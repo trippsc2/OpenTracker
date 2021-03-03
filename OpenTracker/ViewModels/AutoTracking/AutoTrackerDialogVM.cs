@@ -105,16 +105,16 @@ namespace OpenTracker.ViewModels.AutoTracking
         /// Constructor
         /// </summary>
         /// <param name="autoTracker">
-        /// The autotracker data.
+        /// The auto-tracker data.
         /// </param>
         /// <param name="logService">
-        /// The autotracker log service.
+        /// The auto-tracker log service.
         /// </param>
         /// <param name="status">
-        /// The autotracker status control ViewModel.
+        /// The auto-tracker status control ViewModel.
         /// </param>
         /// <param name="log">
-        /// The autotracker log control ViewModel.
+        /// The auto-tracker log control ViewModel.
         /// </param>
         public AutoTrackerDialogVM(
             IAutoTracker autoTracker, IAutoTrackerLogService logService,
@@ -165,7 +165,7 @@ namespace OpenTracker.ViewModels.AutoTracking
             PropertyChanged += OnPropertyChanged;
             _autoTracker.PropertyChanged += OnAutoTrackerChanged;
 
-            UpdateCommandCanExecuteProperties();
+            UpdateCommandCanExecuteProperties().Wait();
         }
 
         /// <summary>
@@ -177,16 +177,16 @@ namespace OpenTracker.ViewModels.AutoTracking
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        private async void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(UriString))
             {
-                UpdateCanConnect();
+                await UpdateCanConnect();
             }
 
             if (e.PropertyName == nameof(Device))
             {
-                UpdateCanStart();
+                await UpdateCanStart();
             }
         }
 
@@ -197,22 +197,21 @@ namespace OpenTracker.ViewModels.AutoTracking
         /// The event sender.
         /// </param>
         /// <param name="e">
-        /// The arguments of the Tick event.
+        /// The Tick event args.
         /// </param>
-        private void OnMemoryCheckTimerTick(object? sender, EventArgs e)
+        private async void OnMemoryCheckTimerTick(object? sender, EventArgs e)
         {
             _tickCount++;
 
-            Dispatcher.UIThread.InvokeAsync(async () =>
-            {
-                await _autoTracker.InGameCheck();
+            await Dispatcher.UIThread.InvokeAsync(async () => { await _autoTracker.InGameCheck(); });
 
-                if (_tickCount == 5)
-                {
-                    _tickCount = 0;
-                    await _autoTracker.MemoryCheck();
-                }
-            });
+            if (_tickCount != 5)
+            {
+                return;
+            }
+            
+            _tickCount = 0;
+            await Dispatcher.UIThread.InvokeAsync(async () => { await _autoTracker.MemoryCheck(); });
         }
 
         /// <summary>
@@ -224,11 +223,11 @@ namespace OpenTracker.ViewModels.AutoTracking
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnAutoTrackerChanged(object? sender, PropertyChangedEventArgs e)
+        private async void OnAutoTrackerChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IAutoTracker.RaceIllegalTracking))
             {
-                Dispatcher.UIThread.InvokeAsync(() =>
+                await Dispatcher.UIThread.InvokeAsync(() =>
                 {
                     this.RaisePropertyChanged(nameof(RaceIllegalTracking));
                 });
@@ -236,7 +235,7 @@ namespace OpenTracker.ViewModels.AutoTracking
 
             if (e.PropertyName == nameof(IAutoTracker.Devices))
             {
-                Dispatcher.UIThread.InvokeAsync(() =>
+                await Dispatcher.UIThread.InvokeAsync(() =>
                 {
                     this.RaisePropertyChanged(nameof(Devices));
                     this.RaisePropertyChanged(nameof(DevicesComboBoxEnabled));
@@ -245,9 +244,9 @@ namespace OpenTracker.ViewModels.AutoTracking
 
             if (e.PropertyName == nameof(IAutoTracker.Status))
             {
-                UpdateCommandCanExecuteProperties();
+                await UpdateCommandCanExecuteProperties();
 
-                Dispatcher.UIThread.InvokeAsync(() =>
+                await Dispatcher.UIThread.InvokeAsync(() =>
                 {
                     if (_autoTracker.Status != ConnectionStatus.Connected &&
                         _memoryCheckTimer.IsEnabled)
@@ -264,20 +263,20 @@ namespace OpenTracker.ViewModels.AutoTracking
         /// <summary>
         /// Updates the "can execute" properties for all commands.
         /// </summary>
-        private void UpdateCommandCanExecuteProperties()
+        private async Task UpdateCommandCanExecuteProperties()
         {
-            UpdateCanConnect();
-            UpdateCanGetDevices();
-            UpdateCanDisconnect();
-            UpdateCanStart();
+            await UpdateCanConnect();
+            await UpdateCanGetDevices();
+            await UpdateCanDisconnect();
+            await UpdateCanStart();
         }
 
         /// <summary>
         /// Updates the CanConnect property.
         /// </summary>
-        private void UpdateCanConnect()
+        private async Task UpdateCanConnect()
         {
-            Dispatcher.UIThread.InvokeAsync(() =>
+            await Dispatcher.UIThread.InvokeAsync(() =>
             {
                 CanConnect = CanCreateWebSocketUri() && _autoTracker.CanConnect();
             });
@@ -286,9 +285,9 @@ namespace OpenTracker.ViewModels.AutoTracking
         /// <summary>
         /// Updates the CanGetDevices property.
         /// </summary>
-        private void UpdateCanGetDevices()
+        private async Task UpdateCanGetDevices()
         {
-            Dispatcher.UIThread.InvokeAsync(() =>
+            await Dispatcher.UIThread.InvokeAsync(() =>
             {
                 CanGetDevices = _autoTracker.CanGetDevices();
             });
@@ -297,9 +296,9 @@ namespace OpenTracker.ViewModels.AutoTracking
         /// <summary>
         /// Updates the CanGetDisconnect property.
         /// </summary>
-        private void UpdateCanDisconnect()
+        private async Task UpdateCanDisconnect()
         {
-            Dispatcher.UIThread.InvokeAsync(() =>
+            await Dispatcher.UIThread.InvokeAsync(() =>
             {
                 CanDisconnect = _autoTracker.CanDisconnect();
             });
@@ -308,9 +307,9 @@ namespace OpenTracker.ViewModels.AutoTracking
         /// <summary>
         /// Updates the CanStart property.
         /// </summary>
-        private void UpdateCanStart()
+        private async Task UpdateCanStart()
         {
-            Dispatcher.UIThread.InvokeAsync(() =>
+            await Dispatcher.UIThread.InvokeAsync(() =>
             {
                 CanStart = !(Device is null) && Device != string.Empty && _autoTracker.CanStart();
             });
@@ -350,12 +349,7 @@ namespace OpenTracker.ViewModels.AutoTracking
         /// </summary>
         private async Task Start()
         {    
-            if (Device is null)
-            {
-                throw new NullReferenceException();
-            }
-            
-            await _autoTracker.Start(Device);
+            await _autoTracker.Start(Device!);
             _memoryCheckTimer.Start();
         }
 
