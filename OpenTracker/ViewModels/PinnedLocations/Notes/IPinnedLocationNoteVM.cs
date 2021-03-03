@@ -1,5 +1,4 @@
-﻿using OpenTracker.Interfaces;
-using OpenTracker.Models.Markings;
+﻿using OpenTracker.Models.Markings;
 using OpenTracker.Utils;
 using OpenTracker.ViewModels.Markings;
 

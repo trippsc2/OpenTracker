@@ -29,6 +29,7 @@
     <PackageReference Include="Avalonia.Diagnostics" Version="0.10.0" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.0" />
     <PackageReference Include="Avalonia.Xaml.Behaviors" Version="0.10.0" />
+    <PackageReference Include="Avalonia.Xaml.Interactions.DragAndDrop" Version="0.10.0" />
     <PackageReference Include="Dotnet.Bundle" Version="0.9.13" />
     <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="5.0.3">
       <PrivateAssets>all</PrivateAssets>

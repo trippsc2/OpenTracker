@@ -1,9 +1,5 @@
 ﻿using Avalonia.Controls;
-using Avalonia.Input;
 using Avalonia.Markup.Xaml;
-using Avalonia.VisualTree;
-using OpenTracker.Interfaces;
-using System.Linq;
 
 namespace OpenTracker.Views.Maps.Locations
 {

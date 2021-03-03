@@ -3,7 +3,6 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
-using OpenTracker.Interfaces;
 using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.Connections;
 using OpenTracker.Models.Locations;
@@ -22,9 +21,9 @@ using System.Reactive;
 namespace OpenTracker.ViewModels.Maps.Locations
 {
     /// <summary>
-    /// This is the ViewModel of the map location control representing a entrance map location.
+    /// This class contains the entrance map location control ViewModel data.
     /// </summary>
-    public class EntranceMapLocationVM : ViewModelBase, IMapLocationVMBase, IConnectLocation
+    public class EntranceMapLocationVM : ViewModelBase, IEntranceMapLocationVM
     {
         private readonly IAppSettings _appSettings;
         private readonly IUndoRedoManager _undoRedoManager;
@@ -118,6 +117,21 @@ namespace OpenTracker.ViewModels.Maps.Locations
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="appSettings">
+        /// The app settings data.
+        /// </param>
+        /// <param name="undoRedoManager">
+        /// The undo/redo manager.
+        /// </param>
+        /// <param name="undoableFactory">
+        /// A factory for creating undoable actions.
+        /// </param>
+        /// <param name="tooltipFactory">
+        /// An Autofac factory for creating tooltips.
+        /// </param>
+        /// <param name="connectionFactory">
+        /// An Autofac factory for creating map connections.
+        /// </param>
         /// <param name="mapLocation">
         /// The map location to be represented.
         /// </param>
@@ -321,15 +335,15 @@ namespace OpenTracker.ViewModels.Maps.Locations
         }
 
         /// <summary>
-        /// Connects this entrance location to the specified location.
+        /// Creates an undoable action to create a connection to the specified location and sends it to the undo/redo
+        /// manager.
         /// </summary>
-        /// <param name="location">
-        /// The location to which this location is connected.
+        /// <param name="mapLocation">
+        /// The map location to which this location is connected.
         /// </param>
-        public void ConnectLocation(IConnectLocation location)
+        public void ConnectLocation(IMapLocation mapLocation)
         {
-            _undoRedoManager.Execute(_undoableFactory.GetAddConnection(_connectionFactory(
-                location.MapLocation, MapLocation)));
+            _undoRedoManager.Execute(_undoableFactory.GetAddConnection(_connectionFactory(mapLocation, MapLocation)));
         }
 
         /// <summary>

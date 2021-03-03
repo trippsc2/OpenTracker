@@ -2,13 +2,24 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:OpenTracker.ViewModels.Maps.Locations"
              xmlns:i="using:Avalonia.Xaml.Interactivity"
              xmlns:ia="using:Avalonia.Xaml.Interactions.Core"
+             xmlns:iadd="using:Avalonia.Xaml.Interactions.DragAndDrop"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="OpenTracker.Views.Maps.Locations.EntranceMapLocation">
-  <DockPanel Name="dockPanel" IsVisible="{Binding Visible}" DragDrop.AllowDrop="True">
+  
+  <UserControl.Resources>
+    <vm:EntranceDropHandler x:Key="EntranceDropHandler" />
+  </UserControl.Resources>
+  
+  <DockPanel Name="dockPanel" IsVisible="{Binding Visible}">
 
     <i:Interaction.Behaviors>
+      
+      <iadd:ContextDragBehavior Context="{Binding}" />
+      <iadd:ContextDropBehavior Context="{Binding MapLocation}"
+                                Handler="{StaticResource EntranceDropHandler}" />
       
       <ia:EventTriggerBehavior EventName="PointerEnter" SourceObject="{Binding #dockPanel}">
         <ia:InvokeCommandAction Command="{Binding HandlePointerEnterCommand}" />
@@ -26,7 +37,7 @@
 
     <ContentControl DockPanel.Dock="{Binding MarkingDock}" Content="{Binding Marking}" />
       
-    <Panel Name="panel" PointerPressed="OnPointerPressed">
+    <Panel Name="panel">
       
       <i:Interaction.Behaviors>
       
@@ -46,4 +57,5 @@
     </Panel>
 
   </DockPanel>
+  
 </UserControl>

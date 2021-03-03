@@ -1,15 +1,14 @@
-﻿using OpenTracker.Interfaces;
-using OpenTracker.Models.UndoRedo;
+﻿using Avalonia.Input;
+using OpenTracker.Models.Items;
+using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.Sections;
+using OpenTracker.Models.UndoRedo;
+using OpenTracker.Utils;
 using ReactiveUI;
 using System.ComponentModel;
-using System.Text;
-using OpenTracker.Models.PrizePlacements;
-using OpenTracker.Models.Items;
 using System.Linq;
 using System.Reactive;
-using Avalonia.Input;
-using OpenTracker.Utils;
+using System.Text;
 
 namespace OpenTracker.ViewModels.Items.Small
 {

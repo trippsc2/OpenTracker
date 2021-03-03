@@ -1,13 +1,11 @@
-﻿using OpenTracker.Interfaces;
+﻿using Avalonia.Input;
 using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.Sections;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
 using ReactiveUI;
-using System;
 using System.ComponentModel;
 using System.Reactive;
-using Avalonia.Input;
 
 namespace OpenTracker.ViewModels.PinnedLocations.Sections
 {

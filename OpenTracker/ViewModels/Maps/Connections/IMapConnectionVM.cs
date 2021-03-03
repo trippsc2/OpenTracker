@@ -1,5 +1,4 @@
-﻿using OpenTracker.Interfaces;
-using OpenTracker.Models.Connections;
+﻿using OpenTracker.Models.Connections;
 using OpenTracker.Utils;
 
 namespace OpenTracker.ViewModels.Maps.Connections

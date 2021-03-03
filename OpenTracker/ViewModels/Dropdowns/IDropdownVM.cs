@@ -1,5 +1,4 @@
-﻿using OpenTracker.Interfaces;
-using OpenTracker.Models.Dropdowns;
+﻿using OpenTracker.Models.Dropdowns;
 
 namespace OpenTracker.ViewModels.Dropdowns
 {
