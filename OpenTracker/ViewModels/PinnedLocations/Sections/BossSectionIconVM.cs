@@ -1,18 +1,18 @@
-﻿using OpenTracker.Interfaces;
+﻿using Avalonia.Input;
 using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.Modes;
 using OpenTracker.Utils;
 using OpenTracker.ViewModels.BossSelect;
 using ReactiveUI;
-using System;
 using System.ComponentModel;
+using System.Reactive;
 
 namespace OpenTracker.ViewModels.PinnedLocations.Sections
 {
     /// <summary>
-    /// This is the ViewModel of the section icon control representing a dungeon boss.
+    /// This class contains boss section icon control ViewModel data.
     /// </summary>
-    public class BossSectionIconVM : ViewModelBase, ISectionIconVMBase, IClickHandler
+    public class BossSectionIconVM : ViewModelBase, ISectionIconVMBase
     {
         private readonly IMode _mode;
         private readonly IBossPlacement _bossPlacement;
@@ -27,12 +27,20 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
             $"{_bossPlacement.DefaultBoss.ToString().ToLowerInvariant()}0.png";
 
         public IBossSelectPopupVM BossSelect { get; }
+        
+        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
 
         public delegate BossSectionIconVM Factory(IBossPlacement bossPlacement);
 
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="mode">
+        /// The mode settings data.
+        /// </param>
+        /// <param name="bossSelectFactory">
+        /// An Autofac factory for creating boss select controls.
+        /// </param>
         /// <param name="bossPlacement">
         /// The boss section to be represented.
         /// </param>
@@ -42,6 +50,8 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
             _mode = mode;
             _bossPlacement = bossPlacement;
             BossSelect = bossSelectFactory(bossPlacement);
+            
+            HandleClickCommand = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClick);
 
             _mode.PropertyChanged += OnModeChanged;
             _bossPlacement.PropertyChanged += OnBossChanged;
@@ -82,24 +92,25 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
         }
 
         /// <summary>
-        /// Handles left clicks and opens the boss select popup.
+        /// Opens the boss select popup.
         /// </summary>
-        /// <param name="force">
-        /// A boolean representing whether the logic should be ignored.
-        /// </param>
-        public void OnLeftClick(bool force = false)
+        private void OpenBossSelect()
         {
             BossSelect.PopupOpen = true;
         }
 
         /// <summary>
-        /// Handles right clicks.
+        /// Handles clicking the control.
         /// </summary>
-        /// <param name="force">
-        /// A boolean representing whether the logic should be ignored.
+        /// <param name="e">
+        /// The PointerReleased event args.
         /// </param>
-        public void OnRightClick(bool force = false)
+        private void HandleClick(PointerReleasedEventArgs e)
         {
+            if (e.InitialPressMouseButton == MouseButton.Left)
+            {
+                OpenBossSelect();
+            }
         }
     }
 }

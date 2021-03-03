@@ -13,6 +13,9 @@ using LogLevel = OpenTracker.Models.AutoTracking.Logging.LogLevel;
 
 namespace OpenTracker.ViewModels.AutoTracking
 {
+    /// <summary>
+    /// This class contains the auto-tracker log control ViewModel data.
+    /// </summary>
     public class AutoTrackerLogVM : ViewModelBase, IAutoTrackerLogVM
     {
         private readonly IAutoTrackerLogService _logService;
@@ -42,7 +45,7 @@ namespace OpenTracker.ViewModels.AutoTracking
         /// Constructor
         /// </summary>
         /// <param name="logService">
-        /// The autotracking log service.
+        /// The auto-tracking log service.
         /// </param>
         public AutoTrackerLogVM(IAutoTrackerLogService logService)
         {
@@ -87,17 +90,22 @@ namespace OpenTracker.ViewModels.AutoTracking
         /// </param>
         private void OnLogMessageChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
-            if (e.Action == NotifyCollectionChangedAction.Add)
+            if (e.Action != NotifyCollectionChangedAction.Add)
             {
-                _ = e.NewItems ?? throw new NullReferenceException();
+                return;
+            }
 
-                foreach (var item in e.NewItems)
+            if (e.NewItems is null)
+            {
+                throw new NullReferenceException();
+            }
+
+            foreach (var item in e.NewItems)
+            {
+                if (item != null && item is ILogMessage message &&
+                    message.LogLevel >= _logLevel)
                 {
-                    if (item != null && item is ILogMessage message &&
-                        message.LogLevel >= _logLevel)
-                    {
-                        AddLog(message);
-                    }
+                    AddLog(message);
                 }
             }
         }
@@ -143,6 +151,7 @@ namespace OpenTracker.ViewModels.AutoTracking
         private void ResetLog()
         {
             _logService.LogCollection.Clear();
+            
             Dispatcher.UIThread.InvokeAsync(() =>
             {
                 LogText.Clear();
@@ -157,11 +166,6 @@ namespace OpenTracker.ViewModels.AutoTracking
         /// </param>
         public void Save(string path)
         {
-            if (path == null)
-            {
-                return;
-            }
-
             using StreamWriter file = new StreamWriter(path);
 
             foreach (var message in _logService.LogCollection)

@@ -4,11 +4,13 @@ using OpenTracker.ViewModels.Markings;
 using OpenTracker.ViewModels.Markings.Images;
 using ReactiveUI;
 using System.ComponentModel;
+using System.Reactive;
+using Avalonia.Input;
 
 namespace OpenTracker.ViewModels.PinnedLocations.Notes
 {
     /// <summary>
-    /// This is the ViewModel of the pinned location note control.
+    /// This class contains pinned location note control ViewModel data.
     /// </summary>
     public class PinnedLocationNoteVM : ViewModelBase, IPinnedLocationNoteVM
     {
@@ -27,27 +29,29 @@ namespace OpenTracker.ViewModels.PinnedLocations.Notes
             set => this.RaiseAndSetIfChanged(ref _image, value);
         }
 
-
-        public delegate IPinnedLocationNoteVM Factory(
-            IMarking marking, INoteMarkingSelectVM markingSelect);
+        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
 
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="markingImages">
+        /// The marking image control dictionary.
+        /// </param>
         /// <param name="marking">
         /// The marking to be noted.
         /// </param>
-        /// <param name="location">
-        /// The location to which the marking belongs.
+        /// <param name="markingSelect">
+        /// The note marking select control.
         /// </param>
         public PinnedLocationNoteVM(
-            IMarkingImageDictionary markingImages, IMarking marking,
-            INoteMarkingSelectVM markingSelect)
+            IMarkingImageDictionary markingImages, IMarking marking, INoteMarkingSelectVM markingSelect)
         {
             _markingImages = markingImages;
 
             Marking = marking;
             MarkingSelect = markingSelect;
+            
+            HandleClickCommand = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClick);
 
             Marking.PropertyChanged += OnMarkingChanged;
 
@@ -80,24 +84,25 @@ namespace OpenTracker.ViewModels.PinnedLocations.Notes
         }
 
         /// <summary>
-        /// Handles left clicks and opens the marking select popup.
+        /// Opens the marking select popup.
         /// </summary>
-        /// <param name="force">
-        /// A boolean representing whether the logic should be ignored.
-        /// </param>
-        public void OnLeftClick(bool force)
+        private void OpenMarkingSelect()
         {
             MarkingSelect.PopupOpen = true;
         }
 
         /// <summary>
-        /// Handles right clicks.
+        /// Handles clicking the control.
         /// </summary>
-        /// <param name="force">
-        /// A boolean representing whether the logic should be ignored.
+        /// <param name="e">
+        /// The PointerReleased event args.
         /// </param>
-        public void OnRightClick(bool force)
+        private void HandleClick(PointerReleasedEventArgs e)
         {
+            if (e.InitialPressMouseButton == MouseButton.Left)
+            {
+                OpenMarkingSelect();
+            }
         }
     }
 }

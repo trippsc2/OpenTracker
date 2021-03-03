@@ -1,7 +1,7 @@
 ﻿namespace OpenTracker.ViewModels.AutoTracking
 {
     /// <summary>
-    /// This is the interface for the autotracker status text ViewModel.
+    /// This class contains the auto-tracker status text control ViewModel data.
     /// </summary>
     public interface IAutoTrackerStatusVM
     {

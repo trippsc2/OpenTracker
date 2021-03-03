@@ -4,7 +4,7 @@ using OpenTracker.Utils;
 namespace OpenTracker.ViewModels.BossSelect
 {
     /// <summary>
-    /// This is the ViewModel for the boss select button control.
+    /// This class contains the boss select button control ViewModel data.
     /// </summary>
     public class BossSelectButtonVM : ViewModelBase, IBossSelectButtonVM
     {
@@ -17,8 +17,6 @@ namespace OpenTracker.ViewModels.BossSelect
             $"{Boss.ToString()!.ToLowerInvariant()}1.png" :
             "avares://OpenTracker/Assets/Images/Bosses/" +
             $"{_bossPlacement.DefaultBoss.ToString().ToLowerInvariant()}0.png";
-
-        public delegate IBossSelectButtonVM Factory(IBossPlacement bossPlacement, BossType? boss);
 
         /// <summary>
         /// Constructor

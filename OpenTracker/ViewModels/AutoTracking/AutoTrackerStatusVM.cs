@@ -8,7 +8,7 @@ using System.Text;
 namespace OpenTracker.ViewModels.AutoTracking
 {
     /// <summary>
-    /// This is the class for the autotracker status text ViewModel.
+    /// This class contains the auto-tracker status text control ViewModel data.
     /// </summary>
     public class AutoTrackerStatusVM : ViewModelBase, IAutoTrackerStatusVM
     {
@@ -32,7 +32,7 @@ namespace OpenTracker.ViewModels.AutoTracking
         /// Constructor
         /// </summary>
         /// <param name="autoTracker">
-        /// The autotracker.
+        /// The auto-tracker data.
         /// </param>
         public AutoTrackerStatusVM(IAutoTracker autoTracker)
         {
@@ -59,20 +59,6 @@ namespace OpenTracker.ViewModels.AutoTracking
             {
                 UpdateStatusText();
             }
-        }
-
-        /// <summary>
-        /// Subscribes to the PropertyChanged event on the ISNESConnector interface.
-        /// </summary>
-        /// <param name="sender">
-        /// The sending object of the event.
-        /// </param>
-        /// <param name="e">
-        /// The arguments of the PropertyChanged event.
-        /// </param>
-        private void OnConnectorChanged(object? sender, PropertyChangedEventArgs e)
-        {
-            UpdateStatusText();
         }
 
         /// <summary>
@@ -113,16 +99,7 @@ namespace OpenTracker.ViewModels.AutoTracking
                             StatusTextColor = "#00ff00";
                             var sb = new StringBuilder();
                             sb.Append("CONNECTED (");
-
-                            if (_autoTracker.RaceIllegalTracking)
-                            {
-                                sb.Append("RACE ILLEGAL)");
-                            }
-                            else
-                            {
-                                sb.Append("RACE LEGAL)");
-                            }
-
+                            sb.Append(_autoTracker.RaceIllegalTracking ? "RACE ILLEGAL)" : "RACE LEGAL)");
                             StatusText = sb.ToString();
                         }
                         break;

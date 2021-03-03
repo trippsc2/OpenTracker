@@ -3,6 +3,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vc="clr-namespace:OpenTracker.ValueConverters;assembly=OpenTracker"
+             xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+             xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="OpenTracker.Views.PinnedLocations.Sections.ShopSectionIcon">
 
@@ -10,9 +12,17 @@
     <vc:BitmapValueConverter x:Key="BitmapValueConverter" />
   </UserControl.Resources>
 
-  <Panel PointerReleased="OnClick">
+  <Panel Name="panel" IsVisible="{Binding Visible}">
+    
+    <i:Interaction.Behaviors>
+      <ia:EventTriggerBehavior EventName="PointerReleased" SourceObject="{Binding #panel}">
+        <ia:InvokeCommandAction Command="{Binding HandleClickCommand}" />
+      </ia:EventTriggerBehavior>
+    </i:Interaction.Behaviors>
+    
     <Image Source="{Binding ImageSource, Converter={StaticResource BitmapValueConverter}}"
            Height="32" Width="32" />
+    
   </Panel>
 
 </UserControl>

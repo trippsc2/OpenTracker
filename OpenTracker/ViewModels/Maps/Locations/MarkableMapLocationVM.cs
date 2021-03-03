@@ -1,7 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
-using OpenTracker.Interfaces;
 using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Modes;
@@ -15,14 +14,16 @@ using ReactiveUI;
 using System;
 using System.ComponentModel;
 using System.Globalization;
+using System.Reactive;
+using Avalonia.Input;
+using Avalonia.Interactivity;
 
 namespace OpenTracker.ViewModels.Maps.Locations
 {
     /// <summary>
-    /// This is the ViewModel for the map location control representing a markable location.
+    /// This class contains the markable map location control ViewModel data.
     /// </summary>
-    public class MarkableMapLocationVM : ViewModelBase, IMapLocationVMBase, IClickHandler,
-        IDoubleClickHandler, IPointerOver
+    public class MarkableMapLocationVM : ViewModelBase, IMapLocationVMBase
     {
         private readonly IAppSettings _appSettings;
         private readonly IMode _mode;
@@ -177,6 +178,11 @@ namespace OpenTracker.ViewModels.Maps.Locations
                     _mapLocation.Location.Available.ToString(CultureInfo.InvariantCulture);
             }
         }
+        
+        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
+        public ReactiveCommand<RoutedEventArgs, Unit> HandleDoubleClickCommand { get; }
+        public ReactiveCommand<PointerEventArgs, Unit> HandlePointerEnterCommand { get; }
+        public ReactiveCommand<PointerEventArgs, Unit> HandlePointerLeaveCommand { get; }
 
         public delegate MarkableMapLocationVM Factory(
             IMapLocation mapLocation, IMarkingMapLocationVM marking, Dock entranceMarkingDock,
@@ -185,6 +191,21 @@ namespace OpenTracker.ViewModels.Maps.Locations
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="appSettings">
+        /// The app settings data.
+        /// </param>
+        /// <param name="mode">
+        /// The mode settings data.
+        /// </param>
+        /// <param name="undoRedoManager">
+        /// The undo/redo manager.
+        /// </param>
+        /// <param name="undoableFactory">
+        /// A factory for creating undoable actions.
+        /// </param>
+        /// <param name="tooltipFactory">
+        /// An Autofac factory for creating tooltips.
+        /// </param>
         /// <param name="mapLocation">
         /// The map location being represented.
         /// </param>
@@ -214,6 +235,11 @@ namespace OpenTracker.ViewModels.Maps.Locations
 
             Marking = marking;
             ToolTip = tooltipFactory(_mapLocation.Location!);
+
+            HandleClickCommand = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClick);
+            HandleDoubleClickCommand = ReactiveCommand.Create<RoutedEventArgs>(HandleDoubleClick);
+            HandlePointerEnterCommand = ReactiveCommand.Create<PointerEventArgs>(HandlePointerEnter);
+            HandlePointerLeaveCommand = ReactiveCommand.Create<PointerEventArgs>(HandlePointerLeave);
 
             PropertyChanged += OnPropertyChanged;
 
@@ -451,49 +477,85 @@ namespace OpenTracker.ViewModels.Maps.Locations
         }
 
         /// <summary>
-        /// Handles double clicks and pins the location.
+        /// Creates an undoable action to clear the location and sends it to the undo/redo manager.
         /// </summary>
-        public void OnDoubleClick()
+        /// <param name="force">
+        /// A boolean representing whether the logic should be ignored.
+        /// </param>
+        private void ClearLocation(bool force)
+        {
+            _undoRedoManager.Execute(_undoableFactory.GetClearLocation(_mapLocation.Location!, force));
+        }
+
+        /// <summary>
+        /// Creates an undoable action to pin the location and sends it to the undo/redo manager.
+        /// </summary>
+        private void PinLocation()
         {
             _undoRedoManager.Execute(_undoableFactory.GetPinLocation(_mapLocation.Location!));
         }
 
         /// <summary>
-        /// Handles the pointer entering the control and highlights it.
+        /// Highlights the control.
         /// </summary>
-        public void OnPointerEnter()
+        private void Highlight()
         {
             Highlighted = true;
         }
 
         /// <summary>
-        /// Handles the pointer exiting the control and unhighlights it.
+        /// Un-highlights the control.
         /// </summary>
-        public void OnPointerLeave()
+        private void Unhighlight()
         {
             Highlighted = false;
         }
 
         /// <summary>
-        /// Handles left clicks.
+        /// Handles clicking the control.
         /// </summary>
-        /// <param name="force">
-        /// A boolean representing whether the logic should be ignored.
+        /// <param name="e">
+        /// The pointer released event args.
         /// </param>
-        public void OnLeftClick(bool force)
+        private void HandleClick(PointerReleasedEventArgs e)
         {
+            if (e.InitialPressMouseButton == MouseButton.Right)
+            {
+                ClearLocation((e.KeyModifiers & KeyModifiers.Control) > 0);
+            }
         }
 
         /// <summary>
-        /// Handles right clicks and clears the location.
+        /// Handles double clicking the control.
         /// </summary>
-        /// <param name="force">
-        /// A boolean representing whether the logic should be ignored.
+        /// <param name="e">
+        /// The pointer released event args.
         /// </param>
-        public void OnRightClick(bool force)
+        private void HandleDoubleClick(RoutedEventArgs e)
         {
-            _undoRedoManager.Execute(_undoableFactory.GetClearLocation(
-                _mapLocation.Location!, force));
+            PinLocation();
+        }
+
+        /// <summary>
+        /// Handles pointer entering the control.
+        /// </summary>
+        /// <param name="e">
+        /// The PointerEnter event args.
+        /// </param>
+        private void HandlePointerEnter(PointerEventArgs e)
+        {
+            Highlight();
+        }
+
+        /// <summary>
+        /// Handles pointer leaving the control.
+        /// </summary>
+        /// <param name="e">
+        /// The PointerLeave event args.
+        /// </param>
+        private void HandlePointerLeave(PointerEventArgs e)
+        {
+            Unhighlight();
         }
     }
 }

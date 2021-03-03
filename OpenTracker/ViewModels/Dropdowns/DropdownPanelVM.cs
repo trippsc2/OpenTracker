@@ -8,7 +8,7 @@ using System.ComponentModel;
 namespace OpenTracker.ViewModels.Dropdowns
 {
     /// <summary>
-    /// This is the class for the dropdown panel ViewModel.
+    /// This class contains the dropdown panel ViewModel data.
     /// </summary>
     public class DropdownPanelVM : ViewModelBase, IDropdownPanelVM
     {
@@ -35,8 +35,7 @@ namespace OpenTracker.ViewModels.Dropdowns
         /// <param name="factory">
         /// The factory for creating new dropdown controls.
         /// </param>
-        public DropdownPanelVM(
-            ILayoutSettings layoutSettings, IMode mode, IDropdownVMFactory factory)
+        public DropdownPanelVM(ILayoutSettings layoutSettings, IMode mode, IDropdownVMFactory factory)
         {
             _layoutSettings = layoutSettings;
             _mode = mode;
@@ -57,7 +56,7 @@ namespace OpenTracker.ViewModels.Dropdowns
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnModeChanged(object sender, PropertyChangedEventArgs e)
+        private void OnModeChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IMode.EntranceShuffle))
             {
@@ -74,7 +73,7 @@ namespace OpenTracker.ViewModels.Dropdowns
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
+        private void OnLayoutChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ILayoutSettings.UIScale))
             {

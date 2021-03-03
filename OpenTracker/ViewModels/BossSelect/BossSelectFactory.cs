@@ -5,20 +5,25 @@ using System.Collections.Generic;
 namespace OpenTracker.ViewModels.BossSelect
 {
     /// <summary>
-    /// This is the class for creating boss select control ViewModel classes.
+    /// This class contains creation logic for the boss select controls.
     /// </summary>
     public class BossSelectFactory : IBossSelectFactory
     {
         private readonly IBossSelectButtonVM.Factory _buttonFactory;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="buttonFactory">
+        /// An Autofac factory for creating boss select button controls.
+        /// </param>
         public BossSelectFactory(IBossSelectButtonVM.Factory buttonFactory)
         {
             _buttonFactory = buttonFactory;
         }
 
         /// <summary>
-        /// Returns an observable collection of boss select button control ViewModel instances
-        /// for the specified boss placement.
+        /// Returns a list of boss select button control ViewModel instances for the specified boss placement.
         /// </summary>
         /// <param name="bossPlacement">
         /// The boss placement.
@@ -26,32 +31,18 @@ namespace OpenTracker.ViewModels.BossSelect
         /// <returns>
         /// An observable collection of boss select button control ViewModel instances.
         /// </returns>
-        public List<IBossSelectButtonVM> GetBossSelectButtonVMs(
-            IBossPlacement bossPlacement)
+        public List<IBossSelectButtonVM> GetBossSelectButtonVMs(IBossPlacement bossPlacement)
         {
             var buttons = new List<IBossSelectButtonVM>
-                {
-                    _buttonFactory(bossPlacement, null)
-                };
+            {
+                _buttonFactory(bossPlacement, null)
+            };
 
             foreach (BossType boss in Enum.GetValues(typeof(BossType)))
             {
-                switch (boss)
+                if (boss != BossType.Aga)
                 {
-                    case BossType.Armos:
-                    case BossType.Lanmolas:
-                    case BossType.Moldorm:
-                    case BossType.HelmasaurKing:
-                    case BossType.Arrghus:
-                    case BossType.Mothula:
-                    case BossType.Blind:
-                    case BossType.Kholdstare:
-                    case BossType.Vitreous:
-                    case BossType.Trinexx:
-                        {
-                            buttons.Add(_buttonFactory(bossPlacement, boss));
-                        }
-                        break;
+                    buttons.Add(_buttonFactory(bossPlacement, boss));
                 }
             }
 

@@ -1,16 +1,15 @@
-﻿using System;
+﻿using Avalonia.Input;
 using OpenTracker.Models.Dropdowns;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
 using ReactiveUI;
 using System.ComponentModel;
 using System.Reactive;
-using Avalonia.Input;
 
 namespace OpenTracker.ViewModels.Dropdowns
 {
     /// <summary>
-    /// This is the ViewModel class for a dropdown icon.
+    /// This class contains the dropdown icon control ViewModel data.
     /// </summary>
     public class DropdownVM : ViewModelBase, IDropdownVM
     {
@@ -26,8 +25,6 @@ namespace OpenTracker.ViewModels.Dropdowns
             _imageSourceBase + (_dropdown.Checked ? "1" : "0") + ".png";
         
         public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
-
-        public delegate IDropdownVM Factory(IDropdown dropdown, string imageSourceBase);
 
         /// <summary>
         /// Constructor

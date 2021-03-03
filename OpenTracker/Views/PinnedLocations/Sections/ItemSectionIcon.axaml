@@ -12,7 +12,13 @@
     <vc:BitmapValueConverter x:Key="BitmapValueConverter" />
   </UserControl.Resources>
   
-  <Panel PointerReleased="OnClick">
+  <Panel Name="panel" IsVisible="{Binding Visible}">
+    
+    <i:Interaction.Behaviors>
+      <ia:EventTriggerBehavior EventName="PointerReleased" SourceObject="{Binding #panel}">
+        <ia:InvokeCommandAction Command="{Binding HandleClickCommand}" />
+      </ia:EventTriggerBehavior>
+    </i:Interaction.Behaviors>
     
     <Image Source="{Binding ImageSource, Converter={StaticResource BitmapValueConverter}}"
            Height="32" Width="32" />

@@ -10,7 +10,7 @@ using System.ComponentModel;
 namespace OpenTracker.ViewModels.ColorSelect
 {
     /// <summary>
-    /// This is the ViewModel for the color select dialog window.
+    /// This class contains the color select dialog window ViewModel data.
     /// </summary>
     public class ColorSelectDialogVM : DialogViewModelBase, IColorSelectDialogVM
     {

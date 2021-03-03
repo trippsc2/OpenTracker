@@ -1,5 +1,6 @@
 ﻿using Avalonia.Threading;
 using OpenTracker.Models.AutoTracking;
+using OpenTracker.Models.AutoTracking.Logging;
 using OpenTracker.Utils.Dialog;
 using ReactiveUI;
 using System;
@@ -7,12 +8,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reactive;
 using System.Threading.Tasks;
-using OpenTracker.Models.AutoTracking.Logging;
 
 namespace OpenTracker.ViewModels.AutoTracking
 {
     /// <summary>
-    /// This class contains the autotracker dialog window ViewModel.
+    /// This class contains the auto-tracker dialog window ViewModel.
     /// </summary>
     public class AutoTrackerDialogVM : DialogViewModelBase, IAutoTrackerDialogVM
     {
@@ -228,7 +228,10 @@ namespace OpenTracker.ViewModels.AutoTracking
         {
             if (e.PropertyName == nameof(IAutoTracker.RaceIllegalTracking))
             {
-                this.RaisePropertyChanged(nameof(RaceIllegalTracking));
+                Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    this.RaisePropertyChanged(nameof(RaceIllegalTracking));
+                });
             }
 
             if (e.PropertyName == nameof(IAutoTracker.Devices))
@@ -242,10 +245,10 @@ namespace OpenTracker.ViewModels.AutoTracking
 
             if (e.PropertyName == nameof(IAutoTracker.Status))
             {
+                UpdateCommandCanExecuteProperties();
+
                 Dispatcher.UIThread.InvokeAsync(() =>
                 {
-                    UpdateCommandCanExecuteProperties();
-
                     if (_autoTracker.Status != ConnectionStatus.Connected &&
                         _memoryCheckTimer.IsEnabled)
                     {
@@ -330,27 +333,20 @@ namespace OpenTracker.ViewModels.AutoTracking
         /// </returns>
         private async Task GetDevices()
         {
-            await Dispatcher.UIThread.InvokeAsync(async () =>
-                {
-                    await _autoTracker.GetDevices();
-                });
+            await _autoTracker.GetDevices();
         }
 
         /// <summary>
-        /// Stops autotracking.
+        /// Stops auto-tracking.
         /// </summary>
         private async Task Stop()
         {
             _memoryCheckTimer.Stop();
-
-            await Dispatcher.UIThread.InvokeAsync(async () =>
-            {
-                await _autoTracker.Disconnect();
-            });
+            await _autoTracker.Disconnect();
         }
 
         /// <summary>
-        /// Starts autotracking.
+        /// Starts auto-tracking.
         /// </summary>
         private async Task Start()
         {    
@@ -358,12 +354,9 @@ namespace OpenTracker.ViewModels.AutoTracking
             {
                 throw new NullReferenceException();
             }
-
-            await Dispatcher.UIThread.InvokeAsync(async () =>
-            {
-                await _autoTracker.Start(Device);
-                _memoryCheckTimer.Start();
-            });
+            
+            await _autoTracker.Start(Device);
+            _memoryCheckTimer.Start();
         }
 
         /// <summary>
@@ -401,9 +394,9 @@ namespace OpenTracker.ViewModels.AutoTracking
                 return false;
             }
 
-            var schm = uri.Scheme;
+            var scheme = uri.Scheme;
 
-            if (!(schm == "ws" || schm == "wss"))
+            if (!(scheme == "ws" || scheme == "wss"))
             {
                 return false;
             }
@@ -415,12 +408,7 @@ namespace OpenTracker.ViewModels.AutoTracking
                 return false;
             }
 
-            if (uri.Fragment.Length > 0)
-            {
-                return false;
-            }
-
-            return true;
+            return uri.Fragment.Length <= 0;
         }
     }
 }

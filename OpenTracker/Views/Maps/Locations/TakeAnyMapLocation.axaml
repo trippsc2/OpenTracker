@@ -2,12 +2,35 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:i="using:Avalonia.Xaml.Interactivity"
+             xmlns:ia="using:Avalonia.Xaml.Interactions.Core"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="OpenTracker.Views.Maps.Locations.TakeAnyMapLocation">
-  <Panel Width="40" Height="40" IsVisible="{Binding Visible}" DoubleTapped="OnDoubleClick"
-         PointerReleased="OnClick" PointerEnter="OnPointerEnter" PointerLeave="OnPointerLeave">
+  <Panel Name="panel" Width="40" Height="40" IsVisible="{Binding Visible}">
+    
+    <i:Interaction.Behaviors>
+      
+      <ia:EventTriggerBehavior EventName="PointerReleased" SourceObject="{Binding #panel}">
+        <ia:InvokeCommandAction Command="{Binding HandleClickCommand}" />
+      </ia:EventTriggerBehavior>
+      
+      <ia:EventTriggerBehavior EventName="DoubleTapped" SourceObject="{Binding #panel}">
+        <ia:InvokeCommandAction Command="{Binding HandleDoubleClickCommand}" />
+      </ia:EventTriggerBehavior>
+      
+      <ia:EventTriggerBehavior EventName="PointerEnter" SourceObject="{Binding #panel}">
+        <ia:InvokeCommandAction Command="{Binding HandlePointerEnterCommand}" />
+      </ia:EventTriggerBehavior>
+
+      <ia:EventTriggerBehavior EventName="PointerLeave" SourceObject="{Binding #panel}">
+        <ia:InvokeCommandAction Command="{Binding HandlePointerLeaveCommand}" />
+      </ia:EventTriggerBehavior>
+      
+    </i:Interaction.Behaviors>
+
     <Border Classes="MapLocation" Width="40" Height="40" CornerRadius="40"
             Background="{Binding Color, Mode=OneWay}" BorderThickness="5"
             BorderBrush="{Binding BorderColor, Mode=OneWay}" ToolTip.Tip="{Binding ToolTipText}" />
+    
   </Panel>
 </UserControl>

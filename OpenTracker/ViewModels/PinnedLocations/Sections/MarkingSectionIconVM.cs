@@ -1,19 +1,19 @@
-﻿using OpenTracker.Interfaces;
+﻿using Avalonia.Input;
 using OpenTracker.Models.Markings;
 using OpenTracker.Models.Sections;
 using OpenTracker.Utils;
 using OpenTracker.ViewModels.Markings;
 using OpenTracker.ViewModels.Markings.Images;
 using ReactiveUI;
-using System;
 using System.ComponentModel;
+using System.Reactive;
 
 namespace OpenTracker.ViewModels.PinnedLocations.Sections
 {
     /// <summary>
-    /// This is the ViewModel of the section icon control representing a section marking.
+    /// This class contains the section marking icon control ViewModel data.
     /// </summary>
-    public class MarkingSectionIconVM : ViewModelBase, ISectionIconVMBase, IClickHandler
+    public class MarkingSectionIconVM : ViewModelBase, ISectionIconVMBase
     {
         private readonly IMarkingImageDictionary _markingImages;
 
@@ -27,23 +27,32 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
         }
 
         public IMarkingSelectVM MarkingSelect { get; }
+        
+        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
 
         public delegate MarkingSectionIconVM Factory(IMarkableSection section);
 
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="markingImages">
+        /// The marking image control dictionary.
+        /// </param>
+        /// <param name="markingSelectFactory">
+        /// A factory for creating marking select controls.
+        /// </param>
         /// <param name="section">
         /// The marking to be represented.
         /// </param>
         public MarkingSectionIconVM(
-            IMarkingImageDictionary markingImages, IMarkingSelectFactory markingSelectFactory,
-            IMarkableSection section)
+            IMarkingImageDictionary markingImages, IMarkingSelectFactory markingSelectFactory, IMarkableSection section)
         {
             _markingImages = markingImages;
             _marking = section.Marking;
 
             MarkingSelect = markingSelectFactory.GetMarkingSelectVM(section);
+            
+            HandleClickCommand = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClick);
 
             _marking.PropertyChanged += OnMarkingChanged;
 
@@ -76,24 +85,25 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
         }
 
         /// <summary>
-        /// Handles left clicks and opens the marking select popup.
+        /// Opens the marking select popup.
         /// </summary>
-        /// <param name="force">
-        /// A boolean representing whether the logic should be ignored.
-        /// </param>
-        public void OnLeftClick(bool force)
+        private void OpenMarkingSelect()
         {
             MarkingSelect.PopupOpen = true;
         }
 
         /// <summary>
-        /// Handles right clicks.
+        /// Handles clicking the control.
         /// </summary>
-        /// <param name="force">
-        /// A boolean representing whether the logic should be ignored.
+        /// <param name="e">
+        /// The PointerReleased event args.
         /// </param>
-        public void OnRightClick(bool force)
+        private void HandleClick(PointerReleasedEventArgs e)
         {
+            if (e.InitialPressMouseButton == MouseButton.Left)
+            {
+                OpenMarkingSelect();
+            }
         }
     }
 }

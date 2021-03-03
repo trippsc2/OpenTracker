@@ -65,7 +65,7 @@ namespace OpenTracker.ViewModels.Maps.Connections
         
         public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
         public ReactiveCommand<PointerEventArgs, Unit> HandlePointerEnterCommand { get; }
-        public ReactiveCommand<PointerEventArgs, Unit> HandlePointerExitCommand { get; }
+        public ReactiveCommand<PointerEventArgs, Unit> HandlePointerLeaveCommand { get; }
 
         /// <summary>
         /// Constructor
@@ -102,7 +102,7 @@ namespace OpenTracker.ViewModels.Maps.Connections
             
             HandleClickCommand = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClick);
             HandlePointerEnterCommand = ReactiveCommand.Create<PointerEventArgs>(HandlePointerEnter);
-            HandlePointerExitCommand = ReactiveCommand.Create<PointerEventArgs>(HandlePointerExit);
+            HandlePointerLeaveCommand = ReactiveCommand.Create<PointerEventArgs>(HandlePointerLeave);
 
             PropertyChanged += OnPropertyChanged;
             _mapArea.PropertyChanged += OnMapAreaChanged;
@@ -237,12 +237,12 @@ namespace OpenTracker.ViewModels.Maps.Connections
         }
 
         /// <summary>
-        /// Handles pointer exiting the control.
+        /// Handles pointer leaving the control.
         /// </summary>
         /// <param name="e">
-        /// The PointerExit event args.
+        /// The PointerLeave event args.
         /// </param>
-        private void HandlePointerExit(PointerEventArgs e)
+        private void HandlePointerLeave(PointerEventArgs e)
         {
             Unhighlight();
         }
