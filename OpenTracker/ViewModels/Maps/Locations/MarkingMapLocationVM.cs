@@ -1,19 +1,19 @@
-﻿using OpenTracker.Interfaces;
-using OpenTracker.Models.Markings;
+﻿using OpenTracker.Models.Markings;
 using OpenTracker.Models.Sections;
 using OpenTracker.Utils;
 using OpenTracker.ViewModels.Markings;
 using OpenTracker.ViewModels.Markings.Images;
 using ReactiveUI;
-using System;
 using System.ComponentModel;
+using System.Reactive;
+using Avalonia.Input;
 
 namespace OpenTracker.ViewModels.Maps.Locations
 {
     /// <summary>
-    /// This is the ViewModel for the marking map location control.
+    /// This class contains the map location marking control ViewModel data.
     /// </summary>
-    public class MarkingMapLocationVM : ViewModelBase, IClickHandler, IMarkingMapLocationVM
+    public class MarkingMapLocationVM : ViewModelBase, IMarkingMapLocationVM
     {
         private readonly IMarkingImageDictionary _markingImages;
 
@@ -27,22 +27,31 @@ namespace OpenTracker.ViewModels.Maps.Locations
         }
 
         public IMarkingSelectVM MarkingSelect { get; }
+        
+        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
 
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="markingImages">
+        /// The marking image control dictionary.
+        /// </param>
+        /// <param name="markingSelectFactory">
+        /// A factory for creating marking select controls.
+        /// </param>
         /// <param name="section">
         /// The section marking to be represented.
         /// </param>
         public MarkingMapLocationVM(
-            IMarkingImageDictionary markingImages, IMarkingSelectFactory markingSelectFactory,
-            IMarkableSection section)
+            IMarkingImageDictionary markingImages, IMarkingSelectFactory markingSelectFactory, IMarkableSection section)
         {
             _markingImages = markingImages;
 
             _marking = section.Marking;
 
             MarkingSelect = markingSelectFactory.GetMarkingSelectVM(section);
+            
+            HandleClickCommand = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClick);
 
             _marking.PropertyChanged += OnMarkingChanged;
 
@@ -75,24 +84,25 @@ namespace OpenTracker.ViewModels.Maps.Locations
         }
 
         /// <summary>
-        /// Handles left clicks and opens the marking select popup.
+        /// Opens the marking select popup.
         /// </summary>
-        /// <param name="force">
-        /// A boolean representing whether the logic should be ignored.
-        /// </param>
-        public void OnLeftClick(bool force)
+        private void OpenMarkingSelect()
         {
             MarkingSelect.PopupOpen = true;
         }
 
         /// <summary>
-        /// Handles right clicks.
+        /// Handles clicking the control.
         /// </summary>
-        /// <param name="force">
-        /// A boolean representing whether the logic should be ignored.
+        /// <param name="e">
+        /// The PointerReleased event args.
         /// </param>
-        public void OnRightClick(bool force)
+        private void HandleClick(PointerReleasedEventArgs e)
         {
+            if (e.InitialPressMouseButton == MouseButton.Left)
+            {
+                OpenMarkingSelect();
+            }
         }
     }
 }

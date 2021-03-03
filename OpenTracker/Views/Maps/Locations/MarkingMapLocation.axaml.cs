@@ -9,9 +9,6 @@ namespace OpenTracker.Views.Maps.Locations
 {
     public class MarkingMapLocation : UserControl
     {
-        private IClickHandler? ViewModelClickHandler =>
-            DataContext as IClickHandler;
-
         public MarkingMapLocation()
         {
             InitializeComponent();
@@ -20,20 +17,6 @@ namespace OpenTracker.Views.Maps.Locations
         private void InitializeComponent()
         {
             AvaloniaXamlLoader.Load(this);
-        }
-
-        private void OnClick(object sender, PointerReleasedEventArgs e)
-        {
-            if (ViewModelClickHandler == null)
-            {
-                return;
-            }
-
-            if (e.InitialPressMouseButton == MouseButton.Left &&
-                this.GetVisualsAt(e.GetPosition(this)).Any(x => this == x || this.IsVisualAncestorOf(x)))
-            {
-                ViewModelClickHandler.OnLeftClick();
-            }
         }
     }
 }

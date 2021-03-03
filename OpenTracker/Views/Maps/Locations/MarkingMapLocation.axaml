@@ -2,9 +2,17 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:i="using:Avalonia.Xaml.Interactivity"
+             xmlns:ia="using:Avalonia.Xaml.Interactions.Core"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="OpenTracker.Views.Maps.Locations.MarkingMapLocation">
-  <Panel Width="56" Height="56" PointerReleased="OnClick">
+  <Panel Name="panel" Width="56" Height="56">
+
+    <i:Interaction.Behaviors>
+      <ia:EventTriggerBehavior EventName="PointerReleased" SourceObject="{Binding #panel}">
+        <ia:InvokeCommandAction Command="{Binding HandleClickCommand}" />
+      </ia:EventTriggerBehavior>
+    </i:Interaction.Behaviors>
     
     <Border Width="56" Height="56" Background="#99000000">
       <ContentControl Content="{Binding Image}" Width="56" Height="56" />
