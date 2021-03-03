@@ -12,19 +12,18 @@
     <SolidColorBrush x:Key="AccessibilityBrush" Color="{Binding FontColor, Mode=OneWay}" />
   </UserControl.Resources>
 
-  <StackPanel Margin="4,0" Orientation="Vertical" IsHitTestVisible="{Binding Visible}"
-				IsVisible="{Binding Visible}">
+  <StackPanel Margin="4,0" Orientation="Vertical" IsVisible="{Binding Visible}">
 
-    <TextBlock Name="SectionName" Classes="SectionName" Text="{Binding Name}">
+    <TextBlock Name="sectionName" Classes="SectionName" Text="{Binding Name}">
       <i:Interaction.Behaviors>
-        <ia:DataTriggerBehavior Binding="{Binding NormalAccessibility}"
-                                ComparisonCondition="Equal" Value="True">
-          <ia:ChangePropertyAction TargetObject="{Binding #SectionName}" PropertyName="Foreground"
-                                   Value="{DynamicResource NormalBrush}"/>
+        <ia:DataTriggerBehavior Binding="{Binding NormalAccessibility}" ComparisonCondition="Equal"
+                                Value="True">
+          <ia:ChangePropertyAction TargetObject="{Binding #sectionName}" PropertyName="Foreground"
+                                   Value="{DynamicResource NormalBrush}" />
         </ia:DataTriggerBehavior>
-        <ia:DataTriggerBehavior Binding="{Binding NormalAccessibility}"
-                                ComparisonCondition="NotEqual" Value="True">
-          <ia:ChangePropertyAction TargetObject="{Binding #SectionName}" PropertyName="Foreground"
+        <ia:DataTriggerBehavior Binding="{Binding NormalAccessibility}" ComparisonCondition="NotEqual"
+                                Value="True">
+          <ia:ChangePropertyAction TargetObject="{Binding #sectionName}" PropertyName="Foreground"
                                    Value="{DynamicResource AccessibilityBrush}"/>
         </ia:DataTriggerBehavior>
       </i:Interaction.Behaviors>

@@ -8,29 +8,24 @@
 
     <StackPanel DockPanel.Dock="Top">
       <StackPanel Margin="10" HorizontalAlignment="Center" Orientation="Horizontal">
-        <TextBlock Classes="AutoTrackerLabel"
-						   Foreground="#FFFFFF">Logging Level:</TextBlock>
-        <ComboBox Classes="AutoTrackerLogLevel" Items="{Binding LogLevelOptions,
-						  Mode=OneWay}" SelectedItem="{Binding LogLevel, Mode=TwoWay}" />
+        <TextBlock Classes="AutoTrackerLabel" Foreground="#FFFFFF">Logging Level:</TextBlock>
+        <ComboBox Classes="AutoTrackerLogLevel" Items="{Binding LogLevelOptions, Mode=OneWay}"
+                  SelectedItem="{Binding LogLevel, Mode=TwoWay}" />
       </StackPanel>
 
-      <ToggleButton Classes="AutoTracker" IsChecked="{Binding LogVisible,
-						  Mode=TwoWay}">Show Log</ToggleButton>
+      <ToggleButton Classes="AutoTracker" IsChecked="{Binding LogVisible, Mode=TwoWay}">Show Log</ToggleButton>
 
     </StackPanel>
     
-    <StackPanel DockPanel.Dock="Bottom" Margin="10" Orientation="Horizontal"
-					HorizontalAlignment="Center">
-      <Button Classes="AutoTrackerSmall" Command="{Binding
-					ResetLogCommand}">Reset Log</Button>
-      <Button Classes="AutoTrackerSmall" Command="{Binding
-					SaveLogCommand}">Save Log</Button>
+    <StackPanel DockPanel.Dock="Bottom" Margin="10" Orientation="Horizontal" HorizontalAlignment="Center">
+      <Button Classes="AutoTrackerSmall" Command="{Binding ResetLogCommand}">Reset Log</Button>
+      <Button Classes="AutoTrackerSmall" Command="{Binding SaveLogCommand}">Save Log</Button>
     </StackPanel>
 
     <Border Classes="AutoTrackerLog" IsVisible="{Binding LogVisible}">
       <ScrollViewer>
         <TextBlock Classes="AutoTrackerLog" Foreground="#FFFFFF" Margin="5,0"
-						   Text="{Binding LogText.Text}" />
+                   Text="{Binding LogText.Text}" />
       </ScrollViewer>
     </Border>
     

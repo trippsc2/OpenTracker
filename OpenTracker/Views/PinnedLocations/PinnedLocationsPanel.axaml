@@ -16,9 +16,7 @@
         <ItemsControl Items="{Binding Locations}">
           <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
-              <WrapPanel Orientation="{Binding
-                         $parent[view:PinnedLocationsPanel].DataContext.Orientation,
-                         Mode=OneWay}" />
+              <WrapPanel Orientation="{Binding $parent[view:PinnedLocationsPanel].DataContext.Orientation, Mode=OneWay}" />
             </ItemsPanelTemplate>
           </ItemsControl.ItemsPanel>
         </ItemsControl>

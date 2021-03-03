@@ -4,9 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="OpenTracker.Views.Maps.Locations.ShopMapLocation">
-  <Panel Width="40" Height="40" IsHitTestVisible="{Binding Visible}"
-         IsVisible="{Binding Visible}" DoubleTapped="OnDoubleClick" PointerReleased="OnClick"
-         PointerEnter="OnPointerEnter" PointerLeave="OnPointerLeave">
+  <Panel Width="40" Height="40" IsVisible="{Binding Visible}" DoubleTapped="OnDoubleClick"
+         PointerReleased="OnClick" PointerEnter="OnPointerEnter" PointerLeave="OnPointerLeave">
     <Polygon Points="20,0 40,20 20,40 0,20" Fill="{Binding Color}" Stroke="{Binding BorderColor}"
              StrokeThickness="5">
       <ToolTip.Tip>

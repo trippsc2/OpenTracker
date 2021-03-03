@@ -21,8 +21,7 @@
       </ia:EventTriggerBehavior>
     </i:Interaction.Behaviors>
     
-    <Image Source="{Binding Path=ImageSource, Converter={StaticResource
-     BitmapValueConverter}}" />
+    <Image Source="{Binding Path=ImageSource, Converter={StaticResource BitmapValueConverter}}" />
   </Panel>
 
 </UserControl>

@@ -5,10 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:view="clr-namespace:OpenTracker.Views;assembly=OpenTracker"
         mc:Ignorable="d" d:DesignWidth="1280" d:DesignHeight="960"
-        x:Class="OpenTracker.Views.MainWindow" Closing="OnClose" WindowStartupLocation="Manual"
-        Background="{DynamicResource ThemeBackgroundBrush}" UseLayoutRounding="True"
-        Icon="avares://OpenTracker/Assets/Images/triforce.png" Title="{Binding Title}"
-        Height="{Binding Height}" Width="{Binding Width}">
+        x:Class="OpenTracker.Views.MainWindow"
+        Closing="OnClose" WindowStartupLocation="Manual" Background="{DynamicResource ThemeBackgroundBrush}"
+        UseLayoutRounding="True" Icon="avares://OpenTracker/Assets/Images/triforce.png"
+        Title="{Binding Title}"
+        Height="{Binding Height}"
+        Width="{Binding Width}">
 	
 	<Design.DataContext>
 		<vm:MainWindowVM />

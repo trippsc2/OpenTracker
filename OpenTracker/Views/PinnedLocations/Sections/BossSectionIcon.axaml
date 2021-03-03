@@ -3,7 +3,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vc="clr-namespace:OpenTracker.ValueConverters;assembly=OpenTracker"
-             xmlns:view="clr-namespace:OpenTracker.Views;assembly=OpenTracker"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="OpenTracker.Views.PinnedLocations.Sections.BossSectionIcon">
 
@@ -11,8 +10,7 @@
     <vc:BitmapValueConverter x:Key="BitmapValueConverter" />
   </UserControl.Resources>
 
-  <Panel PointerReleased="OnClick" IsVisible="{Binding Visible}"
-         IsHitTestVisible="{Binding Visible}">
+  <Panel PointerReleased="OnClick" IsVisible="{Binding Visible}">
     <Image Source="{Binding ImageSource, Converter={StaticResource BitmapValueConverter}}"
            Height="32" Width="32" />
     <ContentControl Content="{Binding BossSelect}" />

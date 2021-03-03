@@ -16,7 +16,7 @@
 
   <StackPanel Orientation="Vertical">
 
-    <TextBlock Classes="MessageBox" Text="{Binding Path=Text, FallbackValue=Test}" />
+    <TextBlock Classes="MessageBox" Text="{Binding Path=Text}" />
 
     <StackPanel Orientation="Horizontal" Margin="15" HorizontalAlignment="Right">
       <Button Classes="MessageBox" Content="OK" Command="{Binding Path=OkCommand}" />

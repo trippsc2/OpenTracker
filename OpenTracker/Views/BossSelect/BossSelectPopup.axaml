@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="OpenTracker.Views.BossSelect.BossSelectPopup">
-	<Popup IsOpen="{Binding PopupOpen, Mode=TwoWay}" StaysOpen="False" PlacementMode="Pointer">
+	<Popup IsOpen="{Binding PopupOpen, Mode=TwoWay}" IsLightDismissEnabled="True" PlacementMode="Pointer">
 		<LayoutTransformControl>
 
 			<LayoutTransformControl.LayoutTransform>
@@ -16,9 +16,8 @@
 					<ItemsControl Items="{Binding Buttons}">
 						<ItemsControl.ItemsPanel>
 							<ItemsPanelTemplate>
-								<WrapPanel ItemWidth="34" ItemHeight="40" MaxWidth="136"
-										   MaxHeight="120" Margin="0" Orientation="Horizontal"
-										   HorizontalAlignment="Left" VerticalAlignment="Top" />
+								<WrapPanel ItemWidth="34" ItemHeight="40" MaxWidth="136" MaxHeight="120" Margin="0"
+								           Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" />
 							</ItemsPanelTemplate>
 						</ItemsControl.ItemsPanel>
 					</ItemsControl>

@@ -5,9 +5,8 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="OpenTracker.Views.AutoTracking.AutoTrackerStatus">
   <StackPanel Orientation="Horizontal">
-    <TextBlock Classes="AutoTrackerLabel"
-           Foreground="#FFFFFF">AutoTracking Status is:</TextBlock>
-    <TextBlock Classes="AutoTrackerStatus" Foreground="{Binding StatusTextColor,
-						   Mode=OneWay}" Text="{Binding StatusText}" />
+    <TextBlock Classes="AutoTrackerLabel">AutoTracking Status is:</TextBlock>
+    <TextBlock Classes="AutoTrackerStatus" Foreground="{Binding StatusTextColor, Mode=OneWay}"
+               Text="{Binding StatusText}" />
   </StackPanel>
 </UserControl>

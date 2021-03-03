@@ -11,10 +11,10 @@
 	</UserControl.Resources>
 
 	<Button Command="{Binding $parent[ItemsControl].DataContext.ChangeBossCommand}"
-			Background="{DynamicResource ThemeBackgroundBrush}"
-			BorderThickness="0" CommandParameter="{Binding Boss}">
+	        Background="{DynamicResource ThemeBackgroundBrush}" BorderThickness="0"
+	        CommandParameter="{Binding Boss}">
 		<Image Source="{Binding ImageSource, Converter={StaticResource BitmapValueConverter}}"
-			   Height="32" Width="32" />
+		       Height="32" Width="32" />
 	</Button>
 
 </UserControl>

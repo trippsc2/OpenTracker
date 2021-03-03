@@ -5,15 +5,9 @@
              xmlns:vc="clr-namespace:OpenTracker.ValueConverters;assembly=OpenTracker"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="OpenTracker.Views.Markings.MarkingSelectButton">
-	
-	<UserControl.Resources>
-		<vc:BitmapValueConverter x:Key="BitmapValueConverter" />
-	</UserControl.Resources>
-
   <Button Command="{Binding $parent[ItemsControl].DataContext.ChangeMarkingCommand}"
-          Background="{DynamicResource ThemeBackgroundBrush}"
-          BorderThickness="0" CommandParameter="{Binding Marking}">
+          Background="{DynamicResource ThemeBackgroundBrush}" BorderThickness="0"
+          CommandParameter="{Binding Marking}">
     <ContentControl Content="{Binding Image}" Height="32" Width="32" />
   </Button>
-
 </UserControl>
