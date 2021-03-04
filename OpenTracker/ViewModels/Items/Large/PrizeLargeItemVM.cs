@@ -79,7 +79,7 @@ namespace OpenTracker.ViewModels.Items.Large
         /// </summary>
         private void CollectSection()
         {
-            _undoRedoManager.Execute(_undoableFactory.GetCollectSection(_section, true));
+            _undoRedoManager.NewAction(_undoableFactory.GetCollectSection(_section, true));
         }
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace OpenTracker.ViewModels.Items.Large
         /// </summary>
         private void UncollectSection()
         {
-            _undoRedoManager.Execute(_undoableFactory.GetUncollectSection(_section));
+            _undoRedoManager.NewAction(_undoableFactory.GetUncollectSection(_section));
         }
 
         /// <summary>

@@ -43,7 +43,7 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Executes the action.
         /// </summary>
-        public void Execute()
+        public void ExecuteDo()
         {
             _previousEntranceShuffle = _mode.EntranceShuffle;
             _mode.EntranceShuffle = _entranceShuffle;
@@ -52,7 +52,7 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Undoes the action.
         /// </summary>
-        public void Undo()
+        public void ExecuteUndo()
         {
             _mode.EntranceShuffle = _previousEntranceShuffle;
         }

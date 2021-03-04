@@ -45,7 +45,7 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Executes the action.
         /// </summary>
-        public void Execute()
+        public void ExecuteDo()
         {
             _previousBoss = _bossPlacement.Boss;
             _bossPlacement.Boss = _boss;
@@ -54,7 +54,7 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Undoes the action.
         /// </summary>
-        public void Undo()
+        public void ExecuteUndo()
         {
             _bossPlacement.Boss = _previousBoss;
         }

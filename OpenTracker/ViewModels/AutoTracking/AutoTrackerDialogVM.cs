@@ -165,7 +165,10 @@ namespace OpenTracker.ViewModels.AutoTracking
             PropertyChanged += OnPropertyChanged;
             _autoTracker.PropertyChanged += OnAutoTrackerChanged;
 
-            UpdateCommandCanExecuteProperties().Wait();
+            CanConnect = CanCreateWebSocketUri() && _autoTracker.CanConnect();
+            CanGetDevices = _autoTracker.CanGetDevices();
+            CanDisconnect = _autoTracker.CanDisconnect();
+            CanStart = !(Device is null) && Device != string.Empty && _autoTracker.CanStart();
         }
 
         /// <summary>

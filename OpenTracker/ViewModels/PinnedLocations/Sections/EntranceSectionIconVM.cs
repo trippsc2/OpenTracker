@@ -77,7 +77,7 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
         /// </param>
         private void CollectSection(bool force)
         {
-            _undoRedoManager.Execute(_undoableFactory.GetCollectSection(_section, force));
+            _undoRedoManager.NewAction(_undoableFactory.GetCollectSection(_section, force));
         }
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
         /// </summary>
         private void UncollectSection()
         {
-            _undoRedoManager.Execute(_undoableFactory.GetUncollectSection(_section));
+            _undoRedoManager.NewAction(_undoableFactory.GetUncollectSection(_section));
         }
 
         /// <summary>

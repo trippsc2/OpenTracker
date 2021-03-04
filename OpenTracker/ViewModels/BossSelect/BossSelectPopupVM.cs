@@ -6,11 +6,13 @@ using ReactiveUI;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reactive;
+using System.Threading.Tasks;
+using Avalonia.Threading;
 
 namespace OpenTracker.ViewModels.BossSelect
 {
     /// <summary>
-    /// This is the ViewModel class for the boss select popup control.
+    /// This class contains the boss select popup control ViewModel data.
     /// </summary>
     public class BossSelectPopupVM : ViewModelBase, IBossSelectPopupVM
     {
@@ -33,14 +35,27 @@ namespace OpenTracker.ViewModels.BossSelect
 
         public ReactiveCommand<BossType?, Unit> ChangeBossCommand { get; }
 
+        private readonly ObservableAsPropertyHelper<bool> _isChangingBoss;
+        public bool IsChangingBoss =>
+            _isChangingBoss.Value;
+        
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="layoutSettings">
+        /// The layout settings data.
+        /// </param>
+        /// <param name="undoRedoManager">
+        /// The undo/redo manager.
+        /// </param>
+        /// <param name="undoableFactory">
+        /// A factory for creating undoable actions.
+        /// </param>
+        /// <param name="factory">
+        /// A factory for creating boss select controls.
+        /// </param>
         /// <param name="bossPlacement">
         /// The boss placement to be manipulated.
-        /// </param>
-        /// <param name="buttons">
-        /// The observable collection of boss select button control ViewModel instances.
         /// </param>
         public BossSelectPopupVM(
             ILayoutSettings layoutSettings, IUndoRedoManager undoRedoManager,
@@ -55,7 +70,9 @@ namespace OpenTracker.ViewModels.BossSelect
 
             Buttons = factory.GetBossSelectButtonVMs(_bossPlacement);
 
-            ChangeBossCommand = ReactiveCommand.Create<BossType?>(ChangeBoss);
+            ChangeBossCommand = ReactiveCommand.CreateFromTask<BossType?>(ChangeBoss);
+            ChangeBossCommand.IsExecuting.ToProperty(
+                this, x => x.IsChangingBoss, out _isChangingBoss);
 
             _layoutSettings.PropertyChanged += OnAppSettingsChanged;
         }
@@ -69,11 +86,11 @@ namespace OpenTracker.ViewModels.BossSelect
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnAppSettingsChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnAppSettingsChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ILayoutSettings.UIScale))
             {
-                this.RaisePropertyChanged(nameof(Scale));
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Scale)));
             }
         }
 
@@ -83,10 +100,13 @@ namespace OpenTracker.ViewModels.BossSelect
         /// <param name="boss">
         /// The boss to be set.
         /// </param>
-        private void ChangeBoss(BossType? boss)
+        private async Task ChangeBoss(BossType? boss)
         {
-            _undoRedoManager.Execute(_undoableFactory.GetChangeBoss(_bossPlacement, boss));
-            PopupOpen = false;
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                _undoRedoManager.NewAction(_undoableFactory.GetChangeBoss(_bossPlacement, boss));
+                PopupOpen = false;
+            });
         }
     }
 }

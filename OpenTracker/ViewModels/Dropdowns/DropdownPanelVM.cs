@@ -4,6 +4,7 @@ using OpenTracker.Utils;
 using ReactiveUI;
 using System.Collections.Generic;
 using System.ComponentModel;
+using Avalonia.Threading;
 
 namespace OpenTracker.ViewModels.Dropdowns
 {
@@ -14,7 +15,6 @@ namespace OpenTracker.ViewModels.Dropdowns
     {
         private readonly ILayoutSettings _layoutSettings;
         private readonly IMode _mode;
-        private readonly IDropdownVMFactory _factory;
 
         public bool Visible =>
             _mode.EntranceShuffle >= EntranceShuffle.All;
@@ -39,9 +39,8 @@ namespace OpenTracker.ViewModels.Dropdowns
         {
             _layoutSettings = layoutSettings;
             _mode = mode;
-            _factory = factory;
 
-            Dropdowns = _factory.GetDropdownVMs();
+            Dropdowns = factory.GetDropdownVMs();
 
             _mode.PropertyChanged += OnModeChanged;
             _layoutSettings.PropertyChanged += OnLayoutChanged;
@@ -56,11 +55,11 @@ namespace OpenTracker.ViewModels.Dropdowns
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnModeChanged(object? sender, PropertyChangedEventArgs e)
+        private async void OnModeChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IMode.EntranceShuffle))
             {
-                this.RaisePropertyChanged(nameof(Visible));
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Visible))); 
             }
         }
 
@@ -73,11 +72,11 @@ namespace OpenTracker.ViewModels.Dropdowns
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnLayoutChanged(object? sender, PropertyChangedEventArgs e)
+        private async void OnLayoutChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ILayoutSettings.UIScale))
             {
-                this.RaisePropertyChanged(nameof(Scale));
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Scale)));
             }
         }
     }

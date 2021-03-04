@@ -7,7 +7,7 @@ namespace OpenTracker.Models.UndoRedo
         bool CanRedo { get; }
         bool CanUndo { get; }
 
-        void Execute(IUndoable action);
+        void NewAction(IUndoable action);
         void Redo();
         void Reset();
         void Undo();

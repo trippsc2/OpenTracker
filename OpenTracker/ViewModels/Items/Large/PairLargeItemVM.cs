@@ -87,7 +87,7 @@ namespace OpenTracker.ViewModels.Items.Large
         /// </summary>
         private void AddFirstItem()
         {
-            _undoRedoManager.Execute(_undoableFactory.GetCycleItem(_items[0]));
+            _undoRedoManager.NewAction(_undoableFactory.GetCycleItem(_items[0]));
         }
 
         /// <summary>
@@ -96,7 +96,7 @@ namespace OpenTracker.ViewModels.Items.Large
         /// </summary>
         private void AddSecondItem()
         {
-            _undoRedoManager.Execute(_undoableFactory.GetCycleItem(_items[1]));
+            _undoRedoManager.NewAction(_undoableFactory.GetCycleItem(_items[1]));
         }
 
         /// <summary>

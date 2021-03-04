@@ -42,7 +42,7 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Executes the action.
         /// </summary>
-        public void Execute()
+        public void ExecuteDo()
         {
             _previousGenericKeys = _mode.GenericKeys;
             _mode.GenericKeys = _genericKeys;
@@ -51,7 +51,7 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Undoes the action.
         /// </summary>
-        public void Undo()
+        public void ExecuteUndo()
         {
             _mode.GenericKeys = _previousGenericKeys;
         }

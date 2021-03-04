@@ -42,7 +42,7 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Executes the action.
         /// </summary>
-        public void Execute()
+        public void ExecuteDo()
         {
             _previousItemPlacement = _mode.ItemPlacement;
             _mode.ItemPlacement = _itemPlacement;
@@ -51,7 +51,7 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Undoes the action.
         /// </summary>
-        public void Undo()
+        public void ExecuteUndo()
         {
             _mode.ItemPlacement = _previousItemPlacement;
         }

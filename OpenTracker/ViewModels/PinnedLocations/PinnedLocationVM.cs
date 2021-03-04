@@ -96,7 +96,7 @@ namespace OpenTracker.ViewModels.PinnedLocations
         /// </summary>
         private void UnpinLocation()
         {
-            _undoRedoManager.Execute(_undoableFactory.GetUnpinLocation(_location));
+            _undoRedoManager.NewAction(_undoableFactory.GetUnpinLocation(_location));
         }
 
         /// <summary>

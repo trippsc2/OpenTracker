@@ -123,7 +123,7 @@ namespace OpenTracker.ViewModels.Items.Small
         /// </summary>
         private void TogglePrize()
         {
-            _undoRedoManager.Execute(_undoableFactory.GetTogglePrize(_section, true));
+            _undoRedoManager.NewAction(_undoableFactory.GetTogglePrize(_section, true));
         }
 
         /// <summary>
@@ -131,7 +131,7 @@ namespace OpenTracker.ViewModels.Items.Small
         /// </summary>
         private void ChangePrize()
         {
-            _undoRedoManager.Execute(_undoableFactory.GetChangePrize(_section.PrizePlacement));
+            _undoRedoManager.NewAction(_undoableFactory.GetChangePrize(_section.PrizePlacement));
         }
 
         /// <summary>

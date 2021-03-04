@@ -4,6 +4,7 @@ using OpenTracker.Utils;
 using ReactiveUI;
 using System.ComponentModel;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace OpenTracker.ViewModels.AutoTracking
 {
@@ -40,7 +41,48 @@ namespace OpenTracker.ViewModels.AutoTracking
 
             _autoTracker.PropertyChanged += OnAutoTrackerChanged;
 
-            UpdateStatusText();
+            switch (_autoTracker.Status)
+            {
+                case ConnectionStatus.NotConnected:
+                {
+                    StatusTextColor = "#ffffff";
+                    StatusText = "NOT CONNECTED";
+                }
+                    break;
+                case ConnectionStatus.SelectDevice:
+                {
+                    StatusTextColor = "#ffffff";
+                    StatusText = "SELECT DEVICE";
+                }
+                    break;
+                case ConnectionStatus.Connecting:
+                {
+                    StatusTextColor = "#ffff00";
+                    StatusText = "CONNECTING";
+                }
+                    break;
+                case ConnectionStatus.Attaching:
+                {
+                    StatusTextColor = "#ffff00";
+                    StatusText = "ATTACHING";
+                }
+                    break;
+                case ConnectionStatus.Connected:
+                {
+                    StatusTextColor = "#00ff00";
+                    var sb = new StringBuilder();
+                    sb.Append("CONNECTED (");
+                    sb.Append(_autoTracker.RaceIllegalTracking ? "RACE ILLEGAL)" : "RACE LEGAL)");
+                    StatusText = sb.ToString();
+                }
+                    break;
+                case ConnectionStatus.Error:
+                {
+                    StatusTextColor = "#ff3030";
+                    StatusText = "ERROR";
+                }
+                    break;
+            }
         }
 
         /// <summary>
@@ -52,21 +94,21 @@ namespace OpenTracker.ViewModels.AutoTracking
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnAutoTrackerChanged(object? sender, PropertyChangedEventArgs e)
+        private async void OnAutoTrackerChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IAutoTracker.RaceIllegalTracking) ||
                 e.PropertyName == nameof(IAutoTracker.Status))
             {
-                UpdateStatusText();
+                await UpdateStatusText();
             }
         }
 
         /// <summary>
         /// Updates the status text and text color based on the status of the SNES connector.
         /// </summary>
-        private void UpdateStatusText()
+        private async Task UpdateStatusText()
         {
-            Dispatcher.UIThread.InvokeAsync(() =>
+            await Dispatcher.UIThread.InvokeAsync(() =>
             {
                 switch (_autoTracker.Status)
                 {

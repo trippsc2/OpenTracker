@@ -47,10 +47,15 @@ namespace OpenTracker.ViewModels.AutoTracking
         }
 
         public ReactiveCommand<Unit, Unit> ResetLogCommand { get; }
+        public ReactiveCommand<Unit, Unit> SaveLogCommand { get; }
         
         private readonly ObservableAsPropertyHelper<bool> _isResettingLog;
         public bool IsResettingLog =>
             _isResettingLog.Value;
+
+        private readonly ObservableAsPropertyHelper<bool> _isSavingLog;
+        public bool IsSavingLog =>
+            _isSavingLog.Value;
 
 
         /// <summary>
@@ -87,6 +92,10 @@ namespace OpenTracker.ViewModels.AutoTracking
             ResetLogCommand = ReactiveCommand.CreateFromTask(ResetLog);
             ResetLogCommand.IsExecuting.ToProperty(
                 this, x => x.IsResettingLog, out _isResettingLog);
+
+            SaveLogCommand = ReactiveCommand.CreateFromTask(SaveLog);
+            SaveLogCommand.IsExecuting.ToProperty(
+                this, x => x.IsSavingLog, out _isSavingLog);
 
             PropertyChanged += OnPropertyChanged;
             _logService.LogCollection.CollectionChanged += OnLogMessageChanged;
@@ -210,28 +219,24 @@ namespace OpenTracker.ViewModels.AutoTracking
         /// </returns>
         private async Task<string?> OpenSaveFileDialog()
         {
-            return await _fileDialogService.ShowSaveDialogAsync();
+            return await Dispatcher.UIThread.InvokeAsync<string?>(async () =>
+                await _fileDialogService.ShowSaveDialogAsync());
         }
 
         /// <summary>
         /// Saves the log to the text file specified.
         /// </summary>
-        private async Task Save()
+        private async Task SaveLog()
         {
-            try
-            {
-                string? path = null;
-                
-                await Dispatcher.UIThread.InvokeAsync(async () =>
-                {
-                    path = await OpenSaveFileDialog();
-                });
-
-                if (path is null)
+            var path = await OpenSaveFileDialog();
+            
+            if (path is null)
                 {
                     return;
                 }
-                
+
+            try
+            {
                 await using StreamWriter file = new StreamWriter(path);
 
                 foreach (var message in _logService.LogCollection)

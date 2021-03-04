@@ -103,7 +103,7 @@ namespace OpenTracker.ViewModels.Items.Small
         /// </summary>
         private void AddItem()
         {
-            _undoRedoManager.Execute(_undoableFactory.GetAddItem(_item));
+            _undoRedoManager.NewAction(_undoableFactory.GetAddItem(_item));
         }
 
         /// <summary>
@@ -111,7 +111,7 @@ namespace OpenTracker.ViewModels.Items.Small
         /// </summary>
         private void RemoveItem()
         {
-            _undoRedoManager.Execute(_undoableFactory.GetRemoveItem(_item));
+            _undoRedoManager.NewAction(_undoableFactory.GetRemoveItem(_item));
         }
 
         /// <summary>

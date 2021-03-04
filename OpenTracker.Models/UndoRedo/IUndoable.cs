@@ -1,4 +1,6 @@
-﻿namespace OpenTracker.Models.UndoRedo
+﻿using OpenTracker.Models.UndoRedo.Actions;
+
+namespace OpenTracker.Models.UndoRedo
 {
     /// <summary>
     /// This interface contains undoable action data.
@@ -6,7 +8,7 @@
     public interface IUndoable
     {
         bool CanExecute();
-        void Execute();
-        void Undo();
+        void ExecuteDo();
+        void ExecuteUndo();
     }
 }

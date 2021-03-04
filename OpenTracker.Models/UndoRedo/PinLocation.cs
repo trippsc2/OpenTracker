@@ -53,7 +53,7 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Executes the action.
         /// </summary>
-        public void Execute()
+        public void ExecuteDo()
         {
             if (_pinnedLocations.Contains(_pinnedLocation))
             {
@@ -67,7 +67,7 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Undoes the action.
         /// </summary>
-        public void Undo()
+        public void ExecuteUndo()
         {
             _pinnedLocations.Remove(_pinnedLocation);
 

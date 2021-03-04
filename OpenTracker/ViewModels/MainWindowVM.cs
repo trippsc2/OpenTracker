@@ -14,6 +14,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Reactive;
 using System.Text;
+using Avalonia.Threading;
 
 namespace OpenTracker.ViewModels
 {
@@ -32,15 +33,7 @@ namespace OpenTracker.ViewModels
             {
                 var sb = new StringBuilder();
                 sb.Append("OpenTracker - ");
-
-                if (_saveLoadManager.CurrentFilePath == null)
-                {
-                    sb.Append("Untitled");
-                }
-                else
-                {
-                    sb.Append(_saveLoadManager.CurrentFilePath);
-                }
+                sb.Append(_saveLoadManager.CurrentFilePath ?? "Untitled");
 
                 if (_saveLoadManager.Unsaved)
                 {
@@ -102,9 +95,8 @@ namespace OpenTracker.ViewModels
         /// Constructor
         /// </summary>
         public MainWindowVM(
-            IAppSettings appSettings, ISaveLoadManager saveLoadManager,
-            ISequenceBreakDictionary sequenceBreaks, ITopMenuVM topMenu, IStatusBarVM statusBar,
-            IUIPanelVM uiPanel, IMapAreaVM mapArea)
+            IAppSettings appSettings, ISaveLoadManager saveLoadManager, ISequenceBreakDictionary sequenceBreaks,
+            ITopMenuVM topMenu, IStatusBarVM statusBar, IUIPanelVM uiPanel, IMapAreaVM mapArea)
         {
             _appSettings = appSettings;
             _saveLoadManager = saveLoadManager;
@@ -129,12 +121,12 @@ namespace OpenTracker.ViewModels
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnSaveLoadManagerChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnSaveLoadManagerChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ISaveLoadManager.CurrentFilePath) ||
                 e.PropertyName == nameof(ISaveLoadManager.Unsaved))
             {
-                this.RaisePropertyChanged(nameof(Title));
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Title)));
             }
         }
 
@@ -147,13 +139,13 @@ namespace OpenTracker.ViewModels
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(LayoutSettings.CurrentLayoutOrientation) ||
                 e.PropertyName == nameof(LayoutSettings.HorizontalUIPanelPlacement) ||
                 e.PropertyName == nameof(LayoutSettings.VerticalUIPanelPlacement))
             {
-                this.RaisePropertyChanged(nameof(UIDock));
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(UIDock)));
             }
         }
 
@@ -202,8 +194,7 @@ namespace OpenTracker.ViewModels
         /// </summary>
         private void LoadSequenceBreaks()
         {
-            var saveData = JsonConversion
-                .Load<Dictionary<SequenceBreakType, SequenceBreakSaveData>>(
+            var saveData = JsonConversion.Load<Dictionary<SequenceBreakType, SequenceBreakSaveData>?>(
                 AppPath.SequenceBreakPath);
 
             if (saveData != null)

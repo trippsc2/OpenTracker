@@ -5,6 +5,7 @@ using OpenTracker.Utils;
 using ReactiveUI;
 using System.ComponentModel;
 using System.Reactive;
+using Avalonia.Threading;
 
 namespace OpenTracker.ViewModels.Dropdowns
 {
@@ -65,16 +66,16 @@ namespace OpenTracker.ViewModels.Dropdowns
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnDropdownChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnDropdownChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IDropdown.RequirementMet))
             {
-                this.RaisePropertyChanged(nameof(Visible));
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Visible)));
             }
 
             if (e.PropertyName == nameof(IDropdown.Checked))
             {
-                this.RaisePropertyChanged(nameof(ImageSource));
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(ImageSource)));
             }
         }
 
@@ -83,7 +84,7 @@ namespace OpenTracker.ViewModels.Dropdowns
         /// </summary>
         private void CheckDropdown()
         {
-            _undoRedoManager.Execute(_undoableFactory.GetCheckDropdown(_dropdown));
+            _undoRedoManager.NewAction(_undoableFactory.GetCheckDropdown(_dropdown));
         }
 
         /// <summary>
@@ -91,7 +92,7 @@ namespace OpenTracker.ViewModels.Dropdowns
         /// </summary>
         private void UncheckDropdown()
         {
-            _undoRedoManager.Execute(_undoableFactory.GetUncheckDropdown(_dropdown));
+            _undoRedoManager.NewAction(_undoableFactory.GetUncheckDropdown(_dropdown));
         }
 
         /// <summary>

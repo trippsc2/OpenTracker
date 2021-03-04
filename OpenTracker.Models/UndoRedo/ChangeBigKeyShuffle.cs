@@ -44,7 +44,7 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Executes the action.
         /// </summary>
-        public void Execute()
+        public void ExecuteDo()
         {
             _previousBigKeyShuffle = _mode.BigKeyShuffle;
             _mode.BigKeyShuffle = _bigKeyShuffle;
@@ -53,7 +53,7 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Undoes the action.
         /// </summary>
-        public void Undo()
+        public void ExecuteUndo()
         {
             _mode.BigKeyShuffle = _previousBigKeyShuffle;
         }

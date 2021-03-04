@@ -94,7 +94,7 @@ namespace OpenTracker.ViewModels.Markings
         /// </summary>
         private void RemoveNote()
         {
-            _undoRedoManager.Execute(_undoableFactory.GetRemoveNote(_marking, _location));
+            _undoRedoManager.NewAction(_undoableFactory.GetRemoveNote(_marking, _location));
             PopupOpen = false;
         }
 
@@ -111,7 +111,7 @@ namespace OpenTracker.ViewModels.Markings
                 return;
             }
 
-            _undoRedoManager.Execute(_undoableFactory.GetSetMarking(_marking, marking.Value));
+            _undoRedoManager.NewAction(_undoableFactory.GetSetMarking(_marking, marking.Value));
             PopupOpen = false;
         }
     }

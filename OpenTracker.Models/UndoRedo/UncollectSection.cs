@@ -38,7 +38,7 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Executes the action.
         /// </summary>
-        public void Execute()
+        public void ExecuteDo()
         {
             _previousUserManipulated = _section.UserManipulated;
             _section.UserManipulated = true;
@@ -48,7 +48,7 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Undoes the action.
         /// </summary>
-        public void Undo()
+        public void ExecuteUndo()
         {
             _section.UserManipulated = _previousUserManipulated;
             _section.Available--;

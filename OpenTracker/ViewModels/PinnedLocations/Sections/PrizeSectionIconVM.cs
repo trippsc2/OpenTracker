@@ -133,7 +133,7 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
         /// </param>
         private void TogglePrize(bool force = false)
         {
-            _undoRedoManager.Execute(_undoableFactory.GetTogglePrize(_section, force));
+            _undoRedoManager.NewAction(_undoableFactory.GetTogglePrize(_section, force));
         }
 
         /// <summary>
@@ -141,7 +141,7 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
         /// </summary>
         private void ChangePrize()
         {
-            _undoRedoManager.Execute(_undoableFactory.GetChangePrize(_section.PrizePlacement));
+            _undoRedoManager.NewAction(_undoableFactory.GetChangePrize(_section.PrizePlacement));
         }
 
         /// <summary>

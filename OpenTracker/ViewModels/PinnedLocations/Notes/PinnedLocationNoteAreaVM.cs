@@ -67,7 +67,7 @@ namespace OpenTracker.ViewModels.PinnedLocations.Notes
         /// </summary>
         private void Add()
         {
-            _undoRedoManager.Execute(_undoableFactory.GetAddNote(_location));
+            _undoRedoManager.NewAction(_undoableFactory.GetAddNote(_location));
         }
     }
 }

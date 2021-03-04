@@ -7,7 +7,9 @@ using ReactiveUI;
 using System.ComponentModel;
 using System.Globalization;
 using System.Reactive;
+using System.Threading.Tasks;
 using Avalonia.Input;
+using Avalonia.Threading;
 
 namespace OpenTracker.ViewModels.Items.Large
 {
@@ -91,13 +93,13 @@ namespace OpenTracker.ViewModels.Items.Large
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnItemChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnItemChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ICrystalRequirementItem.Current) ||
                 e.PropertyName == nameof(ICrystalRequirementItem.Known))
             {
-                this.RaisePropertyChanged(nameof(ImageCount));
-                UpdateTextColor();
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(ImageCount)));
+                await UpdateTextColor();
             }
         }
 
@@ -110,17 +112,17 @@ namespace OpenTracker.ViewModels.Items.Large
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnColorsChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnColorsChanged(object sender, PropertyChangedEventArgs e)
         {
-            UpdateTextColor();
+            await UpdateTextColor();
         }
 
         /// <summary>
         /// Raises the PropertyChanged event for the TextColor property.
         /// </summary>
-        private void UpdateTextColor()
+        private async Task UpdateTextColor()
         {
-            this.RaisePropertyChanged(nameof(TextColor));
+            await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(TextColor)));
         }
 
         /// <summary>
@@ -128,7 +130,7 @@ namespace OpenTracker.ViewModels.Items.Large
         /// </summary>
         private void AddItem()
         {
-            _undoRedoManager.Execute(_undoableFactory.GetAddCrystalRequirement(_item));
+            _undoRedoManager.NewAction(_undoableFactory.GetAddCrystalRequirement(_item));
         }
 
         /// <summary>
@@ -136,7 +138,7 @@ namespace OpenTracker.ViewModels.Items.Large
         /// </summary>
         private void RemoveItem()
         {
-            _undoRedoManager.Execute(_undoableFactory.GetRemoveCrystalRequirement(_item));
+            _undoRedoManager.NewAction(_undoableFactory.GetRemoveCrystalRequirement(_item));
         }
 
         /// <summary>

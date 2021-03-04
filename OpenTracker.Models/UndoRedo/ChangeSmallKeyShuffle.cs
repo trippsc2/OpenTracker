@@ -42,7 +42,7 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Executes the action.
         /// </summary>
-        public void Execute()
+        public void ExecuteDo()
         {
             _previousSmallKeyShuffle = _mode.SmallKeyShuffle;
             _mode.SmallKeyShuffle = _smallKeyShuffle;
@@ -51,7 +51,7 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Undoes the action.
         /// </summary>
-        public void Undo()
+        public void ExecuteUndo()
         {
             _mode.SmallKeyShuffle = _previousSmallKeyShuffle;
         }

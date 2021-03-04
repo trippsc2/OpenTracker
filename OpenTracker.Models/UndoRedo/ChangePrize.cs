@@ -39,7 +39,7 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Executes the action.
         /// </summary>
-        public void Execute()
+        public void ExecuteDo()
         {
             _previousItem = _prizePlacement.Prize;
             _prizePlacement.Cycle();
@@ -48,7 +48,7 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Undoes the action.
         /// </summary>
-        public void Undo()
+        public void ExecuteUndo()
         {
             _prizePlacement.Prize = _previousItem;
         }

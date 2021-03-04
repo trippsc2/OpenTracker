@@ -192,7 +192,7 @@ namespace OpenTracker.ViewModels.Maps.Connections
         /// </summary>
         private void RemoveConnection()
         {
-            _undoRedoManager.Execute(_undoableFactory.GetRemoveConnection(Connection));
+            _undoRedoManager.NewAction(_undoableFactory.GetRemoveConnection(Connection));
         }
 
         /// <summary>

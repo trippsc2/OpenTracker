@@ -343,7 +343,7 @@ namespace OpenTracker.ViewModels.Maps.Locations
         /// </param>
         public void ConnectLocation(IMapLocation mapLocation)
         {
-            _undoRedoManager.Execute(_undoableFactory.GetAddConnection(_connectionFactory(mapLocation, MapLocation)));
+            _undoRedoManager.NewAction(_undoableFactory.GetAddConnection(_connectionFactory(mapLocation, MapLocation)));
         }
 
         /// <summary>
@@ -354,7 +354,7 @@ namespace OpenTracker.ViewModels.Maps.Locations
         /// </param>
         private void ClearLocation(bool force)
         {
-            _undoRedoManager.Execute(_undoableFactory.GetClearLocation(MapLocation.Location!, force));
+            _undoRedoManager.NewAction(_undoableFactory.GetClearLocation(MapLocation.Location!, force));
         }
 
         /// <summary>
@@ -362,7 +362,7 @@ namespace OpenTracker.ViewModels.Maps.Locations
         /// </summary>
         private void PinLocation()
         {
-            _undoRedoManager.Execute(_undoableFactory.GetPinLocation(MapLocation.Location!));
+            _undoRedoManager.NewAction(_undoableFactory.GetPinLocation(MapLocation.Location!));
         }
 
         /// <summary>

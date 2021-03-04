@@ -96,7 +96,7 @@ namespace OpenTracker.ViewModels.Markings
         /// </summary>
         private void ClearMarking()
         {
-            _undoRedoManager.Execute(_undoableFactory.GetSetMarking(_marking, MarkType.Unknown));
+            _undoRedoManager.NewAction(_undoableFactory.GetSetMarking(_marking, MarkType.Unknown));
             PopupOpen = false;
         }
 
@@ -113,7 +113,7 @@ namespace OpenTracker.ViewModels.Markings
                 return;
             }
 
-            _undoRedoManager.Execute(_undoableFactory.GetSetMarking(_marking, marking.Value));
+            _undoRedoManager.NewAction(_undoableFactory.GetSetMarking(_marking, marking.Value));
             PopupOpen = false;
         }
     }

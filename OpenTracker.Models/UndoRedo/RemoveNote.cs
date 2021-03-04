@@ -43,7 +43,7 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Executes the action.
         /// </summary>
-        public void Execute()
+        public void ExecuteDo()
         {
             _index = _location.Notes.IndexOf(_note);
             _location.Notes.Remove(_note);
@@ -52,7 +52,7 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Undoes the action.
         /// </summary>
-        public void Undo()
+        public void ExecuteUndo()
         {
             _location.Notes.Insert(_index, _note);
         }

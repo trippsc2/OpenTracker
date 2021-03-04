@@ -252,17 +252,16 @@ namespace OpenTracker.ViewModels
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnUndoRedoManagerChanged(object? sender, PropertyChangedEventArgs e)
+        private async void OnUndoRedoManagerChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(UndoRedoManager.CanUndo))
             {
-                this.RaisePropertyChanged(nameof(CanUndo));
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(CanUndo)));
             }
 
             if (e.PropertyName == nameof(UndoRedoManager.CanRedo))
             {
-                this.RaisePropertyChanged(nameof(CanRedo));
-
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(CanRedo)));
             }
         }
 

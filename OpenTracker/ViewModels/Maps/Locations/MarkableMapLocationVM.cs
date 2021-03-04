@@ -484,7 +484,7 @@ namespace OpenTracker.ViewModels.Maps.Locations
         /// </param>
         private void ClearLocation(bool force)
         {
-            _undoRedoManager.Execute(_undoableFactory.GetClearLocation(_mapLocation.Location!, force));
+            _undoRedoManager.NewAction(_undoableFactory.GetClearLocation(_mapLocation.Location!, force));
         }
 
         /// <summary>
@@ -492,7 +492,7 @@ namespace OpenTracker.ViewModels.Maps.Locations
         /// </summary>
         private void PinLocation()
         {
-            _undoRedoManager.Execute(_undoableFactory.GetPinLocation(_mapLocation.Location!));
+            _undoRedoManager.NewAction(_undoableFactory.GetPinLocation(_mapLocation.Location!));
         }
 
         /// <summary>

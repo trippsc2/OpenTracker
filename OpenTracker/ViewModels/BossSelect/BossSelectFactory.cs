@@ -40,7 +40,7 @@ namespace OpenTracker.ViewModels.BossSelect
 
             foreach (BossType boss in Enum.GetValues(typeof(BossType)))
             {
-                if (boss != BossType.Aga)
+                if (boss != BossType.Aga && boss != BossType.Test)
                 {
                     buttons.Add(_buttonFactory(bossPlacement, boss));
                 }

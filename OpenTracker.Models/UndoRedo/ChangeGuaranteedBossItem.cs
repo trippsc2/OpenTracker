@@ -43,7 +43,7 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Executes the action.
         /// </summary>
-        public void Execute()
+        public void ExecuteDo()
         {
             _previousGuaranteedBossItems = _mode.GuaranteedBossItems;
             _mode.GuaranteedBossItems = _guaranteedBossItems;
@@ -52,7 +52,7 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Undoes the action.
         /// </summary>
-        public void Undo()
+        public void ExecuteUndo()
         {
             _mode.GuaranteedBossItems = _previousGuaranteedBossItems;
         }
