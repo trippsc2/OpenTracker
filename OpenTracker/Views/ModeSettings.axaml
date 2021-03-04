@@ -3,14 +3,22 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:view="clr-namespace:OpenTracker.Views;assembly=OpenTracker"
+             xmlns:i="using:Avalonia.Xaml.Interactivity"
+             xmlns:ia="using:Avalonia.Xaml.Interactions.Core"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="OpenTracker.Views.ModeSettings">
   <Panel>
-    <Image Source="avares://OpenTracker/Assets/Images/settings.png"
-           PointerReleased="OpenModeSettingsPopup" ToolTip.Tip="Mode Settings" />
-    <Popup IsOpen="{Binding $parent[view:ModeSettings].ModeSettingsPopupOpen, Mode=TwoWay}"
-           IsLightDismissEnabled="True" PlacementMode="Top" HorizontalOffset="8" VerticalOffset="8"
-           PlacementTarget="{Binding $parent[view:ModeSettings]}">
+    
+    <Image Name="image" Source="avares://OpenTracker/Assets/Images/settings.png" ToolTip.Tip="Mode Settings">
+      <i:Interaction.Behaviors>
+        <ia:EventTriggerBehavior EventName="PointerReleased" SourceObject="{Binding #item}">
+          <ia:InvokeCommandAction Command="{Binding HandleClickCommand}" />
+        </ia:EventTriggerBehavior>
+      </i:Interaction.Behaviors>
+    </Image>
+    
+    <Popup IsOpen="{Binding PopupOpen, Mode=TwoWay}" IsLightDismissEnabled="True" PlacementMode="Top"
+           HorizontalOffset="8" VerticalOffset="8" PlacementTarget="{Binding $parent[view:ModeSettings]}">
       <Border Classes="Popup">
         <StackPanel Orientation="Vertical">
 
@@ -19,10 +27,11 @@
           <UniformGrid Rows="1">
             <RadioButton Classes="ModeSettings" GroupName="ItemPlacement"
                          IsChecked="{Binding BasicItemPlacement, Mode=OneWay}"
-                         Command="{Binding ItemPlacementCommand}" CommandParameter="Basic">Basic</RadioButton>
+                         Command="{Binding ChangeItemPlacementCommand}"
+                         CommandParameter="Basic">Basic</RadioButton>
             <RadioButton Classes="ModeSettings" GroupName="ItemPlacement"
                          IsChecked="{Binding AdvancedItemPlacement, Mode=OneWay}"
-                         Command="{Binding ItemPlacementCommand}"
+                         Command="{Binding ChangeItemPlacementCommand}"
                          CommandParameter="Advanced">Advanced</RadioButton>
           </UniformGrid>
 
@@ -45,11 +54,11 @@
           <UniformGrid Rows="1">
             <RadioButton Classes="ModeSettings" GroupName="WorldState"
                          IsChecked="{Binding StandardOpenWorldState, Mode=OneWay}"
-                         Command="{Binding WorldStateCommand}"
+                         Command="{Binding ChangeWorldStateCommand}"
                          CommandParameter="StandardOpen">Standard/Open</RadioButton>
             <RadioButton Classes="ModeSettings" GroupName="WorldState"
                          IsChecked="{Binding InvertedWorldState, Mode=OneWay}"
-                         Command="{Binding WorldStateCommand}"
+                         Command="{Binding ChangeWorldStateCommand}"
                          CommandParameter="Inverted">Inverted</RadioButton>
           </UniformGrid>
 
@@ -58,17 +67,19 @@
           <UniformGrid Rows="1">
             <RadioButton Classes="ModeSettings" GroupName="EntranceShuffle"
                          IsChecked="{Binding EntranceShuffleNone, Mode=OneWay}"
-                         Command="{Binding EntranceShuffleCommand}" CommandParameter="None">None</RadioButton>
+                         Command="{Binding ChangeEntranceShuffleCommand}"
+                         CommandParameter="None">None</RadioButton>
             <RadioButton Classes="ModeSettings" GroupName="EntranceShuffle"
                          IsChecked="{Binding EntranceShuffleDungeon, Mode=OneWay}"
-                         Command="{Binding EntranceShuffleCommand}"
+                         Command="{Binding ChangeEntranceShuffleCommand}"
                          CommandParameter="Dungeon">Dungeon</RadioButton>
             <RadioButton Classes="ModeSettings" GroupName="EntranceShuffle"
                          IsChecked="{Binding EntranceShuffleAll, Mode=OneWay}"
-                         Command="{Binding EntranceShuffleCommand}" CommandParameter="All">All</RadioButton>
+                         Command="{Binding ChangeEntranceShuffleCommand}"
+                         CommandParameter="All">All</RadioButton>
             <RadioButton Classes="ModeSettings" GroupName="EntranceShuffle"
                          IsChecked="{Binding EntranceShuffleInsanity, Mode=OneWay}"
-                         Command="{Binding EntranceShuffleCommand}"
+                         Command="{Binding ChangeEntranceShuffleCommand}"
                          CommandParameter="Insanity">Insanity</RadioButton>
           </UniformGrid>
 
@@ -93,5 +104,6 @@
         </StackPanel>
       </Border>
     </Popup>
+    
   </Panel>
 </UserControl>

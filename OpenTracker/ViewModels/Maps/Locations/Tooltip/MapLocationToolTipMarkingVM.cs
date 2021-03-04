@@ -63,16 +63,24 @@ namespace OpenTracker.ViewModels.Maps.Locations.Tooltip
         {
             if (e.PropertyName == nameof(IMarking.Mark))
             {
-                await UpdateImage();
+                await UpdateImageAsync();
             }
         }
 
         /// <summary>
         /// Updates the image.
         /// </summary>
-        private async Task UpdateImage()
+        private void UpdateImage()
         {
-            await Dispatcher.UIThread.InvokeAsync(() => Image = _markingImages[Marking.Mark]);
+            Image = _markingImages[Marking.Mark];
+        }
+
+        /// <summary>
+        /// Updates the image asynchronously.
+        /// </summary>
+        private async Task UpdateImageAsync()
+        {
+            await Dispatcher.UIThread.InvokeAsync(UpdateImage);
         }
     }
 }

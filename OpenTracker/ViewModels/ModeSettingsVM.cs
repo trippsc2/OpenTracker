@@ -3,7 +3,10 @@ using ReactiveUI;
 using System;
 using System.ComponentModel;
 using System.Reactive;
+using System.Threading.Tasks;
+using Avalonia.Input;
 using Avalonia.Threading;
+using JetBrains.Annotations;
 using OpenTracker.Models.Modes;
 using OpenTracker.Utils;
 
@@ -18,20 +21,12 @@ namespace OpenTracker.ViewModels
         private readonly IUndoRedoManager _undoRedoManager;
         private readonly IUndoableFactory _undoableFactory;
 
-        public ReactiveCommand<string, Unit> ItemPlacementCommand { get; }
-        public ReactiveCommand<Unit, Unit> MapShuffleCommand { get; }
-        public ReactiveCommand<Unit, Unit> CompassShuffleCommand { get; }
-        public ReactiveCommand<Unit, Unit> SmallKeyShuffleCommand { get; }
-        public ReactiveCommand<Unit, Unit> BigKeyShuffleCommand { get; }
-        public ReactiveCommand<string, Unit> WorldStateCommand { get; }
-        public ReactiveCommand<string, Unit> EntranceShuffleCommand { get; }
-        public ReactiveCommand<Unit, Unit> BossShuffleCommand { get; }
-        public ReactiveCommand<Unit, Unit> EnemyShuffleCommand { get; }
-        public ReactiveCommand<Unit, Unit> GuaranteedBossItemsCommand { get; }
-        public ReactiveCommand<Unit, Unit> ShopShuffleCommand { get; }
-        public ReactiveCommand<Unit, Unit> GenericKeysCommand { get; }
-        public ReactiveCommand<Unit, Unit> TakeAnyLocationsCommand { get; }
-        public ReactiveCommand<Unit, Unit> KeyDropShuffleCommand { get; }
+        private bool _popupOpen;
+        public bool PopupOpen
+        {
+            get => _popupOpen;
+            set => this.RaiseAndSetIfChanged(ref _popupOpen, value);
+        }
 
         public bool BasicItemPlacement =>
             _mode.ItemPlacement == ItemPlacement.Basic;
@@ -75,6 +70,55 @@ namespace OpenTracker.ViewModels
             _mode.TakeAnyLocations;
         public bool KeyDropShuffle =>
             _mode.KeyDropShuffle;
+        
+        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
+
+        public ReactiveCommand<string, Unit> ChangeItemPlacementCommand { get; }
+        public ReactiveCommand<string, Unit> ChangeWorldStateCommand { get; }
+        public ReactiveCommand<string, Unit> ChangeEntranceShuffleCommand { get; }
+
+        private readonly ObservableAsPropertyHelper<bool> _isChangingItemPlacement;
+        public bool IsChangingItemPlacement =>
+            _isChangingItemPlacement.Value;
+
+        private readonly ObservableAsPropertyHelper<bool> _isChangingWorldState;
+
+        public bool IsChangingWorldState =>
+            _isChangingWorldState.Value;
+
+        private readonly ObservableAsPropertyHelper<bool> _isChangingEntranceShuffle;
+
+        public bool IsChangingEntranceShuffle =>
+            _isChangingEntranceShuffle.Value;
+
+        public ReactiveCommand<Unit, Unit> ToggleMapShuffleCommand { get; }
+        public ReactiveCommand<Unit, Unit> ToggleCompassShuffleCommand { get; }
+        public ReactiveCommand<Unit, Unit> ToggleSmallKeyShuffleCommand { get; }
+        public ReactiveCommand<Unit, Unit> ToggleBigKeyShuffleCommand { get; }
+
+        private readonly ObservableAsPropertyHelper<bool> _isTogglingMapShuffle;
+        public bool IsTogglingMapShuffle =>
+            _isTogglingMapShuffle.Value;
+
+        private readonly ObservableAsPropertyHelper<bool> _isTogglingCompassShuffle;
+        public bool IsTogglingCompassShuffle =>
+            _isTogglingCompassShuffle.Value;
+
+        private readonly ObservableAsPropertyHelper<bool> _isTogglingSmallKeyShuffle;
+        public bool IsTogglingSmallKeyShuffle =>
+            _isTogglingSmallKeyShuffle.Value;
+
+        private readonly ObservableAsPropertyHelper<bool> _isTogglingBigKeyShuffle;
+        public bool IsTogglingBigKeyShuffle =>
+            _isTogglingBigKeyShuffle.Value;
+        
+        public ReactiveCommand<Unit, Unit> BossShuffleCommand { get; }
+        public ReactiveCommand<Unit, Unit> EnemyShuffleCommand { get; }
+        public ReactiveCommand<Unit, Unit> GuaranteedBossItemsCommand { get; }
+        public ReactiveCommand<Unit, Unit> ShopShuffleCommand { get; }
+        public ReactiveCommand<Unit, Unit> GenericKeysCommand { get; }
+        public ReactiveCommand<Unit, Unit> TakeAnyLocationsCommand { get; }
+        public ReactiveCommand<Unit, Unit> KeyDropShuffleCommand { get; }
 
         public ModeSettingsVM(
             IMode mode, IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory)
@@ -83,14 +127,25 @@ namespace OpenTracker.ViewModels
             _undoRedoManager = undoRedoManager;
             _undoableFactory = undoableFactory;
 
-            ItemPlacementCommand = ReactiveCommand.Create<string>(
-                SetItemPlacement, this.WhenAnyValue(x => x.StandardOpenWorldState));
-            MapShuffleCommand = ReactiveCommand.Create(ToggleMapShuffle);
-            CompassShuffleCommand = ReactiveCommand.Create(ToggleCompassShuffle);
-            SmallKeyShuffleCommand = ReactiveCommand.Create(ToggleSmallKeyShuffle);
-            BigKeyShuffleCommand = ReactiveCommand.Create(ToggleBigKeyShuffle);
-            WorldStateCommand = ReactiveCommand.Create<string>(SetWorldState);
-            EntranceShuffleCommand = ReactiveCommand.Create<string>(SetEntranceShuffle);
+            HandleClickCommand = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClick);
+
+            ChangeItemPlacementCommand = ReactiveCommand.CreateFromTask<string>(
+                ChangeItemPlacement, this.WhenAnyValue(x => x.StandardOpenWorldState));
+            ChangeItemPlacementCommand.IsExecuting.ToProperty(
+                this, x => x.IsChangingItemPlacement, out _isChangingItemPlacement);
+            
+            ChangeWorldStateCommand = ReactiveCommand.CreateFromTask<string>(ChangeWorldState);
+            ChangeWorldStateCommand.IsExecuting.ToProperty(
+                this, x => x.IsChangingWorldState, out _isChangingWorldState);
+            
+            ChangeEntranceShuffleCommand = ReactiveCommand.CreateFromTask<string>(ChangeEntranceShuffle);
+            ChangeEntranceShuffleCommand.IsExecuting.ToProperty(
+                this, x => x.IsChangingEntranceShuffle, out _isChangingEntranceShuffle);
+            
+            ToggleMapShuffleCommand = ReactiveCommand.Create(ToggleMapShuffle);
+            ToggleCompassShuffleCommand = ReactiveCommand.Create(ToggleCompassShuffle);
+            ToggleSmallKeyShuffleCommand = ReactiveCommand.Create(ToggleSmallKeyShuffle);
+            ToggleBigKeyShuffleCommand = ReactiveCommand.Create(ToggleBigKeyShuffle);
             BossShuffleCommand = ReactiveCommand.Create(ToggleBossShuffle);
             EnemyShuffleCommand = ReactiveCommand.Create(ToggleEnemyShuffle);
             GuaranteedBossItemsCommand = ReactiveCommand.Create(ToggleGuaranteedBossItems);
@@ -100,6 +155,28 @@ namespace OpenTracker.ViewModels
             KeyDropShuffleCommand = ReactiveCommand.Create(ToggleKeyDropShuffle);
 
             _mode.PropertyChanged += OnModeChanged;
+        }
+
+        /// <summary>
+        /// Opens the mode settings popup control.
+        /// </summary>
+        private void OpenModeSettingsPopup()
+        {
+            PopupOpen = true;
+        }
+
+        /// <summary>
+        /// Handles clicking the control.
+        /// </summary>
+        /// <param name="e">
+        /// The pointer released event args.
+        /// </param>
+        private void HandleClick(PointerReleasedEventArgs e)
+        {
+            if (e.InitialPressMouseButton == MouseButton.Left)
+            {
+                OpenModeSettingsPopup();
+            }
         }
 
         /// <summary>
@@ -180,11 +257,45 @@ namespace OpenTracker.ViewModels
         /// <param name="itemPlacementString">
         /// A string representing the new item placement setting.
         /// </param>
-        private void SetItemPlacement(string itemPlacementString)
+        private async Task ChangeItemPlacement(string itemPlacementString)
         {
+            PopupOpen = false;
+            
             if (Enum.TryParse(itemPlacementString, out ItemPlacement itemPlacement))
             {
-                _undoRedoManager.NewAction(_undoableFactory.GetChangeItemPlacement(itemPlacement));
+                await Task.Factory.StartNew(() =>
+                    _undoRedoManager.NewAction(_undoableFactory.GetChangeItemPlacement(itemPlacement)));
+            }
+        }
+
+        /// <summary>
+        /// Changes the World State setting to the specified value.
+        /// </summary>
+        /// <param name="worldStateString">
+        /// A string representing the new world state setting.
+        /// </param>
+        private async Task ChangeWorldState(string worldStateString)
+        {
+            PopupOpen = false;
+            
+            if (Enum.TryParse(worldStateString, out WorldState worldState))
+            {
+                await Task.Factory.StartNew(() =>
+                    _undoRedoManager.NewAction(_undoableFactory.GetChangeWorldState(worldState)));
+            }
+        }
+
+        /// <summary>
+        /// Changes the entrance shuffle setting.
+        /// </summary>
+        private async Task ChangeEntranceShuffle(string entranceShuffleString)
+        {
+            PopupOpen = false;
+            
+            if (Enum.TryParse(entranceShuffleString, out EntranceShuffle entranceShuffle))
+            {
+                await Task.Factory.StartNew(() =>
+                    _undoRedoManager.NewAction(_undoableFactory.GetChangeEntranceShuffle(entranceShuffle)));
             }
         }
 
@@ -218,31 +329,6 @@ namespace OpenTracker.ViewModels
         private void ToggleBigKeyShuffle()
         {
             _undoRedoManager.NewAction(_undoableFactory.GetChangeBigKeyShuffle(!_mode.BigKeyShuffle));
-        }
-
-        /// <summary>
-        /// Sets the World State setting to the specified value.
-        /// </summary>
-        /// <param name="worldStateString">
-        /// A string representing the new world state setting.
-        /// </param>
-        private void SetWorldState(string worldStateString)
-        {
-            if (Enum.TryParse(worldStateString, out WorldState worldState))
-            {
-                _undoRedoManager.NewAction(_undoableFactory.GetChangeWorldState(worldState));
-            }
-        }
-
-        /// <summary>
-        /// Toggles the entrance shuffle setting.
-        /// </summary>
-        private void SetEntranceShuffle(string entranceShuffleString)
-        {
-            if (Enum.TryParse(entranceShuffleString, out EntranceShuffle entranceShuffle))
-            {
-                _undoRedoManager.NewAction(_undoableFactory.GetChangeEntranceShuffle(entranceShuffle));
-            }
         }
 
         /// <summary>
