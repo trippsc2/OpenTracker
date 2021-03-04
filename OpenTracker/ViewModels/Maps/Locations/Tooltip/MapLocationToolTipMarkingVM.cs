@@ -1,8 +1,10 @@
-﻿using OpenTracker.Models.Markings;
+﻿using Avalonia.Threading;
+using OpenTracker.Models.Markings;
 using OpenTracker.Utils;
 using OpenTracker.ViewModels.Markings.Images;
 using ReactiveUI;
 using System.ComponentModel;
+using System.Threading.Tasks;
 
 namespace OpenTracker.ViewModels.Maps.Locations.Tooltip
 {
@@ -30,6 +32,9 @@ namespace OpenTracker.ViewModels.Maps.Locations.Tooltip
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="markingImages">
+        /// The marking image control dictionary.
+        /// </param>
         /// <param name="marking">
         /// The marking to be represented.
         /// </param>
@@ -54,20 +59,20 @@ namespace OpenTracker.ViewModels.Maps.Locations.Tooltip
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnMarkingChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnMarkingChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IMarking.Mark))
             {
-                UpdateImage();
+                await UpdateImage();
             }
         }
 
         /// <summary>
         /// Updates the image.
         /// </summary>
-        private void UpdateImage()
+        private async Task UpdateImage()
         {
-            Image = _markingImages[Marking.Mark];
+            await Dispatcher.UIThread.InvokeAsync(() => Image = _markingImages[Marking.Mark]);
         }
     }
 }

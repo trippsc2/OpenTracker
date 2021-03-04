@@ -1,4 +1,5 @@
 ﻿using Avalonia.Media;
+using Avalonia.Threading;
 using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Sections;
@@ -7,6 +8,7 @@ using OpenTracker.Utils;
 using ReactiveUI;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Threading.Tasks;
 
 namespace OpenTracker.ViewModels.PinnedLocations.Sections
 {
@@ -40,8 +42,7 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
         /// <param name="icons">
         /// The observable collection of section icon control ViewModel instances.
         /// </param>
-        public SectionVM(
-            IColorSettings colorSettings, ISection section, List<ISectionIconVMBase> icons)
+        public SectionVM(IColorSettings colorSettings, ISection section, List<ISectionIconVMBase> icons)
         {
             _colorSettings = colorSettings;
             _section = section;
@@ -62,9 +63,9 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnColorChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnColorChanged(object sender, PropertyChangedEventArgs e)
         {
-            UpdateTextColor();
+            await UpdateTextColor();
         }
 
         /// <summary>
@@ -76,11 +77,11 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnSectionChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnSectionChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ISection.Accessibility))
             {
-                UpdateTextColor();
+                await UpdateTextColor();
             }
         }
 
@@ -93,21 +94,24 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnRequirementChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnRequirementChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IRequirement.Accessibility))
             {
-                this.RaisePropertyChanged(nameof(Visible));
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Visible)));
             }
         }
 
         /// <summary>
         /// Raises the PropertyChanged event for the FontColor and NormalAccessibility properties.
         /// </summary>
-        private void UpdateTextColor()
+        private async Task UpdateTextColor()
         {
-            this.RaisePropertyChanged(nameof(FontColor));
-            this.RaisePropertyChanged(nameof(NormalAccessibility));
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                this.RaisePropertyChanged(nameof(FontColor));
+                this.RaisePropertyChanged(nameof(NormalAccessibility));
+            });
         }
     }
 }

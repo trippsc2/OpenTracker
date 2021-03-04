@@ -11,12 +11,7 @@ namespace OpenTracker.ViewModels.BossSelect
         private readonly IBossPlacement _bossPlacement;
 
         public BossType? Boss { get; }
-        public string ImageSource =>
-            Boss.HasValue ? 
-            "avares://OpenTracker/Assets/Images/Bosses/" +
-            $"{Boss.ToString()!.ToLowerInvariant()}1.png" :
-            "avares://OpenTracker/Assets/Images/Bosses/" +
-            $"{_bossPlacement.DefaultBoss.ToString().ToLowerInvariant()}0.png";
+        public string ImageSource { get; }
 
         /// <summary>
         /// Constructor
@@ -32,6 +27,9 @@ namespace OpenTracker.ViewModels.BossSelect
             _bossPlacement = bossPlacement;
 
             Boss = boss;
+            ImageSource = Boss.HasValue ? "avares://OpenTracker/Assets/Images/Bosses/" +
+                $"{Boss.ToString()!.ToLowerInvariant()}1.png" : "avares://OpenTracker/Assets/Images/Bosses/" +
+                $"{_bossPlacement.DefaultBoss.ToString().ToLowerInvariant()}0.png";
         }
     }
 }

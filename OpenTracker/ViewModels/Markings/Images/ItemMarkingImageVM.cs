@@ -4,6 +4,7 @@ using ReactiveUI;
 using System;
 using System.ComponentModel;
 using System.Globalization;
+using Avalonia.Threading;
 
 namespace OpenTracker.ViewModels.Markings.Images
 {
@@ -47,11 +48,11 @@ namespace OpenTracker.ViewModels.Markings.Images
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnItemChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnItemChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IItem.Current))
             {
-                this.RaisePropertyChanged(nameof(ImageSource));
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(ImageSource)));
             }
         }
     }

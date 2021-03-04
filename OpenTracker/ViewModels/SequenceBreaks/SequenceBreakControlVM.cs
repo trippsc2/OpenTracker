@@ -3,6 +3,7 @@ using OpenTracker.Utils;
 using ReactiveUI;
 using System.ComponentModel;
 using System.Reactive;
+using Avalonia.Threading;
 
 namespace OpenTracker.ViewModels.SequenceBreaks
 {
@@ -58,11 +59,11 @@ namespace OpenTracker.ViewModels.SequenceBreaks
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnSequenceBreakChanged(object? sender, PropertyChangedEventArgs e)
+        private async void OnSequenceBreakChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ISequenceBreak.Enabled))
             {
-                this.RaisePropertyChanged(nameof(Enabled));
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Enabled)));
             }
         }
 

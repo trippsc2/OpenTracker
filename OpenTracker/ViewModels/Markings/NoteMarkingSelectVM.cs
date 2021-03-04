@@ -7,6 +7,7 @@ using ReactiveUI;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reactive;
+using Avalonia.Threading;
 
 namespace OpenTracker.ViewModels.Markings
 {
@@ -53,9 +54,8 @@ namespace OpenTracker.ViewModels.Markings
         /// The location.
         /// </param>
         public NoteMarkingSelectVM(
-            ILayoutSettings layoutSettings, IUndoRedoManager undoRedoManager,
-            IUndoableFactory undoableFactory, IMarking marking,
-            List<IMarkingSelectItemVMBase> buttons, ILocation location)
+            ILayoutSettings layoutSettings, IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory,
+            IMarking marking, List<IMarkingSelectItemVMBase> buttons, ILocation location)
         {
             _layoutSettings = layoutSettings;
             _undoRedoManager = undoRedoManager;
@@ -81,11 +81,11 @@ namespace OpenTracker.ViewModels.Markings
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnLayoutChanged(object? sender, PropertyChangedEventArgs e)
+        private async void OnLayoutChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(LayoutSettings.UIScale))
             {
-                this.RaisePropertyChanged(nameof(Scale));
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Scale)));
             }
         }
 

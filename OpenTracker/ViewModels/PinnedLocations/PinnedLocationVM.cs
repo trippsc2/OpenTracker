@@ -9,6 +9,7 @@ using ReactiveUI;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reactive;
+using Avalonia.Threading;
 
 namespace OpenTracker.ViewModels.PinnedLocations
 {
@@ -83,11 +84,11 @@ namespace OpenTracker.ViewModels.PinnedLocations
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(LayoutSettings.UIScale))
             {
-                this.RaisePropertyChanged(nameof(Scale));
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Scale)));
             }
         }
 

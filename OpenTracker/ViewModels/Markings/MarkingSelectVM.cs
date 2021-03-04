@@ -1,4 +1,5 @@
-﻿using OpenTracker.Models.Markings;
+﻿using Avalonia.Threading;
+using OpenTracker.Models.Markings;
 using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
@@ -54,9 +55,8 @@ namespace OpenTracker.ViewModels.Markings
         /// The height of the popup.
         /// </param>
         public MarkingSelectVM(
-            ILayoutSettings layoutSettings, IUndoRedoManager undoRedoManager,
-            IUndoableFactory undoableFactory, IMarking marking,
-            List<IMarkingSelectItemVMBase> buttons, double width, double height)
+            ILayoutSettings layoutSettings, IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory,
+            IMarking marking, List<IMarkingSelectItemVMBase> buttons, double width, double height)
         {
             _layoutSettings = layoutSettings;
             _undoRedoManager = undoRedoManager;
@@ -75,7 +75,7 @@ namespace OpenTracker.ViewModels.Markings
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the LayoutSettings class.
+        /// Subscribes to the PropertyChanged event on the ILayoutSettings interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -83,11 +83,11 @@ namespace OpenTracker.ViewModels.Markings
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ILayoutSettings.UIScale))
             {
-                this.RaisePropertyChanged(nameof(Scale));
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Scale)));
             }
         }
 

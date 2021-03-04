@@ -4,6 +4,7 @@ using OpenTracker.Utils;
 using ReactiveUI;
 using System.Collections.Generic;
 using System.ComponentModel;
+using Avalonia.Threading;
 
 namespace OpenTracker.ViewModels.Items.Small
 {
@@ -64,11 +65,11 @@ namespace OpenTracker.ViewModels.Items.Small
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnModeChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnModeChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IMode.SmallKeyShuffle))
             {
-                this.RaisePropertyChanged(nameof(ATItemsVisible));
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(ATItemsVisible)));
             }
         }
     }

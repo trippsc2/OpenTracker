@@ -1,5 +1,4 @@
 ﻿using OpenTracker.Utils;
-using System;
 
 namespace OpenTracker.ViewModels.Markings.Images
 {
@@ -20,7 +19,7 @@ namespace OpenTracker.ViewModels.Markings.Images
         /// </param>
         public MarkingImageVM(string imageSource)
         {
-            ImageSource = imageSource ?? throw new ArgumentNullException(nameof(imageSource));
+            ImageSource = imageSource;
         }
     }
 }

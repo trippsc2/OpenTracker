@@ -9,7 +9,9 @@ using OpenTracker.Utils;
 using ReactiveUI;
 using System.ComponentModel;
 using System.Reactive;
+using System.Threading.Tasks;
 using Avalonia.Input;
+using Avalonia.Threading;
 
 namespace OpenTracker.ViewModels.Maps.Connections
 {
@@ -119,11 +121,11 @@ namespace OpenTracker.ViewModels.Maps.Connections
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Highlighted))
             {
-                UpdateColor();
+                await UpdateColor();
             }
         }
 
@@ -136,13 +138,15 @@ namespace OpenTracker.ViewModels.Maps.Connections
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnMapAreaChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnMapAreaChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(MapAreaVM.Orientation))
             {
-                this.RaisePropertyChanged(nameof(Start));
-                this.RaisePropertyChanged(nameof(End));
-            }
+                await Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    this.RaisePropertyChanged(nameof(Start));
+                    this.RaisePropertyChanged(nameof(End));
+                });             }
         }
 
         /// <summary>
@@ -154,11 +158,11 @@ namespace OpenTracker.ViewModels.Maps.Connections
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnModeChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnModeChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Mode.EntranceShuffle))
             {
-                this.RaisePropertyChanged(nameof(Visible));
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Visible)));
             }
         }
 
@@ -171,20 +175,20 @@ namespace OpenTracker.ViewModels.Maps.Connections
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnColorsChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnColorsChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ColorSettings.ConnectorColor))
             {
-                UpdateColor();
+                await UpdateColor();
             }
         }
 
         /// <summary>
         /// Raises the PropertyChanged event for the Color property.
         /// </summary>
-        private void UpdateColor()
+        private async Task UpdateColor()
         {
-            this.RaisePropertyChanged(nameof(Color));
+            await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Color)));
         }
 
         /// <summary>
@@ -204,7 +208,7 @@ namespace OpenTracker.ViewModels.Maps.Connections
         }
 
         /// <summary>
-        /// Unhighlights the control.
+        /// Un-highlights the control.
         /// </summary>
         private void Unhighlight()
         {

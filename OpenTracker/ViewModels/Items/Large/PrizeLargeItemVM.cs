@@ -1,10 +1,11 @@
-﻿using OpenTracker.Models.Sections;
+﻿using Avalonia.Input;
+using Avalonia.Threading;
+using OpenTracker.Models.Sections;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
 using ReactiveUI;
 using System.ComponentModel;
 using System.Reactive;
-using Avalonia.Input;
 
 namespace OpenTracker.ViewModels.Items.Large
 {
@@ -65,11 +66,11 @@ namespace OpenTracker.ViewModels.Items.Large
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnSectionChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnSectionChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ISection.Available))
             {
-                this.RaisePropertyChanged(nameof(ImageSource));
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(ImageSource)));
             }
         }
 
@@ -83,7 +84,7 @@ namespace OpenTracker.ViewModels.Items.Large
         }
 
         /// <summary>
-        /// Creates an undoable action to uncollect the prize section and sends it to the undo/redo manager.
+        /// Creates an undoable action to un-collect the prize section and sends it to the undo/redo manager.
         /// </summary>
         private void UncollectSection()
         {

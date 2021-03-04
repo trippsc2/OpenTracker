@@ -1,9 +1,12 @@
-﻿using Avalonia.Layout;
+﻿using System.Collections.Specialized;
+using Avalonia.Layout;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
 using ReactiveUI;
 using System.Reactive;
+using System.Threading.Tasks;
+using Avalonia.Threading;
 
 namespace OpenTracker.ViewModels.PinnedLocations.Notes
 {
@@ -51,7 +54,23 @@ namespace OpenTracker.ViewModels.PinnedLocations.Notes
 
             AddCommand = ReactiveCommand.Create(Add, this.WhenAnyValue(x => x.CanAdd));
 
+            Notes.CollectionChanged += OnNotesChanged;
+
             UpdateCanAdd();
+        }
+
+        /// <summary>
+        /// Subscribes to the CollectionChanged event on the IPinnedLocationNoteVMCollection interface.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the CollectionChanged event.
+        /// </param>
+        private async void OnNotesChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        {
+            await UpdateCanAddAsync();
         }
 
         /// <summary>
@@ -60,6 +79,14 @@ namespace OpenTracker.ViewModels.PinnedLocations.Notes
         private void UpdateCanAdd()
         {
             CanAdd = Notes.Count < 4;
+        }
+
+        /// <summary>
+        /// Updates the CanAdd property for whether a note can be added asynchronously.
+        /// </summary>
+        private async Task UpdateCanAddAsync()
+        {
+            await Dispatcher.UIThread.InvokeAsync(UpdateCanAdd);
         }
 
         /// <summary>

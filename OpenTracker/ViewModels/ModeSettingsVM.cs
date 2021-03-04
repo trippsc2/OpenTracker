@@ -3,6 +3,7 @@ using ReactiveUI;
 using System;
 using System.ComponentModel;
 using System.Reactive;
+using Avalonia.Threading;
 using OpenTracker.Models.Modes;
 using OpenTracker.Utils;
 
@@ -75,8 +76,6 @@ namespace OpenTracker.ViewModels
         public bool KeyDropShuffle =>
             _mode.KeyDropShuffle;
 
-        private bool _modeSettingsPopupOpen;
-
         public ModeSettingsVM(
             IMode mode, IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory)
         {
@@ -103,12 +102,6 @@ namespace OpenTracker.ViewModels
             _mode.PropertyChanged += OnModeChanged;
         }
 
-        public bool ModeSettingsPopupOpen
-        {
-            get => _modeSettingsPopupOpen;
-            set => this.RaiseAndSetIfChanged(ref _modeSettingsPopupOpen, value);
-        }
-
         /// <summary>
         /// Subscribes to the PropertyChanged event on the Mode class.
         /// </summary>
@@ -118,81 +111,66 @@ namespace OpenTracker.ViewModels
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnModeChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnModeChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(IMode.ItemPlacement))
+            switch (e.PropertyName)
             {
-                this.RaisePropertyChanged(nameof(BasicItemPlacement));
-                this.RaisePropertyChanged(nameof(AdvancedItemPlacement));
-            }
-
-            if (e.PropertyName == nameof(IMode.MapShuffle))
-            {
-                this.RaisePropertyChanged(nameof(MapShuffle));
-            }
-
-            if (e.PropertyName == nameof(IMode.CompassShuffle))
-            {
-                this.RaisePropertyChanged(nameof(CompassShuffle));
-            }
-
-            if (e.PropertyName == nameof(IMode.SmallKeyShuffle))
-            {
-                this.RaisePropertyChanged(nameof(SmallKeyShuffle));
-            }
-
-            if (e.PropertyName == nameof(IMode.BigKeyShuffle))
-            {
-                this.RaisePropertyChanged(nameof(BigKeyShuffle));
-            }
-
-            if (e.PropertyName == nameof(IMode.WorldState))
-            {
-                this.RaisePropertyChanged(nameof(StandardOpenWorldState));
-                this.RaisePropertyChanged(nameof(InvertedWorldState));
-            }
-
-            if (e.PropertyName == nameof(IMode.EntranceShuffle))
-            {
-                this.RaisePropertyChanged(nameof(EntranceShuffleNone));
-                this.RaisePropertyChanged(nameof(EntranceShuffleDungeon));
-                this.RaisePropertyChanged(nameof(EntranceShuffleAll));
-                this.RaisePropertyChanged(nameof(EntranceShuffleInsanity));
-            }
-
-            if (e.PropertyName == nameof(IMode.BossShuffle))
-            {
-                this.RaisePropertyChanged(nameof(BossShuffle));
-            }
-
-            if (e.PropertyName == nameof(IMode.EnemyShuffle))
-            {
-                this.RaisePropertyChanged(nameof(EnemyShuffle));
-            }
-
-            if (e.PropertyName == nameof(IMode.GuaranteedBossItems))
-            {
-                this.RaisePropertyChanged(nameof(GuaranteedBossItems));
-            }
-
-            if (e.PropertyName == nameof(IMode.ShopShuffle))
-            {
-                this.RaisePropertyChanged(nameof(ShopShuffle));
-            }
-
-            if (e.PropertyName == nameof(IMode.GenericKeys))
-            {
-                this.RaisePropertyChanged(nameof(GenericKeys));
-            }
-
-            if (e.PropertyName == nameof(IMode.TakeAnyLocations))
-            {
-                this.RaisePropertyChanged(nameof(TakeAnyLocations));
-            }
-
-            if (e.PropertyName == nameof(IMode.KeyDropShuffle))
-            {
-                this.RaisePropertyChanged(nameof(KeyDropShuffle));
+                case nameof(IMode.ItemPlacement):
+                    await Dispatcher.UIThread.InvokeAsync(() =>
+                    {
+                        this.RaisePropertyChanged(nameof(BasicItemPlacement));
+                        this.RaisePropertyChanged(nameof(AdvancedItemPlacement));
+                    });
+                    break;
+                case nameof(IMode.MapShuffle):
+                    await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(MapShuffle)));
+                    break;
+                case nameof(IMode.CompassShuffle):
+                    await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(CompassShuffle)));
+                    break;
+                case nameof(IMode.SmallKeyShuffle):
+                    await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(SmallKeyShuffle)));
+                    break;
+                case nameof(IMode.BigKeyShuffle):
+                    await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(BigKeyShuffle)));
+                    break;
+                case nameof(IMode.WorldState):
+                    await Dispatcher.UIThread.InvokeAsync(() =>
+                    {
+                        this.RaisePropertyChanged(nameof(StandardOpenWorldState));
+                        this.RaisePropertyChanged(nameof(InvertedWorldState));
+                    });
+                    break;
+                case nameof(IMode.EntranceShuffle):
+                    await Dispatcher.UIThread.InvokeAsync(() =>
+                    {
+                        this.RaisePropertyChanged(nameof(EntranceShuffleNone));
+                        this.RaisePropertyChanged(nameof(EntranceShuffleDungeon));
+                        this.RaisePropertyChanged(nameof(EntranceShuffleAll));
+                        this.RaisePropertyChanged(nameof(EntranceShuffleInsanity));
+                    });
+                    break;
+                case nameof(IMode.BossShuffle):
+                    await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(BossShuffle)));
+                    break;
+                case nameof(IMode.EnemyShuffle):
+                    await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(EnemyShuffle)));
+                    break;
+                case nameof(IMode.GuaranteedBossItems):
+                    await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(GuaranteedBossItems)));
+                    break;
+                case nameof(IMode.ShopShuffle):
+                    await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(ShopShuffle)));
+                    break;
+                case nameof(IMode.GenericKeys):
+                    await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(GenericKeys)));
+                    break;
+                case nameof(IMode.TakeAnyLocations):
+                    await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(TakeAnyLocations)));
+                    break;
+                case nameof(IMode.KeyDropShuffle):
+                    await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(KeyDropShuffle)));
+                    break;
             }
         }
 
@@ -288,14 +266,15 @@ namespace OpenTracker.ViewModels
         /// </summary>
         private void ToggleGuaranteedBossItems()
         {
-            _undoRedoManager.NewAction(_undoableFactory.GetChangeGuaranteedBossItems(
-                !_mode.GuaranteedBossItems));
+            _undoRedoManager.NewAction(_undoableFactory.GetChangeGuaranteedBossItems(!_mode.GuaranteedBossItems));
         }
 
+        /// <summary>
+        /// Toggles the shop shuffle setting.
+        /// </summary>
         private void ToggleShopShuffle()
         {
-            _undoRedoManager.NewAction(_undoableFactory.GetChangeShopShuffle(
-                !_mode.ShopShuffle));
+            _undoRedoManager.NewAction(_undoableFactory.GetChangeShopShuffle(!_mode.ShopShuffle));
         }
 
         /// <summary>
@@ -303,8 +282,7 @@ namespace OpenTracker.ViewModels
         /// </summary>
         private void ToggleGenericKeys()
         {
-            _undoRedoManager.NewAction(_undoableFactory.GetChangeGenericKeys(
-                !_mode.GenericKeys));
+            _undoRedoManager.NewAction(_undoableFactory.GetChangeGenericKeys(!_mode.GenericKeys));
         }
 
         /// <summary>
@@ -312,8 +290,7 @@ namespace OpenTracker.ViewModels
         /// </summary>
         private void ToggleTakeAnyLocations()
         {
-            _undoRedoManager.NewAction(_undoableFactory.GetChangeTakeAnyLocations(
-                !_mode.TakeAnyLocations));
+            _undoRedoManager.NewAction(_undoableFactory.GetChangeTakeAnyLocations(!_mode.TakeAnyLocations));
         }
 
         /// <summary>
@@ -321,8 +298,7 @@ namespace OpenTracker.ViewModels
         /// </summary>
         private void ToggleKeyDropShuffle()
         {
-            _undoRedoManager.NewAction(_undoableFactory.GetChangeKeyDropShuffle(
-                !_mode.KeyDropShuffle));
+            _undoRedoManager.NewAction(_undoableFactory.GetChangeKeyDropShuffle(!_mode.KeyDropShuffle));
         }
     }
 }

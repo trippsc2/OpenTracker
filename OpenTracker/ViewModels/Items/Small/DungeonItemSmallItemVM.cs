@@ -8,6 +8,8 @@ using ReactiveUI;
 using System.ComponentModel;
 using System.Globalization;
 using System.Reactive;
+using System.Threading.Tasks;
+using Avalonia.Threading;
 
 namespace OpenTracker.ViewModels.Items.Small
 {
@@ -90,9 +92,9 @@ namespace OpenTracker.ViewModels.Items.Small
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnColorChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnColorChanged(object sender, PropertyChangedEventArgs e)
         {
-            UpdateTextColor();
+            await UpdateTextColor();
         }
 
         /// <summary>
@@ -104,36 +106,36 @@ namespace OpenTracker.ViewModels.Items.Small
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnSectionChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnSectionChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ISection.Accessibility))
             {
-                UpdateTextColor();
-                UpdateImage();
+                await UpdateTextColor();
+                await UpdateImage();
             }
 
             if (e.PropertyName == nameof(ISection.Available))
             {
-                this.RaisePropertyChanged(nameof(NumberString));
-                UpdateTextColor();
-                UpdateImage();
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(NumberString)));
+                await UpdateTextColor();
+                await UpdateImage();
             }
         }
 
         /// <summary>
         /// Raises the PropertyChanged event for the FontColor property.
         /// </summary>
-        private void UpdateTextColor()
+        private async Task UpdateTextColor()
         {
-            this.RaisePropertyChanged(nameof(FontColor));
+            await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(FontColor)));
         }
 
         /// <summary>
         /// Raises the PropertyChanged event for the ImageSource property.
         /// </summary>
-        private void UpdateImage()
+        private async Task UpdateImage()
         {
-            this.RaisePropertyChanged(nameof(ImageSource));
+            await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(ImageSource)));
         }
 
         /// <summary>
@@ -148,7 +150,7 @@ namespace OpenTracker.ViewModels.Items.Small
         }
 
         /// <summary>
-        /// Creates an undoable action to uncollect the section and sends it to the undo/redo manager.
+        /// Creates an undoable action to un-collect the section and sends it to the undo/redo manager.
         /// </summary>
         private void UncollectSection()
         {

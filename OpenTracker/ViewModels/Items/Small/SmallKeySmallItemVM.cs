@@ -12,6 +12,8 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Reactive;
 using System.Text;
+using System.Threading.Tasks;
+using Avalonia.Threading;
 
 namespace OpenTracker.ViewModels.Items.Small
 {
@@ -115,11 +117,11 @@ namespace OpenTracker.ViewModels.Items.Small
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnColorsChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnColorsChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ColorSettings.EmphasisFontColor))
             {
-                UpdateTextColor();
+                await UpdateTextColor();
             }
         }
 
@@ -132,11 +134,14 @@ namespace OpenTracker.ViewModels.Items.Small
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnRequirementChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnRequirementChanged(object sender, PropertyChangedEventArgs e)
         {
-            this.RaisePropertyChanged(nameof(SpacerVisible));
-            this.RaisePropertyChanged(nameof(Visible));
-            this.RaisePropertyChanged(nameof(TextVisible));
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                this.RaisePropertyChanged(nameof(SpacerVisible));
+                this.RaisePropertyChanged(nameof(Visible));
+                this.RaisePropertyChanged(nameof(TextVisible));
+            });
         }
 
         /// <summary>
@@ -148,19 +153,22 @@ namespace OpenTracker.ViewModels.Items.Small
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnItemChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnItemChanged(object sender, PropertyChangedEventArgs e)
         {
-            UpdateTextColor();
-            this.RaisePropertyChanged(nameof(TextVisible));
-            this.RaisePropertyChanged(nameof(ItemNumber));
+            await UpdateTextColor();
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                this.RaisePropertyChanged(nameof(TextVisible));
+                this.RaisePropertyChanged(nameof(ItemNumber));
+            });
         }
 
         /// <summary>
         /// Raises the PropertyChanged event for the TextColor properties.
         /// </summary>
-        private void UpdateTextColor()
+        private async Task UpdateTextColor()
         {
-            this.RaisePropertyChanged(nameof(TextColor));
+            await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(TextColor)));
         }
 
         /// <summary>

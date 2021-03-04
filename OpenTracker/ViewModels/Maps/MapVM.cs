@@ -6,6 +6,7 @@ using OpenTracker.Models.Settings;
 using OpenTracker.Utils;
 using ReactiveUI;
 using System.ComponentModel;
+using Avalonia.Threading;
 
 namespace OpenTracker.ViewModels.Maps
 {
@@ -38,8 +39,6 @@ namespace OpenTracker.ViewModels.Maps
             }
         }
 
-        public delegate IMapVM Factory(MapID id);
-
         /// <summary>
         /// Constructor
         /// </summary>
@@ -57,7 +56,7 @@ namespace OpenTracker.ViewModels.Maps
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the LayoutSettings class.
+        /// Subscribes to the PropertyChanged event on the ILayoutSettings interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -65,16 +64,16 @@ namespace OpenTracker.ViewModels.Maps
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnLayoutChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(LayoutSettings.CurrentMapOrientation))
+            if (e.PropertyName == nameof(ILayoutSettings.CurrentMapOrientation))
             {
-                this.RaisePropertyChanged(nameof(Margin));
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Margin)));
             }
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the Mode class.
+        /// Subscribes to the PropertyChanged event on the IMode interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -82,11 +81,11 @@ namespace OpenTracker.ViewModels.Maps
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnModeChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnModeChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(Mode.WorldState))
+            if (e.PropertyName == nameof(IMode.WorldState))
             {
-                this.RaisePropertyChanged(nameof(ImageSource));
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(ImageSource)));
             }
         }
     }

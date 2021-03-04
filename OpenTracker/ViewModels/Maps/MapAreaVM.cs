@@ -1,4 +1,5 @@
 ﻿using Avalonia.Layout;
+using Avalonia.Threading;
 using OpenTracker.Models.Settings;
 using OpenTracker.Utils;
 using OpenTracker.ViewModels.Maps.Connections;
@@ -26,8 +27,7 @@ namespace OpenTracker.ViewModels.Maps
         /// <summary>
         /// Constructor
         /// </summary>
-        public MapAreaVM(ILayoutSettings layoutSettings, IMapAreaVMFactory factory,
-            IMapConnectionCollection connectors)
+        public MapAreaVM(ILayoutSettings layoutSettings, IMapAreaVMFactory factory, IMapConnectionCollection connectors)
         {
             _layoutSettings = layoutSettings;
 
@@ -47,11 +47,11 @@ namespace OpenTracker.ViewModels.Maps
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ILayoutSettings.CurrentMapOrientation))
             {
-                this.RaisePropertyChanged(nameof(Orientation));
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Orientation)));
             }
         }
     }

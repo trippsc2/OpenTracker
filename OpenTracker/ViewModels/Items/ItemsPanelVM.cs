@@ -5,6 +5,7 @@ using OpenTracker.ViewModels.Items.Large;
 using OpenTracker.ViewModels.Items.Small;
 using ReactiveUI;
 using System.ComponentModel;
+using Avalonia.Threading;
 
 namespace OpenTracker.ViewModels.Items
 {
@@ -67,11 +68,11 @@ namespace OpenTracker.ViewModels.Items
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Orientation))
             {
-                this.RaisePropertyChanged(nameof(SmallItems));
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(SmallItems)));
             }
         }
 
@@ -84,16 +85,16 @@ namespace OpenTracker.ViewModels.Items
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ILayoutSettings.CurrentLayoutOrientation))
             {
-                this.RaisePropertyChanged(nameof(Orientation));
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Orientation)));
             }
 
             if (e.PropertyName == nameof(ILayoutSettings.UIScale))
             {
-                this.RaisePropertyChanged(nameof(Scale));
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Scale)));
             }
         }
     }

@@ -7,6 +7,7 @@ using OpenTracker.ViewModels.Items;
 using OpenTracker.ViewModels.PinnedLocations;
 using ReactiveUI;
 using System.ComponentModel;
+using Avalonia.Threading;
 
 namespace OpenTracker.ViewModels
 {
@@ -64,13 +65,13 @@ namespace OpenTracker.ViewModels
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnLayoutChanged(object? sender, PropertyChangedEventArgs e)
+        private async void OnLayoutChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ILayoutSettings.CurrentLayoutOrientation) ||
                 e.PropertyName == nameof(ILayoutSettings.HorizontalItemsPlacement) ||
                 e.PropertyName == nameof(ILayoutSettings.VerticalItemsPlacement))
             {
-                this.RaisePropertyChanged(nameof(ItemsDock));
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(ItemsDock)));
             }
         }
     }

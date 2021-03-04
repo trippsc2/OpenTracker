@@ -9,6 +9,8 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reactive;
 using System.Text;
+using System.Threading.Tasks;
+using Avalonia.Threading;
 
 namespace OpenTracker.ViewModels.PinnedLocations.Sections
 {
@@ -92,11 +94,11 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnSectionChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnSectionChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ISection.Available))
             {
-                UpdateImage();
+                await UpdateImage();
             }
         }
 
@@ -109,20 +111,20 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnPrizeChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnPrizeChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IPrizePlacement.Prize))
             {
-                UpdateImage();
+                await UpdateImage();
             }
         }
 
         /// <summary>
         /// Raises the PropertyChanged event for the ImageSource property.
         /// </summary>
-        private void UpdateImage()
+        private async Task UpdateImage()
         {
-            this.RaisePropertyChanged(nameof(ImageSource));
+            await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(ImageSource)));
         }
 
         /// <summary>

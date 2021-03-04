@@ -266,7 +266,7 @@ namespace OpenTracker.ViewModels
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the TrackerSettings class.
+        /// Subscribes to the PropertyChanged event on the ITrackerSettings interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -274,21 +274,21 @@ namespace OpenTracker.ViewModels
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnTrackerSettingsChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnTrackerSettingsChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(TrackerSettings.DisplayAllLocations))
+            switch (e.PropertyName)
             {
-                this.RaisePropertyChanged(nameof(DisplayAllLocations));
-            }
-
-            if (e.PropertyName == nameof(TrackerSettings.ShowItemCountsOnMap))
-            {
-                this.RaisePropertyChanged(nameof(ShowItemCountsOnMap));
+                case nameof(ITrackerSettings.DisplayAllLocations):
+                    await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(DisplayAllLocations)));
+                    break;
+                case nameof(ITrackerSettings.ShowItemCountsOnMap):
+                    await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(ShowItemCountsOnMap)));
+                    break;
             }
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the LayoutSettings class.
+        /// Subscribes to the PropertyChanged event on the ILayoutSettings class.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -296,63 +296,72 @@ namespace OpenTracker.ViewModels
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(LayoutSettings.DisplayMapsCompasses))
+            switch (e.PropertyName)
             {
-                this.RaisePropertyChanged(nameof(DisplayMapsCompasses));
-            }
-
-            if (e.PropertyName == nameof(LayoutSettings.AlwaysDisplayDungeonItems))
-            {
-                this.RaisePropertyChanged(nameof(AlwaysDisplayDungeonItems));
-            }
-
-            if (e.PropertyName == nameof(LayoutSettings.LayoutOrientation))
-            {
-                this.RaisePropertyChanged(nameof(DynamicLayoutOrientation));
-                this.RaisePropertyChanged(nameof(HorizontalLayoutOrientation));
-                this.RaisePropertyChanged(nameof(VerticalLayoutOrientation));
-            }
-
-            if (e.PropertyName == nameof(LayoutSettings.MapOrientation))
-            {
-                this.RaisePropertyChanged(nameof(DynamicMapOrientation));
-                this.RaisePropertyChanged(nameof(HorizontalMapOrientation));
-                this.RaisePropertyChanged(nameof(VerticalMapOrientation));
-            }
-
-            if (e.PropertyName == nameof(LayoutSettings.HorizontalUIPanelPlacement))
-            {
-                this.RaisePropertyChanged(nameof(TopHorizontalUIPanelPlacement));
-                this.RaisePropertyChanged(nameof(BottomHorizontalUIPanelPlacement));
-            }
-
-            if (e.PropertyName == nameof(LayoutSettings.VerticalUIPanelPlacement))
-            {
-                this.RaisePropertyChanged(nameof(LeftVerticalUIPanelPlacement));
-                this.RaisePropertyChanged(nameof(RightVerticalUIPanelPlacement));
-            }
-
-            if (e.PropertyName == nameof(LayoutSettings.HorizontalItemsPlacement))
-            {
-                this.RaisePropertyChanged(nameof(LeftHorizontalItemsPlacement));
-                this.RaisePropertyChanged(nameof(RightHorizontalItemsPlacement));
-            }
-
-            if (e.PropertyName == nameof(LayoutSettings.VerticalItemsPlacement))
-            {
-                this.RaisePropertyChanged(nameof(TopVerticalItemsPlacement));
-                this.RaisePropertyChanged(nameof(BottomVerticalItemsPlacement));
-            }
-
-            if (e.PropertyName == nameof(LayoutSettings.UIScale))
-            {
-                this.RaisePropertyChanged(nameof(OneHundredPercentUIScale));
-                this.RaisePropertyChanged(nameof(OneHundredTwentyFivePercentUIScale));
-                this.RaisePropertyChanged(nameof(OneHundredFiftyPercentUIScale));
-                this.RaisePropertyChanged(nameof(OneHundredSeventyFivePercentUIScale));
-                this.RaisePropertyChanged(nameof(TwoHundredPercentUIScale));
+                case nameof(ILayoutSettings.DisplayMapsCompasses):
+                    await Dispatcher.UIThread.InvokeAsync(() =>
+                        this.RaisePropertyChanged(nameof(DisplayMapsCompasses)));
+                    break;
+                case nameof(ILayoutSettings.AlwaysDisplayDungeonItems):
+                    await Dispatcher.UIThread.InvokeAsync(() =>
+                        this.RaisePropertyChanged(nameof(AlwaysDisplayDungeonItems)));
+                    break;
+                case nameof(ILayoutSettings.LayoutOrientation):
+                    await Dispatcher.UIThread.InvokeAsync(() =>
+                    {
+                        this.RaisePropertyChanged(nameof(DynamicLayoutOrientation));
+                        this.RaisePropertyChanged(nameof(HorizontalLayoutOrientation));
+                        this.RaisePropertyChanged(nameof(VerticalLayoutOrientation));
+                    });
+                    break;
+                case nameof(ILayoutSettings.MapOrientation):
+                    await Dispatcher.UIThread.InvokeAsync(() =>
+                    {
+                        this.RaisePropertyChanged(nameof(DynamicMapOrientation));
+                        this.RaisePropertyChanged(nameof(HorizontalMapOrientation));
+                        this.RaisePropertyChanged(nameof(VerticalMapOrientation));
+                    }); 
+                    break;
+                case nameof(ILayoutSettings.HorizontalUIPanelPlacement):
+                    await Dispatcher.UIThread.InvokeAsync(() =>
+                    {
+                        this.RaisePropertyChanged(nameof(TopHorizontalUIPanelPlacement));
+                        this.RaisePropertyChanged(nameof(BottomHorizontalUIPanelPlacement));
+                    });
+                    break;
+                case nameof(ILayoutSettings.VerticalUIPanelPlacement):
+                    await Dispatcher.UIThread.InvokeAsync(() =>
+                    {
+                        this.RaisePropertyChanged(nameof(LeftVerticalUIPanelPlacement));
+                        this.RaisePropertyChanged(nameof(RightVerticalUIPanelPlacement));
+                    });
+                    break;
+                case nameof(ILayoutSettings.HorizontalItemsPlacement):
+                    await Dispatcher.UIThread.InvokeAsync(() =>
+                    {
+                        this.RaisePropertyChanged(nameof(LeftHorizontalItemsPlacement));
+                        this.RaisePropertyChanged(nameof(RightHorizontalItemsPlacement));
+                    });
+                    break;
+                case nameof(ILayoutSettings.VerticalItemsPlacement):
+                    await Dispatcher.UIThread.InvokeAsync(() =>
+                    {
+                        this.RaisePropertyChanged(nameof(TopVerticalItemsPlacement));
+                        this.RaisePropertyChanged(nameof(BottomVerticalItemsPlacement));
+                    });
+                    break;
+                case nameof(ILayoutSettings.UIScale):
+                    await Dispatcher.UIThread.InvokeAsync(() =>
+                    {
+                        this.RaisePropertyChanged(nameof(OneHundredPercentUIScale));
+                        this.RaisePropertyChanged(nameof(OneHundredTwentyFivePercentUIScale));
+                        this.RaisePropertyChanged(nameof(OneHundredFiftyPercentUIScale));
+                        this.RaisePropertyChanged(nameof(OneHundredSeventyFivePercentUIScale));
+                        this.RaisePropertyChanged(nameof(TwoHundredPercentUIScale));
+                    });
+                    break;
             }
         }
 
@@ -365,9 +374,7 @@ namespace OpenTracker.ViewModels
         private async Task OpenErrorBox(string message)
         {
             await Dispatcher.UIThread.InvokeAsync(async () =>
-            {
-                await _dialogService.ShowDialogAsync(_errorBoxFactory("Error", message));
-            });
+                await _dialogService.ShowDialogAsync(_errorBoxFactory("Error", message)));
         }
 
         /// <summary>
@@ -378,7 +385,8 @@ namespace OpenTracker.ViewModels
         /// </returns>
         private async Task<string?> OpenSaveFileDialog()
         {
-            return await _fileDialogService.ShowSaveDialogAsync();
+            return await Dispatcher.UIThread.InvokeAsync(async () =>
+                await _fileDialogService.ShowSaveDialogAsync());
         }
 
         /// <summary>
@@ -389,33 +397,21 @@ namespace OpenTracker.ViewModels
         /// </param>
         private async Task SaveWithErrorHandling(string path)
         {
-            await Dispatcher.UIThread.InvokeAsync(() =>
+            try
             {
-                try
+                _saveLoadManager.Save(path);
+            }
+            catch (Exception ex)
+            {
+                string message = ex switch
                 {
-                    _saveLoadManager.Save(path);
-                }
-                catch (Exception ex)
-                {
-                    string message;
-
-                    switch (ex)
-                    {
-                        case UnauthorizedAccessException uaex:
-                            {
-                                message = "Unable to save to the selected directory.  Check the file permissions and try again.";
-                            }
-                            break;
-                        default:
-                            {
-                                message = ex.Message;
-                            }
-                            break;
-                    }
-
-                    OpenErrorBox(message).Wait();
-                }
-            });
+                    UnauthorizedAccessException _ =>
+                        "Unable to save to the selected directory.  Check the file permissions and try again.",
+                    _ => ex.Message
+                };
+                
+                await OpenErrorBox(message);
+            }
         }
 
         /// <summary>
@@ -425,40 +421,26 @@ namespace OpenTracker.ViewModels
         {
             var dialogResult = await _fileDialogService.ShowOpenDialogAsync();
 
-            if (dialogResult != null)
+            if (dialogResult is null)
             {
-                await Dispatcher.UIThread.InvokeAsync(() =>
+                return;
+            }
+
+            try
+            {
+                _saveLoadManager.Open(dialogResult);
+            }
+            catch (Exception ex)
+            {
+                string message = ex switch
                 {
-                    try
-                    {
-                        _saveLoadManager.Open(dialogResult);
-                    }
-                    catch (Exception ex)
-                    {
-                        string message;
+                    JsonReaderException _ => "The selected file is not a valid JSON file.",
+                    UnauthorizedAccessException _ =>
+                        "The file cannot be read.  Check the permissions on the selected file.",
+                    _ => ex.Message
+                };
 
-                        switch (ex)
-                        {
-                            case JsonReaderException jex:
-                                {
-                                    message = "The selected file is not a valid JSON file.";
-                                }
-                                break;
-                            case UnauthorizedAccessException uaex:
-                                {
-                                    message = "The file cannot be read.  Check the permissions on the selected file.";
-                                }
-                                break;
-                            default:
-                                {
-                                    message = ex.Message;
-                                }
-                                break;
-                        }
-
-                        OpenErrorBox(message).Wait();
-                    }
-                });
+                await OpenErrorBox(message);
             }
         }
 
@@ -487,10 +469,12 @@ namespace OpenTracker.ViewModels
         {
             var dialogResult = await OpenSaveFileDialog();
 
-            if (dialogResult != null)
+            if (dialogResult is null)
             {
-                await SaveWithErrorHandling(dialogResult);
+                return;
             }
+            
+            await SaveWithErrorHandling(dialogResult);
         }
 
         /// <summary>
@@ -505,10 +489,7 @@ namespace OpenTracker.ViewModels
 
             if (result)
             {
-                await Dispatcher.UIThread.InvokeAsync(() =>
-                {
-                    _resetManager.Reset();
-                });
+                _resetManager.Reset();
             }
         }
 
@@ -518,7 +499,7 @@ namespace OpenTracker.ViewModels
         /// <param name="window">
         /// The window to be closed.
         /// </param>
-        private void Close(Window window)
+        private static void Close(Window window)
         {
             window.Close();
         }
@@ -550,10 +531,8 @@ namespace OpenTracker.ViewModels
         /// </summary>
         private async Task AutoTracker()
         {
-            await Dispatcher.UIThread.InvokeAsync(() =>
-            {
-                _dialogService.ShowDialogAsync(_autoTrackerDialog, false).Wait();
-            });
+            await Dispatcher.UIThread.InvokeAsync(async () =>
+                await _dialogService.ShowDialogAsync(_autoTrackerDialog, false));
         }
 
         /// <summary>
@@ -561,10 +540,8 @@ namespace OpenTracker.ViewModels
         /// </summary>
         private async Task SequencesBreak()
         {
-            await Dispatcher.UIThread.InvokeAsync(() =>
-            {
-                _dialogService.ShowDialogAsync(_sequenceBreakDialog, false).Wait();
-            });
+            await Dispatcher.UIThread.InvokeAsync(async () =>
+                await _dialogService.ShowDialogAsync(_sequenceBreakDialog, false));
         }
 
         /// <summary>
@@ -572,8 +549,7 @@ namespace OpenTracker.ViewModels
         /// </summary>
         private void ToggleShowItemCountsOnMap()
         {
-            _appSettings.Tracker.ShowItemCountsOnMap =
-                !_appSettings.Tracker.ShowItemCountsOnMap;
+            _appSettings.Tracker.ShowItemCountsOnMap = !_appSettings.Tracker.ShowItemCountsOnMap;
         }
 
         /// <summary>
@@ -587,8 +563,10 @@ namespace OpenTracker.ViewModels
             if (orientationString == "Dynamic")
             {
                 _appSettings.Layout.LayoutOrientation = null;
+                return;
             }
-            else if (Enum.TryParse(orientationString, out Orientation orientation))
+            
+            if (Enum.TryParse(orientationString, out Orientation orientation))
             {
                 _appSettings.Layout.LayoutOrientation = orientation;
             }
@@ -605,8 +583,10 @@ namespace OpenTracker.ViewModels
             if (orientationString == "Dynamic")
             {
                 _appSettings.Layout.MapOrientation = null;
+                return;
             }
-            else if (Enum.TryParse(orientationString, out Orientation orientation))
+            
+            if (Enum.TryParse(orientationString, out Orientation orientation))
             {
                 _appSettings.Layout.MapOrientation = orientation;
             }
@@ -684,8 +664,7 @@ namespace OpenTracker.ViewModels
         /// </summary>
         private void ToggleDisplayAllLocations()
         {
-            _appSettings.Tracker.DisplayAllLocations =
-                !_appSettings.Tracker.DisplayAllLocations;
+            _appSettings.Tracker.DisplayAllLocations = !_appSettings.Tracker.DisplayAllLocations;
         }
 
         /// <summary>
@@ -693,8 +672,7 @@ namespace OpenTracker.ViewModels
         /// </summary>
         private void ToggleDisplayMapsCompasses()
         {
-            _appSettings.Layout.DisplayMapsCompasses =
-                !_appSettings.Layout.DisplayMapsCompasses;
+            _appSettings.Layout.DisplayMapsCompasses = !_appSettings.Layout.DisplayMapsCompasses;
         }
 
         /// <summary>
@@ -702,8 +680,7 @@ namespace OpenTracker.ViewModels
         /// </summary>
         private void ToggleAlwaysDisplayDungeonItems()
         {
-            _appSettings.Layout.AlwaysDisplayDungeonItems =
-                !_appSettings.Layout.AlwaysDisplayDungeonItems;
+            _appSettings.Layout.AlwaysDisplayDungeonItems = !_appSettings.Layout.AlwaysDisplayDungeonItems;
         }
 
         /// <summary>
@@ -711,10 +688,8 @@ namespace OpenTracker.ViewModels
         /// </summary>
         private async Task ColorSelect()
         {
-            await Dispatcher.UIThread.InvokeAsync(() =>
-            {
-                _dialogService.ShowDialogAsync(_colorSelectDialog, false).Wait();
-            });
+            await Dispatcher.UIThread.InvokeAsync(async () =>
+                await _dialogService.ShowDialogAsync(_colorSelectDialog, false));
         }
 
         /// <summary>
@@ -722,10 +697,8 @@ namespace OpenTracker.ViewModels
         /// </summary>
         private async Task About()
         {
-            await Dispatcher.UIThread.InvokeAsync(() =>
-            {
-                _dialogService.ShowDialogAsync(_aboutDialog, false).Wait();
-            });
+            await Dispatcher.UIThread.InvokeAsync(async () =>
+                await _dialogService.ShowDialogAsync(_aboutDialog, false));
         }
     }
 }

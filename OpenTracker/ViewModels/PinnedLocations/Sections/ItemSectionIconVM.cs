@@ -7,6 +7,8 @@ using ReactiveUI;
 using System.ComponentModel;
 using System.Globalization;
 using System.Reactive;
+using System.Threading.Tasks;
+using Avalonia.Threading;
 
 namespace OpenTracker.ViewModels.PinnedLocations.Sections
 {
@@ -88,26 +90,26 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnSectionChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnSectionChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ISection.Accessibility))
             {
-                UpdateImage();
+                await UpdateImage();
             }
 
             if (e.PropertyName == nameof(ISection.Available))
             {
-                UpdateImage();
-                this.RaisePropertyChanged(nameof(AvailableCount));
+                await UpdateImage();
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(AvailableCount)));
             }
         }
 
         /// <summary>
-        /// Raises the PropertyChanged event for the ImageSource property.
+        /// Updates the ImageSource property asynchronously.
         /// </summary>
-        private void UpdateImage()
+        private async Task UpdateImage()
         {
-            this.RaisePropertyChanged(nameof(ImageSource));
+            await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(ImageSource)));
         }
 
         /// <summary>

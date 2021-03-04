@@ -28,10 +28,10 @@ namespace OpenTracker.Models.Reset
         /// Constructor
         /// </summary>
         public ResetManager(
-            IAutoTracker autoTracker, IBossPlacementDictionary bossPlacements,
-            IConnectionCollection connections, IDropdownDictionary dropdowns, IItemDictionary items,
-            ILocationDictionary locations, IPinnedLocationCollection pinnedLocations,
-            IPrizePlacementDictionary prizePlacements, IUndoRedoManager undoRedoManager)
+            IAutoTracker autoTracker, IBossPlacementDictionary bossPlacements, IConnectionCollection connections,
+            IDropdownDictionary dropdowns, IItemDictionary items, ILocationDictionary locations,
+            IPinnedLocationCollection pinnedLocations, IPrizePlacementDictionary prizePlacements,
+            IUndoRedoManager undoRedoManager)
         {
             _autoTracker = autoTracker;
             _bossPlacements = bossPlacements;

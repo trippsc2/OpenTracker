@@ -117,8 +117,8 @@ namespace OpenTracker.ViewModels.AutoTracking
         /// The auto-tracker log control ViewModel.
         /// </param>
         public AutoTrackerDialogVM(
-            IAutoTracker autoTracker, IAutoTrackerLogService logService,
-            IAutoTrackerStatusVM status, IAutoTrackerLogVM log)
+            IAutoTracker autoTracker, IAutoTrackerLogService logService, IAutoTrackerStatusVM status,
+            IAutoTrackerLogVM log)
         {
             _autoTracker = autoTracker;
 
@@ -164,11 +164,8 @@ namespace OpenTracker.ViewModels.AutoTracking
 
             PropertyChanged += OnPropertyChanged;
             _autoTracker.PropertyChanged += OnAutoTrackerChanged;
-
-            CanConnect = CanCreateWebSocketUri() && _autoTracker.CanConnect();
-            CanGetDevices = _autoTracker.CanGetDevices();
-            CanDisconnect = _autoTracker.CanDisconnect();
-            CanStart = !(Device is null) && Device != string.Empty && _autoTracker.CanStart();
+            
+            UpdateCommandCanExecute();
         }
 
         /// <summary>
@@ -184,12 +181,12 @@ namespace OpenTracker.ViewModels.AutoTracking
         {
             if (e.PropertyName == nameof(UriString))
             {
-                await UpdateCanConnect();
+                await UpdateCanConnectAsync();
             }
 
             if (e.PropertyName == nameof(Device))
             {
-                await UpdateCanStart();
+                await UpdateCanStartAsync();
             }
         }
 
@@ -206,7 +203,7 @@ namespace OpenTracker.ViewModels.AutoTracking
         {
             _tickCount++;
 
-            await Dispatcher.UIThread.InvokeAsync(async () => { await _autoTracker.InGameCheck(); });
+            await _autoTracker.InGameCheck();
 
             if (_tickCount != 5)
             {
@@ -214,7 +211,7 @@ namespace OpenTracker.ViewModels.AutoTracking
             }
             
             _tickCount = 0;
-            await Dispatcher.UIThread.InvokeAsync(async () => { await _autoTracker.MemoryCheck(); });
+            await _autoTracker.MemoryCheck();
         }
 
         /// <summary>
@@ -228,94 +225,122 @@ namespace OpenTracker.ViewModels.AutoTracking
         /// </param>
         private async void OnAutoTrackerChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(IAutoTracker.RaceIllegalTracking))
+            switch (e.PropertyName)
             {
-                await Dispatcher.UIThread.InvokeAsync(() =>
-                {
-                    this.RaisePropertyChanged(nameof(RaceIllegalTracking));
-                });
-            }
-
-            if (e.PropertyName == nameof(IAutoTracker.Devices))
-            {
-                await Dispatcher.UIThread.InvokeAsync(() =>
-                {
-                    this.RaisePropertyChanged(nameof(Devices));
-                    this.RaisePropertyChanged(nameof(DevicesComboBoxEnabled));
-                });
-            }
-
-            if (e.PropertyName == nameof(IAutoTracker.Status))
-            {
-                await UpdateCommandCanExecuteProperties();
-
-                await Dispatcher.UIThread.InvokeAsync(() =>
-                {
-                    if (_autoTracker.Status != ConnectionStatus.Connected &&
-                        _memoryCheckTimer.IsEnabled)
+                case nameof(IAutoTracker.RaceIllegalTracking):
+                    await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(RaceIllegalTracking)));
+                    break;
+                case nameof(IAutoTracker.Devices):
+                    await Dispatcher.UIThread.InvokeAsync(() =>
                     {
-                        _memoryCheckTimer.Stop();
-                    }
+                        this.RaisePropertyChanged(nameof(Devices));
+                        this.RaisePropertyChanged(nameof(DevicesComboBoxEnabled));
+                    });
+                    break;
+                case nameof(IAutoTracker.Status):
+                {
+                    await UpdateCommandCanExecuteAsync();
 
-                    this.RaisePropertyChanged(nameof(UriTextBoxEnabled));
-                    this.RaisePropertyChanged(nameof(DevicesComboBoxEnabled));
-                });
+                    await Dispatcher.UIThread.InvokeAsync(() =>
+                    {
+                        if (_autoTracker.Status != ConnectionStatus.Connected &&
+                            _memoryCheckTimer.IsEnabled)
+                        {
+                            _memoryCheckTimer.Stop();
+                        }
+
+                        this.RaisePropertyChanged(nameof(UriTextBoxEnabled));
+                        this.RaisePropertyChanged(nameof(DevicesComboBoxEnabled));
+                    });
+                }
+                    break;
             }
         }
 
         /// <summary>
         /// Updates the "can execute" properties for all commands.
         /// </summary>
-        private async Task UpdateCommandCanExecuteProperties()
+        private void UpdateCommandCanExecute()
         {
-            await UpdateCanConnect();
-            await UpdateCanGetDevices();
-            await UpdateCanDisconnect();
-            await UpdateCanStart();
+            UpdateCanConnect();
+            UpdateCanGetDevices();
+            UpdateCanDisconnect();
+            UpdateCanStart();
+        }
+
+        /// <summary>
+        /// Updates the "can execute" properties for all commands asynchronously.
+        /// </summary>
+        private async Task UpdateCommandCanExecuteAsync()
+        {
+            await UpdateCanConnectAsync();
+            await UpdateCanGetDevicesAsync();
+            await UpdateCanDisconnectAsync();
+            await UpdateCanStartAsync();
         }
 
         /// <summary>
         /// Updates the CanConnect property.
         /// </summary>
-        private async Task UpdateCanConnect()
+        private void UpdateCanConnect()
         {
-            await Dispatcher.UIThread.InvokeAsync(() =>
-            {
-                CanConnect = CanCreateWebSocketUri() && _autoTracker.CanConnect();
-            });
+            CanConnect = CanCreateWebSocketUri() && _autoTracker.CanConnect();
+        }
+
+        /// <summary>
+        /// Updates the CanConnect property asynchronously.
+        /// </summary>
+        private async Task UpdateCanConnectAsync()
+        {
+            await Dispatcher.UIThread.InvokeAsync(UpdateCanConnect);
         }
 
         /// <summary>
         /// Updates the CanGetDevices property.
         /// </summary>
-        private async Task UpdateCanGetDevices()
+        private void UpdateCanGetDevices()
         {
-            await Dispatcher.UIThread.InvokeAsync(() =>
-            {
-                CanGetDevices = _autoTracker.CanGetDevices();
-            });
+            CanGetDevices = _autoTracker.CanGetDevices();
+        }
+
+        /// <summary>
+        /// Updates the CanGetDevices property asynchronously.
+        /// </summary>
+        private async Task UpdateCanGetDevicesAsync()
+        {
+            await Dispatcher.UIThread.InvokeAsync(UpdateCanGetDevices);
         }
 
         /// <summary>
         /// Updates the CanGetDisconnect property.
         /// </summary>
-        private async Task UpdateCanDisconnect()
+        private void UpdateCanDisconnect()
         {
-            await Dispatcher.UIThread.InvokeAsync(() =>
-            {
-                CanDisconnect = _autoTracker.CanDisconnect();
-            });
+            CanDisconnect = _autoTracker.CanDisconnect();
+        }
+
+        /// <summary>
+        /// Updates the CanGetDisconnect property asynchronously.
+        /// </summary>
+        private async Task UpdateCanDisconnectAsync()
+        {
+            await Dispatcher.UIThread.InvokeAsync(UpdateCanDisconnect);
         }
 
         /// <summary>
         /// Updates the CanStart property.
         /// </summary>
-        private async Task UpdateCanStart()
+        private void UpdateCanStart()
         {
-            await Dispatcher.UIThread.InvokeAsync(() =>
-            {
-                CanStart = !(Device is null) && Device != string.Empty && _autoTracker.CanStart();
-            });
+            CanStart = !(Device is null) && Device != string.Empty && _autoTracker.CanStart();
+        }
+
+        /// <summary>
+        /// Updates the CanStart property asynchronously.
+        /// </summary>
+        private async Task UpdateCanStartAsync()
+        {
+            await Dispatcher.UIThread.InvokeAsync(UpdateCanStart);
         }
 
         /// <summary>
@@ -365,12 +390,10 @@ namespace OpenTracker.ViewModels.AutoTracking
         }
 
         /// <summary>
-        /// Returns whether the UriString property value is a valid URI to be accepted by the web
-        /// socket library.
+        /// Returns whether the UriString property value is a valid URI to be accepted by the web socket library.
         /// </summary>
         /// <returns>
-        /// A boolean representing whether the UriString property value can be accepted by the
-        /// web socket library.
+        /// A boolean representing whether the UriString property value can be accepted by the web socket library.
         /// </returns>
         private bool CanCreateWebSocketUri()
         {

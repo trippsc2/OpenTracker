@@ -15,8 +15,10 @@ using System;
 using System.ComponentModel;
 using System.Globalization;
 using System.Reactive;
+using System.Threading.Tasks;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Threading;
 
 namespace OpenTracker.ViewModels.Maps.Locations
 {
@@ -267,16 +269,16 @@ namespace OpenTracker.ViewModels.Maps.Locations
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Highlighted))
             {
-                this.RaisePropertyChanged(nameof(BorderColor));
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(BorderColor)));
             }
 
             if (e.PropertyName == nameof(MarkingDock))
             {
-                UpdateSize();
+                await UpdateSize();
             }
         }
 
@@ -289,14 +291,14 @@ namespace OpenTracker.ViewModels.Maps.Locations
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnModeChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnModeChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Mode.EntranceShuffle))
             {
-                UpdateSize();
-                UpdateText();
-                UpdateMarkingDock();
-                this.RaisePropertyChanged(nameof(BorderSize));
+                await UpdateSize();
+                await UpdateText();
+                await UpdateMarkingDockAsync();
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(BorderSize)));
             }
         }
 
@@ -309,24 +311,24 @@ namespace OpenTracker.ViewModels.Maps.Locations
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnLocationChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnLocationChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ILocation.Accessibility))
             {
-                UpdateColor();
-                UpdateVisibility();
+                await UpdateColor();
+                await UpdateVisibility();
             }
 
             if (e.PropertyName == nameof(ILocation.Accessible) ||
                 e.PropertyName == nameof(ILocation.Available))
             {
-                UpdateText();
+                await UpdateText();
             }
 
             if (e.PropertyName == nameof(ILocation.Total))
             {
-                UpdateSize();
-                UpdateText();
+                await UpdateSize();
+                await UpdateText();
             }
         }
 
@@ -339,11 +341,11 @@ namespace OpenTracker.ViewModels.Maps.Locations
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnRequirementChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnRequirementChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IRequirement.Accessibility))
             {
-                UpdateVisibility();
+                await UpdateVisibility();
             }
         }
 
@@ -356,16 +358,16 @@ namespace OpenTracker.ViewModels.Maps.Locations
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnTrackerSettingsChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnTrackerSettingsChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(TrackerSettings.DisplayAllLocations))
             {
-                UpdateVisibility();
+                await UpdateVisibility();
             }
 
             if (e.PropertyName == nameof(TrackerSettings.ShowItemCountsOnMap))
             {
-                UpdateText();
+                await UpdateText();
             }
         }
 
@@ -378,11 +380,11 @@ namespace OpenTracker.ViewModels.Maps.Locations
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(LayoutSettings.CurrentMapOrientation))
             {
-                UpdatePosition();
+                await UpdatePosition();
             }
         }
 
@@ -395,11 +397,11 @@ namespace OpenTracker.ViewModels.Maps.Locations
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnSectionChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnSectionChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IMarkableSection.Marking))
             {
-                UpdateVisibility();
+                await UpdateVisibility();
             }
         }
 
@@ -413,9 +415,9 @@ namespace OpenTracker.ViewModels.Maps.Locations
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnColorChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnColorChanged(object sender, PropertyChangedEventArgs e)
         {
-            UpdateColor();
+            await UpdateColor();
         }
 
         /// <summary>
@@ -434,46 +436,60 @@ namespace OpenTracker.ViewModels.Maps.Locations
         }
 
         /// <summary>
+        /// Updates the ImageDock property based on whether entrance shuffle is on asynchronously.
+        /// </summary>
+        private async Task UpdateMarkingDockAsync()
+        {
+            await Dispatcher.UIThread.InvokeAsync(UpdateMarkingDock);
+        }
+
+        /// <summary>
         /// Raises the PropertyChanged event for the CanvasX and CanvasY properties.
         /// </summary>
-        private void UpdatePosition()
+        private async Task UpdatePosition()
         {
-            this.RaisePropertyChanged(nameof(CanvasX));
-            this.RaisePropertyChanged(nameof(CanvasY));
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                this.RaisePropertyChanged(nameof(CanvasX));
+                this.RaisePropertyChanged(nameof(CanvasY));
+            });
         }
 
         /// <summary>
         /// Raises the PropertyChanged event for the Size, CanvasX, and CanvaxY properties.
         /// </summary>
-        private void UpdateSize()
+        private async Task UpdateSize()
         {
-            this.RaisePropertyChanged(nameof(Size));
-            UpdatePosition();
+            await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Size)));
+            await UpdatePosition();
         }
 
         /// <summary>
         /// Raises the PropertyChanged event for the Visible property.
         /// </summary>
-        private void UpdateVisibility()
+        private async Task UpdateVisibility()
         {
-            this.RaisePropertyChanged(nameof(Visible));
+            await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Visible)));
         }
 
         /// <summary>
         /// Raises the PropertyChanged event for the Color property.
         /// </summary>
-        private void UpdateColor()
+        private async Task UpdateColor()
         {
-            this.RaisePropertyChanged(nameof(Color));
+            await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Color)));
         }
 
         /// <summary>
         /// Raises the PropertyChanged event for the TextVisible and Text properties.
         /// </summary>
-        private void UpdateText()
+        private async Task UpdateText()
         {
-            this.RaisePropertyChanged(nameof(TextVisible));
-            this.RaisePropertyChanged(nameof(Text));
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                this.RaisePropertyChanged(nameof(TextVisible));
+                this.RaisePropertyChanged(nameof(Text));
+            });
         }
 
         /// <summary>

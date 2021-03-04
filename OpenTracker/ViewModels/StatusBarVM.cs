@@ -14,7 +14,7 @@ namespace OpenTracker.ViewModels
         /// Constructor
         /// </summary>
         /// <param name="autoTrackerStatus">
-        /// The autotracker status.
+        /// The auto-tracker status.
         /// </param>
         public StatusBarVM(IAutoTrackerStatusVM autoTrackerStatus)
         {

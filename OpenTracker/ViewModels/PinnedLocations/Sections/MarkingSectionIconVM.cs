@@ -7,6 +7,8 @@ using OpenTracker.ViewModels.Markings.Images;
 using ReactiveUI;
 using System.ComponentModel;
 using System.Reactive;
+using System.Threading.Tasks;
+using Avalonia.Threading;
 
 namespace OpenTracker.ViewModels.PinnedLocations.Sections
 {
@@ -68,11 +70,11 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnMarkingChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnMarkingChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IMarking.Mark))
             {
-                UpdateImage();
+                await UpdateImageAsync();
             }
         }
 
@@ -82,6 +84,14 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
         private void UpdateImage()
         {
             Image = _markingImages[_marking.Mark];
+        }
+
+        /// <summary>
+        /// Updates the image asynchronously.
+        /// </summary>
+        private async Task UpdateImageAsync()
+        {
+            await Dispatcher.UIThread.InvokeAsync(UpdateImage);
         }
 
         /// <summary>

@@ -17,6 +17,8 @@ using ReactiveUI;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reactive;
+using System.Threading.Tasks;
+using Avalonia.Threading;
 
 namespace OpenTracker.ViewModels.Maps.Locations
 {
@@ -191,11 +193,11 @@ namespace OpenTracker.ViewModels.Maps.Locations
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Highlighted))
             {
-                this.RaisePropertyChanged(nameof(BorderColor));
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(BorderColor)));
             }
         }
 
@@ -208,11 +210,11 @@ namespace OpenTracker.ViewModels.Maps.Locations
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnRequirementChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnRequirementChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IRequirement.Accessibility))
             {
-                UpdateVisibility();
+                await UpdateVisibility();
             }
         }
 
@@ -225,11 +227,11 @@ namespace OpenTracker.ViewModels.Maps.Locations
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnTrackerSettingsChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnTrackerSettingsChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(TrackerSettings.DisplayAllLocations))
             {
-                UpdateVisibility();
+                await UpdateVisibility();
             }
         }
 
@@ -242,12 +244,15 @@ namespace OpenTracker.ViewModels.Maps.Locations
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(LayoutSettings.CurrentMapOrientation))
             {
-                this.RaisePropertyChanged(nameof(CanvasX));
-                this.RaisePropertyChanged(nameof(CanvasY));
+                await Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    this.RaisePropertyChanged(nameof(CanvasX));
+                    this.RaisePropertyChanged(nameof(CanvasY));
+                });
             }
         }
 
@@ -260,11 +265,11 @@ namespace OpenTracker.ViewModels.Maps.Locations
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnMarkingChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnMarkingChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IMarking.Mark))
             {
-                UpdateVisibility();
+                await UpdateVisibility();
             }
         }
 
@@ -277,11 +282,11 @@ namespace OpenTracker.ViewModels.Maps.Locations
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnSectionChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnSectionChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IMarkableSection.Marking))
             {
-                UpdateVisibility();
+                await UpdateVisibility();
             }
         }
 
@@ -294,12 +299,12 @@ namespace OpenTracker.ViewModels.Maps.Locations
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnLocationChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnLocationChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ILocation.Accessibility))
             {
-                UpdateVisibility();
-                UpdateColor();
+                await UpdateVisibility();
+                await UpdateColor();
             }
         }
 
@@ -313,25 +318,25 @@ namespace OpenTracker.ViewModels.Maps.Locations
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnColorChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnColorChanged(object sender, PropertyChangedEventArgs e)
         {
-            UpdateColor();
+            await UpdateColor();
         }
 
         /// <summary>
         /// Raises the PropertyChanged event for the Visible property.
         /// </summary>
-        private void UpdateVisibility()
+        private async Task UpdateVisibility()
         {
-            this.RaisePropertyChanged(nameof(Visible));
+            await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Visible)));
         }
 
         /// <summary>
         /// Raises the PropertyChanged event for the Color property.
         /// </summary>
-        private void UpdateColor()
+        private async Task UpdateColor()
         {
-            this.RaisePropertyChanged(nameof(Color));
+            await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Color)));
         }
 
         /// <summary>

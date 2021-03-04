@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Reactive;
 using Avalonia.Input;
+using Avalonia.Threading;
 
 namespace OpenTracker.ViewModels.Items.Large
 {
@@ -45,8 +46,7 @@ namespace OpenTracker.ViewModels.Items.Large
         /// An array of items that are to be represented by this control.
         /// </param>
         public PairLargeItemVM(
-            IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory, IItem[] items,
-            string imageSourceBase)
+            IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory, IItem[] items, string imageSourceBase)
         {
             _undoRedoManager = undoRedoManager;
             _undoableFactory = undoableFactory;
@@ -76,9 +76,9 @@ namespace OpenTracker.ViewModels.Items.Large
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnItemChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnItemChanged(object sender, PropertyChangedEventArgs e)
         {
-            this.RaisePropertyChanged(nameof(ImageSource));
+            await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(ImageSource)));
         }
 
         /// <summary>
