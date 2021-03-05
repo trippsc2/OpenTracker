@@ -22,7 +22,7 @@
       <Border Classes="Popup">
         <StackPanel Orientation="Vertical">
 
-          <TextBlock Classes="ModeSettingsTitle" Grid.Row="0" Text="Item Placement" />
+          <TextBlock Classes="ModeSettingsTitle" Text="Item Placement" />
 
           <UniformGrid Rows="1">
             <RadioButton Classes="ModeSettings" GroupName="ItemPlacement"
@@ -39,14 +39,14 @@
 
           <UniformGrid Rows="1">
             <CheckBox Classes="ModeSettings" IsChecked="{Binding MapShuffle, Mode=OneWay}"
-                      Command="{Binding MapShuffleCommand}">Map Shuffle</CheckBox>
+                      Command="{Binding ToggleMapShuffleCommand}">Map Shuffle</CheckBox>
             <CheckBox Classes="ModeSettings" IsChecked="{Binding CompassShuffle, Mode=OneWay}"
-                      Command="{Binding CompassShuffleCommand}">Compass Shuffle</CheckBox>
+                      Command="{Binding ToggleCompassShuffleCommand}">Compass Shuffle</CheckBox>
             <CheckBox Classes="ModeSettings" IsChecked="{Binding SmallKeyShuffle, Mode=OneWay}"
                       IsEnabled="{Binding !GenericKeys, Mode=OneWay}"
-                      Command="{Binding SmallKeyShuffleCommand}">Small Key Shuffle</CheckBox>
+                      Command="{Binding ToggleSmallKeyShuffleCommand}">Small Key Shuffle</CheckBox>
             <CheckBox Classes="ModeSettings" IsChecked="{Binding BigKeyShuffle, Mode=OneWay}"
-                      Command="{Binding BigKeyShuffleCommand}">Big Key Shuffle</CheckBox>
+                      Command="{Binding ToggleBigKeyShuffleCommand}">Big Key Shuffle</CheckBox>
           </UniformGrid>
 
           <TextBlock Classes="ModeSettingsTitle" Text="World State" />
@@ -87,19 +87,19 @@
 
           <UniformGrid Columns="2">
             <CheckBox Classes="ModeSettings" IsChecked="{Binding BossShuffle, Mode=OneWay}"
-                      Command="{Binding BossShuffleCommand}">Boss Shuffle</CheckBox>
+                      Command="{Binding ToggleBossShuffleCommand}">Boss Shuffle</CheckBox>
             <CheckBox Classes="ModeSettings" IsChecked="{Binding EnemyShuffle, Mode=OneWay}"
-                          Command="{Binding EnemyShuffleCommand}">Enemy Shuffle</CheckBox>
+                          Command="{Binding ToggleEnemyShuffleCommand}">Enemy Shuffle</CheckBox>
             <CheckBox Classes="ModeSettings" IsChecked="{Binding GuaranteedBossItems, Mode=OneWay}"
-                      Command="{Binding GuaranteedBossItemsCommand}">Guaranteed Boss Items (Ambrosia)</CheckBox>
+                      Command="{Binding ToggleGuaranteedBossItemsCommand}">Guaranteed Boss Items (Ambrosia)</CheckBox>
             <CheckBox Classes="ModeSettings" IsChecked="{Binding ShopShuffle, Mode=OneWay}"
-                      Command="{Binding ShopShuffleCommand}">Shop Shuffle</CheckBox>
+                      Command="{Binding ToggleShopShuffleCommand}">Shop Shuffle</CheckBox>
             <CheckBox Classes="ModeSettings" IsChecked="{Binding GenericKeys, Mode=OneWay}"
-                      Command="{Binding GenericKeysCommand}">Generic Keys</CheckBox>
+                      Command="{Binding ToggleGenericKeysCommand}">Generic Keys</CheckBox>
             <CheckBox Classes="ModeSettings" IsChecked="{Binding TakeAnyLocations, Mode=OneWay}"
-                      Command="{Binding TakeAnyLocationsCommand}">Take Any Locations</CheckBox>
+                      Command="{Binding ToggleTakeAnyLocationsCommand}">Take Any Locations</CheckBox>
             <CheckBox Classes="ModeSettings" IsChecked="{Binding KeyDropShuffle, Mode=OneWay}"
-                      Command="{Binding KeyDropShuffleCommand}">Key Drop Shuffle</CheckBox>
+                      Command="{Binding ToggleKeyDropShuffleCommand}">Key Drop Shuffle</CheckBox>
           </UniformGrid>
         </StackPanel>
       </Border>

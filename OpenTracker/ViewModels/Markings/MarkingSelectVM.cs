@@ -11,7 +11,7 @@ using System.Reactive;
 namespace OpenTracker.ViewModels.Markings
 {
     /// <summary>
-    /// This is the ViewModel class for the marking select popup control.
+    /// This class contains the marking select popup control ViewModel data.
     /// </summary>
     public class MarkingSelectVM : ViewModelBase, IMarkingSelectVM
     {
@@ -36,12 +36,18 @@ namespace OpenTracker.ViewModels.Markings
         public ReactiveCommand<MarkType?, Unit> ChangeMarkingCommand { get; }
         public ReactiveCommand<Unit, Unit> ClearMarkingCommand { get; }
 
-        public delegate IMarkingSelectVM Factory(
-            IMarking marking, List<IMarkingSelectItemVMBase> buttons, double width, double height);
-
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="layoutSettings">
+        /// The layout settings data.
+        /// </param>
+        /// <param name="undoRedoManager">
+        /// The undo/redo manager.
+        /// </param>
+        /// <param name="undoableFactory">
+        /// A factory for creating undoable actions.
+        /// </param>
         /// <param name="marking">
         /// The marking to be represented.
         /// </param>

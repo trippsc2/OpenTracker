@@ -98,7 +98,7 @@ namespace OpenTracker.ViewModels.Maps.Locations
         /// </summary>
         private void OpenMarkingSelect()
         {
-            MarkingSelect.PopupOpen = true;
+            Dispatcher.UIThread.InvokeAsync(() => MarkingSelect.PopupOpen = true);
         }
 
         /// <summary>
