@@ -1,25 +1,22 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
-using Newtonsoft.Json;
+using Avalonia.Threading;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.SequenceBreaks;
 using OpenTracker.Models.Settings;
 using OpenTracker.Utils;
 using OpenTracker.ViewModels.Maps;
 using ReactiveUI;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.IO;
 using System.Reactive;
 using System.Text;
-using Avalonia.Threading;
 
 namespace OpenTracker.ViewModels
 {
     /// <summary>
-    /// This is the class for the main window ViewModel.
+    /// This class contains the main window ViewModel data.
     /// </summary>
     public class MainWindowVM : ViewModelBase, IMainWindowVM
     {
@@ -82,14 +79,13 @@ namespace OpenTracker.ViewModels
         public IUIPanelVM UIPanel { get; }
         public IMapAreaVM MapArea { get; }
 
-        public ReactiveCommand<Unit, Unit> ResetCommand =>
-            TopMenu.ResetCommand;
-        public ReactiveCommand<Unit, Unit> UndoCommand =>
-            TopMenu.UndoCommand;
-        public ReactiveCommand<Unit, Unit> RedoCommand =>
-            TopMenu.RedoCommand;
-        public ReactiveCommand<Unit, Unit> ToggleDisplayAllLocationsCommand =>
-            TopMenu.ToggleDisplayAllLocationsCommand;
+        public ReactiveCommand<Unit, Unit> Open => TopMenu.Open;
+        public ReactiveCommand<Unit, Unit> Save => TopMenu.Save;
+        public ReactiveCommand<Unit, Unit> SaveAs => TopMenu.SaveAs;
+        public ReactiveCommand<Unit, Unit> Reset => TopMenu.Reset;
+        public ReactiveCommand<Unit, Unit> Undo => TopMenu.Undo;
+        public ReactiveCommand<Unit, Unit> Redo => TopMenu.Redo;
+        public ReactiveCommand<Unit, Unit> ToggleDisplayAllLocations => TopMenu.ToggleDisplayAllLocations;
 
         /// <summary>
         /// Constructor
@@ -170,6 +166,9 @@ namespace OpenTracker.ViewModels
         /// <param name="bounds">
         /// The boundaries of the window.
         /// </param>
+        /// <param name="pixelPoint">
+        /// The pixel point representing the current window position.
+        /// </param>
         private void SaveAppSettings(bool maximized, Rect bounds, PixelPoint pixelPoint)
         {
             _appSettings.Bounds.Maximized = maximized;
@@ -211,6 +210,9 @@ namespace OpenTracker.ViewModels
         /// </param>
         /// <param name="bounds">
         /// The boundaries of the window.
+        /// </param>
+        /// <param name="pixelPoint">
+        /// The pixel point representing the current window position.
         /// </param>
         public void Close(bool maximized, Rect bounds, PixelPoint pixelPoint)
         {

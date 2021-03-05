@@ -3,11 +3,9 @@
         xmlns:vm="clr-namespace:OpenTracker.ViewModels;assembly=OpenTracker"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:view="clr-namespace:OpenTracker.Views;assembly=OpenTracker"
-        mc:Ignorable="d" d:DesignWidth="1280" d:DesignHeight="960"
-        x:Class="OpenTracker.Views.MainWindow"
-        Closing="OnClose" WindowStartupLocation="Manual" Background="{DynamicResource ThemeBackgroundBrush}"
-        UseLayoutRounding="True" Icon="avares://OpenTracker/Assets/Images/triforce.png"
+        mc:Ignorable="d" x:Class="OpenTracker.Views.MainWindow"
+        Closing="OnClose" Icon="avares://OpenTracker/Assets/Images/triforce.png" UseLayoutRounding="True"
+        WindowStartupLocation="Manual"  Background="{DynamicResource ThemeBackgroundBrush}"
         Title="{Binding Title}"
         Height="{Binding Height}"
         Width="{Binding Width}">
@@ -17,19 +15,22 @@
 	</Design.DataContext>
 	
 	<Window.KeyBindings>
-		<KeyBinding Gesture="Ctrl+o" Command="{Binding OpenCommand}" />
-		<KeyBinding Gesture="Ctrl+s" Command="{Binding SaveCommand}" />
-		<KeyBinding Gesture="Ctrl+Shift+s" Command="{Binding SaveAsCommand}" />
-		<KeyBinding Gesture="Ctrl+z" Command="{Binding UndoCommand}" />
-		<KeyBinding Gesture="Ctrl+y" Command="{Binding RedoCommand}" />
-		<KeyBinding Gesture="F5" Command="{Binding ResetCommand}" />
-		<KeyBinding Gesture="F11" Command="{Binding ToggleDisplayAllLocationsCommand}" />
+		<KeyBinding Gesture="Ctrl+o" Command="{Binding Open}" />
+		<KeyBinding Gesture="Ctrl+s" Command="{Binding Save}" />
+		<KeyBinding Gesture="Ctrl+Shift+s"
+		            Command="{Binding SaveAs}" />
+		<KeyBinding Gesture="Ctrl+z" Command="{Binding Undo}" />
+		<KeyBinding Gesture="Ctrl+y" Command="{Binding Redo}" />
+		<KeyBinding Gesture="F5" Command="{Binding Reset}" />
+		<KeyBinding Gesture="F11"
+		            Command="{Binding ToggleDisplayAllLocations}" />
 	</Window.KeyBindings>
 
   <DockPanel>
     <ContentControl Content="{Binding TopMenu}" DockPanel.Dock="Top" />
     <ContentControl Content="{Binding StatusBar}" DockPanel.Dock="Bottom" />
-		<ContentControl Content="{Binding UIPanel}" DockPanel.Dock="{Binding UIDock, Mode=OneWay}" />
+		<ContentControl Content="{Binding UIPanel}"
+		                DockPanel.Dock="{Binding UIDock, Mode=OneWay}" />
 		<ContentControl Content="{Binding MapArea}" />
 	</DockPanel>
 

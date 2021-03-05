@@ -1,14 +1,12 @@
-﻿using OpenTracker.Models.UndoRedo;
+﻿using Avalonia.Input;
+using Avalonia.Threading;
+using OpenTracker.Models.Modes;
+using OpenTracker.Models.UndoRedo;
+using OpenTracker.Utils;
 using ReactiveUI;
 using System;
 using System.ComponentModel;
 using System.Reactive;
-using System.Threading.Tasks;
-using Avalonia.Input;
-using Avalonia.Threading;
-using JetBrains.Annotations;
-using OpenTracker.Models.Modes;
-using OpenTracker.Utils;
 
 namespace OpenTracker.ViewModels
 {
