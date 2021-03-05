@@ -12,6 +12,8 @@ namespace OpenTracker.Models.Requirements
         public bool Met =>
             true;
 
+        public bool Testing { get; set; }
+
         public AccessibilityLevel Accessibility { get; }
 
         public event PropertyChangedEventHandler? PropertyChanged;

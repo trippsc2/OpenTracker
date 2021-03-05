@@ -26,6 +26,22 @@ namespace OpenTracker.Models.Requirements
             }
         }
 
+        private bool _testing;
+        public bool Testing
+        {
+            get => _testing;
+            set
+            {
+                if (_testing == value)
+                {
+                    return;
+                }
+
+                _testing = value;
+                UpdateValue();
+            }
+        }
+
         public bool Met => 
             Accessibility > AccessibilityLevel.None;
 
@@ -52,7 +68,7 @@ namespace OpenTracker.Models.Requirements
         /// </summary>
         protected void UpdateValue()
         {
-            Accessibility = GetAccessibility();
+            Accessibility = Testing ? AccessibilityLevel.Normal : GetAccessibility();
         }
     }
 }

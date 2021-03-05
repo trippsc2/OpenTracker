@@ -11,25 +11,43 @@ namespace OpenTracker.Models.Requirements
     {
         private readonly AccessibilityLevel _metAccessibility;
 
+        public event EventHandler? ChangePropagated;
+        public event PropertyChangedEventHandler? PropertyChanged;
+
         private bool _met;
         public bool Met
         {
             get => _met;
             private set
             {
-                if (_met != value)
+                if (_met == value)
                 {
-                    _met = value;
-                    OnPropertyChanged();
+                    return;
                 }
+                
+                _met = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _testing;
+        public bool Testing
+        {
+            get => _testing;
+            set
+            {
+                if (_testing == value)
+                {
+                    return;
+                }
+                
+                _testing = value;
+                UpdateValue();
             }
         }
 
         public AccessibilityLevel Accessibility =>
             Met ? _metAccessibility : AccessibilityLevel.None;
-
-        public event EventHandler? ChangePropagated;
-        public event PropertyChangedEventHandler? PropertyChanged;
 
         /// <summary>
         /// Constructor
@@ -66,7 +84,7 @@ namespace OpenTracker.Models.Requirements
         /// </summary>
         protected void UpdateValue()
         {
-            Met = ConditionMet();
+            Met = Testing || ConditionMet();
         }
     }
 }
