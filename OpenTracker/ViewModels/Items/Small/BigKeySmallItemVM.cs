@@ -1,4 +1,5 @@
 ﻿using Avalonia.Input;
+using Avalonia.Threading;
 using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Requirements;
@@ -8,7 +9,6 @@ using ReactiveUI;
 using System;
 using System.ComponentModel;
 using System.Reactive;
-using Avalonia.Threading;
 
 namespace OpenTracker.ViewModels.Items.Small
 {
@@ -24,15 +24,12 @@ namespace OpenTracker.ViewModels.Items.Small
         private readonly IRequirement _spacerRequirement;
         private readonly IItem _item;
 
-        public bool SpacerVisible =>
-            _spacerRequirement.Met;
-        public bool Visible =>
-            _requirement.Met;
+        public bool SpacerVisible => _spacerRequirement.Met;
+        public bool Visible => _requirement.Met;
         public string ImageSource =>
-            "avares://OpenTracker/Assets/Images/Items/bigkey" +
-            (_item.Current > 0 ? "1" : "0") + ".png";
+            "avares://OpenTracker/Assets/Images/Items/bigkey" + (_item.Current > 0 ? "1" : "0") + ".png";
         
-        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
+        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
 
         public delegate BigKeySmallItemVM Factory(
             IDungeon dungeon, IRequirement requirement, IRequirement spacerRequirement);
@@ -67,7 +64,7 @@ namespace OpenTracker.ViewModels.Items.Small
             _requirement = requirement;
             _spacerRequirement = spacerRequirement;
             
-            HandleClickCommand = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClick);
+            HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
 
             _item.PropertyChanged += OnItemChanged;
             _requirement.PropertyChanged += OnRequirementChanged;
@@ -128,19 +125,15 @@ namespace OpenTracker.ViewModels.Items.Small
         /// <param name="e">
         /// The pointer released event args.
         /// </param>
-        private void HandleClick(PointerReleasedEventArgs e)
+        private void HandleClickImpl(PointerReleasedEventArgs e)
         {
             switch (e.InitialPressMouseButton)
             {
                 case MouseButton.Left:
-                {
                     AddItem();
-                }
                     break;
                 case MouseButton.Right:
-                {
                     RemoveItem();
-                }
                     break;
             }
         }

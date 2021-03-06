@@ -3,12 +3,10 @@ using Avalonia.Controls;
 using Avalonia.Layout;
 using Avalonia.Threading;
 using OpenTracker.Models.SaveLoad;
-using OpenTracker.Models.SequenceBreaks;
 using OpenTracker.Models.Settings;
 using OpenTracker.Utils;
 using OpenTracker.ViewModels.Maps;
 using ReactiveUI;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reactive;
 using System.Text;
@@ -22,7 +20,6 @@ namespace OpenTracker.ViewModels
     {
         private readonly IAppSettings _appSettings;
         private readonly ISaveLoadManager _saveLoadManager;
-        private readonly ISequenceBreakDictionary _sequenceBreaks;
 
         public string Title
         {
@@ -79,33 +76,57 @@ namespace OpenTracker.ViewModels
         public IUIPanelVM UIPanel { get; }
         public IMapAreaVM MapArea { get; }
 
-        public ReactiveCommand<Unit, Unit> Open => TopMenu.Open;
-        public ReactiveCommand<Unit, Unit> Save => TopMenu.Save;
-        public ReactiveCommand<Unit, Unit> SaveAs => TopMenu.SaveAs;
-        public ReactiveCommand<Unit, Unit> Reset => TopMenu.Reset;
-        public ReactiveCommand<Unit, Unit> Undo => TopMenu.Undo;
-        public ReactiveCommand<Unit, Unit> Redo => TopMenu.Redo;
-        public ReactiveCommand<Unit, Unit> ToggleDisplayAllLocations => TopMenu.ToggleDisplayAllLocations;
+        public ReactiveCommand<Unit, Unit> Open { get; }
+        public ReactiveCommand<Unit, Unit> Save { get; }
+        public ReactiveCommand<Unit, Unit> SaveAs { get; }
+        public ReactiveCommand<Unit, Unit> Reset { get; }
+        public ReactiveCommand<Unit, Unit> Undo { get; }
+        public ReactiveCommand<Unit, Unit> Redo { get; }
+        public ReactiveCommand<Unit, Unit> ToggleDisplayAllLocations { get; }
 
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="appSettings">
+        /// The app settings data.
+        /// </param>
+        /// <param name="saveLoadManager">
+        /// The save/load manager.
+        /// </param>
+        /// <param name="topMenu">
+        /// The top menu control.
+        /// </param>
+        /// <param name="statusBar">
+        /// The status bar control.
+        /// </param>
+        /// <param name="uiPanel">
+        /// The UI panel control.
+        /// </param>
+        /// <param name="mapArea">
+        /// The map area control.
+        /// </param>
         public MainWindowVM(
-            IAppSettings appSettings, ISaveLoadManager saveLoadManager, ISequenceBreakDictionary sequenceBreaks,
-            ITopMenuVM topMenu, IStatusBarVM statusBar, IUIPanelVM uiPanel, IMapAreaVM mapArea)
+            IAppSettings appSettings, ISaveLoadManager saveLoadManager, ITopMenuVM topMenu, IStatusBarVM statusBar,
+            IUIPanelVM uiPanel, IMapAreaVM mapArea)
         {
             _appSettings = appSettings;
             _saveLoadManager = saveLoadManager;
-            _sequenceBreaks = sequenceBreaks;
 
             TopMenu = topMenu;
             StatusBar = statusBar;
             UIPanel = uiPanel;
             MapArea = mapArea;
 
+            Open = TopMenu.Open;
+            Save = TopMenu.Save;
+            SaveAs = TopMenu.SaveAs;
+            Reset = TopMenu.Reset;
+            Undo = TopMenu.Undo;
+            Redo = TopMenu.Redo;
+            ToggleDisplayAllLocations = TopMenu.ToggleDisplayAllLocations;
+
             _saveLoadManager.PropertyChanged += OnSaveLoadManagerChanged;
             _appSettings.Layout.PropertyChanged += OnLayoutChanged;
-            LoadSequenceBreaks();
         }
 
         /// <summary>
@@ -181,28 +202,6 @@ namespace OpenTracker.ViewModels
         }
 
         /// <summary>
-        /// Saves the sequence break settings to a file.
-        /// </summary>
-        private void SaveSequenceBreaks()
-        {
-            JsonConversion.Save(_sequenceBreaks.Save(), AppPath.SequenceBreakPath);
-        }
-
-        /// <summary>
-        /// Loads the sequence break settings from a file.
-        /// </summary>
-        private void LoadSequenceBreaks()
-        {
-            var saveData = JsonConversion.Load<Dictionary<SequenceBreakType, SequenceBreakSaveData>?>(
-                AppPath.SequenceBreakPath);
-
-            if (saveData != null)
-            {
-                _sequenceBreaks.Load(saveData);
-            }
-        }
-
-        /// <summary>
         /// Handles closing the app.
         /// </summary>
         /// <param name="maximized">
@@ -217,7 +216,6 @@ namespace OpenTracker.ViewModels
         public void Close(bool maximized, Rect bounds, PixelPoint pixelPoint)
         {
             SaveAppSettings(maximized, bounds, pixelPoint);
-            SaveSequenceBreaks();
         }
     }
 }

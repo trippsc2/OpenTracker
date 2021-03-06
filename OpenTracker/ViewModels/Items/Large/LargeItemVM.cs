@@ -21,10 +21,9 @@ namespace OpenTracker.ViewModels.Items.Large
         private readonly IItem _item;
         private readonly string _imageSourceBase;
 
-        public string ImageSource =>
-            $"{_imageSourceBase}{_item.Current.ToString(CultureInfo.InvariantCulture)}.png";
+        public string ImageSource => $"{_imageSourceBase}{_item.Current.ToString(CultureInfo.InvariantCulture)}.png";
         
-        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
+        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
 
         public delegate LargeItemVM Factory(IItem item, string imageSourceBase);
 
@@ -44,8 +43,7 @@ namespace OpenTracker.ViewModels.Items.Large
         /// An item that is to be represented by this control.
         /// </param>
         public LargeItemVM(
-            IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory, IItem item,
-            string imageSourceBase)
+            IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory, IItem item, string imageSourceBase)
         {
             _undoRedoManager = undoRedoManager;
             _undoableFactory = undoableFactory;
@@ -53,7 +51,7 @@ namespace OpenTracker.ViewModels.Items.Large
             _item = item;
             _imageSourceBase = imageSourceBase;
 
-            HandleClickCommand = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClick);
+            HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
 
             _item.PropertyChanged += OnItemChanged;
         }
@@ -97,19 +95,15 @@ namespace OpenTracker.ViewModels.Items.Large
         /// <param name="e">
         /// The pointer released event args.
         /// </param>
-        private void HandleClick(PointerReleasedEventArgs e)
+        private void HandleClickImpl(PointerReleasedEventArgs e)
         {
             switch (e.InitialPressMouseButton)
             {
                 case MouseButton.Left:
-                {
                     AddItem();
-                }
                     break;
                 case MouseButton.Right:
-                {
                     RemoveItem();
-                }
                     break;
             }
         }

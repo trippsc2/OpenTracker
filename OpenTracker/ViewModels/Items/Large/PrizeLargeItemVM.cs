@@ -10,7 +10,7 @@ using System.Reactive;
 namespace OpenTracker.ViewModels.Items.Large
 {
     /// <summary>
-    /// This is the ViewModel for the large Items panel control representing a dungeon prize.
+    /// This class contains the dungeon prize large items panel control ViewModel data.
     /// </summary>
     public class PrizeLargeItemVM : ViewModelBase, ILargeItemVMBase
     {
@@ -20,10 +20,9 @@ namespace OpenTracker.ViewModels.Items.Large
         private readonly IPrizeSection _section;
         private readonly string _imageSourceBase;
 
-        public string ImageSource =>
-                _imageSourceBase + (_section.IsAvailable() ? "0.png" : "1.png");
+        public string ImageSource => _imageSourceBase + (_section.IsAvailable() ? "0.png" : "1.png");
         
-        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
+        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
 
         public delegate PrizeLargeItemVM Factory(IPrizeSection section, string imageSourceBase);
 
@@ -43,8 +42,8 @@ namespace OpenTracker.ViewModels.Items.Large
         /// An item that is to be represented by this control.
         /// </param>
         public PrizeLargeItemVM(
-            IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory,
-            IPrizeSection section, string imageSourceBase)
+            IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory, IPrizeSection section,
+            string imageSourceBase)
         {
             _undoRedoManager = undoRedoManager;
             _undoableFactory = undoableFactory;
@@ -52,7 +51,7 @@ namespace OpenTracker.ViewModels.Items.Large
             _section = section;
             _imageSourceBase = imageSourceBase;
             
-            HandleClickCommand = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClick);
+            HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
 
             _section.PropertyChanged += OnSectionChanged;
         }
@@ -97,19 +96,15 @@ namespace OpenTracker.ViewModels.Items.Large
         /// <param name="e">
         /// The pointer released event args.
         /// </param>
-        private void HandleClick(PointerReleasedEventArgs e)
+        private void HandleClickImpl(PointerReleasedEventArgs e)
         {
             switch (e.InitialPressMouseButton)
             {
                 case MouseButton.Left:
-                {
                     CollectSection();
-                }
                     break;
                 case MouseButton.Right:
-                {
                     UncollectSection();
-                }
                     break;
             }
         }

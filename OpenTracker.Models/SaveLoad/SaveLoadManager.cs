@@ -8,8 +8,10 @@ using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.SaveLoad.Converters;
 using OpenTracker.Utils;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
+using OpenTracker.Models.SequenceBreaks;
 
 namespace OpenTracker.Models.SaveLoad
 {
@@ -19,13 +21,14 @@ namespace OpenTracker.Models.SaveLoad
     public class SaveLoadManager : ISaveLoadManager
     {
         private readonly IMode _mode;
-        private readonly IItemDictionary _itemDictionary;
-        private readonly ILocationDictionary _locationDictionary;
-        private readonly IBossPlacementDictionary _bossPlacementDictionary;
-        private readonly IPrizePlacementDictionary _prizePlacementDictionary;
-        private readonly IConnectionCollection _connectionCollection;
-        private readonly IDropdownDictionary _dropdownDictionary;
-        private readonly IPinnedLocationCollection _pinnedLocationCollection;
+        private readonly IItemDictionary _items;
+        private readonly ILocationDictionary _locations;
+        private readonly IBossPlacementDictionary _bossPlacements;
+        private readonly IPrizePlacementDictionary _prizePlacements;
+        private readonly IConnectionCollection _connections;
+        private readonly IDropdownDictionary _dropdowns;
+        private readonly IPinnedLocationCollection _pinnedLocations;
+        private readonly ISequenceBreakDictionary _sequenceBreaks;
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -35,12 +38,14 @@ namespace OpenTracker.Models.SaveLoad
             get => _currentFilename;
             private set
             {
-                if (_currentFilename != value)
+                if (_currentFilename == value)
                 {
-                    _currentFilename = value;
-                    _unsaved = false;
-                    OnPropertyChanged(nameof(CurrentFilePath));
+                    return;
                 }
+                
+                _currentFilename = value;
+                _unsaved = false;
+                OnPropertyChanged(nameof(CurrentFilePath));
             }
         }
 
@@ -50,11 +55,13 @@ namespace OpenTracker.Models.SaveLoad
             get => _unsaved;
             set
             {
-                if (_unsaved != value)
+                if (_unsaved == value)
                 {
-                    _unsaved = value;
-                    OnPropertyChanged(nameof(Unsaved));
+                    return;
                 }
+                
+                _unsaved = value;
+                OnPropertyChanged(nameof(Unsaved));
             }
         }
 
@@ -64,43 +71,44 @@ namespace OpenTracker.Models.SaveLoad
         /// <param name="mode">
         /// The mode settings.
         /// </param>
-        /// <param name="itemDictionary">
+        /// <param name="items">
         /// The item dictionary.
         /// </param>
-        /// <param name="locationDictionary">
+        /// <param name="locations">
         /// The location dictionary.
         /// </param>
-        /// <param name="bossPlacementDictionary">
+        /// <param name="bossPlacements">
         /// The boss placement dictionary.
         /// </param>
-        /// <param name="prizePlacementDictionary">
+        /// <param name="prizePlacements">
         /// The prize placement dictionary.
         /// </param>
-        /// <param name="connectionCollection">
+        /// <param name="connections">
         /// The connection collection.
         /// </param>
-        /// <param name="dropdownDictionary">
+        /// <param name="dropdowns">
         /// The dropdown dictionary.
         /// </param>
-        /// <param name="pinnedLocationCollection">
+        /// <param name="pinnedLocations">
         /// The pinned location collection.
         /// </param>
+        /// <param name="sequenceBreaks">
+        /// The sequence break dictionary.
+        /// </param>
         public SaveLoadManager(
-            IMode mode, IItemDictionary itemDictionary, ILocationDictionary locationDictionary,
-            IBossPlacementDictionary bossPlacementDictionary,
-            IPrizePlacementDictionary prizePlacementDictionary,
-            IConnectionCollection connectionCollection,
-            IDropdownDictionary dropdownDictionary,
-            IPinnedLocationCollection pinnedLocationCollection)
+            IMode mode, IItemDictionary items, ILocationDictionary locations, IBossPlacementDictionary bossPlacements,
+            IPrizePlacementDictionary prizePlacements, IConnectionCollection connections, IDropdownDictionary dropdowns,
+            IPinnedLocationCollection pinnedLocations, ISequenceBreakDictionary sequenceBreaks)
         {
             _mode = mode;
-            _itemDictionary = itemDictionary;
-            _locationDictionary = locationDictionary;
-            _bossPlacementDictionary = bossPlacementDictionary;
-            _prizePlacementDictionary = prizePlacementDictionary;
-            _connectionCollection = connectionCollection;
-            _dropdownDictionary = dropdownDictionary;
-            _pinnedLocationCollection = pinnedLocationCollection;
+            _items = items;
+            _locations = locations;
+            _bossPlacements = bossPlacements;
+            _prizePlacements = prizePlacements;
+            _connections = connections;
+            _dropdowns = dropdowns;
+            _pinnedLocations = pinnedLocations;
+            _sequenceBreaks = sequenceBreaks;
         }
 
         /// <summary>
@@ -126,13 +134,13 @@ namespace OpenTracker.Models.SaveLoad
             {
                 Version = Assembly.GetExecutingAssembly().GetName().Version,
                 Mode = _mode.Save(),
-                Items = _itemDictionary.Save(),
-                Locations = _locationDictionary.Save(),
-                BossPlacements = _bossPlacementDictionary.Save(),
-                PrizePlacements = _prizePlacementDictionary.Save(),
-                Connections = _connectionCollection.Save(),
-                Dropdowns = _dropdownDictionary.Save(),
-                PinnedLocations = _pinnedLocationCollection.Save()
+                Items = _items.Save(),
+                Locations = _locations.Save(),
+                BossPlacements = _bossPlacements.Save(),
+                PrizePlacements = _prizePlacements.Save(),
+                Connections = _connections.Save(),
+                Dropdowns = _dropdowns.Save(),
+                PinnedLocations = _pinnedLocations.Save()
             };
         }
 
@@ -147,13 +155,13 @@ namespace OpenTracker.Models.SaveLoad
             saveData = SaveDataConverter.ConvertSaveData(saveData);
 
             _mode.Load(saveData.Mode);
-            _itemDictionary.Load(saveData.Items!);
-            _locationDictionary.Load(saveData.Locations!);
-            _bossPlacementDictionary.Load(saveData.BossPlacements!);
-            _prizePlacementDictionary.Load(saveData.PrizePlacements!);
-            _connectionCollection.Load(saveData.Connections!);
-            _dropdownDictionary.Load(saveData.Dropdowns!);
-            _pinnedLocationCollection.Load(saveData.PinnedLocations!);
+            _items.Load(saveData.Items!);
+            _locations.Load(saveData.Locations!);
+            _bossPlacements.Load(saveData.BossPlacements!);
+            _prizePlacements.Load(saveData.PrizePlacements!);
+            _connections.Load(saveData.Connections!);
+            _dropdowns.Load(saveData.Dropdowns!);
+            _pinnedLocations.Load(saveData.PinnedLocations!);
         }
 
         /// <summary>
@@ -164,8 +172,7 @@ namespace OpenTracker.Models.SaveLoad
         /// </param>
         public void Open(string path)
         {
-            var saveData = JsonConversion.Load<SaveData>(path) ??
-                throw new NullReferenceException();
+            var saveData = JsonConversion.Load<SaveData>(path) ?? throw new NullReferenceException();
             LoadSaveData(saveData);
 
             CurrentFilePath = path;
@@ -183,6 +190,28 @@ namespace OpenTracker.Models.SaveLoad
             JsonConversion.Save(saveData, path);
 
             CurrentFilePath = path;
+        }
+
+        /// <summary>
+        /// Loads the sequence break data from the specified file path.
+        /// </summary>
+        /// <param name="path">
+        /// A string representing the file path.
+        /// </param>
+        public void OpenSequenceBreaks(string path)
+        {
+            _sequenceBreaks.Load(JsonConversion.Load<Dictionary<SequenceBreakType, SequenceBreakSaveData>>(path));
+        }
+
+        /// <summary>
+        /// Saves the sequence break data to the specified file path.
+        /// </summary>
+        /// <param name="path">
+        /// A string representing the file path.
+        /// </param>
+        public void SaveSequenceBreaks(string path)
+        {
+            JsonConversion.Save(_sequenceBreaks.Save(), path);
         }
     }
 }

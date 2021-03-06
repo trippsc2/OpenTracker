@@ -1,5 +1,6 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:OpenTracker.ViewModels.Items.Small;assembly=OpenTracker"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vc="clr-namespace:OpenTracker.ValueConverters;assembly=OpenTracker"
@@ -8,21 +9,26 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="OpenTracker.Views.Items.Small.BossSmallItem">
 	
+	<Design.DataContext>
+		<vm:BossSmallItemVM />
+	</Design.DataContext>
+	
 	<UserControl.Resources>
 		<vc:BitmapValueConverter x:Key="BitmapValueConverter" />
 	</UserControl.Resources>
 	
-	<Panel Name="panel" Classes="DungeonItem" IsVisible="{Binding Visible}">
+	<Panel Name="panel" Classes="DungeonItem"
+	       IsVisible="{Binding Visible}">
 
 		<i:Interaction.Behaviors>
-			<ia:EventTriggerBehavior EventName="PointerReleased" SourceObject="{Binding
-       #panel}">
-				<ia:InvokeCommandAction Command="{Binding HandleClickCommand}" />
+			<ia:EventTriggerBehavior EventName="PointerReleased"
+			                         SourceObject="{Binding #panel}">
+				<ia:InvokeCommandAction Command="{Binding HandleClick}" />
 			</ia:EventTriggerBehavior>
 		</i:Interaction.Behaviors>
 		
-		<Image Classes="DungeonItem" Source="{Binding Path=ImageSource, Converter={StaticResource
-			   BitmapValueConverter}}" />
+		<Image Classes="DungeonItem"
+		       Source="{Binding Path=ImageSource, Converter={StaticResource BitmapValueConverter}}" />
     <ContentControl Content="{Binding BossSelect}" />
 		
 	</Panel>

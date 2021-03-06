@@ -26,26 +26,16 @@ namespace OpenTracker.ViewModels.Items.Large
 
         public string ImageSource { get; }
 
-        public string ImageCount =>
-            _item.Known ? (7 - _item.Current).ToString(CultureInfo.InvariantCulture) : "?";
+        public string ImageCount => _item.Known ? (7 - _item.Current).ToString(CultureInfo.InvariantCulture) : "?";
 
-        public string TextColor
-        {
-            get
-            {
-                if (_item.Known)
-                {
-                    return _item.Current == 0 ? _colorSettings.EmphasisFontColor : "#ffffffff";
-                }
+        public string TextColor =>
+            _item.Known ?
+                _item.Current == 0 ? _colorSettings.EmphasisFontColor : "#ffffffff" :
+                _colorSettings.AccessibilityColors[AccessibilityLevel.SequenceBreak];
 
-                return _colorSettings.AccessibilityColors[AccessibilityLevel.SequenceBreak];
-            }
-        }
+        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
 
-        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
-
-        public delegate CrystalRequirementLargeItemVM Factory(
-            ICrystalRequirementItem item, string imageSource);
+        public delegate CrystalRequirementLargeItemVM Factory(ICrystalRequirementItem item, string imageSource);
 
         /// <summary>
         /// Constructor
@@ -77,7 +67,7 @@ namespace OpenTracker.ViewModels.Items.Large
 
             ImageSource = imageSource;
 
-            HandleClickCommand = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClick);
+            HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
 
             _item.PropertyChanged += OnItemChanged;
             _colorSettings.PropertyChanged += OnColorsChanged;
@@ -147,19 +137,15 @@ namespace OpenTracker.ViewModels.Items.Large
         /// <param name="e">
         /// The pointer released event args.
         /// </param>
-        private void HandleClick(PointerReleasedEventArgs e)
+        private void HandleClickImpl(PointerReleasedEventArgs e)
         {
             switch (e.InitialPressMouseButton)
             {
                 case MouseButton.Left:
-                {
                     AddItem();
-                }
                     break;
                 case MouseButton.Right:
-                {
                     RemoveItem();
-                }
                     break;
             }
         }

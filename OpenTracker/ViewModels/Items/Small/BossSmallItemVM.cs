@@ -18,17 +18,15 @@ namespace OpenTracker.ViewModels.Items.Small
         private readonly IBossPlacement _bossPlacement;
         private readonly IRequirement _requirement;
 
-        public bool Visible =>
-            _requirement.Met;
+        public bool Visible => _requirement.Met;
         public string ImageSource =>
-            _bossPlacement.Boss.HasValue ? "avares://OpenTracker/Assets/Images/Bosses/" +
-            $"{_bossPlacement.Boss.ToString()!.ToLowerInvariant()}1.png" :
             "avares://OpenTracker/Assets/Images/Bosses/" +
-            $"{_bossPlacement.DefaultBoss.ToString().ToLowerInvariant()}0.png";
+            (_bossPlacement.Boss.HasValue ? $"{_bossPlacement.Boss.ToString()!.ToLowerInvariant()}1" : 
+            $"{_bossPlacement.DefaultBoss.ToString().ToLowerInvariant()}0") + ".png";
 
         public IBossSelectPopupVM BossSelect { get; }
         
-        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
+        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
 
         public delegate BossSmallItemVM Factory(IBossPlacement bossPlacement);
 
@@ -53,7 +51,7 @@ namespace OpenTracker.ViewModels.Items.Small
             
             BossSelect = bossSelectFactory(_bossPlacement);
             
-            HandleClickCommand = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClick);
+            HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
 
             _bossPlacement.PropertyChanged += OnBossChanged;
             _requirement.PropertyChanged += OnRequirementChanged;
@@ -104,7 +102,7 @@ namespace OpenTracker.ViewModels.Items.Small
         /// <param name="e">
         /// The pointer released event args.
         /// </param>
-        private void HandleClick(PointerReleasedEventArgs e)
+        private void HandleClickImpl(PointerReleasedEventArgs e)
         {
             if (e.InitialPressMouseButton == MouseButton.Left)
             {

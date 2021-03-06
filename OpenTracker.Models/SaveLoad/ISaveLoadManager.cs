@@ -12,5 +12,21 @@ namespace OpenTracker.Models.SaveLoad
 
         void Open(string path);
         void Save(string path);
+
+        /// <summary>
+        /// Loads the sequence break data from the specified file path.
+        /// </summary>
+        /// <param name="path">
+        /// A string representing the file path.
+        /// </param>
+        void OpenSequenceBreaks(string path);
+
+        /// <summary>
+        /// Saves the sequence break data to the specified file path.
+        /// </summary>
+        /// <param name="path">
+        /// A string representing the file path.
+        /// </param>
+        void SaveSequenceBreaks(string path);
     }
 }

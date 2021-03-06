@@ -1,4 +1,5 @@
 ﻿using Avalonia.Input;
+using Avalonia.Threading;
 using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.Sections;
 using OpenTracker.Models.Settings;
@@ -9,7 +10,6 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Reactive;
 using System.Threading.Tasks;
-using Avalonia.Threading;
 
 namespace OpenTracker.ViewModels.Items.Small
 {
@@ -25,29 +25,19 @@ namespace OpenTracker.ViewModels.Items.Small
         private readonly ISection _section;
 
         public string FontColor =>
-            _section.Available == 0 ? "#ffffffff" :
-            _colorSettings.AccessibilityColors[_section.Accessibility];
-        public string ImageSource
-        {
-            get
+            _section.Available == 0 ? "#ffffffff" : _colorSettings.AccessibilityColors[_section.Accessibility];
+        public string ImageSource =>
+            "avares://OpenTracker/Assets/Images/chest" +
+            (_section.IsAvailable() ? _section.Accessibility switch
             {
-                if (_section.IsAvailable())
-                {
-                    return _section.Accessibility switch
-                    {
-                        AccessibilityLevel.None => "avares://OpenTracker/Assets/Images/chest0.png",
-                        AccessibilityLevel.Inspect => "avares://OpenTracker/Assets/Images/chest0.png",
-                        _ => "avares://OpenTracker/Assets/Images/chest1.png"
-                    };
-                }
-                
-                return "avares://OpenTracker/Assets/Images/chest2.png";
-            }
-        }
-        public string NumberString =>
-            _section.Available.ToString(CultureInfo.InvariantCulture);
+                AccessibilityLevel.None => "0",
+                AccessibilityLevel.Inspect => "0",
+                _ => "1"
+            } : "2") + ".png";
+
+        public string NumberString => _section.Available.ToString(CultureInfo.InvariantCulture);
         
-        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
+        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
 
         public delegate DungeonItemSmallItemVM Factory(ISection section);
 
@@ -67,8 +57,8 @@ namespace OpenTracker.ViewModels.Items.Small
         /// The dungeon section to be represented.
         /// </param>
         public DungeonItemSmallItemVM(
-            IColorSettings colorSettings, IUndoRedoManager undoRedoManager,
-            IUndoableFactory undoableFactory, ISection section)
+            IColorSettings colorSettings, IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory,
+            ISection section)
         {
             _colorSettings = colorSettings;
             _undoRedoManager = undoRedoManager;
@@ -76,7 +66,7 @@ namespace OpenTracker.ViewModels.Items.Small
 
             _section = section;
             
-            HandleClickCommand = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClick);
+            HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
             
             _colorSettings.AccessibilityColors.PropertyChanged += OnColorChanged;
             _section.PropertyChanged += OnSectionChanged;
@@ -163,19 +153,15 @@ namespace OpenTracker.ViewModels.Items.Small
         /// <param name="e">
         /// The pointer released event args.
         /// </param>
-        private void HandleClick(PointerReleasedEventArgs e)
+        private void HandleClickImpl(PointerReleasedEventArgs e)
         {
             switch (e.InitialPressMouseButton)
             {
                 case MouseButton.Left:
-                {
                     CollectSection((e.KeyModifiers & KeyModifiers.Control) > 0);
-                }
                     break;
                 case MouseButton.Right:
-                {
                     UncollectSection();
-                }
                     break;
             }
         }

@@ -20,12 +20,10 @@ namespace OpenTracker.ViewModels.Dropdowns
         private readonly IDropdown _dropdown;
         private readonly string _imageSourceBase;
 
-        public bool Visible =>
-            _dropdown.RequirementMet;
-        public string ImageSource =>
-            _imageSourceBase + (_dropdown.Checked ? "1" : "0") + ".png";
+        public bool Visible => _dropdown.RequirementMet;
+        public string ImageSource => _imageSourceBase + (_dropdown.Checked ? "1" : "0") + ".png";
         
-        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
+        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
 
         /// <summary>
         /// Constructor
@@ -52,7 +50,7 @@ namespace OpenTracker.ViewModels.Dropdowns
             _dropdown = dropdown;
             _imageSourceBase = imageSourceBase;
 
-            HandleClickCommand = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClick);
+            HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
 
             _dropdown.PropertyChanged += OnDropdownChanged;
         }
@@ -68,14 +66,14 @@ namespace OpenTracker.ViewModels.Dropdowns
         /// </param>
         private async void OnDropdownChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(IDropdown.RequirementMet))
+            switch (e.PropertyName)
             {
-                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Visible)));
-            }
-
-            if (e.PropertyName == nameof(IDropdown.Checked))
-            {
-                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(ImageSource)));
+                case nameof(IDropdown.RequirementMet):
+                    await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Visible)));
+                    break;
+                case nameof(IDropdown.Checked):
+                    await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(ImageSource)));
+                    break;
             }
         }
 
@@ -101,19 +99,15 @@ namespace OpenTracker.ViewModels.Dropdowns
         /// <param name="e">
         /// The pointer released event args.
         /// </param>
-        private void HandleClick(PointerReleasedEventArgs e)
+        private void HandleClickImpl(PointerReleasedEventArgs e)
         {
             switch (e.InitialPressMouseButton)
             {
                 case MouseButton.Left:
-                {
                     CheckDropdown();
-                }
                     break;
                 case MouseButton.Right:
-                {
                     UncheckDropdown();
-                }
                     break;
             }
         }

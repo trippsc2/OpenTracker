@@ -25,12 +25,10 @@ namespace OpenTracker.ViewModels.Items.Large
 
         public bool Visible =>
             _requirement.Met;
-        public string ImageSource =>
-            $"{_imageSourceBase}{(_item.Current > 0 ? "1" : "0")}.png";
-        public string ImageCount =>
-            _item.Current.ToString(CultureInfo.InvariantCulture);
+        public string ImageSource => $"{_imageSourceBase}{(_item.Current > 0 ? "1" : "0")}.png";
+        public string ImageCount => _item.Current.ToString(CultureInfo.InvariantCulture);
         
-        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
+        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
 
         public delegate SmallKeyLargeItemVM Factory(IItem item, string imageSourceBase);
 
@@ -53,8 +51,8 @@ namespace OpenTracker.ViewModels.Items.Large
         /// An item that is to be represented by this control.
         /// </param>
         public SmallKeyLargeItemVM(
-            IRequirementDictionary requirements, IUndoRedoManager undoRedoManager,
-            IUndoableFactory undoableFactory, IItem item, string imageSourceBase)
+            IRequirementDictionary requirements, IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory,
+            IItem item, string imageSourceBase)
         {
             _undoRedoManager = undoRedoManager;
             _undoableFactory = undoableFactory;
@@ -63,7 +61,7 @@ namespace OpenTracker.ViewModels.Items.Large
             _requirement = requirements[RequirementType.GenericKeys];
             _imageSourceBase = imageSourceBase;
             
-            HandleClickCommand = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClick);
+            HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
 
             _item.PropertyChanged += OnItemChanged;
             _requirement.PropertyChanged += OnRequirementChanged;
@@ -126,19 +124,15 @@ namespace OpenTracker.ViewModels.Items.Large
         /// <param name="e">
         /// The pointer released event args.
         /// </param>
-        private void HandleClick(PointerReleasedEventArgs e)
+        private void HandleClickImpl(PointerReleasedEventArgs e)
         {
             switch (e.InitialPressMouseButton)
             {
                 case MouseButton.Left:
-                {
                     AddItem();
-                }
                     break;
                 case MouseButton.Right:
-                {
                     RemoveItem();
-                }
                     break;
             }
         }

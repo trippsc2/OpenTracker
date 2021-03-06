@@ -8,8 +8,6 @@ namespace OpenTracker.ViewModels.BossSelect
     /// </summary>
     public class BossSelectButtonVM : ViewModelBase, IBossSelectButtonVM
     {
-        private readonly IBossPlacement _bossPlacement;
-
         public BossType? Boss { get; }
         public string ImageSource { get; }
 
@@ -24,12 +22,10 @@ namespace OpenTracker.ViewModels.BossSelect
         /// </param>
         public BossSelectButtonVM(IBossPlacement bossPlacement, BossType? boss)
         {
-            _bossPlacement = bossPlacement;
-
             Boss = boss;
             ImageSource = Boss.HasValue ? "avares://OpenTracker/Assets/Images/Bosses/" +
                 $"{Boss.ToString()!.ToLowerInvariant()}1.png" : "avares://OpenTracker/Assets/Images/Bosses/" +
-                $"{_bossPlacement.DefaultBoss.ToString().ToLowerInvariant()}0.png";
+                $"{bossPlacement.DefaultBoss.ToString().ToLowerInvariant()}0.png";
         }
     }
 }

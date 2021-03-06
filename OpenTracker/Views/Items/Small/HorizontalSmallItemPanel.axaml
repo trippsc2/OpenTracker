@@ -1,9 +1,15 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:OpenTracker.ViewModels.Items.Small;assembly=OpenTracker"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="OpenTracker.Views.Items.Small.HorizontalSmallItemPanel">
+	
+	<Design.DataContext>
+		<vm:HorizontalSmallItemPanelVM />
+	</Design.DataContext>
+	
 	<StackPanel Margin="6 0 4 0" Orientation="Vertical">
 
 		<StackPanel Margin="0 0 0 8" Orientation="Horizontal">
@@ -19,8 +25,8 @@
 				</ItemsControl>
 			</StackPanel>
 
-			<StackPanel Orientation="Horizontal" IsVisible="{Binding ATItemsVisible}"
-						IsHitTestVisible="{Binding ATItemsVisible}">
+			<StackPanel Orientation="Horizontal"
+			            IsVisible="{Binding ATItemsVisible}">
 				<Image Classes="DungeonLabel" Source="avares://OpenTracker/Assets/Images/at.png" />
 				<ItemsControl Items="{Binding ATItems}">
 					<ItemsControl.ItemsPanel>
@@ -155,4 +161,5 @@
 		</StackPanel>
 
 	</StackPanel>
+	
 </UserControl>

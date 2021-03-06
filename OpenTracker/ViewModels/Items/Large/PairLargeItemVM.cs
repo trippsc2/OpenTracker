@@ -26,7 +26,7 @@ namespace OpenTracker.ViewModels.Items.Large
             _imageSourceBase + _items[0].Current.ToString(CultureInfo.InvariantCulture) +
             $"{_items[1].Current.ToString(CultureInfo.InvariantCulture)}.png";
         
-        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
+        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
 
         public delegate PairLargeItemVM Factory(IItem[] items, string imageSourceBase);
 
@@ -59,7 +59,7 @@ namespace OpenTracker.ViewModels.Items.Large
                 throw new ArgumentOutOfRangeException(nameof(items));
             }
             
-            HandleClickCommand = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClick);
+            HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
 
             foreach (var item in _items)
             {
@@ -105,19 +105,15 @@ namespace OpenTracker.ViewModels.Items.Large
         /// <param name="e">
         /// The pointer released event args.
         /// </param>
-        private void HandleClick(PointerReleasedEventArgs e)
+        private void HandleClickImpl(PointerReleasedEventArgs e)
         {
             switch (e.InitialPressMouseButton)
             {
                 case MouseButton.Left:
-                {
                     AddFirstItem();
-                }
                     break;
                 case MouseButton.Right:
-                {
                     AddSecondItem();
-                }
                     break;
             }
         }

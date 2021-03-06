@@ -6,6 +6,7 @@ using Avalonia.Logging;
 using Avalonia.Markup.Xaml;
 using Avalonia.ThemeManager;
 using OpenTracker.Models;
+using OpenTracker.Models.SaveLoad;
 using OpenTracker.Utils;
 using OpenTracker.ViewModels;
 using OpenTracker.Views;
@@ -91,6 +92,9 @@ namespace OpenTracker
                 desktop.ShutdownMode = ShutdownMode.OnMainWindowClose;
 
                 using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+                
+                var saveLoadManager = scope.Resolve<ISaveLoadManager>();
+                saveLoadManager.Open(AppPath.SequenceBreakPath);
                 desktop.MainWindow = new MainWindow()
                 {
                     DataContext = scope.Resolve<IMainWindowVM>()
@@ -98,8 +102,11 @@ namespace OpenTracker
                 
                 SetThemeToLastOrDefault();
 
-                desktop.Exit += (sender, e) => Selector!.SaveSelectedTheme(
-                    AppPath.LastThemeFilePath);
+                desktop.Exit += (sender, e) =>
+                {
+                    saveLoadManager.Save(AppPath.SequenceBreakPath);
+                    Selector!.SaveSelectedTheme(AppPath.LastThemeFilePath);
+                };
             }
 
             base.OnFrameworkInitializationCompleted();

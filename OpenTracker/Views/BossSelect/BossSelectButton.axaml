@@ -14,7 +14,7 @@
 		<vc:BitmapValueConverter x:Key="BitmapValueConverter" />
 	</UserControl.Resources>
 
-	<Button Command="{Binding $parent[ItemsControl].DataContext.ChangeBossCommand}"
+	<Button Command="{Binding $parent[ItemsControl].DataContext.ChangeBoss}"
 	        Background="{DynamicResource ThemeBackgroundBrush}" BorderThickness="0"
 	        CommandParameter="{Binding Boss}">
 		<Image Source="{Binding ImageSource, Converter={StaticResource BitmapValueConverter}}"
