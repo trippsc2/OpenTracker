@@ -30,27 +30,23 @@ namespace OpenTracker.ViewModels.Items.Small
         private readonly IRequirement _requirement;
         private readonly IItem _item;
 
-        public bool SpacerVisible =>
-            _spacerRequirement.Met;
-        public bool Visible =>
-            _requirement.Met;
-        public bool TextVisible =>
-            Visible && _item.Current > 0;
+        public bool SpacerVisible => _spacerRequirement.Met;
+        public bool Visible => _requirement.Met;
+        public bool TextVisible => Visible && _item.Current > 0;
         public string ItemNumber
         {
             get
             {
-                StringBuilder sb = new StringBuilder();
+                var sb = new StringBuilder();
                 sb.Append(_item.Current.ToString(CultureInfo.InvariantCulture));
                 sb.Append(_item.CanAdd() ? "" : "*");
 
                 return sb.ToString();
             }
         }
-        public string TextColor => 
-            _item.CanAdd() ? "#ffffff" : _colorSettings.EmphasisFontColor;
+        public string TextColor => _item.CanAdd() ? "#ffffff" : _colorSettings.EmphasisFontColor;
         
-        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
+        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
 
         public delegate SmallKeySmallItemVM Factory(IDungeon dungeon);
 
@@ -100,7 +96,7 @@ namespace OpenTracker.ViewModels.Items.Small
                 requirements[RequirementType.KeyDropShuffleOn] :
                 requirements[RequirementType.NoRequirement];
             
-            HandleClickCommand = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClick);
+            HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
 
             _colorSettings.PropertyChanged += OnColorsChanged;
             _item.PropertyChanged += OnItemChanged;
@@ -193,19 +189,15 @@ namespace OpenTracker.ViewModels.Items.Small
         /// <param name="e">
         /// The pointer released event args.
         /// </param>
-        private void HandleClick(PointerReleasedEventArgs e)
+        private void HandleClickImpl(PointerReleasedEventArgs e)
         {
             switch (e.InitialPressMouseButton)
             {
                 case MouseButton.Left:
-                {
                     AddItem();
-                }
                     break;
                 case MouseButton.Right:
-                {
                     RemoveItem();
-                }
                     break;
             }
         }

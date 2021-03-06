@@ -1,34 +1,39 @@
-﻿using OpenTracker.Models.Locations;
+﻿using Avalonia.Threading;
+using OpenTracker.Models.Locations;
 using OpenTracker.Models.Sections;
 using OpenTracker.Models.Settings;
 using OpenTracker.Utils;
 using ReactiveUI;
 using System.ComponentModel;
-using Avalonia.Threading;
 
 namespace OpenTracker.ViewModels.Maps.Locations.Tooltip
 {
     /// <summary>
-    /// This is the ViewModel class for map location tooltips.
+    /// This class contains the map location tooltip control ViewModel data.
     /// </summary>
     public class MapLocationToolTipVM : ViewModelBase, IMapLocationToolTipVM
     {
         private readonly ILayoutSettings _layoutSettings;
         private readonly ILocation _location;
 
-        public double Scale =>
-            _layoutSettings.UIScale;
-        public string Name =>
-            _location.Name;
+        public double Scale => _layoutSettings.UIScale;
+        public string Name => _location.Name;
 
         public IMapLocationToolTipMarkingVM? SectionMarking { get; }
         public IMapLocationToolTipNotes Notes { get; }
 
-        public delegate IMapLocationToolTipVM Factory(ILocation location);
-
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="layoutSettings">
+        /// The layout settings data.
+        /// </param>
+        /// <param name="markingFactory">
+        /// An Autofac factory for creating marking controls.
+        /// </param>
+        /// <param name="notesFactory">
+        /// An Autofac factory for creating tooltip notes controls.
+        /// </param>
         /// <param name="location">
         /// The map location.
         /// </param>

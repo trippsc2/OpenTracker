@@ -1,5 +1,7 @@
 ﻿using Avalonia;
+using Avalonia.Input;
 using Avalonia.Layout;
+using Avalonia.Threading;
 using OpenTracker.Models.Connections;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Modes;
@@ -10,8 +12,6 @@ using ReactiveUI;
 using System.ComponentModel;
 using System.Reactive;
 using System.Threading.Tasks;
-using Avalonia.Input;
-using Avalonia.Threading;
 
 namespace OpenTracker.ViewModels.Maps.Connections
 {
@@ -27,6 +27,8 @@ namespace OpenTracker.ViewModels.Maps.Connections
 
         private readonly IMapAreaVM _mapArea;
 
+        private readonly IConnection _connection;
+
         private bool _highlighted;
         public bool Highlighted
         {
@@ -34,40 +36,34 @@ namespace OpenTracker.ViewModels.Maps.Connections
             private set => this.RaiseAndSetIfChanged(ref _highlighted, value);
         }
 
-        public bool Visible =>
-            _mode.EntranceShuffle > EntranceShuffle.None;
+        public bool Visible => _mode.EntranceShuffle > EntranceShuffle.None;
 
-        public object Model =>
-            Connection;
+        public object Model => _connection;
 
-        public IConnection Connection { get; }
-
-        public Point Start =>
-            _mapArea.Orientation switch
+        public Point Start => _mapArea.Orientation switch
             {
-                Orientation.Vertical => Connection.Location1.Map == MapID.DarkWorld ?
-                    new Point(Connection.Location1.X + 23, Connection.Location1.Y + 2046) :
-                    new Point(Connection.Location1.X + 23, Connection.Location1.Y + 13),
-                _ => Connection.Location1.Map == MapID.DarkWorld ?
-                    new Point(Connection.Location1.X + 2046, Connection.Location1.Y + 23) :
-                    new Point(Connection.Location1.X + 13, Connection.Location1.Y + 23)
+                Orientation.Vertical => _connection.Location1.Map == MapID.DarkWorld ?
+                    new Point(_connection.Location1.X + 23, _connection.Location1.Y + 2046) :
+                    new Point(_connection.Location1.X + 23, _connection.Location1.Y + 13),
+                _ => _connection.Location1.Map == MapID.DarkWorld ?
+                    new Point(_connection.Location1.X + 2046, _connection.Location1.Y + 23) :
+                    new Point(_connection.Location1.X + 13, _connection.Location1.Y + 23)
             };
         public Point End =>
             _mapArea.Orientation switch
             {
-                Orientation.Vertical => Connection.Location2.Map == MapID.DarkWorld ?
-                    new Point(Connection.Location2.X + 23, Connection.Location2.Y + 2046) :
-                    new Point(Connection.Location2.X + 23, Connection.Location2.Y + 13),
-                _ => Connection.Location2.Map == MapID.DarkWorld ?
-                    new Point(Connection.Location2.X + 2046, Connection.Location2.Y + 23) :
-                    new Point(Connection.Location2.X + 13, Connection.Location2.Y + 23)
+                Orientation.Vertical => _connection.Location2.Map == MapID.DarkWorld ?
+                    new Point(_connection.Location2.X + 23, _connection.Location2.Y + 2046) :
+                    new Point(_connection.Location2.X + 23, _connection.Location2.Y + 13),
+                _ => _connection.Location2.Map == MapID.DarkWorld ?
+                    new Point(_connection.Location2.X + 2046, _connection.Location2.Y + 23) :
+                    new Point(_connection.Location2.X + 13, _connection.Location2.Y + 23)
             };
-        public string Color =>
-            Highlighted ? "#ffffffff" : _colorSettings.ConnectorColor;
+        public string Color => Highlighted ? "#ffffffff" : _colorSettings.ConnectorColor;
         
-        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
-        public ReactiveCommand<PointerEventArgs, Unit> HandlePointerEnterCommand { get; }
-        public ReactiveCommand<PointerEventArgs, Unit> HandlePointerLeaveCommand { get; }
+        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
+        public ReactiveCommand<PointerEventArgs, Unit> HandlePointerEnter { get; }
+        public ReactiveCommand<PointerEventArgs, Unit> HandlePointerLeave { get; }
 
         /// <summary>
         /// Constructor
@@ -100,11 +96,11 @@ namespace OpenTracker.ViewModels.Maps.Connections
             _undoableFactory = undoableFactory;
             _mapArea = mapArea;
 
-            Connection = connection;
+            _connection = connection;
             
-            HandleClickCommand = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClick);
-            HandlePointerEnterCommand = ReactiveCommand.Create<PointerEventArgs>(HandlePointerEnter);
-            HandlePointerLeaveCommand = ReactiveCommand.Create<PointerEventArgs>(HandlePointerLeave);
+            HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
+            HandlePointerEnter = ReactiveCommand.Create<PointerEventArgs>(HandlePointerEnterImpl);
+            HandlePointerLeave = ReactiveCommand.Create<PointerEventArgs>(HandlePointerLeaveImpl);
 
             PropertyChanged += OnPropertyChanged;
             _mapArea.PropertyChanged += OnMapAreaChanged;
@@ -196,7 +192,7 @@ namespace OpenTracker.ViewModels.Maps.Connections
         /// </summary>
         private void RemoveConnection()
         {
-            _undoRedoManager.NewAction(_undoableFactory.GetRemoveConnection(Connection));
+            _undoRedoManager.NewAction(_undoableFactory.GetRemoveConnection(_connection));
         }
 
         /// <summary>
@@ -221,7 +217,7 @@ namespace OpenTracker.ViewModels.Maps.Connections
         /// <param name="e">
         /// The pointer released event args.
         /// </param>
-        private void HandleClick(PointerReleasedEventArgs e)
+        private void HandleClickImpl(PointerReleasedEventArgs e)
         {
             if (e.InitialPressMouseButton == MouseButton.Right)
             {
@@ -235,7 +231,7 @@ namespace OpenTracker.ViewModels.Maps.Connections
         /// <param name="e">
         /// The PointerEnter event args.
         /// </param>
-        private void HandlePointerEnter(PointerEventArgs e)
+        private void HandlePointerEnterImpl(PointerEventArgs e)
         {
             Highlight();
         }
@@ -246,7 +242,7 @@ namespace OpenTracker.ViewModels.Maps.Connections
         /// <param name="e">
         /// The PointerLeave event args.
         /// </param>
-        private void HandlePointerLeave(PointerEventArgs e)
+        private void HandlePointerLeaveImpl(PointerEventArgs e)
         {
             Unhighlight();
         }

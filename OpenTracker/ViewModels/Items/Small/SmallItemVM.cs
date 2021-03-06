@@ -1,4 +1,5 @@
 ﻿using Avalonia.Input;
+using Avalonia.Threading;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.UndoRedo;
@@ -6,7 +7,6 @@ using OpenTracker.Utils;
 using ReactiveUI;
 using System.ComponentModel;
 using System.Reactive;
-using Avalonia.Threading;
 
 namespace OpenTracker.ViewModels.Items.Small
 {
@@ -22,15 +22,12 @@ namespace OpenTracker.ViewModels.Items.Small
         private readonly IRequirement _requirement;
         private readonly string _imageSourceBase;
 
-        public bool Visible =>
-            _requirement.Met;
-        public string ImageSource =>
-            _imageSourceBase + (_item.Current > 0 ? "1" : "0") + ".png";
+        public bool Visible => _requirement.Met;
+        public string ImageSource => _imageSourceBase + (_item.Current > 0 ? "1" : "0") + ".png";
         
-        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
+        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
 
-        public delegate SmallItemVM Factory(
-            IItem item, IRequirement requirement, string imageSourceBase);
+        public delegate SmallItemVM Factory(IItem item, IRequirement requirement, string imageSourceBase);
 
         /// <summary>
         /// Constructor
@@ -51,8 +48,8 @@ namespace OpenTracker.ViewModels.Items.Small
         /// The requirement for displaying the control.
         /// </param>
         public SmallItemVM(
-            IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory,
-            IItem item, IRequirement requirement, string imageSourceBase)
+            IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory, IItem item, IRequirement requirement,
+            string imageSourceBase)
         {
             _undoRedoManager = undoRedoManager;
             _undoableFactory = undoableFactory;
@@ -61,7 +58,7 @@ namespace OpenTracker.ViewModels.Items.Small
             _item = item;
             _requirement = requirement;
 
-            HandleClickCommand = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClick);
+            HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
             
             _item.PropertyChanged += OnItemChanged;
             _requirement.PropertyChanged += OnRequirementChanged;
@@ -120,19 +117,15 @@ namespace OpenTracker.ViewModels.Items.Small
         /// <param name="e">
         /// The pointer released event args.
         /// </param>
-        private void HandleClick(PointerReleasedEventArgs e)
+        private void HandleClickImpl(PointerReleasedEventArgs e)
         {
             switch (e.InitialPressMouseButton)
             {
                 case MouseButton.Left:
-                {
                     AddItem();
-                }
                     break;
                 case MouseButton.Right:
-                {
                     RemoveItem();
-                }
                     break;
             }
         }

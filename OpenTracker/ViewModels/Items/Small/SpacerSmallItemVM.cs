@@ -1,20 +1,19 @@
-﻿using OpenTracker.Models.Requirements;
+﻿using Avalonia.Threading;
+using OpenTracker.Models.Requirements;
 using OpenTracker.Utils;
 using ReactiveUI;
 using System.ComponentModel;
-using Avalonia.Threading;
 
 namespace OpenTracker.ViewModels.Items.Small
 {
     /// <summary>
-    /// This is the ViewModel for the small Items panel control for reserving space.
+    /// This class contains the reserved space small items panel control ViewModel data.
     /// </summary>
     public class SpacerSmallItemVM : ViewModelBase, ISmallItemVMBase
     {
         private readonly IRequirement _requirement;
 
-        public bool Visible =>
-            _requirement.Met;
+        public bool Visible => _requirement.Met;
 
         public delegate SpacerSmallItemVM Factory(IRequirement requirement);
 

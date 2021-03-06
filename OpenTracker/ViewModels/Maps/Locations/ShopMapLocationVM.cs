@@ -55,34 +55,33 @@ namespace OpenTracker.ViewModels.Maps.Locations
         {
             get
             {
-                if (_appSettings.Layout.CurrentMapOrientation == Orientation.Vertical)
+                if (_appSettings.Layout.CurrentMapOrientation == Orientation.Horizontal)
                 {
-                    if (_mapLocation.Map == MapID.DarkWorld)
-                    {
-                        return _mapLocation.Y + 2026;
-                    }
-
-                    return _mapLocation.Y - 7;
+                    return _mapLocation.Y + 3;
+                }
+                
+                if (_mapLocation.Map == MapID.DarkWorld)
+                {
+                    return _mapLocation.Y + 2026;
                 }
 
-                return _mapLocation.Y + 3;
+                return _mapLocation.Y - 7;
+
             }
         }
         public bool Visible =>
             _mapLocation.Requirement.Met && (_appSettings.Tracker.DisplayAllLocations ||
-            (_mapLocation.Location!.Accessibility != AccessibilityLevel.Cleared &&
-            _mapLocation.Location.Accessibility != AccessibilityLevel.None));
-        public string Color =>
-            _appSettings.Colors.AccessibilityColors[_mapLocation.Location!.Accessibility];
-        public string BorderColor =>
-            Highlighted ? "#ffffffff" : "#ff000000";
+            _mapLocation.Location!.Accessibility != AccessibilityLevel.Cleared &&
+            _mapLocation.Location.Accessibility != AccessibilityLevel.None);
+        public string Color => _appSettings.Colors.AccessibilityColors[_mapLocation.Location!.Accessibility];
+        public string BorderColor => Highlighted ? "#ffffffff" : "#ff000000";
 
         public IMapLocationToolTipVM ToolTip { get; }
         
-        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
-        public ReactiveCommand<RoutedEventArgs, Unit> HandleDoubleClickCommand { get; }
-        public ReactiveCommand<PointerEventArgs, Unit> HandlePointerEnterCommand { get; }
-        public ReactiveCommand<PointerEventArgs, Unit> HandlePointerLeaveCommand { get; }
+        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
+        public ReactiveCommand<RoutedEventArgs, Unit> HandleDoubleClick { get; }
+        public ReactiveCommand<PointerEventArgs, Unit> HandlePointerEnter { get; }
+        public ReactiveCommand<PointerEventArgs, Unit> HandlePointerLeave { get; }
 
         public delegate ShopMapLocationVM Factory(IMapLocation mapLocation);
 
@@ -116,10 +115,10 @@ namespace OpenTracker.ViewModels.Maps.Locations
 
             ToolTip = tooltipFactory(_mapLocation.Location!);
 
-            HandleClickCommand = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClick);
-            HandleDoubleClickCommand = ReactiveCommand.Create<RoutedEventArgs>(HandleDoubleClick);
-            HandlePointerEnterCommand = ReactiveCommand.Create<PointerEventArgs>(HandlePointerEnter);
-            HandlePointerLeaveCommand = ReactiveCommand.Create<PointerEventArgs>(HandlePointerLeave);
+            HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
+            HandleDoubleClick = ReactiveCommand.Create<RoutedEventArgs>(HandleDoubleClickImpl);
+            HandlePointerEnter = ReactiveCommand.Create<PointerEventArgs>(HandlePointerEnterImpl);
+            HandlePointerLeave = ReactiveCommand.Create<PointerEventArgs>(HandlePointerLeaveImpl);
 
             PropertyChanged += OnPropertyChanged;
 
@@ -292,7 +291,7 @@ namespace OpenTracker.ViewModels.Maps.Locations
         /// <param name="e">
         /// The pointer released event args.
         /// </param>
-        private void HandleClick(PointerReleasedEventArgs e)
+        private void HandleClickImpl(PointerReleasedEventArgs e)
         {
             if (e.InitialPressMouseButton == MouseButton.Right)
             {
@@ -306,7 +305,7 @@ namespace OpenTracker.ViewModels.Maps.Locations
         /// <param name="e">
         /// The pointer released event args.
         /// </param>
-        private void HandleDoubleClick(RoutedEventArgs e)
+        private void HandleDoubleClickImpl(RoutedEventArgs e)
         {
             PinLocation();
         }
@@ -317,7 +316,7 @@ namespace OpenTracker.ViewModels.Maps.Locations
         /// <param name="e">
         /// The PointerEnter event args.
         /// </param>
-        private void HandlePointerEnter(PointerEventArgs e)
+        private void HandlePointerEnterImpl(PointerEventArgs e)
         {
             Highlight();
         }
@@ -328,7 +327,7 @@ namespace OpenTracker.ViewModels.Maps.Locations
         /// <param name="e">
         /// The PointerLeave event args.
         /// </param>
-        private void HandlePointerLeave(PointerEventArgs e)
+        private void HandlePointerLeaveImpl(PointerEventArgs e)
         {
             Unhighlight();
         }

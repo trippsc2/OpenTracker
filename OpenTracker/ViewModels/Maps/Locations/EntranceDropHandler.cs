@@ -5,6 +5,9 @@ using OpenTracker.Models.Locations;
 
 namespace OpenTracker.ViewModels.Maps.Locations
 {
+    /// <summary>
+    /// This class contains the entrance drop handler logic.
+    /// </summary>
     public class EntranceDropHandler : IDropHandler
     {
         public void Enter(object? sender, DragEventArgs e, object? sourceContext, object? targetContext)

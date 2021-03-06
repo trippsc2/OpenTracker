@@ -30,7 +30,7 @@ namespace OpenTracker.ViewModels.Maps.Locations
 
         public IMarkingSelectVM MarkingSelect { get; }
         
-        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
+        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
 
         /// <summary>
         /// Constructor
@@ -53,7 +53,7 @@ namespace OpenTracker.ViewModels.Maps.Locations
 
             MarkingSelect = markingSelectFactory.GetMarkingSelectVM(section);
             
-            HandleClickCommand = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClick);
+            HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
 
             _marking.PropertyChanged += OnMarkingChanged;
 
@@ -107,7 +107,7 @@ namespace OpenTracker.ViewModels.Maps.Locations
         /// <param name="e">
         /// The PointerReleased event args.
         /// </param>
-        private void HandleClick(PointerReleasedEventArgs e)
+        private void HandleClickImpl(PointerReleasedEventArgs e)
         {
             if (e.InitialPressMouseButton == MouseButton.Left)
             {

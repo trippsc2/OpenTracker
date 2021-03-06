@@ -55,7 +55,7 @@ namespace OpenTracker.ViewModels.Maps.Locations
             get
             {
 
-                double x = MarkingDock switch
+                var x = MarkingDock switch
                 {
                     Dock.Left => _mapLocation.X - (Size / 2) - 55,
                     Dock.Right => _mapLocation.X - (Size / 2),
@@ -79,24 +79,25 @@ namespace OpenTracker.ViewModels.Maps.Locations
         {
             get
             {
-                double y = MarkingDock switch
+                var y = MarkingDock switch
                 {
                     Dock.Bottom => _mapLocation.Y - (Size / 2),
                     Dock.Top => _mapLocation.Y - (Size / 2) - 55,
                     _ => Math.Min(_mapLocation.Y - (Size / 2), _mapLocation.Y - 27.5)
                 };
 
-                if (_appSettings.Layout.CurrentMapOrientation == Orientation.Vertical)
+                if (_appSettings.Layout.CurrentMapOrientation == Orientation.Horizontal)
                 {
-                    if (_mapLocation.Map == MapID.DarkWorld)
-                    {
-                        return y + 2046;
-                    }
-
-                    return y + 13;
+                    return y + 23;
+                }
+                
+                if (_mapLocation.Map == MapID.DarkWorld)
+                {
+                    return y + 2046;
                 }
 
-                return y + 23;
+                return y + 13;
+
             }
         }
         public double Size
@@ -108,58 +109,54 @@ namespace OpenTracker.ViewModels.Maps.Locations
                     return 40.0;
                 }
 
-                if (_mapLocation.Location!.Total > 1)
+                if (_mapLocation.Location!.Total <= 1)
                 {
-                    switch (_mapLocation.Location.ID)
+                    return 70.0;
+                }
+                
+                switch (_mapLocation.Location.ID)
+                {
+                    case LocationID.EasternPalace:
+                    case LocationID.DesertPalace:
+                    case LocationID.TowerOfHera:
+                    case LocationID.PalaceOfDarkness:
+                    case LocationID.SwampPalace:
+                    case LocationID.SkullWoods:
+                    case LocationID.ThievesTown:
+                    case LocationID.IcePalace:
+                    case LocationID.MiseryMire:
+                    case LocationID.TurtleRock:
+                    case LocationID.GanonsTower:
                     {
-                        case LocationID.EasternPalace:
-                        case LocationID.DesertPalace:
-                        case LocationID.TowerOfHera:
-                        case LocationID.PalaceOfDarkness:
-                        case LocationID.SwampPalace:
-                        case LocationID.SkullWoods:
-                        case LocationID.ThievesTown:
-                        case LocationID.IcePalace:
-                        case LocationID.MiseryMire:
-                        case LocationID.TurtleRock:
-                        case LocationID.GanonsTower:
-                            {
-                                return 130.0;
-                            }
-                        default:
-                            {
-                                return 90.0;
-                            }
+                        return 130.0;
+                    }
+                    default:
+                    {
+                        return 90.0;
                     }
                 }
-
-                return 70.0;
             }
         }
         public bool Visible =>
             _mapLocation.Requirement.Met && (_appSettings.Tracker.DisplayAllLocations ||
-            (_mapLocation.Location!.Accessibility != AccessibilityLevel.Cleared &&
-            _mapLocation.Location.Accessibility != AccessibilityLevel.None));
+            _mapLocation.Location!.Accessibility != AccessibilityLevel.Cleared &&
+            _mapLocation.Location.Accessibility != AccessibilityLevel.None);
 
         public IMarkingMapLocationVM Marking { get; }
         public IMapLocationToolTipVM ToolTip { get; }
 
-        public string Color =>
-            _appSettings.Colors.AccessibilityColors[_mapLocation.Location!.Accessibility];
+        public string Color => _appSettings.Colors.AccessibilityColors[_mapLocation.Location!.Accessibility];
         public Thickness BorderSize =>
             _mode.EntranceShuffle > EntranceShuffle.None ? new Thickness(5) : new Thickness(9);
-        public string BorderColor =>
-            Highlighted ? "#ffffffff" : "#ff000000";
+        public string BorderColor => Highlighted ? "#ffffffff" : "#ff000000";
         public bool TextVisible =>
-            _mode.EntranceShuffle == EntranceShuffle.None &&
-            _appSettings.Tracker.ShowItemCountsOnMap &&
+            _mode.EntranceShuffle == EntranceShuffle.None && _appSettings.Tracker.ShowItemCountsOnMap &&
             _mapLocation.Location!.Available != 0 && _mapLocation.Location.Total > 1;
         public string? Text
         {
             get
             {
-                if (_mode.EntranceShuffle > EntranceShuffle.None ||
-                    !_appSettings.Tracker.ShowItemCountsOnMap ||
+                if (_mode.EntranceShuffle > EntranceShuffle.None || !_appSettings.Tracker.ShowItemCountsOnMap ||
                     _mapLocation.Location!.Available == 0 || _mapLocation.Location.Total <= 1)
                 {
                     return null;
@@ -180,10 +177,10 @@ namespace OpenTracker.ViewModels.Maps.Locations
             }
         }
         
-        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
-        public ReactiveCommand<RoutedEventArgs, Unit> HandleDoubleClickCommand { get; }
-        public ReactiveCommand<PointerEventArgs, Unit> HandlePointerEnterCommand { get; }
-        public ReactiveCommand<PointerEventArgs, Unit> HandlePointerLeaveCommand { get; }
+        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
+        public ReactiveCommand<RoutedEventArgs, Unit> HandleDoubleClick { get; }
+        public ReactiveCommand<PointerEventArgs, Unit> HandlePointerEnter { get; }
+        public ReactiveCommand<PointerEventArgs, Unit> HandlePointerLeave { get; }
         
         public delegate MarkableDungeonMapLocationVM Factory(
             IMapLocation mapLocation, IMarkingMapLocationVM marking, Dock entranceMarkingDock,
@@ -220,10 +217,9 @@ namespace OpenTracker.ViewModels.Maps.Locations
         /// The dock direction when entrance shuffle is disabled.
         /// </param>
         public MarkableDungeonMapLocationVM(
-            IAppSettings appSettings, IMode mode, IUndoRedoManager undoRedoManager,
-            IUndoableFactory undoableFactory, IMapLocationToolTipVM.Factory tooltipFactory,
-            IMapLocation mapLocation, IMarkingMapLocationVM marking, Dock entranceMarkingDock,
-            Dock nonEntranceMarkingDock)
+            IAppSettings appSettings, IMode mode, IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory,
+            IMapLocationToolTipVM.Factory tooltipFactory, IMapLocation mapLocation, IMarkingMapLocationVM marking,
+            Dock entranceMarkingDock, Dock nonEntranceMarkingDock)
         {
             _appSettings = appSettings;
             _mode = mode;
@@ -237,10 +233,10 @@ namespace OpenTracker.ViewModels.Maps.Locations
             Marking = marking;
             ToolTip = tooltipFactory(_mapLocation.Location!);
 
-            HandleClickCommand = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClick);
-            HandleDoubleClickCommand = ReactiveCommand.Create<RoutedEventArgs>(HandleDoubleClick);
-            HandlePointerEnterCommand = ReactiveCommand.Create<PointerEventArgs>(HandlePointerEnter);
-            HandlePointerLeaveCommand = ReactiveCommand.Create<PointerEventArgs>(HandlePointerLeave);
+            HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
+            HandleDoubleClick = ReactiveCommand.Create<RoutedEventArgs>(HandleDoubleClickImpl);
+            HandlePointerEnter = ReactiveCommand.Create<PointerEventArgs>(HandlePointerEnterImpl);
+            HandlePointerLeave = ReactiveCommand.Create<PointerEventArgs>(HandlePointerLeaveImpl);
 
             PropertyChanged += OnPropertyChanged;
 
@@ -532,7 +528,7 @@ namespace OpenTracker.ViewModels.Maps.Locations
         /// <param name="e">
         /// The pointer released event args.
         /// </param>
-        private void HandleClick(PointerReleasedEventArgs e)
+        private void HandleClickImpl(PointerReleasedEventArgs e)
         {
             if (e.InitialPressMouseButton == MouseButton.Right)
             {
@@ -546,7 +542,7 @@ namespace OpenTracker.ViewModels.Maps.Locations
         /// <param name="e">
         /// The pointer released event args.
         /// </param>
-        private void HandleDoubleClick(RoutedEventArgs e)
+        private void HandleDoubleClickImpl(RoutedEventArgs e)
         {
             PinLocation();
         }
@@ -557,7 +553,7 @@ namespace OpenTracker.ViewModels.Maps.Locations
         /// <param name="e">
         /// The PointerEnter event args.
         /// </param>
-        private void HandlePointerEnter(PointerEventArgs e)
+        private void HandlePointerEnterImpl(PointerEventArgs e)
         {
             Highlight();
         }
@@ -568,7 +564,7 @@ namespace OpenTracker.ViewModels.Maps.Locations
         /// <param name="e">
         /// The PointerLeave event args.
         /// </param>
-        private void HandlePointerLeave(PointerEventArgs e)
+        private void HandlePointerLeaveImpl(PointerEventArgs e)
         {
             Unhighlight();
         }

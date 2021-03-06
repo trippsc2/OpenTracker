@@ -47,7 +47,7 @@ namespace OpenTracker.ViewModels.Maps.Locations
         {
             get
             {
-                double x = MarkingDock switch
+                var x = MarkingDock switch
                 {
                     Dock.Left => MapLocation.X - 84,
                     Dock.Right => MapLocation.X,
@@ -71,50 +71,48 @@ namespace OpenTracker.ViewModels.Maps.Locations
         {
             get
             {
-                double y = MarkingDock switch
+                var y = MarkingDock switch
                 {
                     Dock.Bottom => MapLocation.Y,
                     Dock.Top => MapLocation.Y - 84,
                     _ => MapLocation.Y - 28,
                 };
 
-                if (_appSettings.Layout.CurrentMapOrientation == Orientation.Vertical)
+                if (_appSettings.Layout.CurrentMapOrientation == Orientation.Horizontal)
                 {
-                    if (MapLocation.Map == MapID.DarkWorld)
-                    {
-                        return y + 2046;
-                    }
-                    
-                    return y + 13;
+                    return y + 23;
                 }
                 
-                return y + 23;
+                if (MapLocation.Map == MapID.DarkWorld)
+                {
+                    return y + 2046;
+                }
+                    
+                return y + 13;
+
             }
         }
         public bool Visible =>
             MapLocation.Requirement.Met && (_appSettings.Tracker.DisplayAllLocations ||
-            (MapLocation.Location!.Sections[0] is IMarkableSection markableSection &&
-            markableSection.Marking.Mark != MarkType.Unknown) ||
+            MapLocation.Location!.Sections[0] is IMarkableSection markableSection &&
+            markableSection.Marking.Mark != MarkType.Unknown ||
             MapLocation.Location.Accessibility != AccessibilityLevel.Cleared);
 
         public IMarkingMapLocationVM Marking { get; }
         public List<Point> Points { get; }
 
-        public string Color =>
-            _appSettings.Colors.AccessibilityColors[MapLocation.Location!.Accessibility];
-        public string BorderColor =>
-            Highlighted ? "#FFFFFFFF" : "#FF000000";
+        public string Color => _appSettings.Colors.AccessibilityColors[MapLocation.Location!.Accessibility];
+        public string BorderColor => Highlighted ? "#FFFFFFFF" : "#FF000000";
 
         public IMapLocationToolTipVM ToolTip { get; }
 
-        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
-        public ReactiveCommand<RoutedEventArgs, Unit> HandleDoubleClickCommand { get; }
-        public ReactiveCommand<PointerEventArgs, Unit> HandlePointerEnterCommand { get; }
-        public ReactiveCommand<PointerEventArgs, Unit> HandlePointerLeaveCommand { get; }
+        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
+        public ReactiveCommand<RoutedEventArgs, Unit> HandleDoubleClick { get; }
+        public ReactiveCommand<PointerEventArgs, Unit> HandlePointerEnter { get; }
+        public ReactiveCommand<PointerEventArgs, Unit> HandlePointerLeave { get; }
 
         public delegate EntranceMapLocationVM Factory(
-            IMapLocation mapLocation, IMarkingMapLocationVM marking, Dock markingDock,
-            List<Point> points);
+            IMapLocation mapLocation, IMarkingMapLocationVM marking, Dock markingDock, List<Point> points);
 
         /// <summary>
         /// Constructor
@@ -147,10 +145,9 @@ namespace OpenTracker.ViewModels.Maps.Locations
         /// The list of points for the triangle polygon.
         /// </param>
         public EntranceMapLocationVM(
-            IAppSettings appSettings, IUndoRedoManager undoRedoManager,
-            IUndoableFactory undoableFactory,  IMapLocationToolTipVM.Factory tooltipFactory,
-            IConnection.Factory connectionFactory, IMapLocation mapLocation,
-            IMarkingMapLocationVM marking, Dock markingDock, List<Point> points)
+            IAppSettings appSettings, IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory,
+            IMapLocationToolTipVM.Factory tooltipFactory, IConnection.Factory connectionFactory,
+            IMapLocation mapLocation, IMarkingMapLocationVM marking, Dock markingDock, List<Point> points)
         {
             _appSettings = appSettings;
             _undoRedoManager = undoRedoManager;
@@ -165,10 +162,10 @@ namespace OpenTracker.ViewModels.Maps.Locations
 
             ToolTip = tooltipFactory(MapLocation.Location!);
 
-            HandleClickCommand = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClick);
-            HandleDoubleClickCommand = ReactiveCommand.Create<RoutedEventArgs>(HandleDoubleClick);
-            HandlePointerEnterCommand = ReactiveCommand.Create<PointerEventArgs>(HandlePointerEnter);
-            HandlePointerLeaveCommand = ReactiveCommand.Create<PointerEventArgs>(HandlePointerLeave);
+            HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
+            HandleDoubleClick = ReactiveCommand.Create<RoutedEventArgs>(HandleDoubleClickImpl);
+            HandlePointerEnter = ReactiveCommand.Create<PointerEventArgs>(HandlePointerEnterImpl);
+            HandlePointerLeave = ReactiveCommand.Create<PointerEventArgs>(HandlePointerLeaveImpl);
 
             foreach (var section in MapLocation.Location!.Sections)
             {
@@ -392,7 +389,7 @@ namespace OpenTracker.ViewModels.Maps.Locations
         /// <param name="e">
         /// The pointer released event args.
         /// </param>
-        private void HandleClick(PointerReleasedEventArgs e)
+        private void HandleClickImpl(PointerReleasedEventArgs e)
         {
             if (e.InitialPressMouseButton == MouseButton.Right)
             {
@@ -406,7 +403,7 @@ namespace OpenTracker.ViewModels.Maps.Locations
         /// <param name="e">
         /// The pointer released event args.
         /// </param>
-        private void HandleDoubleClick(RoutedEventArgs e)
+        private void HandleDoubleClickImpl(RoutedEventArgs e)
         {
             PinLocation();
         }
@@ -417,7 +414,7 @@ namespace OpenTracker.ViewModels.Maps.Locations
         /// <param name="e">
         /// The PointerEnter event args.
         /// </param>
-        private void HandlePointerEnter(PointerEventArgs e)
+        private void HandlePointerEnterImpl(PointerEventArgs e)
         {
             Highlight();
         }
@@ -428,7 +425,7 @@ namespace OpenTracker.ViewModels.Maps.Locations
         /// <param name="e">
         /// The PointerLeave event args.
         /// </param>
-        private void HandlePointerLeave(PointerEventArgs e)
+        private void HandlePointerLeaveImpl(PointerEventArgs e)
         {
             Unhighlight();
         }

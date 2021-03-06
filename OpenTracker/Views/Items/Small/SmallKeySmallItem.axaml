@@ -1,32 +1,32 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:OpenTracker.ViewModels.Items.Small;assembly=OpenTracker"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vc="clr-namespace:OpenTracker.ValueConverters;assembly=OpenTracker"
              xmlns:i="using:Avalonia.Xaml.Interactivity"
              xmlns:ia="using:Avalonia.Xaml.Interactions.Core"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="OpenTracker.Views.Items.Small.SmallKeySmallItem">
+             mc:Ignorable="d" x:Class="OpenTracker.Views.Items.Small.SmallKeySmallItem">
+  
+  <Design.DataContext>
+    <vm:SmallKeySmallItemVM />
+  </Design.DataContext>
 
-  <UserControl.Resources>
-    <vc:BitmapValueConverter x:Key="BitmapValueConverter" />
-  </UserControl.Resources>
-
-  <Panel Name="panel" Classes="DungeonItem" IsVisible="{Binding SpacerVisible}" Height="16" Width="16">
+  <Panel Name="panel" Classes="DungeonItem" Height="16" Width="16"
+         IsVisible="{Binding SpacerVisible}">
 
     <i:Interaction.Behaviors>
-      <ia:EventTriggerBehavior EventName="PointerReleased" SourceObject="{Binding
-       #panel}">
-        <ia:InvokeCommandAction Command="{Binding HandleClickCommand}" />
+      <ia:EventTriggerBehavior EventName="PointerReleased"
+                               SourceObject="{Binding #panel}">
+        <ia:InvokeCommandAction Command="{Binding HandleClick}" />
       </ia:EventTriggerBehavior>
     </i:Interaction.Behaviors>
     
     <Image Classes="DungeonItem" Source="avares://OpenTracker/Assets/Images/Items/smallkey0.png"
            IsVisible="{Binding Visible}" />
 
-    <Border Classes="ItemCount" IsVisible="{Binding Path=TextVisible}"
-				IsHitTestVisible="{Binding Path=TextVisible}">
-      <TextBlock Classes="ItemCount" Text="{Binding ItemNumber}" Foreground="{Binding TextColor}" />
+    <Border Classes="ItemCount" IsVisible="{Binding Path=TextVisible}">
+      <TextBlock Classes="ItemCount" Text="{Binding ItemNumber}"
+                 Foreground="{Binding TextColor}" />
     </Border>
 
   </Panel>

@@ -9,16 +9,14 @@ using System.Threading.Tasks;
 namespace OpenTracker.ViewModels.Maps.Locations.Tooltip
 {
     /// <summary>
-    /// This is the ViewModel class for the map location tooltip markings.
+    /// This class contains the map location tooltip marking control ViewModel data.
     /// </summary>
     public class MapLocationToolTipMarkingVM : ViewModelBase, IMapLocationToolTipMarkingVM
     {
         private readonly IMarkingImageDictionary _markingImages;
+        private readonly IMarking _marking;
 
-        public object Model =>
-            Marking;
-
-        public IMarking Marking { get; }
+        public object Model => _marking;
 
         private IMarkingImageVMBase? _image;
         public IMarkingImageVMBase Image
@@ -26,9 +24,7 @@ namespace OpenTracker.ViewModels.Maps.Locations.Tooltip
             get => _image!;
             private set => this.RaiseAndSetIfChanged(ref _image, value);
         }
-
-        public delegate IMapLocationToolTipMarkingVM Factory(IMarking marking);
-
+        
         /// <summary>
         /// Constructor
         /// </summary>
@@ -38,14 +34,13 @@ namespace OpenTracker.ViewModels.Maps.Locations.Tooltip
         /// <param name="marking">
         /// The marking to be represented.
         /// </param>
-        public MapLocationToolTipMarkingVM(
-            IMarkingImageDictionary markingImages, IMarking marking)
+        public MapLocationToolTipMarkingVM(IMarkingImageDictionary markingImages, IMarking marking)
         {
             _markingImages = markingImages;
 
-            Marking = marking;
+            _marking = marking;
 
-            Marking.PropertyChanged += OnMarkingChanged;
+            _marking.PropertyChanged += OnMarkingChanged;
 
             UpdateImage();
         }
@@ -72,7 +67,7 @@ namespace OpenTracker.ViewModels.Maps.Locations.Tooltip
         /// </summary>
         private void UpdateImage()
         {
-            Image = _markingImages[Marking.Mark];
+            Image = _markingImages[_marking.Mark];
         }
 
         /// <summary>

@@ -28,20 +28,13 @@ namespace OpenTracker.ViewModels.Items.Small
         {
             get
             {
-                StringBuilder sb = new StringBuilder();
+                var sb = new StringBuilder();
                 sb.Append("avares://OpenTracker/Assets/Images/Prizes/");
 
-                if (_section.PrizePlacement.Prize == null)
-                {
-                    sb.Append("unknown");
-                }
-                else
-                {
-                    sb.Append(
-                        _prizes.FirstOrDefault(
-                            x => x.Value == _section.PrizePlacement.Prize).Key.ToString()
-                                .ToLowerInvariant());
-                }
+                sb.Append(_section.PrizePlacement.Prize is null ?
+                    "unknown" : _prizes.FirstOrDefault(
+                        x => x.Value == _section.PrizePlacement.Prize).Key.ToString()
+                        .ToLowerInvariant());
 
                 sb.Append(_section.IsAvailable() ? "0" : "1");
                 sb.Append(".png");
@@ -50,7 +43,7 @@ namespace OpenTracker.ViewModels.Items.Small
             }
         }
         
-        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
+        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
 
         public delegate PrizeSmallItemVM Factory(IPrizeSection section);
 
@@ -70,8 +63,8 @@ namespace OpenTracker.ViewModels.Items.Small
         /// The prize section to be represented.
         /// </param>
         public PrizeSmallItemVM(
-            IPrizeDictionary prizes, IUndoRedoManager undoRedoManager,
-            IUndoableFactory undoableFactory, IPrizeSection section)
+            IPrizeDictionary prizes, IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory,
+            IPrizeSection section)
         {
             _prizes = prizes;
             _undoRedoManager = undoRedoManager;
@@ -79,7 +72,7 @@ namespace OpenTracker.ViewModels.Items.Small
 
             _section = section;
             
-            HandleClickCommand = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClick);
+            HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
 
             _section.PropertyChanged += OnSectionChanged;
             _section.PrizePlacement.PropertyChanged += OnPrizeChanged;
@@ -141,19 +134,15 @@ namespace OpenTracker.ViewModels.Items.Small
         /// <param name="e">
         /// The pointer released event args.
         /// </param>
-        private void HandleClick(PointerReleasedEventArgs e)
+        private void HandleClickImpl(PointerReleasedEventArgs e)
         {
             switch (e.InitialPressMouseButton)
             {
                 case MouseButton.Left:
-                {
                     TogglePrize();
-                }
                     break;
                 case MouseButton.Right:
-                {
                     ChangePrize();
-                }
                     break;
             }
         }
