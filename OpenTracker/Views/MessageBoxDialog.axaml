@@ -5,7 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" x:Class="OpenTracker.Views.MessageBoxDialog"
         CanResize="False" MaxWidth="400" SizeToContent="Height" Padding="5" WindowStartupLocation="CenterOwner"
-        Icon="avares://OpenTracker/Assets/Images/triforce.png" Title="{Binding Title}">
+        Icon="avares://OpenTracker/Assets/Images/triforce.png"
+        Title="{Binding Title}">
+	
+	<Design.DataContext>
+		<vm:MessageBoxDialogVM />
+	</Design.DataContext>
 
 	<Window.Styles>
 		<Style Selector="Button">
@@ -20,8 +25,10 @@
 		<TextBlock Classes="MessageBox" Text="{Binding Path=Text}" />
 
 		<StackPanel Orientation="Horizontal" Margin="15" HorizontalAlignment="Right">
-			<Button Classes="MessageBox" Content="Yes" Command="{Binding Path=YesCommand}" />
-			<Button Classes="MessageBox" Content="No" Command="{Binding Path=NoCommand}" />
+			<Button Classes="MessageBox" Command="{Binding Path=YesCommand}"
+			        Content="Yes" />
+			<Button Classes="MessageBox" Command="{Binding Path=NoCommand}"
+			        Content="No" />
 		</StackPanel>
 
 	</StackPanel>

@@ -16,8 +16,6 @@ namespace OpenTracker.ViewModels.ColorSelect
     /// </summary>
     public class ColorSelectDialogVM : DialogViewModelBase, IColorSelectDialogVM
     {
-        private readonly IColorSettings _colorSettings;
-
         private SolidColorBrush? _emphasisFontColor;
         public SolidColorBrush? EmphasisFontColor
         {
@@ -161,7 +159,7 @@ namespace OpenTracker.ViewModels.ColorSelect
         /// <summary>
         /// Constructor
         /// </summary>
-        public ColorSelectDialogVM(IColorSettings colorSettings)
+        public ColorSelectDialogVM()
         {
             _colorSettings = colorSettings;
 

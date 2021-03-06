@@ -5,8 +5,7 @@
              xmlns:view="clr-namespace:OpenTracker.Views;assembly=OpenTracker"
              xmlns:i="using:Avalonia.Xaml.Interactivity"
              xmlns:ia="using:Avalonia.Xaml.Interactions.Core"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="OpenTracker.Views.ModeSettings">
+             mc:Ignorable="d" x:Class="OpenTracker.Views.ModeSettings">
   <Panel>
     
     <Image Name="image" Source="avares://OpenTracker/Assets/Images/settings.png" ToolTip.Tip="Mode Settings">
