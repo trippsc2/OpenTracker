@@ -1,12 +1,8 @@
 ﻿using OpenTracker.Models.SaveLoad;
 using OpenTracker.Utils;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Threading;
-using System.Threading.Tasks;
-using OpenTracker.Models.UndoRedo.Actions;
 
 namespace OpenTracker.Models.UndoRedo
 {
@@ -17,25 +13,13 @@ namespace OpenTracker.Models.UndoRedo
     {
         private readonly ISaveLoadManager _saveLoadManager;
 
-        private readonly IDoAction.Factory _doFactory;
-        private readonly IUndoAction.Factory _undoFactory;
-        private readonly IRedoAction.Factory _redoFactory;
-
-        private readonly ObservableStack<IUndoable> _undoableActions =
-            new ObservableStack<IUndoable>();
-        private readonly ObservableStack<IUndoable> _redoableActions =
-            new ObservableStack<IUndoable>();
-
-        private CancellationTokenSource _cancellationTokenSource;
-        private BlockingCollection<IUndoableAction> _taskQueue;
-        private Task _queueTask;
+        private readonly ObservableStack<IUndoable> _undoableActions = new ObservableStack<IUndoable>();
+        private readonly ObservableStack<IUndoable> _redoableActions = new ObservableStack<IUndoable>();
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        public bool CanUndo =>
-            _undoableActions.Count > 0;
-        public bool CanRedo =>
-            _redoableActions.Count > 0;
+        public bool CanUndo => _undoableActions.Count > 0;
+        public bool CanRedo => _redoableActions.Count > 0;
 
         /// <summary>
         /// Constructor
@@ -43,20 +27,12 @@ namespace OpenTracker.Models.UndoRedo
         /// <param name="saveLoadManager">
         /// The save/load manager.
         /// </param>
-        public UndoRedoManager(
-            ISaveLoadManager saveLoadManager, IDoAction.Factory doFactory, IUndoAction.Factory undoFactory,
-            IRedoAction.Factory redoFactory)
+        public UndoRedoManager(ISaveLoadManager saveLoadManager)
         {
             _saveLoadManager = saveLoadManager;
 
-            _doFactory = doFactory;
-            _undoFactory = undoFactory;
-            _redoFactory = redoFactory;
-
             _undoableActions.CollectionChanged += OnUndoChanged;
             _redoableActions.CollectionChanged += OnRedoChanged;
-            
-            StartProcessing();
         }
 
         /// <summary>
@@ -71,7 +47,7 @@ namespace OpenTracker.Models.UndoRedo
         }
 
         /// <summary>
-        /// Subscribes to the CollectionChanged event on the _undoableActions observable stack.
+        /// Subscribes to the CollectionChanged event on the undoable actions observable stack.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -85,7 +61,7 @@ namespace OpenTracker.Models.UndoRedo
         }
 
         /// <summary>
-        /// Subscribes to the CollectionChanged event on the _redoableActions observable stack.
+        /// Subscribes to the CollectionChanged event on the redoable actions observable stack.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -99,30 +75,6 @@ namespace OpenTracker.Models.UndoRedo
         }
 
         /// <summary>
-        /// Initializes the queue and starts processing new actions.
-        /// </summary>
-        private void StartProcessing()
-        {
-            _cancellationTokenSource = new CancellationTokenSource();
-            _taskQueue = new BlockingCollection<IUndoableAction>();
-            _queueTask = Task.Factory.StartNew(() =>
-            {
-                ExecuteQueue();
-            }, _cancellationTokenSource.Token);
-        }
-
-        /// <summary>
-        /// Executes new actions.
-        /// </summary>
-        private void ExecuteQueue()
-        {
-            foreach (var action in _taskQueue.GetConsumingEnumerable())
-            {
-                action.Execute();
-            }
-        }
-
-        /// <summary>
         /// Executes a specified action and adds it to the stack of undoable actions.
         /// </summary>
         /// <param name="action">
@@ -130,7 +82,19 @@ namespace OpenTracker.Models.UndoRedo
         /// </param>
         public void NewAction(IUndoable action)
         {
-            _taskQueue.Add(_doFactory(_undoableActions, _redoableActions, action));
+            if (action == null)
+            {
+                throw new ArgumentNullException(nameof(action));
+            }
+
+            if (!action.CanExecute())
+            {
+                return;
+            }
+            
+            action.ExecuteDo();
+            _undoableActions.Push(action);
+            _redoableActions.Clear();
             _saveLoadManager.Unsaved = true;
         }
 
@@ -139,8 +103,14 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void Undo()
         {
-            var action = _undoableActions.Pop();
-            _taskQueue!.Add(_undoFactory(_redoableActions, action));
+            if (_undoableActions.Count <= 0)
+            {
+                return;
+            }
+            
+            IUndoable action = _undoableActions.Pop();
+            action.ExecuteUndo();
+            _redoableActions.Push(action);
             _saveLoadManager.Unsaved = true;
         }
 
@@ -149,8 +119,14 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void Redo()
         {
-            var action = _redoableActions.Pop();
-            _taskQueue!.Add(_redoFactory(_undoableActions, action));
+            if (_redoableActions.Count <= 0)
+            {
+                return;
+            }
+            
+            IUndoable action = _redoableActions.Pop();
+            action.ExecuteDo();
+            _undoableActions.Push(action);
             _saveLoadManager.Unsaved = true;
         }
 
@@ -159,20 +135,8 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void Reset()
         {
-            _taskQueue?.CompleteAdding();
-
-            _cancellationTokenSource?.Cancel();
-            _cancellationTokenSource?.Dispose();
-
             _undoableActions.Clear();
             _redoableActions.Clear();
-
-            _queueTask.Wait();
-            _queueTask.Dispose();
-
-            _taskQueue?.Dispose();
-
-            StartProcessing();
         }
     }
 }

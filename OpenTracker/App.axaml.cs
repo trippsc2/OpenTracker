@@ -45,12 +45,14 @@ namespace OpenTracker
         {
             foreach (var theme in Selector!.Themes!)
             {
-                if (theme.Name == "Default")
+                if (theme.Name != "Default")
                 {
-                    Selector.Themes.Remove(theme);
-                    Selector.Themes.Insert(0, theme);
-                    break;
+                    continue;
                 }
+                
+                Selector.Themes.Remove(theme);
+                Selector.Themes.Insert(0, theme);
+                break;
             }
         }
 
@@ -94,7 +96,7 @@ namespace OpenTracker
                 using var scope = ContainerConfig.Configure().BeginLifetimeScope();
                 
                 var saveLoadManager = scope.Resolve<ISaveLoadManager>();
-                saveLoadManager.Open(AppPath.SequenceBreakPath);
+                saveLoadManager.OpenSequenceBreaks(AppPath.SequenceBreakPath);
                 desktop.MainWindow = new MainWindow()
                 {
                     DataContext = scope.Resolve<IMainWindowVM>()
@@ -104,7 +106,7 @@ namespace OpenTracker
 
                 desktop.Exit += (sender, e) =>
                 {
-                    saveLoadManager.Save(AppPath.SequenceBreakPath);
+                    saveLoadManager.SaveSequenceBreaks(AppPath.SequenceBreakPath);
                     Selector!.SaveSelectedTheme(AppPath.LastThemeFilePath);
                 };
             }
