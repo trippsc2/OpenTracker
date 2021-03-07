@@ -1,16 +1,14 @@
 ﻿using OpenTracker.Models.SaveLoad;
-using OpenTracker.Models.Utils;
-using System;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.Modes
 {
     /// <summary>
-    /// This is the class for the game mode settings.
+    /// This class contains game mode settings data.
     /// </summary>
-    public class Mode : Singleton<Mode>, INotifyPropertyChanged
+    public class Mode : IMode
     {
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         private ItemPlacement _itemPlacement = ItemPlacement.Advanced;
         public ItemPlacement ItemPlacement
@@ -180,6 +178,34 @@ namespace OpenTracker.Models.Modes
             }
         }
 
+        private bool _keyDropShuffle;
+        public bool KeyDropShuffle
+        {
+            get => _keyDropShuffle;
+            set
+            {
+                if (_keyDropShuffle != value)
+                {
+                    _keyDropShuffle = value;
+                    OnPropertyChanged(nameof(KeyDropShuffle));
+                }
+            }
+        }
+
+        private bool _shopShuffle;
+        public bool ShopShuffle
+        {
+            get => _shopShuffle;
+            set
+            {
+                if (_shopShuffle != value)
+                {
+                    _shopShuffle = value;
+                    OnPropertyChanged(nameof(ShopShuffle));
+                }
+            }
+        }
+
         /// <summary>
         /// Raises the PropertyChanged event for the specified property.
         /// </summary>
@@ -222,7 +248,9 @@ namespace OpenTracker.Models.Modes
                 EnemyShuffle = EnemyShuffle,
                 GuaranteedBossItems = GuaranteedBossItems,
                 GenericKeys = GenericKeys,
-                TakeAnyLocations = TakeAnyLocations
+                TakeAnyLocations = TakeAnyLocations,
+                KeyDropShuffle = KeyDropShuffle,
+                ShopShuffle = ShopShuffle
             };
         }
 
@@ -232,11 +260,11 @@ namespace OpenTracker.Models.Modes
         /// <param name="saveData">
         /// The save data to be loaded.
         /// </param>
-        public void Load(ModeSaveData saveData)
+        public void Load(ModeSaveData? saveData)
         {
             if (saveData == null)
             {
-                throw new ArgumentNullException(nameof(saveData));
+                return;
             }
 
             ItemPlacement = saveData.ItemPlacement;
@@ -251,6 +279,8 @@ namespace OpenTracker.Models.Modes
             GuaranteedBossItems = saveData.GuaranteedBossItems;
             GenericKeys = saveData.GenericKeys;
             TakeAnyLocations = saveData.TakeAnyLocations;
+            KeyDropShuffle = saveData.KeyDropShuffle;
+            ShopShuffle = saveData.ShopShuffle;
         }
     }
 }

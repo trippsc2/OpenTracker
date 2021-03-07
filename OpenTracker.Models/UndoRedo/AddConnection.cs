@@ -1,25 +1,31 @@
 ﻿using OpenTracker.Models.Connections;
-using System;
 
 namespace OpenTracker.Models.UndoRedo
 {
     /// <summary>
-    /// This is the class for an undoable action to create a connection between
-    /// two entrances.
+    /// This class contains undoable action data to create a connection between two entrances.
     /// </summary>
     public class AddConnection : IUndoable
     {
-        private readonly Connection _connection;
+        private readonly IConnectionCollection _connections;
+        private readonly IConnection _connection;
+
+        public delegate AddConnection Factory(IConnection connection);
 
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="connections">
+        /// The connection collection.
+        /// </param>
         /// <param name="connection">
         /// A tuple of the two map locations that are being collected.
         /// </param>
-        public AddConnection(Connection connection)
+        public AddConnection(
+            IConnectionCollection connections, IConnection connection)
         {
-            _connection = connection ?? throw new ArgumentNullException(nameof(connection));
+            _connections = connections;
+            _connection = connection;
         }
 
         /// <summary>
@@ -30,23 +36,23 @@ namespace OpenTracker.Models.UndoRedo
         /// </returns>
         public bool CanExecute()
         {
-            return !ConnectionCollection.Instance.Contains(_connection);
+            return !_connections.Contains(_connection);
         }
 
         /// <summary>
         /// Executes the action.
         /// </summary>
-        public void Execute()
+        public void ExecuteDo()
         {
-            ConnectionCollection.Instance.Add(_connection);
+            _connections.Add(_connection);
         }
 
         /// <summary>
         /// Undoes the action.
         /// </summary>
-        public void Undo()
+        public void ExecuteUndo()
         {
-            ConnectionCollection.Instance.Remove(_connection);
+            _connections.Remove(_connection);
         }
     }
 }

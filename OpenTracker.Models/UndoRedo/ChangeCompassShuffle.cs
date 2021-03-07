@@ -3,21 +3,29 @@
 namespace OpenTracker.Models.UndoRedo
 {
     /// <summary>
-    /// This is the class for an undoable action to change the compass shuffle setting.
+    /// This class contains undoable action data to change the compass shuffle setting.
     /// </summary>
     public class ChangeCompassShuffle : IUndoable
     {
+        private readonly IMode _mode;
         private readonly bool _compassShuffle;
+
         private bool _previousCompassShuffle;
+
+        public delegate ChangeCompassShuffle Factory(bool compassShuffle);
 
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="mode">
+        /// The mode settings.
+        /// </param>
         /// <param name="compassShuffle">
         /// The new compass shuffle setting.
         /// </param>
-        public ChangeCompassShuffle(bool compassShuffle)
+        public ChangeCompassShuffle(IMode mode, bool compassShuffle)
         {
+            _mode = mode;
             _compassShuffle = compassShuffle;
         }
 
@@ -35,18 +43,18 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Executes the action.
         /// </summary>
-        public void Execute()
+        public void ExecuteDo()
         {
-            _previousCompassShuffle = Mode.Instance.CompassShuffle;
-            Mode.Instance.CompassShuffle = _compassShuffle;
+            _previousCompassShuffle = _mode.CompassShuffle;
+            _mode.CompassShuffle = _compassShuffle;
         }
 
         /// <summary>
         /// Undoes the action.
         /// </summary>
-        public void Undo()
+        public void ExecuteUndo()
         {
-            Mode.Instance.CompassShuffle = _previousCompassShuffle;
+            _mode.CompassShuffle = _previousCompassShuffle;
         }
     }
 }

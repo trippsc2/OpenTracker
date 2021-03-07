@@ -1,11 +1,11 @@
 ﻿using Avalonia.Layout;
-using OpenTracker.Models.Connections;
+using Avalonia.Threading;
 using OpenTracker.Models.Settings;
-using OpenTracker.ViewModels.Maps.MapLocations;
+using OpenTracker.Utils;
+using OpenTracker.ViewModels.Maps.Connections;
+using OpenTracker.ViewModels.Maps.Locations;
 using ReactiveUI;
-using System;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
+using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace OpenTracker.ViewModels.Maps
@@ -13,26 +13,29 @@ namespace OpenTracker.ViewModels.Maps
     /// <summary>
     /// This is the ViewModel of the map area control.
     /// </summary>
-    public class MapAreaVM : ViewModelBase
+    public class MapAreaVM : ViewModelBase, IMapAreaVM
     {
-        public static Orientation Orientation => 
-            AppSettings.Instance.Layout.CurrentMapOrientation;
+        private readonly ILayoutSettings _layoutSettings;
 
-        public ObservableCollection<MapVM> Maps { get; }
-        public ObservableCollection<MapConnectionVM> Connectors { get; } =
-            new ObservableCollection<MapConnectionVM>();
-        public ObservableCollection<MapLocationVMBase> MapLocations { get; }
+        public Orientation Orientation => 
+            _layoutSettings.CurrentMapOrientation;
+
+        public List<IMapVM> Maps { get; }
+        public IMapConnectionCollection Connectors { get; }
+        public List<IMapLocationVMBase> MapLocations { get; }
 
         /// <summary>
         /// Constructor
         /// </summary>
-        public MapAreaVM()
+        public MapAreaVM(ILayoutSettings layoutSettings, IMapAreaVMFactory factory, IMapConnectionCollection connectors)
         {
-            Maps = MapAreaVMFactory.GetMapControlVMs();
-            MapLocations = MapAreaVMFactory.GetMapLocationControlVMs();
+            _layoutSettings = layoutSettings;
 
-            AppSettings.Instance.Layout.PropertyChanged += OnLayoutChanged;
-            ConnectionCollection.Instance.CollectionChanged += OnConnectionsChanged;
+            Maps = factory.GetMapControlVMs();
+            Connectors = connectors;
+            MapLocations = factory.GetMapLocationControlVMs();
+
+            _layoutSettings.PropertyChanged += OnLayoutChanged;
         }
 
         /// <summary>
@@ -44,59 +47,11 @@ namespace OpenTracker.ViewModels.Maps
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(LayoutSettings.CurrentMapOrientation))
+            if (e.PropertyName == nameof(ILayoutSettings.CurrentMapOrientation))
             {
-                this.RaisePropertyChanged(nameof(Orientation));
-            }
-        }
-
-        /// <summary>
-        /// Subscribes to the CollectionChanged event on the ObservableCollection of map entrance
-        /// connections.
-        /// </summary>
-        /// <param name="sender">
-        /// The sending object of the event.
-        /// </param>
-        /// <param name="e">
-        /// The arguments of the PropertyChanged event.
-        /// </param>
-        private void OnConnectionsChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (e.Action == NotifyCollectionChangedAction.Add)
-            {
-                foreach (object item in e.NewItems)
-                {
-                    Connectors.Add(new MapConnectionVM((Connection)item, this));
-                }
-            }
-
-            if (e.Action == NotifyCollectionChangedAction.Remove)
-            {
-                foreach (object item in e.OldItems)
-                {
-                    Connection connection = (Connection)item;
-
-                    foreach (MapConnectionVM connector in Connectors)
-                    {
-                        if (connector.Connection == connection)
-                        {
-                            Connectors.Remove(connector);
-                            break;
-                        }
-                    }
-                }
-            }
-
-            if (e.Action == NotifyCollectionChangedAction.Reset)
-            {
-                Connectors.Clear();
-
-                foreach (Connection connection in (ObservableCollection<Connection>)sender)
-                {
-                    Connectors.Add(new MapConnectionVM(connection, this));
-                }
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Orientation)));
             }
         }
     }

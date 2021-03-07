@@ -3,21 +3,29 @@
 namespace OpenTracker.Models.UndoRedo
 {
     /// <summary>
-    /// This is the class for an undoable action to change the entrance shuffle setting.
+    /// This class contains undoable action data to change the entrance shuffle setting.
     /// </summary>
     public class ChangeEntranceShuffle : IUndoable
     {
+        private readonly IMode _mode;
         private readonly EntranceShuffle _entranceShuffle;
+
         private EntranceShuffle _previousEntranceShuffle;
+
+        public delegate ChangeEntranceShuffle Factory(EntranceShuffle entranceShuffle);
 
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="mode">
+        /// The mode settings.
+        /// </param>
         /// <param name="entranceShuffle">
         /// The new entrance shuffle setting.
         /// </param>
-        public ChangeEntranceShuffle(EntranceShuffle entranceShuffle)
+        public ChangeEntranceShuffle(IMode mode, EntranceShuffle entranceShuffle)
         {
+            _mode = mode;
             _entranceShuffle = entranceShuffle;
         }
 
@@ -35,18 +43,18 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Executes the action.
         /// </summary>
-        public void Execute()
+        public void ExecuteDo()
         {
-            _previousEntranceShuffle = Mode.Instance.EntranceShuffle;
-            Mode.Instance.EntranceShuffle = _entranceShuffle;
+            _previousEntranceShuffle = _mode.EntranceShuffle;
+            _mode.EntranceShuffle = _entranceShuffle;
         }
 
         /// <summary>
         /// Undoes the action.
         /// </summary>
-        public void Undo()
+        public void ExecuteUndo()
         {
-            Mode.Instance.EntranceShuffle = _previousEntranceShuffle;
+            _mode.EntranceShuffle = _previousEntranceShuffle;
         }
     }
 }

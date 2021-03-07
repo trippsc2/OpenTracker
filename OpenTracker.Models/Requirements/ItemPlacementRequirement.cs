@@ -1,63 +1,39 @@
-﻿using OpenTracker.Models.AccessibilityLevels;
-using OpenTracker.Models.Modes;
+﻿using OpenTracker.Models.Modes;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.Requirements
 {
     /// <summary>
-    /// This is the class for Item Placement requirements.
+    /// This class contains item placement setting requirement data.
     /// </summary>
-    public class ItemPlacementRequirement : IRequirement
+    public class ItemPlacementRequirement : BooleanRequirement
     {
-        private readonly ItemPlacement _itemPlacement;
+        private readonly IMode _mode;
+        private readonly ItemPlacement _expectedValue;
 
-        public bool Met =>
-            Accessibility != AccessibilityLevel.None;
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private AccessibilityLevel _accessibility;
-        public AccessibilityLevel Accessibility
-        {
-            get => _accessibility;
-            private set
-            {
-                if (_accessibility != value)
-                {
-                    _accessibility = value;
-                    OnPropertyChanged(nameof(Accessibility));
-                }
-            }
-        }
+        public delegate ItemPlacementRequirement Factory(ItemPlacement expectedValue);
 
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="itemPlacement">
-        /// The required item placement.
+        /// <param name="mode">
+        /// The mode settings.
         /// </param>
-        public ItemPlacementRequirement(ItemPlacement itemPlacement)
+        /// <param name="expectedValue">
+        /// The expected item placement value.
+        /// </param>
+        public ItemPlacementRequirement(IMode mode, ItemPlacement expectedValue)
         {
-            _itemPlacement = itemPlacement;
+            _mode = mode;
+            _expectedValue = expectedValue;
 
-            Mode.Instance.PropertyChanged += OnModeChanged;
+            _mode.PropertyChanged += OnModeChanged;
 
-            UpdateAccessibility();
+            UpdateValue();
         }
 
         /// <summary>
-        /// Raises the PropertyChanged event for the specified property.
-        /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changed property.
-        /// </param>
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        /// <summary>
-        /// Subscribes to the PropertyChanged event on the Mode class.
+        /// Subscribes to the PropertyChanged event on the IMode interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -65,21 +41,17 @@ namespace OpenTracker.Models.Requirements
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnModeChanged(object sender, PropertyChangedEventArgs e)
+        private void OnModeChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(Mode.ItemPlacement))
+            if (e.PropertyName == nameof(IMode.ItemPlacement))
             {
-                UpdateAccessibility();
+                UpdateValue();
             }
         }
 
-        /// <summary>
-        /// Updates the accessibility of this requirement.
-        /// </summary>
-        private void UpdateAccessibility()
+        protected override bool ConditionMet()
         {
-            Accessibility = Mode.Instance.ItemPlacement == _itemPlacement ?
-                AccessibilityLevel.Normal : AccessibilityLevel.None;
+            return _mode.ItemPlacement == _expectedValue;
         }
     }
 }

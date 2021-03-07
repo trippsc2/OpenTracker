@@ -3,7 +3,7 @@
 namespace OpenTracker.Models.SaveLoad
 {
     /// <summary>
-    /// This is the class for containing save data for the BossPlacement class.
+    /// This class contains boss placement save data.
     /// </summary>
     public class BossPlacementSaveData
     {

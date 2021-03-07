@@ -1,0 +1,33 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:OpenTracker.ViewModels.PinnedLocations.Sections;assembly=OpenTracker"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vc="clr-namespace:OpenTracker.ValueConverters;assembly=OpenTracker"
+             xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+             xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
+             mc:Ignorable="d" x:Class="OpenTracker.Views.PinnedLocations.Sections.TakeAnySectionIcon">
+  
+  <Design.DataContext>
+    <vm:TakeAnySectionIconVM />
+  </Design.DataContext>
+
+  <UserControl.Resources>
+    <vc:BitmapValueConverter x:Key="BitmapValueConverter" />
+  </UserControl.Resources>
+  
+  <Panel Name="panel">
+    
+    <i:Interaction.Behaviors>
+      <ia:EventTriggerBehavior EventName="PointerReleased"
+                               SourceObject="{Binding #panel}">
+        <ia:InvokeCommandAction Command="{Binding HandleClick}" />
+      </ia:EventTriggerBehavior>
+    </i:Interaction.Behaviors>
+    
+    <Image Source="{Binding ImageSource, Converter={StaticResource BitmapValueConverter}}"
+           Height="32" Width="32" />
+    
+  </Panel>
+
+</UserControl>

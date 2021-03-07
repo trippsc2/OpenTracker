@@ -1,13 +1,15 @@
-﻿using System;
+﻿using OpenTracker.Utils;
 
 namespace OpenTracker.ViewModels.Markings.Images
 {
     /// <summary>
-    /// This is the ViewModel class for the marking image control.
+    /// This class contains the static marking image control ViewModel data.
     /// </summary>
-    public class MarkingImageVM : MarkingImageVMBase
+    public class MarkingImageVM : ViewModelBase, IMarkingImageVMBase
     {
         public string ImageSource { get; }
+
+        public delegate MarkingImageVM Factory(string imageSource);
 
         /// <summary>
         /// Constructor
@@ -17,7 +19,7 @@ namespace OpenTracker.ViewModels.Markings.Images
         /// </param>
         public MarkingImageVM(string imageSource)
         {
-            ImageSource = imageSource ?? throw new ArgumentNullException(nameof(imageSource));
+            ImageSource = imageSource;
         }
     }
 }

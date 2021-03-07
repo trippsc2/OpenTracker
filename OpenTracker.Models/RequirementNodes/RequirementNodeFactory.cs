@@ -6,10 +6,40 @@ using System.Collections.Generic;
 namespace OpenTracker.Models.RequirementNodes
 {
     /// <summary>
-    /// This is the class for creating requirement node classes.
+    /// This class contains creation logic for requirement node data.
     /// </summary>
-    public static class RequirementNodeFactory
+    public class RequirementNodeFactory : IRequirementNodeFactory
     {
+        private readonly IRequirementDictionary _requirements;
+        private readonly IRequirementNodeDictionary _requirementNodes;
+        private readonly IRequirementNode.Factory _factory;
+        private readonly NodeConnection.Factory _connectionFactory;
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="requirements">
+        /// The requirement dictionary.
+        /// </param>
+        /// <param name="requirementNodes">
+        /// The requirement node dictionary.
+        /// </param>
+        /// <param name="factory">
+        /// An Autofac factory for creating requirement nodes.
+        /// </param>
+        /// <param name="connectionFactory">
+        /// An Autofac factory for creating node connections.
+        /// </param>
+        public RequirementNodeFactory(
+            IRequirementDictionary requirements, IRequirementNodeDictionary requirementNodes,
+            IRequirementNode.Factory factory, NodeConnection.Factory connectionFactory)
+        {
+            _requirements = requirements;
+            _requirementNodes = requirementNodes;
+            _factory = factory;
+            _connectionFactory = connectionFactory;
+        }
+
         /// <summary>
         /// Populates the list of connections to the specified requirement node ID.
         /// </summary>
@@ -22,2221 +52,2517 @@ namespace OpenTracker.Models.RequirementNodes
         /// <param name="connections">
         /// The list of connections to be populated.
         /// </param>
-        public static void PopulateNodeConnections(
+        public void PopulateNodeConnections(
             RequirementNodeID id, IRequirementNode node, List<INodeConnection> connections)
         {
-            if (node == null)
-            {
-                throw new ArgumentNullException(nameof(node));
-            }
-
-            if (connections == null)
-            {
-                throw new ArgumentNullException(nameof(connections));
-            }
-
             switch (id)
             {
                 case RequirementNodeID.EntranceDungeonAllInsanity:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.Start], node,
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleDungeonAllInsanity]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.Start], node,
+                            _requirements[RequirementType.EntranceShuffleDungeonAllInsanity]));
                     }
                     break;
                 case RequirementNodeID.EntranceNone:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.Start], node,
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.Start], node,
+                            _requirements[RequirementType.EntranceShuffleNoneDungeon]));
                     }
                     break;
                 case RequirementNodeID.EntranceNoneInverted:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceNone], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateInverted]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.EntranceNone], node,
+                            _requirements[RequirementType.WorldStateInverted]));
                     }
                     break;
                 case RequirementNodeID.Flute:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.Start], node,
-                            RequirementDictionary.Instance[RequirementType.Flute]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.Start], node,
+                            _requirements[RequirementType.Flute]));
                     }
                     break;
                 case RequirementNodeID.FluteActivated:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.Flute], node,
-                            RequirementDictionary.Instance[RequirementType.FluteActivated]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldFlute], node));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.Flute], node,
+                            _requirements[RequirementType.FluteActivated]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LightWorldFlute], node,
+                            _requirements[RequirementType.NoRequirement]));
+
                     }
                     break;
                 case RequirementNodeID.LightWorld:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.Start], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainEntry], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainExit], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LWKakarikoPortalNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.Hammer]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LWKakarikoPortalNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.Gloves2]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DesertLedge], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.GrassHouse], node,
-                            RequirementDictionary.Instance[RequirementType.NotBunnyLW]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.BombHut], node,
-                            RequirementDictionary.Instance[RequirementType.NotBunnyLW]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.RaceGameLedge], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.CastleSecretExitArea], node,
-                            RequirementDictionary.Instance[RequirementType.NotBunnyLW]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.SouthOfGroveLedge], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.CheckerboardLedge], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LWMirePortal], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LWSouthPortalNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.Hammer]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LWWitchAreaNotBunny], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LWEastPortalNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.Hammer]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldSouthInverted], node,
-                            RequirementDictionary.Instance[RequirementType.Aga1]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.Start], node,
+                            _requirements[RequirementType.WorldStateStandardOpen]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DeathMountainEntry], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DeathMountainExit], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LWKakarikoPortalNotBunny], node,
+                            _requirements[RequirementType.Hammer]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LWKakarikoPortalNotBunny], node,
+                            _requirements[RequirementType.Gloves2]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DesertLedge], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.GrassHouse], node,
+                            _requirements[RequirementType.NotBunnyLW]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.BombHut], node,
+                            _requirements[RequirementType.NotBunnyLW]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.RaceGameLedge], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.CastleSecretExitArea], node,
+                            _requirements[RequirementType.NotBunnyLW]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.SouthOfGroveLedge], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.CheckerboardLedge], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LWMirePortal], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LWSouthPortalNotBunny], node,
+                            _requirements[RequirementType.Hammer]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LWWitchAreaNotBunny], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LWEastPortalNotBunny], node,
+                            _requirements[RequirementType.Hammer]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldSouthInverted], node,
+                            _requirements[RequirementType.Aga1]));
                     }
                     break;
                 case RequirementNodeID.LightWorldInverted:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorld], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateInverted]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LightWorld], node,
+                            _requirements[RequirementType.WorldStateInverted]));
                     }
                     break;
                 case RequirementNodeID.LightWorldInvertedNotBunny:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldInverted], node,
-                            RequirementDictionary.Instance[RequirementType.MoonPearl]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LightWorldInverted], node,
+                            _requirements[RequirementType.MoonPearl]));
                     }
                     break;
                 case RequirementNodeID.LightWorldStandardOpen:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorld], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LightWorld], node,
+                            _requirements[RequirementType.WorldStateStandardOpen]));
                     }
                     break;
                 case RequirementNodeID.LightWorldMirror:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorld], node,
-                            RequirementDictionary.Instance[RequirementType.LWMirror]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LightWorld], node,
+                            _requirements[RequirementType.LWMirror]));
                     }
                     break;
                 case RequirementNodeID.LightWorldNotBunny:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorld], node,
-                            RequirementDictionary.Instance[RequirementType.NotBunnyLW]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LightWorld], node,
+                            _requirements[RequirementType.NotBunnyLW]));
                     }
                     break;
                 case RequirementNodeID.LightWorldNotBunnyOrDungeonRevive:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldNotBunny], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorld], node,
-                            RequirementDictionary.Instance[RequirementType.DungeonRevive]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LightWorldNotBunny], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LightWorld], node,
+                            _requirements[RequirementType.DungeonRevive]));
                     }
                     break;
                 case RequirementNodeID.LightWorldNotBunnyOrSuperBunnyFallInHole:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldNotBunny], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorld], node,
-                            RequirementDictionary.Instance[RequirementType.SuperBunnyFallInHole]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LightWorldNotBunny], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LightWorld], node,
+                            _requirements[RequirementType.SuperBunnyFallInHole]));
                     }
                     break;
                 case RequirementNodeID.LightWorldNotBunnyOrSuperBunnyMirror:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldNotBunny], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorld], node,
-                            RequirementDictionary.Instance[RequirementType.SuperBunnyMirror]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LightWorldNotBunny], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LightWorld], node,
+                            _requirements[RequirementType.SuperBunnyMirror]));
                     }
                     break;
                 case RequirementNodeID.LightWorldDash:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.Boots]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LightWorldNotBunny], node,
+                            _requirements[RequirementType.Boots]));
                     }
                     break;
                 case RequirementNodeID.LightWorldHammer:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.Hammer]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LightWorldNotBunny], node,
+                            _requirements[RequirementType.Hammer]));
                     }
                     break;
                 case RequirementNodeID.LightWorldLift1:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.Gloves1]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LightWorldNotBunny], node,
+                            _requirements[RequirementType.Gloves1]));
                     }
                     break;
                 case RequirementNodeID.LightWorldFlute:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.Flute]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LightWorldNotBunny], node,
+                            _requirements[RequirementType.Flute]));
                     }
                     break;
                 case RequirementNodeID.FluteInverted:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.FluteActivated], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateInverted]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.FluteActivated], node,
+                            _requirements[RequirementType.WorldStateInverted]));
                     }
                     break;
                 case RequirementNodeID.FluteStandardOpen:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.FluteActivated], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.FluteActivated], node,
+                            _requirements[RequirementType.WorldStateStandardOpen]));
                     }
                     break;
                 case RequirementNodeID.Pedestal:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorld], node,
-                            RequirementDictionary.Instance[RequirementType.Pedestal]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LightWorld], node,
+                            _requirements[RequirementType.Pedestal]));
                     }
                     break;
                 case RequirementNodeID.LumberjackCaveHole:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldDash], node,
-                            RequirementDictionary.Instance[RequirementType.Aga1]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LightWorldDash], node,
+                            _requirements[RequirementType.Aga1]));
                     }
                     break;
                 case RequirementNodeID.DeathMountainEntry:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldLift1], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.BumperCaveEntry], node,
-                            RequirementDictionary.Instance[RequirementType.DWMirror]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LightWorldLift1], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.BumperCaveEntry], node,
+                            _requirements[RequirementType.DWMirror]));
                     }
                     break;
                 case RequirementNodeID.DeathMountainEntryNonEntrance:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainEntry], node,
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DeathMountainEntry], node,
+                            _requirements[RequirementType.EntranceShuffleNoneDungeon]));
                     }
                     break;
                 case RequirementNodeID.DeathMountainEntryCave:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainEntryNonEntrance], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainWestBottomNonEntrance], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.BumperCaveEntryNonEntrance], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateInverted]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkDeathMountainWestBottomNonEntrance], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateInverted]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DeathMountainEntryNonEntrance], node,
+                            _requirements[RequirementType.WorldStateStandardOpen]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DeathMountainWestBottomNonEntrance], node,
+                            _requirements[RequirementType.WorldStateStandardOpen]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.BumperCaveEntryNonEntrance], node,
+                            _requirements[RequirementType.WorldStateInverted]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkDeathMountainWestBottomNonEntrance], node,
+                            _requirements[RequirementType.WorldStateInverted]));
                     }
                     break;
                 case RequirementNodeID.DeathMountainEntryCaveDark:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainEntryCave], node,
-                            RequirementDictionary.Instance[RequirementType.DarkRoomDeathMountainEntry]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DeathMountainEntryCave], node,
+                            _requirements[RequirementType.DarkRoomDeathMountainEntry]));
                     }
                     break;
                 case RequirementNodeID.DeathMountainExit:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainExitCaveDark], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.BumperCaveBack], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateInverted]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.BumperCaveTop], node,
-                            RequirementDictionary.Instance[RequirementType.DWMirror]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DeathMountainExitCaveDark], node,
+                            _requirements[RequirementType.WorldStateStandardOpen]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.BumperCaveBack], node,
+                            _requirements[RequirementType.WorldStateInverted]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.BumperCaveTop], node,
+                            _requirements[RequirementType.DWMirror]));
                     }
                     break;
                 case RequirementNodeID.DeathMountainExitNonEntrance:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainExit], node,
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DeathMountainExit], node,
+                            _requirements[RequirementType.EntranceShuffleNoneDungeon]));
                     }
                     break;
                 case RequirementNodeID.DeathMountainExitCave:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainExitNonEntrance], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainWestBottomNonEntrance], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DeathMountainExitNonEntrance], node,
+                            _requirements[RequirementType.WorldStateStandardOpen]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DeathMountainWestBottomNonEntrance], node,
+                            _requirements[RequirementType.WorldStateStandardOpen]));
                     }
                     break;
                 case RequirementNodeID.DeathMountainExitCaveDark:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainExitCave], node,
-                            RequirementDictionary.Instance[RequirementType.DarkRoomDeathMountainExit]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DeathMountainExitCave], node,
+                            _requirements[RequirementType.DarkRoomDeathMountainExit]));
                     }
                     break;
                 case RequirementNodeID.LWKakarikoPortal:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.Gloves2]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldHammer], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DWKakarikoPortalInverted], node,
-                            RequirementDictionary.Instance[RequirementType.Gloves1]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LightWorldNotBunny], node,
+                            _requirements[RequirementType.Gloves2]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LightWorldHammer], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DWKakarikoPortalInverted], node,
+                            _requirements[RequirementType.Gloves1]));
                     }
                     break;
                 case RequirementNodeID.LWKakarikoPortalStandardOpen:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LWKakarikoPortal], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LWKakarikoPortal], node,
+                            _requirements[RequirementType.WorldStateStandardOpen]));
                     }
                     break;
                 case RequirementNodeID.LWKakarikoPortalNotBunny:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LWKakarikoPortal], node,
-                            RequirementDictionary.Instance[RequirementType.NotBunnyLW]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LWKakarikoPortal], node,
+                            _requirements[RequirementType.NotBunnyLW]));
                     }
                     break;
                 case RequirementNodeID.SickKid:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorld], node,
-                            RequirementDictionary.Instance[RequirementType.Bottle]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LightWorld], node,
+                            _requirements[RequirementType.Bottle]));
                     }
                     break;
                 case RequirementNodeID.GrassHouse:
                 case RequirementNodeID.BombHut:
                 case RequirementNodeID.CastleSecretExitArea:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldNotBunny], node));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LightWorldNotBunny], node,
+                            _requirements[RequirementType.NoRequirement]));
+
                     }
                     break;
                 case RequirementNodeID.MagicBatLedge:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldHammer], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.HammerPegsArea], node,
-                            RequirementDictionary.Instance[RequirementType.DWMirror]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LightWorldHammer], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.HammerPegsArea], node,
+                            _requirements[RequirementType.DWMirror]));
                     }
                     break;
                 case RequirementNodeID.MagicBat:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.MagicBatLedge], node,
-                            RequirementDictionary.Instance[RequirementType.MagicBat]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.MagicBatLedge], node,
+                            _requirements[RequirementType.MagicBat]));
                     }
                     break;
                 case RequirementNodeID.RaceGameLedge:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldSouthMirror], node));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LightWorldNotBunny], node,
+                            _requirements[RequirementType.EntranceShuffleNoneDungeon]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldSouthMirror], node,
+                            _requirements[RequirementType.NoRequirement]));
+
                     }
                     break;
                 case RequirementNodeID.RaceGameLegdeNotBunny:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.RaceGameLedge], node,
-                            RequirementDictionary.Instance[RequirementType.NotBunnyLW]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.RaceGameLedge], node,
+                            _requirements[RequirementType.NotBunnyLW]));
                     }
                     break;
                 case RequirementNodeID.SouthOfGroveLedge:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldInverted], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldSouthMirror], node));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LightWorldInverted], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldSouthMirror], node,
+                            _requirements[RequirementType.NoRequirement]));
+
                     }
                     break;
                 case RequirementNodeID.SouthOfGrove:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.SouthOfGroveLedge], node,
-                            RequirementDictionary.Instance[RequirementType.NotBunnyLW]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.SouthOfGroveLedge], node,
-                            RequirementDictionary.Instance[RequirementType.SuperBunnyMirror]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.SouthOfGroveLedge], node,
+                            _requirements[RequirementType.NotBunnyLW]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.SouthOfGroveLedge], node,
+                            _requirements[RequirementType.SuperBunnyMirror]));
                     }
                     break;
                 case RequirementNodeID.GroveDiggingSpot:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.Shovel]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LightWorldNotBunny], node,
+                            _requirements[RequirementType.Shovel]));
                     }
                     break;
                 case RequirementNodeID.DesertLedge:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DesertBackNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.Gloves1]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.MireAreaMirror], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DPFrontEntry], node,
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleNone]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DesertBackNotBunny], node,
+                            _requirements[RequirementType.Gloves1]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.MireAreaMirror], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DPFrontEntry], node,
+                            _requirements[RequirementType.EntranceShuffleNone]));
                     }
                     break;
                 case RequirementNodeID.DesertLedgeNotBunny:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DesertLedge], node,
-                            RequirementDictionary.Instance[RequirementType.NotBunnyLW]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DesertLedge], node,
+                            _requirements[RequirementType.NotBunnyLW]));
                     }
                     break;
                 case RequirementNodeID.DesertBack:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DesertLedgeNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.Gloves1]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.MireAreaMirror], node));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DesertLedgeNotBunny], node,
+                            _requirements[RequirementType.Gloves1]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.MireAreaMirror], node,
+                            _requirements[RequirementType.NoRequirement]));
+
                     }
                     break;
                 case RequirementNodeID.DesertBackNotBunny:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DesertBack], node,
-                            RequirementDictionary.Instance[RequirementType.NotBunnyLW]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DesertBack], node,
+                            _requirements[RequirementType.NotBunnyLW]));
                     }
                     break;
                 case RequirementNodeID.CheckerboardLedge:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldInverted], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.MireAreaMirror], node));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LightWorldInverted], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.MireAreaMirror], node,
+                            _requirements[RequirementType.NoRequirement]));
+
                     }
                     break;
                 case RequirementNodeID.CheckerboardLedgeNotBunny:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.CheckerboardLedge], node,
-                            RequirementDictionary.Instance[RequirementType.NotBunnyLW]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.CheckerboardLedge], node,
+                            _requirements[RequirementType.NotBunnyLW]));
                     }
                     break;
                 case RequirementNodeID.CheckerboardCave:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.CheckerboardLedgeNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.Gloves1]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.CheckerboardLedgeNotBunny], node,
+                            _requirements[RequirementType.Gloves1]));
                     }
                     break;
                 case RequirementNodeID.DesertPalaceFrontEntrance:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorld], node,
-                            RequirementDictionary.Instance[RequirementType.Book]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.MireAreaMirror], node));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LightWorld], node,
+                            _requirements[RequirementType.Book]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.MireAreaMirror], node,
+                            _requirements[RequirementType.NoRequirement]));
+
                     }
                     break;
                 case RequirementNodeID.BombosTabletLedge:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldInverted], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldSouthMirror], node));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LightWorldInverted], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldSouthMirror], node,
+                            _requirements[RequirementType.NoRequirement]));
+
                     }
                     break;
                 case RequirementNodeID.BombosTablet:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.BombosTabletLedge], node,
-                            RequirementDictionary.Instance[RequirementType.Tablet]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.BombosTabletLedge], node,
+                            _requirements[RequirementType.Tablet]));
                     }
                     break;
                 case RequirementNodeID.LWMirePortal:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.FluteStandardOpen], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DWMirePortalInverted], node,
-                            RequirementDictionary.Instance[RequirementType.Gloves2]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.FluteStandardOpen], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DWMirePortalInverted], node,
+                            _requirements[RequirementType.Gloves2]));
                     }
                     break;
                 case RequirementNodeID.LWMirePortalStandardOpen:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LWMirePortal], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LWMirePortal], node,
+                            _requirements[RequirementType.WorldStateStandardOpen]));
                     }
                     break;
                 case RequirementNodeID.LWGraveyard:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldNotBunny], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LWGraveyardLedge], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.KingsTombNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.Gloves2]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LightWorldNotBunny], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LWGraveyardLedge], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.KingsTombNotBunny], node,
+                            _requirements[RequirementType.Gloves2]));
                     }
                     break;
                 case RequirementNodeID.LWGraveyardNotBunny:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LWGraveyard], node,
-                            RequirementDictionary.Instance[RequirementType.NotBunnyLW]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LWGraveyard], node,
+                            _requirements[RequirementType.NotBunnyLW]));
                     }
                     break;
                 case RequirementNodeID.LWGraveyardLedge:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LWGraveyardNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateInverted]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DWGraveyardMirror], node));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LWGraveyardNotBunny], node,
+                            _requirements[RequirementType.WorldStateInverted]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DWGraveyardMirror], node,
+                            _requirements[RequirementType.NoRequirement]));
+
                     }
                     break;
                 case RequirementNodeID.EscapeGrave:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LWGraveyardNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.Gloves1]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LWGraveyardNotBunny], node,
+                            _requirements[RequirementType.Gloves1]));
                     }
                     break;
                 case RequirementNodeID.KingsTomb:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LWGraveyardNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.Gloves2]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DWGraveyardMirror], node));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LWGraveyardNotBunny], node,
+                            _requirements[RequirementType.Gloves2]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DWGraveyardMirror], node,
+                            _requirements[RequirementType.NoRequirement]));
+
                     }
                     break;
                 case RequirementNodeID.KingsTombNotBunny:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.KingsTomb], node,
-                            RequirementDictionary.Instance[RequirementType.NotBunnyLW]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.KingsTomb], node,
+                            _requirements[RequirementType.NotBunnyLW]));
                     }
                     break;
                 case RequirementNodeID.KingsTombGrave:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.KingsTombNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.Boots]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.KingsTombNotBunny], node,
+                            _requirements[RequirementType.Boots]));
                     }
                     break;
                 case RequirementNodeID.HyruleCastleTop:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorld], node,
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleNone]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldEast], node,
-                            RequirementDictionary.Instance[RequirementType.DWMirror]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LightWorld], node,
+                            _requirements[RequirementType.EntranceShuffleNone]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldEast], node,
+                            _requirements[RequirementType.DWMirror]));
                     }
                     break;
                 case RequirementNodeID.HyruleCastleTopInverted:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.HyruleCastleTop], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateInverted]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.HyruleCastleTop], node,
+                            _requirements[RequirementType.WorldStateInverted]));
                     }
                     break;
                 case RequirementNodeID.HyruleCastleTopStandardOpen:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.HyruleCastleTop], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.HyruleCastleTop], node,
+                            _requirements[RequirementType.WorldStateStandardOpen]));
                     }
                     break;
                 case RequirementNodeID.AgahnimTowerEntrance:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.HyruleCastleTopInverted], node,
-                            RequirementDictionary.Instance[RequirementType.GTCrystal]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.HyruleCastleTopStandardOpen], node,
-                            RequirementDictionary.Instance[RequirementType.ATBarrier]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.HyruleCastleTopInverted], node,
+                            _requirements[RequirementType.GTCrystal]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.HyruleCastleTopStandardOpen], node,
+                            _requirements[RequirementType.ATBarrier]));
                     }
                     break;
                 case RequirementNodeID.GanonHole:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.HyruleCastleTopInverted], node,
-                            RequirementDictionary.Instance[RequirementType.Aga2]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldEastStandardOpen], node,
-                            RequirementDictionary.Instance[RequirementType.Aga2]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.HyruleCastleTopInverted], node,
+                            _requirements[RequirementType.Aga2]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldEastStandardOpen], node,
+                            _requirements[RequirementType.Aga2]));
                     }
                     break;
                 case RequirementNodeID.LWSouthPortal:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldHammer], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DWSouthPortalInverted], node,
-                            RequirementDictionary.Instance[RequirementType.Gloves1]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LightWorldHammer], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DWSouthPortalInverted], node,
+                            _requirements[RequirementType.Gloves1]));
                     }
                     break;
                 case RequirementNodeID.LWSouthPortalStandardOpen:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LWSouthPortal], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LWSouthPortal], node,
+                            _requirements[RequirementType.WorldStateStandardOpen]));
                     }
                     break;
                 case RequirementNodeID.LWSouthPortalNotBunny:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LWSouthPortal], node,
-                            RequirementDictionary.Instance[RequirementType.NotBunnyLW]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LWSouthPortal], node,
+                            _requirements[RequirementType.NotBunnyLW]));
                     }
                     break;
                 case RequirementNodeID.ZoraArea:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LWLakeHyliaFlippers], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LWWitchAreaNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.Gloves1]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.CatfishArea], node,
-                            RequirementDictionary.Instance[RequirementType.DWMirror]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LWLakeHyliaFakeFlippers], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LWLakeHyliaWaterWalk], node));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LWLakeHyliaFlippers], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LWWitchAreaNotBunny], node,
+                            _requirements[RequirementType.Gloves1]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.CatfishArea], node,
+                            _requirements[RequirementType.DWMirror]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LWLakeHyliaFakeFlippers], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LWLakeHyliaWaterWalk], node,
+                            _requirements[RequirementType.NoRequirement]));
+
                     }
                     break;
                 case RequirementNodeID.ZoraLedge:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.ZoraArea], node,
-                            RequirementDictionary.Instance[RequirementType.Flippers]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.ZoraArea], node,
-                            RequirementDictionary.Instance[RequirementType.FakeFlippersSplashDeletion]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.ZoraArea], node,
-                            RequirementDictionary.Instance[RequirementType.WaterWalk]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.ZoraArea], node,
+                            _requirements[RequirementType.Flippers]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.ZoraArea], node,
+                            _requirements[RequirementType.FakeFlippersSplashDeletion]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.ZoraArea], node,
+                            _requirements[RequirementType.WaterWalk]));
                     }
                     break;
                 case RequirementNodeID.WaterfallFairy:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LWLakeHyliaFlippers], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LWLakeHyliaFakeFlippers], node,
-                            RequirementDictionary.Instance[RequirementType.MoonPearl]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LWLakeHyliaWaterWalk], node));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LWLakeHyliaFlippers], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LWLakeHyliaFakeFlippers], node,
+                            _requirements[RequirementType.MoonPearl]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LWLakeHyliaWaterWalk], node,
+                            _requirements[RequirementType.NoRequirement]));
+
                     }
                     break;
                 case RequirementNodeID.WaterfallFairyNotBunny:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.WaterfallFairy], node,
-                            RequirementDictionary.Instance[RequirementType.NotBunnyLW]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.WaterfallFairy], node,
+                            _requirements[RequirementType.NotBunnyLW]));
                     }
                     break;
                 case RequirementNodeID.LWWitchArea:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldNotBunny], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.ZoraArea], node,
-                            RequirementDictionary.Instance[RequirementType.Gloves1]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LightWorldNotBunny], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.ZoraArea], node,
+                            _requirements[RequirementType.Gloves1]));
                     }
                     break;
                 case RequirementNodeID.LWWitchAreaNotBunny:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LWWitchArea], node,
-                            RequirementDictionary.Instance[RequirementType.NotBunnyLW]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LWWitchArea], node,
+                            _requirements[RequirementType.NotBunnyLW]));
                     }
                     break;
                 case RequirementNodeID.WitchsHut:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LWWitchArea], node,
-                            RequirementDictionary.Instance[RequirementType.Mushroom]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LWWitchArea], node,
+                            _requirements[RequirementType.Mushroom]));
                     }
                     break;
                 case RequirementNodeID.Sahasrahla:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorld], node,
-                            RequirementDictionary.Instance[RequirementType.GreenPendant]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LightWorld], node,
+                            _requirements[RequirementType.GreenPendant]));
                     }
                     break;
                 case RequirementNodeID.LWEastPortal:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldHammer], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DWEastPortalInverted], node,
-                            RequirementDictionary.Instance[RequirementType.Gloves1]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LightWorldHammer], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DWEastPortalInverted], node,
+                            _requirements[RequirementType.Gloves1]));
                     }
                     break;
                 case RequirementNodeID.LWEastPortalStandardOpen:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LWEastPortal], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LWEastPortal], node,
+                            _requirements[RequirementType.WorldStateStandardOpen]));
                     }
                     break;
                 case RequirementNodeID.LWEastPortalNotBunny:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LWEastPortal], node,
-                            RequirementDictionary.Instance[RequirementType.NotBunnyLW]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LWEastPortal], node,
+                            _requirements[RequirementType.NotBunnyLW]));
                     }
                     break;
                 case RequirementNodeID.LWLakeHyliaFakeFlippers:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.FakeFlippersFairyRevival]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.FakeFlippersScreenTransition]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.FakeFlippersSplashDeletion]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LightWorldNotBunny], node,
+                            _requirements[RequirementType.FakeFlippersFairyRevival]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LightWorldNotBunny], node,
+                            _requirements[RequirementType.FakeFlippersScreenTransition]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LightWorldNotBunny], node,
+                            _requirements[RequirementType.FakeFlippersSplashDeletion]));
                     }
                     break;
                 case RequirementNodeID.LWLakeHyliaFlippers:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.Flippers]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.WaterfallFairyNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.Flippers]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LightWorldNotBunny], node,
+                            _requirements[RequirementType.Flippers]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.WaterfallFairyNotBunny], node,
+                            _requirements[RequirementType.Flippers]));
                     }
                     break;
                 case RequirementNodeID.LWLakeHyliaWaterWalk:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.WaterWalk]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.WaterfallFairyNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.WaterWalkFromWaterfallCave]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LightWorldNotBunny], node,
+                            _requirements[RequirementType.WaterWalk]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.WaterfallFairyNotBunny], node,
+                            _requirements[RequirementType.WaterWalkFromWaterfallCave]));
                     }
                     break;
                 case RequirementNodeID.Hobo:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LWLakeHyliaFlippers], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LWLakeHyliaFakeFlippers], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LWLakeHyliaWaterWalk], node));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LWLakeHyliaFlippers], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LWLakeHyliaFakeFlippers], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LWLakeHyliaWaterWalk], node,
+                            _requirements[RequirementType.NoRequirement]));
+
                     }
                     break;
                 case RequirementNodeID.LakeHyliaIsland:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LWLakeHyliaFlippers], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateInverted]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DWLakeHyliaFlippers], node,
-                            RequirementDictionary.Instance[RequirementType.DWMirror]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LWLakeHyliaFakeFlippers], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateInverted]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LWLakeHyliaWaterWalk], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateInverted]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DWLakeHyliaWaterWalk], node,
-                            RequirementDictionary.Instance[RequirementType.DWMirror]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LWLakeHyliaFlippers], node,
+                            _requirements[RequirementType.WorldStateInverted]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DWLakeHyliaFlippers], node,
+                            _requirements[RequirementType.DWMirror]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LWLakeHyliaFakeFlippers], node,
+                            _requirements[RequirementType.WorldStateInverted]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LWLakeHyliaWaterWalk], node,
+                            _requirements[RequirementType.WorldStateInverted]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DWLakeHyliaWaterWalk], node,
+                            _requirements[RequirementType.DWMirror]));
                     }
                     break;
                 case RequirementNodeID.LakeHyliaFairyIsland:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LWLakeHyliaFlippers], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.IcePalaceIsland], node,
-                            RequirementDictionary.Instance[RequirementType.DWMirror]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LWLakeHyliaFakeFlippers], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LWLakeHyliaWaterWalk], node));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LWLakeHyliaFlippers], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.IcePalaceIsland], node,
+                            _requirements[RequirementType.DWMirror]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LWLakeHyliaFakeFlippers], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LWLakeHyliaWaterWalk], node,
+                            _requirements[RequirementType.NoRequirement]));
+
                     }
                     break;
                 case RequirementNodeID.LakeHyliaFairyIslandStandardOpen:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LakeHyliaFairyIsland], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LakeHyliaFairyIsland], node,
+                            _requirements[RequirementType.WorldStateStandardOpen]));
                     }
                     break;
                 case RequirementNodeID.DeathMountainWestBottom:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.FluteStandardOpen], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainEntryCaveDark], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainExitCaveDark], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainWestTop], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainEastBottomNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.Hookshot]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkDeathMountainWestBottomInverted], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkDeathMountainWestBottomMirror], node));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.FluteStandardOpen], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DeathMountainEntryCaveDark], node,
+                            _requirements[RequirementType.WorldStateStandardOpen]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DeathMountainExitCaveDark], node,
+                            _requirements[RequirementType.WorldStateStandardOpen]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DeathMountainWestTop], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DeathMountainEastBottomNotBunny], node,
+                            _requirements[RequirementType.Hookshot]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkDeathMountainWestBottomInverted], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkDeathMountainWestBottomMirror], node,
+                            _requirements[RequirementType.NoRequirement]));
+
                     }
                     break;
                 case RequirementNodeID.DeathMountainWestBottomNonEntrance:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainWestBottom], node,
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DeathMountainWestBottom], node,
+                            _requirements[RequirementType.EntranceShuffleNoneDungeon]));
                     }
                     break;
                 case RequirementNodeID.DeathMountainWestBottomNotBunny:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainWestBottom], node,
-                            RequirementDictionary.Instance[RequirementType.NotBunnyLW]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DeathMountainWestBottom], node,
+                            _requirements[RequirementType.NotBunnyLW]));
                     }
                     break;
                 case RequirementNodeID.SpectacleRockTop:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainWestTop], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateInverted]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkDeathMountainWestBottomMirror], node));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DeathMountainWestTop], node,
+                            _requirements[RequirementType.WorldStateInverted]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkDeathMountainWestBottomMirror], node,
+                            _requirements[RequirementType.NoRequirement]));
+
                     }
                     break;
                 case RequirementNodeID.DeathMountainWestTop:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.SpectacleRockTop], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainEastTopNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.Hammer]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkDeathMountainTopMirror], node));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.SpectacleRockTop], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DeathMountainEastTopNotBunny], node,
+                            _requirements[RequirementType.Hammer]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkDeathMountainTopMirror], node,
+                            _requirements[RequirementType.NoRequirement]));
+
                     }
                     break;
                 case RequirementNodeID.DeathMountainWestTopNotBunny:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainWestTop], node,
-                            RequirementDictionary.Instance[RequirementType.NotBunnyLW]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DeathMountainWestTop], node,
+                            _requirements[RequirementType.NotBunnyLW]));
                     }
                     break;
                 case RequirementNodeID.EtherTablet:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainWestTop], node,
-                            RequirementDictionary.Instance[RequirementType.Tablet]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DeathMountainWestTop], node,
+                            _requirements[RequirementType.Tablet]));
                     }
                     break;
                 case RequirementNodeID.DeathMountainEastBottom:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainWestBottomNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.Hookshot]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainEastBottomConnector], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.ParadoxCave], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainEastTop], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.SpiralCaveLedge], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.MimicCaveLedge], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateInverted]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkDeathMountainEastBottom], node,
-                            RequirementDictionary.Instance[RequirementType.DWMirror]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkDeathMountainEastBottomInverted], node,
-                            RequirementDictionary.Instance[RequirementType.Gloves2]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DeathMountainWestBottomNotBunny], node,
+                            _requirements[RequirementType.Hookshot]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DeathMountainEastBottomConnector], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.ParadoxCave], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DeathMountainEastTop], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.SpiralCaveLedge], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.MimicCaveLedge], node,
+                            _requirements[RequirementType.WorldStateInverted]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkDeathMountainEastBottom], node,
+                            _requirements[RequirementType.DWMirror]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkDeathMountainEastBottomInverted], node,
+                            _requirements[RequirementType.Gloves2]));
                     }
                     break;
                 case RequirementNodeID.DeathMountainEastBottomNotBunny:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainEastBottom], node,
-                            RequirementDictionary.Instance[RequirementType.NotBunnyLW]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DeathMountainEastBottom], node,
+                            _requirements[RequirementType.NotBunnyLW]));
                     }
                     break;
                 case RequirementNodeID.DeathMountainEastBottomLift2:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainEastBottomNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.Gloves2]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DeathMountainEastBottomNotBunny], node,
+                            _requirements[RequirementType.Gloves2]));
                     }
                     break;
                 case RequirementNodeID.DeathMountainEastBottomConnector:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainEastBottomLift2], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainEastTopConnector], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkDeathMountainEastBottomConnector], node,
-                            RequirementDictionary.Instance[RequirementType.DWMirror]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DeathMountainEastBottomLift2], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DeathMountainEastTopConnector], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkDeathMountainEastBottomConnector], node,
+                            _requirements[RequirementType.DWMirror]));
                     }
                     break;
                 case RequirementNodeID.ParadoxCave:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainEastBottom], node,
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainEastTop], node,
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DeathMountainEastBottom], node,
+                            _requirements[RequirementType.EntranceShuffleNoneDungeon]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DeathMountainEastTop], node,
+                            _requirements[RequirementType.EntranceShuffleNoneDungeon]));
                     }
                     break;
                 case RequirementNodeID.ParadoxCaveSuperBunnyFallInHole:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.ParadoxCave], node,
-                            RequirementDictionary.Instance[RequirementType.SuperBunnyFallInHole]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.ParadoxCave], node,
+                            _requirements[RequirementType.SuperBunnyFallInHole]));
                     }
                     break;
                 case RequirementNodeID.ParadoxCaveNotBunny:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.ParadoxCave], node,
-                            RequirementDictionary.Instance[RequirementType.NotBunnyLW]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.ParadoxCave], node,
+                            _requirements[RequirementType.NotBunnyLW]));
                     }
                     break;
                 case RequirementNodeID.ParadoxCaveTop:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.ParadoxCaveNotBunny], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.ParadoxCaveSuperBunnyFallInHole], node,
-                            RequirementDictionary.Instance[RequirementType.Sword2]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.ParadoxCaveNotBunny], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.ParadoxCaveSuperBunnyFallInHole], node,
+                            _requirements[RequirementType.Sword2]));
                     }
                     break;
                 case RequirementNodeID.DeathMountainEastTop:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainWestTopNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.Hammer]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.ParadoxCave], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LWTurtleRockTopInvertedNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.Hammer]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkDeathMountainTopMirror], node));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DeathMountainWestTopNotBunny], node,
+                            _requirements[RequirementType.Hammer]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.ParadoxCave], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LWTurtleRockTopInvertedNotBunny], node,
+                            _requirements[RequirementType.Hammer]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkDeathMountainTopMirror], node,
+                            _requirements[RequirementType.NoRequirement]));
+
                     }
                     break;
                 case RequirementNodeID.DeathMountainEastTopInverted:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainEastTop], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateInverted]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DeathMountainEastTop], node,
+                            _requirements[RequirementType.WorldStateInverted]));
                     }
                     break;
                 case RequirementNodeID.DeathMountainEastTopNotBunny:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainEastTop], node,
-                            RequirementDictionary.Instance[RequirementType.NotBunnyLW]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DeathMountainEastTop], node,
+                            _requirements[RequirementType.NotBunnyLW]));
                     }
                     break;
                 case RequirementNodeID.DeathMountainEastTopConnector:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainEastTop], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.TurtleRockSafetyDoor], node,
-                            RequirementDictionary.Instance[RequirementType.DWMirror]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DeathMountainEastTop], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.TurtleRockSafetyDoor], node,
+                            _requirements[RequirementType.DWMirror]));
                     }
                     break;
                 case RequirementNodeID.SpiralCaveLedge:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainEastTop], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.TurtleRockTunnelMirror], node));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DeathMountainEastTop], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.TurtleRockTunnelMirror], node,
+                            _requirements[RequirementType.NoRequirement]));
+
                     }
                     break;
                 case RequirementNodeID.SpiralCave:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.SpiralCaveLedge], node,
-                            RequirementDictionary.Instance[RequirementType.NotBunnyLW]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.SpiralCaveLedge], node,
-                            RequirementDictionary.Instance[RequirementType.SuperBunnyFallInHole]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.SpiralCaveLedge], node,
+                            _requirements[RequirementType.NotBunnyLW]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.SpiralCaveLedge], node,
+                            _requirements[RequirementType.SuperBunnyFallInHole]));
                     }
                     break;
                 case RequirementNodeID.MimicCaveLedge:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainEastTopInverted], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.TurtleRockTunnelMirror], node));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DeathMountainEastTopInverted], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.TurtleRockTunnelMirror], node,
+                            _requirements[RequirementType.NoRequirement]));
+
                     }
                     break;
                 case RequirementNodeID.MimicCaveLedgeNotBunny:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.MimicCaveLedge], node,
-                            RequirementDictionary.Instance[RequirementType.NotBunnyLW]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.MimicCaveLedge], node,
+                            _requirements[RequirementType.NotBunnyLW]));
                     }
                     break;
                 case RequirementNodeID.MimicCave:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.MimicCaveLedgeNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.Hammer]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.MimicCaveLedgeNotBunny], node,
+                            _requirements[RequirementType.Hammer]));
                     }
                     break;
                 case RequirementNodeID.LWFloatingIsland:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainEastTopInverted], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DWFloatingIsland], node,
-                            RequirementDictionary.Instance[RequirementType.DWMirror]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DeathMountainEastTopInverted], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DWFloatingIsland], node,
+                            _requirements[RequirementType.DWMirror]));
                     }
                     break;
                 case RequirementNodeID.LWTurtleRockTop:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainEastTopNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.Gloves2]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DWTurtleRockTopInverted], node,
-                            RequirementDictionary.Instance[RequirementType.Gloves2]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DeathMountainEastTopNotBunny], node,
+                            _requirements[RequirementType.Gloves2]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DWTurtleRockTopInverted], node,
+                            _requirements[RequirementType.Gloves2]));
                     }
                     break;
                 case RequirementNodeID.LWTurtleRockTopInverted:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LWTurtleRockTop], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateInverted]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LWTurtleRockTop], node,
+                            _requirements[RequirementType.WorldStateInverted]));
                     }
                     break;
                 case RequirementNodeID.LWTurtleRockTopInvertedNotBunny:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LWTurtleRockTopInverted], node,
-                            RequirementDictionary.Instance[RequirementType.NotBunnyLW]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LWTurtleRockTopInverted], node,
+                            _requirements[RequirementType.NotBunnyLW]));
                     }
                     break;
                 case RequirementNodeID.LWTurtleRockTopStandardOpen:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LWTurtleRockTop], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LWTurtleRockTop], node,
+                            _requirements[RequirementType.WorldStateStandardOpen]));
                     }
                     break;
                 case RequirementNodeID.DWKakarikoPortal:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LWKakarikoPortalStandardOpen], node,
-                            RequirementDictionary.Instance[RequirementType.Gloves1]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldWestNotBunny], node));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LWKakarikoPortalStandardOpen], node,
+                            _requirements[RequirementType.Gloves1]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldWestNotBunny], node,
+                            _requirements[RequirementType.NoRequirement]));
+
                     }
                     break;
                 case RequirementNodeID.DWKakarikoPortalInverted:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DWKakarikoPortal], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateInverted]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DWKakarikoPortal], node,
+                            _requirements[RequirementType.WorldStateInverted]));
                     }
                     break;
                 case RequirementNodeID.DarkWorldWest:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceNoneInverted], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.FluteInverted], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldMirror], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DWKakarikoPortal], node,
-                            RequirementDictionary.Instance[RequirementType.NotBunnyDW]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.SkullWoodsBackArea], node,
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeonAll]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.BumperCaveEntry], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.BumperCaveTop], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.HammerHouseNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.Hammer]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldSouthNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.Gloves2]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DWWitchAreaNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.Hookshot]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.EntranceNoneInverted], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.FluteInverted], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LightWorldMirror], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DWKakarikoPortal], node,
+                            _requirements[RequirementType.NotBunnyDW]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.SkullWoodsBackArea], node,
+                            _requirements[RequirementType.EntranceShuffleNoneDungeonAll]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.BumperCaveEntry], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.BumperCaveTop], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.HammerHouseNotBunny], node,
+                            _requirements[RequirementType.Hammer]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldSouthNotBunny], node,
+                            _requirements[RequirementType.Gloves2]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DWWitchAreaNotBunny], node,
+                            _requirements[RequirementType.Hookshot]));
                     }
                     break;
                 case RequirementNodeID.DarkWorldWestNotBunny:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldWest], node,
-                            RequirementDictionary.Instance[RequirementType.NotBunnyDW]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldWest], node,
+                            _requirements[RequirementType.NotBunnyDW]));
                     }
                     break;
                 case RequirementNodeID.DarkWorldWestNotBunnyOrSuperBunnyMirror:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldWestNotBunny], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldWest], node,
-                            RequirementDictionary.Instance[RequirementType.SuperBunnyMirror]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldWestNotBunny], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldWest], node,
+                            _requirements[RequirementType.SuperBunnyMirror]));
                     }
                     break;
                 case RequirementNodeID.DarkWorldWestLift2:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldWestNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.Gloves2]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldWestNotBunny], node,
+                            _requirements[RequirementType.Gloves2]));
                     }
                     break;
                 case RequirementNodeID.SkullWoodsBackArea:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldWest], node,
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeonAll]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldWest], node,
+                            _requirements[RequirementType.EntranceShuffleNoneDungeonAll]));
                     }
                     break;
                 case RequirementNodeID.SkullWoodsBackAreaNotBunny:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.SkullWoodsBackArea], node,
-                            RequirementDictionary.Instance[RequirementType.NotBunnyDW]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.SkullWoodsBackArea], node,
+                            _requirements[RequirementType.NotBunnyDW]));
                     }
                     break;
                 case RequirementNodeID.SkullWoodsBack:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.SkullWoodsBackAreaNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.FireRod]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.SkullWoodsBackAreaNotBunny], node,
+                            _requirements[RequirementType.FireRod]));
                     }
                     break;
                 case RequirementNodeID.BumperCaveEntry:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldWestNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.Gloves1]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainEntry], node,
-                            RequirementDictionary.Instance[RequirementType.LWMirror]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldWestNotBunny], node,
+                            _requirements[RequirementType.Gloves1]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DeathMountainEntry], node,
+                            _requirements[RequirementType.LWMirror]));
                     }
                     break;
                 case RequirementNodeID.BumperCaveEntryNonEntrance:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.BumperCaveEntry], node,
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.BumperCaveEntry], node,
+                            _requirements[RequirementType.EntranceShuffleNoneDungeon]));
                     }
                     break;
                 case RequirementNodeID.BumperCaveFront:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainEntryNonEntrance], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateInverted]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.BumperCaveEntryNonEntrance], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DeathMountainEntryNonEntrance], node,
+                            _requirements[RequirementType.WorldStateInverted]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.BumperCaveEntryNonEntrance], node,
+                            _requirements[RequirementType.WorldStateStandardOpen]));
                     }
                     break;
                 case RequirementNodeID.BumperCaveNotBunny:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.BumperCaveFront], node,
-                            RequirementDictionary.Instance[RequirementType.MoonPearl]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.BumperCaveFront], node,
+                            _requirements[RequirementType.MoonPearl]));
                     }
                     break;
                 case RequirementNodeID.BumperCavePastGap:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.BumperCaveNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.BumperCaveGap]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.BumperCaveNotBunny], node,
+                            _requirements[RequirementType.BumperCaveGap]));
                     }
                     break;
                 case RequirementNodeID.BumperCaveBack:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.BumperCavePastGap], node,
-                            RequirementDictionary.Instance[RequirementType.Cape]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.BumperCavePastGap], node,
+                            _requirements[RequirementType.Cape]));
                     }
                     break;
                 case RequirementNodeID.BumperCaveTop:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainExit], node,
-                            RequirementDictionary.Instance[RequirementType.LWMirror]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.BumperCaveBack], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DeathMountainExit], node,
+                            _requirements[RequirementType.LWMirror]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.BumperCaveBack], node,
+                            _requirements[RequirementType.WorldStateStandardOpen]));
                     }
                     break;
                 case RequirementNodeID.HammerHouse:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldWestNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.Hammer]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldWestNotBunny], node,
+                            _requirements[RequirementType.Hammer]));
                     }
                     break;
                 case RequirementNodeID.HammerHouseNotBunny:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.HammerHouse], node,
-                            RequirementDictionary.Instance[RequirementType.NotBunnyDW]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.HammerHouse], node,
+                            _requirements[RequirementType.NotBunnyDW]));
                     }
                     break;
                 case RequirementNodeID.HammerPegsArea:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldMirror], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldWestLift2], node));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LightWorldMirror], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldWestLift2], node,
+                            _requirements[RequirementType.NoRequirement]));
+
                     }
                     break;
                 case RequirementNodeID.HammerPegs:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.HammerPegsArea], node,
-                            RequirementDictionary.Instance[RequirementType.Hammer]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.HammerPegsArea], node,
+                            _requirements[RequirementType.Hammer]));
                     }
                     break;
                 case RequirementNodeID.PurpleChest:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.Blacksmith], node,
-                            RequirementDictionary.Instance[RequirementType.HammerPegsArea]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.Blacksmith], node,
+                            _requirements[RequirementType.HammerPegsArea]));
                     }
                     break;
                 case RequirementNodeID.BlacksmithPrison:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldMirror], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldWestLift2], node));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LightWorldMirror], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldWestLift2], node,
+                            _requirements[RequirementType.NoRequirement]));
+
                     }
                     break;
                 case RequirementNodeID.Blacksmith:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.BlacksmithPrison], node,
-                            RequirementDictionary.Instance[RequirementType.LightWorld]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.BlacksmithPrison], node,
+                            _requirements[RequirementType.LightWorld]));
                     }
                     break;
                 case RequirementNodeID.DarkWorldSouth:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceNoneInverted], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.FluteInverted], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldMirror], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DWSouthPortalNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.Hammer]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldWest], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldEastHammer], node));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.EntranceNoneInverted], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.FluteInverted], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LightWorldMirror], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DWSouthPortalNotBunny], node,
+                            _requirements[RequirementType.Hammer]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldWest], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldEastHammer], node,
+                            _requirements[RequirementType.NoRequirement]));
+
                     }
                     break;
                 case RequirementNodeID.DarkWorldSouthInverted:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldSouth], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateInverted]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldSouth], node,
+                            _requirements[RequirementType.WorldStateInverted]));
                     }
                     break;
                 case RequirementNodeID.DarkWorldSouthStandardOpen:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldSouth], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldSouth], node,
+                            _requirements[RequirementType.WorldStateStandardOpen]));
                     }
                     break;
                 case RequirementNodeID.DarkWorldSouthStandardOpenNotBunny:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldSouthStandardOpen], node,
-                            RequirementDictionary.Instance[RequirementType.MoonPearl]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldSouthStandardOpen], node,
+                            _requirements[RequirementType.MoonPearl]));
                     }
                     break;
                 case RequirementNodeID.DarkWorldSouthMirror:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldSouth], node,
-                            RequirementDictionary.Instance[RequirementType.DWMirror]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldSouth], node,
+                            _requirements[RequirementType.DWMirror]));
                     }
                     break;
                 case RequirementNodeID.DarkWorldSouthNotBunny:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldSouth], node,
-                            RequirementDictionary.Instance[RequirementType.NotBunnyDW]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldSouth], node,
+                            _requirements[RequirementType.NotBunnyDW]));
                     }
                     break;
                 case RequirementNodeID.DarkWorldSouthDash:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldSouthNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.Boots]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldSouthNotBunny], node,
+                            _requirements[RequirementType.Boots]));
                     }
                     break;
                 case RequirementNodeID.DarkWorldSouthHammer:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldSouthNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.Hammer]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldSouthNotBunny], node,
+                            _requirements[RequirementType.Hammer]));
                     }
                     break;
                 case RequirementNodeID.BuyBigBomb:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldInvertedNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.RedCrystal]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldSouthStandardOpenNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.RedCrystal]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LightWorldInvertedNotBunny], node,
+                            _requirements[RequirementType.RedCrystal]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldSouthStandardOpenNotBunny], node,
+                            _requirements[RequirementType.RedCrystal]));
                     }
                     break;
                 case RequirementNodeID.BuyBigBombStandardOpen:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.BuyBigBomb], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.BuyBigBomb], node,
+                            _requirements[RequirementType.WorldStateStandardOpen]));
                     }
                     break;
                 case RequirementNodeID.BigBombToLightWorld:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.BuyBigBomb], node,
-                            RequirementDictionary.Instance[RequirementType.DWMirror]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.BuyBigBomb], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateInverted]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.BuyBigBomb], node,
+                            _requirements[RequirementType.DWMirror]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.BuyBigBomb], node,
+                            _requirements[RequirementType.WorldStateInverted]));
                     }
                     break;
                 case RequirementNodeID.BigBombToLightWorldStandardOpen:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.BigBombToLightWorld], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.BigBombToLightWorld], node,
+                            _requirements[RequirementType.WorldStateStandardOpen]));
                     }
                     break;
                 case RequirementNodeID.BigBombToDWLakeHylia:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.BuyBigBombStandardOpen], node,
-                            RequirementDictionary.Instance[RequirementType.BombDuplicationMirror]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.BuyBigBombStandardOpen], node,
-                            RequirementDictionary.Instance[RequirementType.BombDuplicationAncillaOverload]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.BuyBigBombStandardOpen], node,
+                            _requirements[RequirementType.BombDuplicationMirror]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.BuyBigBombStandardOpen], node,
+                            _requirements[RequirementType.BombDuplicationAncillaOverload]));
                     }
                     break;
                 case RequirementNodeID.BigBombToWall:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.BuyBigBombStandardOpen], node,
-                            RequirementDictionary.Instance[RequirementType.Hammer]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.BigBombToLightWorld], node,
-                            RequirementDictionary.Instance[RequirementType.LWMirror]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.BigBombToLightWorldStandardOpen], node,
-                            RequirementDictionary.Instance[RequirementType.Aga1]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.BigBombToDWLakeHylia], node));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.BuyBigBombStandardOpen], node,
+                            _requirements[RequirementType.Hammer]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.BigBombToLightWorld], node,
+                            _requirements[RequirementType.LWMirror]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.BigBombToLightWorldStandardOpen], node,
+                            _requirements[RequirementType.Aga1]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.BigBombToDWLakeHylia], node,
+                            _requirements[RequirementType.NoRequirement]));
+
                     }
                     break;
                 case RequirementNodeID.DWSouthPortal:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LWSouthPortalStandardOpen], node,
-                            RequirementDictionary.Instance[RequirementType.Gloves1]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldSouthHammer], node));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LWSouthPortalStandardOpen], node,
+                            _requirements[RequirementType.Gloves1]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldSouthHammer], node,
+                            _requirements[RequirementType.NoRequirement]));
+
                     }
                     break;
                 case RequirementNodeID.DWSouthPortalInverted:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DWSouthPortal], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateInverted]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DWSouthPortal], node,
+                            _requirements[RequirementType.WorldStateInverted]));
                     }
                     break;
                 case RequirementNodeID.DWSouthPortalNotBunny:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DWSouthPortal], node,
-                            RequirementDictionary.Instance[RequirementType.NotBunnyDW]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DWSouthPortal], node,
+                            _requirements[RequirementType.NotBunnyDW]));
                     }
                     break;
                 case RequirementNodeID.MireArea:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldMirror], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DWMirePortal], node));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LightWorldMirror], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DWMirePortal], node,
+                            _requirements[RequirementType.NoRequirement]));
+
                     }
                     break;
                 case RequirementNodeID.MireAreaMirror:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.MireArea], node,
-                            RequirementDictionary.Instance[RequirementType.DWMirror]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.MireArea], node,
+                            _requirements[RequirementType.DWMirror]));
                     }
                     break;
                 case RequirementNodeID.MireAreaNotBunny:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.MireArea], node,
-                            RequirementDictionary.Instance[RequirementType.NotBunnyDW]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.MireArea], node,
+                            _requirements[RequirementType.NotBunnyDW]));
                     }
                     break;
                 case RequirementNodeID.MireAreaNotBunnyOrSuperBunnyMirror:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.MireAreaNotBunny], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.MireArea], node,
-                            RequirementDictionary.Instance[RequirementType.SuperBunnyMirror]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.MireAreaNotBunny], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.MireArea], node,
+                            _requirements[RequirementType.SuperBunnyMirror]));
                     }
                     break;
                 case RequirementNodeID.MiseryMireEntrance:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.MireAreaNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.MMMedallion]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.MireAreaNotBunny], node,
+                            _requirements[RequirementType.MMMedallion]));
                     }
                     break;
                 case RequirementNodeID.DWMirePortal:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.FluteInverted], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LWMirePortalStandardOpen], node,
-                            RequirementDictionary.Instance[RequirementType.Gloves2]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.FluteInverted], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LWMirePortalStandardOpen], node,
+                            _requirements[RequirementType.Gloves2]));
                     }
                     break;
                 case RequirementNodeID.DWMirePortalInverted:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DWMirePortal], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateInverted]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DWMirePortal], node,
+                            _requirements[RequirementType.WorldStateInverted]));
                     }
                     break;
                 case RequirementNodeID.DWGraveyard:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldWestNotBunny], node));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldWestNotBunny], node,
+                            _requirements[RequirementType.NoRequirement]));
+
                     }
                     break;
                 case RequirementNodeID.DWGraveyardMirror:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DWGraveyard], node,
-                            RequirementDictionary.Instance[RequirementType.DWMirror]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DWGraveyard], node,
+                            _requirements[RequirementType.DWMirror]));
                     }
                     break;
                 case RequirementNodeID.DWWitchArea:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LWWitchArea], node,
-                            RequirementDictionary.Instance[RequirementType.LWMirror]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.FluteInverted], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldEastNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.Hammer]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldEastNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.Gloves1]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DWLakeHyliaFlippers], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DWLakeHyliaFakeFlippers], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DWLakeHyliaWaterWalk], node));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LWWitchArea], node,
+                            _requirements[RequirementType.LWMirror]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.FluteInverted], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldEastNotBunny], node,
+                            _requirements[RequirementType.Hammer]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldEastNotBunny], node,
+                            _requirements[RequirementType.Gloves1]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DWLakeHyliaFlippers], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DWLakeHyliaFakeFlippers], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DWLakeHyliaWaterWalk], node,
+                            _requirements[RequirementType.NoRequirement]));
+
                     }
                     break;
                 case RequirementNodeID.DWWitchAreaNotBunny:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DWWitchArea], node,
-                            RequirementDictionary.Instance[RequirementType.NotBunnyDW]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DWWitchArea], node,
+                            _requirements[RequirementType.NotBunnyDW]));
                     }
                     break;
                 case RequirementNodeID.CatfishArea:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.ZoraArea], node,
-                            RequirementDictionary.Instance[RequirementType.LWMirror]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DWWitchAreaNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.Gloves1]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.ZoraArea], node,
+                            _requirements[RequirementType.LWMirror]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DWWitchAreaNotBunny], node,
+                            _requirements[RequirementType.Gloves1]));
                     }
                     break;
                 case RequirementNodeID.DarkWorldEast:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldStandardOpen], node,
-                            RequirementDictionary.Instance[RequirementType.Aga1]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.FluteInverted], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldMirror], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DWWitchAreaNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.Gloves1]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DWWitchAreaNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.Hammer]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldSouthHammer], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DWEastPortalNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.Hammer]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DWLakeHyliaFlippers], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DWLakeHyliaFakeFlippers], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DWLakeHyliaWaterWalk], node));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LightWorldStandardOpen], node,
+                            _requirements[RequirementType.Aga1]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.FluteInverted], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LightWorldMirror], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DWWitchAreaNotBunny], node,
+                            _requirements[RequirementType.Gloves1]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DWWitchAreaNotBunny], node,
+                            _requirements[RequirementType.Hammer]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldSouthHammer], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DWEastPortalNotBunny], node,
+                            _requirements[RequirementType.Hammer]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DWLakeHyliaFlippers], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DWLakeHyliaFakeFlippers], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DWLakeHyliaWaterWalk], node,
+                            _requirements[RequirementType.NoRequirement]));
+
                     }
                     break;
                 case RequirementNodeID.DarkWorldEastStandardOpen:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldEast], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldEast], node,
+                            _requirements[RequirementType.WorldStateStandardOpen]));
                     }
                     break;
                 case RequirementNodeID.DarkWorldEastNotBunny:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldEast], node,
-                            RequirementDictionary.Instance[RequirementType.NotBunnyDW]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldEast], node,
+                            _requirements[RequirementType.NotBunnyDW]));
                     }
                     break;
                 case RequirementNodeID.DarkWorldEastHammer:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldEastNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.Hammer]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldEastNotBunny], node,
+                            _requirements[RequirementType.Hammer]));
                     }
                     break;
                 case RequirementNodeID.FatFairyEntrance:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldEastNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.RedCrystal]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldEastNotBunny], node,
+                            _requirements[RequirementType.RedCrystal]));
                     }
                     break;
                 case RequirementNodeID.DWEastPortal:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LWEastPortalStandardOpen], node,
-                            RequirementDictionary.Instance[RequirementType.Gloves1]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldEastHammer], node));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LWEastPortalStandardOpen], node,
+                            _requirements[RequirementType.Gloves1]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldEastHammer], node,
+                            _requirements[RequirementType.NoRequirement]));
+
                     }
                     break;
                 case RequirementNodeID.DWEastPortalInverted:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DWEastPortal], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateInverted]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DWEastPortal], node,
+                            _requirements[RequirementType.WorldStateInverted]));
                     }
                     break;
                 case RequirementNodeID.DWEastPortalNotBunny:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DWEastPortal], node,
-                            RequirementDictionary.Instance[RequirementType.NotBunnyDW]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DWEastPortal], node,
+                            _requirements[RequirementType.NotBunnyDW]));
                     }
                     break;
                 case RequirementNodeID.DWLakeHyliaFlippers:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldWestNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.Flippers]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldSouthNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.Flippers]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DWWitchAreaNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.Flippers]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldEastNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.Flippers]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldSouthEastNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.Flippers]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.IcePalaceIslandInverted], node,
-                            RequirementDictionary.Instance[RequirementType.Flippers]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldWestNotBunny], node,
+                            _requirements[RequirementType.Flippers]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldSouthNotBunny], node,
+                            _requirements[RequirementType.Flippers]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DWWitchAreaNotBunny], node,
+                            _requirements[RequirementType.Flippers]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldEastNotBunny], node,
+                            _requirements[RequirementType.Flippers]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldSouthEastNotBunny], node,
+                            _requirements[RequirementType.Flippers]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.IcePalaceIslandInverted], node,
+                            _requirements[RequirementType.Flippers]));
                     }
                     break;
                 case RequirementNodeID.DWLakeHyliaFakeFlippers:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldWestNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.FakeFlippersFairyRevival]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldWestNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.FakeFlippersQirnJump]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldWestNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.FakeFlippersSplashDeletion]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldSouthNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.FakeFlippersFairyRevival]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldSouthNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.FakeFlippersSplashDeletion]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DWWitchAreaNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.FakeFlippersFairyRevival]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DWWitchAreaNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.FakeFlippersSplashDeletion]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldEastNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.FakeFlippersFairyRevival]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldEastNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.FakeFlippersSplashDeletion]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldSouthEastNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.FakeFlippersFairyRevival]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldSouthEastNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.FakeFlippersSplashDeletion]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.IcePalaceIslandInverted], node,
-                            RequirementDictionary.Instance[RequirementType.FakeFlippersFairyRevival]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.IcePalaceIslandInverted], node,
-                            RequirementDictionary.Instance[RequirementType.FakeFlippersSplashDeletion]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldWestNotBunny], node,
+                            _requirements[RequirementType.FakeFlippersFairyRevival]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldWestNotBunny], node,
+                            _requirements[RequirementType.FakeFlippersQirnJump]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldWestNotBunny], node,
+                            _requirements[RequirementType.FakeFlippersSplashDeletion]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldSouthNotBunny], node,
+                            _requirements[RequirementType.FakeFlippersFairyRevival]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldSouthNotBunny], node,
+                            _requirements[RequirementType.FakeFlippersSplashDeletion]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DWWitchAreaNotBunny], node,
+                            _requirements[RequirementType.FakeFlippersFairyRevival]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DWWitchAreaNotBunny], node,
+                            _requirements[RequirementType.FakeFlippersSplashDeletion]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldEastNotBunny], node,
+                            _requirements[RequirementType.FakeFlippersFairyRevival]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldEastNotBunny], node,
+                            _requirements[RequirementType.FakeFlippersSplashDeletion]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldSouthEastNotBunny], node,
+                            _requirements[RequirementType.FakeFlippersFairyRevival]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldSouthEastNotBunny], node,
+                            _requirements[RequirementType.FakeFlippersSplashDeletion]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.IcePalaceIslandInverted], node,
+                            _requirements[RequirementType.FakeFlippersFairyRevival]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.IcePalaceIslandInverted], node,
+                            _requirements[RequirementType.FakeFlippersSplashDeletion]));
                     }
                     break;
                 case RequirementNodeID.DWLakeHyliaWaterWalk:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldWestNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.WaterWalk]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldWestNotBunny], node,
+                            _requirements[RequirementType.WaterWalk]));
                     }
                     break;
                 case RequirementNodeID.IcePalaceIsland:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LakeHyliaFairyIsland], node,
-                            RequirementDictionary.Instance[RequirementType.LWMirror]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LakeHyliaFairyIslandStandardOpen], node,
-                            RequirementDictionary.Instance[RequirementType.Gloves2]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DWLakeHyliaFlippers], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateInverted]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DWLakeHyliaFakeFlippers], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateInverted]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DWLakeHyliaWaterWalk], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateInverted]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LakeHyliaFairyIsland], node,
+                            _requirements[RequirementType.LWMirror]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LakeHyliaFairyIslandStandardOpen], node,
+                            _requirements[RequirementType.Gloves2]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DWLakeHyliaFlippers], node,
+                            _requirements[RequirementType.WorldStateInverted]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DWLakeHyliaFakeFlippers], node,
+                            _requirements[RequirementType.WorldStateInverted]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DWLakeHyliaWaterWalk], node,
+                            _requirements[RequirementType.WorldStateInverted]));
                     }
                     break;
                 case RequirementNodeID.IcePalaceIslandInverted:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.IcePalaceIsland], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateInverted]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.IcePalaceIsland], node,
+                            _requirements[RequirementType.WorldStateInverted]));
                     }
                     break;
                 case RequirementNodeID.DarkWorldSouthEast:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.FluteInverted], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldMirror], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DWLakeHyliaFlippers], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DWLakeHyliaFakeFlippers], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DWLakeHyliaWaterWalk], node));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.FluteInverted], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LightWorldMirror], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DWLakeHyliaFlippers], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DWLakeHyliaFakeFlippers], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DWLakeHyliaWaterWalk], node,
+                            _requirements[RequirementType.NoRequirement]));
+
                     }
                     break;
                 case RequirementNodeID.DarkWorldSouthEastNotBunny:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldSouthEast], node,
-                            RequirementDictionary.Instance[RequirementType.NotBunnyDW]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldSouthEast], node,
+                            _requirements[RequirementType.NotBunnyDW]));
                     }
                     break;
                 case RequirementNodeID.DarkWorldSouthEastLift1:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldSouthEastNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.Gloves1]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldSouthEastNotBunny], node,
+                            _requirements[RequirementType.Gloves1]));
                     }
                     break;
                 case RequirementNodeID.DarkDeathMountainWestBottom:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.FluteInverted], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainEntryCaveDark], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateInverted]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainWestBottom], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainWestBottom], node,
-                            RequirementDictionary.Instance[RequirementType.LWMirror]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkDeathMountainTop], node));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.FluteInverted], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DeathMountainEntryCaveDark], node,
+                            _requirements[RequirementType.WorldStateInverted]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DeathMountainWestBottom], node,
+                            _requirements[RequirementType.WorldStateStandardOpen]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DeathMountainWestBottom], node,
+                            _requirements[RequirementType.LWMirror]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkDeathMountainTop], node,
+                            _requirements[RequirementType.NoRequirement]));
+
                     }
                     break;
                 case RequirementNodeID.DarkDeathMountainWestBottomInverted:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkDeathMountainWestBottom], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateInverted]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkDeathMountainWestBottom], node,
+                            _requirements[RequirementType.WorldStateInverted]));
                     }
                     break;
                 case RequirementNodeID.DarkDeathMountainWestBottomNonEntrance:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkDeathMountainWestBottom], node,
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkDeathMountainWestBottom], node,
+                            _requirements[RequirementType.EntranceShuffleNoneDungeon]));
                     }
                     break;
                 case RequirementNodeID.DarkDeathMountainWestBottomMirror:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkDeathMountainWestBottom], node,
-                            RequirementDictionary.Instance[RequirementType.DWMirror]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkDeathMountainWestBottom], node,
+                            _requirements[RequirementType.DWMirror]));
                     }
                     break;
                 case RequirementNodeID.DarkDeathMountainWestBottomNotBunny:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkDeathMountainWestBottom], node,
-                            RequirementDictionary.Instance[RequirementType.NotBunnyDW]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkDeathMountainWestBottom], node,
+                            _requirements[RequirementType.NotBunnyDW]));
                     }
                     break;
                 case RequirementNodeID.SpikeCavePastHammerBlocks:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkDeathMountainWestBottomNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.Hammer]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkDeathMountainWestBottomNotBunny], node,
+                            _requirements[RequirementType.Hammer]));
                     }
                     break;
                 case RequirementNodeID.SpikeCavePastSpikes:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.SpikeCavePastHammerBlocks], node,
-                            RequirementDictionary.Instance[RequirementType.SpikeCave]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.SpikeCavePastHammerBlocks], node,
+                            _requirements[RequirementType.SpikeCave]));
                     }
                     break;
                 case RequirementNodeID.SpikeCaveChest:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.SpikeCavePastSpikes], node,
-                            RequirementDictionary.Instance[RequirementType.Gloves1]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.SpikeCavePastSpikes], node,
+                            _requirements[RequirementType.Gloves1]));
                     }
                     break;
                 case RequirementNodeID.DarkDeathMountainTop:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainWestTop], node,
-                            RequirementDictionary.Instance[RequirementType.LWMirror]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainEastTop], node,
-                            RequirementDictionary.Instance[RequirementType.LWMirror]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkDeathMountainWestBottomInverted], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.SuperBunnyCave], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DWFloatingIsland], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DWTurtleRockTop], node));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DeathMountainWestTop], node,
+                            _requirements[RequirementType.LWMirror]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DeathMountainEastTop], node,
+                            _requirements[RequirementType.LWMirror]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkDeathMountainWestBottomInverted], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.SuperBunnyCave], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DWFloatingIsland], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DWTurtleRockTop], node,
+                            _requirements[RequirementType.NoRequirement]));
+
                     }
                     break;
                 case RequirementNodeID.DarkDeathMountainTopInverted:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkDeathMountainTop], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateInverted]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkDeathMountainTop], node,
+                            _requirements[RequirementType.WorldStateInverted]));
                     }
                     break;
                 case RequirementNodeID.DarkDeathMountainTopStandardOpen:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkDeathMountainTop], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkDeathMountainTop], node,
+                            _requirements[RequirementType.WorldStateStandardOpen]));
                     }
                     break;
                 case RequirementNodeID.DarkDeathMountainTopMirror:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkDeathMountainTop], node,
-                            RequirementDictionary.Instance[RequirementType.DWMirror]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkDeathMountainTop], node,
+                            _requirements[RequirementType.DWMirror]));
                     }
                     break;
                 case RequirementNodeID.DarkDeathMountainTopNotBunny:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkDeathMountainTop], node,
-                            RequirementDictionary.Instance[RequirementType.NotBunnyDW]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkDeathMountainTop], node,
+                            _requirements[RequirementType.NotBunnyDW]));
                     }
                     break;
                 case RequirementNodeID.SuperBunnyCave:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkDeathMountainTop], node,
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkDeathMountainEastBottom], node,
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkDeathMountainTop], node,
+                            _requirements[RequirementType.EntranceShuffleNoneDungeon]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkDeathMountainEastBottom], node,
+                            _requirements[RequirementType.EntranceShuffleNoneDungeon]));
                     }
                     break;
                 case RequirementNodeID.SuperBunnyCaveChests:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.SuperBunnyCave], node,
-                            RequirementDictionary.Instance[RequirementType.NotBunnyDW]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.SuperBunnyCave], node,
-                            RequirementDictionary.Instance[RequirementType.SuperBunnyFallInHole]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.SuperBunnyCave], node,
+                            _requirements[RequirementType.NotBunnyDW]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.SuperBunnyCave], node,
+                            _requirements[RequirementType.SuperBunnyFallInHole]));
                     }
                     break;
                 case RequirementNodeID.GanonsTowerEntrance:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkDeathMountainTopInverted], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkDeathMountainTopStandardOpen], node,
-                            RequirementDictionary.Instance[RequirementType.GTCrystal]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkDeathMountainTopInverted], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkDeathMountainTopStandardOpen], node,
+                            _requirements[RequirementType.GTCrystal]));
                     }
                     break;
                 case RequirementNodeID.GanonsTowerEntranceStandardOpen:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.GanonsTowerEntrance], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.GanonsTowerEntrance], node,
+                            _requirements[RequirementType.WorldStateStandardOpen]));
                     }
                     break;
                 case RequirementNodeID.DWFloatingIsland:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LWFloatingIsland], node,
-                            RequirementDictionary.Instance[RequirementType.LWMirror]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.HookshotCaveEntrance], node,
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LWFloatingIsland], node,
+                            _requirements[RequirementType.LWMirror]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.HookshotCaveEntrance], node,
+                            _requirements[RequirementType.EntranceShuffleNoneDungeon]));
                     }
                     break;
                 case RequirementNodeID.HookshotCaveEntrance:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkDeathMountainTopNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.Gloves1]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkDeathMountainTopNotBunny], node,
+                            _requirements[RequirementType.Gloves1]));
                     }
                     break;
                 case RequirementNodeID.HookshotCaveEntranceHookshot:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.HookshotCaveEntrance], node,
-                            RequirementDictionary.Instance[RequirementType.Hookshot]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.HookshotCaveEntrance], node,
+                            _requirements[RequirementType.Hookshot]));
                     }
                     break;
                 case RequirementNodeID.HookshotCaveEntranceHover:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.HookshotCaveEntrance], node,
-                            RequirementDictionary.Instance[RequirementType.Hover]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.HookshotCaveEntrance], node,
+                            _requirements[RequirementType.Hover]));
                     }
                     break;
                 case RequirementNodeID.HookshotCaveBonkableChest:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.HookshotCaveEntranceHookshot], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.HookshotCaveEntrance], node,
-                            RequirementDictionary.Instance[RequirementType.BonkOverLedge]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.HookshotCaveEntranceHover], node));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.HookshotCaveEntranceHookshot], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.HookshotCaveEntrance], node,
+                            _requirements[RequirementType.BonkOverLedge]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.HookshotCaveEntranceHover], node,
+                            _requirements[RequirementType.NoRequirement]));
+
                     }
                     break;
                 case RequirementNodeID.HookshotCaveBack:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.HookshotCaveEntranceHookshot], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.HookshotCaveEntranceHover], node));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.HookshotCaveEntranceHookshot], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.HookshotCaveEntranceHover], node,
+                            _requirements[RequirementType.NoRequirement]));
+
                     }
                     break;
                 case RequirementNodeID.DWTurtleRockTop:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LWTurtleRockTopStandardOpen], node,
-                            RequirementDictionary.Instance[RequirementType.Hammer]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkDeathMountainTopInverted], node));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LWTurtleRockTopStandardOpen], node,
+                            _requirements[RequirementType.Hammer]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkDeathMountainTopInverted], node,
+                            _requirements[RequirementType.NoRequirement]));
+
                     }
                     break;
                 case RequirementNodeID.DWTurtleRockTopInverted:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DWTurtleRockTop], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateInverted]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DWTurtleRockTop], node,
+                            _requirements[RequirementType.WorldStateInverted]));
                     }
                     break;
                 case RequirementNodeID.DWTurtleRockTopNotBunny:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DWTurtleRockTop], node,
-                            RequirementDictionary.Instance[RequirementType.NotBunnyDW]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DWTurtleRockTop], node,
+                            _requirements[RequirementType.NotBunnyDW]));
                     }
                     break;
                 case RequirementNodeID.TurtleRockFrontEntrance:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DWTurtleRockTopNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.TRMedallion]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DWTurtleRockTopNotBunny], node,
+                            _requirements[RequirementType.TRMedallion]));
                     }
                     break;
                 case RequirementNodeID.DarkDeathMountainEastBottom:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainEastBottom], node,
-                            RequirementDictionary.Instance[RequirementType.LWMirror]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainEastBottomLift2], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkDeathMountainTop], node));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DeathMountainEastBottom], node,
+                            _requirements[RequirementType.LWMirror]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DeathMountainEastBottomLift2], node,
+                            _requirements[RequirementType.WorldStateStandardOpen]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkDeathMountainTop], node,
+                            _requirements[RequirementType.NoRequirement]));
+
                     }
                     break;
                 case RequirementNodeID.DarkDeathMountainEastBottomInverted:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkDeathMountainEastBottom], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateInverted]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkDeathMountainEastBottom], node,
+                            _requirements[RequirementType.WorldStateInverted]));
                     }
                     break;
                 case RequirementNodeID.DarkDeathMountainEastBottomConnector:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkDeathMountainEastBottom], node,
-                            RequirementDictionary.Instance[RequirementType.NotBunnyDW]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkDeathMountainEastBottom], node,
+                            _requirements[RequirementType.NotBunnyDW]));
                     }
                     break;
                 case RequirementNodeID.TurtleRockTunnel:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.SpiralCaveLedge], node,
-                            RequirementDictionary.Instance[RequirementType.LWMirror]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.MimicCaveLedge], node,
-                            RequirementDictionary.Instance[RequirementType.LWMirror]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.SpiralCaveLedge], node,
+                            _requirements[RequirementType.LWMirror]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.MimicCaveLedge], node,
+                            _requirements[RequirementType.LWMirror]));
                     }
                     break;
                 case RequirementNodeID.TurtleRockTunnelMirror:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.TurtleRockTunnel], node,
-                            RequirementDictionary.Instance[RequirementType.DWMirror]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.TRKeyDoorsToMiddleExit], node,
-                            RequirementDictionary.Instance[RequirementType.DWMirror]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.TurtleRockTunnel], node,
+                            _requirements[RequirementType.DWMirror]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.TRKeyDoorsToMiddleExit], node,
+                            _requirements[RequirementType.DWMirror]));
                     }
                     break;
                 case RequirementNodeID.TurtleRockSafetyDoor:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainEastTopConnector], node,
-                            RequirementDictionary.Instance[RequirementType.LWMirror]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DeathMountainEastTopConnector], node,
+                            _requirements[RequirementType.LWMirror]));
                     }
                     break;
                 case RequirementNodeID.HCSanctuaryEntry:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceDungeonAllInsanity], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldNotBunnyOrSuperBunnyMirror], node));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.EntranceDungeonAllInsanity], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LightWorldNotBunnyOrSuperBunnyMirror], node,
+                            _requirements[RequirementType.NoRequirement]));
+
                     }
                     break;
                 case RequirementNodeID.HCFrontEntry:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceDungeonAllInsanity], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldNotBunnyOrDungeonRevive], node));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.EntranceDungeonAllInsanity], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LightWorldNotBunnyOrDungeonRevive], node,
+                            _requirements[RequirementType.NoRequirement]));
+
                     }
                     break;
                 case RequirementNodeID.HCBackEntry:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceDungeonAllInsanity], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.EscapeGrave], node));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.EntranceDungeonAllInsanity], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.EscapeGrave], node,
+                            _requirements[RequirementType.NoRequirement]));
+
                     }
                     break;
                 case RequirementNodeID.ATEntry:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceDungeonAllInsanity], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.AgahnimTowerEntrance], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.GanonsTowerEntrance], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateInverted]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.EntranceDungeonAllInsanity], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.AgahnimTowerEntrance], node,
+                            _requirements[RequirementType.WorldStateStandardOpen]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.GanonsTowerEntrance], node,
+                            _requirements[RequirementType.WorldStateInverted]));
                     }
                     break;
                 case RequirementNodeID.EPEntry:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceDungeonAllInsanity], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldNotBunnyOrDungeonRevive], node));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.EntranceDungeonAllInsanity], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LightWorldNotBunnyOrDungeonRevive], node,
+                            _requirements[RequirementType.NoRequirement]));
+
                     }
                     break;
                 case RequirementNodeID.DPFrontEntry:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceDungeonAllInsanity], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DesertPalaceFrontEntrance], node,
-                            RequirementDictionary.Instance[RequirementType.NotBunnyLW]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DesertPalaceFrontEntrance], node,
-                            RequirementDictionary.Instance[RequirementType.DungeonRevive]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.EntranceDungeonAllInsanity], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DesertPalaceFrontEntrance], node,
+                            _requirements[RequirementType.NotBunnyLW]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DesertPalaceFrontEntrance], node,
+                            _requirements[RequirementType.DungeonRevive]));
                     }
                     break;
                 case RequirementNodeID.DPLeftEntry:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceDungeonAllInsanity], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DesertLedge], node));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.EntranceDungeonAllInsanity], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DesertLedge], node,
+                            _requirements[RequirementType.NoRequirement]));
+
                     }
                     break;
                 case RequirementNodeID.DPBackEntry:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceDungeonAllInsanity], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DesertBack], node));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.EntranceDungeonAllInsanity], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DesertBack], node,
+                            _requirements[RequirementType.NoRequirement]));
+
                     }
                     break;
                 case RequirementNodeID.ToHEntry:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceDungeonAllInsanity], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainWestTopNotBunny], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainWestTop], node,
-                            RequirementDictionary.Instance[RequirementType.DungeonRevive]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.EntranceDungeonAllInsanity], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DeathMountainWestTopNotBunny], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DeathMountainWestTop], node,
+                            _requirements[RequirementType.DungeonRevive]));
                     }
                     break;
                 case RequirementNodeID.PoDEntry:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceDungeonAllInsanity], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldEastNotBunny], node));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.EntranceDungeonAllInsanity], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldEastNotBunny], node,
+                            _requirements[RequirementType.NoRequirement]));
+
                     }
                     break;
                 case RequirementNodeID.SPEntry:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceDungeonAllInsanity], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldInvertedNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.Mirror]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldSouthStandardOpenNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.Mirror]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.EntranceDungeonAllInsanity], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.LightWorldInvertedNotBunny], node,
+                            _requirements[RequirementType.Mirror]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldSouthStandardOpenNotBunny], node,
+                            _requirements[RequirementType.Mirror]));
                     }
                     break;
                 case RequirementNodeID.SWFrontEntry:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldWestNotBunny], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldWest], node,
-                            RequirementDictionary.Instance[RequirementType.DungeonRevive]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.Start], node,
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleInsanity]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldWestNotBunny], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldWest], node,
+                            _requirements[RequirementType.DungeonRevive]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.Start], node,
+                            _requirements[RequirementType.EntranceShuffleInsanity]));
                     }
                     break;
                 case RequirementNodeID.SWBackEntry:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceDungeonAllInsanity], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.SkullWoodsBack], node));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.EntranceDungeonAllInsanity], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.SkullWoodsBack], node,
+                            _requirements[RequirementType.NoRequirement]));
+
                     }
                     break;
                 case RequirementNodeID.TTEntry:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceDungeonAllInsanity], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldWestNotBunny], node));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.EntranceDungeonAllInsanity], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.DarkWorldWestNotBunny], node,
+                            _requirements[RequirementType.NoRequirement]));
+
                     }
                     break;
                 case RequirementNodeID.IPEntry:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceDungeonAllInsanity], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.IcePalaceIsland], node,
-                            RequirementDictionary.Instance[RequirementType.NotBunnyDW]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.IcePalaceIsland], node,
-                            RequirementDictionary.Instance[RequirementType.DungeonRevive]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.EntranceDungeonAllInsanity], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.IcePalaceIsland], node,
+                            _requirements[RequirementType.NotBunnyDW]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.IcePalaceIsland], node,
+                            _requirements[RequirementType.DungeonRevive]));
                     }
                     break;
                 case RequirementNodeID.MMEntry:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceDungeonAllInsanity], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.MiseryMireEntrance], node));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.EntranceDungeonAllInsanity], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.MiseryMireEntrance], node,
+                            _requirements[RequirementType.NoRequirement]));
+
                     }
                     break;
                 case RequirementNodeID.TRFrontEntry:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceDungeonAllInsanity], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.TurtleRockFrontEntrance], node));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.EntranceDungeonAllInsanity], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.TurtleRockFrontEntrance], node,
+                            _requirements[RequirementType.NoRequirement]));
+
                     }
                     break;
                 case RequirementNodeID.TRFrontEntryStandardOpen:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.TRFrontEntry], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.TRFrontEntry], node,
+                            _requirements[RequirementType.WorldStateStandardOpen]));
                     }
                     break;
                 case RequirementNodeID.TRFrontEntryStandardOpenEntranceNone:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.TRFrontEntryStandardOpen], node,
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleNone]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.TRFrontEntryStandardOpen], node,
+                            _requirements[RequirementType.EntranceShuffleNone]));
                     }
                     break;
                 case RequirementNodeID.TRFrontToKeyDoors:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.TRFrontEntryStandardOpenEntranceNone], node,
-                            RequirementDictionary.Instance[RequirementType.CaneOfSomaria]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.TRFrontEntryStandardOpenEntranceNone], node,
+                            _requirements[RequirementType.CaneOfSomaria]));
                     }
                     break;
                 case RequirementNodeID.TRKeyDoorsToMiddleExit:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.TRFrontToKeyDoors], node,
-                            RequirementDictionary.Instance[RequirementType.TRKeyDoorsToMiddleExit]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.TRFrontToKeyDoors], node,
+                            _requirements[RequirementType.TRKeyDoorsToMiddleExit]));
                     }
                     break;
                 case RequirementNodeID.TRMiddleEntry:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceDungeonAllInsanity], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.TurtleRockTunnel], node));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.EntranceDungeonAllInsanity], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.TurtleRockTunnel], node,
+                            _requirements[RequirementType.NoRequirement]));
+
                     }
                     break;
                 case RequirementNodeID.TRBackEntry:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceDungeonAllInsanity], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.TurtleRockSafetyDoor], node));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.EntranceDungeonAllInsanity], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.TurtleRockSafetyDoor], node,
+                            _requirements[RequirementType.NoRequirement]));
+
                     }
                     break;
                 case RequirementNodeID.GTEntry:
                     {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceDungeonAllInsanity], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.AgahnimTowerEntrance], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateInverted]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.GanonsTowerEntranceStandardOpen], node,
-                            RequirementDictionary.Instance[RequirementType.NotBunnyDW]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.GanonsTowerEntranceStandardOpen], node,
-                            RequirementDictionary.Instance[RequirementType.DungeonRevive]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.EntranceDungeonAllInsanity], node,
+                            _requirements[RequirementType.NoRequirement]));
+
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.AgahnimTowerEntrance], node,
+                            _requirements[RequirementType.WorldStateInverted]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.GanonsTowerEntranceStandardOpen], node,
+                            _requirements[RequirementType.NotBunnyDW]));
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[RequirementNodeID.GanonsTowerEntranceStandardOpen], node,
+                            _requirements[RequirementType.DungeonRevive]));
                     }
                     break;
             }
@@ -2251,9 +2577,9 @@ namespace OpenTracker.Models.RequirementNodes
         /// <returns>
         /// A new requirement node.
         /// </returns>
-        public static IRequirementNode GetRequirementNode(RequirementNodeID id)
+        public IRequirementNode GetRequirementNode(RequirementNodeID id)
         {
-            return new RequirementNode(id, id == RequirementNodeID.Start);
+            return _factory(id, id == RequirementNodeID.Start);
         }
     }
 }

@@ -7,8 +7,23 @@ namespace OpenTracker.ViewModels.Markings.Images
     /// <summary>
     /// This is the class containing creation logic for marking image control ViewModel classes.
     /// </summary>
-    public static class MarkingImageFactory
+    public class MarkingImageFactory : IMarkingImageFactory
     {
+        private readonly IItemDictionary _items;
+
+        private readonly MarkingImageVM.Factory _markingFactory;
+        private readonly ItemMarkingImageVM.Factory _itemMarkingFactory;
+
+        public MarkingImageFactory(
+            IItemDictionary items, MarkingImageVM.Factory markingFactory,
+            ItemMarkingImageVM.Factory itemMarkingFactory)
+        {
+            _items = items;
+
+            _markingFactory = markingFactory;
+            _itemMarkingFactory = itemMarkingFactory;
+        }
+
         /// <summary>
         /// Returns a new marking image control ViewModel instance representing the specified mark
         /// type.
@@ -19,7 +34,7 @@ namespace OpenTracker.ViewModels.Markings.Images
         /// <returns>
         /// A new marking image control ViewModel instance.
         /// </returns>
-        public static MarkingImageVMBase GetMarkingImageVM(MarkType type)
+        public IMarkingImageVMBase GetMarkingImageVM(MarkType type)
         {
             switch (type)
             {
@@ -29,13 +44,13 @@ namespace OpenTracker.ViewModels.Markings.Images
                 case MarkType.Gloves:
                 case MarkType.Bottle:
                     {
-                        return new ItemMarkingImageVM(
-                            ItemDictionary.Instance[Enum.Parse<ItemType>(type.ToString())],
+                        return _itemMarkingFactory(
+                            _items[Enum.Parse<ItemType>(type.ToString())],
                             $"avares://OpenTracker/Assets/Images/Marks/{type.ToString().ToLowerInvariant()}");
                     }
                 default:
                     {
-                        return new MarkingImageVM(
+                        return _markingFactory(
                             $"avares://OpenTracker/Assets/Images/Marks/{type.ToString().ToLowerInvariant()}.png");
                     }
             }

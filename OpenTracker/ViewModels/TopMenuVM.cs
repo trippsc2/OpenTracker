@@ -1,155 +1,240 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Layout;
 using Avalonia.Threading;
-using OpenTracker.Models;
-using OpenTracker.Models.AutoTracking;
-using OpenTracker.Models.BossPlacements;
-using OpenTracker.Models.Connections;
-using OpenTracker.Models.Items;
-using OpenTracker.Models.Locations;
-using OpenTracker.Models.PrizePlacements;
+using Newtonsoft.Json;
+using OpenTracker.Models.Reset;
+using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
+using OpenTracker.Utils;
+using OpenTracker.Utils.Dialog;
+using OpenTracker.ViewModels.AutoTracking;
+using OpenTracker.ViewModels.ColorSelect;
+using OpenTracker.ViewModels.SequenceBreaks;
 using ReactiveUI;
 using System;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Globalization;
 using System.Reactive;
-using System.Reactive.Linq;
+using System.Threading.Tasks;
 
 namespace OpenTracker.ViewModels
 {
     /// <summary>
-    /// This is the ViewModel class for the top menu control.
+    /// This class contains the top menu control ViewModel data.
     /// </summary>
-    public class TopMenuVM : ViewModelBase
+    public class TopMenuVM : ViewModelBase, ITopMenuVM
     {
-        public static bool DisplayAllLocations =>
-            AppSettings.Instance.Tracker.DisplayAllLocations;
-        public static bool ShowItemCountsOnMap =>
-            AppSettings.Instance.Tracker.ShowItemCountsOnMap;
+        private readonly IAppSettings _appSettings;
+        private readonly IResetManager _resetManager;
+        private readonly ISaveLoadManager _saveLoadManager;
+        private readonly IUndoRedoManager _undoRedoManager;
 
-        public static bool DisplayMapsCompasses =>
-            AppSettings.Instance.Layout.DisplayMapsCompasses;
-        public static bool AlwaysDisplayDungeonItems =>
-            AppSettings.Instance.Layout.AlwaysDisplayDungeonItems;
+        private readonly IDialogService _dialogService;
+        private readonly IFileDialogService _fileDialogService;
 
-        public static bool DynamicLayoutOrientation =>
-            AppSettings.Instance.Layout.LayoutOrientation == null;
-        public static bool HorizontalLayoutOrientation =>
-            AppSettings.Instance.Layout.LayoutOrientation == Orientation.Horizontal;
-        public static bool VerticalLayoutOrientation =>
-            AppSettings.Instance.Layout.LayoutOrientation == Orientation.Vertical;
+        private readonly IAutoTrackerDialogVM _autoTrackerDialog;
+        private readonly ISequenceBreakDialogVM _sequenceBreakDialog;
+        private readonly IColorSelectDialogVM _colorSelectDialog;
+        private readonly IAboutDialogVM _aboutDialog;
 
-        public static bool DynamicMapOrientation =>
-            AppSettings.Instance.Layout.MapOrientation == null;
-        public static bool HorizontalMapOrientation =>
-            AppSettings.Instance.Layout.MapOrientation == Orientation.Horizontal;
-        public static bool VerticalMapOrientation =>
-            AppSettings.Instance.Layout.MapOrientation == Orientation.Vertical;
+        private readonly IErrorBoxDialogVM.Factory _errorBoxFactory;
+        private readonly IMessageBoxDialogVM.Factory _messageBoxFactory;
 
-        public static bool TopHorizontalUIPanelPlacement =>
-            AppSettings.Instance.Layout.HorizontalUIPanelPlacement == Dock.Top;
-        public static bool BottomHorizontalUIPanelPlacement =>
-            AppSettings.Instance.Layout.HorizontalUIPanelPlacement == Dock.Bottom;
+        public bool DisplayAllLocations =>
+            _appSettings.Tracker.DisplayAllLocations;
+        public bool ShowItemCountsOnMap =>
+            _appSettings.Tracker.ShowItemCountsOnMap;
 
-        public static bool LeftVerticalUIPanelPlacement =>
-            AppSettings.Instance.Layout.VerticalUIPanelPlacement == Dock.Left;
-        public static bool RightVerticalUIPanelPlacement =>
-            AppSettings.Instance.Layout.VerticalUIPanelPlacement == Dock.Right;
+        public bool DisplayMapsCompasses =>
+            _appSettings.Layout.DisplayMapsCompasses;
+        public bool AlwaysDisplayDungeonItems =>
+            _appSettings.Layout.AlwaysDisplayDungeonItems;
 
-        public static bool LeftHorizontalItemsPlacement =>
-            AppSettings.Instance.Layout.HorizontalItemsPlacement == Dock.Left;
-        public static bool RightHorizontalItemsPlacement =>
-            AppSettings.Instance.Layout.HorizontalItemsPlacement == Dock.Right;
+        public bool DynamicLayoutOrientation =>
+            _appSettings.Layout.LayoutOrientation == null;
+        public bool HorizontalLayoutOrientation =>
+            _appSettings.Layout.LayoutOrientation == Orientation.Horizontal;
+        public bool VerticalLayoutOrientation =>
+            _appSettings.Layout.LayoutOrientation == Orientation.Vertical;
 
-        public static bool TopVerticalItemsPlacement =>
-            AppSettings.Instance.Layout.VerticalItemsPlacement == Dock.Top;
-        public static bool BottomVerticalItemsPlacement =>
-            AppSettings.Instance.Layout.VerticalItemsPlacement == Dock.Bottom;
+        public bool DynamicMapOrientation =>
+            _appSettings.Layout.MapOrientation == null;
+        public bool HorizontalMapOrientation =>
+            _appSettings.Layout.MapOrientation == Orientation.Horizontal;
+        public bool VerticalMapOrientation =>
+            _appSettings.Layout.MapOrientation == Orientation.Vertical;
 
-        public static bool OneHundredPercentUIScale =>
-            AppSettings.Instance.Layout.UIScale == 1.0;
-        public static bool OneHundredTwentyFivePercentUIScale =>
-            AppSettings.Instance.Layout.UIScale == 1.25;
-        public static bool OneHundredFiftyPercentUIScale =>
-            AppSettings.Instance.Layout.UIScale == 1.50;
-        public static bool OneHundredSeventyFivePercentUIScale =>
-            AppSettings.Instance.Layout.UIScale == 1.75;
-        public static bool TwoHundredPercentUIScale =>
-            AppSettings.Instance.Layout.UIScale == 2.0;
+        public bool TopHorizontalUIPanelPlacement =>
+            _appSettings.Layout.HorizontalUIPanelPlacement == Dock.Top;
+        public bool BottomHorizontalUIPanelPlacement =>
+            _appSettings.Layout.HorizontalUIPanelPlacement == Dock.Bottom;
 
-        public ReactiveCommand<Unit, Unit> OpenResetDialogCommand { get; }
-        public ReactiveCommand<Unit, Unit> OpenAboutDialogCommand { get; }
-        public ReactiveCommand<Unit, Unit> UndoCommand { get; }
-        public ReactiveCommand<Unit, Unit> RedoCommand { get; }
-        public ReactiveCommand<Unit, Unit> ToggleDisplayAllLocationsCommand { get; }
-        public ReactiveCommand<Unit, Unit> ToggleShowItemCountsOnMapCommand { get; }
-        public ReactiveCommand<Unit, Unit> ToggleDisplayMapsCompassesCommand { get; }
-        public ReactiveCommand<Unit, Unit> ToggleAlwaysDisplayDungeonItemsCommand { get; }
-        public ReactiveCommand<string, Unit> SetLayoutOrientationCommand { get; }
-        public ReactiveCommand<string, Unit> SetMapOrientationCommand { get; }
-        public ReactiveCommand<string, Unit> SetHorizontalUIPanelPlacementCommand { get; }
-        public ReactiveCommand<string, Unit> SetVerticalUIPanelPlacementCommand { get; }
-        public ReactiveCommand<string, Unit> SetHorizontalItemsPlacementCommand { get; }
-        public ReactiveCommand<string, Unit> SetVerticalItemsPlacementCommand { get; }
-        public ReactiveCommand<string, Unit> SetUIScaleCommand { get; }
+        public bool LeftVerticalUIPanelPlacement =>
+            _appSettings.Layout.VerticalUIPanelPlacement == Dock.Left;
+        public bool RightVerticalUIPanelPlacement =>
+            _appSettings.Layout.VerticalUIPanelPlacement == Dock.Right;
 
-        private readonly ObservableAsPropertyHelper<bool> _isOpeningResetDialog;
-        public bool IsOpeningResetDialog =>
-            _isOpeningResetDialog.Value;
+        public bool LeftHorizontalItemsPlacement =>
+            _appSettings.Layout.HorizontalItemsPlacement == Dock.Left;
+        public bool RightHorizontalItemsPlacement =>
+            _appSettings.Layout.HorizontalItemsPlacement == Dock.Right;
 
-        private readonly ObservableAsPropertyHelper<bool> _isOpeningAboutDialog;
-        public bool IsOpeningAboutDialog =>
-            _isOpeningAboutDialog.Value;
+        public bool TopVerticalItemsPlacement =>
+            _appSettings.Layout.VerticalItemsPlacement == Dock.Top;
+        public bool BottomVerticalItemsPlacement =>
+            _appSettings.Layout.VerticalItemsPlacement == Dock.Bottom;
 
-        private bool _canUndo;
-        public bool CanUndo
-        {
-            get => _canUndo;
-            private set => this.RaiseAndSetIfChanged(ref _canUndo, value);
-        }
+        public bool OneHundredPercentUIScale =>
+            _appSettings.Layout.UIScale == 1.0;
+        public bool OneHundredTwentyFivePercentUIScale =>
+            _appSettings.Layout.UIScale == 1.25;
+        public bool OneHundredFiftyPercentUIScale =>
+            _appSettings.Layout.UIScale == 1.50;
+        public bool OneHundredSeventyFivePercentUIScale =>
+            _appSettings.Layout.UIScale == 1.75;
+        public bool TwoHundredPercentUIScale =>
+            _appSettings.Layout.UIScale == 2.0;
 
-        private bool _canRedo;
-        public bool CanRedo
-        {
-            get => _canRedo;
-            private set => this.RaiseAndSetIfChanged(ref _canRedo, value);
-        }
+        public ReactiveCommand<Unit, Unit> Open { get; }
+        public ReactiveCommand<Unit, Unit> Save { get; }
+        public ReactiveCommand<Unit, Unit> SaveAs { get; }
+        public ReactiveCommand<Unit, Unit> Reset { get; }
+        public ReactiveCommand<Window, Unit> Close { get; }
+
+        private readonly ObservableAsPropertyHelper<bool> _isOpening;
+        private bool IsOpening => _isOpening.Value;
+
+        private readonly ObservableAsPropertyHelper<bool> _isSaving;
+        private bool IsSaving => _isSaving.Value;
+
+        private readonly ObservableAsPropertyHelper<bool> _isSavingAs;
+        private bool IsSavingAs => _isSavingAs.Value;
+
+        private readonly ObservableAsPropertyHelper<bool> _isResetting;
+        private bool IsResetting => _isResetting.Value;
+
+        public bool CanUndo => _undoRedoManager.CanUndo;
+        public bool CanRedo => _undoRedoManager.CanRedo;
+
+        public ReactiveCommand<Unit, Unit> Undo { get; }
+        public ReactiveCommand<Unit, Unit> Redo { get; }
+        public ReactiveCommand<Unit, Unit> AutoTracker { get; }
+        public ReactiveCommand<Unit, Unit> SequenceBreaks { get; }
+
+        private readonly ObservableAsPropertyHelper<bool> _isUndoing;
+        private bool IsUndoing => _isUndoing.Value;
+
+        private readonly ObservableAsPropertyHelper<bool> _isRedoing;
+        private bool IsRedoing => _isRedoing.Value;
+
+        private readonly ObservableAsPropertyHelper<bool> _isOpeningAutoTracker;
+        private bool IsOpeningAutoTracker => _isOpeningAutoTracker.Value;
+
+        private readonly ObservableAsPropertyHelper<bool> _isOpeningSequenceBreak;
+        private bool IsOpeningSequenceBreak => _isOpeningSequenceBreak.Value;
+
+        public ReactiveCommand<Unit, Unit> ToggleDisplayAllLocations { get; }
+        public ReactiveCommand<Unit, Unit> ToggleShowItemCountsOnMap { get; }
+        public ReactiveCommand<Unit, Unit> ToggleDisplayMapsCompasses { get; }
+        public ReactiveCommand<Unit, Unit> ToggleAlwaysDisplayDungeonItems { get; }
+
+        public ReactiveCommand<Unit, Unit> ColorSelect { get; }
+
+        private readonly ObservableAsPropertyHelper<bool> _isOpeningColorSelect;
+        private bool IsOpeningColorSelect => _isOpeningColorSelect.Value;
+
+        public ReactiveCommand<string, Unit> ChangeLayoutOrientation { get; }
+        public ReactiveCommand<string, Unit> ChangeMapOrientation { get; }
+        public ReactiveCommand<string, Unit> ChangeHorizontalUIPanelPlacement { get; }
+        public ReactiveCommand<string, Unit> ChangeVerticalUIPanelPlacement { get; }
+        public ReactiveCommand<string, Unit> ChangeHorizontalItemsPlacement { get; }
+        public ReactiveCommand<string, Unit> ChangeVerticalItemsPlacement { get; }
+        public ReactiveCommand<string, Unit> ChangeUIScale { get; }
+
+        public ReactiveCommand<Unit, Unit> About { get; }
+
+        private readonly ObservableAsPropertyHelper<bool> _isOpeningAbout;
+        private bool IsOpeningAbout => _isOpeningAbout.Value;
 
         /// <summary>
         /// Constructor
         /// </summary>
-        public TopMenuVM()
+        public TopMenuVM(
+            IAppSettings appSettings, IResetManager resetManager, ISaveLoadManager saveLoadManager,
+            IUndoRedoManager undoRedoManager, IDialogService dialogService, IFileDialogService fileDialogService,
+            IAutoTrackerDialogVM autoTrackerDialog, IColorSelectDialogVM colorSelectDialog,
+            ISequenceBreakDialogVM sequenceBreakDialog, IAboutDialogVM aboutDialog,
+            IErrorBoxDialogVM.Factory errorBoxFactory, IMessageBoxDialogVM.Factory messageBoxFactory)
         {
-            OpenResetDialogCommand = ReactiveCommand.CreateFromObservable(OpenResetDialogAsync);
-            OpenResetDialogCommand.IsExecuting.ToProperty(
-                this, x => x.IsOpeningResetDialog, out _isOpeningResetDialog);
+            _appSettings = appSettings;
+            _resetManager = resetManager;
+            _saveLoadManager = saveLoadManager;
+            _undoRedoManager = undoRedoManager;
 
-            OpenAboutDialogCommand = ReactiveCommand.CreateFromObservable(OpenAboutDialogAsync);
-            OpenAboutDialogCommand.IsExecuting.ToProperty(
-                this, x => x.IsOpeningAboutDialog, out _isOpeningAboutDialog);
+            _dialogService = dialogService;
+            _fileDialogService = fileDialogService;
 
-            UndoCommand = ReactiveCommand.Create(Undo, this.WhenAnyValue(x => x.CanUndo));
-            RedoCommand = ReactiveCommand.Create(Redo, this.WhenAnyValue(x => x.CanRedo));
-            ToggleDisplayAllLocationsCommand = ReactiveCommand.Create(ToggleDisplayAllLocations);
+            _autoTrackerDialog = autoTrackerDialog;
+            _colorSelectDialog = colorSelectDialog;
+            _sequenceBreakDialog = sequenceBreakDialog;
+            _aboutDialog = aboutDialog;
 
-            ToggleShowItemCountsOnMapCommand = ReactiveCommand.Create(ToggleShowItemCountsOnMap);
-            ToggleDisplayMapsCompassesCommand = ReactiveCommand.Create(ToggleDisplayMapsCompasses);
-            ToggleAlwaysDisplayDungeonItemsCommand = ReactiveCommand.Create(ToggleAlwaysDisplayDungeonItems);
-            SetLayoutOrientationCommand = ReactiveCommand.Create<string>(SetLayoutOrientation);
-            SetMapOrientationCommand = ReactiveCommand.Create<string>(SetMapOrientation);
-            SetHorizontalUIPanelPlacementCommand = ReactiveCommand.Create<string>(SetHorizontalUIPanelPlacement);
-            SetVerticalUIPanelPlacementCommand = ReactiveCommand.Create<string>(SetVerticalUIPanelPlacement);
-            SetHorizontalItemsPlacementCommand = ReactiveCommand.Create<string>(SetHorizontalItemsPlacement);
-            SetVerticalItemsPlacementCommand = ReactiveCommand.Create<string>(SetVerticalItemsPlacement);
-            SetUIScaleCommand = ReactiveCommand.Create<string>(SetUIScale);
+            _errorBoxFactory = errorBoxFactory;
+            _messageBoxFactory = messageBoxFactory;
 
-            UndoRedoManager.Instance.UndoableActions.CollectionChanged += OnUndoChanged;
-            UndoRedoManager.Instance.RedoableActions.CollectionChanged += OnRedoChanged;
-            AppSettings.Instance.Tracker.PropertyChanged += OnTrackerSettingsChanged;
-            AppSettings.Instance.Layout.PropertyChanged += OnLayoutChanged;
+            Open = ReactiveCommand.CreateFromTask(OpenImpl);
+            Open.IsExecuting.ToProperty(this, x => x.IsOpening, out _isOpening);
+
+            Save = ReactiveCommand.CreateFromTask(SaveImpl);
+            Save.IsExecuting.ToProperty(this, x => x.IsSaving, out _isSaving);
+
+            SaveAs = ReactiveCommand.CreateFromTask(SaveAsImpl);
+            SaveAs.IsExecuting.ToProperty(this, x => x.IsSavingAs, out _isSavingAs);
+
+            Reset = ReactiveCommand.CreateFromTask(ResetImpl);
+            Reset.IsExecuting.ToProperty(this, x => x.IsResetting, out _isResetting);
+            
+            Close = ReactiveCommand.Create<Window>(CloseImpl);
+
+            Undo = ReactiveCommand.CreateFromTask(UndoImpl, this.WhenAnyValue(x => x.CanUndo));
+            Undo.IsExecuting.ToProperty(this, x => x.IsUndoing, out _isUndoing);
+
+            Redo = ReactiveCommand.CreateFromTask(RedoImpl, this.WhenAnyValue(x => x.CanRedo));
+            Redo.IsExecuting.ToProperty(this, x => x.IsRedoing, out _isRedoing);
+
+            AutoTracker = ReactiveCommand.CreateFromTask(AutoTrackerImpl);
+            AutoTracker.IsExecuting.ToProperty(
+                this, x => x.IsOpeningAutoTracker, out _isOpeningAutoTracker);
+
+            SequenceBreaks = ReactiveCommand.CreateFromTask(SequenceBreaksImpl);
+            SequenceBreaks.IsExecuting.ToProperty(
+                this, x => x.IsOpeningSequenceBreak, out _isOpeningSequenceBreak);
+
+            ToggleDisplayAllLocations = ReactiveCommand.Create(ToggleDisplayAllLocationsImpl);
+            ToggleShowItemCountsOnMap = ReactiveCommand.Create(ToggleShowItemCountsOnMapImpl);
+            ToggleDisplayMapsCompasses = ReactiveCommand.Create(ToggleDisplayMapsCompassesImpl);
+            ToggleAlwaysDisplayDungeonItems = ReactiveCommand.Create(ToggleAlwaysDisplayDungeonItemsImpl);
+
+            ColorSelect = ReactiveCommand.CreateFromTask(ColorSelectImpl);
+            ColorSelect.IsExecuting.ToProperty(
+                this, x => x.IsOpeningColorSelect, out _isOpeningColorSelect);
+
+            ChangeLayoutOrientation = ReactiveCommand.Create<string>(ChangeLayoutOrientationImpl);
+            ChangeMapOrientation = ReactiveCommand.Create<string>(ChangeMapOrientationImpl);
+            ChangeHorizontalUIPanelPlacement = ReactiveCommand.Create<string>(ChangeHorizontalUIPanelPlacementImpl);
+            ChangeVerticalUIPanelPlacement = ReactiveCommand.Create<string>(ChangeVerticalUIPanelPlacementImpl);
+            ChangeHorizontalItemsPlacement = ReactiveCommand.Create<string>(ChangeHorizontalItemsPlacementImpl);
+            ChangeVerticalItemsPlacement = ReactiveCommand.Create<string>(ChangeVerticalItemsPlacementImpl);
+            ChangeUIScale = ReactiveCommand.Create<string>(ChangeUIScaleImpl);
+
+            About = ReactiveCommand.CreateFromTask(AboutImpl);
+            About.IsExecuting.ToProperty(
+                this, x => x.IsOpeningAbout, out _isOpeningAbout);
+
+            _undoRedoManager.PropertyChanged += OnUndoRedoManagerChanged;
+            _appSettings.Tracker.PropertyChanged += OnTrackerSettingsChanged;
+            _appSettings.Layout.PropertyChanged += OnLayoutChanged;
         }
 
         /// <summary>
@@ -161,13 +246,21 @@ namespace OpenTracker.ViewModels
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnUndoChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async void OnUndoRedoManagerChanged(object? sender, PropertyChangedEventArgs e)
         {
-            UpdateCanUndo();
+            if (e.PropertyName == nameof(UndoRedoManager.CanUndo))
+            {
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(CanUndo)));
+            }
+
+            if (e.PropertyName == nameof(UndoRedoManager.CanRedo))
+            {
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(CanRedo)));
+            }
         }
 
         /// <summary>
-        /// Subscribes to the CollectionChanged event on the observable stack of redoable actions.
+        /// Subscribes to the PropertyChanged event on the ITrackerSettings interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -175,13 +268,21 @@ namespace OpenTracker.ViewModels
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnRedoChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async void OnTrackerSettingsChanged(object sender, PropertyChangedEventArgs e)
         {
-            UpdateCanRedo();
+            switch (e.PropertyName)
+            {
+                case nameof(ITrackerSettings.DisplayAllLocations):
+                    await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(DisplayAllLocations)));
+                    break;
+                case nameof(ITrackerSettings.ShowItemCountsOnMap):
+                    await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(ShowItemCountsOnMap)));
+                    break;
+            }
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the TrackerSettings class.
+        /// Subscribes to the PropertyChanged event on the ILayoutSettings class.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -189,129 +290,260 @@ namespace OpenTracker.ViewModels
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnTrackerSettingsChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(TrackerSettings.DisplayAllLocations))
+            switch (e.PropertyName)
             {
-                this.RaisePropertyChanged(nameof(DisplayAllLocations));
-            }
-
-            if (e.PropertyName == nameof(TrackerSettings.ShowItemCountsOnMap))
-            {
-                this.RaisePropertyChanged(nameof(ShowItemCountsOnMap));
+                case nameof(ILayoutSettings.DisplayMapsCompasses):
+                    await Dispatcher.UIThread.InvokeAsync(() =>
+                        this.RaisePropertyChanged(nameof(DisplayMapsCompasses)));
+                    break;
+                case nameof(ILayoutSettings.AlwaysDisplayDungeonItems):
+                    await Dispatcher.UIThread.InvokeAsync(() =>
+                        this.RaisePropertyChanged(nameof(AlwaysDisplayDungeonItems)));
+                    break;
+                case nameof(ILayoutSettings.LayoutOrientation):
+                    await Dispatcher.UIThread.InvokeAsync(() =>
+                    {
+                        this.RaisePropertyChanged(nameof(DynamicLayoutOrientation));
+                        this.RaisePropertyChanged(nameof(HorizontalLayoutOrientation));
+                        this.RaisePropertyChanged(nameof(VerticalLayoutOrientation));
+                    });
+                    break;
+                case nameof(ILayoutSettings.MapOrientation):
+                    await Dispatcher.UIThread.InvokeAsync(() =>
+                    {
+                        this.RaisePropertyChanged(nameof(DynamicMapOrientation));
+                        this.RaisePropertyChanged(nameof(HorizontalMapOrientation));
+                        this.RaisePropertyChanged(nameof(VerticalMapOrientation));
+                    }); 
+                    break;
+                case nameof(ILayoutSettings.HorizontalUIPanelPlacement):
+                    await Dispatcher.UIThread.InvokeAsync(() =>
+                    {
+                        this.RaisePropertyChanged(nameof(TopHorizontalUIPanelPlacement));
+                        this.RaisePropertyChanged(nameof(BottomHorizontalUIPanelPlacement));
+                    });
+                    break;
+                case nameof(ILayoutSettings.VerticalUIPanelPlacement):
+                    await Dispatcher.UIThread.InvokeAsync(() =>
+                    {
+                        this.RaisePropertyChanged(nameof(LeftVerticalUIPanelPlacement));
+                        this.RaisePropertyChanged(nameof(RightVerticalUIPanelPlacement));
+                    });
+                    break;
+                case nameof(ILayoutSettings.HorizontalItemsPlacement):
+                    await Dispatcher.UIThread.InvokeAsync(() =>
+                    {
+                        this.RaisePropertyChanged(nameof(LeftHorizontalItemsPlacement));
+                        this.RaisePropertyChanged(nameof(RightHorizontalItemsPlacement));
+                    });
+                    break;
+                case nameof(ILayoutSettings.VerticalItemsPlacement):
+                    await Dispatcher.UIThread.InvokeAsync(() =>
+                    {
+                        this.RaisePropertyChanged(nameof(TopVerticalItemsPlacement));
+                        this.RaisePropertyChanged(nameof(BottomVerticalItemsPlacement));
+                    });
+                    break;
+                case nameof(ILayoutSettings.UIScale):
+                    await Dispatcher.UIThread.InvokeAsync(() =>
+                    {
+                        this.RaisePropertyChanged(nameof(OneHundredPercentUIScale));
+                        this.RaisePropertyChanged(nameof(OneHundredTwentyFivePercentUIScale));
+                        this.RaisePropertyChanged(nameof(OneHundredFiftyPercentUIScale));
+                        this.RaisePropertyChanged(nameof(OneHundredSeventyFivePercentUIScale));
+                        this.RaisePropertyChanged(nameof(TwoHundredPercentUIScale));
+                    });
+                    break;
             }
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the LayoutSettings class.
+        /// Opens an error box with the specified message.
         /// </summary>
-        /// <param name="sender">
-        /// The sending object of the event.
+        /// <param name="message">
+        /// The message to be contained in the error box.
         /// </param>
-        /// <param name="e">
-        /// The arguments of the PropertyChanged event.
-        /// </param>
-        private void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
+        private async Task OpenErrorBox(string message)
         {
-            if (e.PropertyName == nameof(LayoutSettings.DisplayMapsCompasses))
-            {
-                this.RaisePropertyChanged(nameof(DisplayMapsCompasses));
-            }
+            await Dispatcher.UIThread.InvokeAsync(async () =>
+                await _dialogService.ShowDialogAsync(_errorBoxFactory("Error", message)));
+        }
 
-            if (e.PropertyName == nameof(LayoutSettings.AlwaysDisplayDungeonItems))
-            {
-                this.RaisePropertyChanged(nameof(AlwaysDisplayDungeonItems));
-            }
+        /// <summary>
+        /// Opens a file save dialog box and returns the result.
+        /// </summary>
+        /// <returns>
+        /// A nullable string representing the result of the dialog box.
+        /// </returns>
+        private async Task<string?> OpenSaveFileDialog()
+        {
+            return await Dispatcher.UIThread.InvokeAsync(async () =>
+                await _fileDialogService.ShowSaveDialogAsync());
+        }
 
-            if (e.PropertyName == nameof(LayoutSettings.LayoutOrientation))
+        /// <summary>
+        /// Save the data to the file and handles errors by opening an error box.
+        /// </summary>
+        /// <param name="path">
+        /// A string representing the file path.
+        /// </param>
+        private async Task SaveWithErrorHandling(string path)
+        {
+            try
             {
-                this.RaisePropertyChanged(nameof(DynamicLayoutOrientation));
-                this.RaisePropertyChanged(nameof(HorizontalLayoutOrientation));
-                this.RaisePropertyChanged(nameof(VerticalLayoutOrientation));
+                _saveLoadManager.Save(path);
             }
-
-            if (e.PropertyName == nameof(LayoutSettings.MapOrientation))
+            catch (Exception ex)
             {
-                this.RaisePropertyChanged(nameof(DynamicMapOrientation));
-                this.RaisePropertyChanged(nameof(HorizontalMapOrientation));
-                this.RaisePropertyChanged(nameof(VerticalMapOrientation));
-            }
-
-            if (e.PropertyName == nameof(LayoutSettings.HorizontalUIPanelPlacement))
-            {
-                this.RaisePropertyChanged(nameof(TopHorizontalUIPanelPlacement));
-                this.RaisePropertyChanged(nameof(BottomHorizontalUIPanelPlacement));
-            }
-
-            if (e.PropertyName == nameof(LayoutSettings.VerticalUIPanelPlacement))
-            {
-                this.RaisePropertyChanged(nameof(LeftVerticalUIPanelPlacement));
-                this.RaisePropertyChanged(nameof(RightVerticalUIPanelPlacement));
-            }
-
-            if (e.PropertyName == nameof(LayoutSettings.HorizontalItemsPlacement))
-            {
-                this.RaisePropertyChanged(nameof(LeftHorizontalItemsPlacement));
-                this.RaisePropertyChanged(nameof(RightHorizontalItemsPlacement));
-            }
-
-            if (e.PropertyName == nameof(LayoutSettings.VerticalItemsPlacement))
-            {
-                this.RaisePropertyChanged(nameof(TopVerticalItemsPlacement));
-                this.RaisePropertyChanged(nameof(BottomVerticalItemsPlacement));
-            }
-
-            if (e.PropertyName == nameof(LayoutSettings.UIScale))
-            {
-                this.RaisePropertyChanged(nameof(OneHundredPercentUIScale));
-                this.RaisePropertyChanged(nameof(OneHundredTwentyFivePercentUIScale));
-                this.RaisePropertyChanged(nameof(OneHundredFiftyPercentUIScale));
-                this.RaisePropertyChanged(nameof(OneHundredSeventyFivePercentUIScale));
-                this.RaisePropertyChanged(nameof(TwoHundredPercentUIScale));
+                string message = ex switch
+                {
+                    UnauthorizedAccessException _ =>
+                        "Unable to save to the selected directory.  Check the file permissions and try again.",
+                    _ => ex.Message
+                };
+                
+                await OpenErrorBox(message);
             }
         }
 
         /// <summary>
-        /// Updates the CanUndo property with a value representing whether there are objects in the
-        /// Undoable stack.
+        /// Opens a file with saved data.
         /// </summary>
-        private void UpdateCanUndo()
+        private async Task OpenImpl()
         {
-            CanUndo = UndoRedoManager.Instance.CanUndo();
+            var dialogResult = await _fileDialogService.ShowOpenDialogAsync();
+
+            if (dialogResult is null)
+            {
+                return;
+            }
+
+            try
+            {
+                _saveLoadManager.Open(dialogResult);
+            }
+            catch (Exception ex)
+            {
+                string message = ex switch
+                {
+                    JsonReaderException _ => "The selected file is not a valid JSON file.",
+                    UnauthorizedAccessException _ =>
+                        "The file cannot be read.  Check the permissions on the selected file.",
+                    _ => ex.Message
+                };
+
+                await OpenErrorBox(message);
+            }
+        }
+
+        /// <summary>
+        /// If the file is already saved, save the current data to the existing path.  Otherwise,
+        /// open a save file dialog window and save to a new path.
+        /// </summary>
+        /// <returns>
+        /// An observable representing the progress of the command.
+        /// </returns>
+        private async Task SaveImpl()
+        {
+            var path = _saveLoadManager.CurrentFilePath ??
+                await OpenSaveFileDialog();
+
+            if (path != null)
+            {
+                await SaveWithErrorHandling(path);
+            }
+        }
+
+        /// <summary>
+        /// Opens a save file dialog window and saves to a new path.
+        /// </summary>
+        private async Task SaveAsImpl()
+        {
+            var dialogResult = await OpenSaveFileDialog();
+
+            if (dialogResult is null)
+            {
+                return;
+            }
+            
+            await SaveWithErrorHandling(dialogResult);
+        }
+
+        /// <summary>
+        /// Resets the tracker to default values.
+        /// </summary>
+        private async Task ResetImpl()
+        {
+            var result = await _dialogService.ShowDialogAsync<bool>(
+                _messageBoxFactory("Warning",
+                "Resetting the tracker will set all items and locations back to their " +
+                "starting values. This cannot be undone.\n\nDo you wish to proceed?"));
+
+            if (result)
+            {
+                _resetManager.Reset();
+            }
+        }
+
+        /// <summary>
+        /// Closes the window.
+        /// </summary>
+        /// <param name="window">
+        /// The window to be closed.
+        /// </param>
+        private static void CloseImpl(Window window)
+        {
+            window.Close();
         }
 
         /// <summary>
         /// Undoes the last action.
         /// </summary>
-        private void Undo()
+        private async Task UndoImpl()
         {
-            UndoRedoManager.Instance.Undo();
-        }
-
-        /// <summary>
-        /// Updates the CanRedo property with a value representing whether there are objects in the
-        /// Redoable stack.
-        /// </summary>
-        private void UpdateCanRedo()
-        {
-            CanRedo = UndoRedoManager.Instance.CanRedo();
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                _undoRedoManager.Undo();
+            });
         }
 
         /// <summary>
         /// Redoes the last action.
         /// </summary>
-        private void Redo()
+        private async Task RedoImpl()
         {
-            UndoRedoManager.Instance.Redo();
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                _undoRedoManager.Redo();
+            });
+        }
+
+        /// <summary>
+        /// Opens the AutoTracker dialog window.
+        /// </summary>
+        private async Task AutoTrackerImpl()
+        {
+            await Dispatcher.UIThread.InvokeAsync(async () =>
+                await _dialogService.ShowDialogAsync(_autoTrackerDialog, false));
+        }
+
+        /// <summary>
+        /// Opens the Sequence Break dialog window.
+        /// </summary>
+        private async Task SequenceBreaksImpl()
+        {
+            await Dispatcher.UIThread.InvokeAsync(async () =>
+                await _dialogService.ShowDialogAsync(_sequenceBreakDialog, false));
         }
 
         /// <summary>
         /// Toggles whether to show the item counts on the map.
         /// </summary>
-        private void ToggleShowItemCountsOnMap()
+        private void ToggleShowItemCountsOnMapImpl()
         {
-            AppSettings.Instance.Tracker.ShowItemCountsOnMap =
-                !AppSettings.Instance.Tracker.ShowItemCountsOnMap;
+            _appSettings.Tracker.ShowItemCountsOnMap = !_appSettings.Tracker.ShowItemCountsOnMap;
         }
 
         /// <summary>
@@ -320,15 +552,17 @@ namespace OpenTracker.ViewModels
         /// <param name="orientationString">
         /// A string representing the new layout orientation value.
         /// </param>
-        private void SetLayoutOrientation(string orientationString)
+        private void ChangeLayoutOrientationImpl(string orientationString)
         {
             if (orientationString == "Dynamic")
             {
-                AppSettings.Instance.Layout.LayoutOrientation = null;
+                _appSettings.Layout.LayoutOrientation = null;
+                return;
             }
-            else if (Enum.TryParse(orientationString, out Orientation orientation))
+            
+            if (Enum.TryParse(orientationString, out Orientation orientation))
             {
-                AppSettings.Instance.Layout.LayoutOrientation = orientation;
+                _appSettings.Layout.LayoutOrientation = orientation;
             }
         }
 
@@ -338,15 +572,17 @@ namespace OpenTracker.ViewModels
         /// <param name="orientationString">
         /// A string representing the new map orientation value.
         /// </param>
-        private void SetMapOrientation(string orientationString)
+        private void ChangeMapOrientationImpl(string orientationString)
         {
             if (orientationString == "Dynamic")
             {
-                AppSettings.Instance.Layout.MapOrientation = null;
+                _appSettings.Layout.MapOrientation = null;
+                return;
             }
-            else if (Enum.TryParse(orientationString, out Orientation orientation))
+            
+            if (Enum.TryParse(orientationString, out Orientation orientation))
             {
-                AppSettings.Instance.Layout.MapOrientation = orientation;
+                _appSettings.Layout.MapOrientation = orientation;
             }
         }
 
@@ -356,11 +592,11 @@ namespace OpenTracker.ViewModels
         /// <param name="dockString">
         /// A string representing the new horizontal UI panel orientation value.
         /// </param>
-        private void SetHorizontalUIPanelPlacement(string dockString)
+        private void ChangeHorizontalUIPanelPlacementImpl(string dockString)
         {
             if (Enum.TryParse(dockString, out Dock dock))
             {
-                AppSettings.Instance.Layout.HorizontalUIPanelPlacement = dock;
+                _appSettings.Layout.HorizontalUIPanelPlacement = dock;
             }
         }
 
@@ -370,11 +606,11 @@ namespace OpenTracker.ViewModels
         /// <param name="dockString">
         /// A string representing the new vertical UI panel orientation value.
         /// </param>
-        private void SetVerticalUIPanelPlacement(string dockString)
+        private void ChangeVerticalUIPanelPlacementImpl(string dockString)
         {
             if (Enum.TryParse(dockString, out Dock dock))
             {
-                AppSettings.Instance.Layout.VerticalUIPanelPlacement = dock;
+                _appSettings.Layout.VerticalUIPanelPlacement = dock;
             }
         }
 
@@ -384,11 +620,11 @@ namespace OpenTracker.ViewModels
         /// <param name="dockString">
         /// A string representing the new horizontal items placement orientation value.
         /// </param>
-        private void SetHorizontalItemsPlacement(string dockString)
+        private void ChangeHorizontalItemsPlacementImpl(string dockString)
         {
             if (Enum.TryParse(dockString, out Dock dock))
             {
-                AppSettings.Instance.Layout.HorizontalItemsPlacement = dock;
+                _appSettings.Layout.HorizontalItemsPlacement = dock;
             }
         }
 
@@ -398,11 +634,11 @@ namespace OpenTracker.ViewModels
         /// <param name="dockString">
         /// A string representing the new vertical items placement orientation value.
         /// </param>
-        private void SetVerticalItemsPlacement(string dockString)
+        private void ChangeVerticalItemsPlacementImpl(string dockString)
         {
             if (Enum.TryParse(dockString, out Dock dock))
             {
-                AppSettings.Instance.Layout.VerticalItemsPlacement = dock;
+                _appSettings.Layout.VerticalItemsPlacement = dock;
             }
         }
 
@@ -412,108 +648,51 @@ namespace OpenTracker.ViewModels
         /// <param name="uiScaleValue">
         /// A floating point number representing the UI scale value.
         /// </param>
-        private static void SetUIScale(string uiScaleValue)
+        private void ChangeUIScaleImpl(string uiScaleValue)
         {
-            AppSettings.Instance.Layout.UIScale = double.Parse(uiScaleValue, CultureInfo.InvariantCulture);
+            _appSettings.Layout.UIScale = double.Parse(uiScaleValue, CultureInfo.InvariantCulture);
         }
 
         /// <summary>
         /// Toggles whether to display all locations on the map.
         /// </summary>
-        private void ToggleDisplayAllLocations()
+        private void ToggleDisplayAllLocationsImpl()
         {
-            AppSettings.Instance.Tracker.DisplayAllLocations =
-                !AppSettings.Instance.Tracker.DisplayAllLocations;
+            _appSettings.Tracker.DisplayAllLocations = !_appSettings.Tracker.DisplayAllLocations;
         }
 
         /// <summary>
         /// Toggles whether to display maps and compasses.
         /// </summary>
-        private void ToggleDisplayMapsCompasses()
+        private void ToggleDisplayMapsCompassesImpl()
         {
-            AppSettings.Instance.Layout.DisplayMapsCompasses =
-                !AppSettings.Instance.Layout.DisplayMapsCompasses;
+            _appSettings.Layout.DisplayMapsCompasses = !_appSettings.Layout.DisplayMapsCompasses;
         }
 
         /// <summary>
         /// Toggles whether to always display dungeon items.
         /// </summary>
-        private void ToggleAlwaysDisplayDungeonItems()
+        private void ToggleAlwaysDisplayDungeonItemsImpl()
         {
-            AppSettings.Instance.Layout.AlwaysDisplayDungeonItems =
-                !AppSettings.Instance.Layout.AlwaysDisplayDungeonItems;
+            _appSettings.Layout.AlwaysDisplayDungeonItems = !_appSettings.Layout.AlwaysDisplayDungeonItems;
         }
 
         /// <summary>
-        /// Resets the undo/redo manager, pinned locations, and game data to their starting values.
+        /// Opens the Color Select dialog window.
         /// </summary>
-        private static void Reset()
+        private async Task ColorSelectImpl()
         {
-            Dispatcher.UIThread.InvokeAsync(() =>
-            {
-                UndoRedoManager.Instance.Reset();
-                PinnedLocationCollection.Instance.Clear();
-                AutoTracker.Instance.Stop();
-                BossPlacementDictionary.Instance.Reset();
-                LocationDictionary.Instance.Reset();
-                PrizePlacementDictionary.Instance.Reset();
-                ItemDictionary.Instance.Reset();
-                ConnectionCollection.Instance.Clear();
-            });
+            await Dispatcher.UIThread.InvokeAsync(async () =>
+                await _dialogService.ShowDialogAsync(_colorSelectDialog, false));
         }
 
         /// <summary>
-        /// Opens a reset dialog window.
+        /// Opens the About dialog window.
         /// </summary>
-        private static void OpenResetDialog()
+        private async Task AboutImpl()
         {
-            Dispatcher.UIThread.InvokeAsync(async () =>
-            {
-                bool? result = await App.DialogService.ShowDialog(
-                    new MessageBoxDialogVM("Warning",
-                    "Resetting the tracker will set all items and locations back to their " +
-                    "starting values. This cannot be undone.\n\nDo you wish to proceed?"))
-                    .ConfigureAwait(false);
-
-                if (result.HasValue && result.Value)
-                {
-                    Reset();
-                }
-            });
-        }
-
-        /// <summary>
-        /// Opens an about dialog window.
-        /// </summary>
-        private static void OpenAboutDialog()
-        {
-            Dispatcher.UIThread.InvokeAsync(async () =>
-            {
-                bool? result = await App.DialogService.ShowDialog(new AboutDialogVM())
-                    .ConfigureAwait(false);
-            });
-        }
-
-        /// <summary>
-        /// Returns the observable result of the OpenResetDialog method.
-        /// </summary>
-        /// <returns>
-        /// The observable result of the OpenResetDialog method.
-        /// </returns>
-        private IObservable<Unit> OpenResetDialogAsync()
-        {
-            return Observable.Start(() => { OpenResetDialog(); });
-        }
-
-        /// <summary>
-        /// Returns the observable result of the OpenAboutDialog method.
-        /// </summary>
-        /// <returns>
-        /// The observable result of the OpenAboutDialog method.
-        /// </returns>
-        private IObservable<Unit> OpenAboutDialogAsync()
-        {
-            return Observable.Start(() => { OpenAboutDialog(); });
+            await Dispatcher.UIThread.InvokeAsync(async () =>
+                await _dialogService.ShowDialogAsync(_aboutDialog, false));
         }
     }
 }

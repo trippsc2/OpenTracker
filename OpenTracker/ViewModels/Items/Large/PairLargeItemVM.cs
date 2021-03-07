@@ -1,52 +1,68 @@
-﻿using OpenTracker.Interfaces;
-using OpenTracker.Models.Items;
+﻿using OpenTracker.Models.Items;
 using OpenTracker.Models.UndoRedo;
+using OpenTracker.Utils;
 using ReactiveUI;
 using System;
 using System.ComponentModel;
 using System.Globalization;
+using System.Reactive;
+using Avalonia.Input;
+using Avalonia.Threading;
 
 namespace OpenTracker.ViewModels.Items.Large
 {
     /// <summary>
-    /// This is the ViewModel for the large Items panel control representing a pair of items.
+    /// This class contains item pair large items panel control ViewModel data.
     /// </summary>
-    public class PairLargeItemVM : LargeItemVMBase, IClickHandler
+    public class PairLargeItemVM : ViewModelBase, ILargeItemVMBase
     {
+        private readonly IUndoRedoManager _undoRedoManager;
+        private readonly IUndoableFactory _undoableFactory;
+
         private readonly IItem[] _items;
         private readonly string _imageSourceBase;
 
         public string ImageSource =>
             _imageSourceBase + _items[0].Current.ToString(CultureInfo.InvariantCulture) +
             $"{_items[1].Current.ToString(CultureInfo.InvariantCulture)}.png";
+        
+        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
+
+        public delegate PairLargeItemVM Factory(IItem[] items, string imageSourceBase);
 
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="undoRedoManager">
+        /// The undo/redo manager.
+        /// </param>
+        /// <param name="undoableFactory">
+        /// A factory for creating undoable actions.
+        /// </param>
         /// <param name="imageSourceBase">
         /// A string representing the image source base.
         /// </param>
         /// <param name="items">
         /// An array of items that are to be represented by this control.
         /// </param>
-        public PairLargeItemVM(string imageSourceBase, IItem[] items)
+        public PairLargeItemVM(
+            IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory, IItem[] items, string imageSourceBase)
         {
-            _items = items ?? throw new ArgumentNullException(nameof(items));
-            _imageSourceBase = imageSourceBase ??
-                throw new ArgumentNullException(nameof(imageSourceBase));
+            _undoRedoManager = undoRedoManager;
+            _undoableFactory = undoableFactory;
+
+            _items = items;
+            _imageSourceBase = imageSourceBase;
 
             if (_items.Length != 2)
             {
                 throw new ArgumentOutOfRangeException(nameof(items));
             }
+            
+            HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
 
             foreach (var item in _items)
             {
-                if (item == null)
-                {
-                    throw new ArgumentOutOfRangeException(nameof(items));
-                }
-
                 item.PropertyChanged += OnItemChanged;
             }
         }
@@ -60,31 +76,46 @@ namespace OpenTracker.ViewModels.Items.Large
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnItemChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnItemChanged(object sender, PropertyChangedEventArgs e)
         {
-            this.RaisePropertyChanged(nameof(ImageSource));
+            await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(ImageSource)));
         }
 
         /// <summary>
-        /// Handles left clicks and cycles the first item.
+        /// Creates an undoable action to add an item to the first item in the pair and sends it to the undo/redo
+        /// manager.
         /// </summary>
-        /// <param name="force">
-        /// A boolean representing whether the logic should be ignored.
-        /// </param>
-        public void OnLeftClick(bool force)
+        private void AddFirstItem()
         {
-            UndoRedoManager.Instance.Execute(new CycleItem(_items[0]));
+            _undoRedoManager.NewAction(_undoableFactory.GetCycleItem(_items[0]));
         }
 
         /// <summary>
-        /// Handles right clicks and cycles the second item.
+        /// Creates an undoable action to add an item to the second item in the pair and sends it to the undo/redo
+        /// manager.
         /// </summary>
-        /// <param name="force">
-        /// A boolean representing whether the logic should be ignored.
-        /// </param>
-        public void OnRightClick(bool force)
+        private void AddSecondItem()
         {
-            UndoRedoManager.Instance.Execute(new CycleItem(_items[1]));
+            _undoRedoManager.NewAction(_undoableFactory.GetCycleItem(_items[1]));
+        }
+
+        /// <summary>
+        /// Handles clicking the control.
+        /// </summary>
+        /// <param name="e">
+        /// The pointer released event args.
+        /// </param>
+        private void HandleClickImpl(PointerReleasedEventArgs e)
+        {
+            switch (e.InitialPressMouseButton)
+            {
+                case MouseButton.Left:
+                    AddFirstItem();
+                    break;
+                case MouseButton.Right:
+                    AddSecondItem();
+                    break;
+            }
         }
     }
 }

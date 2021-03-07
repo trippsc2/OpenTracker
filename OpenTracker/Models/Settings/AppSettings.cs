@@ -1,74 +1,50 @@
-﻿using Avalonia.Controls;
-using Newtonsoft.Json;
-using OpenTracker.Models.AccessibilityLevels;
+﻿using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.SaveLoad;
-using System;
+using OpenTracker.Utils;
 using System.Collections.Generic;
-using System.IO;
 using System.Reflection;
 
 namespace OpenTracker.Models.Settings
 {
     /// <summary>
-    /// This is the class for application data to be saved to file.
+    /// This class contains app settings data.
     /// </summary>
-    public class AppSettings
+    public class AppSettings : IAppSettings
     {
-        private static readonly object _syncLock = new object();
-        private static volatile AppSettings _instance;
-
-        public static AppSettings Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    lock (_syncLock)
-                    {
-                        if (_instance == null)
-                        {
-                            _instance = new AppSettings();
-                        }
-                    }
-                }
-
-                return _instance;
-            }
-        }
-
-        public BoundsSettings Bounds { get; } =
-            new BoundsSettings();
-        public TrackerSettings Tracker { get; } =
-            new TrackerSettings();
-        public LayoutSettings Layout { get; } =
-            new LayoutSettings();
-        public ColorSettings Colors { get; } =
-            new ColorSettings();
+        public IBoundsSettings Bounds { get; }
+        public ITrackerSettings Tracker { get; }
+        public ILayoutSettings Layout { get; }
+        public IColorSettings Colors { get; }
 
         /// <summary>
         /// Constructor
         /// </summary>
-        public AppSettings()
+        /// <param name="bounds">
+        /// The bounds settings.
+        /// </param>
+        /// <param name="tracker">
+        /// The tracker settings.
+        /// </param>
+        /// <param name="layout">
+        /// The layout settings.
+        /// </param>
+        /// <param name="colors">
+        /// The color settings.
+        /// </param>
+        public AppSettings(
+            IBoundsSettings bounds, ITrackerSettings tracker, ILayoutSettings layout,
+            IColorSettings colors)
         {
-            string appSettingsPath = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "OpenTracker", "OpenTracker.json");
-            
-            if (File.Exists(appSettingsPath))
+            Bounds = bounds;
+            Tracker = tracker;
+            Layout = layout;
+            Colors = colors;
+
+            var saveData = JsonConversion.Load<AppSettingsSaveData>(AppPath.AppSettingsFilePath);
+
+            if (saveData != null)
             {
-                string jsonContent = File.ReadAllText(appSettingsPath);
-                AppSettingsSaveData saveData =
-                    JsonConvert.DeserializeObject<AppSettingsSaveData>(jsonContent);
                 Load(saveData);
-            }
-            else
-            {
-                Colors.AccessibilityColors.Add(AccessibilityLevel.None, "#ffff3030");
-                Colors.AccessibilityColors.Add(AccessibilityLevel.Partial, "#ffff8c00");
-                Colors.AccessibilityColors.Add(AccessibilityLevel.Inspect, "#ff6495ed");
-                Colors.AccessibilityColors.Add(AccessibilityLevel.SequenceBreak, "#ffffff00");
-                Colors.AccessibilityColors.Add(AccessibilityLevel.Normal, "#ff00ff00");
-                Colors.AccessibilityColors.Add(AccessibilityLevel.Cleared, "#ff333333");
             }
         }
 
@@ -82,7 +58,7 @@ namespace OpenTracker.Models.Settings
         {
             return new AppSettingsSaveData()
             {
-                Version = Assembly.GetExecutingAssembly().GetName().Version,
+                Version = Assembly.GetExecutingAssembly().GetName().Version!,
                 Maximized = Bounds.Maximized,
                 X = Bounds.X,
                 Y = Bounds.Y,
@@ -111,11 +87,6 @@ namespace OpenTracker.Models.Settings
         /// </summary>
         public void Load(AppSettingsSaveData saveData)
         {
-            if (saveData == null)
-            {
-                throw new ArgumentNullException(nameof(saveData));
-            }
-
             Bounds.Maximized = saveData.Maximized;
             Bounds.X = saveData.X;
             Bounds.Y = saveData.Y;
@@ -123,7 +94,7 @@ namespace OpenTracker.Models.Settings
             Bounds.Height = saveData.Height;
             Tracker.DisplayAllLocations = saveData.DisplayAllLocations;
             Tracker.ShowItemCountsOnMap = saveData.ShowItemCountsOnMap;
-            
+
             if (saveData.DisplayMapsCompasses.HasValue)
             {
                 Layout.DisplayMapsCompasses = saveData.DisplayMapsCompasses.Value;
@@ -140,41 +111,30 @@ namespace OpenTracker.Models.Settings
             // Code to handle change of type from 1.3.2 to later versions.
             if (saveData.Version == null)
             {
-                Layout.HorizontalUIPanelPlacement = saveData.HorizontalUIPanelPlacement switch
-                {
-                    Dock.Bottom => Dock.Top,
-                    _ => Dock.Bottom
-                };
-
-                Layout.VerticalUIPanelPlacement = saveData.VerticalUIPanelPlacement switch
-                {
-                    Dock.Bottom => Dock.Left,
-                    _ => Dock.Right
-                };
-
-                Layout.HorizontalItemsPlacement = saveData.HorizontalItemsPlacement switch
-                {
-                    Dock.Bottom => Dock.Left,
-                    _ => Dock.Right
-                };
-
-                Layout.VerticalItemsPlacement = saveData.VerticalItemsPlacement switch
-                {
-                    Dock.Bottom => Dock.Top,
-                    _ => Dock.Bottom
-                };
+                AppSettingsConversion.ConvertPre132(saveData);
             }
-            else
-            {
-                Layout.HorizontalUIPanelPlacement = saveData.HorizontalUIPanelPlacement;
-                Layout.VerticalUIPanelPlacement = saveData.VerticalUIPanelPlacement;
-                Layout.HorizontalItemsPlacement = saveData.HorizontalItemsPlacement;
-                Layout.VerticalItemsPlacement = saveData.VerticalItemsPlacement;
-            }
+
+            Layout.HorizontalUIPanelPlacement = saveData.HorizontalUIPanelPlacement;
+            Layout.VerticalUIPanelPlacement = saveData.VerticalUIPanelPlacement;
+            Layout.HorizontalItemsPlacement = saveData.HorizontalItemsPlacement;
+            Layout.VerticalItemsPlacement = saveData.VerticalItemsPlacement;
 
             Layout.UIScale = saveData.UIScale == 0.0 ? 1.0 : saveData.UIScale;
-            Colors.EmphasisFontColor = saveData.EmphasisFontColor;
-            Colors.ConnectorColor = saveData.ConnectorColor;
+
+            if (saveData.EmphasisFontColor != null)
+            {
+                Colors.EmphasisFontColor = saveData.EmphasisFontColor;
+            }
+
+            if (saveData.ConnectorColor != null)
+            {
+                Colors.ConnectorColor = saveData.ConnectorColor;
+            }
+
+            if (saveData.AccessibilityColors == null)
+            {
+                return;
+            }
 
             foreach (var color in saveData.AccessibilityColors)
             {

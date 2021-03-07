@@ -1,6 +1,5 @@
 ﻿using OpenTracker.Models.Modes;
 using OpenTracker.Models.SaveLoad;
-using System;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.BossPlacements
@@ -10,9 +9,11 @@ namespace OpenTracker.Models.BossPlacements
     /// </summary>
     public class BossPlacement : IBossPlacement
     {
+        private readonly IMode _mode;
+
         public BossType DefaultBoss { get; }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         private BossType? _boss;
         public BossType? Boss
@@ -31,17 +32,23 @@ namespace OpenTracker.Models.BossPlacements
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="mode">
+        /// The mode settings.
+        /// </param>
         /// <param name="defaultBoss">
         /// The default boss type for the boss placement.
         /// </param>
-        public BossPlacement(BossType defaultBoss)
+        public BossPlacement(IMode mode, BossType defaultBoss)
         {
-            if (defaultBoss == BossType.Aga)
+            _mode = mode;
+
+            DefaultBoss = defaultBoss;
+
+            if (DefaultBoss == BossType.Aga)
             {
                 Boss = BossType.Aga;
             }
 
-            DefaultBoss = defaultBoss;
         }
 
         /// <summary>
@@ -63,7 +70,7 @@ namespace OpenTracker.Models.BossPlacements
         /// </returns>
         public BossType? GetCurrentBoss()
         {
-            if (Mode.Instance.BossShuffle)
+            if (_mode.BossShuffle)
             {
                 return Boss;
             }
@@ -99,13 +106,13 @@ namespace OpenTracker.Models.BossPlacements
         /// <summary>
         /// Loads boss placement save data.
         /// </summary>
-        public void Load(BossPlacementSaveData saveData)
+        public void Load(BossPlacementSaveData? saveData)
         {
             if (saveData == null)
             {
-                throw new ArgumentNullException(nameof(saveData));
+                return;
             }
-
+            
             Boss = saveData.Boss;
         }
     }

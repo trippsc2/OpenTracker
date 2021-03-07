@@ -3,11 +3,11 @@
 namespace OpenTracker.Models.Settings
 {
     /// <summary>
-    /// This is the class containing tracker GUI settings.
+    /// This class contains GUI tracking settings data.
     /// </summary>
-    public class TrackerSettings : INotifyPropertyChanged
+    public class TrackerSettings : ITrackerSettings
     {
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         private bool _displayAllLocations;
         public bool DisplayAllLocations
@@ -41,7 +41,7 @@ namespace OpenTracker.Models.Settings
         /// Raises the PropertyChanged event for the specified property.
         /// </summary>
         /// <param name="propertyName">
-        /// The string of the property name of the changed property.
+        /// A string representing the property name that changed.
         /// </param>
         private void OnPropertyChanged(string propertyName)
         {

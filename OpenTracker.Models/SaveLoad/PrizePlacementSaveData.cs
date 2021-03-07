@@ -3,7 +3,7 @@
 namespace OpenTracker.Models.SaveLoad
 {
     /// <summary>
-    /// This is the class for containing save data for the PrizePlacement class.
+    /// This class contains prize placement save data.
     /// </summary>
     public class PrizePlacementSaveData
     {

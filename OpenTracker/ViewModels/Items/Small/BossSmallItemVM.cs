@@ -1,42 +1,57 @@
-﻿using OpenTracker.Interfaces;
-using ReactiveUI;
-using System;
-using System.ComponentModel;
+﻿using Avalonia.Input;
+using Avalonia.Threading;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.BossPlacements;
+using OpenTracker.Utils;
 using OpenTracker.ViewModels.BossSelect;
+using ReactiveUI;
+using System.ComponentModel;
+using System.Reactive;
 
 namespace OpenTracker.ViewModels.Items.Small
 {
     /// <summary>
-    /// This is the ViewModel for the small Items panel control representing the boss.
+    /// This class contains the boss small items panel control ViewModel data.
     /// </summary>
-    public class BossSmallItemVM : SmallItemVMBase, IClickHandler
+    public class BossSmallItemVM : ViewModelBase, ISmallItemVMBase
     {
         private readonly IBossPlacement _bossPlacement;
         private readonly IRequirement _requirement;
 
-        public bool Visible =>
-            _requirement.Met;
+        public bool Visible => _requirement.Met;
         public string ImageSource =>
-            _bossPlacement.Boss.HasValue ? "avares://OpenTracker/Assets/Images/Bosses/" +
-            $"{_bossPlacement.Boss.ToString().ToLowerInvariant()}1.png" :
             "avares://OpenTracker/Assets/Images/Bosses/" +
-            $"{_bossPlacement.DefaultBoss.ToString().ToLowerInvariant()}0.png";
+            (_bossPlacement.Boss.HasValue ? $"{_bossPlacement.Boss.ToString()!.ToLowerInvariant()}1" : 
+            $"{_bossPlacement.DefaultBoss.ToString().ToLowerInvariant()}0") + ".png";
 
-        public BossSelectPopupVM BossSelect { get; }
+        public IBossSelectPopupVM BossSelect { get; }
+        
+        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
+
+        public delegate BossSmallItemVM Factory(IBossPlacement bossPlacement);
 
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="requirements">
+        /// The requirements dictionary.
+        /// </param>
+        /// <param name="bossSelectFactory">
+        /// An Autofac factory for creating the boss select popup control ViewModel.
+        /// </param>
         /// <param name="bossPlacement">
         /// The boss section to which the boss belongs.
         /// </param>
-        public BossSmallItemVM(IBossPlacement bossPlacement)
+        public BossSmallItemVM(
+            IRequirementDictionary requirements, IBossSelectPopupVM.Factory bossSelectFactory,
+            IBossPlacement bossPlacement)
         {
-            _bossPlacement = bossPlacement ?? throw new ArgumentNullException(nameof(bossPlacement));
-            _requirement = RequirementDictionary.Instance[RequirementType.BossShuffleOn];
-            BossSelect = BossSelectVMFactory.GetBossSelectPopupVM(_bossPlacement);
+            _bossPlacement = bossPlacement;
+            _requirement = requirements[RequirementType.BossShuffleOn];
+            
+            BossSelect = bossSelectFactory(_bossPlacement);
+            
+            HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
 
             _bossPlacement.PropertyChanged += OnBossChanged;
             _requirement.PropertyChanged += OnRequirementChanged;
@@ -51,9 +66,9 @@ namespace OpenTracker.ViewModels.Items.Small
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnRequirementChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnRequirementChanged(object sender, PropertyChangedEventArgs e)
         {
-            this.RaisePropertyChanged(nameof(Visible));
+            await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Visible)));
         }
 
         /// <summary>
@@ -65,33 +80,34 @@ namespace OpenTracker.ViewModels.Items.Small
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnBossChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnBossChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IBossPlacement.Boss))
             {
-                this.RaisePropertyChanged(nameof(ImageSource));
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(ImageSource)));
             }
         }
 
         /// <summary>
-        /// Handles left clicks and opens the boss select popup.
+        /// Opens the boss select popup.
         /// </summary>
-        /// <param name="force">
-        /// A boolean representing whether the logic should be ignored.
-        /// </param>
-        public void OnLeftClick(bool force = false)
+        private void OpenBossSelect()
         {
             BossSelect.PopupOpen = true;
         }
 
         /// <summary>
-        /// Handles right clicks.
+        /// Handles clicking the control.
         /// </summary>
-        /// <param name="force">
-        /// A boolean representing whether the logic should be ignored.
+        /// <param name="e">
+        /// The pointer released event args.
         /// </param>
-        public void OnRightClick(bool force = false)
+        private void HandleClickImpl(PointerReleasedEventArgs e)
         {
+            if (e.InitialPressMouseButton == MouseButton.Left)
+            {
+                OpenBossSelect();
+            }
         }
     }
 }

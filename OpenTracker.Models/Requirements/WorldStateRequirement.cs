@@ -1,63 +1,39 @@
-﻿using OpenTracker.Models.AccessibilityLevels;
-using OpenTracker.Models.Modes;
+﻿using OpenTracker.Models.Modes;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.Requirements
 {
     /// <summary>
-    /// This is the class for World State requirements.
+    /// This class contains world state requirement data.
     /// </summary>
-    public class WorldStateRequirement : IRequirement
+    public class WorldStateRequirement : BooleanRequirement
     {
-        private readonly WorldState _worldState;
+        private readonly IMode _mode;
+        private readonly WorldState _expectedValue;
 
-        public bool Met =>
-            Accessibility != AccessibilityLevel.None;
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private AccessibilityLevel _accessibility;
-        public AccessibilityLevel Accessibility
-        {
-            get => _accessibility;
-            private set
-            {
-                if (_accessibility != value)
-                {
-                    _accessibility = value;
-                    OnPropertyChanged(nameof(Accessibility));
-                }
-            }
-        }
+        public delegate WorldStateRequirement Factory(WorldState expectedValue);
 
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="worldState">
+        /// <param name="mode">
+        /// The mode settings.
+        /// </param>
+        /// <param name="expectedValue">
         /// The required world state.
         /// </param>
-        public WorldStateRequirement(WorldState worldState)
+        public WorldStateRequirement(IMode mode, WorldState expectedValue)
         {
-            _worldState = worldState;
+            _mode = mode;
+            _expectedValue = expectedValue;
 
-            Mode.Instance.PropertyChanged += OnModeChanged;
+            _mode.PropertyChanged += OnModeChanged;
 
-            UpdateAccessibility();
+            UpdateValue();
         }
 
         /// <summary>
-        /// Raises the PropertyChanged event for the specified property.
-        /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changed property.
-        /// </param>
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        /// <summary>
-        /// Subscribes to the PropertyChanged event on the Mode class.
+        /// Subscribes to the PropertyChanged event on the IMode interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -65,21 +41,17 @@ namespace OpenTracker.Models.Requirements
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnModeChanged(object sender, PropertyChangedEventArgs e)
+        private void OnModeChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(Mode.WorldState))
+            if (e.PropertyName == nameof(IMode.WorldState))
             {
-                UpdateAccessibility();
+                UpdateValue();
             }
         }
 
-        /// <summary>
-        /// Updates the accessibility of this requirement.
-        /// </summary>
-        private void UpdateAccessibility()
+        protected override bool ConditionMet()
         {
-            Accessibility = Mode.Instance.WorldState == _worldState ?
-                AccessibilityLevel.Normal : AccessibilityLevel.None;
+            return _mode.WorldState == _expectedValue;
         }
     }
 }

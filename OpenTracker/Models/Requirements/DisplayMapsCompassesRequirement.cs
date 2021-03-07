@@ -1,60 +1,40 @@
-﻿using OpenTracker.Models.AccessibilityLevels;
-using OpenTracker.Models.Settings;
+﻿using OpenTracker.Models.Settings;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.Requirements
 {
-    public class DisplayMapsCompassesRequirement : IRequirement
+    /// <summary>
+    /// This class contains display maps/compasses setting requirement data.
+    /// </summary>
+    public class DisplayMapsCompassesRequirement : BooleanRequirement
     {
-        private readonly bool _displayMapsCompasses;
+        private readonly ILayoutSettings _layoutSettings;
+        private readonly bool _expectedValue;
 
-        public bool Met =>
-            Accessibility != AccessibilityLevel.None;
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private AccessibilityLevel _accessibility;
-        public AccessibilityLevel Accessibility
-        {
-            get => _accessibility;
-            private set
-            {
-                if (_accessibility != value)
-                {
-                    _accessibility = value;
-                    OnPropertyChanged(nameof(Accessibility));
-                }
-            }
-        }
+        public delegate DisplayMapsCompassesRequirement Factory(bool expectedValue);
 
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="displayMapsCompasses">
-        /// A boolean representing the display maps/compasses requirement.
+        /// <param name="layoutSettings">
+        /// The layout settings.
         /// </param>
-        public DisplayMapsCompassesRequirement(bool displayMapsCompasses)
+        /// <param name="expectedValue">
+        /// A boolean representing the expected value.
+        /// </param>
+        public DisplayMapsCompassesRequirement(
+            ILayoutSettings layoutSettings, bool expectedValue)
         {
-            _displayMapsCompasses = displayMapsCompasses;
+            _layoutSettings = layoutSettings;
+            _expectedValue = expectedValue;
 
-            AppSettings.Instance.Layout.PropertyChanged += OnLayoutChanged;
+            _layoutSettings.PropertyChanged += OnLayoutChanged;
 
-            UpdateAccessibility();
+            UpdateValue();
         }
 
         /// <summary>
-        /// Raises the PropertyChanged event for the specified property.
-        /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changed property.
-        /// </param>
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        /// <summary>
-        /// Subscribes to the PropertyChanged event on the LayoutSettings class.
+        /// Subscribes to the PropertyChanged event on the ILayoutSettings interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -62,22 +42,17 @@ namespace OpenTracker.Models.Requirements
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
+        private void OnLayoutChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(LayoutSettings.DisplayMapsCompasses))
+            if (e.PropertyName == nameof(ILayoutSettings.DisplayMapsCompasses))
             {
-                UpdateAccessibility();
+                UpdateValue();
             }
         }
 
-        /// <summary>
-        /// Updates the accessibility of this requirement.
-        /// </summary>
-        private void UpdateAccessibility()
+        protected override bool ConditionMet()
         {
-            Accessibility =
-                AppSettings.Instance.Layout.DisplayMapsCompasses == _displayMapsCompasses ?
-                AccessibilityLevel.Normal : AccessibilityLevel.None;
+            return _layoutSettings.DisplayMapsCompasses == _expectedValue;
         }
     }
 }

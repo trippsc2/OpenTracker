@@ -1,28 +1,49 @@
 ﻿using OpenTracker.Models.Modes;
 using OpenTracker.Models.Settings;
+using OpenTracker.Utils;
 using ReactiveUI;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.ComponentModel;
+using Avalonia.Threading;
 
 namespace OpenTracker.ViewModels.Dropdowns
 {
-    public class DropdownPanelVM : ViewModelBase
+    /// <summary>
+    /// This class contains the dropdown panel ViewModel data.
+    /// </summary>
+    public class DropdownPanelVM : ViewModelBase, IDropdownPanelVM
     {
-        public static bool Visible =>
-            Mode.Instance.EntranceShuffle >= EntranceShuffle.All;
-        public static double Scale =>
-            AppSettings.Instance.Layout.UIScale;
+        private readonly ILayoutSettings _layoutSettings;
+        private readonly IMode _mode;
 
-        public ObservableCollection<DropdownVM> Dropdowns { get; } =
-            DropdownVMFactory.GetDropdownVMs();
+        public bool Visible =>
+            _mode.EntranceShuffle >= EntranceShuffle.All;
+        public double Scale =>
+            _layoutSettings.UIScale;
+
+        public List<IDropdownVM> Dropdowns { get; }
 
         /// <summary>
         /// Constructor
         /// </summary>
-        public DropdownPanelVM()
+        /// <param name="layoutSettings">
+        /// The layout settings.
+        /// </param>
+        /// <param name="mode">
+        /// The mode settings.
+        /// </param>
+        /// <param name="factory">
+        /// The factory for creating new dropdown controls.
+        /// </param>
+        public DropdownPanelVM(ILayoutSettings layoutSettings, IMode mode, IDropdownVMFactory factory)
         {
-            Mode.Instance.PropertyChanged += OnModeChanged;
-            AppSettings.Instance.Layout.PropertyChanged += OnLayoutChanged;
+            _layoutSettings = layoutSettings;
+            _mode = mode;
+
+            Dropdowns = factory.GetDropdownVMs();
+
+            _mode.PropertyChanged += OnModeChanged;
+            _layoutSettings.PropertyChanged += OnLayoutChanged;
         }
 
         /// <summary>
@@ -34,11 +55,11 @@ namespace OpenTracker.ViewModels.Dropdowns
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnModeChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnModeChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(Mode.EntranceShuffle))
+            if (e.PropertyName == nameof(IMode.EntranceShuffle))
             {
-                this.RaisePropertyChanged(nameof(Visible));
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Visible))); 
             }
         }
 
@@ -51,11 +72,11 @@ namespace OpenTracker.ViewModels.Dropdowns
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnLayoutChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(LayoutSettings.UIScale))
+            if (e.PropertyName == nameof(ILayoutSettings.UIScale))
             {
-                this.RaisePropertyChanged(nameof(Scale));
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Scale)));
             }
         }
     }

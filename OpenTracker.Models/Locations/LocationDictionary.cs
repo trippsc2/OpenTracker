@@ -1,137 +1,72 @@
-﻿using OpenTracker.Models.SaveLoad;
-using OpenTracker.Models.Utils;
-using System;
-using System.Collections;
-using System.Collections.Concurrent;
+﻿using OpenTracker.Models.Dungeons;
+using OpenTracker.Models.SaveLoad;
+using OpenTracker.Utils;
 using System.Collections.Generic;
 
 namespace OpenTracker.Models.Locations
 {
     /// <summary>
-    /// This is the dictionary of location data
+    /// This class contains the dictionary container for location data.
     /// </summary>
-    public class LocationDictionary : Singleton<LocationDictionary>,
-        IDictionary<LocationID, ILocation>
+    public class LocationDictionary : LazyDictionary<LocationID, ILocation>,
+        ILocationDictionary
     {
-        private static readonly ConcurrentDictionary<LocationID, ILocation> _dictionary =
-            new ConcurrentDictionary<LocationID, ILocation>();
-
-        public ICollection<LocationID> Keys =>
-            ((IDictionary<LocationID, ILocation>)_dictionary).Keys;
-        public ICollection<ILocation> Values =>
-            ((IDictionary<LocationID, ILocation>)_dictionary).Values;
-        public int Count =>
-            ((ICollection<KeyValuePair<LocationID, ILocation>>)_dictionary).Count;
-        public bool IsReadOnly =>
-            ((ICollection<KeyValuePair<LocationID, ILocation>>)_dictionary).IsReadOnly;
-
-        public ILocation this[LocationID key]
-        {
-            get
-            {
-                if (!ContainsKey(key))
-                {
-                    Create(key);
-                }
-
-                return ((IDictionary<LocationID, ILocation>)_dictionary)[key];
-            }
-            set => ((IDictionary<LocationID, ILocation>)_dictionary)[key] = value;
-        }
-
-        public event EventHandler<LocationID> LocationCreated;
+        private readonly ILocation.Factory _locationFactory;
+        private readonly IDungeon.Factory _dungeonFactory;
 
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="game">
-        /// The game data parent class.
+        /// <param name="locationFactory">
+        /// The location factory.
         /// </param>
-        public LocationDictionary()
+        /// <param name="dungeonFactory">
+        /// The dungeon factory.
+        /// </param>
+        public LocationDictionary(
+            ILocation.Factory locationFactory, IDungeon.Factory dungeonFactory)
+            : base(new Dictionary<LocationID, ILocation>())
         {
+            _locationFactory = locationFactory;
+            _dungeonFactory = dungeonFactory;
+        }
+
+        protected override ILocation Create(LocationID key)
+        {
+            switch (key)
+            {
+                case LocationID.HyruleCastle:
+                case LocationID.AgahnimTower:
+                case LocationID.EasternPalace:
+                case LocationID.DesertPalace:
+                case LocationID.TowerOfHera:
+                case LocationID.PalaceOfDarkness:
+                case LocationID.SwampPalace:
+                case LocationID.SkullWoods:
+                case LocationID.ThievesTown:
+                case LocationID.IcePalace:
+                case LocationID.MiseryMire:
+                case LocationID.TurtleRock:
+                case LocationID.GanonsTower:
+                    {
+                        return _dungeonFactory(key);
+                    }
+                default:
+                    {
+                        return _locationFactory(key);
+                    }
+            }
         }
 
         /// <summary>
-        /// Creates a new location for the specified key.
-        /// </summary>
-        /// <param name="key">
-        /// The key.
-        /// </param>
-        private void Create(LocationID key)
-        {
-            Add(key, LocationFactory.GetLocation(key));
-            LocationCreated?.Invoke(this, key);
-        }
-
-        /// <summary>
-        /// Resets all locations to starting values.
+        /// Resets all locations to their starting values.
         /// </summary>
         public void Reset()
         {
-            foreach (Location location in Values)
+            foreach (var location in Values)
             {
                 location.Reset();
             }
-        }
-
-        public void Add(LocationID key, ILocation value)
-        {
-            ((IDictionary<LocationID, ILocation>)_dictionary).Add(key, value);
-        }
-
-        public bool ContainsKey(LocationID key)
-        {
-            return ((IDictionary<LocationID, ILocation>)_dictionary).ContainsKey(key);
-        }
-
-        public bool Remove(LocationID key)
-        {
-            return ((IDictionary<LocationID, ILocation>)_dictionary).Remove(key);
-        }
-
-        public bool TryGetValue(LocationID key, out ILocation value)
-        {
-            if (!ContainsKey(key))
-            {
-                Create(key);
-            }
-
-            return ((IDictionary<LocationID, ILocation>)_dictionary).TryGetValue(key, out value);
-        }
-
-        public void Add(KeyValuePair<LocationID, ILocation> item)
-        {
-            ((ICollection<KeyValuePair<LocationID, ILocation>>)_dictionary).Add(item);
-        }
-
-        public void Clear()
-        {
-            ((ICollection<KeyValuePair<LocationID, ILocation>>)_dictionary).Clear();
-        }
-
-        public bool Contains(KeyValuePair<LocationID, ILocation> item)
-        {
-            return ((ICollection<KeyValuePair<LocationID, ILocation>>)_dictionary).Contains(item);
-        }
-
-        public void CopyTo(KeyValuePair<LocationID, ILocation>[] array, int arrayIndex)
-        {
-            ((ICollection<KeyValuePair<LocationID, ILocation>>)_dictionary).CopyTo(array, arrayIndex);
-        }
-
-        public bool Remove(KeyValuePair<LocationID, ILocation> item)
-        {
-            return ((ICollection<KeyValuePair<LocationID, ILocation>>)_dictionary).Remove(item);
-        }
-
-        public IEnumerator<KeyValuePair<LocationID, ILocation>> GetEnumerator()
-        {
-            return ((IEnumerable<KeyValuePair<LocationID, ILocation>>)_dictionary).GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return ((IEnumerable)_dictionary).GetEnumerator();
         }
 
         /// <summary>
@@ -156,11 +91,11 @@ namespace OpenTracker.Models.Locations
         /// <summary>
         /// Loads a dictionary of location save data.
         /// </summary>
-        public void Load(Dictionary<LocationID, LocationSaveData> saveData)
+        public void Load(Dictionary<LocationID, LocationSaveData>? saveData)
         {
             if (saveData == null)
             {
-                throw new ArgumentNullException(nameof(saveData));
+                return;
             }
 
             foreach (var id in saveData.Keys)

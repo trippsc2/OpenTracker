@@ -1,24 +1,27 @@
-﻿using OpenTracker.Models.Markings;
+﻿using Avalonia.Threading;
+using OpenTracker.Models.Markings;
 using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
+using OpenTracker.Utils;
 using ReactiveUI;
-using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reactive;
 
 namespace OpenTracker.ViewModels.Markings
 {
     /// <summary>
-    /// This is the ViewModel class for the marking select popup control.
+    /// This class contains the marking select popup control ViewModel data.
     /// </summary>
-    public class MarkingSelectVM : ViewModelBase
+    public class MarkingSelectVM : ViewModelBase, IMarkingSelectVM
     {
+        private readonly ILayoutSettings _layoutSettings;
+        private readonly IUndoRedoManager _undoRedoManager;
+        private readonly IUndoableFactory _undoableFactory;
         private readonly IMarking _marking;
 
-        public static double Scale =>
-            AppSettings.Instance.Layout.UIScale;
-        public ObservableCollection<MarkingSelectItemVMBase> Buttons { get; }
+        public double Scale => _layoutSettings.UIScale;
+        public List<IMarkingSelectItemVMBase> Buttons { get; }
         public double Width { get; }
         public double Height { get; }
 
@@ -29,12 +32,21 @@ namespace OpenTracker.ViewModels.Markings
             set => this.RaiseAndSetIfChanged(ref _popupOpen, value);
         }
 
-        public ReactiveCommand<MarkType?, Unit> ChangeMarkingCommand { get; }
-        public ReactiveCommand<Unit, Unit> ClearMarkingCommand { get; }
+        public ReactiveCommand<MarkType?, Unit> ChangeMarking { get; }
+        public ReactiveCommand<Unit, Unit> ClearMarking { get; }
 
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="layoutSettings">
+        /// The layout settings data.
+        /// </param>
+        /// <param name="undoRedoManager">
+        /// The undo/redo manager.
+        /// </param>
+        /// <param name="undoableFactory">
+        /// A factory for creating undoable actions.
+        /// </param>
         /// <param name="marking">
         /// The marking to be represented.
         /// </param>
@@ -48,21 +60,27 @@ namespace OpenTracker.ViewModels.Markings
         /// The height of the popup.
         /// </param>
         public MarkingSelectVM(
-            IMarking marking, ObservableCollection<MarkingSelectItemVMBase> buttons,
-            double width, double height)
+            ILayoutSettings layoutSettings, IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory,
+            IMarking marking, List<IMarkingSelectItemVMBase> buttons, double width, double height)
         {
-            _marking = marking ?? throw new ArgumentNullException(nameof(marking));
-            Buttons = buttons ?? throw new ArgumentNullException(nameof(buttons));
+            _layoutSettings = layoutSettings;
+            _undoRedoManager = undoRedoManager;
+            _undoableFactory = undoableFactory;
+
+            _marking = marking;
+
+            Buttons = buttons;
             Width = width;
             Height = height;
-            ChangeMarkingCommand = ReactiveCommand.Create<MarkType?>(ChangeMarking);
-            ClearMarkingCommand = ReactiveCommand.Create(ClearMarking);
 
-            AppSettings.Instance.Layout.PropertyChanged += OnLayoutChanged;
+            ChangeMarking = ReactiveCommand.Create<MarkType?>(ChangeMarkingImpl);
+            ClearMarking = ReactiveCommand.Create(ClearMarkingImpl);
+
+            _layoutSettings.PropertyChanged += OnLayoutChanged;
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the LayoutSettings class.
+        /// Subscribes to the PropertyChanged event on the ILayoutSettings interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -70,20 +88,20 @@ namespace OpenTracker.ViewModels.Markings
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(LayoutSettings.UIScale))
+            if (e.PropertyName == nameof(ILayoutSettings.UIScale))
             {
-                this.RaisePropertyChanged(nameof(Scale));
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Scale)));
             }
         }
 
         /// <summary>
         /// Clears the marking of the section.
         /// </summary>
-        private void ClearMarking()
+        private void ClearMarkingImpl()
         {
-            UndoRedoManager.Instance.Execute(new SetMarking(_marking, MarkType.Unknown));
+            _undoRedoManager.NewAction(_undoableFactory.GetSetMarking(_marking, MarkType.Unknown));
             PopupOpen = false;
         }
 
@@ -93,14 +111,14 @@ namespace OpenTracker.ViewModels.Markings
         /// <param name="marking">
         /// The marking to be set.
         /// </param>
-        private void ChangeMarking(MarkType? marking)
+        private void ChangeMarkingImpl(MarkType? marking)
         {
             if (!marking.HasValue)
             {
                 return;
             }
 
-            UndoRedoManager.Instance.Execute(new SetMarking(_marking, marking.Value));
+            _undoRedoManager.NewAction(_undoableFactory.GetSetMarking(_marking, marking.Value));
             PopupOpen = false;
         }
     }

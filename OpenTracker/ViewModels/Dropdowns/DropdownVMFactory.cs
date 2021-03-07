@@ -1,14 +1,33 @@
 ﻿using OpenTracker.Models.Dropdowns;
 using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 
 namespace OpenTracker.ViewModels.Dropdowns
 {
     /// <summary>
     /// This is the class containing the creation logic for the dropdown icon ViewModels.
     /// </summary>
-    internal static class DropdownVMFactory
+    public class DropdownVMFactory : IDropdownVMFactory
     {
+        private readonly IDropdownDictionary _dropdownDictionary;
+        private readonly IDropdownVM.Factory _factory;
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="dropdownDictionary">
+        /// The dropdown dictionary.
+        /// </param>
+        /// <param name="factory">
+        /// The factory for creating new dropdown controls.
+        /// </param>
+        public DropdownVMFactory(
+            IDropdownDictionary dropdownDictionary, IDropdownVM.Factory factory)
+        {
+            _dropdownDictionary = dropdownDictionary;
+            _factory = factory;
+        }
+
         /// <summary>
         /// Returns the base image source string for the specified ID.
         /// </summary>
@@ -22,7 +41,7 @@ namespace OpenTracker.ViewModels.Dropdowns
         {
             return $"avares://OpenTracker/Assets/Images/Dropdowns/{id.ToString().ToLowerInvariant()}";
         }
-        
+
         /// <summary>
         /// Returns a new dropdown icon ViewModel instance for the specified ID.
         /// </summary>
@@ -32,20 +51,20 @@ namespace OpenTracker.ViewModels.Dropdowns
         /// <returns>
         /// A new dropdown icon ViewModel instance.
         /// </returns>
-        private static DropdownVM GetDropdownVM(DropdownID id)
+        private IDropdownVM GetDropdownVM(DropdownID id)
         {
-            return new DropdownVM(GetBaseImageSource(id), DropdownDictionary.Instance[id]);
+            return _factory(_dropdownDictionary[id], GetBaseImageSource(id));
         }
 
         /// <summary>
-        /// Returns an observable collection of dropdown icon ViewModel instances.
+        /// Returns an list of dropdown icon ViewModel instances.
         /// </summary>
         /// <returns>
-        /// An observable collection of dropdown icon ViewModel instances.
+        /// An list of dropdown icon ViewModel instances.
         /// </returns>
-        internal static ObservableCollection<DropdownVM> GetDropdownVMs()
+        public List<IDropdownVM> GetDropdownVMs()
         {
-            var result = new ObservableCollection<DropdownVM>();
+            var result = new List<IDropdownVM>();
 
             foreach (DropdownID id in Enum.GetValues(typeof(DropdownID)))
             {

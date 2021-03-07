@@ -7,21 +7,19 @@ using System.ComponentModel;
 namespace OpenTracker.Models.Requirements
 {
     /// <summary>
-    /// This is the class for the requirement of boss placements.
+    /// This class contains boss placement requirement data.
     /// </summary>
-    internal class BossRequirement : IRequirement
+    public class BossRequirement : AccessibilityRequirement
     {
+        private readonly IMode _mode;
+        private readonly IRequirementDictionary _requirements;
         private readonly IBossPlacement _bossPlacement;
 
-        public bool Met =>
-            Accessibility != AccessibilityLevel.None;
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private IRequirement _currentBossRequirement;
+        private IRequirement? _currentBossRequirement;
         private IRequirement CurrentBossRequirement
         {
-            get => _currentBossRequirement;
+            get => _currentBossRequirement ??
+                throw new NullReferenceException();
             set
             {
                 if (_currentBossRequirement != value)
@@ -37,54 +35,41 @@ namespace OpenTracker.Models.Requirements
                     {
                         _currentBossRequirement.PropertyChanged += OnRequirementChanged;
                     }
+
+                    UpdateValue();
                 }
             }
         }
 
-        private AccessibilityLevel _accessibility;
-        public AccessibilityLevel Accessibility
-        {
-            get => _accessibility;
-            private set
-            {
-                if (_accessibility != value)
-                {
-                    _accessibility = value;
-                    OnPropertyChanged(nameof(Accessibility));
-                }
-            }
-        }
+        public delegate BossRequirement Factory(IBossPlacement bossPlacement);
 
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="mode">
+        /// The mode settings.
+        /// </param>
+        /// <param name="requirements">
+        /// The requirement dictionary.
+        /// </param>
         /// <param name="bossPlacement">
         /// The boss placement to provide requirements.
         /// </param>
-        public BossRequirement(IBossPlacement bossPlacement)
+        public BossRequirement(
+            IMode mode, IRequirementDictionary requirements, IBossPlacement bossPlacement)
         {
-            _bossPlacement = bossPlacement ?? throw new ArgumentNullException(nameof(bossPlacement));
+            _mode = mode;
+            _requirements = requirements;
+            _bossPlacement = bossPlacement;
 
-            Mode.Instance.PropertyChanged += OnModeChanged;
+            _mode.PropertyChanged += OnModeChanged;
             _bossPlacement.PropertyChanged += OnBossPlacementChanged;
             
             UpdateRequirement();
-            UpdateAccessibility();
         }
 
         /// <summary>
-        /// Raises the PropertyChanged event for the specified property.
-        /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changed property.
-        /// </param>
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        /// <summary>
-        /// Subscribes to the PropertyChanged event on the Mode class.
+        /// Subscribes to the PropertyChanged event on the IMode interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -92,17 +77,16 @@ namespace OpenTracker.Models.Requirements
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnModeChanged(object sender, PropertyChangedEventArgs e)
+        private void OnModeChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(Mode.BossShuffle))
+            if (e.PropertyName == nameof(IMode.BossShuffle))
             {
                 UpdateRequirement();
-                UpdateAccessibility();
             }
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the BossPlacement class.
+        /// Subscribes to the PropertyChanged event on the IBossPlacement interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -110,12 +94,11 @@ namespace OpenTracker.Models.Requirements
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnBossPlacementChanged(object sender, PropertyChangedEventArgs e)
+        private void OnBossPlacementChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(BossPlacement.Boss))
+            if (e.PropertyName == nameof(IBossPlacement.Boss))
             {
                 UpdateRequirement();
-                UpdateAccessibility();
             }
         }
 
@@ -128,11 +111,11 @@ namespace OpenTracker.Models.Requirements
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnRequirementChanged(object sender, PropertyChangedEventArgs e)
+        private void OnRequirementChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IRequirement.Accessibility))
             {
-                UpdateAccessibility();
+                UpdateValue();
             }
         }
 
@@ -141,39 +124,35 @@ namespace OpenTracker.Models.Requirements
         /// </summary>
         private void UpdateRequirement()
         {
-            BossType? boss = _bossPlacement.GetCurrentBoss();
+            var boss = _bossPlacement.GetCurrentBoss();
 
-            if (boss.HasValue)
+            if (boss == null)
             {
-                CurrentBossRequirement = boss.Value switch
-                {
-                    BossType.Test => RequirementDictionary.Instance[RequirementType.NoRequirement],
-                    BossType.Armos => RequirementDictionary.Instance[RequirementType.Armos],
-                    BossType.Lanmolas => RequirementDictionary.Instance[RequirementType.Lanmolas],
-                    BossType.Moldorm => RequirementDictionary.Instance[RequirementType.Moldorm],
-                    BossType.HelmasaurKing => RequirementDictionary.Instance[RequirementType.HelmasaurKing],
-                    BossType.Arrghus => RequirementDictionary.Instance[RequirementType.Arrghus],
-                    BossType.Mothula => RequirementDictionary.Instance[RequirementType.Mothula],
-                    BossType.Blind => RequirementDictionary.Instance[RequirementType.Blind],
-                    BossType.Kholdstare => RequirementDictionary.Instance[RequirementType.Kholdstare],
-                    BossType.Vitreous => RequirementDictionary.Instance[RequirementType.Vitreous],
-                    BossType.Trinexx => RequirementDictionary.Instance[RequirementType.Trinexx],
-                    BossType.Aga => RequirementDictionary.Instance[RequirementType.AgaBoss],
-                    _ => throw new Exception()
-                };
+                CurrentBossRequirement = _requirements[RequirementType.UnknownBoss];
+                return;
             }
-            else
+            
+            CurrentBossRequirement = boss.Value switch
             {
-                Accessibility = RequirementDictionary.Instance[RequirementType.UnknownBoss].Accessibility;
-            }
+                BossType.Test => _requirements[RequirementType.NoRequirement],
+                BossType.Armos => _requirements[RequirementType.Armos],
+                BossType.Lanmolas => _requirements[RequirementType.Lanmolas],
+                BossType.Moldorm => _requirements[RequirementType.Moldorm],
+                BossType.HelmasaurKing => _requirements[RequirementType.HelmasaurKing],
+                BossType.Arrghus => _requirements[RequirementType.Arrghus],
+                BossType.Mothula => _requirements[RequirementType.Mothula],
+                BossType.Blind => _requirements[RequirementType.Blind],
+                BossType.Kholdstare => _requirements[RequirementType.Kholdstare],
+                BossType.Vitreous => _requirements[RequirementType.Vitreous],
+                BossType.Trinexx => _requirements[RequirementType.Trinexx],
+                BossType.Aga => _requirements[RequirementType.AgaBoss],
+                _ => throw new Exception()
+            };
         }
 
-        /// <summary>
-        /// Updates the accessibility of this requirement.
-        /// </summary>
-        private void UpdateAccessibility()
+        protected override AccessibilityLevel GetAccessibility()
         {
-            Accessibility = CurrentBossRequirement.Accessibility;
+            return CurrentBossRequirement.Accessibility;
         }
     }
 }

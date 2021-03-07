@@ -1,60 +1,39 @@
-﻿using OpenTracker.Models.AccessibilityLevels;
-using OpenTracker.Models.Modes;
+﻿using OpenTracker.Models.Modes;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.Requirements
 {
-    public class GenericKeysRequirement : IRequirement
+    /// <summary>
+    /// This class contains generic keys requirement data.
+    /// </summary>
+    public class GenericKeysRequirement : BooleanRequirement
     {
-        private readonly bool _genericKeys;
+        private readonly IMode _mode;
+        private readonly bool _expectedValue;
 
-        public bool Met =>
-            Accessibility != AccessibilityLevel.None;
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private AccessibilityLevel _accessibility;
-        public AccessibilityLevel Accessibility
-        {
-            get => _accessibility;
-            private set
-            {
-                if (_accessibility != value)
-                {
-                    _accessibility = value;
-                    OnPropertyChanged(nameof(Accessibility));
-                }
-            }
-        }
+        public delegate GenericKeysRequirement Factory(bool expectedValue);
 
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="genericKeys">
+        /// <param name="mode">
+        /// The mode settings.
+        /// </param>
+        /// <param name="expectedValue">
         /// The required enemy shuffle value.
         /// </param>
-        public GenericKeysRequirement(bool genericKeys)
+        public GenericKeysRequirement(IMode mode, bool expectedValue)
         {
-            _genericKeys = genericKeys;
+            _mode = mode;
+            _expectedValue = expectedValue;
 
-            Mode.Instance.PropertyChanged += OnModeChanged;
+            _mode.PropertyChanged += OnModeChanged;
 
-            UpdateAccessibility();
+            UpdateValue();
         }
 
         /// <summary>
-        /// Raises the PropertyChanged event for the specified property.
-        /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changed property.
-        /// </param>
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        /// <summary>
-        /// Subscribes to the PropertyChanged event on the Mode class.
+        /// Subscribes to the PropertyChanged event on the IMode interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -62,21 +41,17 @@ namespace OpenTracker.Models.Requirements
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnModeChanged(object sender, PropertyChangedEventArgs e)
+        private void OnModeChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(Mode.GenericKeys))
+            if (e.PropertyName == nameof(IMode.GenericKeys))
             {
-                UpdateAccessibility();
+                UpdateValue();
             }
         }
 
-        /// <summary>
-        /// Updates the accessibility of this requirement.
-        /// </summary>
-        private void UpdateAccessibility()
+        protected override bool ConditionMet()
         {
-            Accessibility = Mode.Instance.GenericKeys == _genericKeys ?
-                AccessibilityLevel.Normal : AccessibilityLevel.None;
+            return _mode.GenericKeys == _expectedValue;
         }
     }
 }

@@ -3,21 +3,30 @@
 namespace OpenTracker.Models.UndoRedo
 {
     /// <summary>
-    /// This is the class for unpinning a location.
+    /// This class contains undoable action data to unpin a location.
     /// </summary>
     public class UnpinLocation : IUndoable
     {
+        private readonly IPinnedLocationCollection _pinnedLocations;
+
         private readonly ILocation _pinnedLocation;
+
         private int? _existingIndex;
+
+        public delegate UnpinLocation Factory(ILocation pinnedLocation);
 
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="pinnedLocations">
+        /// The pinned locations collection.
+        /// </param>
         /// <param name="pinnedLocation">
         /// The pinned location ViewModel instance to be added.
         /// </param>
-        public UnpinLocation(ILocation pinnedLocation)
+        public UnpinLocation(IPinnedLocationCollection pinnedLocations, ILocation pinnedLocation)
         {
+            _pinnedLocations = pinnedLocations;
             _pinnedLocation = pinnedLocation;
         }
 
@@ -35,20 +44,20 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Executes the action.
         /// </summary>
-        public void Execute()
+        public void ExecuteDo()
         {
-            _existingIndex = PinnedLocationCollection.Instance.IndexOf(_pinnedLocation);
-            PinnedLocationCollection.Instance.Remove(_pinnedLocation);
+            _existingIndex = _pinnedLocations.IndexOf(_pinnedLocation);
+            _pinnedLocations.Remove(_pinnedLocation);
         }
 
         /// <summary>
         /// Undoes the action.
         /// </summary>
-        public void Undo()
+        public void ExecuteUndo()
         {
             if (_existingIndex.HasValue)
             {
-                PinnedLocationCollection.Instance.Insert(_existingIndex.Value, _pinnedLocation);
+                _pinnedLocations.Insert(_existingIndex.Value, _pinnedLocation);
             }
         }
     }

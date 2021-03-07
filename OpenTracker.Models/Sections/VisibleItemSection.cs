@@ -1,5 +1,5 @@
 ﻿using OpenTracker.Models.AccessibilityLevels;
-using OpenTracker.Models.AutoTracking.AutotrackValues;
+using OpenTracker.Models.AutoTracking.Values;
 using OpenTracker.Models.Markings;
 using OpenTracker.Models.RequirementNodes;
 using OpenTracker.Models.Requirements;
@@ -10,22 +10,21 @@ using System.ComponentModel;
 namespace OpenTracker.Models.Sections
 {
     /// <summary>
-    /// This is the section class of items with a marking.
+    /// This class contains item sections with marking data.
     /// </summary>
     public class VisibleItemSection : IMarkableSection, IItemSection
     {
-        private readonly IRequirementNode _visibleNode;
+        private readonly IRequirementNode? _visibleNode;
         private readonly IRequirementNode _node;
-        private readonly IAutoTrackValue _autoTrackValue;
+        private readonly IAutoTrackValue? _autoTrackValue;
 
         public string Name { get; }
         public int Total { get; }
         public IRequirement Requirement { get; }
         public bool UserManipulated { get; set; }
-        public IMarking Marking { get; } =
-            MarkingFactory.GetMarking();
+        public IMarking Marking { get; }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         public AccessibilityLevel Accessibility
         {
@@ -70,9 +69,16 @@ namespace OpenTracker.Models.Sections
             }
         }
 
+        public delegate VisibleItemSection Factory(
+            string name, int total, IRequirementNode node, IAutoTrackValue? autoTrackValue,
+            IRequirement requirement, IRequirementNode? visibleNode = null);
+
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="marking">
+        /// The section marking.
+        /// </param>
         /// <param name="name">
         /// A string representing the name of the section.
         /// </param>
@@ -85,21 +91,26 @@ namespace OpenTracker.Models.Sections
         /// <param name="autoTrackValue">
         /// The autotracking value for this section.
         /// </param>
+        /// <param name="requirement">
+        /// The requirement for the section to be visible.
+        /// </param>
         /// <param name="visibleNode">
         /// The node that provides Inspect accessibility for this section.
         /// </param>
         public VisibleItemSection(
-            string name, int total, IRequirementNode node, IAutoTrackValue autoTrackValue,
-            IRequirement requirement = null, IRequirementNode visibleNode = null)
+            IMarking marking, string name, int total, IRequirementNode node,
+            IAutoTrackValue? autoTrackValue, IRequirement requirement,
+            IRequirementNode? visibleNode = null)
         {
-            Name = name ?? throw new ArgumentNullException(nameof(name));
-            Total = total;
-            _node = node ?? throw new ArgumentNullException(nameof(node));
+            _node = node;
             _autoTrackValue = autoTrackValue;
-            Requirement = requirement ??
-                RequirementDictionary.Instance[RequirementType.NoRequirement];
-            Available = Total;
             _visibleNode = visibleNode;
+
+            Marking = marking;
+            Name = name;
+            Total = total;
+            Requirement = requirement;
+            Available = Total;
 
             _node.PropertyChanged += OnNodeChanged;
             UpdateAccessible();
@@ -140,7 +151,7 @@ namespace OpenTracker.Models.Sections
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnNodeChanged(object sender, PropertyChangedEventArgs e)
+        private void OnNodeChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IRequirementNode.Accessibility))
             {
@@ -158,7 +169,7 @@ namespace OpenTracker.Models.Sections
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnAutoTrackChanged(object sender, PropertyChangedEventArgs e)
+        private void OnAutoTrackChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IAutoTrackValue.CurrentValue))
             {
@@ -171,12 +182,12 @@ namespace OpenTracker.Models.Sections
         /// </summary>
         private void AutoTrackUpdate()
         {
-            if (_autoTrackValue.CurrentValue.HasValue)
+            if (_autoTrackValue!.CurrentValue.HasValue)
             {
                 if (Available != Total - _autoTrackValue.CurrentValue.Value)
                 {
                     Available = Total - _autoTrackValue.CurrentValue.Value;
-                    SaveLoadManager.Instance.Unsaved = true;
+                    //SaveLoadManager.Instance.Unsaved = true;
                 }
             }
         }

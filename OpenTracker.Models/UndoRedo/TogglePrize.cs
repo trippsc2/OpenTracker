@@ -3,12 +3,14 @@
 namespace OpenTracker.Models.UndoRedo
 {
     /// <summary>
-    /// This is the class for an undoable action to toggle a dungeon prize.
+    /// This class contains undoable action to toggle a dungeon prize.
     /// </summary>
     public class TogglePrize : IUndoable
     {
         private readonly ISection _section;
         private readonly bool _force;
+
+        public delegate TogglePrize Factory(ISection section, bool force);
 
         /// <summary>
         /// Constructor
@@ -39,7 +41,7 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Executes the action.
         /// </summary>
-        public void Execute()
+        public void ExecuteDo()
         {
             if (_section.IsAvailable())
             {
@@ -54,7 +56,7 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Undoes the action.
         /// </summary>
-        public void Undo()
+        public void ExecuteUndo()
         {
             if (_section.IsAvailable())
             {

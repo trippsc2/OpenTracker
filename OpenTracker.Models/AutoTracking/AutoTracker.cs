@@ -1,7 +1,8 @@
-﻿using OpenTracker.Models.Utils;
+﻿using OpenTracker.Models.AutoTracking.SNESConnectors;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Threading.Tasks;
 using WebSocketSharp;
 
 namespace OpenTracker.Models.AutoTracking
@@ -9,29 +10,59 @@ namespace OpenTracker.Models.AutoTracking
     /// <summary>
     /// This is the class containing autotracking data and methods
     /// </summary>
-    public class AutoTracker : Singleton<AutoTracker>, INotifyPropertyChanged
+    public class AutoTracker : IAutoTracker
     {
+        private readonly IMemoryAddress.Factory _addressFactory;
+
         private byte? _inGameStatus;
+        private readonly Dictionary<MemorySegmentType, List<IMemoryAddress>> _memorySegments =
+            new Dictionary<MemorySegmentType, List<IMemoryAddress>>();
 
-        private bool InGame =>
-            _inGameStatus.HasValue && _inGameStatus.Value > 0x05 && _inGameStatus.Value != 0x14;
-        public ISNESConnector SNESConnector { get; }
-        public Action<LogLevel, string> LogHandler { get; set; }
+        private bool CanReadMemory =>
+            Status == ConnectionStatus.Connected;
+        private bool IsInGame =>
+            !(_inGameStatus is null) && _inGameStatus > 0x05 && _inGameStatus != 0x14 &&
+            _inGameStatus < 0x20;
 
-        public List<MemoryAddress> RoomMemory { get; } =
-            new List<MemoryAddress>(592);
-        public List<MemoryAddress> OverworldEventMemory { get; } =
-            new List<MemoryAddress>(130);
-        public List<MemoryAddress> ItemMemory { get; } =
-            new List<MemoryAddress>(144);
-        public List<MemoryAddress> NPCItemMemory { get; } =
-            new List<MemoryAddress>(2);
-        public List<MemoryAddress> DungeonItemMemory { get; } =
-            new List<MemoryAddress>(6);
-        public List<MemoryAddress> SmallKeyMemory { get; } =
-            new List<MemoryAddress>(16);
+        public Action<LogLevel, string>? LogHandler { get; set; }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public Dictionary<ulong, IMemoryAddress> MemoryAddresses { get; } =
+            new Dictionary<ulong, IMemoryAddress>();
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        private ISNESConnector _snesConnector;
+        private ISNESConnector SNESConnector
+        {
+            get => _snesConnector;
+            set
+            {
+                if (_snesConnector != value)
+                {
+                    if (!(_snesConnector is null))
+                    {
+                        _snesConnector.StatusChanged -= OnStatusChanged;
+                    }
+                    _snesConnector = value;
+                    _snesConnector.StatusChanged += OnStatusChanged;
+                    Status = ConnectionStatus.NotConnected;
+                }
+            }
+        }
+
+        private List<string> _devices = new List<string>();
+        public List<string> Devices
+        {
+            get => _devices;
+            private set
+            {
+                if (_devices != value)
+                {
+                    _devices = value;
+                    OnPropertyChanged(nameof(Devices));
+                }
+            }
+        }
 
         private bool _raceIllegalTracking;
         public bool RaceIllegalTracking
@@ -39,225 +70,311 @@ namespace OpenTracker.Models.AutoTracking
             get => _raceIllegalTracking;
             set
             {
-                if (_raceIllegalTracking != value)
+                _raceIllegalTracking = value;
+                OnPropertyChanged(nameof(RaceIllegalTracking));
+            }
+        }
+
+        private ConnectionStatus _status;
+        public ConnectionStatus Status
+        {
+            get => _status;
+            private set
+            {
+                if (_status != value)
                 {
-                    _raceIllegalTracking = value;
-                    PropertyChanged?.Invoke(
-                        this, new PropertyChangedEventArgs(nameof(RaceIllegalTracking)));
+                    _status = value;
+                    OnPropertyChanged(nameof(Status));
                 }
             }
         }
-        
+
         /// <summary>
         /// Constructor
         /// </summary>
-        public AutoTracker()
+        /// <param name="snesConnector">
+        /// The SNES connector factory.
+        /// </param>
+        /// <param name="addressFactory">
+        /// An Autofac factory for creating memory addresses.
+        /// </param>
+        public AutoTracker(
+            ISNESConnector snesConnector, IMemoryAddress.Factory addressFactory)
         {
-            SNESConnector = SNESConnectorFactory.GetSNESConnector(HandleLog);
+            _addressFactory = addressFactory;
+            
+            SNESConnector = snesConnector;
 
-            for (int i = 0; i < 592; i++)
+            foreach (MemorySegmentType type in Enum.GetValues(typeof(MemorySegmentType)))
             {
-                RoomMemory.Add(new MemoryAddress());
+                _memorySegments.Add(type, new List<IMemoryAddress>());
+            }
 
-                if (i < 130)
+            for (ulong i = 0; i < 128; i++)
+            {
+                CreateMemoryAddress(MemorySegmentType.FirstRoom, i);
+                CreateMemoryAddress(MemorySegmentType.SecondRoom, i);
+                CreateMemoryAddress(MemorySegmentType.ThirdRoom, i);
+                CreateMemoryAddress(MemorySegmentType.FourthRoom, i);
+                CreateMemoryAddress(MemorySegmentType.FirstItem, i);
+                CreateMemoryAddress(MemorySegmentType.FirstOverworldEvent, i);
+
+                if (i < 80)
                 {
-                    OverworldEventMemory.Add(new MemoryAddress());
+                    CreateMemoryAddress(MemorySegmentType.FifthRoom, i);
                 }
 
-                if (i < 144)
+                if (i < 48)
                 {
-                    ItemMemory.Add(new MemoryAddress());
+                    CreateMemoryAddress(MemorySegmentType.Dungeon, i);
                 }
 
                 if (i < 16)
                 {
-                    SmallKeyMemory.Add(new MemoryAddress());
+                    CreateMemoryAddress(MemorySegmentType.SecondItem, i);
                 }
-
+                
                 if (i < 6)
                 {
-                    DungeonItemMemory.Add(new MemoryAddress());
+                    CreateMemoryAddress(MemorySegmentType.DungeonItem, i);
                 }
 
                 if (i < 2)
                 {
-                    NPCItemMemory.Add(new MemoryAddress());
+                    CreateMemoryAddress(MemorySegmentType.SecondOverworldEvent, i);
+                    CreateMemoryAddress(MemorySegmentType.NPCItem, i);
                 }
             }
         }
 
         /// <summary>
-        /// Calls the LogHandler property and is passed to the connector to allow for log handling.
+        /// Raises the PropertyChanged event for the specified property.
         /// </summary>
-        /// <param name="logLevel">
-        /// The log level of the event to be logged.
+        /// <param name="propertyName">
+        /// The string of the property name of the changed property.
         /// </param>
-        /// <param name="message">
-        /// A string representing the log message.
-        /// </param>
-        private void HandleLog(LogLevel logLevel, string message)
+        private void OnPropertyChanged(string propertyName)
         {
-            LogHandler?.Invoke(logLevel, message);
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        /// <summary>
+        /// Subscribes to the StatusChanged event on the ISNESConnector interface.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="status">
+        /// The arguments of the StatusChanged event.
+        /// </param>
+        private void OnStatusChanged(object? sender, ConnectionStatus status)
+        {
+            Status = status;
+        }
+
+        /// <summary>
+        /// Returns the starting address of the specified memory segment.
+        /// </summary>
+        /// <param name="type">
+        /// The memory segment type.
+        /// </param>
+        /// <returns>
+        /// A 64-bit unsigned integer representing the starting memory address of the segment.
+        /// </returns>
+        private static ulong GetMemorySegmentStart(MemorySegmentType type)
+        {
+            return type switch
+            {
+                MemorySegmentType.FirstRoom => 0x7ef000,
+                MemorySegmentType.SecondRoom => 0x7ef080,
+                MemorySegmentType.ThirdRoom => 0x7ef100,
+                MemorySegmentType.FourthRoom => 0x7ef180,
+                MemorySegmentType.FifthRoom => 0x7ef200,
+                MemorySegmentType.FirstOverworldEvent => 0x7ef280,
+                MemorySegmentType.SecondOverworldEvent => 0x7ef300,
+                MemorySegmentType.FirstItem => 0x7ef340,
+                MemorySegmentType.SecondItem => 0x7ef3c0,
+                MemorySegmentType.NPCItem => 0x7ef410,
+                MemorySegmentType.DungeonItem => 0x7ef434,
+                MemorySegmentType.Dungeon => 0x7ef4c0,
+                _ => throw new ArgumentOutOfRangeException(nameof(type))
+            };
+        }
+
+        /// <summary>
+        /// Creates a memory address for the specified memory segment and offset.
+        /// </summary>
+        /// <param name="type">
+        /// The memory segment type.
+        /// </param>
+        /// <param name="offset">
+        /// The offset of the address.
+        /// </param>
+        private void CreateMemoryAddress(MemorySegmentType type, ulong offset)
+        {
+            var memoryAddress = _addressFactory();
+            var memorySegment = _memorySegments[type];
+            memorySegment.Add(memoryAddress);
+            var address = GetMemorySegmentStart(type);
+            address += offset;
+            MemoryAddresses.Add(address, memoryAddress);
+        }
+        
+        /// <summary>
+        /// Updates cached values of a memory segment.
+        /// </summary>
+        /// <param name="segment">
+        /// The segment to be updated.
+        /// </param>
+        private async Task MemoryCheck(MemorySegmentType segment)
+        {
+            var memorySegment = _memorySegments[segment];
+            var startAddress = GetMemorySegmentStart(segment);
+            var buffer = await SNESConnector.Read(startAddress, memorySegment.Count);
+
+            if (!(buffer is null))
+            {
+                for (var i = 0; i < buffer.Length; i++)
+                {
+                    memorySegment[i].Value = buffer[i];
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns the list of devices provided by the SNES connector.
+        /// </summary>
+        /// <returns>
+        /// A list of strings representing the devices.
+        /// </returns>
+        private async Task<List<string>> GetDevicesFromConnector()
+        {
+            var devices = await SNESConnector.GetDevices();
+
+            if (devices is null)
+            {
+                return new List<string>();
+            }
+            
+            return new List<string>(devices);
         }
 
         /// <summary>
         /// Updates cached value of the SNES memory address that provides game status.
         /// </summary>
-        public void InGameCheck()
+        public async Task InGameCheck()
         {
-            if (SNESConnector != null && SNESConnector.Socket != null &&
-                SNESConnector.Status != ConnectionStatus.Error &&
-                SNESConnector.Read(0x7e0010, out byte inGameStatus))
+            if (CanReadMemory)
             {
-                _inGameStatus = inGameStatus;
+                var result = await SNESConnector.Read(0x7e0010);
+
+                if (result is null)
+                {
+                    return;
+                }
+
+                _inGameStatus = result[0];
             }
         }
 
         /// <summary>
-        /// Updates cached values of a memory segment.
+        /// Updates cached values of all SNES memory addresses.
         /// </summary>
-        /// <param name="segment">
-        /// The memory segment to updated.
-        /// </param>
-        public void MemoryCheck(MemorySegmentType segment)
+        public async Task MemoryCheck()
         {
-            if (SNESConnector != null && SNESConnector.Socket != null &&
-                SNESConnector.Status != ConnectionStatus.Error && InGame)
+            if (CanReadMemory && IsInGame)
             {
-                List<MemoryAddress> memory;
-                ulong startAddress;
-
-                switch (segment)
+                foreach (MemorySegmentType segment in Enum.GetValues(typeof(MemorySegmentType)))
                 {
-                    case MemorySegmentType.Room:
-                        {
-                            startAddress = 0x7ef000;
-                            memory = RoomMemory;
-                        }
-                        break;
-                    case MemorySegmentType.OverworldEvent:
-                        {
-                            startAddress = 0x7ef280;
-                            memory = OverworldEventMemory;
-                        }
-                        break;
-                    case MemorySegmentType.Item:
-                        {
-                            startAddress = 0x7ef340;
-                            memory = ItemMemory;
-                        }
-                        break;
-                    case MemorySegmentType.NPCItem:
-                        {
-                            startAddress = 0x7ef410;
-                            memory = NPCItemMemory;
-                        }
-                        break;
-                    case MemorySegmentType.DungeonItem:
-                        {
-                            startAddress = 0x7ef434;
-                            memory = DungeonItemMemory;
-                        }
-                        break;
-                    case MemorySegmentType.SmallKey:
-                        {
-                            startAddress = 0x7ef4e0;
-                            memory = SmallKeyMemory;
-                        }
-                        break;
-                    default:
-                        {
-                            throw new ArgumentOutOfRangeException(nameof(segment));
-                        }
-                }
-
-                byte[] buffer = new byte[memory.Count];
-
-                if (SNESConnector.Read(startAddress, buffer))
-                {
-                    for (int i = 0; i < buffer.Length; i++)
-                    {
-                        memory[i].Value = buffer[i];
-                    }
+                    await MemoryCheck(segment);
                 }
             }
         }
 
         /// <summary>
-        /// Returns an enumerator of devices to which can be connected.
+        /// Returns whether the web socket can be connected to.
         /// </summary>
         /// <returns>
-        /// An enumerator of devices to which can be connected.
+        /// A boolean representing whether the web socket can be connected to.
         /// </returns>
-        public IEnumerable<string> GetDevices()
+        public bool CanConnect()
         {
-            return SNESConnector.GetDevices();
+            return Status == ConnectionStatus.NotConnected;
         }
 
         /// <summary>
-        /// Disconnects from the USB2SNES websocket, disposes of the connection, and
-        ///  resets all memory addresses to null or 0.
+        /// Connects to the web socket with the specified URI string.
         /// </summary>
-        public void Stop()
+        /// <param name="uriString">
+        /// A string representing the web socket URI.
+        /// </param>
+        public async Task Connect(string uriString)
         {
-            SNESConnector.Disconnect();
+            SNESConnector.SetUri(uriString);
+            await SNESConnector.Connect();
+        }
+
+        /// <summary>
+        /// Returns whether the web socket is able to provide the devices.
+        /// </summary>
+        /// <returns>
+        /// A boolean representing whether the web socket is able to provide the devices.
+        /// </returns>
+        public bool CanGetDevices()
+        {
+            return Status == ConnectionStatus.SelectDevice;
+        }
+
+        /// <summary>
+        /// Updates the list of devices.
+        /// </summary>
+        public async Task GetDevices()
+        {
+            Devices = await GetDevicesFromConnector();
+        }
+
+        /// <summary>
+        /// Returns whether the web socket can be disconnected.
+        /// </summary>
+        /// <returns>
+        /// A boolean representing whether the web socket can be disconnected.
+        /// </returns>
+        public bool CanDisconnect()
+        {
+            return Status != ConnectionStatus.NotConnected;
+        }
+
+        /// <summary>
+        /// Disconnects the autotracker.
+        /// </summary>
+        public async Task Disconnect()
+        { 
+            await SNESConnector.Disconnect();
             _inGameStatus = null;
-
-            foreach (var address in RoomMemory)
-            {
-                address.Reset();
-            }
-
-            foreach (var address in OverworldEventMemory)
-            {
-                address.Reset();
-            }
-
-            foreach (var address in ItemMemory)
-            {
-                address.Reset();
-            }
-
-            foreach (var address in NPCItemMemory)
-            {
-                address.Reset();
-            }
-
-            foreach (var address in DungeonItemMemory)
-            {
-                address.Reset();
-            }
-
-            foreach (var address in SmallKeyMemory)
+            
+            foreach (var address in MemoryAddresses.Values)
             {
                 address.Reset();
             }
         }
 
         /// <summary>
-        /// Returns the specified memory address.
+        /// Returns whether autotracking can be started.
         /// </summary>
-        /// <param name="memorySegment">
-        /// The memory segment of the address.
-        /// </param>
-        /// <param name="index">
-        /// The index of the address.
-        /// </param>
         /// <returns>
-        /// The memory address.
+        /// A boolean representing whether autotracking can be started.
         /// </returns>
-        public static MemoryAddress GetMemoryAddress(MemorySegmentType memorySegment, int index)
+        public bool CanStart()
         {
-            return memorySegment switch
-            {
-                MemorySegmentType.Room => Instance.RoomMemory[index],
-                MemorySegmentType.OverworldEvent => Instance.OverworldEventMemory[index],
-                MemorySegmentType.Item => Instance.ItemMemory[index],
-                MemorySegmentType.NPCItem => Instance.NPCItemMemory[index],
-                MemorySegmentType.DungeonItem => Instance.DungeonItemMemory[index],
-                MemorySegmentType.SmallKey => Instance.SmallKeyMemory[index],
-                _ => throw new ArgumentOutOfRangeException(nameof(memorySegment))
-            };
+            return Status == ConnectionStatus.SelectDevice;
+        }
+
+        /// <summary>
+        /// Starts autotracking.
+        /// </summary>
+        public async Task Start(string device)
+        {
+            await SNESConnector.SetDevice(device);
         }
     }
 }

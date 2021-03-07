@@ -1,7 +1,7 @@
 ﻿namespace OpenTracker.Models.Sections
 {
     /// <summary>
-    /// This is the interface for entrance sections.
+    /// This interface contains entrance section data.
     /// </summary>
     public interface IEntranceSection : IMarkableSection
     {

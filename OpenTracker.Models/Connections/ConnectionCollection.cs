@@ -1,67 +1,32 @@
 ﻿using OpenTracker.Models.Locations;
 using OpenTracker.Models.SaveLoad;
-using OpenTracker.Models.Utils;
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 
 namespace OpenTracker.Models.Connections
 {
     /// <summary>
-    /// This is the class containing the collection of connections between MapLocation classes.
+    /// This is the class for the collection container of map connections between map locations.
     /// </summary>
-    public class ConnectionCollection : Singleton<ConnectionCollection>,
-        ICollection<Connection>, INotifyCollectionChanged
+    public class ConnectionCollection : ObservableCollection<IConnection>, IConnectionCollection
     {
-        private static readonly ObservableCollection<Connection> _collection =
-            new ObservableCollection<Connection>();
+        private readonly ILocationDictionary _locations;
+        private readonly IConnection.Factory _connectionFactory;
 
-        public int Count =>
-            _collection.Count;
-        public bool IsReadOnly =>
-            ((ICollection<Connection>)_collection).IsReadOnly;
-
-        public event NotifyCollectionChangedEventHandler CollectionChanged
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="locations">
+        /// The location dictionary.
+        /// </param>
+        /// <param name="connectionFactory">
+        /// An Autofac factory for creating new connections.
+        /// </param>
+        public ConnectionCollection(
+            ILocationDictionary locations, IConnection.Factory connectionFactory)
         {
-            add => _collection.CollectionChanged += value;
-            remove => _collection.CollectionChanged -= value;
-        }
-
-        public void Add(Connection item)
-        {
-            _collection.Add(item);
-        }
-
-        public void Clear()
-        {
-            _collection.Clear();
-        }
-
-        public bool Contains(Connection item)
-        {
-            return _collection.Contains(item);
-        }
-
-        public void CopyTo(Connection[] array, int arrayIndex)
-        {
-            _collection.CopyTo(array, arrayIndex);
-        }
-
-        public IEnumerator<Connection> GetEnumerator()
-        {
-            return _collection.GetEnumerator();
-        }
-
-        public bool Remove(Connection item)
-        {
-            return _collection.Remove(item);
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return _collection.GetEnumerator();
+            _locations = locations;
+            _connectionFactory = connectionFactory;
         }
 
         /// <summary>
@@ -88,22 +53,20 @@ namespace OpenTracker.Models.Connections
         /// <param name="saveData">
         /// A list of connection save data.
         /// </param>
-        public void Load(List<ConnectionSaveData> saveData)
+        public void Load(List<ConnectionSaveData>? saveData)
         {
             if (saveData == null)
             {
-                throw new ArgumentNullException(nameof(saveData));
+                return;
             }
 
             Clear();
 
             foreach (var connection in saveData)
             {
-                Add(new Connection(
-                    LocationDictionary.Instance[connection.Location1]
-                        .MapLocations[connection.Index1],
-                    LocationDictionary.Instance[connection.Location2]
-                        .MapLocations[connection.Index2]));
+                Add(_connectionFactory(
+                    _locations[connection.Location1].MapLocations[connection.Index1],
+                    _locations[connection.Location2].MapLocations[connection.Index2]));
             }
         }
     }

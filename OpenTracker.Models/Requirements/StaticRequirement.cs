@@ -1,33 +1,26 @@
 ﻿using OpenTracker.Models.AccessibilityLevels;
+using System;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.Requirements
 {
     /// <summary>
-    /// This is the class for unchanging requirements, such as no requirement or
-    /// inspect requirements.
+    /// This class contains unchanging requirement data.
     /// </summary>
     public class StaticRequirement : IRequirement
     {
         public bool Met =>
             true;
 
-        private AccessibilityLevel _accessibility;
-        public AccessibilityLevel Accessibility
-        {
-            get => _accessibility;
-            private set
-            {
-                if (_accessibility != value)
-                {
-                    _accessibility = value;
-                    OnPropertyChanged(nameof(Accessibility));
-                }
-            }
-        }
+        public bool Testing { get; set; }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-        
+        public AccessibilityLevel Accessibility { get; }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+        public event EventHandler? ChangePropagated;
+
+        public delegate StaticRequirement Factory(AccessibilityLevel accessibility);
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -37,17 +30,6 @@ namespace OpenTracker.Models.Requirements
         public StaticRequirement(AccessibilityLevel accessibility)
         {
             Accessibility = accessibility;
-        }
-
-        /// <summary>
-        /// Raises the PropertyChanged event for the specified property.
-        /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changed property.
-        /// </param>
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

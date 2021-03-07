@@ -8,7 +8,7 @@ using System.ComponentModel;
 namespace OpenTracker.Models.Sections
 {
     /// <summary>
-    /// This is the section class of dungeon items with a marking.
+    /// This class contains markable data for a dungeon item section.
     /// </summary>
     public class MarkableDungeonItemSection : IMarkableSection, IDungeonItemSection
     {
@@ -31,10 +31,9 @@ namespace OpenTracker.Models.Sections
         }
         public int Total =>
             _section.Total;
-        public IMarking Marking { get; } =
-            MarkingFactory.GetMarking();
+        public IMarking Marking { get; }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         public AccessibilityLevel Accessibility
         {
@@ -47,15 +46,22 @@ namespace OpenTracker.Models.Sections
             set => _section.Accessible = value;
         }
 
+        public delegate MarkableDungeonItemSection Factory(IDungeonItemSection section);
+
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="marking">
+        /// The section marking.
+        /// </param>
         /// <param name="section">
         /// The dungeon item section to be encapsulated.
         /// </param>
-        public MarkableDungeonItemSection(IDungeonItemSection section)
+        public MarkableDungeonItemSection(IMarking marking, IDungeonItemSection section)
         {
-            _section = section ?? throw new ArgumentNullException(nameof(section));
+            _section = section;
+
+            Marking = marking;
 
             _section.PropertyChanged += OnPropertyChanged;
         }
@@ -69,7 +75,7 @@ namespace OpenTracker.Models.Sections
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             PropertyChanged?.Invoke(this, e);
 

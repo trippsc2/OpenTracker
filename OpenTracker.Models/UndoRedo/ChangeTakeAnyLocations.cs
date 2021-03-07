@@ -3,21 +3,28 @@
 namespace OpenTracker.Models.UndoRedo
 {
     /// <summary>
-    /// This is the class for the undoable action of changing the take any locations mode setting.
+    /// This class contains undoable action data to change the take any locations mode setting.
     /// </summary>
     public class ChangeTakeAnyLocations : IUndoable
     {
+        private readonly IMode _mode;
         private readonly bool _takeAnyLocations;
         private bool _previousTakeAnyLocations;
+
+        public delegate ChangeTakeAnyLocations Factory(bool takeAnyLocations);
 
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="mode">
+        /// The mode settings.
+        /// </param>
         /// <param name="takeAnyLocations">
         /// The new generic keys setting.
         /// </param>
-        public ChangeTakeAnyLocations(bool takeAnyLocations)
+        public ChangeTakeAnyLocations(IMode mode, bool takeAnyLocations)
         {
+            _mode = mode;
             _takeAnyLocations = takeAnyLocations;
         }
 
@@ -35,18 +42,18 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Executes the action.
         /// </summary>
-        public void Execute()
+        public void ExecuteDo()
         {
-            _previousTakeAnyLocations = Mode.Instance.TakeAnyLocations;
-            Mode.Instance.TakeAnyLocations = _takeAnyLocations;
+            _previousTakeAnyLocations = _mode.TakeAnyLocations;
+            _mode.TakeAnyLocations = _takeAnyLocations;
         }
 
         /// <summary>
         /// Undoes the action.
         /// </summary>
-        public void Undo()
+        public void ExecuteUndo()
         {
-            Mode.Instance.TakeAnyLocations = _previousTakeAnyLocations;
+            _mode.TakeAnyLocations = _previousTakeAnyLocations;
         }
     }
 }

@@ -1,20 +1,21 @@
-﻿using System.Collections.ObjectModel;
+﻿using OpenTracker.Utils;
+using System.Collections.Generic;
 
 namespace OpenTracker.ViewModels.Items.Large
 {
     /// <summary>
     /// This is the ViewModel for the large item panel control.
     /// </summary>
-    public class LargeItemPanelVM : ViewModelBase
+    public class LargeItemPanelVM : ViewModelBase, ILargeItemPanelVM
     {
-        public ObservableCollection<LargeItemVMBase> Items { get; }
+        public List<ILargeItemVMBase> Items { get; }
 
         /// <summary>
         /// Constructor
         /// </summary>
-        public LargeItemPanelVM()
+        public LargeItemPanelVM(ILargeItemVMFactory factory)
         {
-            Items = LargeItemControlVMFactory.GetLargeItemControlVMs();
+            Items = factory.GetLargeItemControlVMs();
         }
     }
 }

@@ -1,85 +1,107 @@
-﻿using OpenTracker.Interfaces;
+﻿using Avalonia.Input;
 using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.Items;
+using OpenTracker.Models.Locations;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
+using OpenTracker.Utils;
 using ReactiveUI;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
+using System.Reactive;
 using System.Text;
+using System.Threading.Tasks;
+using Avalonia.Threading;
 
 namespace OpenTracker.ViewModels.Items.Small
 {
     /// <summary>
-    /// This is the ViewModel of the small Items panel control representing a small key.
+    /// This class contains small key small items panel control ViewModel data.
     /// </summary>
-    public class SmallKeySmallItemVM : SmallItemVMBase, IClickHandler
+    public class SmallKeySmallItemVM : ViewModelBase, ISmallItemVMBase
     {
+        private readonly IColorSettings _colorSettings;
+        private readonly IUndoRedoManager _undoRedoManager;
+        private readonly IUndoableFactory _undoableFactory;
+
+        private readonly IRequirement _spacerRequirement;
         private readonly IRequirement _requirement;
-        private readonly IDungeon _dungeon;
         private readonly IItem _item;
 
-        public bool Visible =>
-            _requirement.Met;
-        public bool TextVisible =>
-            _item.Current > 0;
+        public bool SpacerVisible => _spacerRequirement.Met;
+        public bool Visible => _requirement.Met;
+        public bool TextVisible => Visible && _item.Current > 0;
         public string ItemNumber
         {
             get
             {
-                StringBuilder sb = new StringBuilder();
+                var sb = new StringBuilder();
                 sb.Append(_item.Current.ToString(CultureInfo.InvariantCulture));
-                sb.Append(_item.Current == _dungeon.SmallKeys ? "*" : "");
+                sb.Append(_item.CanAdd() ? "" : "*");
 
                 return sb.ToString();
             }
         }
-        public string TextColor
-        {
-            get
-            {
-                if (_item == null)
-                {
-                    return "#ffffff";
-                }
+        public string TextColor => _item.CanAdd() ? "#ffffff" : _colorSettings.EmphasisFontColor;
+        
+        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
 
-                if (_item.Current == _dungeon.SmallKeys)
-                {
-                    return AppSettings.Instance.Colors.EmphasisFontColor;
-                }
-
-                return "#ffffff";
-            }
-        }
+        public delegate SmallKeySmallItemVM Factory(IDungeon dungeon);
 
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="colorSettings">
+        /// The color settings data.
+        /// </param>
+        /// <param name="requirements">
+        /// The requirement dictionary.
+        /// </param>
+        /// <param name="undoRedoManager">
+        /// The undo/redo manager.
+        /// </param>
+        /// <param name="undoableFactory">
+        /// A factory for creating undoable actions.
+        /// </param>
+        /// <param name="alternativeFactory">
+        /// An Autofac factory for creating alternative requirements.
+        /// </param>
+        /// <param name="alwaysDisplayFactory">
+        /// An Autofac factory for creating always display dungeon items requirements.
+        /// </param>
         /// <param name="dungeon">
         /// The dungeon whose small keys are to be represented.
         /// </param>
-        public SmallKeySmallItemVM(IDungeon dungeon)
+        public SmallKeySmallItemVM(
+            IColorSettings colorSettings, IRequirementDictionary requirements,
+            IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory,
+            AlternativeRequirement.Factory alternativeFactory,
+            AlwaysDisplayDungeonItemsRequirement.Factory alwaysDisplayFactory, IDungeon dungeon)
         {
-            _dungeon = dungeon ?? throw new ArgumentNullException(nameof(dungeon));
+            _colorSettings = colorSettings;
+            _undoRedoManager = undoRedoManager;
+            _undoableFactory = undoableFactory;
 
-            if (_dungeon.SmallKeyItem == null)
-            {
-                throw new ArgumentOutOfRangeException(nameof(dungeon));
-            }
+            _item = dungeon.SmallKeyItem;
 
-            _item = _dungeon.SmallKeyItem;
-            _requirement = new AlternativeRequirement(new List<IRequirement>
+            _spacerRequirement = alternativeFactory(new List<IRequirement>
             {
-                new AlwaysDisplayDungeonItemsRequirement(true),
-                RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]
+                alwaysDisplayFactory(true),
+                requirements[RequirementType.SmallKeyShuffleOn]
             });
 
-            AppSettings.Instance.Colors.PropertyChanged += OnColorsChanged;
+            _requirement = dungeon.ID == LocationID.EasternPalace ?
+                requirements[RequirementType.KeyDropShuffleOn] :
+                requirements[RequirementType.NoRequirement];
+            
+            HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
+
+            _colorSettings.PropertyChanged += OnColorsChanged;
             _item.PropertyChanged += OnItemChanged;
             _requirement.PropertyChanged += OnRequirementChanged;
+            _spacerRequirement.PropertyChanged += OnRequirementChanged;
         }
 
         /// <summary>
@@ -91,11 +113,11 @@ namespace OpenTracker.ViewModels.Items.Small
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnColorsChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnColorsChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ColorSettings.EmphasisFontColor))
             {
-                UpdateTextColor();
+                await UpdateTextColor();
             }
         }
 
@@ -108,9 +130,14 @@ namespace OpenTracker.ViewModels.Items.Small
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnRequirementChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnRequirementChanged(object sender, PropertyChangedEventArgs e)
         {
-            this.RaisePropertyChanged(nameof(Visible));
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                this.RaisePropertyChanged(nameof(SpacerVisible));
+                this.RaisePropertyChanged(nameof(Visible));
+                this.RaisePropertyChanged(nameof(TextVisible));
+            });
         }
 
         /// <summary>
@@ -122,41 +149,57 @@ namespace OpenTracker.ViewModels.Items.Small
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnItemChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnItemChanged(object sender, PropertyChangedEventArgs e)
         {
-            UpdateTextColor();
-            this.RaisePropertyChanged(nameof(TextVisible));
-            this.RaisePropertyChanged(nameof(ItemNumber));
+            await UpdateTextColor();
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                this.RaisePropertyChanged(nameof(TextVisible));
+                this.RaisePropertyChanged(nameof(ItemNumber));
+            });
         }
 
         /// <summary>
         /// Raises the PropertyChanged event for the TextColor properties.
         /// </summary>
-        private void UpdateTextColor()
+        private async Task UpdateTextColor()
         {
-            this.RaisePropertyChanged(nameof(TextColor));
+            await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(TextColor)));
         }
 
         /// <summary>
-        /// Handles left clicks and adds an item.
+        /// Creates an undoable action to add an item and sends it to the undo/redo manager.
         /// </summary>
-        /// <param name="force">
-        /// A boolean representing whether the logic should be ignored.
-        /// </param>
-        public void OnLeftClick(bool force = false)
+        private void AddItem()
         {
-            UndoRedoManager.Instance.Execute(new AddItem(_item));
+            _undoRedoManager.NewAction(_undoableFactory.GetAddItem(_item));
         }
 
         /// <summary>
-        /// Handles right clicks and removes an item.
+        /// Creates an undoable actions to remove an item and sends it to the undo/redo manager.
         /// </summary>
-        /// <param name="force">
-        /// A boolean representing whether the logic should be ignored.
-        /// </param>
-        public void OnRightClick(bool force = false)
+        private void RemoveItem()
         {
-            UndoRedoManager.Instance.Execute(new RemoveItem(_item));
+            _undoRedoManager.NewAction(_undoableFactory.GetRemoveItem(_item));
+        }
+
+        /// <summary>
+        /// Handles clicking the control.
+        /// </summary>
+        /// <param name="e">
+        /// The pointer released event args.
+        /// </param>
+        private void HandleClickImpl(PointerReleasedEventArgs e)
+        {
+            switch (e.InitialPressMouseButton)
+            {
+                case MouseButton.Left:
+                    AddItem();
+                    break;
+                case MouseButton.Right:
+                    RemoveItem();
+                    break;
+            }
         }
     }
 }

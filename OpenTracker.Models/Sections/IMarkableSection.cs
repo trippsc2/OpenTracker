@@ -3,7 +3,7 @@
 namespace OpenTracker.Models.Sections
 {
     /// <summary>
-    /// This is the interface for markable sections.
+    /// This interface contains markable section data.
     /// </summary>
     public interface IMarkableSection : ISection
     {

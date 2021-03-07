@@ -1,31 +1,43 @@
-﻿using OpenTracker.Interfaces;
+﻿using Avalonia.Input;
+using Avalonia.Threading;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.UndoRedo;
+using OpenTracker.Utils;
 using ReactiveUI;
-using System;
 using System.ComponentModel;
+using System.Reactive;
 
 namespace OpenTracker.ViewModels.Items.Small
 {
     /// <summary>
-    /// This is the ViewModel of the small Items panel control representing big keys, compasses,
-    /// and maps.
+    /// This class contains big key/compass/map small items panel control ViewModel data.
     /// </summary>
-    public class SmallItemVM : SmallItemVMBase, IClickHandler
+    public class SmallItemVM : ViewModelBase, ISmallItemVMBase
     {
-        private readonly string _imageSourceBase;
-        private readonly IRequirement _requirement;
-        private readonly IItem _item;
+        private readonly IUndoRedoManager _undoRedoManager;
+        private readonly IUndoableFactory _undoableFactory;
 
-        public bool Visible =>
-            _requirement.Met;
-        public string ImageSource =>
-            _imageSourceBase + (_item.Current > 0 ? "1" : "0") + ".png";
+        private readonly IItem _item;
+        private readonly IRequirement _requirement;
+        private readonly string _imageSourceBase;
+
+        public bool Visible => _requirement.Met;
+        public string ImageSource => _imageSourceBase + (_item.Current > 0 ? "1" : "0") + ".png";
+        
+        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
+
+        public delegate SmallItemVM Factory(IItem item, IRequirement requirement, string imageSourceBase);
 
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="undoRedoManager">
+        /// The undo/redo manager.
+        /// </param>
+        /// <param name="undoableFactory">
+        /// A factory for creating undoable actions.
+        /// </param>
         /// <param name="imageSourceBase">
         /// A string representing the base image source.
         /// </param>
@@ -35,12 +47,18 @@ namespace OpenTracker.ViewModels.Items.Small
         /// <param name="requirement">
         /// The requirement for displaying the control.
         /// </param>
-        public SmallItemVM(string imageSourceBase, IItem item, IRequirement requirement)
+        public SmallItemVM(
+            IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory, IItem item, IRequirement requirement,
+            string imageSourceBase)
         {
-            _imageSourceBase = imageSourceBase ??
-                throw new ArgumentNullException(nameof(imageSourceBase));
-            _item = item ?? throw new ArgumentNullException(nameof(item));
-            _requirement = requirement ?? throw new ArgumentNullException(nameof(requirement));
+            _undoRedoManager = undoRedoManager;
+            _undoableFactory = undoableFactory;
+
+            _imageSourceBase = imageSourceBase;
+            _item = item;
+            _requirement = requirement;
+
+            HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
             
             _item.PropertyChanged += OnItemChanged;
             _requirement.PropertyChanged += OnRequirementChanged;
@@ -55,9 +73,9 @@ namespace OpenTracker.ViewModels.Items.Small
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnRequirementChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnRequirementChanged(object sender, PropertyChangedEventArgs e)
         {
-            this.RaisePropertyChanged(nameof(Visible));
+            await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Visible)));
         }
 
         /// <summary>
@@ -69,34 +87,47 @@ namespace OpenTracker.ViewModels.Items.Small
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnItemChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnItemChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IItem.Current))
             {
-                this.RaisePropertyChanged(nameof(ImageSource));
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(ImageSource)));
             }
         }
-
+        
         /// <summary>
-        /// Handles left clicks and adds an item.
+        /// Creates an undoable action to add an item and sends it to the undo/redo manager.
         /// </summary>
-        /// <param name="force">
-        /// A boolean representing whether the logic should be ignored.
-        /// </param>
-        public void OnLeftClick(bool force = false)
+        private void AddItem()
         {
-            UndoRedoManager.Instance.Execute(new AddItem(_item));
+            _undoRedoManager.NewAction(_undoableFactory.GetAddItem(_item));
         }
 
         /// <summary>
-        /// Handles right clicks and removes an item.
+        /// Creates an undoable action to remove an item and sends it to the undo/redo manager.
         /// </summary>
-        /// <param name="force">
-        /// A boolean representing whether the logic should be ignored.
-        /// </param>
-        public void OnRightClick(bool force = false)
+        private void RemoveItem()
         {
-            UndoRedoManager.Instance.Execute(new RemoveItem(_item));
+            _undoRedoManager.NewAction(_undoableFactory.GetRemoveItem(_item));
+        }
+
+        /// <summary>
+        /// Handles clicking the control.
+        /// </summary>
+        /// <param name="e">
+        /// The pointer released event args.
+        /// </param>
+        private void HandleClickImpl(PointerReleasedEventArgs e)
+        {
+            switch (e.InitialPressMouseButton)
+            {
+                case MouseButton.Left:
+                    AddItem();
+                    break;
+                case MouseButton.Right:
+                    RemoveItem();
+                    break;
+            }
         }
     }
 }

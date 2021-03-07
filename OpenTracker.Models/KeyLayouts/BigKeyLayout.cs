@@ -8,13 +8,17 @@ using System.Collections.Generic;
 namespace OpenTracker.Models.KeyLayouts
 {
     /// <summary>
-    /// This is the class containing the big key layout.
+    /// This class contains the big key layout data.
     /// </summary>
     public class BigKeyLayout : IKeyLayout
     {
         private readonly List<DungeonItemID> _bigKeyLocations;
         private readonly List<IKeyLayout> _children;
         private readonly IRequirement _requirement;
+
+        public delegate BigKeyLayout Factory(
+            List<DungeonItemID> bigKeyLocations, List<IKeyLayout> children,
+            IRequirement requirement);
 
         /// <summary>
         /// Constructor
@@ -30,11 +34,11 @@ namespace OpenTracker.Models.KeyLayouts
         /// </param>
         public BigKeyLayout(
             List<DungeonItemID> bigKeyLocations, List<IKeyLayout> children,
-            IRequirement requirement = null)
+            IRequirement requirement)
         {
-            _bigKeyLocations = bigKeyLocations ?? throw new ArgumentNullException(nameof(bigKeyLocations));
-            _children = children ?? throw new ArgumentNullException(nameof(children));
-            _requirement = requirement ?? RequirementDictionary.Instance[RequirementType.NoRequirement];
+            _bigKeyLocations = bigKeyLocations;
+            _children = children;
+            _requirement = requirement;
         }
 
         /// <summary>
@@ -52,7 +56,7 @@ namespace OpenTracker.Models.KeyLayouts
         /// <returns>
         /// A boolean representing whether the key layout is possible.
         /// </returns>
-        public bool CanBeTrue(IMutableDungeon dungeonData, int smallKeys, bool bigKey)
+        public bool CanBeTrue(IMutableDungeon dungeonData, IDungeonState state)
         {
             if (dungeonData == null)
             {
@@ -69,29 +73,46 @@ namespace OpenTracker.Models.KeyLayouts
 
             foreach (var item in _bigKeyLocations)
             {
-                if (dungeonData.Items[item].Accessibility > AccessibilityLevel.Partial)
+                switch (dungeonData.DungeonItems[item].Accessibility)
                 {
-                    accessible++;
-                }
-                else
-                {
-                    inaccessible++;
+                    case AccessibilityLevel.SequenceBreak:
+                        {
+                            if (state.SequenceBreak)
+                            {
+                                accessible++;
+                            }
+                            else
+                            {
+                                inaccessible++;
+                            }
+                        }
+                        break;
+                    case AccessibilityLevel.Normal:
+                        {
+                            accessible++;
+                        }
+                        break;
+                    default:
+                        {
+                            inaccessible++;
+                        }
+                        break;
                 }
             }
 
-            if (bigKey && accessible == 0)
+            if (state.BigKeyCollected && accessible == 0)
             {
                 return false;
             }
 
-            if (!bigKey && inaccessible == 0)
+            if (!state.BigKeyCollected && inaccessible == 0)
             {
                 return false;
             }
 
             foreach (var child in _children)
             {
-                if (child.CanBeTrue(dungeonData, smallKeys, bigKey))
+                if (child.CanBeTrue(dungeonData, state))
                 {
                     return true;
                 }

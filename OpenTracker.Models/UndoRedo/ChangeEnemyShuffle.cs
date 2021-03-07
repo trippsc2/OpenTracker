@@ -3,21 +3,29 @@
 namespace OpenTracker.Models.UndoRedo
 {
     /// <summary>
-    /// This is the class for an undoable action to change the enemy shuffle setting.
+    /// This class contains undoable action data to change the enemy shuffle setting.
     /// </summary>
     public class ChangeEnemyShuffle : IUndoable
     {
+        private readonly IMode _mode;
         private readonly bool _enemyShuffle;
+
         private bool _previousEnemyShuffle;
+
+        public delegate ChangeEnemyShuffle Factory(bool enemyShuffle);
 
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="mode">
+        /// The mode settings.
+        /// </param>
         /// <param name="enemyShuffle">
         /// The new enemy shuffle setting.
         /// </param>
-        public ChangeEnemyShuffle(bool enemyShuffle)
+        public ChangeEnemyShuffle(IMode mode, bool enemyShuffle)
         {
+            _mode = mode;
             _enemyShuffle = enemyShuffle;
         }
 
@@ -35,18 +43,18 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Executes the action.
         /// </summary>
-        public void Execute()
+        public void ExecuteDo()
         {
-            _previousEnemyShuffle = Mode.Instance.EnemyShuffle;
-            Mode.Instance.EnemyShuffle = _enemyShuffle;
+            _previousEnemyShuffle = _mode.EnemyShuffle;
+            _mode.EnemyShuffle = _enemyShuffle;
         }
 
         /// <summary>
         /// Undoes the action.
         /// </summary>
-        public void Undo()
+        public void ExecuteUndo()
         {
-            Mode.Instance.EnemyShuffle = _previousEnemyShuffle;
+            _mode.EnemyShuffle = _previousEnemyShuffle;
         }
     }
 }

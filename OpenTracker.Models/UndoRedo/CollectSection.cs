@@ -1,11 +1,10 @@
 ﻿using OpenTracker.Models.Markings;
 using OpenTracker.Models.Sections;
-using System;
 
 namespace OpenTracker.Models.UndoRedo
 {
     /// <summary>
-    /// This is the class for an undoable action to collect an item/entrance from a location
+    /// This class contains undoable action data to collect an item/entrance from a location
     /// section.
     /// </summary>
     public class CollectSection : IUndoable
@@ -14,6 +13,8 @@ namespace OpenTracker.Models.UndoRedo
         private readonly bool _force;
         private MarkType? _previousMarking;
         private bool _previousUserManipulated;
+
+        public delegate CollectSection Factory(ISection section, bool force);
 
         /// <summary>
         /// Constructor
@@ -26,7 +27,7 @@ namespace OpenTracker.Models.UndoRedo
         /// </param>
         public CollectSection(ISection section, bool force)
         {
-            _section = section ?? throw new ArgumentNullException(nameof(section));
+            _section = section;
             _force = force;
         }
 
@@ -44,7 +45,7 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Executes the action.
         /// </summary>
-        public void Execute()
+        public void ExecuteDo()
         {
             if (_section is IMarkableSection markableSection)
             {
@@ -59,13 +60,13 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Undoes the action.
         /// </summary>
-        public void Undo()
+        public void ExecuteUndo()
         {
             _section.Available++;
 
-            if (_previousMarking.HasValue)
+            if (_previousMarking.HasValue && _section is IMarkableSection markableSection)
             {
-                (_section as IMarkableSection).Marking.Mark = _previousMarking.Value;
+                markableSection.Marking.Mark = _previousMarking.Value;
             }
 
             _section.UserManipulated = _previousUserManipulated;

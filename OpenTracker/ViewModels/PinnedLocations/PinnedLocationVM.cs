@@ -1,51 +1,79 @@
-﻿using OpenTracker.Interfaces;
+﻿using Avalonia.Input;
+using Avalonia.Threading;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
+using OpenTracker.Utils;
+using OpenTracker.ViewModels.PinnedLocations.Notes;
+using OpenTracker.ViewModels.PinnedLocations.Sections;
 using ReactiveUI;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Reactive;
 
 namespace OpenTracker.ViewModels.PinnedLocations
 {
     /// <summary>
-    /// This is the ViewModel for the pinned location control.
+    /// This class contains the pinned location control ViewModel data.
     /// </summary>
-    public class PinnedLocationVM : ViewModelBase, IModelWrapper, IClickHandler
+    public class PinnedLocationVM : ViewModelBase, IPinnedLocationVM
     {
+        private readonly ILayoutSettings _layoutSettings;
+        private readonly IUndoRedoManager _undoRedoManager;
+        private readonly IUndoableFactory _undoableFactory;
+
         private readonly ILocation _location;
 
-        public static double Scale =>
-            AppSettings.Instance.Layout.UIScale;
-        public string Name =>
-            _location.Name;
-        public object Model =>
-            _location;
+        public double Scale => _layoutSettings.UIScale;
+        public string Name => _location.Name;
+        public object Model => _location;
 
-        public List<SectionVM> Sections { get; }
-        public PinnedLocationNoteAreaVM Notes { get; }
+        public List<ISectionVM> Sections { get; }
+        public IPinnedLocationNoteAreaVM Notes { get; }
+
+        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
 
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="layoutSettings">
+        /// The layout settings data.
+        /// </param>
+        /// <param name="undoRedoManager">
+        /// The undo/redo manager.
+        /// </param>
+        /// <param name="undoableFactory">
+        /// A factory for creating undoable actions.
+        /// </param>
         /// <param name="location">
         /// The location to be represented.
         /// </param>
         /// <param name="sections">
         /// The observable collection of section control ViewModels.
         /// </param>
-        public PinnedLocationVM(ILocation location, List<SectionVM> sections)
+        /// <param name="notes">
+        /// The pinned location note area control.
+        /// </param>
+        public PinnedLocationVM(
+            ILayoutSettings layoutSettings, IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory,
+            ILocation location, List<ISectionVM> sections, IPinnedLocationNoteAreaVM notes)
         {
-            _location = location ?? throw new ArgumentNullException(nameof(location));
-            Sections = sections ?? throw new ArgumentNullException(nameof(sections));
-            Notes = new PinnedLocationNoteAreaVM(_location);
+            _layoutSettings = layoutSettings;
+            _undoRedoManager = undoRedoManager;
+            _undoableFactory = undoableFactory;
 
-            AppSettings.Instance.Layout.PropertyChanged += OnLayoutChanged;
+            _location = location;
+
+            Sections = sections;
+            Notes = notes;
+            
+            HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
+
+            _layoutSettings.PropertyChanged += OnLayoutChanged;
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the LayoutSettings class.
+        /// Subscribes to the PropertyChanged event on the ILayoutSettings interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -53,33 +81,34 @@ namespace OpenTracker.ViewModels.PinnedLocations
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(LayoutSettings.UIScale))
             {
-                this.RaisePropertyChanged(nameof(Scale));
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Scale)));
             }
         }
 
         /// <summary>
-        /// Handles left clicks and removes the pinned location.
+        /// Creates an undoable action to remove the pinned location and sends it to undo/redo manager.
         /// </summary>
-        /// <param name="force">
-        /// A boolean representing whether the logic should be ignored.
-        /// </param>
-        public void OnLeftClick(bool force = false)
+        private void UnpinLocation()
         {
-            UndoRedoManager.Instance.Execute(new UnpinLocation(_location));
+            _undoRedoManager.NewAction(_undoableFactory.GetUnpinLocation(_location));
         }
 
         /// <summary>
-        /// Handles right clicks.
+        /// Handles clicking the control.
         /// </summary>
-        /// <param name="force">
-        /// A boolean representing whether the logic should be ignored.
+        /// <param name="e">
+        /// The PointerReleased event args.
         /// </param>
-        public void OnRightClick(bool force = false)
+        private void HandleClickImpl(PointerReleasedEventArgs e)
         {
+            if (e.InitialPressMouseButton == MouseButton.Left)
+            {
+                UnpinLocation();
+            }
         }
     }
 }

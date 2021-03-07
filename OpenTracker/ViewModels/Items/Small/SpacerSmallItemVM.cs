@@ -1,19 +1,21 @@
-﻿using OpenTracker.Models.Requirements;
+﻿using Avalonia.Threading;
+using OpenTracker.Models.Requirements;
+using OpenTracker.Utils;
 using ReactiveUI;
-using System;
 using System.ComponentModel;
 
 namespace OpenTracker.ViewModels.Items.Small
 {
     /// <summary>
-    /// This is the ViewModel for the small Items panel control for reserving space.
+    /// This class contains the reserved space small items panel control ViewModel data.
     /// </summary>
-    public class SpacerSmallItemVM : SmallItemVMBase
+    public class SpacerSmallItemVM : ViewModelBase, ISmallItemVMBase
     {
         private readonly IRequirement _requirement;
 
-        public bool Visible =>
-            _requirement.Met;
+        public bool Visible => _requirement.Met;
+
+        public delegate SpacerSmallItemVM Factory(IRequirement requirement);
 
         /// <summary>
         /// Constructor
@@ -23,7 +25,7 @@ namespace OpenTracker.ViewModels.Items.Small
         /// </param>
         public SpacerSmallItemVM(IRequirement requirement)
         {
-            _requirement = requirement ?? throw new ArgumentNullException(nameof(requirement));
+            _requirement = requirement;
 
             _requirement.PropertyChanged += OnRequirementChanged;
         }
@@ -37,9 +39,9 @@ namespace OpenTracker.ViewModels.Items.Small
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnRequirementChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnRequirementChanged(object sender, PropertyChangedEventArgs e)
         {
-            this.RaisePropertyChanged(nameof(Visible));
+            await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Visible)));
         }
     }
 }

@@ -1,11 +1,15 @@
 ﻿using OpenTracker.Models.Dropdowns;
-using System;
 
 namespace OpenTracker.Models.UndoRedo
 {
+    /// <summary>
+    /// This class contains undoable action data to uncheck a dropdown.
+    /// </summary>
     public class UncheckDropdown : IUndoable
     {
         private readonly IDropdown _dropdown;
+
+        public delegate UncheckDropdown Factory(IDropdown dropdown);
 
         /// <summary>
         /// Constructor
@@ -15,7 +19,7 @@ namespace OpenTracker.Models.UndoRedo
         /// </param>
         public UncheckDropdown(IDropdown dropdown)
         {
-            _dropdown = dropdown ?? throw new ArgumentNullException(nameof(dropdown));
+            _dropdown = dropdown;
         }
 
         /// <summary>
@@ -32,7 +36,7 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Executes the action.
         /// </summary>
-        public void Execute()
+        public void ExecuteDo()
         {
             _dropdown.Checked = false;
         }
@@ -40,7 +44,7 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Undoes the action.
         /// </summary>
-        public void Undo()
+        public void ExecuteUndo()
         {
             _dropdown.Checked = true;
         }

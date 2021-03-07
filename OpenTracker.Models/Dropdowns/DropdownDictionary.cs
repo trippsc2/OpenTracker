@@ -1,100 +1,44 @@
 ﻿using OpenTracker.Models.SaveLoad;
-using OpenTracker.Models.Utils;
+using OpenTracker.Utils;
 using System;
-using System.Collections;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 
 namespace OpenTracker.Models.Dropdowns
 {
-    public class DropdownDictionary : Singleton<DropdownDictionary>, 
-        IDictionary<DropdownID, IDropdown>, ISaveable<Dictionary<DropdownID, DropdownSaveData>>
+    /// <summary>
+    /// This is the class for the dictionary container of dropdowns.
+    /// </summary>
+    public class DropdownDictionary : LazyDictionary<DropdownID, IDropdown>,
+        IDropdownDictionary
     {
-        private readonly ConcurrentDictionary<DropdownID, IDropdown> _dictionary =
-            new ConcurrentDictionary<DropdownID, IDropdown>();
+        private readonly Lazy<IDropdownFactory> _factory;
 
-        public IDropdown this[DropdownID key]
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="factory">
+        /// The factory for creating new dropdowns.
+        /// </param>
+        public DropdownDictionary(IDropdownFactory.Factory factory)
+            : base(new Dictionary<DropdownID, IDropdown>())
         {
-            get
+            _factory = new Lazy<IDropdownFactory>(() => factory());
+        }
+
+        protected override IDropdown Create(DropdownID key)
+        {
+            return _factory.Value.GetDropdown(key);
+        }
+
+        /// <summary>
+        /// Resets all dropdowns.
+        /// </summary>
+        public void Reset()
+        {
+            foreach (var dropdown in Values)
             {
-                if (!ContainsKey(key))
-                {
-                    Create(key);
-                }
-
-                return _dictionary[key];
+                dropdown.Reset();
             }
-            set => _dictionary[key] = value;
-        }
-
-        public ICollection<DropdownID> Keys =>
-            _dictionary.Keys;
-        public ICollection<IDropdown> Values =>
-            _dictionary.Values;
-        public int Count =>
-            ((ICollection<KeyValuePair<DropdownID, IDropdown>>)_dictionary).Count;
-        public bool IsReadOnly =>
-            ((ICollection<KeyValuePair<DropdownID, IDropdown>>)_dictionary).IsReadOnly;
-
-        private void Create(DropdownID key)
-        {
-            Add(key, DropdownFactory.GetDropdown(key));
-        }
-
-        public void Add(DropdownID key, IDropdown value)
-        {
-            ((IDictionary<DropdownID, IDropdown>)_dictionary).Add(key, value);
-        }
-
-        public void Add(KeyValuePair<DropdownID, IDropdown> item)
-        {
-            ((ICollection<KeyValuePair<DropdownID, IDropdown>>)_dictionary).Add(item);
-        }
-
-        public void Clear()
-        {
-            ((ICollection<KeyValuePair<DropdownID, IDropdown>>)_dictionary).Clear();
-        }
-
-        public bool Contains(KeyValuePair<DropdownID, IDropdown> item)
-        {
-            return ((ICollection<KeyValuePair<DropdownID, IDropdown>>)_dictionary).Contains(item);
-        }
-
-        public bool ContainsKey(DropdownID key)
-        {
-            return _dictionary.ContainsKey(key);
-        }
-
-        public void CopyTo(KeyValuePair<DropdownID, IDropdown>[] array, int arrayIndex)
-        {
-            ((ICollection<KeyValuePair<DropdownID, IDropdown>>)_dictionary).CopyTo(array, arrayIndex);
-        }
-
-        public IEnumerator<KeyValuePair<DropdownID, IDropdown>> GetEnumerator()
-        {
-            return ((IEnumerable<KeyValuePair<DropdownID, IDropdown>>)_dictionary).GetEnumerator();
-        }
-
-        public bool Remove(DropdownID key)
-        {
-            return ((IDictionary<DropdownID, IDropdown>)_dictionary).Remove(key);
-        }
-
-        public bool Remove(KeyValuePair<DropdownID, IDropdown> item)
-        {
-            return ((ICollection<KeyValuePair<DropdownID, IDropdown>>)_dictionary).Remove(item);
-        }
-
-        public bool TryGetValue(DropdownID key, [MaybeNullWhen(false)] out IDropdown value)
-        {
-            return _dictionary.TryGetValue(key, out value);
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return ((IEnumerable)_dictionary).GetEnumerator();
         }
 
         /// <summary>
@@ -123,11 +67,6 @@ namespace OpenTracker.Models.Dropdowns
         /// </param>
         public void Load(Dictionary<DropdownID, DropdownSaveData> saveData)
         {
-            if (saveData == null)
-            {
-                throw new ArgumentNullException(nameof(saveData));
-            }
-
             foreach (var item in saveData.Keys)
             {
                 this[item].Load(saveData[item]);

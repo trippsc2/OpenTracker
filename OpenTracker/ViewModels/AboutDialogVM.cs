@@ -1,15 +1,11 @@
-﻿using OpenTracker.Interfaces;
-using OpenTracker.Utils;
-using System;
+﻿using OpenTracker.Utils.Dialog;
 using System.Reflection;
 
 namespace OpenTracker.ViewModels
 {
-    public class AboutDialogVM : ViewModelBase, IDialogRequestClose
+    public class AboutDialogVM : DialogViewModelBase, IAboutDialogVM
     {
-        public event EventHandler<DialogCloseRequestedEventArgs> CloseRequested;
-
-        public static string Version =>
+        public static string Version { get; } =
             $"v{Assembly.GetExecutingAssembly().GetName().Version}";
     }
 }

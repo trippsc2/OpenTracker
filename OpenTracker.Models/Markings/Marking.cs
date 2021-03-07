@@ -3,12 +3,12 @@
 namespace OpenTracker.Models.Markings
 {
     /// <summary>
-    /// This is the class for marking data.
+    /// This class contains marking data.
     /// </summary>
     public class Marking : IMarking
     {
-        public event PropertyChangingEventHandler PropertyChanging;
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangingEventHandler? PropertyChanging;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         private MarkType _mark;
         public MarkType Mark

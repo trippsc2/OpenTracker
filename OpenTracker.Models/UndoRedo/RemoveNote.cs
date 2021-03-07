@@ -1,17 +1,18 @@
 ﻿using OpenTracker.Models.Locations;
 using OpenTracker.Models.Markings;
-using System;
 
 namespace OpenTracker.Models.UndoRedo
 {
     /// <summary>
-    /// This is the class for an undoable action to remove a note from a location.
+    /// This class contains undoable action to remove a note from a location.
     /// </summary>
     public class RemoveNote : IUndoable
     {
         private readonly ILocation _location;
         private readonly IMarking _note;
         private int _index;
+
+        public delegate RemoveNote Factory(IMarking note, ILocation location);
 
         /// <summary>
         /// Constructor
@@ -24,8 +25,8 @@ namespace OpenTracker.Models.UndoRedo
         /// </param>
         public RemoveNote(IMarking note, ILocation location)
         {
-            _note = note ?? throw new ArgumentNullException(nameof(note));
-            _location = location ?? throw new ArgumentNullException(nameof(location));
+            _note = note;
+            _location = location;
         }
 
         /// <summary>
@@ -42,7 +43,7 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Executes the action.
         /// </summary>
-        public void Execute()
+        public void ExecuteDo()
         {
             _index = _location.Notes.IndexOf(_note);
             _location.Notes.Remove(_note);
@@ -51,7 +52,7 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Undoes the action.
         /// </summary>
-        public void Undo()
+        public void ExecuteUndo()
         {
             _location.Notes.Insert(_index, _note);
         }

@@ -1,41 +1,40 @@
-﻿using OpenTracker.Interfaces;
-using OpenTracker.Models.UndoRedo;
-using OpenTracker.Models.Sections;
-using ReactiveUI;
-using System;
-using System.ComponentModel;
-using System.Text;
-using OpenTracker.Models.PrizePlacements;
+﻿using Avalonia.Input;
+using Avalonia.Threading;
 using OpenTracker.Models.Items;
+using OpenTracker.Models.PrizePlacements;
+using OpenTracker.Models.Sections;
+using OpenTracker.Models.UndoRedo;
+using OpenTracker.Utils;
+using ReactiveUI;
+using System.ComponentModel;
 using System.Linq;
+using System.Reactive;
+using System.Text;
 
 namespace OpenTracker.ViewModels.Items.Small
 {
     /// <summary>
-    /// This is the ViewModel of the small item control representing a dungeon prize.
+    /// This class contains dungeon prize small items panel control ViewModel data.
     /// </summary>
-    public class PrizeSmallItemVM : SmallItemVMBase, IClickHandler
+    public class PrizeSmallItemVM : ViewModelBase, ISmallItemVMBase
     {
+        private readonly IPrizeDictionary _prizes;
+        private readonly IUndoRedoManager _undoRedoManager;
+        private readonly IUndoableFactory _undoableFactory;
+
         private readonly IPrizeSection _section;
 
         public string ImageSource
         {
             get
             {
-                StringBuilder sb = new StringBuilder();
+                var sb = new StringBuilder();
                 sb.Append("avares://OpenTracker/Assets/Images/Prizes/");
 
-                if (_section.PrizePlacement.Prize == null)
-                {
-                    sb.Append("unknown");
-                }
-                else
-                {
-                    sb.Append(
-                        PrizeDictionary.Instance.FirstOrDefault(
-                            x => x.Value == _section.PrizePlacement.Prize).Key.ToString()
-                                .ToLowerInvariant());
-                }
+                sb.Append(_section.PrizePlacement.Prize is null ?
+                    "unknown" : _prizes.FirstOrDefault(
+                        x => x.Value == _section.PrizePlacement.Prize).Key.ToString()
+                        .ToLowerInvariant());
 
                 sb.Append(_section.IsAvailable() ? "0" : "1");
                 sb.Append(".png");
@@ -43,16 +42,37 @@ namespace OpenTracker.ViewModels.Items.Small
                 return sb.ToString();
             }
         }
+        
+        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
+
+        public delegate PrizeSmallItemVM Factory(IPrizeSection section);
 
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="prizes">
+        /// The prizes dictionary.
+        /// </param>
+        /// <param name="undoRedoManager">
+        /// The undo/redo manager.
+        /// </param>
+        /// <param name="undoableFactory">
+        /// A factory for creating undoable actions.
+        /// </param>
         /// <param name="section">
         /// The prize section to be represented.
         /// </param>
-        public PrizeSmallItemVM(IPrizeSection section)
+        public PrizeSmallItemVM(
+            IPrizeDictionary prizes, IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory,
+            IPrizeSection section)
         {
-            _section = section ?? throw new ArgumentNullException(nameof(section));
+            _prizes = prizes;
+            _undoRedoManager = undoRedoManager;
+            _undoableFactory = undoableFactory;
+
+            _section = section;
+            
+            HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
 
             _section.PropertyChanged += OnSectionChanged;
             _section.PrizePlacement.PropertyChanged += OnPrizeChanged;
@@ -67,11 +87,11 @@ namespace OpenTracker.ViewModels.Items.Small
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnPrizeChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnPrizeChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IPrizePlacement.Prize))
             {
-                this.RaisePropertyChanged(nameof(ImageSource));
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(ImageSource)));
             }
         }
 
@@ -84,34 +104,47 @@ namespace OpenTracker.ViewModels.Items.Small
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnSectionChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnSectionChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ISection.Available))
             {
-                this.RaisePropertyChanged(nameof(ImageSource));
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(ImageSource)));
             }
         }
 
         /// <summary>
-        /// Handles left clicks and toggles the prize section.
+        /// Creates an undoable action to toggle the prize section and sends it to the undo/redo manager.
         /// </summary>
-        /// <param name="force">
-        /// A boolean representing whether the logic should be ignored.
-        /// </param>
-        public void OnLeftClick(bool force = false)
+        private void TogglePrize()
         {
-            UndoRedoManager.Instance.Execute(new TogglePrize(_section, true));
+            _undoRedoManager.NewAction(_undoableFactory.GetTogglePrize(_section, true));
         }
 
         /// <summary>
-        /// Handles right clicks and changes the prize.
+        /// Creates an undoable action to change the prize and sends it to the undo/redo manager.
         /// </summary>
-        /// <param name="force">
-        /// A boolean representing whether the logic should be ignored.
-        /// </param>
-        public void OnRightClick(bool force = false)
+        private void ChangePrize()
         {
-            UndoRedoManager.Instance.Execute(new ChangePrize(_section.PrizePlacement));
+            _undoRedoManager.NewAction(_undoableFactory.GetChangePrize(_section.PrizePlacement));
+        }
+
+        /// <summary>
+        /// Handles clicking the control.
+        /// </summary>
+        /// <param name="e">
+        /// The pointer released event args.
+        /// </param>
+        private void HandleClickImpl(PointerReleasedEventArgs e)
+        {
+            switch (e.InitialPressMouseButton)
+            {
+                case MouseButton.Left:
+                    TogglePrize();
+                    break;
+                case MouseButton.Right:
+                    ChangePrize();
+                    break;
+            }
         }
     }
 }

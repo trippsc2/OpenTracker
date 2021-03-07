@@ -8,18 +8,20 @@ using System.ComponentModel;
 
 namespace OpenTracker.Models.Sections
 {
+    /// <summary>
+    /// This class contains insanity entrance section data.
+    /// </summary>
     public class InsanityEntranceSection : IEntranceSection
     {
         private readonly IRequirementNode _node;
-        private readonly IRequirementNode _exitProvided;
+        private readonly IRequirementNode? _exitProvided;
 
         public string Name { get; }
         public IRequirement Requirement { get; }
         public bool UserManipulated { get; set; }
-        public IMarking Marking { get; } =
-            MarkingFactory.GetMarking();
+        public IMarking Marking { get; }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         public AccessibilityLevel Accessibility =>
             _node.Accessibility;
@@ -38,9 +40,16 @@ namespace OpenTracker.Models.Sections
             }
         }
 
+        public delegate InsanityEntranceSection Factory(
+            string name, IRequirementNode? exitProvided, IRequirementNode node,
+            IRequirement requirement);
+
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="marking">
+        /// The section marking.
+        /// </param>
         /// <param name="name">
         /// A string representing the name of the section.
         /// </param>
@@ -54,15 +63,16 @@ namespace OpenTracker.Models.Sections
         /// The requirement for this section to be visible.
         /// </param>
         public InsanityEntranceSection(
-            string name, IRequirementNode exitProvided, IRequirementNode node,
-            IRequirement requirement = null)
+            IMarking marking, string name, IRequirementNode? exitProvided, IRequirementNode node,
+            IRequirement requirement)
         {
-            Name = name ?? throw new ArgumentNullException(nameof(name));
-            Available = 1;
             _exitProvided = exitProvided;
-            _node = node ?? throw new ArgumentNullException(nameof(node));
-            Requirement = requirement ??
-                RequirementDictionary.Instance[RequirementType.NoRequirement];
+            _node = node;
+
+            Marking = marking;
+            Name = name;
+            Available = 1;
+            Requirement = requirement;
 
             _node.PropertyChanged += OnNodeChanged;
         }
@@ -102,7 +112,7 @@ namespace OpenTracker.Models.Sections
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnNodeChanged(object sender, PropertyChangedEventArgs e)
+        private void OnNodeChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IRequirementNode.Accessibility))
             {

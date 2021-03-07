@@ -3,21 +3,28 @@
 namespace OpenTracker.Models.UndoRedo
 {
     /// <summary>
-    /// This is the class for an undoable action to change the map shuffle setting.
+    /// This class contains undoable action data to change the map shuffle setting.
     /// </summary>
     public class ChangeMapShuffle : IUndoable
     {
+        private readonly IMode _mode;
         private readonly bool _mapShuffle;
         private bool _previousMapShuffle;
+
+        public delegate ChangeMapShuffle Factory(bool mapShuffle);
 
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="mode">
+        /// The mode settings.
+        /// </param>
         /// <param name="mapShuffle">
         /// The new map shuffle setting.
         /// </param>
-        public ChangeMapShuffle(bool mapShuffle)
+        public ChangeMapShuffle(IMode mode, bool mapShuffle)
         {
+            _mode = mode;
             _mapShuffle = mapShuffle;
         }
 
@@ -35,18 +42,18 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Executes the action.
         /// </summary>
-        public void Execute()
+        public void ExecuteDo()
         {
-            _previousMapShuffle = Mode.Instance.MapShuffle;
-            Mode.Instance.MapShuffle = _mapShuffle;
+            _previousMapShuffle = _mode.MapShuffle;
+            _mode.MapShuffle = _mapShuffle;
         }
 
         /// <summary>
         /// Undoes the action.
         /// </summary>
-        public void Undo()
+        public void ExecuteUndo()
         {
-            Mode.Instance.MapShuffle = _previousMapShuffle;
+            _mode.MapShuffle = _previousMapShuffle;
         }
     }
 }

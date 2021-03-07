@@ -4,26 +4,26 @@ using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.Sections;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 
 namespace OpenTracker.Models.Locations
 {
     /// <summary>
-    /// This is the class containing location data.
+    /// This class contains location data.
     /// </summary>
     public class Location : ILocation
     {
+        private readonly IMarking.Factory _markingFactory;
+
         public LocationID ID { get; }
         public string Name { get; }
 
-        public List<MapLocation> MapLocations { get; }
+        public List<IMapLocation> MapLocations { get; }
         public List<ISection> Sections { get; }
-        public ObservableCollection<IMarking> Notes { get; } =
-            new ObservableCollection<IMarking>();
+        public ILocationNoteCollection Notes { get; }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         private AccessibilityLevel _accessibility;
         public AccessibilityLevel Accessibility
@@ -84,23 +84,45 @@ namespace OpenTracker.Models.Locations
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="factory">
+        /// The location factory.
+        /// </param>
+        /// <param name="mapLocationFactory">
+        /// The map location factory.
+        /// </param>
+        /// <param name="sectionFactory">
+        /// The section factory.
+        /// </param>
+        /// <param name="markingFactory">
+        /// The marking factory.
+        /// </param>
+        /// <param name="notes">
+        /// A new collection of location notes.
+        /// </param>
         /// <param name="id">
         /// The ID of the location.
         /// </param>
-        /// <param name="name">
-        /// A string representing the name of the location.
-        /// </param>
-        /// <param name="mapLocations">
-        /// The list of map locations for the location.
-        /// </param>
-        public Location(LocationID id, string name, List<MapLocation> mapLocations)
+        public Location(ILocationFactory factory, IMapLocationFactory mapLocationFactory,
+            ISectionFactory sectionFactory, IMarking.Factory markingFactory, 
+            ILocationNoteCollection notes, LocationID id)
         {
-            ID = id;
-            Name = name ?? throw new ArgumentNullException(nameof(name));
-            MapLocations = mapLocations ?? throw new ArgumentNullException(nameof(mapLocations));
-            Sections = SectionFactory.GetSections(id, this);
+            _markingFactory = markingFactory;
 
-            LocationDictionary.Instance.LocationCreated += OnLocationCreated;
+            ID = id;
+            Name = factory.GetLocationName(ID);
+            MapLocations = mapLocationFactory.GetMapLocations(this);
+            Sections = sectionFactory.GetSections(ID);
+            Notes = notes;
+
+            foreach (ISection section in Sections)
+            {
+                section.PropertyChanged += OnSectionChanged;
+            }
+
+            UpdateAccessibility();
+            UpdateAccessible();
+            UpdateAvailable();
+            UpdateTotal();
         }
 
         /// <summary>
@@ -115,7 +137,7 @@ namespace OpenTracker.Models.Locations
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the ILocation class.
+        /// Subscribes to the PropertyChanged event on the ISection interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -123,34 +145,7 @@ namespace OpenTracker.Models.Locations
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnLocationCreated(object sender, LocationID id)
-        {
-            if (id == ID)
-            {
-                foreach (ISection section in Sections)
-                {
-                    section.PropertyChanged += OnSectionChanged;
-                }
-
-                UpdateAccessibility();
-                UpdateAccessible();
-                UpdateAvailable();
-                UpdateTotal();
-
-                LocationDictionary.Instance.LocationCreated -= OnLocationCreated;
-            }
-        }
-
-        /// <summary>
-        /// Subscribes to the PropertyChanged event on the ISection class.
-        /// </summary>
-        /// <param name="sender">
-        /// The sending object of the event.
-        /// </param>
-        /// <param name="e">
-        /// The arguments of the PropertyChanged event.
-        /// </param>
-        private void OnSectionChanged(object sender, PropertyChangedEventArgs e)
+        private void OnSectionChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ISection.Available))
             {
@@ -175,8 +170,8 @@ namespace OpenTracker.Models.Locations
         /// </summary>
         private void UpdateAccessibility()
         {
-            AccessibilityLevel? leastAccessible = null;
-            AccessibilityLevel? mostAccessible = null;
+            AccessibilityLevel leastAccessible = AccessibilityLevel.Normal;
+            AccessibilityLevel mostAccessible = AccessibilityLevel.None;
 
             bool available = false;
 
@@ -187,12 +182,12 @@ namespace OpenTracker.Models.Locations
                     available = true;
                     AccessibilityLevel sectionAccessibility = section.Accessibility;
 
-                    if (leastAccessible == null || leastAccessible > sectionAccessibility)
+                    if (leastAccessible > sectionAccessibility)
                     {
                         leastAccessible = sectionAccessibility;
                     }
 
-                    if (mostAccessible == null || mostAccessible < sectionAccessibility)
+                    if (mostAccessible < sectionAccessibility)
                     {
                         mostAccessible = sectionAccessibility;
                     }
@@ -205,15 +200,15 @@ namespace OpenTracker.Models.Locations
             }
             else
             {
-                Accessibility = mostAccessible.Value switch
+                Accessibility = mostAccessible switch
                 {
                     AccessibilityLevel.None => AccessibilityLevel.None,
                     AccessibilityLevel.Inspect => AccessibilityLevel.Inspect,
                     AccessibilityLevel.Partial => AccessibilityLevel.Partial,
-                    AccessibilityLevel.SequenceBreak when leastAccessible.Value <= AccessibilityLevel.Partial => AccessibilityLevel.Partial,
+                    AccessibilityLevel.SequenceBreak when leastAccessible <= AccessibilityLevel.Partial => AccessibilityLevel.Partial,
                     AccessibilityLevel.SequenceBreak => AccessibilityLevel.SequenceBreak,
-                    AccessibilityLevel.Normal when leastAccessible.Value <= AccessibilityLevel.Partial => AccessibilityLevel.Partial,
-                    AccessibilityLevel.Normal when leastAccessible.Value == AccessibilityLevel.SequenceBreak => AccessibilityLevel.SequenceBreak,
+                    AccessibilityLevel.Normal when leastAccessible <= AccessibilityLevel.Partial => AccessibilityLevel.Partial,
+                    AccessibilityLevel.Normal when leastAccessible == AccessibilityLevel.SequenceBreak => AccessibilityLevel.SequenceBreak,
                     AccessibilityLevel.Normal => AccessibilityLevel.Normal,
                     _ => throw new Exception(string.Format(CultureInfo.InvariantCulture, "Unknown availability state for location {0}", ID.ToString())),
                 };
@@ -335,36 +330,34 @@ namespace OpenTracker.Models.Locations
         /// <summary>
         /// Loads location save data.
         /// </summary>
-        public void Load(LocationSaveData saveData)
+        public void Load(LocationSaveData? saveData)
         {
             if (saveData == null)
             {
-                throw new ArgumentNullException(nameof(saveData));
+                return;
             }
 
             Notes.Clear();
 
-            for (int i = 0; i < saveData.Sections.Count; i++)
+            for (int i = 0; i < saveData.Sections!.Count; i++)
             {
                 Sections[i].Load(saveData.Sections[i]);
             }
 
-            foreach (var marking in saveData.Markings)
+            foreach (var marking in saveData.Markings!)
             {
+                var newMarking = _markingFactory();
+
                 if (marking.HasValue)
                 {
-                    Notes.Add(new Marking()
-                    {
-                        Mark = marking.Value
-                    });
+                    newMarking.Mark = marking.Value;
                 }
                 else
                 {
-                    Notes.Add(new Marking()
-                    {
-                        Mark = MarkType.Unknown
-                    });
+                    newMarking.Mark = MarkType.Unknown;
                 }
+
+                Notes.Add(newMarking);
             }
         }
     }

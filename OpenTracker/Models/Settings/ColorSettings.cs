@@ -1,12 +1,16 @@
 ﻿using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Utils;
+using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.Settings
 {
-    public class ColorSettings : INotifyPropertyChanged
+    /// <summary>
+    /// This class contains color settings data.
+    /// </summary>
+    public class ColorSettings : IColorSettings
     {
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         private string _emphasisFontColor = "#ff00ff00";
         public string EmphasisFontColor
@@ -37,13 +41,22 @@ namespace OpenTracker.Models.Settings
         }
 
         public ObservableDictionary<AccessibilityLevel, string> AccessibilityColors { get; } =
-            new ObservableDictionary<AccessibilityLevel, string>();
+            new ObservableDictionary<AccessibilityLevel, string>(
+                new Dictionary<AccessibilityLevel, string>
+                {
+                    { AccessibilityLevel.None, "#ffff3030" },
+                    { AccessibilityLevel.Inspect, "#ff6495ed" },
+                    { AccessibilityLevel.Partial, "#ffff8c00" },
+                    { AccessibilityLevel.SequenceBreak, "#ffffff00" },
+                    { AccessibilityLevel.Normal, "#ff00ff00" },
+                    { AccessibilityLevel.Cleared, "#ff333333" }
+                });
 
         /// <summary>
         /// Raises the PropertyChanged event for the specified property.
         /// </summary>
         /// <param name="propertyName">
-        /// The string of the property name of the changed property.
+        /// A string representing the property name that changed.
         /// </param>
         private void OnPropertyChanged(string propertyName)
         {

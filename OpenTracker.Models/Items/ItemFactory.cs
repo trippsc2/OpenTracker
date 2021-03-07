@@ -1,10 +1,51 @@
-﻿namespace OpenTracker.Models.Items
+﻿using System;
+
+namespace OpenTracker.Models.Items
 {
     /// <summary>
-    /// This is the class for creating items.
+    /// This class contains creation logic for item data.
     /// </summary>
-    public static class ItemFactory
+    public class ItemFactory : IItemFactory
     {
+        private readonly Lazy<IItemAutoTrackValueFactory> _autoTrackValueFactory;
+
+        private readonly Item.Factory _itemFactory;
+        private readonly CappedItem.Factory _cappedItemFactory;
+        private readonly CrystalRequirementItem.Factory _crystalRequirementFactory;
+        private readonly KeyItem.Factory _keyFactory;
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="autoTrackValueFactory">
+        /// An Autofac factory for creating autotrack values.
+        /// </param>
+        /// <param name="itemFactory">
+        /// An Autofac factory for creating items.
+        /// </param>
+        /// <param name="cappedItemFactory">
+        /// An Autofac factory for creating items with maximums.
+        /// </param>
+        /// <param name="crystalRequirementFactory">
+        /// An Autofac factory for creating crystal requirement items.
+        /// </param>
+        /// <param name="keyFactory">
+        /// An Autofac factory for creating key items.
+        /// </param>
+        public ItemFactory(
+            IItemAutoTrackValueFactory.Factory autoTrackValueFactory, Item.Factory itemFactory,
+            CappedItem.Factory cappedItemFactory,
+            CrystalRequirementItem.Factory crystalRequirementFactory, KeyItem.Factory keyFactory)
+        {
+            _autoTrackValueFactory =
+                new Lazy<IItemAutoTrackValueFactory>(() => autoTrackValueFactory());
+
+            _itemFactory = itemFactory;
+            _cappedItemFactory = cappedItemFactory;
+            _crystalRequirementFactory = crystalRequirementFactory;
+            _keyFactory = keyFactory;
+        }
+
         /// <summary>
         /// Returns the starting amount of the item.
         /// </summary>
@@ -143,6 +184,56 @@
                     {
                         return 6;
                     }
+                case ItemType.HCBigKey:
+                case ItemType.EPSmallKey:
+                    {
+                        return 0;
+                    }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Returns the delta maximum when key drop shuffle is enabled.
+        /// </summary>
+        /// <param name="type">
+        /// The type of item.
+        /// </param>
+        /// <returns>
+        /// A 32-bit integer representing the delta maximum amount of the item.
+        /// </returns>
+        private static int? GetItemKeyDropMaximum(ItemType type)
+        {
+            switch (type)
+            {
+                case ItemType.HCSmallKey:
+                case ItemType.DPSmallKey:
+                case ItemType.MMSmallKey:
+                    {
+                        return 3;
+                    }
+                case ItemType.ATSmallKey:
+                case ItemType.EPSmallKey:
+                case ItemType.SWSmallKey:
+                case ItemType.TTSmallKey:
+                case ItemType.TRSmallKey:
+                    {
+                        return 2;
+                    }
+                case ItemType.SPSmallKey:
+                    {
+                        return 5;
+                    }
+                case ItemType.IPSmallKey:
+                case ItemType.GTSmallKey:
+                    {
+                        return 4;
+                    }
+                case ItemType.HCBigKey:
+                    {
+                        return 1;
+                    }
             }
 
             return null;
@@ -157,19 +248,33 @@
         /// <returns>
         /// A finished item.
         /// </returns>
-        public static IItem GetItem(ItemType type)
+        public IItem GetItem(ItemType type)
         {
-            int? maximum = GetItemMaximum(type);
+            if (type == ItemType.TowerCrystals || type == ItemType.GanonCrystals)
+            {
+                return _crystalRequirementFactory();
+            }
+
+            var maximum = GetItemMaximum(type);
 
             if (maximum.HasValue)
             {
-                return new CappedItem(
+                var keyDropMaximum = GetItemKeyDropMaximum(type);
+
+                if (keyDropMaximum.HasValue)
+                {
+                    return _keyFactory(
+                        maximum.Value, keyDropMaximum.Value, GetItemStarting(type),
+                        _autoTrackValueFactory.Value.GetAutoTrackValue(type));
+                }
+
+                return _cappedItemFactory(
                     GetItemStarting(type), maximum.Value,
-                    ItemAutoTrackingFactory.GetAutoTrackValue(type));
+                    _autoTrackValueFactory.Value.GetAutoTrackValue(type));
             }
 
-            return new Item(
-                GetItemStarting(type), ItemAutoTrackingFactory.GetAutoTrackValue(type));
+            return _itemFactory(
+                GetItemStarting(type), _autoTrackValueFactory.Value.GetAutoTrackValue(type));
         }
     }
 }

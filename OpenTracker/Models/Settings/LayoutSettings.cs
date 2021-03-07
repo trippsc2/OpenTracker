@@ -5,11 +5,11 @@ using System.ComponentModel;
 namespace OpenTracker.Models.Settings
 {
     /// <summary>
-    /// This is the class containing tracker GUI layout settings.
+    /// This class contains GUI layout settings data.
     /// </summary>
-    public class LayoutSettings : INotifyPropertyChanged
+    public class LayoutSettings : ILayoutSettings
     {
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         private bool _displayMapsCompasses;
         public bool DisplayMapsCompasses
@@ -183,7 +183,7 @@ namespace OpenTracker.Models.Settings
         /// Raises the PropertyChanged event for the specified property.
         /// </summary>
         /// <param name="propertyName">
-        /// The string of the property name of the changed property.
+        /// A string representing the property name that changed.
         /// </param>
         private void OnPropertyChanged(string propertyName)
         {

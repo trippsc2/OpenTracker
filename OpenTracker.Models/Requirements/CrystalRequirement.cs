@@ -5,58 +5,36 @@ using System.ComponentModel;
 namespace OpenTracker.Models.Requirements
 {
     /// <summary>
-    /// This is the class for GT crystal requirements.
+    /// This class contains GT crystal requirement data.
     /// </summary>
-    public class CrystalRequirement : IRequirement
+    public class CrystalRequirement : AccessibilityRequirement
     {
-        private readonly IItem _gtCrystal;
+        private readonly ICrystalRequirementItem _gtCrystal;
         private readonly IItem _crystal;
         private readonly IItem _redCrystal;
 
-        public bool Met =>
-            Accessibility != AccessibilityLevel.None;
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private AccessibilityLevel _accessibility;
-        public AccessibilityLevel Accessibility
-        {
-            get => _accessibility;
-            private set
-            {
-                if (_accessibility != value)
-                {
-                    _accessibility = value;
-                    OnPropertyChanged(nameof(Accessibility));
-                }
-            }
-        }
+        public delegate CrystalRequirement Factory();
 
         /// <summary>
         /// Constructor
         /// </summary>
-        public CrystalRequirement()
+        /// <param name="items">
+        /// The item dictionary.
+        /// </param>
+        /// <param name="prizes">
+        /// The prize dictionary.
+        /// </param>
+        public CrystalRequirement(IItemDictionary items, IPrizeDictionary prizes)
         {
-            _gtCrystal = ItemDictionary.Instance[ItemType.TowerCrystals];
-            _crystal = PrizeDictionary.Instance[PrizeType.Crystal];
-            _redCrystal = PrizeDictionary.Instance[PrizeType.RedCrystal];
+            _gtCrystal = (ICrystalRequirementItem)items[ItemType.TowerCrystals];
+            _crystal = prizes[PrizeType.Crystal];
+            _redCrystal = prizes[PrizeType.RedCrystal];
 
             _gtCrystal.PropertyChanged += OnItemChanged;
             _crystal.PropertyChanged += OnItemChanged;
             _redCrystal.PropertyChanged += OnItemChanged;
 
-            UpdateAccessibility();
-        }
-
-        /// <summary>
-        /// Raises the PropertyChanged event for the specified property.
-        /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changed property.
-        /// </param>
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            UpdateValue();
         }
 
         /// <summary>
@@ -68,21 +46,29 @@ namespace OpenTracker.Models.Requirements
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnItemChanged(object sender, PropertyChangedEventArgs e)
+        private void OnItemChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(IItem.Current))
+            if (e.PropertyName == nameof(IItem.Current) ||
+                e.PropertyName == nameof(ICrystalRequirementItem.Known))
             {
-                UpdateAccessibility();
+                UpdateValue();
             }
         }
 
-        /// <summary>
-        /// Updates the accessibility of this requirement.
-        /// </summary>
-        private void UpdateAccessibility()
+        protected override AccessibilityLevel GetAccessibility()
         {
-            Accessibility = _gtCrystal.Current + _crystal.Current + _redCrystal.Current >= 7 ?
-                AccessibilityLevel.Normal : AccessibilityLevel.None;
+            if (_crystal.Current + _redCrystal.Current >= 7)
+            {
+                return AccessibilityLevel.Normal;
+            }
+
+            if (_gtCrystal.Known)
+            {
+                return _gtCrystal.Current + _crystal.Current + _redCrystal.Current >= 7 ?
+                    AccessibilityLevel.Normal : AccessibilityLevel.None;
+            }
+
+            return AccessibilityLevel.SequenceBreak;
         }
     }
 }

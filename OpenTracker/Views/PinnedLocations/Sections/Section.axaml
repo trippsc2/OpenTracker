@@ -1,0 +1,49 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:OpenTracker.ViewModels.PinnedLocations.Sections;assembly=OpenTracker"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+             xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
+             mc:Ignorable="d" x:Class="OpenTracker.Views.PinnedLocations.Sections.Section">
+  
+  <Design.DataContext>
+    <vm:SectionVM />
+  </Design.DataContext>
+
+  <UserControl.Resources>
+    <SolidColorBrush x:Key="NormalBrush" Color="{DynamicResource ThemeForegroundColor}" />
+    <SolidColorBrush x:Key="AccessibilityBrush"
+                     Color="{Binding FontColor, Mode=OneWay}" />
+  </UserControl.Resources>
+
+  <StackPanel Margin="4 0" Orientation="Vertical"
+              IsVisible="{Binding Visible}">
+
+    <TextBlock Name="sectionName" Classes="SectionName"
+               Text="{Binding Name}">
+      <i:Interaction.Behaviors>
+        <ia:DataTriggerBehavior Binding="{Binding NormalAccessibility}"
+                                ComparisonCondition="Equal" Value="True">
+          <ia:ChangePropertyAction TargetObject="{Binding #sectionName}"
+                                   PropertyName="Foreground" Value="{DynamicResource NormalBrush}" />
+        </ia:DataTriggerBehavior>
+        <ia:DataTriggerBehavior Binding="{Binding NormalAccessibility}"
+                                ComparisonCondition="NotEqual" Value="True">
+          <ia:ChangePropertyAction TargetObject="{Binding #sectionName}"
+                                   PropertyName="Foreground" Value="{DynamicResource AccessibilityBrush}" />
+        </ia:DataTriggerBehavior>
+      </i:Interaction.Behaviors>
+    </TextBlock>
+
+    <ItemsControl Items="{Binding Icons}">
+      <ItemsControl.ItemsPanel>
+        <ItemsPanelTemplate>
+          <StackPanel Orientation="Horizontal" Spacing="4" />
+        </ItemsPanelTemplate>
+      </ItemsControl.ItemsPanel>
+    </ItemsControl>
+
+  </StackPanel>
+
+</UserControl>

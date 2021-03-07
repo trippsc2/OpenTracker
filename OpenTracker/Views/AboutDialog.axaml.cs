@@ -1,11 +1,10 @@
 ﻿using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using OpenTracker.Interfaces;
+using OpenTracker.Utils.Dialog;
 
 namespace OpenTracker.Views
 {
-    public class AboutDialog : Window, IDialog
+    public class AboutDialog : DialogWindowBase
     {
         public AboutDialog()
         {

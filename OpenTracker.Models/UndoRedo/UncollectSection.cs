@@ -3,12 +3,15 @@
 namespace OpenTracker.Models.UndoRedo
 {
     /// <summary>
-    /// This is the class for an undoable action to uncollect a section.
+    /// This class contains undoable action to uncollect a section.
     /// </summary>
     public class UncollectSection : IUndoable
     {
         private readonly ISection _section;
+
         private bool _previousUserManipulated;
+
+        public delegate UncollectSection Factory(ISection section);
 
         /// <summary>
         /// Constructor
@@ -35,7 +38,7 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Executes the action.
         /// </summary>
-        public void Execute()
+        public void ExecuteDo()
         {
             _previousUserManipulated = _section.UserManipulated;
             _section.UserManipulated = true;
@@ -45,7 +48,7 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Undoes the action.
         /// </summary>
-        public void Undo()
+        public void ExecuteUndo()
         {
             _section.UserManipulated = _previousUserManipulated;
             _section.Available--;

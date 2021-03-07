@@ -1,29 +1,35 @@
 ﻿using OpenTracker.Models.Markings;
+using OpenTracker.Utils;
 using OpenTracker.ViewModels.Markings.Images;
 
 namespace OpenTracker.ViewModels.Markings
 {
     /// <summary>
-    /// This is the ViewModel for the marking select button control.
+    /// This class contains the marking select button control ViewModel data.
     /// </summary>
-    public class MarkingSelectButtonVM : MarkingSelectItemVMBase
+    public class MarkingSelectButtonVM : ViewModelBase, IMarkingSelectItemVMBase
     {
         public MarkType? Marking { get; }
-        public MarkingImageVMBase Image { get; }
+        public IMarkingImageVMBase? Image { get; }
+
+        public delegate MarkingSelectButtonVM Factory(MarkType? marking);
 
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="markingImages">
+        /// The marking image control dictionary.
+        /// </param>
         /// <param name="marking">
         /// The marking to be represented by this button.
         /// </param>
-        public MarkingSelectButtonVM(MarkType? marking)
+        public MarkingSelectButtonVM(IMarkingImageDictionary markingImages, MarkType? marking)
         {
             Marking = marking;
 
-            if (Marking != null)
+            if (!(Marking is null))
             {
-                Image = MarkingImageDictionary.Instance[Marking.Value];
+                Image = markingImages[Marking.Value];
             }
         }
     }

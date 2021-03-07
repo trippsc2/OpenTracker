@@ -1,26 +1,32 @@
 ﻿using OpenTracker.Models.Locations;
 using OpenTracker.Models.Markings;
-using System;
 
 namespace OpenTracker.Models.UndoRedo
 {
     /// <summary>
-    /// This is the class for an undoable action to add a note to a location.
+    /// This class contains undoable action data to add a note to a location.
     /// </summary>
     public class AddNote : IUndoable
     {
+        private readonly IMarking.Factory _factory;
         private readonly ILocation _location;
-        private IMarking _note;
+        private IMarking? _note;
+
+        public delegate AddNote Factory(ILocation location);
 
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="factory">
+        /// An Autofac factory for creating markings.
+        /// </param>
         /// <param name="location">
         /// The location to which the note will be added.
         /// </param>
-        public AddNote(ILocation location)
+        public AddNote(IMarking.Factory factory, ILocation location)
         {
-            _location = location ?? throw new ArgumentNullException(nameof(location));
+            _factory = factory;
+            _location = location;
         }
 
         /// <summary>
@@ -37,18 +43,18 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Executes the action.
         /// </summary>
-        public void Execute()
+        public void ExecuteDo()
         {
-            _note = MarkingFactory.GetMarking();
+            _note = _factory();
             _location.Notes.Add(_note);
         }
 
         /// <summary>
         /// Undoes the action.
         /// </summary>
-        public void Undo()
+        public void ExecuteUndo()
         {
-            _location.Notes.Remove(_note);
+            _location.Notes.Remove(_note!);
         }
     }
 }

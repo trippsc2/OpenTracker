@@ -4,7 +4,7 @@ using OpenTracker.Models.BossPlacements;
 namespace OpenTracker.Models.Sections
 {
     /// <summary>
-    /// This is the interface for boss sections.
+    /// This interface contains boss section data.
     /// </summary>
     public interface IBossSection : ISection
     {

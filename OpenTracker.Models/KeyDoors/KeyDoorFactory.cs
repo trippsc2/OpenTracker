@@ -6,10 +6,23 @@ using System;
 namespace OpenTracker.Models.KeyDoors
 {
     /// <summary>
-    /// This is the class for creating key doors.
+    /// This class contains creation logic for key door data.
     /// </summary>
-    public static class KeyDoorFactory
+    public class KeyDoorFactory : IKeyDoorFactory
     {
+        private readonly IKeyDoor.Factory _factory;
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="factory">
+        /// An Autofac factory for creating key doors.
+        /// </param>
+        public KeyDoorFactory(IKeyDoor.Factory factory)
+        {
+            _factory = factory;
+        }
+
         /// <summary>
         /// Returns the requirement for the specified key door.
         /// </summary>
@@ -22,19 +35,15 @@ namespace OpenTracker.Models.KeyDoors
         /// <returns>
         /// The requirement for the specified key door.
         /// </returns>
-        public static IRequirementNode GetKeyDoorNode(KeyDoorID id, IMutableDungeon dungeonData)
+        public IRequirementNode GetKeyDoorNode(KeyDoorID id, IMutableDungeon dungeonData)
         {
-            if (dungeonData == null)
-            {
-                throw new ArgumentNullException(nameof(dungeonData));
-            }
-
             return id switch
             {
                 KeyDoorID.HCEscapeFirstKeyDoor => dungeonData.Nodes[DungeonNodeID.HCEscapeFirstKeyDoor],
                 KeyDoorID.HCEscapeSecondKeyDoor => dungeonData.Nodes[DungeonNodeID.HCEscapeSecondKeyDoor],
                 KeyDoorID.HCDarkCrossKeyDoor => dungeonData.Nodes[DungeonNodeID.HCDarkCrossKeyDoor],
                 KeyDoorID.HCSewerRatRoomKeyDoor => dungeonData.Nodes[DungeonNodeID.HCSewerRatRoomKeyDoor],
+                KeyDoorID.HCZeldasCellDoor => dungeonData.Nodes[DungeonNodeID.HCZeldasCellDoor],
                 KeyDoorID.ATFirstKeyDoor => dungeonData.Nodes[DungeonNodeID.ATDarkMaze],
                 KeyDoorID.ATSecondKeyDoor => dungeonData.Nodes[DungeonNodeID.ATSecondKeyDoor],
                 KeyDoorID.ATThirdKeyDoor => dungeonData.Nodes[DungeonNodeID.ATPastSecondKeyDoor],
@@ -116,7 +125,7 @@ namespace OpenTracker.Models.KeyDoors
                 KeyDoorID.GTBigChest => dungeonData.Nodes[DungeonNodeID.GT1FBottomRoom],
                 KeyDoorID.GT3FBigKeyDoor => dungeonData.Nodes[DungeonNodeID.GT3FBigKeyDoor],
                 KeyDoorID.GT7FBigKeyDoor => dungeonData.Nodes[DungeonNodeID.GT6FPastBossRoomGap],
-                _ => null
+                _ => throw new ArgumentOutOfRangeException(nameof(id))
             };
         }
 
@@ -129,14 +138,9 @@ namespace OpenTracker.Models.KeyDoors
         /// <returns>
         /// A new key door for the specified key door ID.
         /// </returns>
-        public static IKeyDoor GetKeyDoor(IMutableDungeon dungeonData)
+        public IKeyDoor GetKeyDoor(IMutableDungeon dungeonData)
         {
-            if (dungeonData == null)
-            {
-                throw new ArgumentNullException(nameof(dungeonData));
-            }
-
-            return new KeyDoor(dungeonData);
+            return _factory(dungeonData);
         }
     }
 }

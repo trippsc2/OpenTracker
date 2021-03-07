@@ -4,13 +4,16 @@ using System;
 namespace OpenTracker.Models.UndoRedo
 {
     /// <summary>
-    /// This is the class for an undoable action to set a marking.
+    /// This class contains undoable action data to set a marking.
     /// </summary>
     public class SetMarking : IUndoable
     {
         private readonly IMarking _marking;
         private readonly MarkType _newMarking;
+
         private MarkType _previousMarking;
+
+        public delegate SetMarking Factory(IMarking marking, MarkType newMarking);
 
         /// <summary>
         /// Constructor
@@ -41,7 +44,7 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Executes the action.
         /// </summary>
-        public void Execute()
+        public void ExecuteDo()
         {
             _previousMarking = _marking.Mark;
             _marking.Mark = _newMarking;
@@ -50,7 +53,7 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Undoes the action.
         /// </summary>
-        public void Undo()
+        public void ExecuteUndo()
         {
             _marking.Mark = _previousMarking;
         }

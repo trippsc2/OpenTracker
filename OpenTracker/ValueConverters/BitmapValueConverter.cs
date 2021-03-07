@@ -11,7 +11,7 @@ using System.IO;
 namespace OpenTracker.ValueConverters
 {
     /// <summary>
-    /// This is a ValueConverter to convert from a string to a bitmap URI.
+    /// This class contains logic to convert a string to a bitmap URI.
     /// </summary>
     public class BitmapValueConverter : IValueConverter
     {
@@ -21,7 +21,7 @@ namespace OpenTracker.ValueConverters
         /// <returns>
         /// A bitmap URI from the string.
         /// </returns>
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value == null)
             {
@@ -58,6 +58,7 @@ namespace OpenTracker.ValueConverters
             throw new NotSupportedException();
         }
 
+        // Not implemented.  Bitmap bindings are always one-way.
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();

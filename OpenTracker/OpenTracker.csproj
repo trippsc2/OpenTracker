@@ -4,16 +4,16 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <ApplicationIcon>triforce.ico</ApplicationIcon>
     <Win32Resource />
-    <Version>1.7.0</Version>
+    <Version>1.8.0</Version>
     <Authors>Tripp</Authors>
-    <AssemblyVersion>1.7.0</AssemblyVersion>
-    <FileVersion>1.7.0</FileVersion>
-    <CFBundleShortVersionString>1.7.0</CFBundleShortVersionString>
+    <AssemblyVersion>1.8.0</AssemblyVersion>
+    <FileVersion>1.8.0</FileVersion>
+    <CFBundleShortVersionString>1.8.0</CFBundleShortVersionString>
+    <Nullable>enable</Nullable>
     <RuntimeIdentifiers>osx-x64;linux-x64;debian-x64;rhel-x64;win-x64;win-x86;win7-x64;win7-x86</RuntimeIdentifiers>
   </PropertyGroup>
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
-    <AvaloniaResource Include="Assets\Images\*.png" />
   </ItemGroup>
   <ItemGroup>
     <AvaloniaResource Remove="bin\**" />
@@ -23,11 +23,13 @@
     <None Remove="bin\**" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Autofac" Version="6.1.0" />
     <PackageReference Include="Avalonia" Version="0.10.0" />
     <PackageReference Include="Avalonia.Desktop" Version="0.10.0" />
     <PackageReference Include="Avalonia.Diagnostics" Version="0.10.0" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.0" />
     <PackageReference Include="Avalonia.Xaml.Behaviors" Version="0.10.0" />
+    <PackageReference Include="Avalonia.Xaml.Interactions.DragAndDrop" Version="0.10.0" />
     <PackageReference Include="Dotnet.Bundle" Version="0.9.13" />
     <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="5.0.3">
       <PrivateAssets>all</PrivateAssets>
@@ -41,6 +43,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Avalonia.ThemeManager\Avalonia.ThemeManager.csproj" />
     <ProjectReference Include="..\OpenTracker.Models\OpenTracker.Models.csproj" />
+    <ProjectReference Include="..\OpenTracker.Utils\OpenTracker.Utils.csproj" />
   </ItemGroup>
   <ItemGroup>
     <AvaloniaResource Update="Assets\Images\triforce.png">
@@ -48,26 +51,11 @@
     </AvaloniaResource>
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="Views\AboutDialog.axaml.cs">
-      <DependentUpon>AboutDialog.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\Items\Small\SmallItem.axaml.cs">
-      <DependentUpon>SmallItem.axaml</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Update="Themes\Dark.xaml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Themes\Default.xaml">
-      <Generator></Generator>
+    <None Update="Themes\*.xaml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="triforce.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\UndoRedo\" />
   </ItemGroup>
 </Project>

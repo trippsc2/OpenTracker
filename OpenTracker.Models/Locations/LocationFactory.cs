@@ -1,12 +1,11 @@
-﻿using OpenTracker.Models.Dungeons;
-using System;
+﻿using System;
 
 namespace OpenTracker.Models.Locations
 {
     /// <summary>
-    /// This is the class for creating locations.
+    /// This class contains creation logic for location data.
     /// </summary>
-    public static class LocationFactory
+    public class LocationFactory : ILocationFactory
     {
         /// <summary>
         /// Returns the name of a specified location.
@@ -17,7 +16,7 @@ namespace OpenTracker.Models.Locations
         /// <returns>
         /// A string representing the name of the location.
         /// </returns>
-        public static string GetLocationName(LocationID id)
+        public string GetLocationName(LocationID id)
         {
             return id switch
             {
@@ -105,7 +104,7 @@ namespace OpenTracker.Models.Locations
                 LocationID.ChickenHouseEntrance => "Chicken House",
                 LocationID.GrassHouseEntrance => "Grass House",
                 LocationID.TavernFront => "Front Tavern",
-                LocationID.KakarikoShop => "Kakariko Shop",
+                LocationID.KakarikoShopEntrance => "Kakariko Shop",
                 LocationID.BombHutEntrance => "Bomb Hut",
                 LocationID.SickKidEntrance => "Sick Kid",
                 LocationID.BlacksmithHouse => "Blacksmiths",
@@ -205,7 +204,7 @@ namespace OpenTracker.Models.Locations
                 LocationID.EDMConnectorTop => "EDM Connector Top",
                 LocationID.ParadoxCaveTop => "Paradox Cave Top",
                 LocationID.SuperBunnyCaveBottom => "Super-Bunny Cave Bottom",
-                LocationID.DeathMountainShop => "Death Mountain Shop",
+                LocationID.DeathMountainShopEntrance => "Death Mountain Shop",
                 LocationID.SuperBunnyCaveTop => "Super-Bunny Cave Top",
                 LocationID.HookshotCaveEntrance => "Hookshot Cave",
                 LocationID.TurtleRockEntrance => "Turtle Rock",
@@ -261,59 +260,18 @@ namespace OpenTracker.Models.Locations
                 LocationID.SkullWoodsSWHole => "Skull Woods SW Hole",
                 LocationID.SkullWoodsSEHole => "Skull Woods SE Hole",
                 LocationID.SkullWoodsNEHole => "Skull Woods NE Hole",
+                LocationID.KakarikoShop => "Kakariko Shop",
+                LocationID.LakeHyliaShop => "Lake Hylia Shop",
+                LocationID.DeathMountainShop => "Death Mountain Shop",
+                LocationID.PotionShop => "Potion Shop",
+                LocationID.DarkLumberjackShop => "Dark Lumberjack Shop",
+                LocationID.RedShieldShop => "Red Shield Shop",
+                LocationID.VillageOfOutcastsShop => "Village of Outcasts Shop",
+                LocationID.DarkLakeHyliaShop => "Dark Lake Hylia Shop",
+                LocationID.DarkPotionShop => "Dark Potion Shop",
+                LocationID.DarkDeathMountainShop => "Dark Death Mountain Shop",
                 _ => throw new ArgumentOutOfRangeException(nameof(id))
             };
-        }
-
-        /// <summary>
-        /// Returns a new base location of a specified location ID.
-        /// </summary>
-        /// <param name="id">
-        /// The location ID.
-        /// </param>
-        /// <returns>
-        /// A new base location.
-        /// </returns>
-        public static ILocation GetBaseLocation(LocationID id)
-        {
-            return new Location(
-                id, GetLocationName(id), MapLocationFactory.GetMapLocations(id));
-        }
-
-        /// <summary>
-        /// Returns a new location of a specified location ID.
-        /// </summary>
-        /// <param name="id">
-        /// The location ID.
-        /// </param>
-        /// <returns>
-        /// A new location.
-        /// </returns>
-        public static ILocation GetLocation(LocationID id)
-        {
-            switch (id)
-            {
-                case LocationID.HyruleCastle:
-                case LocationID.AgahnimTower:
-                case LocationID.EasternPalace:
-                case LocationID.DesertPalace:
-                case LocationID.TowerOfHera:
-                case LocationID.PalaceOfDarkness:
-                case LocationID.SwampPalace:
-                case LocationID.SkullWoods:
-                case LocationID.ThievesTown:
-                case LocationID.IcePalace:
-                case LocationID.MiseryMire:
-                case LocationID.TurtleRock:
-                case LocationID.GanonsTower:
-                    {
-                        return DungeonFactory.GetDungeon(id);
-                    }
-                default:
-                    {
-                        return GetBaseLocation(id);
-                    }
-            }
         }
     }
 }

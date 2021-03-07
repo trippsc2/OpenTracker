@@ -1,64 +1,41 @@
 ﻿using Avalonia.Layout;
-using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.Settings;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.Requirements
 {
     /// <summary>
-    /// This is the class for the requirement of a specified Items panel orientation.
+    /// This class contains items panel orientation requirement data.
     /// </summary>
-    public class ItemsPanelOrientationRequirement : IRequirement
+    public class ItemsPanelOrientationRequirement : BooleanRequirement
     {
-        private readonly Orientation _orientation;
+        private readonly ILayoutSettings _layoutSettings;
+        private readonly Orientation _expectedValue;
 
-        public bool Met =>
-            Accessibility != AccessibilityLevel.None;
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private AccessibilityLevel _accessibility;
-        public AccessibilityLevel Accessibility
-        {
-            get => _accessibility;
-            private set
-            {
-                if (_accessibility != value)
-                {
-                    _accessibility = value;
-                    OnPropertyChanged(nameof(Accessibility));
-                }
-            }
-        }
+        public delegate ItemsPanelOrientationRequirement Factory(Orientation expectedValue);
 
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="orientation">
-        /// The orientation requirement.
+        /// <param name="layoutSettings">
+        /// The layout settings.
         /// </param>
-        public ItemsPanelOrientationRequirement(Orientation orientation)
+        /// <param name="expectedValue">
+        /// The expected orientation value.
+        /// </param>
+        public ItemsPanelOrientationRequirement(
+            ILayoutSettings layoutSettings, Orientation expectedValue)
         {
-            _orientation = orientation;
+            _layoutSettings = layoutSettings;
+            _expectedValue = expectedValue;
 
-            AppSettings.Instance.Layout.PropertyChanged += OnLayoutChanged;
+            _layoutSettings.PropertyChanged += OnLayoutChanged;
 
-            UpdateAccessibility();
+            UpdateValue();
         }
 
         /// <summary>
-        /// Raises the PropertyChanged event for the specified property.
-        /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changed property.
-        /// </param>
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        /// <summary>
-        /// Subscribes to the PropertyChanged event on the LayoutSettings class.
+        /// Subscribes to the PropertyChanged event on the ILayoutSettings interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -66,21 +43,17 @@ namespace OpenTracker.Models.Requirements
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
+        private void OnLayoutChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(LayoutSettings.CurrentLayoutOrientation))
+            if (e.PropertyName == nameof(ILayoutSettings.CurrentLayoutOrientation))
             {
-                UpdateAccessibility();
+                UpdateValue();
             }
         }
 
-        /// <summary>
-        /// Updates the accessibility of this requirement.
-        /// </summary>
-        private void UpdateAccessibility()
+        protected override bool ConditionMet()
         {
-            Accessibility = AppSettings.Instance.Layout.CurrentLayoutOrientation == _orientation ?
-                AccessibilityLevel.Normal : AccessibilityLevel.None;
+            return _layoutSettings.CurrentLayoutOrientation == _expectedValue;
         }
     }
 }

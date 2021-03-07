@@ -1,7 +1,7 @@
 ﻿namespace OpenTracker.Models.Sections
 {
     /// <summary>
-    /// This is the interface for item sections.
+    /// This interface contains item section data.
     /// </summary>
     public interface IItemSection : ISection
     {

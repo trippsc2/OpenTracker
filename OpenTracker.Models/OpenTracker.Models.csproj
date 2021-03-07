@@ -2,7 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <Version>1.7.0</Version>
+    <Nullable>enable</Nullable>
+    <Version>1.8.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,6 +13,10 @@
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="WebSocketSharp-netstandard" Version="1.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OpenTracker.Utils\OpenTracker.Utils.csproj" />
   </ItemGroup>
 
 </Project>

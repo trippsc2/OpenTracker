@@ -1,16 +1,15 @@
 ﻿using OpenTracker.Models.Locations;
 using OpenTracker.Models.SaveLoad;
-using System;
 
 namespace OpenTracker.Models.Connections
 {
     /// <summary>
     /// This is the class for connections between two entrance map locations.
     /// </summary>
-    public class Connection
+    public class Connection : IConnection
     {
-        public MapLocation Location1 { get;  }
-        public MapLocation Location2 { get; }
+        public IMapLocation Location1 { get; }
+        public IMapLocation Location2 { get; }
 
         /// <summary>
         /// Constructor
@@ -21,20 +20,20 @@ namespace OpenTracker.Models.Connections
         /// <param name="location2">
         /// The second location to connect.
         /// </param>
-        public Connection(MapLocation location1, MapLocation location2)
+        public Connection(IMapLocation location1, IMapLocation location2)
         {
-            Location1 = location1 ?? throw new ArgumentNullException(nameof(location1));
-            Location2 = location2 ?? throw new ArgumentNullException(nameof(location2));
+            Location1 = location1;
+            Location2 = location2;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (obj == null)
             {
                 return false;
             }
 
-            if (obj is Connection connection)
+            if (obj is IConnection connection)
             {
                 return (Location1 == connection.Location1 || Location1 == connection.Location2) &&
                     (Location2 == connection.Location2 || Location2 == connection.Location1);
@@ -58,8 +57,8 @@ namespace OpenTracker.Models.Connections
         {
             return new ConnectionSaveData()
             {
-                Location1 = Location1.Location.ID,
-                Location2 = Location2.Location.ID,
+                Location1 = Location1.Location!.ID,
+                Location2 = Location2.Location!.ID,
                 Index1 = Location1.Location.MapLocations.IndexOf(Location1),
                 Index2 = Location2.Location.MapLocations.IndexOf(Location2)
             };

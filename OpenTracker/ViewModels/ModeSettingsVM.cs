@@ -1,96 +1,112 @@
-﻿using OpenTracker.Models.UndoRedo;
+﻿using Avalonia.Input;
+using Avalonia.Threading;
+using OpenTracker.Models.Modes;
+using OpenTracker.Models.UndoRedo;
+using OpenTracker.Utils;
 using ReactiveUI;
 using System;
 using System.ComponentModel;
 using System.Reactive;
-using OpenTracker.Models.Modes;
 
 namespace OpenTracker.ViewModels
 {
     /// <summary>
-    /// This is the ViewModel for the mode settings popup control.
+    /// This class contains the mode settings popup control ViewModel data.
     /// </summary>
-    public class ModeSettingsVM : ViewModelBase
+    public class ModeSettingsVM : ViewModelBase, IModeSettingsVM
     {
-        public ReactiveCommand<string, Unit> ItemPlacementCommand { get; }
-        public ReactiveCommand<Unit, Unit> MapShuffleCommand { get; }
-        public ReactiveCommand<Unit, Unit> CompassShuffleCommand { get; }
-        public ReactiveCommand<Unit, Unit> SmallKeyShuffleCommand { get; }
-        public ReactiveCommand<Unit, Unit> BigKeyShuffleCommand { get; }
-        public ReactiveCommand<string, Unit> WorldStateCommand { get; }
-        public ReactiveCommand<string, Unit> EntranceShuffleCommand { get; }
-        public ReactiveCommand<Unit, Unit> BossShuffleCommand { get; }
-        public ReactiveCommand<Unit, Unit> EnemyShuffleCommand { get; }
-        public ReactiveCommand<Unit, Unit> GuaranteedBossItemsCommand { get; }
-        public ReactiveCommand<Unit, Unit> GenericKeysCommand { get; }
-        public ReactiveCommand<Unit, Unit> TakeAnyLocationsCommand { get; }
+        private readonly IMode _mode;
+        private readonly IUndoRedoManager _undoRedoManager;
+        private readonly IUndoableFactory _undoableFactory;
 
-        public static bool BasicItemPlacement =>
-            Mode.Instance.ItemPlacement == ItemPlacement.Basic;
-        public static bool AdvancedItemPlacement =>
-            Mode.Instance.ItemPlacement == ItemPlacement.Advanced;
-
-        public static bool MapShuffle =>
-            Mode.Instance.MapShuffle;
-        public static bool CompassShuffle =>
-            Mode.Instance.CompassShuffle;
-        public static bool SmallKeyShuffle =>
-            Mode.Instance.SmallKeyShuffle;
-        public static bool BigKeyShuffle =>
-            Mode.Instance.BigKeyShuffle;
-
-        public bool StandardOpenWorldState =>
-            Mode.Instance.WorldState == WorldState.StandardOpen;
-        public static bool InvertedWorldState =>
-            Mode.Instance.WorldState == WorldState.Inverted;
-
-        public static bool EntranceShuffleNone =>
-            Mode.Instance.EntranceShuffle == Models.Modes.EntranceShuffle.None;
-        public static bool EntranceShuffleDungeon =>
-            Mode.Instance.EntranceShuffle == Models.Modes.EntranceShuffle.Dungeon;
-        public static bool EntranceShuffleAll =>
-            Mode.Instance.EntranceShuffle == Models.Modes.EntranceShuffle.All;
-        public static bool EntranceShuffleInsanity =>
-            Mode.Instance.EntranceShuffle == EntranceShuffle.Insanity;
-
-        public static bool BossShuffle =>
-            Mode.Instance.BossShuffle;
-        public static bool EnemyShuffle =>
-            Mode.Instance.EnemyShuffle;
-        public static bool GuaranteedBossItems =>
-            Mode.Instance.GuaranteedBossItems;
-        public static bool GenericKeys =>
-            Mode.Instance.GenericKeys;
-        public static bool TakeAnyLocations =>
-            Mode.Instance.TakeAnyLocations;
-
-        private bool _modeSettingsPopupOpen;
-        public bool ModeSettingsPopupOpen
+        private bool _popupOpen;
+        public bool PopupOpen
         {
-            get => _modeSettingsPopupOpen;
-            set => this.RaiseAndSetIfChanged(ref _modeSettingsPopupOpen, value);
+            get => _popupOpen;
+            set => this.RaiseAndSetIfChanged(ref _popupOpen, value);
         }
+
+        public bool BasicItemPlacement => _mode.ItemPlacement == ItemPlacement.Basic;
+        public bool AdvancedItemPlacement => _mode.ItemPlacement == ItemPlacement.Advanced;
+
+        public bool MapShuffle => _mode.MapShuffle;
+        public bool CompassShuffle => _mode.CompassShuffle;
+        public bool SmallKeyShuffle => _mode.SmallKeyShuffle;
+        public bool BigKeyShuffle => _mode.BigKeyShuffle;
+
+        public bool StandardOpenWorldState => _mode.WorldState == WorldState.StandardOpen;
+        public bool InvertedWorldState => _mode.WorldState == WorldState.Inverted;
+
+        public bool EntranceShuffleNone => _mode.EntranceShuffle == EntranceShuffle.None;
+        public bool EntranceShuffleDungeon => _mode.EntranceShuffle == EntranceShuffle.Dungeon;
+        public bool EntranceShuffleAll => _mode.EntranceShuffle == EntranceShuffle.All;
+        public bool EntranceShuffleInsanity => _mode.EntranceShuffle == EntranceShuffle.Insanity;
+
+        public bool BossShuffle => _mode.BossShuffle;
+        public bool EnemyShuffle => _mode.EnemyShuffle;
+        public bool GuaranteedBossItems => _mode.GuaranteedBossItems;
+        public bool ShopShuffle => _mode.ShopShuffle;
+        public bool GenericKeys => _mode.GenericKeys;
+        public bool TakeAnyLocations => _mode.TakeAnyLocations;
+        public bool KeyDropShuffle => _mode.KeyDropShuffle;
+        
+        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
+
+        public ReactiveCommand<string, Unit> ChangeItemPlacement { get; }
+        public ReactiveCommand<string, Unit> ChangeWorldState { get; }
+        public ReactiveCommand<string, Unit> ChangeEntranceShuffle { get; }
+
+        public ReactiveCommand<Unit, Unit> ToggleMapShuffle { get; }
+        public ReactiveCommand<Unit, Unit> ToggleCompassShuffle { get; }
+        public ReactiveCommand<Unit, Unit> ToggleSmallKeyShuffle { get; }
+        public ReactiveCommand<Unit, Unit> ToggleBigKeyShuffle { get; }
+
+        public ReactiveCommand<Unit, Unit> ToggleBossShuffle { get; }
+        public ReactiveCommand<Unit, Unit> ToggleEnemyShuffle { get; }
+        public ReactiveCommand<Unit, Unit> ToggleGuaranteedBossItems { get; }
+        public ReactiveCommand<Unit, Unit> ToggleShopShuffle { get; }
+        public ReactiveCommand<Unit, Unit> ToggleGenericKeys { get; }
+        public ReactiveCommand<Unit, Unit> ToggleTakeAnyLocations { get; }
+        public ReactiveCommand<Unit, Unit> ToggleKeyDropShuffle { get; }
 
         /// <summary>
         /// Constructor
         /// </summary>
-        public ModeSettingsVM()
+        /// <param name="mode">
+        /// The mode settings data.
+        /// </param>
+        /// <param name="undoRedoManager">
+        /// The undo/redo manager.
+        /// </param>
+        /// <param name="undoableFactory">
+        /// A factory for creating undoable actions.
+        /// </param>
+        public ModeSettingsVM(IMode mode, IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory)
         {
-            ItemPlacementCommand = ReactiveCommand.Create<string>(
-                SetItemPlacement, this.WhenAnyValue(x => x.StandardOpenWorldState));
-            MapShuffleCommand = ReactiveCommand.Create(ToggleMapShuffle);
-            CompassShuffleCommand = ReactiveCommand.Create(ToggleCompassShuffle);
-            SmallKeyShuffleCommand = ReactiveCommand.Create(ToggleSmallKeyShuffle);
-            BigKeyShuffleCommand = ReactiveCommand.Create(ToggleBigKeyShuffle);
-            WorldStateCommand = ReactiveCommand.Create<string>(SetWorldState);
-            EntranceShuffleCommand = ReactiveCommand.Create<string>(SetEntranceShuffle);
-            BossShuffleCommand = ReactiveCommand.Create(ToggleBossShuffle);
-            EnemyShuffleCommand = ReactiveCommand.Create(ToggleEnemyShuffle);
-            GuaranteedBossItemsCommand = ReactiveCommand.Create(ToggleGuaranteedBossItems);
-            GenericKeysCommand = ReactiveCommand.Create(ToggleGenericKeys);
-            TakeAnyLocationsCommand = ReactiveCommand.Create(ToggleTakeAnyLocations);
+            _mode = mode;
+            _undoRedoManager = undoRedoManager;
+            _undoableFactory = undoableFactory;
 
-            Mode.Instance.PropertyChanged += OnModeChanged;
+            HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
+
+            ChangeItemPlacement = ReactiveCommand.Create<string>(
+                ChangeItemPlacementImpl, this.WhenAnyValue(x => x.StandardOpenWorldState));
+            ChangeWorldState = ReactiveCommand.Create<string>(ChangeWorldStateImpl);
+            ChangeEntranceShuffle = ReactiveCommand.Create<string>(ChangeEntranceShuffleImpl);
+            
+            ToggleMapShuffle = ReactiveCommand.Create(ToggleMapShuffleImpl);
+            ToggleCompassShuffle = ReactiveCommand.Create(ToggleCompassShuffleImpl);
+            ToggleSmallKeyShuffle = ReactiveCommand.Create(ToggleSmallKeyShuffleImpl);
+            ToggleBigKeyShuffle = ReactiveCommand.Create(ToggleBigKeyShuffleImpl);
+            ToggleBossShuffle = ReactiveCommand.Create(ToggleBossShuffleImpl);
+            ToggleEnemyShuffle = ReactiveCommand.Create(ToggleEnemyShuffleImpl);
+            ToggleGuaranteedBossItems = ReactiveCommand.Create(ToggleGuaranteedBossItemsImpl);
+            ToggleShopShuffle = ReactiveCommand.Create(ToggleShopShuffleImpl);
+            ToggleGenericKeys = ReactiveCommand.Create(ToggleGenericKeysImpl);
+            ToggleTakeAnyLocations = ReactiveCommand.Create(ToggleTakeAnyLocationsImpl);
+            ToggleKeyDropShuffle = ReactiveCommand.Create(ToggleKeyDropShuffleImpl);
+
+            _mode.PropertyChanged += OnModeChanged;
         }
 
         /// <summary>
@@ -102,71 +118,88 @@ namespace OpenTracker.ViewModels
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnModeChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnModeChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(Mode.ItemPlacement))
+            switch (e.PropertyName)
             {
-                this.RaisePropertyChanged(nameof(BasicItemPlacement));
-                this.RaisePropertyChanged(nameof(AdvancedItemPlacement));
+                case nameof(IMode.ItemPlacement):
+                    await Dispatcher.UIThread.InvokeAsync(() =>
+                    {
+                        this.RaisePropertyChanged(nameof(BasicItemPlacement));
+                        this.RaisePropertyChanged(nameof(AdvancedItemPlacement));
+                    });
+                    break;
+                case nameof(IMode.MapShuffle):
+                    await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(MapShuffle)));
+                    break;
+                case nameof(IMode.CompassShuffle):
+                    await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(CompassShuffle)));
+                    break;
+                case nameof(IMode.SmallKeyShuffle):
+                    await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(SmallKeyShuffle)));
+                    break;
+                case nameof(IMode.BigKeyShuffle):
+                    await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(BigKeyShuffle)));
+                    break;
+                case nameof(IMode.WorldState):
+                    await Dispatcher.UIThread.InvokeAsync(() =>
+                    {
+                        this.RaisePropertyChanged(nameof(StandardOpenWorldState));
+                        this.RaisePropertyChanged(nameof(InvertedWorldState));
+                    });
+                    break;
+                case nameof(IMode.EntranceShuffle):
+                    await Dispatcher.UIThread.InvokeAsync(() =>
+                    {
+                        this.RaisePropertyChanged(nameof(EntranceShuffleNone));
+                        this.RaisePropertyChanged(nameof(EntranceShuffleDungeon));
+                        this.RaisePropertyChanged(nameof(EntranceShuffleAll));
+                        this.RaisePropertyChanged(nameof(EntranceShuffleInsanity));
+                    });
+                    break;
+                case nameof(IMode.BossShuffle):
+                    await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(BossShuffle)));
+                    break;
+                case nameof(IMode.EnemyShuffle):
+                    await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(EnemyShuffle)));
+                    break;
+                case nameof(IMode.GuaranteedBossItems):
+                    await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(GuaranteedBossItems)));
+                    break;
+                case nameof(IMode.ShopShuffle):
+                    await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(ShopShuffle)));
+                    break;
+                case nameof(IMode.GenericKeys):
+                    await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(GenericKeys)));
+                    break;
+                case nameof(IMode.TakeAnyLocations):
+                    await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(TakeAnyLocations)));
+                    break;
+                case nameof(IMode.KeyDropShuffle):
+                    await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(KeyDropShuffle)));
+                    break;
             }
+        }
 
-            if (e.PropertyName == nameof(Mode.MapShuffle))
-            {
-                this.RaisePropertyChanged(nameof(MapShuffle));
-            }
+        /// <summary>
+        /// Opens the mode settings popup control.
+        /// </summary>
+        private void OpenModeSettingsPopup()
+        {
+            PopupOpen = true;
+        }
 
-            if (e.PropertyName == nameof(Mode.CompassShuffle))
+        /// <summary>
+        /// Handles clicking the control.
+        /// </summary>
+        /// <param name="e">
+        /// The pointer released event args.
+        /// </param>
+        private void HandleClickImpl(PointerReleasedEventArgs e)
+        {
+            if (e.InitialPressMouseButton == MouseButton.Left)
             {
-                this.RaisePropertyChanged(nameof(CompassShuffle));
-            }
-
-            if (e.PropertyName == nameof(Mode.SmallKeyShuffle))
-            {
-                this.RaisePropertyChanged(nameof(SmallKeyShuffle));
-            }
-
-            if (e.PropertyName == nameof(Mode.BigKeyShuffle))
-            {
-                this.RaisePropertyChanged(nameof(BigKeyShuffle));
-            }
-
-            if (e.PropertyName == nameof(Mode.WorldState))
-            {
-                this.RaisePropertyChanged(nameof(StandardOpenWorldState));
-                this.RaisePropertyChanged(nameof(InvertedWorldState));
-            }
-
-            if (e.PropertyName == nameof(Mode.EntranceShuffle))
-            {
-                this.RaisePropertyChanged(nameof(EntranceShuffleNone));
-                this.RaisePropertyChanged(nameof(EntranceShuffleDungeon));
-                this.RaisePropertyChanged(nameof(EntranceShuffleAll));
-                this.RaisePropertyChanged(nameof(EntranceShuffleInsanity));
-            }
-
-            if (e.PropertyName == nameof(Mode.BossShuffle))
-            {
-                this.RaisePropertyChanged(nameof(BossShuffle));
-            }
-
-            if (e.PropertyName == nameof(Mode.EnemyShuffle))
-            {
-                this.RaisePropertyChanged(nameof(EnemyShuffle));
-            }
-
-            if (e.PropertyName == nameof(Mode.GuaranteedBossItems))
-            {
-                this.RaisePropertyChanged(nameof(GuaranteedBossItems));
-            }
-
-            if (e.PropertyName == nameof(Mode.GenericKeys))
-            {
-                this.RaisePropertyChanged(nameof(GenericKeys));
-            }
-
-            if (e.PropertyName == nameof(Mode.TakeAnyLocations))
-            {
-                this.RaisePropertyChanged(nameof(TakeAnyLocations));
+                OpenModeSettingsPopup();
             }
         }
 
@@ -176,112 +209,153 @@ namespace OpenTracker.ViewModels
         /// <param name="itemPlacementString">
         /// A string representing the new item placement setting.
         /// </param>
-        private void SetItemPlacement(string itemPlacementString)
+        private void ChangeItemPlacementImpl(string itemPlacementString)
         {
+            PopupOpen = false;
+            
             if (Enum.TryParse(itemPlacementString, out ItemPlacement itemPlacement))
             {
-                UndoRedoManager.Instance.Execute(new ChangeItemPlacement(itemPlacement));
+                _undoRedoManager.NewAction(_undoableFactory.GetChangeItemPlacement(itemPlacement));
+            }
+        }
+
+        /// <summary>
+        /// Changes the World State setting to the specified value.
+        /// </summary>
+        /// <param name="worldStateString">
+        /// A string representing the new world state setting.
+        /// </param>
+        private void ChangeWorldStateImpl(string worldStateString)
+        {
+            PopupOpen = false;
+            
+            if (Enum.TryParse(worldStateString, out WorldState worldState))
+            {
+                _undoRedoManager.NewAction(_undoableFactory.GetChangeWorldState(worldState));
+            }
+        }
+
+        /// <summary>
+        /// Changes the entrance shuffle setting.
+        /// </summary>
+        private void ChangeEntranceShuffleImpl(string entranceShuffleString)
+        {
+            PopupOpen = false;
+            
+            if (Enum.TryParse(entranceShuffleString, out EntranceShuffle entranceShuffle))
+            {
+                _undoRedoManager.NewAction(_undoableFactory.GetChangeEntranceShuffle(entranceShuffle));
             }
         }
 
         /// <summary>
         /// Toggles the map shuffle setting.
         /// </summary>
-        private void ToggleMapShuffle()
+        private void ToggleMapShuffleImpl()
         {
-            UndoRedoManager.Instance.Execute(new ChangeMapShuffle(!Mode.Instance.MapShuffle));
+            PopupOpen = false;
+            
+            _undoRedoManager.NewAction(_undoableFactory.GetChangeMapShuffle(!_mode.MapShuffle));
         }
 
         /// <summary>
         /// Toggles the compass shuffle setting.
         /// </summary>
-        private void ToggleCompassShuffle()
+        private void ToggleCompassShuffleImpl()
         {
-            UndoRedoManager.Instance.Execute(new ChangeCompassShuffle(!Mode.Instance.CompassShuffle));
+            PopupOpen = false;
+            
+            _undoRedoManager.NewAction(_undoableFactory.GetChangeCompassShuffle(!_mode.CompassShuffle));
         }
 
         /// <summary>
         /// Toggles the small key shuffle setting.
         /// </summary>
-        private void ToggleSmallKeyShuffle()
+        private void ToggleSmallKeyShuffleImpl()
         {
-            UndoRedoManager.Instance.Execute(new ChangeSmallKeyShuffle(!Mode.Instance.SmallKeyShuffle));
+            PopupOpen = false;
+            
+            _undoRedoManager.NewAction(_undoableFactory.GetChangeSmallKeyShuffle(!_mode.SmallKeyShuffle));
         }
 
         /// <summary>
         /// Toggles the big key shuffle setting.
         /// </summary>
-        private void ToggleBigKeyShuffle()
+        private void ToggleBigKeyShuffleImpl()
         {
-            UndoRedoManager.Instance.Execute(new ChangeBigKeyShuffle(!Mode.Instance.BigKeyShuffle));
-        }
-
-        /// <summary>
-        /// Sets the World State setting to the specified value.
-        /// </summary>
-        /// <param name="worldStateString">
-        /// A string representing the new world state setting.
-        /// </param>
-        private void SetWorldState(string worldStateString)
-        {
-            if (Enum.TryParse(worldStateString, out WorldState worldState))
-            {
-                UndoRedoManager.Instance.Execute(new ChangeWorldState(worldState));
-            }
-        }
-
-        /// <summary>
-        /// Toggles the entrance shuffle setting.
-        /// </summary>
-        private void SetEntranceShuffle(string entranceShuffleString)
-        {
-            if (Enum.TryParse(entranceShuffleString, out EntranceShuffle entranceShuffle))
-            {
-                UndoRedoManager.Instance.Execute(new ChangeEntranceShuffle(entranceShuffle));
-            }
+            PopupOpen = false;
+            
+            _undoRedoManager.NewAction(_undoableFactory.GetChangeBigKeyShuffle(!_mode.BigKeyShuffle));
         }
 
         /// <summary>
         /// Toggles the boss shuffle setting.
         /// </summary>
-        private void ToggleBossShuffle()
+        private void ToggleBossShuffleImpl()
         {
-            UndoRedoManager.Instance.Execute(new ChangeBossShuffle(!Mode.Instance.BossShuffle));
+            PopupOpen = false;
+            
+            _undoRedoManager.NewAction(_undoableFactory.GetChangeBossShuffle(!_mode.BossShuffle));
         }
 
         /// <summary>
         /// Toggles the enemy shuffle setting.
         /// </summary>
-        private void ToggleEnemyShuffle()
+        private void ToggleEnemyShuffleImpl()
         {
-            UndoRedoManager.Instance.Execute(new ChangeEnemyShuffle(!Mode.Instance.EnemyShuffle));
+            PopupOpen = false;
+            
+            _undoRedoManager.NewAction(_undoableFactory.GetChangeEnemyShuffle(!_mode.EnemyShuffle));
         }
 
         /// <summary>
         /// Toggles the guaranteed boss items setting.
         /// </summary>
-        private void ToggleGuaranteedBossItems()
+        private void ToggleGuaranteedBossItemsImpl()
         {
-            UndoRedoManager.Instance.Execute(new ChangeGuaranteedBossItems(
-                !Mode.Instance.GuaranteedBossItems));
+            PopupOpen = false;
+            
+            _undoRedoManager.NewAction(_undoableFactory.GetChangeGuaranteedBossItems(!_mode.GuaranteedBossItems));
+        }
+
+        /// <summary>
+        /// Toggles the shop shuffle setting.
+        /// </summary>
+        private void ToggleShopShuffleImpl()
+        {
+            PopupOpen = false;
+            
+            _undoRedoManager.NewAction(_undoableFactory.GetChangeShopShuffle(!_mode.ShopShuffle));
         }
 
         /// <summary>
         /// Toggles the generic keys setting.
         /// </summary>
-        private void ToggleGenericKeys()
+        private void ToggleGenericKeysImpl()
         {
-            UndoRedoManager.Instance.Execute(new ChangeGenericKeys(
-                !Mode.Instance.GenericKeys));
+            PopupOpen = false;
+            
+            _undoRedoManager.NewAction(_undoableFactory.GetChangeGenericKeys(!_mode.GenericKeys));
         }
 
         /// <summary>
         /// Toggles the take any locations setting.
         /// </summary>
-        private void ToggleTakeAnyLocations()
+        private void ToggleTakeAnyLocationsImpl()
         {
-            UndoRedoManager.Instance.Execute(new ChangeTakeAnyLocations(
-                !Mode.Instance.TakeAnyLocations));
+            PopupOpen = false;
+            
+            _undoRedoManager.NewAction(_undoableFactory.GetChangeTakeAnyLocations(!_mode.TakeAnyLocations));
+        }
+
+        /// <summary>
+        /// Toggles the key drop shuffle setting.
+        /// </summary>
+        private void ToggleKeyDropShuffleImpl()
+        {
+            PopupOpen = false;
+            
+            _undoRedoManager.NewAction(_undoableFactory.GetChangeKeyDropShuffle(!_mode.KeyDropShuffle));
         }
     }
 }

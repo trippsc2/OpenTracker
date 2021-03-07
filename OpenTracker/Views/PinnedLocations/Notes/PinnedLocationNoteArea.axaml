@@ -1,0 +1,30 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:OpenTracker.ViewModels.PinnedLocations.Notes;assembly=OpenTracker"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" x:Class="OpenTracker.Views.PinnedLocations.Notes.PinnedLocationNoteArea">
+  
+  <Design.DataContext>
+    <vm:PinnedLocationNoteAreaVM />
+  </Design.DataContext>
+  
+  <StackPanel Margin="4 2 4 0" Orientation="Horizontal"
+              HorizontalAlignment="{Binding Alignment}">
+
+    <ItemsControl Items="{Binding Notes}">
+      <ItemsControl.ItemsPanel>
+        <ItemsPanelTemplate>
+          <StackPanel Margin="0 2 0 4" Orientation="Horizontal" />
+        </ItemsPanelTemplate>
+      </ItemsControl.ItemsPanel>
+    </ItemsControl>
+    
+    <Button Height="12" Width="12"
+            Command="{Binding Add}">
+      <Image Height="10" Width="10" HorizontalAlignment="Center" VerticalAlignment="Center"
+             Source="avares://OpenTracker/Assets/Images/plus.png" />
+    </Button>
+    
+  </StackPanel>
+</UserControl>

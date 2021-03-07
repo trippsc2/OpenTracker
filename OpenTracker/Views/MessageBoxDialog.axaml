@@ -3,9 +3,14 @@
         xmlns:vm="clr-namespace:OpenTracker.ViewModels;assembly=OpenTracker"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        MaxWidth="400" SizeToContent="Height" Padding="5" WindowStartupLocation="CenterOwner"
-        CanResize="False" mc:Ignorable="d" x:Class="OpenTracker.Views.MessageBoxDialog"
-        Icon="avares://OpenTracker/Assets/Images/triforce.png" Title="{Binding Title}">
+        mc:Ignorable="d" x:Class="OpenTracker.Views.MessageBoxDialog"
+        CanResize="False" MaxWidth="400" SizeToContent="Height" Padding="5" WindowStartupLocation="CenterOwner"
+        Icon="avares://OpenTracker/Assets/Images/triforce.png"
+        Title="{Binding Title}">
+	
+	<Design.DataContext>
+		<vm:MessageBoxDialogVM />
+	</Design.DataContext>
 
 	<Window.Styles>
 		<Style Selector="Button">
@@ -17,11 +22,13 @@
 
 	<StackPanel Orientation="Vertical">
 
-		<TextBlock Classes="MessageBox" Text="{Binding Path=Text, FallbackValue=Test}" />
+		<TextBlock Classes="MessageBox" Text="{Binding Path=Text}" />
 
 		<StackPanel Orientation="Horizontal" Margin="15" HorizontalAlignment="Right">
-			<Button Classes="MessageBox" Content="Yes" Command="{Binding Path=YesCommand}" />
-			<Button Classes="MessageBox" Content="No" Command="{Binding Path=NoCommand}" />
+			<Button Classes="MessageBox" Command="{Binding Path=YesCommand}"
+			        Content="Yes" />
+			<Button Classes="MessageBox" Command="{Binding Path=NoCommand}"
+			        Content="No" />
 		</StackPanel>
 
 	</StackPanel>

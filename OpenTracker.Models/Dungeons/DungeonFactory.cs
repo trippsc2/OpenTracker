@@ -2,18 +2,39 @@
 using OpenTracker.Models.DungeonNodes;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.KeyDoors;
+using OpenTracker.Models.KeyLayouts;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.RequirementNodes;
+using OpenTracker.Models.Sections;
 using System;
 using System.Collections.Generic;
 
 namespace OpenTracker.Models.Dungeons
 {
     /// <summary>
-    /// This is the class for creating dungeons.
+    /// This is class contains creation logic for dungeons.
     /// </summary>
-    public static class DungeonFactory
+    public class DungeonFactory : IDungeonFactory
     {
+        private readonly IItemDictionary _items;
+        private readonly IRequirementNodeDictionary _requirementNodes;
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="items">
+        /// The item dictionary.
+        /// </param>
+        /// <param name="requirementNodes">
+        /// The requirement node dictionary.
+        /// </param>
+        public DungeonFactory(
+            IItemDictionary items, IRequirementNodeDictionary requirementNodes)
+        {
+            _items = items;
+            _requirementNodes = requirementNodes;
+        }
+
         /// <summary>
         /// Returns the number of maps in the specified dungeon.
         /// </summary>
@@ -23,7 +44,7 @@ namespace OpenTracker.Models.Dungeons
         /// <returns>
         /// A 32-bit signed integer representing the number of maps.
         /// </returns>
-        private static int GetDungeonMapCount(LocationID id)
+        public int GetDungeonMapCount(LocationID id)
         {
             switch (id)
             {
@@ -60,7 +81,7 @@ namespace OpenTracker.Models.Dungeons
         /// <returns>
         /// A 32-bit signed integer representing the number of compasses.
         /// </returns>
-        private static int GetDungeonCompassCount(LocationID id)
+        public int GetDungeonCompassCount(LocationID id)
         {
             switch (id)
             {
@@ -97,7 +118,7 @@ namespace OpenTracker.Models.Dungeons
         /// <returns>
         /// A 32-bit signed integer representing the number of small keys.
         /// </returns>
-        private static int GetDungeonSmallKeyCount(LocationID id)
+        public int GetDungeonSmallKeyCount(LocationID id)
         {
             switch (id)
             {
@@ -146,7 +167,7 @@ namespace OpenTracker.Models.Dungeons
         /// <returns>
         /// A 32-bit signed integer representing the number of big keys.
         /// </returns>
-        private static int GetDungeonBigKeyCount(LocationID id)
+        public int GetDungeonBigKeyCount(LocationID id)
         {
             switch (id)
             {
@@ -183,65 +204,25 @@ namespace OpenTracker.Models.Dungeons
         /// <returns>
         /// The map item.
         /// </returns>
-        private static IItem GetDungeonMapItem(LocationID id)
+        public IItem? GetDungeonMapItem(LocationID id)
         {
-            switch (id)
+            return id switch
             {
-                case LocationID.HyruleCastle:
-                    {
-                        return ItemDictionary.Instance[ItemType.HCMap];
-                    }
-                case LocationID.AgahnimTower:
-                    {
-                        return null;
-                    }
-                case LocationID.EasternPalace:
-                    {
-                        return ItemDictionary.Instance[ItemType.EPMap];
-                    }
-                case LocationID.DesertPalace:
-                    {
-                        return ItemDictionary.Instance[ItemType.DPMap];
-                    }
-                case LocationID.TowerOfHera:
-                    {
-                        return ItemDictionary.Instance[ItemType.ToHMap];
-                    }
-                case LocationID.PalaceOfDarkness:
-                    {
-                        return ItemDictionary.Instance[ItemType.PoDMap];
-                    }
-                case LocationID.SwampPalace:
-                    {
-                        return ItemDictionary.Instance[ItemType.SPMap];
-                    }
-                case LocationID.SkullWoods:
-                    {
-                        return ItemDictionary.Instance[ItemType.SWMap];
-                    }
-                case LocationID.ThievesTown:
-                    {
-                        return ItemDictionary.Instance[ItemType.TTMap];
-                    }
-                case LocationID.IcePalace:
-                    {
-                        return ItemDictionary.Instance[ItemType.IPMap];
-                    }
-                case LocationID.MiseryMire:
-                    {
-                        return ItemDictionary.Instance[ItemType.MMMap];
-                    }
-                case LocationID.TurtleRock:
-                    {
-                        return ItemDictionary.Instance[ItemType.TRMap];
-                    }
-                case LocationID.GanonsTower:
-                    {
-                        return ItemDictionary.Instance[ItemType.GTMap];
-                    }
-            }
-
-            throw new ArgumentOutOfRangeException(nameof(id));
+                LocationID.HyruleCastle => _items[ItemType.HCMap],
+                LocationID.AgahnimTower => null,
+                LocationID.EasternPalace => _items[ItemType.EPMap],
+                LocationID.DesertPalace => _items[ItemType.DPMap],
+                LocationID.TowerOfHera => _items[ItemType.ToHMap],
+                LocationID.PalaceOfDarkness => _items[ItemType.PoDMap],
+                LocationID.SwampPalace => _items[ItemType.SPMap],
+                LocationID.SkullWoods => _items[ItemType.SWMap],
+                LocationID.ThievesTown => _items[ItemType.TTMap],
+                LocationID.IcePalace => _items[ItemType.IPMap],
+                LocationID.MiseryMire => _items[ItemType.MMMap],
+                LocationID.TurtleRock => _items[ItemType.TRMap],
+                LocationID.GanonsTower => _items[ItemType.GTMap],
+                _ => throw new ArgumentOutOfRangeException(nameof(id))
+            };
         }
 
         /// <summary>
@@ -253,7 +234,7 @@ namespace OpenTracker.Models.Dungeons
         /// <returns>
         /// The compass item.
         /// </returns>
-        private static IItem GetDungeonCompassItem(LocationID id)
+        public IItem? GetDungeonCompassItem(LocationID id)
         {
             switch (id)
             {
@@ -264,47 +245,47 @@ namespace OpenTracker.Models.Dungeons
                     }
                 case LocationID.EasternPalace:
                     {
-                        return ItemDictionary.Instance[ItemType.EPCompass];
+                        return _items[ItemType.EPCompass];
                     }
                 case LocationID.DesertPalace:
                     {
-                        return ItemDictionary.Instance[ItemType.DPCompass];
+                        return _items[ItemType.DPCompass];
                     }
                 case LocationID.TowerOfHera:
                     {
-                        return ItemDictionary.Instance[ItemType.ToHCompass];
+                        return _items[ItemType.ToHCompass];
                     }
                 case LocationID.PalaceOfDarkness:
                     {
-                        return ItemDictionary.Instance[ItemType.PoDCompass];
+                        return _items[ItemType.PoDCompass];
                     }
                 case LocationID.SwampPalace:
                     {
-                        return ItemDictionary.Instance[ItemType.SPCompass];
+                        return _items[ItemType.SPCompass];
                     }
                 case LocationID.SkullWoods:
                     {
-                        return ItemDictionary.Instance[ItemType.SWCompass];
+                        return _items[ItemType.SWCompass];
                     }
                 case LocationID.ThievesTown:
                     {
-                        return ItemDictionary.Instance[ItemType.TTCompass];
+                        return _items[ItemType.TTCompass];
                     }
                 case LocationID.IcePalace:
                     {
-                        return ItemDictionary.Instance[ItemType.IPCompass];
+                        return _items[ItemType.IPCompass];
                     }
                 case LocationID.MiseryMire:
                     {
-                        return ItemDictionary.Instance[ItemType.MMCompass];
+                        return _items[ItemType.MMCompass];
                     }
                 case LocationID.TurtleRock:
                     {
-                        return ItemDictionary.Instance[ItemType.TRCompass];
+                        return _items[ItemType.TRCompass];
                     }
                 case LocationID.GanonsTower:
                     {
-                        return ItemDictionary.Instance[ItemType.GTCompass];
+                        return _items[ItemType.GTCompass];
                     }
             }
 
@@ -320,61 +301,61 @@ namespace OpenTracker.Models.Dungeons
         /// <returns>
         /// The small key item.
         /// </returns>
-        private static IItem GetDungeonSmallKeyItem(LocationID id)
+        public IItem GetDungeonSmallKeyItem(LocationID id)
         {
             switch (id)
             {
                 case LocationID.HyruleCastle:
                     {
-                        return ItemDictionary.Instance[ItemType.HCSmallKey];
+                        return _items[ItemType.HCSmallKey];
                     }
                 case LocationID.AgahnimTower:
                     {
-                        return ItemDictionary.Instance[ItemType.ATSmallKey];
+                        return _items[ItemType.ATSmallKey];
                     }
                 case LocationID.EasternPalace:
                     {
-                        return null;
+                        return _items[ItemType.EPSmallKey];
                     }
                 case LocationID.DesertPalace:
                     {
-                        return ItemDictionary.Instance[ItemType.DPSmallKey];
+                        return _items[ItemType.DPSmallKey];
                     }
                 case LocationID.TowerOfHera:
                     {
-                        return ItemDictionary.Instance[ItemType.ToHSmallKey];
+                        return _items[ItemType.ToHSmallKey];
                     }
                 case LocationID.PalaceOfDarkness:
                     {
-                        return ItemDictionary.Instance[ItemType.PoDSmallKey];
+                        return _items[ItemType.PoDSmallKey];
                     }
                 case LocationID.SwampPalace:
                     {
-                        return ItemDictionary.Instance[ItemType.SPSmallKey];
+                        return _items[ItemType.SPSmallKey];
                     }
                 case LocationID.SkullWoods:
                     {
-                        return ItemDictionary.Instance[ItemType.SWSmallKey];
+                        return _items[ItemType.SWSmallKey];
                     }
                 case LocationID.ThievesTown:
                     {
-                        return ItemDictionary.Instance[ItemType.TTSmallKey];
+                        return _items[ItemType.TTSmallKey];
                     }
                 case LocationID.IcePalace:
                     {
-                        return ItemDictionary.Instance[ItemType.IPSmallKey];
+                        return _items[ItemType.IPSmallKey];
                     }
                 case LocationID.MiseryMire:
                     {
-                        return ItemDictionary.Instance[ItemType.MMSmallKey];
+                        return _items[ItemType.MMSmallKey];
                     }
                 case LocationID.TurtleRock:
                     {
-                        return ItemDictionary.Instance[ItemType.TRSmallKey];
+                        return _items[ItemType.TRSmallKey];
                     }
                 case LocationID.GanonsTower:
                     {
-                        return ItemDictionary.Instance[ItemType.GTSmallKey];
+                        return _items[ItemType.GTSmallKey];
                     }
             }
 
@@ -390,58 +371,61 @@ namespace OpenTracker.Models.Dungeons
         /// <returns>
         /// The big key item.
         /// </returns>
-        private static IItem GetDungeonBigKeyItem(LocationID id)
+        public IItem? GetDungeonBigKeyItem(LocationID id)
         {
             switch (id)
             {
                 case LocationID.HyruleCastle:
+                    {
+                        return _items[ItemType.HCBigKey];
+                    }
                 case LocationID.AgahnimTower:
                     {
                         return null;
                     }
                 case LocationID.EasternPalace:
                     {
-                        return ItemDictionary.Instance[ItemType.EPBigKey];
+                        return _items[ItemType.EPBigKey];
                     }
                 case LocationID.DesertPalace:
                     {
-                        return ItemDictionary.Instance[ItemType.DPBigKey];
+                        return _items[ItemType.DPBigKey];
                     }
                 case LocationID.TowerOfHera:
                     {
-                        return ItemDictionary.Instance[ItemType.ToHBigKey];
+                        return _items[ItemType.ToHBigKey];
                     }
                 case LocationID.PalaceOfDarkness:
                     {
-                        return ItemDictionary.Instance[ItemType.PoDBigKey];
+                        return _items[ItemType.PoDBigKey];
                     }
                 case LocationID.SwampPalace:
                     {
-                        return ItemDictionary.Instance[ItemType.SPBigKey];
+                        return _items[ItemType.SPBigKey];
                     }
                 case LocationID.SkullWoods:
                     {
-                        return ItemDictionary.Instance[ItemType.SWBigKey];
+                        return _items[ItemType.SWBigKey];
                     }
                 case LocationID.ThievesTown:
                     {
-                        return ItemDictionary.Instance[ItemType.TTBigKey];
+                        return _items[ItemType.TTBigKey];
                     }
                 case LocationID.IcePalace:
                     {
-                        return ItemDictionary.Instance[ItemType.IPBigKey];
+                        return _items[ItemType.IPBigKey];
                     }
                 case LocationID.MiseryMire:
                     {
-                        return ItemDictionary.Instance[ItemType.MMBigKey];
+                        return _items[ItemType.MMBigKey];
                     }
                 case LocationID.TurtleRock:
                     {
-                        return ItemDictionary.Instance[ItemType.TRBigKey];
+                        return _items[ItemType.TRBigKey];
                     }
                 case LocationID.GanonsTower:
                     {
-                        return ItemDictionary.Instance[ItemType.GTBigKey];
+                        return _items[ItemType.GTBigKey];
                     }
             }
 
@@ -457,7 +441,7 @@ namespace OpenTracker.Models.Dungeons
         /// <returns>
         /// A list of dungeon node IDs.
         /// </returns>
-        private static List<DungeonNodeID> GetDungeonNodes(LocationID id)
+        public List<DungeonNodeID> GetDungeonNodes(LocationID id)
         {
             return id switch
             {
@@ -724,7 +708,7 @@ namespace OpenTracker.Models.Dungeons
         /// <returns>
         /// A list of dungeon item IDs.
         /// </returns>
-        private static List<DungeonItemID> GetDungeonItems(LocationID id)
+        public List<DungeonItemID> GetDungeonItems(LocationID id)
         {
             switch (id)
             {
@@ -943,7 +927,7 @@ namespace OpenTracker.Models.Dungeons
         /// <returns>
         /// A list of dungeon boss item IDs.
         /// </returns>
-        private static List<DungeonItemID> GetDungeonBosses(LocationID id)
+        public List<DungeonItemID> GetDungeonBosses(LocationID id)
         {
             switch (id)
             {
@@ -1044,6 +1028,167 @@ namespace OpenTracker.Models.Dungeons
         }
 
         /// <summary>
+        /// Returns a list of dungeon small key drop item IDs for the specified dungeon.
+        /// </summary>
+        /// <param name="id">
+        /// The dungeon ID.
+        /// </param>
+        /// <returns>
+        /// A list of dungeon small key drop item IDs.
+        /// </returns>
+        public List<DungeonItemID> GetDungeonSmallKeyDrops(LocationID id)
+        {
+            switch (id)
+            {
+                case LocationID.HyruleCastle:
+                    {
+                        return new List<DungeonItemID>
+                        {
+                            DungeonItemID.HCBoomerangGuardDrop,
+                            DungeonItemID.HCMapGuardDrop,
+                            DungeonItemID.HCKeyRatDrop
+                        };
+                    }
+                case LocationID.AgahnimTower:
+                    {
+                        return new List<DungeonItemID>
+                        {
+                            DungeonItemID.ATDarkArcherDrop,
+                            DungeonItemID.ATCircleOfPotsDrop
+                        };
+                    }
+                case LocationID.EasternPalace:
+                    {
+                        return new List<DungeonItemID>
+                        {
+                            DungeonItemID.EPDarkSquarePot,
+                            DungeonItemID.EPDarkEyegoreDrop
+                        };
+                    }
+                case LocationID.DesertPalace:
+                    {
+                        return new List<DungeonItemID>
+                        {
+                            DungeonItemID.DPTiles1Pot,
+                            DungeonItemID.DPBeamosHallPot,
+                            DungeonItemID.DPTiles2Pot
+                        };
+                    }
+                case LocationID.TowerOfHera:
+                case LocationID.PalaceOfDarkness:
+                    {
+                        return new List<DungeonItemID>(0);
+                    }
+                case LocationID.SwampPalace:
+                    {
+                        return new List<DungeonItemID>
+                        {
+                            DungeonItemID.SPPotRowPot,
+                            DungeonItemID.SPTrench1Pot,
+                            DungeonItemID.SPHookshotPot,
+                            DungeonItemID.SPTrench2Pot,
+                            DungeonItemID.SPWaterwayPot
+                        };
+                    }
+                case LocationID.SkullWoods:
+                    {
+                        return new List<DungeonItemID>
+                        {
+                            DungeonItemID.SWWestLobbyPot,
+                            DungeonItemID.SWSpikeCornerDrop
+                        };
+                    }
+                case LocationID.ThievesTown:
+                    {
+                        return new List<DungeonItemID>
+                        {
+                            DungeonItemID.TTHallwayPot,
+                            DungeonItemID.TTSpikeSwitchPot
+                        };
+                    }
+                case LocationID.IcePalace:
+                    {
+                        return new List<DungeonItemID>
+                        {
+                            DungeonItemID.IPJellyDrop,
+                            DungeonItemID.IPConveyerDrop,
+                            DungeonItemID.IPHammerBlockDrop,
+                            DungeonItemID.IPManyPotsPot
+                        };
+                    }
+                case LocationID.MiseryMire:
+                    {
+                        return new List<DungeonItemID>
+                        {
+                            DungeonItemID.MMSpikesPot,
+                            DungeonItemID.MMFishbonePot,
+                            DungeonItemID.MMConveyerCrystalDrop
+                        };
+                    }
+                case LocationID.TurtleRock:
+                    {
+                        return new List<DungeonItemID>
+                        {
+                            DungeonItemID.TRPokey1Drop,
+                            DungeonItemID.TRPokey2Drop
+                        };
+                    }
+                case LocationID.GanonsTower:
+                    {
+                        return new List<DungeonItemID>
+                        {
+                            DungeonItemID.GTConveyorCrossPot,
+                            DungeonItemID.GTDoubleSwitchPot,
+                            DungeonItemID.GTConveyorStarPitsPot,
+                            DungeonItemID.GTMiniHelmasaurDrop
+                        };
+                    }
+            }
+
+            throw new ArgumentOutOfRangeException(nameof(id));
+        }
+
+        /// <summary>
+        /// Returns a list of dungeon small key drop item IDs for the specified dungeon.
+        /// </summary>
+        /// <param name="id">
+        /// The dungeon ID.
+        /// </param>
+        /// <returns>
+        /// A list of dungeon small key drop item IDs.
+        /// </returns>
+        public List<DungeonItemID> GetDungeonBigKeyDrops(LocationID id)
+        {
+            switch (id)
+            {
+                case LocationID.HyruleCastle:
+                    {
+                        return new List<DungeonItemID>
+                        {
+                            DungeonItemID.HCBigKeyDrop
+                        };
+                    }
+                case LocationID.AgahnimTower:
+                case LocationID.EasternPalace:
+                case LocationID.DesertPalace:
+                case LocationID.TowerOfHera:
+                case LocationID.PalaceOfDarkness:
+                case LocationID.SwampPalace:
+                case LocationID.SkullWoods:
+                case LocationID.ThievesTown:
+                case LocationID.IcePalace:
+                case LocationID.MiseryMire:
+                case LocationID.TurtleRock:
+                case LocationID.GanonsTower:
+                    {
+                        return new List<DungeonItemID>(0);
+                    }
+            }
+
+            throw new ArgumentOutOfRangeException(nameof(id));
+        }
+
+        /// <summary>
         /// Returns a list of small key door IDs for the specified dungeon.
         /// </summary>
         /// <param name="id">
@@ -1052,7 +1197,7 @@ namespace OpenTracker.Models.Dungeons
         /// <returns>
         /// A list of small key door IDs.
         /// </returns>
-        private static List<KeyDoorID> GetDungeonSmallKeyDoors(LocationID id)
+        public List<KeyDoorID> GetDungeonSmallKeyDoors(LocationID id)
         {
             switch (id)
             {
@@ -1209,11 +1354,17 @@ namespace OpenTracker.Models.Dungeons
         /// <returns>
         /// A list of big key door IDs.
         /// </returns>
-        private static List<KeyDoorID> GetDungeonBigKeyDoors(LocationID id)
+        public List<KeyDoorID> GetDungeonBigKeyDoors(LocationID id)
         {
             switch (id)
             {
                 case LocationID.HyruleCastle:
+                    {
+                        return new List<KeyDoorID>
+                        {
+                            KeyDoorID.HCZeldasCellDoor
+                        };
+                    }
                 case LocationID.AgahnimTower:
                     {
                         return new List<KeyDoorID>(0);
@@ -1322,91 +1473,71 @@ namespace OpenTracker.Models.Dungeons
         /// <returns>
         /// A list of dungeon entry nodes.
         /// </returns>
-        private static List<IRequirementNode> GetDungeonEntryNodes(LocationID id)
+        public List<IRequirementNode> GetDungeonEntryNodes(LocationID id)
         {
             return id switch
             {
                 LocationID.HyruleCastle => new List<IRequirementNode>
                 {
-                    RequirementNodeDictionary.Instance[RequirementNodeID.HCSanctuaryEntry],
-                    RequirementNodeDictionary.Instance[RequirementNodeID.HCFrontEntry],
-                    RequirementNodeDictionary.Instance[RequirementNodeID.HCBackEntry]
+                    _requirementNodes[RequirementNodeID.HCSanctuaryEntry],
+                    _requirementNodes[RequirementNodeID.HCFrontEntry],
+                    _requirementNodes[RequirementNodeID.HCBackEntry]
                 },
                 LocationID.AgahnimTower => new List<IRequirementNode>
                 {
-                    RequirementNodeDictionary.Instance[RequirementNodeID.ATEntry]
+                    _requirementNodes[RequirementNodeID.ATEntry]
                 },
                 LocationID.EasternPalace => new List<IRequirementNode>
                 {
-                    RequirementNodeDictionary.Instance[RequirementNodeID.EPEntry]
+                    _requirementNodes[RequirementNodeID.EPEntry]
                 },
                 LocationID.DesertPalace => new List<IRequirementNode>
                 {
-                    RequirementNodeDictionary.Instance[RequirementNodeID.DPFrontEntry],
-                    RequirementNodeDictionary.Instance[RequirementNodeID.DPLeftEntry],
-                    RequirementNodeDictionary.Instance[RequirementNodeID.DPBackEntry]
+                    _requirementNodes[RequirementNodeID.DPFrontEntry],
+                    _requirementNodes[RequirementNodeID.DPLeftEntry],
+                    _requirementNodes[RequirementNodeID.DPBackEntry]
                 },
                 LocationID.TowerOfHera => new List<IRequirementNode>
                 {
-                    RequirementNodeDictionary.Instance[RequirementNodeID.ToHEntry]
+                    _requirementNodes[RequirementNodeID.ToHEntry]
                 },
                 LocationID.PalaceOfDarkness => new List<IRequirementNode>
                 {
-                    RequirementNodeDictionary.Instance[RequirementNodeID.PoDEntry]
+                    _requirementNodes[RequirementNodeID.PoDEntry]
                 },
                 LocationID.SwampPalace => new List<IRequirementNode>
                 {
-                    RequirementNodeDictionary.Instance[RequirementNodeID.SPEntry]
+                    _requirementNodes[RequirementNodeID.SPEntry]
                 },
                 LocationID.SkullWoods => new List<IRequirementNode>
                 {
-                    RequirementNodeDictionary.Instance[RequirementNodeID.SWFrontEntry],
-                    RequirementNodeDictionary.Instance[RequirementNodeID.SWBackEntry]
+                    _requirementNodes[RequirementNodeID.SWFrontEntry],
+                    _requirementNodes[RequirementNodeID.SWBackEntry]
                 },
                 LocationID.ThievesTown => new List<IRequirementNode>
                 {
-                    RequirementNodeDictionary.Instance[RequirementNodeID.TTEntry]
+                    _requirementNodes[RequirementNodeID.TTEntry]
                 },
                 LocationID.IcePalace => new List<IRequirementNode>
                 {
-                    RequirementNodeDictionary.Instance[RequirementNodeID.IPEntry]
+                    _requirementNodes[RequirementNodeID.IPEntry]
                 },
                 LocationID.MiseryMire => new List<IRequirementNode>
                 {
-                    RequirementNodeDictionary.Instance[RequirementNodeID.MMEntry]
+                    _requirementNodes[RequirementNodeID.MMEntry]
                 },
                 LocationID.TurtleRock => new List<IRequirementNode>
                 {
-                    RequirementNodeDictionary.Instance[RequirementNodeID.TRFrontEntry],
-                    RequirementNodeDictionary.Instance[RequirementNodeID.TRMiddleEntry],
-                    RequirementNodeDictionary.Instance[RequirementNodeID.TRBackEntry]
+                    _requirementNodes[RequirementNodeID.TRFrontEntry],
+                    _requirementNodes[RequirementNodeID.TRMiddleEntry],
+                    _requirementNodes[RequirementNodeID.TRBackEntry]
                 },
                 LocationID.GanonsTower => new List<IRequirementNode>
                 {
-                    RequirementNodeDictionary.Instance[RequirementNodeID.GTEntry]
+                    _requirementNodes[RequirementNodeID.GTEntry]
                 },
                 _ => throw new ArgumentOutOfRangeException(nameof(id))
             };
-        }
-
-        /// <summary>
-        /// Returns a new dungeon instance.
-        /// </summary>
-        /// <param name="id">
-        /// The dungeon ID.
-        /// </param>
-        /// <returns>
-        /// A new dungeon instance.
-        /// </returns>
-        public static IDungeon GetDungeon(LocationID id)
-        {
-            return new Dungeon(
-                id, LocationFactory.GetLocationName(id), MapLocationFactory.GetMapLocations(id),
-                GetDungeonMapCount(id), GetDungeonCompassCount(id), GetDungeonSmallKeyCount(id),
-                GetDungeonBigKeyCount(id), GetDungeonMapItem(id), GetDungeonCompassItem(id),
-                GetDungeonSmallKeyItem(id), GetDungeonBigKeyItem(id), GetDungeonNodes(id),
-                GetDungeonItems(id), GetDungeonBosses(id), GetDungeonSmallKeyDoors(id),
-                GetDungeonBigKeyDoors(id), GetDungeonEntryNodes(id));
         }
     }
 }

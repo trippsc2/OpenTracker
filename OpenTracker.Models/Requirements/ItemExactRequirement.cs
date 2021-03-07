@@ -1,36 +1,18 @@
-﻿using OpenTracker.Models.AccessibilityLevels;
-using OpenTracker.Models.Items;
+﻿using OpenTracker.Models.Items;
 using System;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.Requirements
 {
     /// <summary>
-    /// This is the class for requirement that requires an exact number of an item.
+    /// This class contains item exact value requirement data.
     /// </summary>
-    public class ItemExactRequirement : IRequirement
+    public class ItemExactRequirement : BooleanRequirement
     {
         private readonly IItem _item;
         private readonly int _count;
 
-        public bool Met =>
-            Accessibility != AccessibilityLevel.None;
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private AccessibilityLevel _accessibility;
-        public AccessibilityLevel Accessibility
-        {
-            get => _accessibility;
-            private set
-            {
-                if (_accessibility != value)
-                {
-                    _accessibility = value;
-                    OnPropertyChanged(nameof(Accessibility));
-                }
-            }
-        }
+        public delegate ItemExactRequirement Factory(IItem item, int count);
 
         /// <summary>
         /// Constructor
@@ -48,18 +30,7 @@ namespace OpenTracker.Models.Requirements
 
             _item.PropertyChanged += OnItemChanged;
 
-            UpdateAccessibility();
-        }
-
-        /// <summary>
-        /// Raises the PropertyChanged event for the specified property.
-        /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changed property.
-        /// </param>
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            UpdateValue();
         }
 
         /// <summary>
@@ -71,21 +42,17 @@ namespace OpenTracker.Models.Requirements
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnItemChanged(object sender, PropertyChangedEventArgs e)
+        private void OnItemChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IItem.Current))
             {
-                UpdateAccessibility();
+                UpdateValue();
             }
         }
 
-        /// <summary>
-        /// Updates the accessibility of this requirement.
-        /// </summary>
-        private void UpdateAccessibility()
+        protected override bool ConditionMet()
         {
-            Accessibility = _item.Current == _count ?
-                AccessibilityLevel.Normal : AccessibilityLevel.None;
+            return _item.Current == _count;
         }
     }
 }

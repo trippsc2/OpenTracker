@@ -1,32 +1,32 @@
 ﻿using Avalonia.Layout;
 using OpenTracker.Models.Settings;
+using OpenTracker.Utils;
 using OpenTracker.ViewModels.Items.Large;
 using OpenTracker.ViewModels.Items.Small;
 using ReactiveUI;
 using System.ComponentModel;
+using Avalonia.Threading;
 
 namespace OpenTracker.ViewModels.Items
 {
     /// <summary>
     /// This is the ViewModel class for the Items panel control.
     /// </summary>
-    public class ItemsPanelVM : ViewModelBase
+    public class ItemsPanelVM : ViewModelBase, IItemsPanelVM
     {
-        private readonly HorizontalSmallItemPanelVM _horizontalSmallItemPanel =
-            new HorizontalSmallItemPanelVM();
-        private readonly VerticalSmallItemPanelVM _verticalSmallItemPanel =
-            new VerticalSmallItemPanelVM();
+        private readonly ILayoutSettings _layoutSettings;
 
-        public static double Scale =>
-            AppSettings.Instance.Layout.UIScale;
-        public static Orientation Orientation =>
-            AppSettings.Instance.Layout.CurrentLayoutOrientation;
+        private readonly IHorizontalSmallItemPanelVM _horizontalSmallItemPanel;
+        private readonly IVerticalSmallItemPanelVM _verticalSmallItemPanel;
 
-        public ModeSettingsVM ModeSettings { get; } =
-            new ModeSettingsVM();
-        public LargeItemPanelVM LargeItems { get; } =
-            new LargeItemPanelVM();
-        public SmallItemPanelVM SmallItems
+        public double Scale =>
+            _layoutSettings.UIScale;
+        public Orientation Orientation =>
+            _layoutSettings.CurrentLayoutOrientation;
+
+        public IModeSettingsVM ModeSettings { get; }
+        public ILargeItemPanelVM LargeItems { get; }
+        public ISmallItemPanelVM SmallItems
         {
             get
             {
@@ -42,10 +42,21 @@ namespace OpenTracker.ViewModels.Items
         /// <summary>
         /// Constructor
         /// </summary>
-        public ItemsPanelVM()
+        public ItemsPanelVM(
+            ILayoutSettings layoutSettings, IHorizontalSmallItemPanelVM horizontalSmallItemPanel,
+            IVerticalSmallItemPanelVM verticalSmallItemPanel, IModeSettingsVM modeSettings,
+            ILargeItemPanelVM largeItems)
         {
+            _layoutSettings = layoutSettings;
+
+            _horizontalSmallItemPanel = horizontalSmallItemPanel;
+            _verticalSmallItemPanel = verticalSmallItemPanel;
+
+            ModeSettings = modeSettings;
+            LargeItems = largeItems;
+
             PropertyChanged += OnPropertyChanged;
-            AppSettings.Instance.Layout.PropertyChanged += OnLayoutChanged;
+            _layoutSettings.PropertyChanged += OnLayoutChanged;
         }
 
         /// <summary>
@@ -57,11 +68,11 @@ namespace OpenTracker.ViewModels.Items
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Orientation))
             {
-                this.RaisePropertyChanged(nameof(SmallItems));
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(SmallItems)));
             }
         }
 
@@ -74,16 +85,16 @@ namespace OpenTracker.ViewModels.Items
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(LayoutSettings.CurrentLayoutOrientation))
+            if (e.PropertyName == nameof(ILayoutSettings.CurrentLayoutOrientation))
             {
-                this.RaisePropertyChanged(nameof(Orientation));
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Orientation)));
             }
 
-            if (e.PropertyName == nameof(LayoutSettings.UIScale))
+            if (e.PropertyName == nameof(ILayoutSettings.UIScale))
             {
-                this.RaisePropertyChanged(nameof(Scale));
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Scale)));
             }
         }
     }

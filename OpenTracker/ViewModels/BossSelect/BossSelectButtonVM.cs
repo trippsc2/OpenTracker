@@ -1,22 +1,15 @@
 ﻿using OpenTracker.Models.BossPlacements;
-using System;
+using OpenTracker.Utils;
 
 namespace OpenTracker.ViewModels.BossSelect
 {
     /// <summary>
-    /// This is the ViewModel for the boss select button control.
+    /// This class contains the boss select button control ViewModel data.
     /// </summary>
-    public class BossSelectButtonVM : ViewModelBase
+    public class BossSelectButtonVM : ViewModelBase, IBossSelectButtonVM
     {
-        private readonly IBossPlacement _bossPlacement;
-
         public BossType? Boss { get; }
-        public string ImageSource =>
-            Boss.HasValue ? 
-            "avares://OpenTracker/Assets/Images/Bosses/" +
-            $"{Boss.ToString().ToLowerInvariant()}1.png" :
-            "avares://OpenTracker/Assets/Images/Bosses/" +
-            $"{_bossPlacement.DefaultBoss.ToString().ToLowerInvariant()}0.png";
+        public string ImageSource { get; }
 
         /// <summary>
         /// Constructor
@@ -27,11 +20,12 @@ namespace OpenTracker.ViewModels.BossSelect
         /// <param name="bossPlacement">
         /// The boss placement to be manipulated.
         /// </param>
-        public BossSelectButtonVM(BossType? boss, IBossPlacement bossPlacement)
+        public BossSelectButtonVM(IBossPlacement bossPlacement, BossType? boss)
         {
             Boss = boss;
-            _bossPlacement = bossPlacement ??
-                throw new ArgumentNullException(nameof(bossPlacement));
+            ImageSource = Boss.HasValue ? "avares://OpenTracker/Assets/Images/Bosses/" +
+                $"{Boss.ToString()!.ToLowerInvariant()}1.png" : "avares://OpenTracker/Assets/Images/Bosses/" +
+                $"{bossPlacement.DefaultBoss.ToString().ToLowerInvariant()}0.png";
         }
     }
 }

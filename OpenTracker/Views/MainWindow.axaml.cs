@@ -3,39 +3,18 @@ using Avalonia.Controls;
 using Avalonia.Layout;
 using Avalonia.Markup.Xaml;
 using Avalonia.Platform;
-using Avalonia.Threading;
-using OpenTracker.Interfaces;
-using OpenTracker.Views.ColorSelect;
-using OpenTracker.Views.SequenceBreaks;
+using OpenTracker.ViewModels;
 using System;
 using System.ComponentModel;
-using System.Threading.Tasks;
+using System.Linq;
 
 namespace OpenTracker.Views
 {
     public class MainWindow : Window
     {
         private Orientation? _orientation;
-        private AutoTrackerDialog _autoTrackerDialog;
-        private ColorSelectDialog _colorSelectDialog;
-        private SequenceBreakDialog _sequenceBreakDialog;
 
-        private IAutoTrackerAccess AutoTrackerAccess =>
-            DataContext as IAutoTrackerAccess;
-        private IBoundsData BoundsData =>
-            DataContext as IBoundsData;
-        private ICloseHandler CloseHandler =>
-            DataContext as ICloseHandler;
-        private IColorSelectAccess ColorSelectAccess =>
-            DataContext as IColorSelectAccess;
-        private IDynamicLayout DynamicLayout =>
-            DataContext as IDynamicLayout;
-        private IOpenData OpenData =>
-            DataContext as IOpenData;
-        private ISaveData SaveData =>
-            DataContext as ISaveData;
-        private ISequenceBreakAccess SequenceBreakAccess =>
-            DataContext as ISequenceBreakAccess;
+        private IMainWindowVM? ViewModel => DataContext as IMainWindowVM;
 
         public MainWindow()
         {
@@ -57,168 +36,56 @@ namespace OpenTracker.Views
             ChangeLayout(Bounds);
         }
 
-        private void OnClose(object sender, CancelEventArgs e)
+        private void OnClose(object? sender, CancelEventArgs e)
         {
-            CloseHandler.Close(WindowState == WindowState.Maximized, Bounds, Position);
-
-            if (_autoTrackerDialog != null && _autoTrackerDialog.IsVisible)
-            {
-                _autoTrackerDialog?.Close();
-            }
-
-            if (_colorSelectDialog != null && _colorSelectDialog.IsVisible)
-            {
-                _colorSelectDialog?.Close();
-            }
-
-            if (_sequenceBreakDialog != null && _sequenceBreakDialog.IsVisible)
-            {
-                _sequenceBreakDialog?.Close();
-            }
+            ViewModel!.Close(WindowState == WindowState.Maximized, Bounds, Position);
         }
 
-        private Screen GetScreen()
+        private void OnDataContextChanged(object? sender, EventArgs e)
         {
-            foreach (var screen in Screens.All)
+            if (ViewModel?.X is null || ViewModel?.Y is null)
             {
-                if (screen.Bounds.X <= BoundsData.X.Value &&
-                    screen.Bounds.Y <= BoundsData.Y.Value &&
-                    screen.Bounds.X + screen.Bounds.Width > BoundsData.X.Value &&
-                    screen.Bounds.Y + screen.Bounds.Height > BoundsData.Y.Value)
-                {
-                    return screen;
-                }
+                return;
             }
 
-            return null;
-        }
-
-        private void OnDataContextChanged(object sender, EventArgs e)
-        {
-            if (BoundsData.X.HasValue && BoundsData.Y.HasValue && GetScreen() != null)
+            if (!(GetScreen() is null))
             {
-                Position = new PixelPoint(
-                    (int)Math.Floor(BoundsData.X.Value), (int)Math.Floor(BoundsData.Y.Value));
+                Position = new PixelPoint((int)Math.Floor(ViewModel.X.Value), (int)Math.Floor(ViewModel.Y.Value));
             }
 
-            if (BoundsData.Maximized.HasValue)
+            if (!(ViewModel?.Maximized is null) && ViewModel.Maximized.Value)
             {
-                if (BoundsData.Maximized.Value)
-                {
-                    WindowState = WindowState.Maximized;
-                }
+                WindowState = WindowState.Maximized;
             }
-
+            
             ChangeLayout(Bounds);
+        }
+
+        private Screen? GetScreen()
+        {
+            if (ViewModel?.X is null || ViewModel?.Y is null)
+            {
+                return null;
+            }
+
+            return Screens.All.FirstOrDefault(
+                screen => screen.Bounds.X <= ViewModel.X.Value && screen.Bounds.Y <= ViewModel.Y.Value &&
+                screen.Bounds.X + screen.Bounds.Width > ViewModel.X.Value &&
+                screen.Bounds.Y + screen.Bounds.Height > ViewModel.Y.Value);
         }
 
         private void ChangeLayout(Rect bounds)
         {
-            Orientation orientation = bounds.Height >= bounds.Width ?
-                Orientation.Vertical : Orientation.Horizontal;
+            var orientation = bounds.Height >= bounds.Width ? Orientation.Vertical : Orientation.Horizontal;
 
-            if (_orientation != orientation)
+            if (_orientation == orientation)
             {
-                _orientation = orientation;
-                DynamicLayout.ChangeLayout(orientation);
+                return;
             }
-        }
+            
+            _orientation = orientation;
 
-        public async Task Open()
-        {
-            OpenFileDialog dialog = new OpenFileDialog();
-            dialog.Filters.Add(new FileDialogFilter() { Name = "JSON", Extensions = { "json" } });
-            dialog.AllowMultiple = false;
-
-            if (OpenData.CurrentFilePath != null)
-            {
-                dialog.InitialFileName = OpenData.CurrentFilePath;
-            }
-
-            string[] path = await dialog.ShowAsync(this).ConfigureAwait(false);
-
-            if (path != null && path.Length > 0)
-            {
-                await Dispatcher.UIThread.InvokeAsync(() =>
-                {
-                    OpenData.Open(path[0]);
-                }).ConfigureAwait(false);
-            }
-        }
-
-        public async Task Save()
-        {
-            if (SaveData.CurrentFilePath != null)
-            {
-                SaveData.Save();
-            }
-            else
-            {
-                await SaveAs().ConfigureAwait(false);
-            }
-        }
-
-        public async Task SaveAs()
-        {
-            SaveFileDialog dialog = new SaveFileDialog();
-            dialog.Filters.Add(new FileDialogFilter() { Name = "JSON", Extensions = { "json" } });
-            string path = await dialog.ShowAsync(this).ConfigureAwait(false);
-
-            if (path != null)
-            {
-                await Dispatcher.UIThread.InvokeAsync(() =>
-                {
-                    SaveData.Save(path);
-                }).ConfigureAwait(false);
-            }
-        }
-
-        public void AutoTracker()
-        {
-            if (_autoTrackerDialog != null && _autoTrackerDialog.IsVisible)
-            {
-                _autoTrackerDialog.Activate();
-            }
-            else
-            {
-                _autoTrackerDialog = new AutoTrackerDialog()
-                {
-                    DataContext = AutoTrackerAccess.GetAutoTrackerViewModel()
-                };
-                _autoTrackerDialog.Show();
-            }
-        }
-
-        public void ColorSelect()
-        {
-            if (_colorSelectDialog != null && _colorSelectDialog.IsVisible)
-            {
-                _colorSelectDialog.Activate();
-            }
-            else
-            {
-                _colorSelectDialog = new ColorSelectDialog()
-                {
-                    DataContext = ColorSelectAccess.GetColorSelectViewModel()
-                };
-                _colorSelectDialog.Show();
-            }
-        }
-
-        public void SequenceBreak()
-        {
-            if (_sequenceBreakDialog != null && _sequenceBreakDialog.IsVisible)
-            {
-                _sequenceBreakDialog.Activate();
-            }
-            else
-            {
-                _sequenceBreakDialog = new SequenceBreakDialog()
-                {
-                    DataContext = SequenceBreakAccess.GetSequenceBreakViewModel()
-                };
-                _sequenceBreakDialog.Show();
-            }
+            ViewModel?.ChangeLayout(orientation);
         }
     }
 }

@@ -1,17 +1,18 @@
 ﻿using OpenTracker.Models.SequenceBreaks;
+using OpenTracker.Utils;
 using ReactiveUI;
-using System;
 using System.ComponentModel;
 using System.Reactive;
+using Avalonia.Threading;
 
 namespace OpenTracker.ViewModels.SequenceBreaks
 {
     /// <summary>
     /// This is the ViewModel of the sequence break control.
     /// </summary>
-    public class SequenceBreakControlVM : ViewModelBase
+    public class SequenceBreakControlVM : ViewModelBase, ISequenceBreakControlVM
     {
-        private readonly SequenceBreak _sequenceBreak;
+        private readonly ISequenceBreak _sequenceBreak;
 
         public bool Enabled =>
             _sequenceBreak.Enabled;
@@ -20,6 +21,9 @@ namespace OpenTracker.ViewModels.SequenceBreaks
         public string ToolTipText { get; }
 
         public ReactiveCommand<Unit, Unit> ToggleEnabledCommand { get; }
+
+        public delegate ISequenceBreakControlVM Factory(
+            ISequenceBreak sequenceBreak, string text, string toolTipText);
 
         /// <summary>
         /// Constructor
@@ -34,18 +38,20 @@ namespace OpenTracker.ViewModels.SequenceBreaks
         /// A string representing the tooltip text of the sequence break.
         /// </param>
         public SequenceBreakControlVM(
-            SequenceBreak sequenceBreak, string text, string toolTipText)
+            ISequenceBreak sequenceBreak, string text, string toolTipText)
         {
-            _sequenceBreak = sequenceBreak ?? throw new ArgumentNullException(nameof(sequenceBreak));
-            Text = text ?? throw new ArgumentNullException(nameof(text));
-            ToolTipText = toolTipText ?? throw new ArgumentNullException(nameof(toolTipText));
+            _sequenceBreak = sequenceBreak;
+            
+            Text = text;
+            ToolTipText = toolTipText;
+
             ToggleEnabledCommand = ReactiveCommand.Create(ToggleEnabled);
 
             _sequenceBreak.PropertyChanged += OnSequenceBreakChanged;
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the SequenceBreak class.
+        /// Subscribes to the PropertyChanged event on the ISequenceBreak interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -53,11 +59,11 @@ namespace OpenTracker.ViewModels.SequenceBreaks
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnSequenceBreakChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnSequenceBreakChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(SequenceBreak.Enabled))
+            if (e.PropertyName == nameof(ISequenceBreak.Enabled))
             {
-                this.RaisePropertyChanged(nameof(Enabled));
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Enabled)));
             }
         }
 

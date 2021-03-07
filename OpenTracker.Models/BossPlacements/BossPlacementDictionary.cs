@@ -1,56 +1,33 @@
 ﻿using OpenTracker.Models.SaveLoad;
-using OpenTracker.Models.Utils;
+using OpenTracker.Utils;
 using System;
-using System.Collections;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace OpenTracker.Models.BossPlacements
 {
     /// <summary>
-    /// This is the dictionary container for boss placements.
+    /// This is the class for the dictionary container for boss placements.
     /// </summary>
-    public class BossPlacementDictionary : Singleton<BossPlacementDictionary>,
-        IDictionary<BossPlacementID, IBossPlacement>
+    public class BossPlacementDictionary : LazyDictionary<BossPlacementID, IBossPlacement>,
+        IBossPlacementDictionary
     {
-        private static readonly ConcurrentDictionary<BossPlacementID, IBossPlacement> _dictionary =
-            new ConcurrentDictionary<BossPlacementID, IBossPlacement>();
-
-        public ICollection<BossPlacementID> Keys =>
-            _dictionary.Keys;
-        public ICollection<IBossPlacement> Values =>
-            _dictionary.Values;
-        public int Count =>
-            _dictionary.Count;
-        public bool IsReadOnly =>
-            ((ICollection<KeyValuePair<BossPlacementID, IBossPlacement>>)_dictionary).IsReadOnly;
-
-        public IBossPlacement this[BossPlacementID key]
-        {
-            get
-            {
-                if (!ContainsKey(key))
-                {
-                    Create(key);
-                }
-
-                return _dictionary[key];
-            }
-            set => _dictionary[key] = value;
-        }
-
-        public event EventHandler<BossPlacementID> BossPlacementCreated;
+        private readonly Lazy<IBossPlacementFactory> _factory;
 
         /// <summary>
-        /// Creates a new boss placement at the specified key.
+        /// Constructor
         /// </summary>
-        /// <param name="key">
-        /// The boss placement ID to be created.
+        /// <param name="factory">
+        /// A factory for creating boss placements.
         /// </param>
-        private void Create(BossPlacementID key)
+        public BossPlacementDictionary(IBossPlacementFactory.Factory factory)
+            : base(new Dictionary<BossPlacementID, IBossPlacement>())
         {
-            Add(key, BossPlacementFactory.GetBossPlacement(key));
-            BossPlacementCreated?.Invoke(this, key);
+            _factory = new Lazy<IBossPlacementFactory>(() => factory());
+        }
+
+        protected override IBossPlacement Create(BossPlacementID key)
+        {
+            return _factory.Value.GetBossPlacement(key);
         }
 
         /// <summary>
@@ -62,68 +39,6 @@ namespace OpenTracker.Models.BossPlacements
             {
                 placement.Reset();
             }
-        }
-
-        public void Add(BossPlacementID key, IBossPlacement value)
-        {
-            ((IDictionary<BossPlacementID, IBossPlacement>)_dictionary).Add(key, value);
-        }
-
-        public void Add(KeyValuePair<BossPlacementID, IBossPlacement> item)
-        {
-            ((ICollection<KeyValuePair<BossPlacementID, IBossPlacement>>)_dictionary).Add(item);
-        }
-
-        public void Clear()
-        {
-            _dictionary.Clear();
-        }
-
-        public bool Contains(KeyValuePair<BossPlacementID, IBossPlacement> item)
-        {
-            return ((ICollection<KeyValuePair<BossPlacementID, IBossPlacement>>)_dictionary).Contains(
-                item);
-        }
-
-        public bool ContainsKey(BossPlacementID key)
-        {
-            return _dictionary.ContainsKey(key);
-        }
-
-        public void CopyTo(KeyValuePair<BossPlacementID, IBossPlacement>[] array, int arrayIndex)
-        {
-            ((ICollection<KeyValuePair<BossPlacementID, IBossPlacement>>)_dictionary).CopyTo(
-                array, arrayIndex);
-        }
-
-        public bool Remove(BossPlacementID key)
-        {
-            return ((IDictionary<BossPlacementID, IBossPlacement>)_dictionary).Remove(key);
-        }
-
-        public bool Remove(KeyValuePair<BossPlacementID, IBossPlacement> item)
-        {
-            return ((ICollection<KeyValuePair<BossPlacementID, IBossPlacement>>)_dictionary).Remove(item);
-        }
-
-        public bool TryGetValue(BossPlacementID key, out IBossPlacement value)
-        {
-            if (!ContainsKey(key))
-            {
-                Create(key);
-            }
-
-            return _dictionary.TryGetValue(key, out value);
-        }
-
-        public IEnumerator<KeyValuePair<BossPlacementID, IBossPlacement>> GetEnumerator()
-        {
-            return _dictionary.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return _dictionary.GetEnumerator();
         }
 
         /// <summary>
@@ -148,11 +63,11 @@ namespace OpenTracker.Models.BossPlacements
         /// <summary>
         /// Loads a dictionary of boss placement save data.
         /// </summary>
-        public void Load(Dictionary<BossPlacementID, BossPlacementSaveData> saveData)
+        public void Load(Dictionary<BossPlacementID, BossPlacementSaveData>? saveData)
         {
             if (saveData == null)
             {
-                throw new ArgumentNullException(nameof(saveData));
+                return;
             }
 
             foreach (var bossPlacement in saveData.Keys)

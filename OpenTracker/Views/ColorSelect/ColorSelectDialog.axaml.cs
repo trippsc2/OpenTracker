@@ -1,11 +1,10 @@
 ﻿using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using OpenTracker.Interfaces;
+using OpenTracker.Utils.Dialog;
 
 namespace OpenTracker.Views.ColorSelect
 {
-    public class ColorSelectDialog : Window, IDialog
+    public class ColorSelectDialog : DialogWindowBase
     {
         public static AvaloniaProperty<bool> EmphasisFontColorPickerOpenProperty =
             AvaloniaProperty.Register<ColorSelectDialog, bool>(nameof(EmphasisFontColorPickerOpen));

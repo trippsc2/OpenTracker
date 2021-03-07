@@ -8,7 +8,7 @@ namespace OpenTracker.Models.SaveLoad
 {
     public class AppSettingsSaveData
     {
-        public Version Version { get; set; }
+        public Version? Version { get; set; }
         public bool? Maximized { get; set; }
         public double? X { get; set; }
         public double? Y { get; set; }
@@ -25,8 +25,8 @@ namespace OpenTracker.Models.SaveLoad
         public Dock HorizontalItemsPlacement { get; set; }
         public Dock VerticalItemsPlacement { get; set; }
         public double UIScale { get; set; }
-        public string EmphasisFontColor { get; set; }
-        public string ConnectorColor { get; set; }
-        public Dictionary<AccessibilityLevel, string> AccessibilityColors { get; set; }
+        public string? EmphasisFontColor { get; set; }
+        public string? ConnectorColor { get; set; }
+        public Dictionary<AccessibilityLevel, string>? AccessibilityColors { get; set; }
     }
 }

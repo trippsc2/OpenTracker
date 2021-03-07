@@ -1,88 +1,127 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:OpenTracker.ViewModels;assembly=OpenTracker"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:view="clr-namespace:OpenTracker.Views;assembly=OpenTracker"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450" 
-             x:Class="OpenTracker.Views.ModeSettings">
-	<Panel>
-		<Image Source="avares://OpenTracker/Assets/Images/settings.png"
-			   PointerReleased="OpenModeSettingsPopup" ToolTip.Tip="Mode Settings" />
-		<Popup IsOpen="{Binding $parent[view:ModeSettings].ModeSettingsPopupOpen, Mode=TwoWay}"
-			   StaysOpen="False" PlacementMode="Top" PlacementTarget="{Binding
-			   $parent[view:ModeSettings]}" HorizontalOffset="8" VerticalOffset="8">
-			<Border Classes="Popup">
-				<StackPanel Orientation="Vertical">
-          
-					<TextBlock Classes="ModeSettingsTitle" Grid.Row="0" Text="Item Placement" />
+             xmlns:i="using:Avalonia.Xaml.Interactivity"
+             xmlns:ia="using:Avalonia.Xaml.Interactions.Core"
+             mc:Ignorable="d" x:Class="OpenTracker.Views.ModeSettings">
+  
+  <Design.DataContext>
+    <vm:ModeSettingsVM />
+  </Design.DataContext>
+  
+  <Panel>
+    
+    <Image Name="image" Source="avares://OpenTracker/Assets/Images/settings.png" ToolTip.Tip="Mode Settings">
+      <i:Interaction.Behaviors>
+        <ia:EventTriggerBehavior EventName="PointerReleased"
+                                 SourceObject="{Binding #image}">
+          <ia:InvokeCommandAction Command="{Binding HandleClick}" />
+        </ia:EventTriggerBehavior>
+      </i:Interaction.Behaviors>
+    </Image>
+    
+    <Popup IsOpen="{Binding PopupOpen, Mode=TwoWay}"
+           IsLightDismissEnabled="True" PlacementMode="Top" HorizontalOffset="8" VerticalOffset="8"
+           PlacementTarget="{Binding $parent[view:ModeSettings]}">
+      <Border Classes="Popup">
+        <StackPanel Orientation="Vertical">
+
+          <TextBlock Classes="ModeSettingsTitle" Text="Item Placement" />
 
           <UniformGrid Rows="1">
-            <RadioButton Classes="ModeSettings" IsChecked="{Binding BasicItemPlacement,
-                         Mode=OneWay}" GroupName="ItemPlacement" Command="{Binding
-                         ItemPlacementCommand}" CommandParameter="Basic">Basic</RadioButton>
-            <RadioButton Classes="ModeSettings" IsChecked="{Binding AdvancedItemPlacement,
-                         Mode=OneWay}" GroupName="ItemPlacement" Command="{Binding
-                         ItemPlacementCommand}"
+            <RadioButton Classes="ModeSettings" GroupName="ItemPlacement"
+                         IsChecked="{Binding BasicItemPlacement, Mode=OneWay}"
+                         Command="{Binding ChangeItemPlacement}"
+                         CommandParameter="Basic">Basic</RadioButton>
+            <RadioButton Classes="ModeSettings" GroupName="ItemPlacement"
+                         IsChecked="{Binding AdvancedItemPlacement, Mode=OneWay}"
+                         Command="{Binding ChangeItemPlacement}"
                          CommandParameter="Advanced">Advanced</RadioButton>
           </UniformGrid>
-          
+
           <TextBlock Classes="ModeSettingsTitle" Text="Dungeon Item Shuffle" />
 
           <UniformGrid Rows="1">
-            <CheckBox Classes="ModeSettings" IsChecked="{Binding MapShuffle, Mode=OneWay}"
-                      Command="{Binding MapShuffleCommand}">Map Shuffle</CheckBox>
-            <CheckBox Classes="ModeSettings" IsChecked="{Binding CompassShuffle, Mode=OneWay}"
-                      Command="{Binding CompassShuffleCommand}">Compass Shuffle</CheckBox>
-            <CheckBox Classes="ModeSettings" IsChecked="{Binding SmallKeyShuffle, Mode=OneWay}"
+            <CheckBox Classes="ModeSettings"
+                      IsChecked="{Binding MapShuffle, Mode=OneWay}"
+                      Command="{Binding ToggleMapShuffle}">Map Shuffle</CheckBox>
+            <CheckBox Classes="ModeSettings"
+                      IsChecked="{Binding CompassShuffle, Mode=OneWay}"
+                      Command="{Binding ToggleCompassShuffle}">Compass Shuffle</CheckBox>
+            <CheckBox Classes="ModeSettings"
+                      IsChecked="{Binding SmallKeyShuffle, Mode=OneWay}"
                       IsEnabled="{Binding !GenericKeys, Mode=OneWay}"
-                      Command="{Binding SmallKeyShuffleCommand}">Small Key Shuffle</CheckBox>
-            <CheckBox Classes="ModeSettings" IsChecked="{Binding BigKeyShuffle, Mode=OneWay}"
-                      Command="{Binding BigKeyShuffleCommand}">Big Key Shuffle</CheckBox>
+                      Command="{Binding ToggleSmallKeyShuffle}">Small Key Shuffle</CheckBox>
+            <CheckBox Classes="ModeSettings"
+                      IsChecked="{Binding BigKeyShuffle, Mode=OneWay}"
+                      Command="{Binding ToggleBigKeyShuffle}">Big Key Shuffle</CheckBox>
           </UniformGrid>
-          
-					<TextBlock Classes="ModeSettingsTitle" Text="World State" />
+
+          <TextBlock Classes="ModeSettingsTitle" Text="World State" />
 
           <UniformGrid Rows="1">
-            <RadioButton Classes="ModeSettings" IsChecked="{Binding StandardOpenWorldState,
-                         Mode=OneWay}" GroupName="WorldState" Command="{Binding WorldStateCommand}"
+            <RadioButton Classes="ModeSettings" GroupName="WorldState"
+                         IsChecked="{Binding StandardOpenWorldState, Mode=OneWay}"
+                         Command="{Binding ChangeWorldState}"
                          CommandParameter="StandardOpen">Standard/Open</RadioButton>
-            <RadioButton Classes="ModeSettings" IsChecked="{Binding InvertedWorldState,
-                         Mode=OneWay}" GroupName="WorldState" Command="{Binding WorldStateCommand}"
+            <RadioButton Classes="ModeSettings" GroupName="WorldState"
+                         IsChecked="{Binding InvertedWorldState, Mode=OneWay}"
+                         Command="{Binding ChangeWorldState}"
                          CommandParameter="Inverted">Inverted</RadioButton>
           </UniformGrid>
-          
+
           <TextBlock Classes="ModeSettingsTitle" Text="Entrance Shuffle" />
 
           <UniformGrid Rows="1">
-            <RadioButton Classes="ModeSettings" IsChecked="{Binding EntranceShuffleNone,
-                         Mode=OneWay}" GroupName="EntranceShuffle" Command="{Binding
-                         EntranceShuffleCommand}" CommandParameter="None">None</RadioButton>
-            <RadioButton Classes="ModeSettings" IsChecked="{Binding EntranceShuffleDungeon,
-                         Mode=OneWay}" GroupName="EntranceShuffle" Command="{Binding
-                         EntranceShuffleCommand}" CommandParameter="Dungeon">Dungeon</RadioButton>
-            <RadioButton Classes="ModeSettings" IsChecked="{Binding EntranceShuffleAll,
-                         Mode=OneWay}" GroupName="EntranceShuffle" Command="{Binding
-                         EntranceShuffleCommand}" CommandParameter="All">All</RadioButton>
-            <RadioButton Classes="ModeSettings" IsChecked="{Binding EntranceShuffleInsanity,
-                         Mode=OneWay}" GroupName="EntranceShuffle" Command="{Binding
-                         EntranceShuffleCommand}" CommandParameter="Insanity">Insanity</RadioButton>
+            <RadioButton Classes="ModeSettings" GroupName="EntranceShuffle"
+                         IsChecked="{Binding EntranceShuffleNone, Mode=OneWay}"
+                         Command="{Binding ChangeEntranceShuffle}"
+                         CommandParameter="None">None</RadioButton>
+            <RadioButton Classes="ModeSettings" GroupName="EntranceShuffle"
+                         IsChecked="{Binding EntranceShuffleDungeon, Mode=OneWay}"
+                         Command="{Binding ChangeEntranceShuffle}"
+                         CommandParameter="Dungeon">Dungeon</RadioButton>
+            <RadioButton Classes="ModeSettings" GroupName="EntranceShuffle"
+                         IsChecked="{Binding EntranceShuffleAll, Mode=OneWay}"
+                         Command="{Binding ChangeEntranceShuffle}"
+                         CommandParameter="All">All</RadioButton>
+            <RadioButton Classes="ModeSettings" GroupName="EntranceShuffle"
+                         IsChecked="{Binding EntranceShuffleInsanity, Mode=OneWay}"
+                         Command="{Binding ChangeEntranceShuffle}"
+                         CommandParameter="Insanity">Insanity</RadioButton>
           </UniformGrid>
-          
-          <Border Classes="Separator" Margin="0,4" />
-          <CheckBox Classes="ModeSettings" IsChecked="{Binding BossShuffle, Mode=OneWay}"
-                    Command="{Binding BossShuffleCommand}">Boss Shuffle</CheckBox>
-					<CheckBox Classes="ModeSettings" IsChecked="{Binding EnemyShuffle, Mode=OneWay}"
-                    Command="{Binding EnemyShuffleCommand}">Enemy Shuffle</CheckBox>
-					<CheckBox Classes="ModeSettings" IsChecked="{Binding GuaranteedBossItems, Mode=OneWay}"
-                    Command="{Binding
-                    GuaranteedBossItemsCommand}">Guaranteed Boss Items (Ambrosia)</CheckBox>
-          <CheckBox Classes="ModeSettings" IsChecked="{Binding GenericKeys, Mode=OneWay}"
-                    Command="{Binding GenericKeysCommand}">Generic Keys</CheckBox>
-          <CheckBox Classes="ModeSettings" IsChecked="{Binding TakeAnyLocations, Mode=OneWay}"
-                    Command="{Binding TakeAnyLocationsCommand}">Take Any Locations</CheckBox>
-          
+
+          <Border Classes="Separator" Margin="0 4" />
+
+          <UniformGrid Columns="2">
+            <CheckBox Classes="ModeSettings"
+                      IsChecked="{Binding BossShuffle, Mode=OneWay}"
+                      Command="{Binding ToggleBossShuffle}">Boss Shuffle</CheckBox>
+            <CheckBox Classes="ModeSettings"
+                      IsChecked="{Binding EnemyShuffle, Mode=OneWay}"
+                          Command="{Binding ToggleEnemyShuffle}">Enemy Shuffle</CheckBox>
+            <CheckBox Classes="ModeSettings"
+                      IsChecked="{Binding GuaranteedBossItems, Mode=OneWay}"
+                      Command="{Binding ToggleGuaranteedBossItems}">Guaranteed Boss Items (Ambrosia)</CheckBox>
+            <CheckBox Classes="ModeSettings"
+                      IsChecked="{Binding ShopShuffle, Mode=OneWay}"
+                      Command="{Binding ToggleShopShuffle}">Shop Shuffle</CheckBox>
+            <CheckBox Classes="ModeSettings"
+                      IsChecked="{Binding GenericKeys, Mode=OneWay}"
+                      Command="{Binding ToggleGenericKeys}">Generic Keys</CheckBox>
+            <CheckBox Classes="ModeSettings"
+                      IsChecked="{Binding TakeAnyLocations, Mode=OneWay}"
+                      Command="{Binding ToggleTakeAnyLocations}">Take Any Locations</CheckBox>
+            <CheckBox Classes="ModeSettings"
+                      IsChecked="{Binding KeyDropShuffle, Mode=OneWay}"
+                      Command="{Binding ToggleKeyDropShuffle}">Key Drop Shuffle</CheckBox>
+          </UniformGrid>
         </StackPanel>
-			</Border>
-		</Popup>
-	</Panel>
+      </Border>
+    </Popup>
+    
+  </Panel>
 </UserControl>

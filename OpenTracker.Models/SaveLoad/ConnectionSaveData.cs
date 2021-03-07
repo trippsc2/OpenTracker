@@ -3,7 +3,7 @@
 namespace OpenTracker.Models.SaveLoad
 {
     /// <summary>
-    /// This is the class for connection save data.
+    /// This class contains connection save data.
     /// </summary>
     public class ConnectionSaveData
     {

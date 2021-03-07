@@ -6,7 +6,7 @@ using System.ComponentModel;
 namespace OpenTracker.Models.Sections
 {
     /// <summary>
-    /// This is the interface for item/entrance sections of a location.
+    /// This base interface contains section data.
     /// </summary>
     public interface ISection : INotifyPropertyChanged
     {

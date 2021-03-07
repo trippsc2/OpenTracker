@@ -13,16 +13,16 @@ namespace Avalonia.ThemeManager
 {
     public sealed class ThemeSelector : ReactiveObject, IThemeSelector
     {
-        private ITheme _selectedTheme;
-        private IList<ITheme> _themes;
+        private ITheme? _selectedTheme;
+        private IList<ITheme>? _themes;
 
-        public ITheme SelectedTheme
+        public ITheme? SelectedTheme
         {
             get => _selectedTheme;
             set => this.RaiseAndSetIfChanged(ref _selectedTheme, value);
         }
 
-        public IList<ITheme> Themes
+        public IList<ITheme>? Themes
         {
             get => _themes;
             set => this.RaiseAndSetIfChanged(ref _themes, value);

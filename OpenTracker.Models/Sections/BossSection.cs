@@ -8,7 +8,7 @@ using System.ComponentModel;
 namespace OpenTracker.Models.Sections
 {
     /// <summary>
-    /// This is the section class containing a boss and no dungeon prize (GT non-Aga2 bosses).
+    /// This class contains boss section data (GT LW boss re-fights)
     /// </summary>
     public class BossSection : IBossSection
     {
@@ -17,7 +17,7 @@ namespace OpenTracker.Models.Sections
         public bool UserManipulated { get; set; }
         public IBossPlacement BossPlacement { get; }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         private AccessibilityLevel _accessibility;
         public AccessibilityLevel Accessibility
@@ -47,6 +47,9 @@ namespace OpenTracker.Models.Sections
             }
         }
 
+        public delegate BossSection Factory(
+            string name, IBossPlacement bossPlacement, IRequirement requirement);
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -60,11 +63,11 @@ namespace OpenTracker.Models.Sections
         /// The requirement for this section to be visible.
         /// </param>
         public BossSection(
-            string name, IBossPlacement bossPlacement, IRequirement requirement = null)
+            string name, IBossPlacement bossPlacement, IRequirement requirement)
         {
-            Name = name ?? throw new ArgumentNullException(nameof(name));
+            Name = name;
             BossPlacement = bossPlacement;
-            Requirement = requirement ?? RequirementDictionary.Instance[RequirementType.NoRequirement];
+            Requirement = requirement;
             Available = 1;
         }
 
@@ -129,6 +132,7 @@ namespace OpenTracker.Models.Sections
         public void Reset()
         {
             Available = 1;
+            UserManipulated = false;
         }
 
         /// <summary>
@@ -149,11 +153,11 @@ namespace OpenTracker.Models.Sections
         /// <summary>
         /// Loads section save data.
         /// </summary>
-        public void Load(SectionSaveData saveData)
+        public void Load(SectionSaveData? saveData)
         {
             if (saveData == null)
             {
-                throw new ArgumentNullException(nameof(saveData));
+                return;
             }
 
             Available = saveData.Available;

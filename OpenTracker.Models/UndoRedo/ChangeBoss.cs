@@ -4,14 +4,17 @@ using System;
 namespace OpenTracker.Models.UndoRedo
 {
     /// <summary>
-    /// This is the class for an undoable action to change the boss
-    /// of a dungeon.
+    /// This class contains undoable action to change the boss of a dungeon.
     /// </summary>
     public class ChangeBoss : IUndoable
     {
         private readonly IBossPlacement _bossPlacement;
         private readonly BossType? _boss;
+
         private BossType? _previousBoss;
+
+        public delegate ChangeBoss Factory(
+            IBossPlacement bossPlacement, BossType? boss);
 
         /// <summary>
         /// Constructor
@@ -24,7 +27,7 @@ namespace OpenTracker.Models.UndoRedo
         /// </param>
         public ChangeBoss(IBossPlacement bossPlacement, BossType? boss)
         {
-            _bossPlacement = bossPlacement ?? throw new ArgumentNullException(nameof(bossPlacement));
+            _bossPlacement = bossPlacement;
             _boss = boss;
         }
 
@@ -42,7 +45,7 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Executes the action.
         /// </summary>
-        public void Execute()
+        public void ExecuteDo()
         {
             _previousBoss = _bossPlacement.Boss;
             _bossPlacement.Boss = _boss;
@@ -51,7 +54,7 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Undoes the action.
         /// </summary>
-        public void Undo()
+        public void ExecuteUndo()
         {
             _bossPlacement.Boss = _previousBoss;
         }

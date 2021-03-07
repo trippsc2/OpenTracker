@@ -1,39 +1,77 @@
 ﻿using OpenTracker.Models.SaveLoad;
-using OpenTracker.Models.Utils;
+using OpenTracker.Utils;
 using System;
+using System.Collections.Specialized;
+using System.ComponentModel;
 
 namespace OpenTracker.Models.UndoRedo
 {
     /// <summary>
-    /// This is the class for managing undo/redo actions.
+    /// This class contains logic managing undo/redo actions.
     /// </summary>
-    public class UndoRedoManager : Singleton<UndoRedoManager>
+    public class UndoRedoManager : IUndoRedoManager
     {
-        public ObservableStack<IUndoable> UndoableActions { get; } =
-            new ObservableStack<IUndoable>();
-        public ObservableStack<IUndoable> RedoableActions { get; } =
-            new ObservableStack<IUndoable>();
+        private readonly ISaveLoadManager _saveLoadManager;
+
+        private readonly ObservableStack<IUndoable> _undoableActions = new ObservableStack<IUndoable>();
+        private readonly ObservableStack<IUndoable> _redoableActions = new ObservableStack<IUndoable>();
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        public bool CanUndo => _undoableActions.Count > 0;
+        public bool CanRedo => _redoableActions.Count > 0;
 
         /// <summary>
-        /// Returns whether any actions can be undone.
+        /// Constructor
         /// </summary>
-        /// <returns>
-        /// A boolean representing whether the actions can be undone.
-        /// </returns>
-        public bool CanUndo()
+        /// <param name="saveLoadManager">
+        /// The save/load manager.
+        /// </param>
+        public UndoRedoManager(ISaveLoadManager saveLoadManager)
         {
-            return UndoableActions.Count > 0;
+            _saveLoadManager = saveLoadManager;
+
+            _undoableActions.CollectionChanged += OnUndoChanged;
+            _redoableActions.CollectionChanged += OnRedoChanged;
         }
 
         /// <summary>
-        /// Returns whether any actions can be redone.
+        /// Raises the PropertyChanged event for the specified property.
         /// </summary>
-        /// <returns>
-        /// A boolean representing whether the actions can be redone.
-        /// </returns>
-        public bool CanRedo()
+        /// <param name="propertyName">
+        /// The string of the property name of the changed property.
+        /// </param>
+        private void OnPropertyChanged(string propertyName)
         {
-            return RedoableActions.Count > 0;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        /// <summary>
+        /// Subscribes to the CollectionChanged event on the undoable actions observable stack.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the CollectionChanged event.
+        /// </param>
+        private void OnUndoChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        {
+            OnPropertyChanged(nameof(CanUndo));
+        }
+
+        /// <summary>
+        /// Subscribes to the CollectionChanged event on the redoable actions observable stack.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the CollectionChanged event.
+        /// </param>
+        private void OnRedoChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        {
+            OnPropertyChanged(nameof(CanRedo));
         }
 
         /// <summary>
@@ -42,23 +80,22 @@ namespace OpenTracker.Models.UndoRedo
         /// <param name="action">
         /// The action to be executed.
         /// </param>
-        /// <param name="clearRedo">
-        /// A boolean representing whether to clear the redo stack.
-        /// </param>
-        public void Execute(IUndoable action)
+        public void NewAction(IUndoable action)
         {
             if (action == null)
             {
                 throw new ArgumentNullException(nameof(action));
             }
 
-            if (action.CanExecute())
+            if (!action.CanExecute())
             {
-                action.Execute();
-                UndoableActions.Push(action);
-                RedoableActions.Clear();
-                SaveLoadManager.Instance.Unsaved = true;
+                return;
             }
+            
+            action.ExecuteDo();
+            _undoableActions.Push(action);
+            _redoableActions.Clear();
+            _saveLoadManager.Unsaved = true;
         }
 
         /// <summary>
@@ -66,13 +103,15 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void Undo()
         {
-            if (UndoableActions.Count > 0)
+            if (_undoableActions.Count <= 0)
             {
-                IUndoable action = UndoableActions.Pop();
-                action.Undo();
-                RedoableActions.Push(action);
-                SaveLoadManager.Instance.Unsaved = true;
+                return;
             }
+            
+            IUndoable action = _undoableActions.Pop();
+            action.ExecuteUndo();
+            _redoableActions.Push(action);
+            _saveLoadManager.Unsaved = true;
         }
 
         /// <summary>
@@ -80,13 +119,15 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void Redo()
         {
-            if (RedoableActions.Count > 0)
+            if (_redoableActions.Count <= 0)
             {
-                IUndoable action = RedoableActions.Pop();
-                action.Execute();
-                UndoableActions.Push(action);
-                SaveLoadManager.Instance.Unsaved = true;
+                return;
             }
+            
+            IUndoable action = _redoableActions.Pop();
+            action.ExecuteDo();
+            _undoableActions.Push(action);
+            _saveLoadManager.Unsaved = true;
         }
 
         /// <summary>
@@ -94,8 +135,8 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void Reset()
         {
-            UndoableActions.Clear();
-            RedoableActions.Clear();
+            _undoableActions.Clear();
+            _redoableActions.Clear();
         }
     }
 }

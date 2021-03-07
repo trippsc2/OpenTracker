@@ -1,53 +1,39 @@
-﻿using OpenTracker.Models.AccessibilityLevels;
-using OpenTracker.Models.AutoTracking;
+﻿using OpenTracker.Models.AutoTracking;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.Requirements
 {
     /// <summary>
-    /// This is the class for race illegal tracking requirements.
+    /// This class contains race illegal tracking requirement data.
     /// </summary>
-    public class RaceIllegalTrackingRequirement : IRequirement
+    public class RaceIllegalTrackingRequirement : BooleanRequirement
     {
-        private readonly bool _raceIllegalTracking;
+        private readonly IAutoTracker _autoTracker;
+        private readonly bool _expectedValue;
 
-        public bool Met =>
-            Accessibility == AccessibilityLevel.Normal;
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private AccessibilityLevel _accessibility;
-        public AccessibilityLevel Accessibility
-        {
-            get => _accessibility;
-            private set
-            {
-                if (_accessibility != value)
-                {
-                    _accessibility = value;
-                    PropertyChanged?.Invoke(
-                        this, new PropertyChangedEventArgs(nameof(Accessibility)));
-                }
-            }
-        }
+        public delegate RaceIllegalTrackingRequirement Factory(bool expectedValue);
 
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="value">
-        /// The required value.
+        /// <param name="autoTracker">
+        /// The autotracker data.
         /// </param>
-        public RaceIllegalTrackingRequirement(bool value)
+        /// <param name="expectedValue">
+        /// A boolean expected race illegal tracking requirement value.
+        /// </param>
+        public RaceIllegalTrackingRequirement(IAutoTracker autoTracker, bool expectedValue)
         {
-            _raceIllegalTracking = value;
+            _autoTracker = autoTracker;
+            _expectedValue = expectedValue;
 
-            AutoTracker.Instance.PropertyChanged += OnAutoTrackerChanged;
+            _autoTracker.PropertyChanged += OnAutoTrackerChanged;
 
-            UpdateAccessibility();
+            UpdateValue();
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the AutoTracker class.
+        /// Subscribes to the PropertyChanged event on the IAutoTracker interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -55,21 +41,17 @@ namespace OpenTracker.Models.Requirements
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnAutoTrackerChanged(object sender, PropertyChangedEventArgs e)
+        private void OnAutoTrackerChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(AutoTracker.RaceIllegalTracking))
+            if (e.PropertyName == nameof(IAutoTracker.RaceIllegalTracking))
             {
-                UpdateAccessibility();
+                UpdateValue();
             }
         }
 
-        /// <summary>
-        /// Updates the accessibility of this requirement.
-        /// </summary>
-        private void UpdateAccessibility()
+        protected override bool ConditionMet()
         {
-            Accessibility = AutoTracker.Instance.RaceIllegalTracking == _raceIllegalTracking ?
-                AccessibilityLevel.Normal : AccessibilityLevel.None;
+            return _autoTracker.RaceIllegalTracking == _expectedValue;
         }
     }
 }

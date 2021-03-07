@@ -5,21 +5,20 @@ using System.Linq;
 namespace OpenTracker.Models.UndoRedo
 {
     /// <summary>
-    /// This is the class for an undoable action to change the dungeon prize.
+    /// This class contains undoable action data to change the dungeon prize.
     /// </summary>
     public class ChangePrize : IUndoable
     {
         private readonly IPrizePlacement _prizePlacement;
-        private IItem _previousItem;
+        private IItem? _previousItem;
+
+        public delegate ChangePrize Factory(IPrizePlacement prizePlacement);
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="prizePlacement">
         /// The boss section data for the dungeon.
-        /// </param>
-        /// <param name="item">
-        /// The item of the prize to be placed.
         /// </param>
         public ChangePrize(IPrizePlacement prizePlacement)
         {
@@ -40,7 +39,7 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Executes the action.
         /// </summary>
-        public void Execute()
+        public void ExecuteDo()
         {
             _previousItem = _prizePlacement.Prize;
             _prizePlacement.Cycle();
@@ -49,7 +48,7 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Undoes the action.
         /// </summary>
-        public void Undo()
+        public void ExecuteUndo()
         {
             _prizePlacement.Prize = _previousItem;
         }

@@ -1,39 +1,57 @@
-﻿using OpenTracker.Interfaces;
-using OpenTracker.Models.PrizePlacements;
+﻿using Avalonia.Input;
+using Avalonia.Threading;
 using OpenTracker.Models.Sections;
 using OpenTracker.Models.UndoRedo;
+using OpenTracker.Utils;
 using ReactiveUI;
-using System;
 using System.ComponentModel;
-using System.Text;
+using System.Reactive;
 
 namespace OpenTracker.ViewModels.Items.Large
 {
     /// <summary>
-    /// This is the ViewModel for the large Items panel control representing a dungeon prize.
+    /// This class contains the dungeon prize large items panel control ViewModel data.
     /// </summary>
-    public class PrizeLargeItemVM : LargeItemVMBase, IClickHandler
+    public class PrizeLargeItemVM : ViewModelBase, ILargeItemVMBase
     {
+        private readonly IUndoRedoManager _undoRedoManager;
+        private readonly IUndoableFactory _undoableFactory;
+
         private readonly IPrizeSection _section;
         private readonly string _imageSourceBase;
 
-        public string ImageSource =>
-                _imageSourceBase + (_section.IsAvailable() ? "0.png" : "1.png");
+        public string ImageSource => _imageSourceBase + (_section.IsAvailable() ? "0.png" : "1.png");
+        
+        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
+
+        public delegate PrizeLargeItemVM Factory(IPrizeSection section, string imageSourceBase);
 
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="undoRedoManager">
+        /// The undo/redo manager.
+        /// </param>
+        /// <param name="undoableFactory">
+        /// The factory for creating undoable actions.
+        /// </param>
         /// <param name="imageSourceBase">
         /// A string representing the base image source.
         /// </param>
         /// <param name="section">
         /// An item that is to be represented by this control.
         /// </param>
-        public PrizeLargeItemVM(string imageSourceBase, IPrizeSection section)
+        public PrizeLargeItemVM(
+            IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory, IPrizeSection section,
+            string imageSourceBase)
         {
-            _section = section ?? throw new ArgumentNullException(nameof(section));
-            _imageSourceBase = imageSourceBase ??
-                throw new ArgumentNullException(nameof(imageSourceBase));
+            _undoRedoManager = undoRedoManager;
+            _undoableFactory = undoableFactory;
+
+            _section = section;
+            _imageSourceBase = imageSourceBase;
+            
+            HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
 
             _section.PropertyChanged += OnSectionChanged;
         }
@@ -47,34 +65,48 @@ namespace OpenTracker.ViewModels.Items.Large
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnSectionChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnSectionChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ISection.Available))
             {
-                this.RaisePropertyChanged(nameof(ImageSource));
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(ImageSource)));
             }
         }
 
         /// <summary>
-        /// Handles left clicks and collects the prize section, ignoring logic.
+        /// Creates an undoable action to collect the prize section, ignoring logic, and sends it to the undo/redo
+        /// manager.
         /// </summary>
-        /// <param name="force">
-        /// A boolean representing whether the logic should be ignored.
-        /// </param>
-        public void OnLeftClick(bool force)
+        private void CollectSection()
         {
-            UndoRedoManager.Instance.Execute(new CollectSection(_section, true));
+            _undoRedoManager.NewAction(_undoableFactory.GetCollectSection(_section, true));
         }
 
         /// <summary>
-        /// Handles right clicks and uncollects the prize section.
+        /// Creates an undoable action to un-collect the prize section and sends it to the undo/redo manager.
         /// </summary>
-        /// <param name="force">
-        /// A boolean representing whether the logic should be ignored.
-        /// </param>
-        public void OnRightClick(bool force)
+        private void UncollectSection()
         {
-            UndoRedoManager.Instance.Execute(new UncollectSection(_section));
+            _undoRedoManager.NewAction(_undoableFactory.GetUncollectSection(_section));
+        }
+
+        /// <summary>
+        /// Handles clicking the control.
+        /// </summary>
+        /// <param name="e">
+        /// The pointer released event args.
+        /// </param>
+        private void HandleClickImpl(PointerReleasedEventArgs e)
+        {
+            switch (e.InitialPressMouseButton)
+            {
+                case MouseButton.Left:
+                    CollectSection();
+                    break;
+                case MouseButton.Right:
+                    UncollectSection();
+                    break;
+            }
         }
     }
 }

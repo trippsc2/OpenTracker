@@ -11,6 +11,8 @@ namespace OpenTracker.Models.BossPlacements
         BossType? Boss { get; set; }
         BossType DefaultBoss { get; }
 
+        delegate IBossPlacement Factory(BossType defaultBoss);
+
         BossType? GetCurrentBoss();
         void Reset();
     }

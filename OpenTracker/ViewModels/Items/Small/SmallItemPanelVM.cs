@@ -1,53 +1,59 @@
 ﻿using OpenTracker.Models.Locations;
 using OpenTracker.Models.Modes;
+using OpenTracker.Utils;
 using ReactiveUI;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.ComponentModel;
+using Avalonia.Threading;
 
 namespace OpenTracker.ViewModels.Items.Small
 {
     /// <summary>
     /// This is the ViewModel for the small item panel control.
     /// </summary>
-    public class SmallItemPanelVM : ViewModelBase
+    public abstract class SmallItemPanelVM : ViewModelBase, ISmallItemPanelVM
     {
-        public bool ATItemsVisible =>
-            Mode.Instance.SmallKeyShuffle;
+        private readonly IMode _mode;
 
-        public ObservableCollection<SmallItemVMBase> HCItems { get; }
-        public ObservableCollection<SmallItemVMBase> ATItems { get; }
-        public ObservableCollection<SmallItemVMBase> EPItems { get; }
-        public ObservableCollection<SmallItemVMBase> DPItems { get; }
-        public ObservableCollection<SmallItemVMBase> ToHItems { get; }
-        public ObservableCollection<SmallItemVMBase> PoDItems { get; }
-        public ObservableCollection<SmallItemVMBase> SPItems { get; }
-        public ObservableCollection<SmallItemVMBase> SWItems { get; }
-        public ObservableCollection<SmallItemVMBase> TTItems { get; }
-        public ObservableCollection<SmallItemVMBase> IPItems { get; }
-        public ObservableCollection<SmallItemVMBase> MMItems { get; }
-        public ObservableCollection<SmallItemVMBase> TRItems { get; }
-        public ObservableCollection<SmallItemVMBase> GTItems { get; }
+        public bool ATItemsVisible =>
+            _mode.SmallKeyShuffle;
+
+        public List<ISmallItemVMBase> HCItems { get; }
+        public List<ISmallItemVMBase> ATItems { get; }
+        public List<ISmallItemVMBase> EPItems { get; }
+        public List<ISmallItemVMBase> DPItems { get; }
+        public List<ISmallItemVMBase> ToHItems { get; }
+        public List<ISmallItemVMBase> PoDItems { get; }
+        public List<ISmallItemVMBase> SPItems { get; }
+        public List<ISmallItemVMBase> SWItems { get; }
+        public List<ISmallItemVMBase> TTItems { get; }
+        public List<ISmallItemVMBase> IPItems { get; }
+        public List<ISmallItemVMBase> MMItems { get; }
+        public List<ISmallItemVMBase> TRItems { get; }
+        public List<ISmallItemVMBase> GTItems { get; }
 
         /// <summary>
         /// Constructor
         /// </summary>
-        public SmallItemPanelVM()
+        public SmallItemPanelVM(IMode mode, ISmallItemVMFactory factory)
         {
-            HCItems = SmallItemVMFactory.GetSmallItemControlVMs(LocationID.HyruleCastle);
-            ATItems = SmallItemVMFactory.GetSmallItemControlVMs(LocationID.AgahnimTower);
-            EPItems = SmallItemVMFactory.GetSmallItemControlVMs(LocationID.EasternPalace);
-            DPItems = SmallItemVMFactory.GetSmallItemControlVMs(LocationID.DesertPalace);
-            ToHItems = SmallItemVMFactory.GetSmallItemControlVMs(LocationID.TowerOfHera);
-            PoDItems = SmallItemVMFactory.GetSmallItemControlVMs(LocationID.PalaceOfDarkness);
-            SPItems = SmallItemVMFactory.GetSmallItemControlVMs(LocationID.SwampPalace);
-            SWItems = SmallItemVMFactory.GetSmallItemControlVMs(LocationID.SkullWoods);
-            TTItems = SmallItemVMFactory.GetSmallItemControlVMs(LocationID.ThievesTown);
-            IPItems = SmallItemVMFactory.GetSmallItemControlVMs(LocationID.IcePalace);
-            MMItems = SmallItemVMFactory.GetSmallItemControlVMs(LocationID.MiseryMire);
-            TRItems = SmallItemVMFactory.GetSmallItemControlVMs(LocationID.TurtleRock);
-            GTItems = SmallItemVMFactory.GetSmallItemControlVMs(LocationID.GanonsTower);
+            _mode = mode;
 
-            Mode.Instance.PropertyChanged += OnModeChanged;
+            HCItems = factory.GetSmallItemControlVMs(LocationID.HyruleCastle);
+            ATItems = factory.GetSmallItemControlVMs(LocationID.AgahnimTower);
+            EPItems = factory.GetSmallItemControlVMs(LocationID.EasternPalace);
+            DPItems = factory.GetSmallItemControlVMs(LocationID.DesertPalace);
+            ToHItems = factory.GetSmallItemControlVMs(LocationID.TowerOfHera);
+            PoDItems = factory.GetSmallItemControlVMs(LocationID.PalaceOfDarkness);
+            SPItems = factory.GetSmallItemControlVMs(LocationID.SwampPalace);
+            SWItems = factory.GetSmallItemControlVMs(LocationID.SkullWoods);
+            TTItems = factory.GetSmallItemControlVMs(LocationID.ThievesTown);
+            IPItems = factory.GetSmallItemControlVMs(LocationID.IcePalace);
+            MMItems = factory.GetSmallItemControlVMs(LocationID.MiseryMire);
+            TRItems = factory.GetSmallItemControlVMs(LocationID.TurtleRock);
+            GTItems = factory.GetSmallItemControlVMs(LocationID.GanonsTower);
+
+            _mode.PropertyChanged += OnModeChanged;
         }
 
         /// <summary>
@@ -59,11 +65,11 @@ namespace OpenTracker.ViewModels.Items.Small
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnModeChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnModeChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(Mode.SmallKeyShuffle))
+            if (e.PropertyName == nameof(IMode.SmallKeyShuffle))
             {
-                this.RaisePropertyChanged(nameof(ATItemsVisible));
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(ATItemsVisible)));
             }
         }
     }

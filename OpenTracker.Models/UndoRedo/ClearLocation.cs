@@ -1,13 +1,12 @@
 ﻿using OpenTracker.Models.Locations;
 using OpenTracker.Models.Markings;
 using OpenTracker.Models.Sections;
-using System;
 using System.Collections.Generic;
 
 namespace OpenTracker.Models.UndoRedo
 {
     /// <summary>
-    /// This is the class for an undoable action to clear a location.
+    /// This class contains undoable action data to clear a location.
     /// </summary>
     public class ClearLocation : IUndoable
     {
@@ -16,6 +15,8 @@ namespace OpenTracker.Models.UndoRedo
         private readonly List<int?> _previousLocationCounts = new List<int?>();
         private readonly List<MarkType?> _previousMarkings = new List<MarkType?>();
         private readonly List<bool?> _previousUserManipulated = new List<bool?>();
+
+        public delegate ClearLocation Factory(ILocation location, bool force = false);
 
         /// <summary>
         /// Constructor
@@ -28,7 +29,7 @@ namespace OpenTracker.Models.UndoRedo
         /// </param>
         public ClearLocation(ILocation location, bool force = false)
         {
-            _location = location ?? throw new ArgumentNullException(nameof(location));
+            _location = location;
             _force = force;
         }
 
@@ -46,7 +47,7 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Executes the action.
         /// </summary>
-        public void Execute()
+        public void ExecuteDo()
         {
             _previousLocationCounts.Clear();
             _previousMarkings.Clear();
@@ -82,23 +83,26 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Undoes the action.
         /// </summary>
-        public void Undo()
+        public void ExecuteUndo()
         {
             for (int i = 0; i < _previousLocationCounts.Count; i++)
             {
-                if (_previousLocationCounts[i] != null)
+                if (_previousLocationCounts[i].HasValue)
                 {
-                    _location.Sections[i].Available = _previousLocationCounts[i].Value;
+                    _location.Sections[i].Available = _previousLocationCounts[i]!.Value;
                 }
 
-                if (_previousMarkings[i] != null)
+                if (_previousMarkings[i].HasValue)
                 {
-                    (_location.Sections[i] as IMarkableSection).Marking.Mark = _previousMarkings[i].Value;
+                    if (_location.Sections[i] is IMarkableSection markableSection)
+                    {
+                        markableSection.Marking.Mark = _previousMarkings[i]!.Value;
+                    }
                 }
 
-                if (_previousUserManipulated[i] != null)
+                if (_previousUserManipulated[i].HasValue)
                 {
-                    _location.Sections[i].UserManipulated = _previousUserManipulated[i].Value;
+                    _location.Sections[i].UserManipulated = _previousUserManipulated[i]!.Value;
                 }
             }
         }

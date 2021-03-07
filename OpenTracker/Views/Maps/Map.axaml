@@ -14,7 +14,7 @@
           Margin="{Binding Margin}">
 		<Panel>
 			<Image Source="{Binding ImageSource, Converter={StaticResource BitmapValueConverter}}"
-				   Height="2007" Width="2007" />
+			       Height="2007" Width="2007" />
     </Panel>
 	</Border>
 

@@ -1,33 +1,43 @@
 ﻿using Avalonia.Layout;
-using OpenTracker.Models;
+using Avalonia.Threading;
 using OpenTracker.Models.Settings;
-using OpenTracker.Models.Utils;
+using OpenTracker.Utils;
 using ReactiveUI;
 using System.ComponentModel;
 
 namespace OpenTracker.ViewModels.PinnedLocations
 {
     /// <summary>
-    /// This is the ViewModel for the Locations panel control.
+    /// This class contains the pinned location panel control ViewModel data.
     /// </summary>
-    public class PinnedLocationsPanelVM : ViewModelBase
+    public class PinnedLocationsPanelVM : ViewModelBase, IPinnedLocationsPanelVM
     {
-        public static Orientation Orientation =>
-            AppSettings.Instance.Layout.CurrentLayoutOrientation;
+        private readonly ILayoutSettings _layoutSettings;
 
-        public IObservableCollection<PinnedLocationVM> Locations { get; } =
-            PinnedLocationVMCollection.Instance;
+        public Orientation Orientation => _layoutSettings.CurrentLayoutOrientation;
+
+        public IPinnedLocationVMCollection Locations { get; }
 
         /// <summary>
         /// Constructor
         /// </summary>
-        public PinnedLocationsPanelVM()
+        /// <param name="layoutSettings">
+        /// The layout settings data.
+        /// </param>
+        /// <param name="locations">
+        /// The pinned location control collection.
+        /// </param>
+        public PinnedLocationsPanelVM(ILayoutSettings layoutSettings, IPinnedLocationVMCollection locations)
         {
-            AppSettings.Instance.Layout.PropertyChanged += OnLayoutChanged;
+            _layoutSettings = layoutSettings;
+
+            Locations = locations;
+
+            _layoutSettings.PropertyChanged += OnLayoutChanged;
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the LayoutSettings class.
+        /// Subscribes to the PropertyChanged event on the ILayoutSettings interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -35,11 +45,11 @@ namespace OpenTracker.ViewModels.PinnedLocations
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(LayoutSettings.CurrentLayoutOrientation))
+            if (e.PropertyName == nameof(ILayoutSettings.CurrentLayoutOrientation))
             {
-                this.RaisePropertyChanged(nameof(Orientation));
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Orientation)));
             }
         }
     }

@@ -13,17 +13,19 @@ namespace OpenTracker.Models.DungeonNodes
     /// </summary>
     public class DungeonNode : IDungeonNode
     {
-        private readonly DungeonNodeID _id;
+        private readonly IDungeonNodeFactory _factory;
         private readonly IMutableDungeon _dungeonData;
+        private readonly DungeonNodeID _id;
 
         public int ExitsAccessible { get; set; }
         public int DungeonExitsAccessible { get; set; }
         public int InsanityExitsAccessible { get; set; }
-        public int KeysProvided { get; }
+
         public List<INodeConnection> Connections { get; } =
             new List<INodeConnection>();
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
+        public event EventHandler? ChangePropagated;
 
         private bool _alwaysAccessible;
         public bool AlwaysAccessible
@@ -56,24 +58,23 @@ namespace OpenTracker.Models.DungeonNodes
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="factory">
+        /// The dungeon node factory for creating node connections.
+        /// </param>
         /// <param name="id">
         /// The node identity.
         /// </param>
         /// <param name="dungeonData">
         /// The mutable dungeon data parent class.
         /// </param>
-        /// <param name="freeKeysProvided">
-        /// A 32-bit signed integer representing the number of free keys provided by accessing the
-        /// node.
-        /// </param>
         public DungeonNode(
-            DungeonNodeID id, IMutableDungeon dungeonData, int freeKeysProvided)
+            IDungeonNodeFactory factory, IMutableDungeon dungeonData, DungeonNodeID id)
         {
+            _factory = factory;
+            _dungeonData = dungeonData;
             _id = id;
-            _dungeonData = dungeonData ?? throw new ArgumentNullException(nameof(dungeonData));
-            KeysProvided = freeKeysProvided;
 
-            _dungeonData.Nodes.NodeCreated += OnNodeCreated;
+            dungeonData.Nodes.ItemCreated += OnNodeCreated;
         }
 
         /// <summary>
@@ -85,6 +86,7 @@ namespace OpenTracker.Models.DungeonNodes
         private void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            ChangePropagated?.Invoke(this, new EventArgs());
         }
 
         /// <summary>
@@ -96,13 +98,17 @@ namespace OpenTracker.Models.DungeonNodes
         /// <param name="e">
         /// The arguments of the NodeCreated event.
         /// </param>
-        private void OnNodeCreated(object sender, KeyValuePair<DungeonNodeID, IDungeonNode> e)
+        private void OnNodeCreated(object? sender, KeyValuePair<DungeonNodeID, IDungeonNode> e)
         {
             if (e.Value == this)
             {
-                _dungeonData.Nodes.NodeCreated -= OnNodeCreated;
-                DungeonNodeFactory.PopulateNodeConnections(
-                    e.Key, this, _dungeonData, Connections);
+                var nodes = (sender as IDungeonNodeDictionary) ??
+                    throw new ArgumentNullException(nameof(sender));
+
+                nodes.ItemCreated -= OnNodeCreated;
+
+                _factory.PopulateNodeConnections(_dungeonData, e.Key, this, Connections);
+
                 UpdateAccessibility();
 
                 foreach (var connection in Connections)
@@ -122,7 +128,7 @@ namespace OpenTracker.Models.DungeonNodes
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnConnectionChanged(object sender, PropertyChangedEventArgs e)
+        private void OnConnectionChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(INodeConnection.Accessibility))
             {
@@ -149,11 +155,6 @@ namespace OpenTracker.Models.DungeonNodes
         /// </returns>
         public AccessibilityLevel GetNodeAccessibility(List<IRequirementNode> excludedNodes)
         {
-            if (excludedNodes == null)
-            {
-                throw new ArgumentNullException(nameof(excludedNodes));
-            }
-
             if (AlwaysAccessible)
             {
                 return AccessibilityLevel.Normal;

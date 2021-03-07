@@ -3,11 +3,13 @@
 namespace OpenTracker.Models.UndoRedo
 {
     /// <summary>
-    /// This is the class for an undoable action to add an item.
+    /// This class contains undoable action data to add an item.
     /// </summary>
     public class AddItem : IUndoable
     {
         private readonly IItem _item;
+
+        public delegate AddItem Factory(IItem item);
 
         /// <summary>
         /// Constructor
@@ -34,7 +36,7 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Executes the action.
         /// </summary>
-        public void Execute()
+        public void ExecuteDo()
         {
             _item.Add();
         }
@@ -42,7 +44,7 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Undoes the action.
         /// </summary>
-        public void Undo()
+        public void ExecuteUndo()
         {
             _item.Remove();
         }

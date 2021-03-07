@@ -8,16 +8,21 @@ using System.ComponentModel;
 namespace OpenTracker.Models.RequirementNodes
 {
     /// <summary>
-    /// This is the class for requirement nodes.
+    /// This class contains requirement node data.
     /// </summary>
     public class RequirementNode : IRequirementNode
     {
+        private readonly IMode _mode;
+        private readonly IRequirementNodeFactory _factory;
+
         private readonly RequirementNodeID _id;
         private readonly bool _start;
+
         private readonly List<INodeConnection> _connections =
             new List<INodeConnection>();
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
+        public event EventHandler? ChangePropagated;
 
         private bool _alwaysAccessible;
         public bool AlwaysAccessible
@@ -89,23 +94,38 @@ namespace OpenTracker.Models.RequirementNodes
             }
         }
 
+        public delegate IRequirementNode Factory(RequirementNodeID id, bool start);
+
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="mode">
+        /// The mode settings.
+        /// </param>
+        /// <param name="requirementNodes">
+        /// The requirement node dictionary.
+        /// </param>
+        /// <param name="factory">
+        /// The requirement node factory.
+        /// </param>
         /// <param name="id">
         /// The requirement node identity.
         /// </param>
         /// <param name="start">
         /// A boolean representing whether the node is the start node.
         /// </param>
-        public RequirementNode(RequirementNodeID id, bool start)
+        public RequirementNode(
+            IMode mode, IRequirementNodeDictionary requirementNodes,
+            IRequirementNodeFactory factory, RequirementNodeID id, bool start)
         {
+            _mode = mode;
+            _factory = factory;
             _id = id;
             _start = start;
             AlwaysAccessible = _start;
 
-            RequirementNodeDictionary.Instance.NodeCreated += OnNodeCreated;
-            Mode.Instance.PropertyChanged += OnModeChanged;
+            requirementNodes.ItemCreated += OnNodeCreated;
+            _mode.PropertyChanged += OnModeChanged;
         }
 
         /// <summary>
@@ -125,40 +145,31 @@ namespace OpenTracker.Models.RequirementNodes
             {
                 UpdateAccessibility();
             }
-        }
 
-        /// <summary>
-        /// Subscribes to the PropertyChanged event on the Mode class.
-        /// </summary>
-        /// <param name="sender">
-        /// The sending object of the event.
-        /// </param>
-        /// <param name="e">
-        /// The arguments of the PropertyChanged event.
-        /// </param>
-        private void OnModeChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(Mode.EntranceShuffle))
+            if (propertyName == nameof(Accessibility))
             {
-                UpdateAccessibility();
-            }    
+                ChangePropagated?.Invoke(this, new EventArgs());
+            }
         }
 
         /// <summary>
-        /// Subscribes to the NodeCreated event on the RequirementNodeDictionary class.
+        /// Subscribes to the ItemCreated event on the IRequirementNodeDictionary interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
         /// </param>
         /// <param name="e">
-        /// The arguments of the NodeCreated event.
+        /// The arguments of the ItemCreated event.
         /// </param>
-        private void OnNodeCreated(object sender, KeyValuePair<RequirementNodeID, IRequirementNode> e)
+        private void OnNodeCreated(object? sender, KeyValuePair<RequirementNodeID, IRequirementNode> e)
         {
             if (e.Value == this)
             {
-                RequirementNodeDictionary.Instance.NodeCreated -= OnNodeCreated;
-                RequirementNodeFactory.PopulateNodeConnections(e.Key, this, _connections);
+                var requirementNodes = ((IRequirementNodeDictionary)sender!);
+
+                requirementNodes.ItemCreated -= OnNodeCreated;
+                _factory.PopulateNodeConnections(e.Key, this, _connections);
+
                 UpdateAccessibility();
 
                 foreach (var connection in _connections)
@@ -166,6 +177,23 @@ namespace OpenTracker.Models.RequirementNodes
                     connection.PropertyChanged += OnConnectionChanged;
                 }
             }
+        }
+
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the IMode interface.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
+        private void OnModeChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(IMode.EntranceShuffle))
+            {
+                UpdateAccessibility();
+            }    
         }
 
         /// <summary>
@@ -177,7 +205,7 @@ namespace OpenTracker.Models.RequirementNodes
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnConnectionChanged(object sender, PropertyChangedEventArgs e)
+        private void OnConnectionChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(INodeConnection.Accessibility))
             {
@@ -204,17 +232,12 @@ namespace OpenTracker.Models.RequirementNodes
         /// </returns>
         public AccessibilityLevel GetNodeAccessibility(List<IRequirementNode> excludedNodes)
         {
-            if (excludedNodes == null)
-            {
-                throw new ArgumentNullException(nameof(excludedNodes));
-            }
-
             if (AlwaysAccessible ||
                 (InsanityExitsAccessible > 0 &&
-                Mode.Instance.EntranceShuffle >= EntranceShuffle.Insanity) ||
-                (ExitsAccessible > 0 && Mode.Instance.EntranceShuffle >= EntranceShuffle.All) ||
+                _mode.EntranceShuffle >= EntranceShuffle.Insanity) ||
+                (ExitsAccessible > 0 && _mode.EntranceShuffle >= EntranceShuffle.All) ||
                 (DungeonExitsAccessible > 0 &&
-                Mode.Instance.EntranceShuffle >= EntranceShuffle.Dungeon))
+                _mode.EntranceShuffle >= EntranceShuffle.Dungeon))
             {
                 return AccessibilityLevel.Normal;
             }

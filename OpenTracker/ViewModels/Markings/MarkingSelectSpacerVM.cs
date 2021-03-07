@@ -1,9 +1,10 @@
 ﻿namespace OpenTracker.ViewModels.Markings
 {
     /// <summary>
-    /// This is the ViewModel class for a spacer in the marking select UI.
+    /// This class contains marking select UI spacer control ViewModel data.
     /// </summary>
-    public class MarkingSelectSpacerVM : MarkingSelectItemVMBase
+    public class MarkingSelectSpacerVM : IMarkingSelectItemVMBase
     {
+        public delegate MarkingSelectSpacerVM Factory();
     }
 }

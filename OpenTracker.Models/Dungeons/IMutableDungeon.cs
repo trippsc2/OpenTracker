@@ -1,7 +1,7 @@
-﻿using OpenTracker.Models.AccessibilityLevels;
-using OpenTracker.Models.DungeonItems;
+﻿using OpenTracker.Models.DungeonItems;
 using OpenTracker.Models.DungeonNodes;
 using OpenTracker.Models.KeyDoors;
+using OpenTracker.Models.Locations;
 using System.Collections.Generic;
 
 namespace OpenTracker.Models.Dungeons
@@ -11,23 +11,22 @@ namespace OpenTracker.Models.Dungeons
     /// </summary>
     public interface IMutableDungeon
     {
+        LocationID ID { get; }
         Dictionary<KeyDoorID, IKeyDoor> BigKeyDoors { get; }
-        List<IDungeonItem> BossItems { get; }
+        List<IDungeonItem> Bosses { get; }
         Dictionary<DungeonItemID, IDungeonItem> Items { get; }
-        DungeonNodeDictionary Nodes { get; }
+        IDungeonNodeDictionary Nodes { get; }
         Dictionary<KeyDoorID, IKeyDoor> SmallKeyDoors { get; }
-        DungeonItemDictionary ItemDictionary { get; }
-        KeyDoorDictionary KeyDoorDictionary { get; }
+        IDungeonItemDictionary DungeonItems { get; }
+        IKeyDoorDictionary KeyDoors { get; }
 
-        List<(KeyDoorID, bool)> GetAccessibleKeyDoors();
-        List<AccessibilityLevel> GetBossAccessibility();
-        int GetFreeKeys();
-        int GetFreeKeysSequenceBreak();
-        (AccessibilityLevel, int, bool) GetItemAccessibility(
-            int smallKeyValue, bool bigKeyValue, bool sequenceBroken);
-        void SetBigKeyDoorState(bool unlocked);
-        void SetSmallKeyDoorState(List<KeyDoorID> unlockedDoors);
-        bool ValidateKeyLayout(int keysCollected, bool bigKeyCollected);
+        delegate IMutableDungeon Factory(IDungeon dungeon);
+
+        void ApplyState(IDungeonState state);
+        List<KeyDoorID> GetAccessibleKeyDoors(bool sequenceBreak = false);
+        int GetAvailableSmallKeys(bool sequenceBreak = false);
+        IDungeonResult GetDungeonResult(IDungeonState state);
+        bool ValidateKeyLayout(IDungeonState state);
         void Reset();
     }
 }

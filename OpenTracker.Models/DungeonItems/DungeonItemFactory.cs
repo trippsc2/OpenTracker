@@ -6,24 +6,36 @@ using System;
 namespace OpenTracker.Models.DungeonItems
 {
     /// <summary>
-    /// This is the class for creating dungeon items.
+    /// This is the class for the creation logic for dungeon items.
     /// </summary>
-    public static class DungeonItemFactory
+    public class DungeonItemFactory : IDungeonItemFactory
     {
+        private readonly IDungeonItem.Factory _factory;
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="factory">
+        /// The factory for creating dungeon items.
+        /// </param>
+        public DungeonItemFactory(IDungeonItem.Factory factory)
+        {
+            _factory = factory;
+        }
+
         /// <summary>
         /// Returns a dungeon node to which the specified item ID belongs.
         /// </summary>
-        /// <param name="id">
-        /// The dungeon node identity.
-        /// </param>
         /// <param name="dungeonData">
         /// The dungeon mutable data parent class.
+        /// </param>
+        /// <param name="id">
+        /// The dungeon node identity.
         /// </param>
         /// <returns>
         /// A dungeon node.
         /// </returns>
-        private static IRequirementNode GetDungeonItemNode(
-            DungeonItemID id, IMutableDungeon dungeonData)
+        private static IRequirementNode GetDungeonItemNode(IMutableDungeon dungeonData, DungeonItemID id)
         {
             switch (id)
             {
@@ -32,16 +44,18 @@ namespace OpenTracker.Models.DungeonItems
                         return dungeonData.Nodes[DungeonNodeID.HCSanctuary];
                     }
                 case DungeonItemID.HCMapChest:
+                case DungeonItemID.HCMapGuardDrop:
                     {
                         return dungeonData.Nodes[DungeonNodeID.HCFront];
                     }
                 case DungeonItemID.HCBoomerangChest:
+                case DungeonItemID.HCBoomerangGuardDrop:
                     {
                         return dungeonData.Nodes[DungeonNodeID.HCPastEscapeFirstKeyDoor];
                     }
                 case DungeonItemID.HCZeldasCell:
                     {
-                        return dungeonData.Nodes[DungeonNodeID.HCPastEscapeSecondKeyDoor];
+                        return dungeonData.Nodes[DungeonNodeID.HCZeldasCell];
                     }
                 case DungeonItemID.HCDarkCross:
                     {
@@ -52,6 +66,14 @@ namespace OpenTracker.Models.DungeonItems
                 case DungeonItemID.HCSecretRoomRight:
                     {
                         return dungeonData.Nodes[DungeonNodeID.HCBack];
+                    }
+                case DungeonItemID.HCKeyRatDrop:
+                    {
+                        return dungeonData.Nodes[DungeonNodeID.HCPastDarkCrossKeyDoor];
+                    }
+                case DungeonItemID.HCBigKeyDrop:
+                    {
+                        return dungeonData.Nodes[DungeonNodeID.HCPastEscapeSecondKeyDoor];
                     }
                 case DungeonItemID.ATRoom03:
                     {
@@ -64,6 +86,14 @@ namespace OpenTracker.Models.DungeonItems
                 case DungeonItemID.ATBoss:
                     {
                         return dungeonData.Nodes[DungeonNodeID.ATBoss];
+                    }
+                case DungeonItemID.ATDarkArcherDrop:
+                    {
+                        return dungeonData.Nodes[DungeonNodeID.ATPastSecondKeyDoor];
+                    }
+                case DungeonItemID.ATCircleOfPotsDrop:
+                    {
+                        return dungeonData.Nodes[DungeonNodeID.ATPastThirdKeyDoor];
                     }
                 case DungeonItemID.EPCannonballChest:
                 case DungeonItemID.EPMapChest:
@@ -82,6 +112,14 @@ namespace OpenTracker.Models.DungeonItems
                 case DungeonItemID.EPBoss:
                     {
                         return dungeonData.Nodes[DungeonNodeID.EPBoss];
+                    }
+                case DungeonItemID.EPDarkSquarePot:
+                    {
+                        return dungeonData.Nodes[DungeonNodeID.EPRightDarkRoom];
+                    }
+                case DungeonItemID.EPDarkEyegoreDrop:
+                    {
+                        return dungeonData.Nodes[DungeonNodeID.EPBackDarkRoom];
                     }
                 case DungeonItemID.DPMapChest:
                     {
@@ -103,6 +141,18 @@ namespace OpenTracker.Models.DungeonItems
                 case DungeonItemID.DPBoss:
                     {
                         return dungeonData.Nodes[DungeonNodeID.DPBoss];
+                    }
+                case DungeonItemID.DPTiles1Pot:
+                    {
+                        return dungeonData.Nodes[DungeonNodeID.DPBack];
+                    }
+                case DungeonItemID.DPBeamosHallPot:
+                    {
+                        return dungeonData.Nodes[DungeonNodeID.DP2F];
+                    }
+                case DungeonItemID.DPTiles2Pot:
+                    {
+                        return dungeonData.Nodes[DungeonNodeID.DP2FPastFirstKeyDoor];
                     }
                 case DungeonItemID.ToHBasementCage:
                 case DungeonItemID.ToHMapChest:
@@ -174,6 +224,7 @@ namespace OpenTracker.Models.DungeonItems
                         return dungeonData.Nodes[DungeonNodeID.SPAfterRiver];
                     }
                 case DungeonItemID.SPMapChest:
+                case DungeonItemID.SPPotRowPot:
                     {
                         return dungeonData.Nodes[DungeonNodeID.SPB1];
                     }
@@ -182,6 +233,7 @@ namespace OpenTracker.Models.DungeonItems
                         return dungeonData.Nodes[DungeonNodeID.SPBigChest];
                     }
                 case DungeonItemID.SPCompassChest:
+                case DungeonItemID.SPTrench2Pot:
                     {
                         return dungeonData.Nodes[DungeonNodeID.SPB1PastRightHammerBlocks];
                     }
@@ -193,6 +245,7 @@ namespace OpenTracker.Models.DungeonItems
                 case DungeonItemID.SPFloodedRoomLeft:
                 case DungeonItemID.SPFloodedRoomRight:
                 case DungeonItemID.SPWaterfallRoom:
+                case DungeonItemID.SPWaterwayPot:
                     {
                         return dungeonData.Nodes[DungeonNodeID.SPB1PastBackFirstKeyDoor];
                     }
@@ -200,7 +253,16 @@ namespace OpenTracker.Models.DungeonItems
                     {
                         return dungeonData.Nodes[DungeonNodeID.SPBoss];
                     }
+                case DungeonItemID.SPTrench1Pot:
+                    {
+                        return dungeonData.Nodes[DungeonNodeID.SPB1PastFirstRightKeyDoor];
+                    }
+                case DungeonItemID.SPHookshotPot:
+                    {
+                        return dungeonData.Nodes[DungeonNodeID.SPB1KeyLedge];
+                    }
                 case DungeonItemID.SWBigKeyChest:
+                case DungeonItemID.SWWestLobbyPot:
                     {
                         return dungeonData.Nodes[DungeonNodeID.SWFrontBackConnector];
                     }
@@ -229,6 +291,10 @@ namespace OpenTracker.Models.DungeonItems
                     {
                         return dungeonData.Nodes[DungeonNodeID.SWBoss];
                     }
+                case DungeonItemID.SWSpikeCornerDrop:
+                    {
+                        return dungeonData.Nodes[DungeonNodeID.SWBackPastCurtains];
+                    }
                 case DungeonItemID.TTMapChest:
                 case DungeonItemID.TTAmbushChest:
                 case DungeonItemID.TTCompassChest:
@@ -241,6 +307,7 @@ namespace OpenTracker.Models.DungeonItems
                         return dungeonData.Nodes[DungeonNodeID.TTPastSecondKeyDoor];
                     }
                 case DungeonItemID.TTBlindsCell:
+                case DungeonItemID.TTSpikeSwitchPot:
                     {
                         return dungeonData.Nodes[DungeonNodeID.TTPastFirstKeyDoor];
                     }
@@ -252,6 +319,10 @@ namespace OpenTracker.Models.DungeonItems
                     {
                         return dungeonData.Nodes[DungeonNodeID.TTBoss];
                     }
+                case DungeonItemID.TTHallwayPot:
+                    {
+                        return dungeonData.Nodes[DungeonNodeID.TTPastBigKeyDoor];
+                    }
                 case DungeonItemID.IPCompassChest:
                     {
                         return dungeonData.Nodes[DungeonNodeID.IPB1LeftSide];
@@ -261,6 +332,7 @@ namespace OpenTracker.Models.DungeonItems
                         return dungeonData.Nodes[DungeonNodeID.IPSpikeRoom];
                     }
                 case DungeonItemID.IPMapChest:
+                case DungeonItemID.IPHammerBlockDrop:
                     {
                         return dungeonData.Nodes[DungeonNodeID.IPB2PastLiftBlock];
                     }
@@ -277,6 +349,7 @@ namespace OpenTracker.Models.DungeonItems
                         return dungeonData.Nodes[DungeonNodeID.IPBigChest];
                     }
                 case DungeonItemID.IPIcedTRoom:
+                case DungeonItemID.IPManyPotsPot:
                     {
                         return dungeonData.Nodes[DungeonNodeID.IPB5];
                     }
@@ -284,8 +357,17 @@ namespace OpenTracker.Models.DungeonItems
                     {
                         return dungeonData.Nodes[DungeonNodeID.IPBoss];
                     }
+                case DungeonItemID.IPJellyDrop:
+                    {
+                        return dungeonData.Nodes[DungeonNodeID.IPPastEntranceFreezorRoom];
+                    }
+                case DungeonItemID.IPConveyerDrop:
+                    {
+                        return dungeonData.Nodes[DungeonNodeID.IPB2LeftSide];
+                    }
                 case DungeonItemID.MMBridgeChest:
                 case DungeonItemID.MMSpikeChest:
+                case DungeonItemID.MMSpikesPot:
                     {
                         return dungeonData.Nodes[DungeonNodeID.MMPastEntranceGap];
                     }
@@ -312,6 +394,14 @@ namespace OpenTracker.Models.DungeonItems
                 case DungeonItemID.MMBoss:
                     {
                         return dungeonData.Nodes[DungeonNodeID.MMBoss];
+                    }
+                case DungeonItemID.MMFishbonePot:
+                    {
+                        return dungeonData.Nodes[DungeonNodeID.MMB1TopSide];
+                    }
+                case DungeonItemID.MMConveyerCrystalDrop:
+                    {
+                        return dungeonData.Nodes[DungeonNodeID.MMB1LeftSidePastFirstKeyDoor];
                     }
                 case DungeonItemID.TRCompassChest:
                     {
@@ -348,6 +438,14 @@ namespace OpenTracker.Models.DungeonItems
                 case DungeonItemID.TRBoss:
                     {
                         return dungeonData.Nodes[DungeonNodeID.TRBoss];
+                    }
+                case DungeonItemID.TRPokey1Drop:
+                    {
+                        return dungeonData.Nodes[DungeonNodeID.TRF1PastFirstKeyDoor];
+                    }
+                case DungeonItemID.TRPokey2Drop:
+                    {
+                        return dungeonData.Nodes[DungeonNodeID.TRB1];
                     }
                 case DungeonItemID.GTHopeRoomLeft:
                 case DungeonItemID.GTHopeRoomRight:
@@ -407,6 +505,7 @@ namespace OpenTracker.Models.DungeonItems
                     }
                 case DungeonItemID.GTMiniHelmasaurRoomLeft:
                 case DungeonItemID.GTMiniHelmasaurRoomRight:
+                case DungeonItemID.GTMiniHelmasaurDrop:
                     {
                         return dungeonData.Nodes[DungeonNodeID.GT5FPastFourTorchRooms];
                     }
@@ -434,30 +533,38 @@ namespace OpenTracker.Models.DungeonItems
                     {
                         return dungeonData.Nodes[DungeonNodeID.GTFinalBoss];
                     }
+                case DungeonItemID.GTConveyorCrossPot:
+                    {
+                        return dungeonData.Nodes[DungeonNodeID.GT1FLeft];
+                    }
+                case DungeonItemID.GTDoubleSwitchPot:
+                    {
+                        return dungeonData.Nodes[DungeonNodeID.GT1FLeftPastBonkableGaps];
+                    }
+                case DungeonItemID.GTConveyorStarPitsPot:
+                    {
+                        return dungeonData.Nodes[DungeonNodeID.GT1FRightPastCompassRoomPortal];
+                    }
             }
 
             throw new ArgumentOutOfRangeException(nameof(id));
         }
 
         /// <summary>
-        /// Returns a new dungeon item instance of the specified ID.
+        /// Returns a new dungeon item for the specified dungeon data and dungeon item ID.
         /// </summary>
-        /// <param name="id">
-        /// The dungeon node identity.
-        /// </param>
         /// <param name="dungeonData">
-        /// The dungeon mutable data parent class.
+        /// The dungeon data.
         /// </param>
-        /// <returns>A new dungeon item instance.</returns>
-        public static IDungeonItem GetDungeonItem(
-            DungeonItemID id, IMutableDungeon dungeonData)
+        /// <param name="id">
+        /// The dungeon item ID.
+        /// </param>
+        /// <returns>
+        /// A new dungeon item.
+        /// </returns>
+        public IDungeonItem GetDungeonItem(IMutableDungeon dungeonData, DungeonItemID id)
         {
-            if (dungeonData == null)
-            {
-                throw new ArgumentNullException(nameof(dungeonData));
-            }
-
-            return new DungeonItem(id, dungeonData, GetDungeonItemNode(id, dungeonData));
+            return _factory(dungeonData, id, GetDungeonItemNode(dungeonData, id));
         }
     }
 }

@@ -4,11 +4,13 @@ using OpenTracker.Models.Requirements;
 namespace OpenTracker.Models.KeyLayouts
 {
     /// <summary>
-    /// This is the class containing the end key layout.
+    /// This class contains the end of key layout data.
     /// </summary>
     public class EndKeyLayout : IKeyLayout
     {
         private readonly IRequirement _requirement;
+
+        public delegate EndKeyLayout Factory(IRequirement requirement);
 
         /// <summary>
         /// Constructor
@@ -16,9 +18,9 @@ namespace OpenTracker.Models.KeyLayouts
         /// <param name="requirement">
         /// The requirement for this key layout to be valid.
         /// </param>
-        public EndKeyLayout(IRequirement requirement = null)
+        public EndKeyLayout(IRequirement requirement)
         {
-            _requirement = requirement ?? RequirementDictionary.Instance[RequirementType.NoRequirement];
+            _requirement = requirement;
         }
 
         /// <summary>
@@ -36,7 +38,7 @@ namespace OpenTracker.Models.KeyLayouts
         /// <returns>
         /// A boolean representing whether the key layout is possible.
         /// </returns>
-        public bool CanBeTrue(IMutableDungeon dungeonData, int smallKeys, bool bigKey)
+        public bool CanBeTrue(IMutableDungeon dungeonData, IDungeonState state)
         {
             return _requirement.Met;
         }

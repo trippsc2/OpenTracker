@@ -1,13 +1,18 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:OpenTracker.ViewModels.Dropdowns;assembly=OpenTracker"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="OpenTracker.Views.Dropdowns.DropdownPanel">
+             mc:Ignorable="d" x:Class="OpenTracker.Views.Dropdowns.DropdownPanel">
+  
+  <Design.DataContext>
+    <vm:DropdownPanelVM />
+  </Design.DataContext>
+  
   <Border Classes="ControlBorder" Margin="1" IsVisible="{Binding Visible}">
     <StackPanel Orientation="Vertical">
 
-      <Border Classes="UIPanelTitle ItemsPanelTitle">
+      <Border Classes="UIPanelTitle">
         <Grid ColumnDefinitions="Auto,*,Auto">
           <TextBlock Classes="UIPanelTitleText" Grid.Column="0" Text="Dropdowns" />
         </Grid>
@@ -16,16 +21,16 @@
       <LayoutTransformControl>
 
         <LayoutTransformControl.LayoutTransform>
-          <ScaleTransform ScaleX="{Binding Scale}" ScaleY="{Binding Scale}" />
+          <ScaleTransform ScaleX="{Binding Scale}"
+                          ScaleY="{Binding Scale}" />
         </LayoutTransformControl.LayoutTransform>
 
         <Border Classes="UIPanelBody LocationsPanelBody">
           <ItemsControl Items="{Binding Dropdowns}">
             <ItemsControl.ItemsPanel>
               <ItemsPanelTemplate>
-                <WrapPanel ItemWidth="34" ItemHeight="40" MaxWidth="238" MaxHeight="200"
-                     Orientation="Horizontal" HorizontalAlignment="Left"
-                     VerticalAlignment="Top" />
+                <WrapPanel ItemWidth="34" ItemHeight="40" MaxWidth="238" MaxHeight="200" Orientation="Horizontal"
+                           HorizontalAlignment="Left" VerticalAlignment="Top" />
               </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
           </ItemsControl>
@@ -34,4 +39,5 @@
 
     </StackPanel>
   </Border>
+  
 </UserControl>

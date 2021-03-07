@@ -2,48 +2,34 @@
 using Avalonia.Controls;
 using Avalonia.Layout;
 using Avalonia.Threading;
-using Newtonsoft.Json;
-using OpenTracker.Interfaces;
 using OpenTracker.Models.SaveLoad;
-using OpenTracker.Models.SequenceBreaks;
 using OpenTracker.Models.Settings;
-using OpenTracker.ViewModels.ColorSelect;
+using OpenTracker.Utils;
 using OpenTracker.ViewModels.Maps;
-using OpenTracker.ViewModels.SequenceBreaks;
 using ReactiveUI;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
 using System.Reactive;
 using System.Text;
 
 namespace OpenTracker.ViewModels
 {
     /// <summary>
-    /// This is the ViewModel for the main window.
+    /// This class contains the main window ViewModel data.
     /// </summary>
-    public class MainWindowVM : ViewModelBase, IAutoTrackerAccess, IBoundsData, ICloseHandler,
-        IColorSelectAccess, IDynamicLayout, IOpenData, ISaveData, ISequenceBreakAccess
+    public class MainWindowVM : ViewModelBase, IMainWindowVM
     {
-        public static string Title
+        private readonly IAppSettings _appSettings;
+        private readonly ISaveLoadManager _saveLoadManager;
+
+        public string Title
         {
             get
             {
                 var sb = new StringBuilder();
                 sb.Append("OpenTracker - ");
+                sb.Append(_saveLoadManager.CurrentFilePath ?? "Untitled");
 
-                if (SaveLoadManager.Instance.CurrentFilePath == null)
-                {
-                    sb.Append("Untitled");
-                }
-                else
-                {
-                    sb.Append(SaveLoadManager.Instance.CurrentFilePath);
-                }
-
-                if (SaveLoadManager.Instance.Unsaved)
+                if (_saveLoadManager.Unsaved)
                 {
                     sb.Append('*');
                 }
@@ -54,81 +40,97 @@ namespace OpenTracker.ViewModels
 
         public bool? Maximized
         {
-            get => AppSettings.Instance.Bounds.Maximized;
-            set => AppSettings.Instance.Bounds.Maximized = value;
+            get => _appSettings.Bounds.Maximized;
+            set => _appSettings.Bounds.Maximized = value;
         }
         public double? X
         {
-            get => AppSettings.Instance.Bounds.X;
-            set => AppSettings.Instance.Bounds.X = value;
+            get => _appSettings.Bounds.X;
+            set => _appSettings.Bounds.X = value;
         }
         public double? Y
         {
-            get => AppSettings.Instance.Bounds.Y;
-            set => AppSettings.Instance.Bounds.Y = value;
+            get => _appSettings.Bounds.Y;
+            set => _appSettings.Bounds.Y = value;
         }
         public double? Width
         {
-            get => AppSettings.Instance.Bounds.Width;
-            set => AppSettings.Instance.Bounds.Width = value;
+            get => _appSettings.Bounds.Width;
+            set => _appSettings.Bounds.Width = value;
         }
         public double? Height
         {
-            get => AppSettings.Instance.Bounds.Height;
-            set => AppSettings.Instance.Bounds.Height = value;
+            get => _appSettings.Bounds.Height;
+            set => _appSettings.Bounds.Height = value;
         }
 
-        public string CurrentFilePath =>
-            SaveLoadManager.Instance.CurrentFilePath;
-
-        public static Dock UIDock =>
-            AppSettings.Instance.Layout.CurrentLayoutOrientation switch
+        public Dock UIDock =>
+            _appSettings.Layout.CurrentLayoutOrientation switch
             {
-                Orientation.Horizontal => AppSettings.Instance.Layout.HorizontalUIPanelPlacement,
-                _ => AppSettings.Instance.Layout.VerticalUIPanelPlacement
+                Orientation.Horizontal => _appSettings.Layout.HorizontalUIPanelPlacement,
+                _ => _appSettings.Layout.VerticalUIPanelPlacement
             };
 
-        public Screens Screens { get; set; }
+        public ITopMenuVM TopMenu { get; }
+        public IStatusBarVM StatusBar { get; }
+        public IUIPanelVM UIPanel { get; }
+        public IMapAreaVM MapArea { get; }
 
-        public AutoTrackerDialogVM AutoTrackerDialog { get; } =
-            new AutoTrackerDialogVM();
-        public TopMenuVM TopMenu { get; } =
-            new TopMenuVM();
-        public UIPanelVM UIPanel { get; } =
-            new UIPanelVM();
-        public MapAreaVM MapArea { get; } =
-            new MapAreaVM();
-        public StatusBarVM StatusBar { get; } =
-            new StatusBarVM();
-
-        private bool _aboutPageOpen;
-        public bool AboutPageOpen
-        {
-            get => _aboutPageOpen;
-            set => this.RaiseAndSetIfChanged(ref _aboutPageOpen, value);
-        }
-
-        public ReactiveCommand<Unit, Unit> OpenResetDialogCommand =>
-            TopMenu.OpenResetDialogCommand;
-        public ReactiveCommand<Unit, Unit> UndoCommand =>
-            TopMenu.UndoCommand;
-        public ReactiveCommand<Unit, Unit> RedoCommand =>
-            TopMenu.RedoCommand;
-        public ReactiveCommand<Unit, Unit> ToggleDisplayAllLocationsCommand =>
-            TopMenu.ToggleDisplayAllLocationsCommand;
+        public ReactiveCommand<Unit, Unit> Open { get; }
+        public ReactiveCommand<Unit, Unit> Save { get; }
+        public ReactiveCommand<Unit, Unit> SaveAs { get; }
+        public ReactiveCommand<Unit, Unit> Reset { get; }
+        public ReactiveCommand<Unit, Unit> Undo { get; }
+        public ReactiveCommand<Unit, Unit> Redo { get; }
+        public ReactiveCommand<Unit, Unit> ToggleDisplayAllLocations { get; }
 
         /// <summary>
         /// Constructor
         /// </summary>
-        public MainWindowVM()
+        /// <param name="appSettings">
+        /// The app settings data.
+        /// </param>
+        /// <param name="saveLoadManager">
+        /// The save/load manager.
+        /// </param>
+        /// <param name="topMenu">
+        /// The top menu control.
+        /// </param>
+        /// <param name="statusBar">
+        /// The status bar control.
+        /// </param>
+        /// <param name="uiPanel">
+        /// The UI panel control.
+        /// </param>
+        /// <param name="mapArea">
+        /// The map area control.
+        /// </param>
+        public MainWindowVM(
+            IAppSettings appSettings, ISaveLoadManager saveLoadManager, ITopMenuVM topMenu, IStatusBarVM statusBar,
+            IUIPanelVM uiPanel, IMapAreaVM mapArea)
         {
-            SaveLoadManager.Instance.PropertyChanged += OnSaveLoadManagerChanged;
-            AppSettings.Instance.Layout.PropertyChanged += OnLayoutChanged;
-            LoadSequenceBreaks();
+            _appSettings = appSettings;
+            _saveLoadManager = saveLoadManager;
+
+            TopMenu = topMenu;
+            StatusBar = statusBar;
+            UIPanel = uiPanel;
+            MapArea = mapArea;
+
+            Open = TopMenu.Open;
+            Save = TopMenu.Save;
+            SaveAs = TopMenu.SaveAs;
+            Reset = TopMenu.Reset;
+            Undo = TopMenu.Undo;
+            Redo = TopMenu.Redo;
+            ToggleDisplayAllLocations = TopMenu.ToggleDisplayAllLocations;
+
+            _saveLoadManager.PropertyChanged += OnSaveLoadManagerChanged;
+            _appSettings.Layout.PropertyChanged += OnLayoutChanged;
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the SaveLoadManager class.
+        /// Subscribes to the PropertyChanged event on the ISaveLoadManager interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -136,17 +138,17 @@ namespace OpenTracker.ViewModels
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnSaveLoadManagerChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnSaveLoadManagerChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(SaveLoadManager.CurrentFilePath) ||
-                e.PropertyName == nameof(SaveLoadManager.Unsaved))
+            if (e.PropertyName == nameof(ISaveLoadManager.CurrentFilePath) ||
+                e.PropertyName == nameof(ISaveLoadManager.Unsaved))
             {
-                this.RaisePropertyChanged(nameof(Title));
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Title)));
             }
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the LayoutSettings class.
+        /// Subscribes to the PropertyChanged event on the ILayoutSettings interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -154,24 +156,14 @@ namespace OpenTracker.ViewModels
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(LayoutSettings.CurrentLayoutOrientation) ||
                 e.PropertyName == nameof(LayoutSettings.HorizontalUIPanelPlacement) ||
                 e.PropertyName == nameof(LayoutSettings.VerticalUIPanelPlacement))
             {
-                this.RaisePropertyChanged(nameof(UIDock));
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(UIDock)));
             }
-        }
-
-        private static void OpenErrorBox(string message)
-        {
-            Dispatcher.UIThread.InvokeAsync(async () =>
-            {
-                bool? result = await App.DialogService.ShowDialog(
-                    new ErrorBoxDialogVM("Error", message))
-                    .ConfigureAwait(false);
-            });
         }
 
         /// <summary>
@@ -183,80 +175,7 @@ namespace OpenTracker.ViewModels
         /// </param>
         public void ChangeLayout(Orientation orientation)
         {
-            AppSettings.Instance.Layout.CurrentDynamicOrientation = orientation;
-        }
-
-        /// <summary>
-        /// Saves the tracker data to a file at the specified path.
-        /// </summary>
-        /// <param name="path">
-        /// The file path to which the tracker data is to be saved.
-        /// </param>
-        public void Save(string path = null)
-        {
-            try
-            {
-                SaveLoadManager.Save(path);
-            }
-            catch (Exception ex)
-            {
-                string message;
-
-                switch (ex)
-                {
-                    case UnauthorizedAccessException uaex:
-                        {
-                            message = "Unable to save to the selected directory.  Check the file permissions and try again.";
-                        }
-                        break;
-                    default:
-                        {
-                            message = ex.Message;
-                        }
-                        break;
-                }
-
-                OpenErrorBox(message);
-            }
-        }
-
-        /// <summary>
-        /// Opens and reads the tracker data from a file at the specified path.
-        /// </summary>
-        /// <param name="path">
-        /// The file path to which the tracker data is to be opened.
-        /// </param>
-        public void Open(string path)
-        {
-            try
-            {
-                SaveLoadManager.Open(path);
-            }
-            catch (Exception ex)
-            {
-                string message;
-
-                switch (ex)
-                {
-                    case JsonReaderException jex:
-                        {
-                            message = "The selected file is not a valid JSON file.";
-                        }
-                        break;
-                    case UnauthorizedAccessException uaex:
-                        {
-                            message = "The file cannot be read.  Check the permissions on the selected file.";
-                        }
-                        break;
-                    default:
-                        {
-                            message = ex.Message;
-                        }
-                        break;
-                }
-
-                OpenErrorBox(message);
-            }
+            _appSettings.Layout.CurrentDynamicOrientation = orientation;
         }
 
         /// <summary>
@@ -268,64 +187,18 @@ namespace OpenTracker.ViewModels
         /// <param name="bounds">
         /// The boundaries of the window.
         /// </param>
-        private static void SaveAppSettings(bool maximized, Rect bounds, PixelPoint pixelPoint)
+        /// <param name="pixelPoint">
+        /// The pixel point representing the current window position.
+        /// </param>
+        private void SaveAppSettings(bool maximized, Rect bounds, PixelPoint pixelPoint)
         {
-            AppSettings.Instance.Bounds.Maximized = maximized;
-            AppSettings.Instance.Bounds.X = pixelPoint.X;
-            AppSettings.Instance.Bounds.Y = pixelPoint.Y;
-            AppSettings.Instance.Bounds.Width = bounds.Width;
-            AppSettings.Instance.Bounds.Height = bounds.Height;
+            _appSettings.Bounds.Maximized = maximized;
+            _appSettings.Bounds.X = pixelPoint.X;
+            _appSettings.Bounds.Y = pixelPoint.Y;
+            _appSettings.Bounds.Width = bounds.Width;
+            _appSettings.Bounds.Height = bounds.Height;
 
-            string appSettingsPath = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "OpenTracker", "OpenTracker.json");
-
-            if (File.Exists(appSettingsPath))
-            {
-                File.Delete(appSettingsPath);
-            }
-
-            string json = JsonConvert.SerializeObject(AppSettings.Instance.Save(), Formatting.Indented);
-            File.WriteAllText(appSettingsPath, json);
-        }
-
-        /// <summary>
-        /// Saves the sequence break settings to a file.
-        /// </summary>
-        private static void SaveSequenceBreaks()
-        {
-            string sequenceBreakPath = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "OpenTracker", "sequencebreak.json");
-
-            if (File.Exists(sequenceBreakPath))
-            {
-                File.Delete(sequenceBreakPath);
-            }
-
-            var sequenceBreakData = SequenceBreakDictionary.Instance.Save();
-
-            string json = JsonConvert.SerializeObject(sequenceBreakData, Formatting.Indented);
-            File.WriteAllText(sequenceBreakPath, json);
-        }
-
-        /// <summary>
-        /// Loads the sequence break settings from a file.
-        /// </summary>
-        private static void LoadSequenceBreaks()
-        {
-            string sequenceBreakPath = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "OpenTracker", "sequencebreak.json");
-
-            if (File.Exists(sequenceBreakPath))
-            {
-                string jsonContent = File.ReadAllText(sequenceBreakPath);
-                Dictionary<SequenceBreakType, SequenceBreakSaveData> sequenceBreaks = JsonConvert
-                    .DeserializeObject<Dictionary<SequenceBreakType, SequenceBreakSaveData>>(jsonContent);
-
-                SequenceBreakDictionary.Instance.Load(sequenceBreaks);
-            }
+            JsonConversion.Save(_appSettings.Save(), AppPath.AppSettingsFilePath);
         }
 
         /// <summary>
@@ -337,43 +210,12 @@ namespace OpenTracker.ViewModels
         /// <param name="bounds">
         /// The boundaries of the window.
         /// </param>
+        /// <param name="pixelPoint">
+        /// The pixel point representing the current window position.
+        /// </param>
         public void Close(bool maximized, Rect bounds, PixelPoint pixelPoint)
         {
             SaveAppSettings(maximized, bounds, pixelPoint);
-            SaveSequenceBreaks();
-        }
-
-        /// <summary>
-        /// Returns the autotracker ViewModel.
-        /// </summary>
-        /// <returns>
-        /// The autotracker ViewModel.
-        /// </returns>
-        public object GetAutoTrackerViewModel()
-        {
-            return AutoTrackerDialog;
-        }
-
-        /// <summary>
-        /// Returns a new color select ViewModel.
-        /// </summary>
-        /// <returns>
-        /// A new color select ViewModel.
-        /// </returns>
-        public object GetColorSelectViewModel()
-        {
-            return new ColorSelectDialogVM();
-        }
-
-        /// <summary>
-        /// Returns a new sequence break dialog ViewModel.
-        /// </summary>
-        /// <returns>
-        /// A new color select ViewModel.
-        /// </returns>
-        public object GetSequenceBreakViewModel()
-        {
-            return SequenceBreakDialogVMFactory.GetSequenceBreakDialogVM();
         }
     }
 }

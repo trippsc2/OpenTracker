@@ -1,4 +1,4 @@
-﻿using OpenTracker.Models.AutoTracking.AutotrackValues;
+﻿using OpenTracker.Models.AutoTracking.Values;
 using OpenTracker.Models.SaveLoad;
 using System;
 using System.ComponentModel;
@@ -6,14 +6,14 @@ using System.ComponentModel;
 namespace OpenTracker.Models.Items
 {
     /// <summary>
-    /// This is the item data class.
+    /// This class contains item data.
     /// </summary>
     public class Item : IItem
     {
         private readonly int _starting;
-        private readonly IAutoTrackValue _autoTrackValue;
+        private readonly IAutoTrackValue? _autoTrackValue;
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         private int _current;
         public int Current
@@ -29,19 +29,25 @@ namespace OpenTracker.Models.Items
             }
         }
 
+        public delegate Item Factory(int starting, IAutoTrackValue? autoTrackValue);
+
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="type">
+        /// The item type.
+        /// </param>
         /// <param name="starting">
         /// A 32-bit signed integer representing the starting value of the item.
         /// </param>
         /// <param name="autoTrackValue">
-        /// The autotracking value for the item.
+        /// The autotrack value.
         /// </param>
-        public Item(int starting, IAutoTrackValue autoTrackValue)
+        public Item(int starting, IAutoTrackValue? autoTrackValue)
         {
             _starting = starting;
             _autoTrackValue = autoTrackValue;
+
             Current = _starting;
 
             if (_autoTrackValue != null)
@@ -56,7 +62,7 @@ namespace OpenTracker.Models.Items
         /// <param name="propertyName">
         /// The string of the property name of the changed property.
         /// </param>
-        private void OnPropertyChanged(string propertyName)
+        protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
@@ -70,7 +76,7 @@ namespace OpenTracker.Models.Items
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnAutoTrackChanged(object sender, PropertyChangedEventArgs e)
+        private void OnAutoTrackChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IAutoTrackValue.CurrentValue))
             {
@@ -83,12 +89,12 @@ namespace OpenTracker.Models.Items
         /// </summary>
         private void AutoTrackUpdate()
         {
-            if (_autoTrackValue.CurrentValue.HasValue)
+            if (_autoTrackValue!.CurrentValue.HasValue)
             {
                 if (Current != _autoTrackValue.CurrentValue.Value)
                 {
                     Current = _autoTrackValue.CurrentValue.Value;
-                    SaveLoadManager.Instance.Unsaved = true;
+                    //SaveLoadManager.Instance.Unsaved = true;
                 }
             }
         }
@@ -139,7 +145,7 @@ namespace OpenTracker.Models.Items
         /// <summary>
         /// Resets the item to its starting values.
         /// </summary>
-        public void Reset()
+        public virtual void Reset()
         {
             Current = _starting;
         }

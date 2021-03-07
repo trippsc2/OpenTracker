@@ -1,27 +1,31 @@
-﻿using OpenTracker.Models.Locations;
+﻿using Avalonia.Threading;
+using OpenTracker.Models.Locations;
 using OpenTracker.Models.Markings;
 using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
+using OpenTracker.Utils;
 using ReactiveUI;
-using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reactive;
 
 namespace OpenTracker.ViewModels.Markings
 {
     /// <summary>
-    /// This is the ViewModel class for the note marking select popup control.
+    /// This class contains the note marking select popup control ViewModel data.
     /// </summary>
-    public class NoteMarkingSelectVM : ViewModelBase
+    public class NoteMarkingSelectVM : ViewModelBase, INoteMarkingSelectVM
     {
+        private readonly ILayoutSettings _layoutSettings;
+        private readonly IUndoRedoManager _undoRedoManager;
+        private readonly IUndoableFactory _undoableFactory;
+
         private readonly IMarking _marking;
         private readonly ILocation _location;
 
-        public static double Scale =>
-            AppSettings.Instance.Layout.UIScale;
+        public double Scale => _layoutSettings.UIScale;
 
-        public ObservableCollection<MarkingSelectItemVMBase> Buttons { get; }
+        public List<IMarkingSelectItemVMBase> Buttons { get; }
 
         private bool _popupOpen;
         public bool PopupOpen
@@ -30,36 +34,54 @@ namespace OpenTracker.ViewModels.Markings
             set => this.RaiseAndSetIfChanged(ref _popupOpen, value);
         }
 
-        public ReactiveCommand<MarkType?, Unit> ChangeMarkingCommand { get; }
-        public ReactiveCommand<Unit, Unit> RemoveNoteCommand { get; }
+        public ReactiveCommand<MarkType?, Unit> ChangeMarking { get; }
+        public ReactiveCommand<Unit, Unit> RemoveNote { get; }
+
+        public delegate INoteMarkingSelectVM Factory(
+            IMarking marking, List<IMarkingSelectItemVMBase> buttons, ILocation location);
 
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="layoutSettings">
+        /// The layout settings data.
+        /// </param>
+        /// <param name="undoRedoManager">
+        /// The undo/redo manager.
+        /// </param>
+        /// <param name="undoableFactory">
+        /// A factory for creating undoable actions.
+        /// </param>
         /// <param name="marking">
         /// The marking to be represented.
         /// </param>
         /// <param name="buttons">
-        /// The observable collection of marking select button ViewModel instances.
+        /// The observable collection of marking select buttons.
         /// </param>
         /// <param name="location">
         /// The location.
         /// </param>
         public NoteMarkingSelectVM(
-            IMarking marking, ObservableCollection<MarkingSelectItemVMBase> buttons,
-            ILocation location)
+            ILayoutSettings layoutSettings, IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory,
+            IMarking marking, List<IMarkingSelectItemVMBase> buttons, ILocation location)
         {
-            _marking = marking ?? throw new ArgumentNullException(nameof(marking));
-            Buttons = buttons ?? throw new ArgumentNullException(nameof(buttons));
-            _location = location ?? throw new ArgumentNullException(nameof(location));
-            ChangeMarkingCommand = ReactiveCommand.Create<MarkType?>(ChangeMarking);
-            RemoveNoteCommand = ReactiveCommand.Create(RemoveNote);
+            _layoutSettings = layoutSettings;
+            _undoRedoManager = undoRedoManager;
+            _undoableFactory = undoableFactory;
 
-            AppSettings.Instance.Layout.PropertyChanged += OnLayoutChanged;
+            _marking = marking;
+            _location = location;
+
+            Buttons = buttons;
+
+            ChangeMarking = ReactiveCommand.Create<MarkType?>(ChangeMarkingImpl);
+            RemoveNote = ReactiveCommand.Create(RemoveNoteImpl);
+
+            _layoutSettings.PropertyChanged += OnLayoutChanged;
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the LayoutSettings class.
+        /// Subscribes to the PropertyChanged event on the ILayoutSettings interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -67,20 +89,20 @@ namespace OpenTracker.ViewModels.Markings
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnLayoutChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(LayoutSettings.UIScale))
+            if (e.PropertyName == nameof(ILayoutSettings.UIScale))
             {
-                this.RaisePropertyChanged(nameof(Scale));
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Scale)));
             }
         }
 
         /// <summary>
         /// Remove the note.
         /// </summary>
-        private void RemoveNote()
+        private void RemoveNoteImpl()
         {
-            UndoRedoManager.Instance.Execute(new RemoveNote(_marking, _location));
+            _undoRedoManager.NewAction(_undoableFactory.GetRemoveNote(_marking, _location));
             PopupOpen = false;
         }
 
@@ -90,14 +112,14 @@ namespace OpenTracker.ViewModels.Markings
         /// <param name="marking">
         /// The marking to be set.
         /// </param>
-        private void ChangeMarking(MarkType? marking)
+        private void ChangeMarkingImpl(MarkType? marking)
         {
             if (marking == null)
             {
                 return;
             }
 
-            UndoRedoManager.Instance.Execute(new SetMarking(_marking, marking.Value));
+            _undoRedoManager.NewAction(_undoableFactory.GetSetMarking(_marking, marking.Value));
             PopupOpen = false;
         }
     }

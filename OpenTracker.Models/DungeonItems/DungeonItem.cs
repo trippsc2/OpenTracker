@@ -2,21 +2,23 @@
 using OpenTracker.Models.DungeonNodes;
 using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.RequirementNodes;
-using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.DungeonItems
 {
     /// <summary>
-    /// This is the class for mutable dungeon item data.
+    /// This class contains mutable dungeon item data.
     /// </summary>
     public class DungeonItem : IDungeonItem
     {
-        private readonly DungeonItemID _id;
         private readonly IMutableDungeon _dungeonData;
+#if DEBUG
+        private readonly DungeonItemID _id;
+#endif
         private readonly IRequirementNode _node;
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         private AccessibilityLevel _accessibility;
         public AccessibilityLevel Accessibility
@@ -24,34 +26,38 @@ namespace OpenTracker.Models.DungeonItems
             get => _accessibility;
             private set
             {
-                if (_accessibility != value)
+                if (_accessibility == value)
                 {
-                    _accessibility = value;
-                    OnPropertyChanged(nameof(Accessibility));
+                    return;
                 }
+                
+                _accessibility = value;
+                OnPropertyChanged(nameof(Accessibility));
             }
         }
 
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="id">
-        /// The item identity.
-        /// </param>
         /// <param name="dungeonData">
         /// The mutable dungeon data parent class.
+        /// </param>
+        /// <param name="id">
+        /// The item identity.
         /// </param>
         /// <param name="node">
         /// The dungeon node to which this item belongs.
         /// </param>
         public DungeonItem(
-            DungeonItemID id, IMutableDungeon dungeonData, IRequirementNode node)
+            IMutableDungeon dungeonData, DungeonItemID id, IRequirementNode node)
         {
+            _dungeonData = dungeonData;
+#if DEBUG
             _id = id;
-            _dungeonData = dungeonData ?? throw new ArgumentNullException(nameof(dungeonData));
-            _node = node ?? throw new ArgumentNullException(nameof(node));
+#endif
+            _node = node;
 
-            _dungeonData.ItemDictionary.DungeonItemCreated += OnDungeonItemCreated;
+            _dungeonData.DungeonItems.ItemCreated += OnDungeonItemCreated;
         }
 
         /// <summary>
@@ -66,7 +72,7 @@ namespace OpenTracker.Models.DungeonItems
         }
 
         /// <summary>
-        /// Subscribes to the DungeonItemCreated event on the DungeonItemDictionary class.
+        /// Subscribes to the DungeonItemCreated event on the IDungeonItemDictionary interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -74,14 +80,16 @@ namespace OpenTracker.Models.DungeonItems
         /// <param name="e">
         /// The arguments of the DungeonItemCreated event.
         /// </param>
-        private void OnDungeonItemCreated(object sender, DungeonItemID id)
+        private void OnDungeonItemCreated(object? sender, KeyValuePair<DungeonItemID, IDungeonItem> e)
         {
-            if (id == _id)
+            if (e.Value != this)
             {
-                _node.PropertyChanged += OnNodeChanged;
-                UpdateAccessibility();
-                _dungeonData.ItemDictionary.DungeonItemCreated -= OnDungeonItemCreated;
+                return;
             }
+            
+            _dungeonData.DungeonItems.ItemCreated -= OnDungeonItemCreated;
+            _node.PropertyChanged += OnNodeChanged;
+            UpdateAccessibility();
         }
 
         /// <summary>
@@ -93,7 +101,7 @@ namespace OpenTracker.Models.DungeonItems
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnNodeChanged(object sender, PropertyChangedEventArgs e)
+        private void OnNodeChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IDungeonNode.Accessibility))
             {

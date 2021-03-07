@@ -8,7 +8,7 @@ using System.ComponentModel;
 namespace OpenTracker.Models.Sections
 {
     /// <summary>
-    /// This is the class containing take any sections.
+    /// This class contains take any section data.
     /// </summary>
     public class TakeAnySection : ITakeAnySection
     {
@@ -19,7 +19,7 @@ namespace OpenTracker.Models.Sections
         public IRequirement Requirement { get; }
         public bool UserManipulated { get; set; }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         public AccessibilityLevel Accessibility =>
             _node.Accessibility;
@@ -38,6 +38,8 @@ namespace OpenTracker.Models.Sections
             }
         }
 
+        public delegate TakeAnySection Factory(IRequirementNode node, IRequirement requirement);
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -47,11 +49,10 @@ namespace OpenTracker.Models.Sections
         /// <param name="requirement">
         /// The requirement for this section to be visible.
         /// </param>
-        public TakeAnySection(IRequirementNode node, IRequirement requirement = null)
+        public TakeAnySection(IRequirementNode node, IRequirement requirement)
         {
-            _node = node ?? throw new ArgumentNullException(nameof(node));
-            Requirement = requirement ??
-                RequirementDictionary.Instance[RequirementType.NoRequirement];
+            _node = node;
+            Requirement = requirement;
             Available = 1;
 
             _node.PropertyChanged += OnRequirementChanged;

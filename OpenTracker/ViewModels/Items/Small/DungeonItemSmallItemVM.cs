@@ -1,56 +1,74 @@
-﻿using OpenTracker.Interfaces;
+﻿using Avalonia.Input;
+using Avalonia.Threading;
 using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.Sections;
 using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
+using OpenTracker.Utils;
 using ReactiveUI;
-using System;
 using System.ComponentModel;
 using System.Globalization;
+using System.Reactive;
+using System.Threading.Tasks;
 
 namespace OpenTracker.ViewModels.Items.Small
 {
     /// <summary>
-    /// This is the ViewModel for the small Items panel control representing dungeon items.
+    /// This class contains dungeon items small items panel control ViewModel data.
     /// </summary>
-    public class DungeonItemSmallItemVM : SmallItemVMBase, IClickHandler
+    public class DungeonItemSmallItemVM : ViewModelBase, ISmallItemVMBase
     {
+        private readonly IColorSettings _colorSettings;
+        private readonly IUndoRedoManager _undoRedoManager;
+        private readonly IUndoableFactory _undoableFactory;
+
         private readonly ISection _section;
 
         public string FontColor =>
-            _section.Available == 0 ? "#ffffffff" :
-            AppSettings.Instance.Colors.AccessibilityColors[_section.Accessibility];
-        public string ImageSource
-        {
-            get
+            _section.Available == 0 ? "#ffffffff" : _colorSettings.AccessibilityColors[_section.Accessibility];
+        public string ImageSource =>
+            "avares://OpenTracker/Assets/Images/chest" +
+            (_section.IsAvailable() ? _section.Accessibility switch
             {
-                if (_section.IsAvailable())
-                {
-                    return _section.Accessibility switch
-                    {
-                        AccessibilityLevel.None => "avares://OpenTracker/Assets/Images/chest0.png",
-                        AccessibilityLevel.Inspect => "avares://OpenTracker/Assets/Images/chest0.png",
-                        _ => "avares://OpenTracker/Assets/Images/chest1.png"
-                    };
-                }
-                
-                return "avares://OpenTracker/Assets/Images/chest2.png";
-            }
-        }
-        public string NumberString =>
-            _section.Available.ToString(CultureInfo.InvariantCulture);
+                AccessibilityLevel.None => "0",
+                AccessibilityLevel.Inspect => "0",
+                _ => "1"
+            } : "2") + ".png";
+
+        public string NumberString => _section.Available.ToString(CultureInfo.InvariantCulture);
+        
+        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
+
+        public delegate DungeonItemSmallItemVM Factory(ISection section);
 
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="colorSettings">
+        /// The color settings data.
+        /// </param>
+        /// <param name="undoRedoManager">
+        /// The undo/redo manager.
+        /// </param>
+        /// <param name="undoableFactory">
+        /// A factory for creating undoable actions.
+        /// </param>
         /// <param name="section">
         /// The dungeon section to be represented.
         /// </param>
-        public DungeonItemSmallItemVM(ISection section)
+        public DungeonItemSmallItemVM(
+            IColorSettings colorSettings, IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory,
+            ISection section)
         {
-            _section = section ?? throw new ArgumentNullException(nameof(section));
+            _colorSettings = colorSettings;
+            _undoRedoManager = undoRedoManager;
+            _undoableFactory = undoableFactory;
 
-            AppSettings.Instance.Colors.AccessibilityColors.PropertyChanged += OnColorChanged;
+            _section = section;
+            
+            HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
+            
+            _colorSettings.AccessibilityColors.PropertyChanged += OnColorChanged;
             _section.PropertyChanged += OnSectionChanged;
         }
 
@@ -64,9 +82,9 @@ namespace OpenTracker.ViewModels.Items.Small
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnColorChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnColorChanged(object sender, PropertyChangedEventArgs e)
         {
-            UpdateTextColor();
+            await UpdateTextColor();
         }
 
         /// <summary>
@@ -78,58 +96,74 @@ namespace OpenTracker.ViewModels.Items.Small
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnSectionChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnSectionChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ISection.Accessibility))
             {
-                UpdateTextColor();
-                UpdateImage();
+                await UpdateTextColor();
+                await UpdateImage();
             }
 
             if (e.PropertyName == nameof(ISection.Available))
             {
-                this.RaisePropertyChanged(nameof(NumberString));
-                UpdateTextColor();
-                UpdateImage();
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(NumberString)));
+                await UpdateTextColor();
+                await UpdateImage();
             }
         }
 
         /// <summary>
         /// Raises the PropertyChanged event for the FontColor property.
         /// </summary>
-        private void UpdateTextColor()
+        private async Task UpdateTextColor()
         {
-            this.RaisePropertyChanged(nameof(FontColor));
+            await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(FontColor)));
         }
 
         /// <summary>
         /// Raises the PropertyChanged event for the ImageSource property.
         /// </summary>
-        private void UpdateImage()
+        private async Task UpdateImage()
         {
-            this.RaisePropertyChanged(nameof(ImageSource));
+            await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(ImageSource)));
         }
 
         /// <summary>
-        /// Handles left clicks and collects the section.
+        /// Creates an undoable action to collect the section and sends it to the undo/redo manager.
         /// </summary>
         /// <param name="force">
         /// A boolean representing whether the logic should be ignored.
         /// </param>
-        public void OnLeftClick(bool force)
+        private void CollectSection(bool force)
         {
-            UndoRedoManager.Instance.Execute(new CollectSection(_section, force));
+            _undoRedoManager.NewAction(_undoableFactory.GetCollectSection(_section, force));
         }
 
         /// <summary>
-        /// Handles right clicks and uncollects the section.
+        /// Creates an undoable action to un-collect the section and sends it to the undo/redo manager.
         /// </summary>
-        /// <param name="force">
-        /// A boolean representing whether the logic should be ignored.
-        /// </param>
-        public void OnRightClick(bool force)
+        private void UncollectSection()
         {
-            UndoRedoManager.Instance.Execute(new UncollectSection(_section));
+            _undoRedoManager.NewAction(_undoableFactory.GetUncollectSection(_section));
+        }
+
+        /// <summary>
+        /// Handles clicking the control.
+        /// </summary>
+        /// <param name="e">
+        /// The pointer released event args.
+        /// </param>
+        private void HandleClickImpl(PointerReleasedEventArgs e)
+        {
+            switch (e.InitialPressMouseButton)
+            {
+                case MouseButton.Left:
+                    CollectSection((e.KeyModifiers & KeyModifiers.Control) > 0);
+                    break;
+                case MouseButton.Right:
+                    UncollectSection();
+                    break;
+            }
         }
     }
 }

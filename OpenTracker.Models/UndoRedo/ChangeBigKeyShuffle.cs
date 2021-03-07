@@ -3,21 +3,30 @@
 namespace OpenTracker.Models.UndoRedo
 {
     /// <summary>
-    /// This is the class for an undoable action to change the big key shuffle setting.
+    /// This class contains undoable action data to change the big key shuffle setting.
     /// </summary>
     public class ChangeBigKeyShuffle : IUndoable
     {
+        private readonly IMode _mode;
+
         private readonly bool _bigKeyShuffle;
+
         private bool _previousBigKeyShuffle;
+
+        public delegate ChangeBigKeyShuffle Factory(bool bigKeyShuffle);
 
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="mode">
+        /// The mode settings.
+        /// </param>
         /// <param name="bigKeyShuffle">
         /// The new big key shuffle setting.
         /// </param>
-        public ChangeBigKeyShuffle(bool bigKeyShuffle)
+        public ChangeBigKeyShuffle(IMode mode, bool bigKeyShuffle)
         {
+            _mode = mode;
             _bigKeyShuffle = bigKeyShuffle;
         }
 
@@ -35,18 +44,18 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Executes the action.
         /// </summary>
-        public void Execute()
+        public void ExecuteDo()
         {
-            _previousBigKeyShuffle = Mode.Instance.BigKeyShuffle;
-            Mode.Instance.BigKeyShuffle = _bigKeyShuffle;
+            _previousBigKeyShuffle = _mode.BigKeyShuffle;
+            _mode.BigKeyShuffle = _bigKeyShuffle;
         }
 
         /// <summary>
         /// Undoes the action.
         /// </summary>
-        public void Undo()
+        public void ExecuteUndo()
         {
-            Mode.Instance.BigKeyShuffle = _previousBigKeyShuffle;
+            _mode.BigKeyShuffle = _previousBigKeyShuffle;
         }
     }
 }

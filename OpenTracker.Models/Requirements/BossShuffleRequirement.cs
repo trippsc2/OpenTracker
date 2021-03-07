@@ -1,85 +1,57 @@
-﻿using OpenTracker.Models.AccessibilityLevels;
-using OpenTracker.Models.Modes;
+﻿using OpenTracker.Models.Modes;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.Requirements
 {
     /// <summary>
-    /// This is the class for boss shuffle requirements.
+    /// This class contains boss shuffle requirement data.
     /// </summary>
-    internal class BossShuffleRequirement : IRequirement
+    public class BossShuffleRequirement : BooleanRequirement
     {
-        private readonly bool _bossShuffle;
+        private readonly IMode _mode;
+        private readonly bool _expectedValue;
 
-        public bool Met =>
-            Accessibility != AccessibilityLevel.None;
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private AccessibilityLevel _accessibility;
-        public AccessibilityLevel Accessibility
-        {
-            get => _accessibility;
-            private set
-            {
-                if (_accessibility != value)
-                {
-                    _accessibility = value;
-                    OnPropertyChanged(nameof(Accessibility));
-                }
-            }
-        }
+        public delegate BossShuffleRequirement Factory(bool expectedValue);
 
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="mode">
+        /// The mode settings.
+        /// </param>
         /// <param name="bossShuffle">
-        /// The required boss shuffle value.
+        /// The expected boss shuffle value.
         /// </param>
-        public BossShuffleRequirement(bool bossShuffle)
+        public BossShuffleRequirement(IMode mode, bool expectedValue)
         {
-            _bossShuffle = bossShuffle;
+            _mode = mode;
+            _expectedValue = expectedValue;
 
-            Mode.Instance.PropertyChanged += OnModeChanged;
+            _mode.PropertyChanged += OnModeChanged;
 
-            UpdateAccessibility();
+            UpdateValue();
         }
 
         /// <summary>
-        /// Raises the PropertyChanged event for the specified property.
-        /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changed property.
-        /// </param>
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        /// <summary>
-        /// Subscribes to the PropertyChanged event on the Mode class.
+        /// Subscribes to the PropertyChanged event on the IMode interface.
         /// </summary>
         /// <param name="sender">
-        /// The sending object of the event.
+        /// The event sender.
         /// </param>
         /// <param name="e">
-        /// The arguments of the PropertyChanged event.
+        /// The PropertyChanged event args.
         /// </param>
-        private void OnModeChanged(object sender, PropertyChangedEventArgs e)
+        private void OnModeChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(Mode.BossShuffle))
+            if (e.PropertyName == nameof(IMode.BossShuffle))
             {
-                UpdateAccessibility();
+                UpdateValue();
             }
         }
 
-        /// <summary>
-        /// Updates the accessibility of this requirement.
-        /// </summary>
-        private void UpdateAccessibility()
+        protected override bool ConditionMet()
         {
-            Accessibility = Mode.Instance.BossShuffle == _bossShuffle ?
-                AccessibilityLevel.Normal : AccessibilityLevel.None;
+            return _mode.BossShuffle == _expectedValue;
         }
     }
 }

@@ -3,29 +3,34 @@ using Avalonia.Layout;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.Settings;
+using OpenTracker.Utils;
 using ReactiveUI;
 using System.ComponentModel;
+using Avalonia.Threading;
 
 namespace OpenTracker.ViewModels.Maps
 {
     /// <summary>
     /// This is the ViewModel of the map control.
     /// </summary>
-    public class MapVM : ViewModelBase
+    public class MapVM : ViewModelBase, IMapVM
     {
+        private readonly ILayoutSettings _layoutSettings;
+        private readonly IMode _mode;
+
         private readonly MapID _id;
 
-        public static Thickness Margin =>
-            AppSettings.Instance.Layout.CurrentMapOrientation switch
+        public Thickness Margin =>
+            _layoutSettings.CurrentMapOrientation switch
             {
                 Orientation.Horizontal => new Thickness(10, 20),
                 _ => new Thickness(20, 10)
             };
-        public string ImageSource 
+        public string ImageSource
         {
             get
             {
-                var worldState = Mode.Instance.WorldState == WorldState.Inverted ?
+                var worldState = _mode.WorldState == WorldState.Inverted ?
                     WorldState.Inverted : WorldState.StandardOpen;
 
                 return $"avares://OpenTracker/Assets/Images/Maps/" +
@@ -40,16 +45,18 @@ namespace OpenTracker.ViewModels.Maps
         /// <param name="id">
         /// The map identity.
         /// </param>
-        public MapVM(MapID id)
+        public MapVM(ILayoutSettings layoutSettings, IMode mode, MapID id)
         {
+            _layoutSettings = layoutSettings;
+            _mode = mode;
             _id = id;
 
-            Mode.Instance.PropertyChanged += OnModeChanged;
-            AppSettings.Instance.Layout.PropertyChanged += OnLayoutChanged;
+            _mode.PropertyChanged += OnModeChanged;
+            _layoutSettings.PropertyChanged += OnLayoutChanged;
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the LayoutSettings class.
+        /// Subscribes to the PropertyChanged event on the ILayoutSettings interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -57,16 +64,16 @@ namespace OpenTracker.ViewModels.Maps
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnLayoutChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(LayoutSettings.CurrentMapOrientation))
+            if (e.PropertyName == nameof(ILayoutSettings.CurrentMapOrientation))
             {
-                this.RaisePropertyChanged(nameof(Margin));
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Margin)));
             }
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the Mode class.
+        /// Subscribes to the PropertyChanged event on the IMode interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -74,11 +81,11 @@ namespace OpenTracker.ViewModels.Maps
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnModeChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnModeChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(Mode.WorldState))
+            if (e.PropertyName == nameof(IMode.WorldState))
             {
-                this.RaisePropertyChanged(nameof(ImageSource));
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(ImageSource)));
             }
         }
     }

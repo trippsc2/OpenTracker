@@ -1,59 +1,38 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using OpenTracker.Utils.Dialog;
+using System.Collections.Generic;
 
 namespace OpenTracker.ViewModels.SequenceBreaks
 {
     /// <summary>
     /// This is the ViewModel of the sequence break dialog window.
     /// </summary>
-    public class SequenceBreakDialogVM : ViewModelBase
+    public class SequenceBreakDialogVM : DialogViewModelBase, ISequenceBreakDialogVM
     {
-        public ObservableCollection<SequenceBreakControlVM> BombDuplication { get; }
-        public ObservableCollection<SequenceBreakControlVM> BombJumps { get; }
-        public ObservableCollection<SequenceBreakControlVM> DarkRooms { get; }
-        public ObservableCollection<SequenceBreakControlVM> FakeFlippersWaterWalk { get; }
-        public ObservableCollection<SequenceBreakControlVM> SuperBunny { get; }
-        public ObservableCollection<SequenceBreakControlVM> Other { get; }
+        private readonly ISequenceBreakControlFactory _factory;
+
+        public List<ISequenceBreakControlVM> BombDuplication { get; }
+        public List<ISequenceBreakControlVM> BombJumps { get; }
+        public List<ISequenceBreakControlVM> DarkRooms { get; }
+        public List<ISequenceBreakControlVM> FakeFlippersWaterWalk { get; }
+        public List<ISequenceBreakControlVM> SuperBunny { get; }
+        public List<ISequenceBreakControlVM> Other { get; }
 
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="bombDuplication">
-        /// The observable collection of bomb duplication sequence break control ViewModel
-        /// instances.
+        /// <param name="factory">
+        /// The factory for creating sequence break controls.
         /// </param>
-        /// <param name="bombJumps">
-        /// The observable collection of bomb jump sequence break control ViewModel instances.
-        /// </param>
-        /// <param name="darkRooms">
-        /// The observable collection of dark room sequence break control ViewModel instances.
-        /// </param>
-        /// <param name="fakeFlippersWaterWalk">
-        /// The observable collection of fake flippers and water walk sequence break control
-        /// ViewModel instances.
-        /// </param>
-        /// <param name="superBunny">
-        /// The observable collection of super bunny sequence break control ViewModel instances.
-        /// </param>
-        /// <param name="other">
-        /// The observable collection of other sequence break control ViewModel instances.
-        /// </param>
-        public SequenceBreakDialogVM(
-            ObservableCollection<SequenceBreakControlVM> bombDuplication,
-            ObservableCollection<SequenceBreakControlVM> bombJumps,
-            ObservableCollection<SequenceBreakControlVM> darkRooms,
-            ObservableCollection<SequenceBreakControlVM> fakeFlippersWaterWalk,
-            ObservableCollection<SequenceBreakControlVM> superBunny,
-            ObservableCollection<SequenceBreakControlVM> other)
+        public SequenceBreakDialogVM(ISequenceBreakControlFactory factory)
         {
-            BombDuplication = bombDuplication ??
-                throw new ArgumentNullException(nameof(bombDuplication));
-            BombJumps = bombJumps ?? throw new ArgumentNullException(nameof(bombJumps));
-            DarkRooms = darkRooms ?? throw new ArgumentNullException(nameof(darkRooms));
-            FakeFlippersWaterWalk = fakeFlippersWaterWalk ??
-                throw new ArgumentNullException(nameof(fakeFlippersWaterWalk));
-            SuperBunny = superBunny ?? throw new ArgumentNullException(nameof(superBunny));
-            Other = other ?? throw new ArgumentNullException(nameof(other));
+            _factory = factory;
+
+            BombDuplication = _factory.GetBombDuplicationSequenceBreaks();
+            BombJumps = _factory.GetBombJumpsSequenceBreaks();
+            DarkRooms = _factory.GetDarkRoomsSequenceBreaks();
+            FakeFlippersWaterWalk = _factory.GetFakeFlippersWaterWalkSequenceBreaks();
+            SuperBunny = _factory.GetSuperBunnySequenceBreaks();
+            Other = _factory.GetOtherSequenceBreaks();
         }
     }
 }

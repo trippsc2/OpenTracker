@@ -3,7 +3,7 @@
 namespace OpenTracker.Models.Sections
 {
     /// <summary>
-    /// This is the interface for dungeon item sections.
+    /// This interface contains dungeon item section data.
     /// </summary>
     public interface IDungeonItemSection : IItemSection
     {
