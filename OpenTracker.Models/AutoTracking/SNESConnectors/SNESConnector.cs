@@ -173,15 +173,16 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
                 {
                     _logService.Log(LogLevel.Info, $"Request {requestName} response received.");
 
-                    if (JsonConvert.DeserializeObject<Dictionary<string, string[]>>(
-                        e.Data) is Dictionary<string, string[]> dictionary &&
-                        dictionary.TryGetValue("Results", out var deserialized))
+                    if (!(JsonConvert.DeserializeObject<Dictionary<string, string[]>>(
+                            e.Data) is Dictionary<string, string[]> dictionary) ||
+                        !dictionary.TryGetValue("Results", out var deserialized))
                     {
-                        _logService.Log(
-                            LogLevel.Debug, $"Request {requestName} successfully deserialized.");
-                        results = deserialized;
-                        readEvent.Set();
+                        return;
                     }
+                    
+                    _logService.Log(LogLevel.Debug, $"Request {requestName} successfully deserialized.");
+                    results = deserialized;
+                    readEvent.Set();
                 };
 
                 _logService.Log(LogLevel.Info, $"Request {requestName} sending.");
@@ -371,7 +372,7 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
 
                 Socket.OnOpen += onOpen;
                 Socket.Connect();
-                bool result = openEvent.WaitOne(timeOutInMs);
+                var result = openEvent.WaitOne(timeOutInMs);
                 Socket.OnOpen -= onOpen;
 
                 if (result)
@@ -403,7 +404,6 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
                 Status = ConnectionStatus.NotConnected;
-                _device = null;
             });
         }
 
