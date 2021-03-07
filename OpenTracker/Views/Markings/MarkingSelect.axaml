@@ -1,14 +1,21 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:OpenTracker.ViewModels.Markings;assembly=OpenTracker"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="OpenTracker.Views.Markings.MarkingSelect">
-  <Popup IsOpen="{Binding PopupOpen, Mode=TwoWay}" IsLightDismissEnabled="True" PlacementMode="Pointer">
+             mc:Ignorable="d" x:Class="OpenTracker.Views.Markings.MarkingSelect">
+  
+  <Design.DataContext>
+    <vm:MarkingSelectVM />
+  </Design.DataContext>
+  
+  <Popup IsOpen="{Binding PopupOpen, Mode=TwoWay}"
+         IsLightDismissEnabled="True" PlacementMode="Pointer">
     <LayoutTransformControl>
 
       <LayoutTransformControl.LayoutTransform>
-        <ScaleTransform ScaleX="{Binding Scale}" ScaleY="{Binding Scale}" />
+        <ScaleTransform ScaleX="{Binding Scale}"
+                        ScaleY="{Binding Scale}" />
       </LayoutTransformControl.LayoutTransform>
 
       <Border Classes="Popup">
@@ -17,15 +24,17 @@
           <ItemsControl Items="{Binding Buttons}">
             <ItemsControl.ItemsPanel>
               <ItemsPanelTemplate>
-                <WrapPanel ItemWidth="34" ItemHeight="40" MaxWidth="{Binding Width}"
-                           MaxHeight="{Binding Height}" Margin="0,0,0,10" Orientation="Horizontal"
+                <WrapPanel ItemWidth="34" ItemHeight="40" Margin="0 0 0 10" Orientation="Horizontal"
+                           MaxWidth="{Binding Width}"
+                           MaxHeight="{Binding Height}"
                            HorizontalAlignment="Left" VerticalAlignment="Top" />
               </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
           </ItemsControl>
 
-          <Border Classes="Separator" Grid.Row="1" Margin="0,2" />
-          <Button Classes="ClearMarking" Command="{Binding ClearMarkingCommand}">Clear</Button>
+          <Border Classes="Separator" Grid.Row="1" Margin="0 2" />
+          <Button Classes="ClearMarking"
+                  Command="{Binding ClearMarking}">Clear</Button>
 
         </StackPanel>
       </Border>

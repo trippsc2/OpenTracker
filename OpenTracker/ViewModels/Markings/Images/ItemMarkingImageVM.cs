@@ -1,23 +1,22 @@
-﻿using OpenTracker.Models.Items;
+﻿using Avalonia.Threading;
+using OpenTracker.Models.Items;
 using OpenTracker.Utils;
 using ReactiveUI;
 using System;
 using System.ComponentModel;
 using System.Globalization;
-using Avalonia.Threading;
 
 namespace OpenTracker.ViewModels.Markings.Images
 {
     /// <summary>
-    /// This is the ViewModel class for the item marking image control.
+    /// This class contains the non-static item marking image control ViewModel data.
     /// </summary>
     public class ItemMarkingImageVM : ViewModelBase, IMarkingImageVMBase
     {
         private readonly IItem _item;
         private readonly string _imageSourceBase;
 
-        public string ImageSource =>
-            $"{_imageSourceBase}{_item.Current.ToString(CultureInfo.InvariantCulture)}.png";
+        public string ImageSource => $"{_imageSourceBase}{_item.Current.ToString(CultureInfo.InvariantCulture)}.png";
 
         public delegate ItemMarkingImageVM Factory(IItem item, string imageSourceBase);
 

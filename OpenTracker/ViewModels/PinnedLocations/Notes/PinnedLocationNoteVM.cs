@@ -1,4 +1,5 @@
 ﻿using Avalonia.Input;
+using Avalonia.Threading;
 using OpenTracker.Models.Markings;
 using OpenTracker.Utils;
 using OpenTracker.ViewModels.Markings;
@@ -7,7 +8,6 @@ using ReactiveUI;
 using System.ComponentModel;
 using System.Reactive;
 using System.Threading.Tasks;
-using Avalonia.Threading;
 
 namespace OpenTracker.ViewModels.PinnedLocations.Notes
 {
@@ -17,11 +17,11 @@ namespace OpenTracker.ViewModels.PinnedLocations.Notes
     public class PinnedLocationNoteVM : ViewModelBase, IPinnedLocationNoteVM
     {
         private readonly IMarkingImageDictionary _markingImages;
+        
+        private readonly IMarking _marking;
 
-        public object Model =>
-            Marking;
+        public object Model => _marking;
 
-        public IMarking Marking { get; }
         public INoteMarkingSelectVM MarkingSelect { get; }
 
         private IMarkingImageVMBase? _image;
@@ -31,7 +31,7 @@ namespace OpenTracker.ViewModels.PinnedLocations.Notes
             set => this.RaiseAndSetIfChanged(ref _image, value);
         }
 
-        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
+        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
 
         /// <summary>
         /// Constructor
@@ -50,12 +50,12 @@ namespace OpenTracker.ViewModels.PinnedLocations.Notes
         {
             _markingImages = markingImages;
 
-            Marking = marking;
+            _marking = marking;
             MarkingSelect = markingSelect;
             
-            HandleClickCommand = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClick);
+            HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
 
-            Marking.PropertyChanged += OnMarkingChanged;
+            _marking.PropertyChanged += OnMarkingChanged;
 
             UpdateImage();
         }
@@ -82,7 +82,7 @@ namespace OpenTracker.ViewModels.PinnedLocations.Notes
         /// </summary>
         private void UpdateImage()
         {
-            Image = _markingImages[Marking.Mark];
+            Image = _markingImages[_marking.Mark];
         }
 
         /// <summary>
@@ -107,7 +107,7 @@ namespace OpenTracker.ViewModels.PinnedLocations.Notes
         /// <param name="e">
         /// The PointerReleased event args.
         /// </param>
-        private void HandleClick(PointerReleasedEventArgs e)
+        private void HandleClickImpl(PointerReleasedEventArgs e)
         {
             if (e.InitialPressMouseButton == MouseButton.Left)
             {

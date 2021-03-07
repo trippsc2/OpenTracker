@@ -1,4 +1,5 @@
 ﻿using Avalonia.Input;
+using Avalonia.Threading;
 using OpenTracker.Models.Markings;
 using OpenTracker.Models.Sections;
 using OpenTracker.Utils;
@@ -8,7 +9,6 @@ using ReactiveUI;
 using System.ComponentModel;
 using System.Reactive;
 using System.Threading.Tasks;
-using Avalonia.Threading;
 
 namespace OpenTracker.ViewModels.PinnedLocations.Sections
 {
@@ -30,7 +30,7 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
 
         public IMarkingSelectVM MarkingSelect { get; }
         
-        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
+        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
 
         public delegate MarkingSectionIconVM Factory(IMarkableSection section);
 
@@ -54,7 +54,7 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
 
             MarkingSelect = markingSelectFactory.GetMarkingSelectVM(section);
             
-            HandleClickCommand = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClick);
+            HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
 
             _marking.PropertyChanged += OnMarkingChanged;
 
@@ -108,7 +108,7 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
         /// <param name="e">
         /// The PointerReleased event args.
         /// </param>
-        private void HandleClick(PointerReleasedEventArgs e)
+        private void HandleClickImpl(PointerReleasedEventArgs e)
         {
             if (e.InitialPressMouseButton == MouseButton.Left)
             {

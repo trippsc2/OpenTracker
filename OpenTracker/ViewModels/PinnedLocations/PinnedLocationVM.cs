@@ -1,4 +1,5 @@
 ﻿using Avalonia.Input;
+using Avalonia.Threading;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
@@ -9,7 +10,6 @@ using ReactiveUI;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reactive;
-using Avalonia.Threading;
 
 namespace OpenTracker.ViewModels.PinnedLocations
 {
@@ -24,17 +24,14 @@ namespace OpenTracker.ViewModels.PinnedLocations
 
         private readonly ILocation _location;
 
-        public double Scale =>
-            _layoutSettings.UIScale;
-        public string Name =>
-            _location.Name;
-        public object Model =>
-            _location;
+        public double Scale => _layoutSettings.UIScale;
+        public string Name => _location.Name;
+        public object Model => _location;
 
         public List<ISectionVM> Sections { get; }
         public IPinnedLocationNoteAreaVM Notes { get; }
 
-        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
+        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
 
         /// <summary>
         /// Constructor
@@ -70,7 +67,7 @@ namespace OpenTracker.ViewModels.PinnedLocations
             Sections = sections;
             Notes = notes;
             
-            HandleClickCommand = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClick);
+            HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
 
             _layoutSettings.PropertyChanged += OnLayoutChanged;
         }
@@ -106,7 +103,7 @@ namespace OpenTracker.ViewModels.PinnedLocations
         /// <param name="e">
         /// The PointerReleased event args.
         /// </param>
-        private void HandleClick(PointerReleasedEventArgs e)
+        private void HandleClickImpl(PointerReleasedEventArgs e)
         {
             if (e.InitialPressMouseButton == MouseButton.Left)
             {

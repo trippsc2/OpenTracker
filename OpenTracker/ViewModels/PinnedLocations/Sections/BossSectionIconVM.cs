@@ -1,4 +1,5 @@
 ﻿using Avalonia.Input;
+using Avalonia.Threading;
 using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.Modes;
 using OpenTracker.Utils;
@@ -6,7 +7,6 @@ using OpenTracker.ViewModels.BossSelect;
 using ReactiveUI;
 using System.ComponentModel;
 using System.Reactive;
-using Avalonia.Threading;
 
 namespace OpenTracker.ViewModels.PinnedLocations.Sections
 {
@@ -18,18 +18,15 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
         private readonly IMode _mode;
         private readonly IBossPlacement _bossPlacement;
 
-        public bool Visible =>
-            _mode.BossShuffle;
+        public bool Visible => _mode.BossShuffle;
         public string ImageSource =>
-            _bossPlacement.Boss.HasValue ?
             "avares://OpenTracker/Assets/Images/Bosses/" +
-            $"{_bossPlacement.Boss.ToString()!.ToLowerInvariant()}1.png" :
-            "avares://OpenTracker/Assets/Images/Bosses/" +
-            $"{_bossPlacement.DefaultBoss.ToString().ToLowerInvariant()}0.png";
+            (_bossPlacement.Boss.HasValue ? $"{_bossPlacement.Boss.ToString()!.ToLowerInvariant()}1" :
+            $"{_bossPlacement.DefaultBoss.ToString().ToLowerInvariant()}0") + ".png";
 
         public IBossSelectPopupVM BossSelect { get; }
         
-        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
+        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
 
         public delegate BossSectionIconVM Factory(IBossPlacement bossPlacement);
 
@@ -52,7 +49,7 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
             _bossPlacement = bossPlacement;
             BossSelect = bossSelectFactory(bossPlacement);
             
-            HandleClickCommand = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClick);
+            HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
 
             _mode.PropertyChanged += OnModeChanged;
             _bossPlacement.PropertyChanged += OnBossChanged;
@@ -106,7 +103,7 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
         /// <param name="e">
         /// The PointerReleased event args.
         /// </param>
-        private void HandleClick(PointerReleasedEventArgs e)
+        private void HandleClickImpl(PointerReleasedEventArgs e)
         {
             if (e.InitialPressMouseButton == MouseButton.Left)
             {

@@ -3,7 +3,7 @@
 namespace OpenTracker.ViewModels.Markings.Images
 {
     /// <summary>
-    /// This is the ViewModel class for the marking image control.
+    /// This class contains the static marking image control ViewModel data.
     /// </summary>
     public class MarkingImageVM : ViewModelBase, IMarkingImageVMBase
     {

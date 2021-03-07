@@ -1,11 +1,11 @@
 ﻿using Avalonia.Input;
+using Avalonia.Threading;
 using OpenTracker.Models.Sections;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
 using ReactiveUI;
 using System.ComponentModel;
 using System.Reactive;
-using Avalonia.Threading;
 
 namespace OpenTracker.ViewModels.PinnedLocations.Sections
 {
@@ -20,10 +20,9 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
         private readonly IEntranceSection _section;
 
         public string ImageSource =>
-            _section.IsAvailable() ? "avares://OpenTracker/Assets/Images/door0.png" :
-            "avares://OpenTracker/Assets/Images/door1.png";
+            "avares://OpenTracker/Assets/Images/door" + (_section.IsAvailable() ? "0" : "1") + ".png";
         
-        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
+        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
 
         public delegate EntranceSectionIconVM Factory(IEntranceSection section);
 
@@ -47,7 +46,7 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
 
             _section = section;
             
-            HandleClickCommand = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClick);
+            HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
 
             _section.PropertyChanged += OnSectionChanged;
         }
@@ -63,8 +62,7 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
         /// </param>
         private async void OnSectionChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(ISection.Accessibility) ||
-                e.PropertyName == nameof(ISection.Available))
+            if (e.PropertyName == nameof(ISection.Accessibility) || e.PropertyName == nameof(ISection.Available))
             {
                 await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(ImageSource)));
             }
@@ -95,7 +93,7 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
         /// <param name="e">
         /// The PointerReleased event args.
         /// </param>
-        private void HandleClick(PointerReleasedEventArgs e)
+        private void HandleClickImpl(PointerReleasedEventArgs e)
         {
             switch (e.InitialPressMouseButton)
             {

@@ -1,29 +1,33 @@
 ﻿using Avalonia.Layout;
+using Avalonia.Threading;
 using OpenTracker.Models.Settings;
 using OpenTracker.Utils;
 using ReactiveUI;
 using System.ComponentModel;
-using Avalonia.Threading;
 
 namespace OpenTracker.ViewModels.PinnedLocations
 {
     /// <summary>
-    /// This is the ViewModel for the Locations panel control.
+    /// This class contains the pinned location panel control ViewModel data.
     /// </summary>
     public class PinnedLocationsPanelVM : ViewModelBase, IPinnedLocationsPanelVM
     {
         private readonly ILayoutSettings _layoutSettings;
 
-        public Orientation Orientation =>
-            _layoutSettings.CurrentLayoutOrientation;
+        public Orientation Orientation => _layoutSettings.CurrentLayoutOrientation;
 
         public IPinnedLocationVMCollection Locations { get; }
 
         /// <summary>
         /// Constructor
         /// </summary>
-        public PinnedLocationsPanelVM(
-            ILayoutSettings layoutSettings, IPinnedLocationVMCollection locations)
+        /// <param name="layoutSettings">
+        /// The layout settings data.
+        /// </param>
+        /// <param name="locations">
+        /// The pinned location control collection.
+        /// </param>
+        public PinnedLocationsPanelVM(ILayoutSettings layoutSettings, IPinnedLocationVMCollection locations)
         {
             _layoutSettings = layoutSettings;
 

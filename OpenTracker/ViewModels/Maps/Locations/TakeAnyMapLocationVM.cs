@@ -76,10 +76,10 @@ namespace OpenTracker.ViewModels.Maps.Locations
         public string BorderColor => Highlighted ? "#ffffffff" : "#ff000000";
         public string ToolTipText => _mapLocation.Location!.Name;
         
-        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
-        public ReactiveCommand<RoutedEventArgs, Unit> HandleDoubleClickCommand { get; }
-        public ReactiveCommand<PointerEventArgs, Unit> HandlePointerEnterCommand { get; }
-        public ReactiveCommand<PointerEventArgs, Unit> HandlePointerLeaveCommand { get; }
+        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
+        public ReactiveCommand<RoutedEventArgs, Unit> HandleDoubleClick { get; }
+        public ReactiveCommand<PointerEventArgs, Unit> HandlePointerEnter { get; }
+        public ReactiveCommand<PointerEventArgs, Unit> HandlePointerLeave { get; }
 
         public delegate TakeAnyMapLocationVM Factory(IMapLocation mapLocation);
 
@@ -108,10 +108,10 @@ namespace OpenTracker.ViewModels.Maps.Locations
 
             _mapLocation = mapLocation;
 
-            HandleClickCommand = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
-            HandleDoubleClickCommand = ReactiveCommand.Create<RoutedEventArgs>(HandleDoubleClickImpl);
-            HandlePointerEnterCommand = ReactiveCommand.Create<PointerEventArgs>(HandlePointerEnterImpl);
-            HandlePointerLeaveCommand = ReactiveCommand.Create<PointerEventArgs>(HandlePointerLeaveImpl);
+            HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
+            HandleDoubleClick = ReactiveCommand.Create<RoutedEventArgs>(HandleDoubleClickImpl);
+            HandlePointerEnter = ReactiveCommand.Create<PointerEventArgs>(HandlePointerEnterImpl);
+            HandlePointerLeave = ReactiveCommand.Create<PointerEventArgs>(HandlePointerLeaveImpl);
 
             PropertyChanged += OnPropertyChanged;
 

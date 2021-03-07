@@ -1,4 +1,5 @@
 ﻿using Avalonia.Input;
+using Avalonia.Threading;
 using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.Sections;
 using OpenTracker.Models.UndoRedo;
@@ -8,7 +9,6 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Reactive;
 using System.Threading.Tasks;
-using Avalonia.Threading;
 
 namespace OpenTracker.ViewModels.PinnedLocations.Sections
 {
@@ -35,24 +35,20 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
                 {
                     case AccessibilityLevel.None:
                     case AccessibilityLevel.Inspect:
-                    {
                         return "avares://OpenTracker/Assets/Images/chest0.png";
-                    }
                     case AccessibilityLevel.Partial:
                     case AccessibilityLevel.SequenceBreak:
                     case AccessibilityLevel.Normal:
-                    {
                         return "avares://OpenTracker/Assets/Images/chest1.png";
-                    }
+                    default:
+                        return "avares://OpenTracker/Assets/Images/chest2.png";
                 }
 
-                return "avares://OpenTracker/Assets/Images/chest2.png";
             }
         }
-        public string AvailableCount =>
-            _section.Available.ToString(CultureInfo.InvariantCulture);
+        public string AvailableCount => _section.Available.ToString(CultureInfo.InvariantCulture);
         
-        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
+        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
 
         public delegate ItemSectionIconVM Factory(IItemSection section);
 
@@ -76,7 +72,7 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
 
             _section = section;
             
-            HandleClickCommand = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClick);
+            HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
 
             _section.PropertyChanged += OnSectionChanged;
         }
@@ -137,7 +133,7 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
         /// <param name="e">
         /// The PointerReleased event args.
         /// </param>
-        private void HandleClick(PointerReleasedEventArgs e)
+        private void HandleClickImpl(PointerReleasedEventArgs e)
         {
             switch (e.InitialPressMouseButton)
             {

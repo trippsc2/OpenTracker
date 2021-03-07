@@ -1,17 +1,17 @@
-﻿using System.Collections.Specialized;
-using Avalonia.Layout;
+﻿using Avalonia.Layout;
+using Avalonia.Threading;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
 using ReactiveUI;
+using System.Collections.Specialized;
 using System.Reactive;
 using System.Threading.Tasks;
-using Avalonia.Threading;
 
 namespace OpenTracker.ViewModels.PinnedLocations.Notes
 {
     /// <summary>
-    /// This is the ViewModel for the pinned location note area control.
+    /// This class contains the pinned location note area control ViewModel data.
     /// </summary>
     public class PinnedLocationNoteAreaVM : ViewModelBase, IPinnedLocationNoteAreaVM
     {
@@ -24,20 +24,27 @@ namespace OpenTracker.ViewModels.PinnedLocations.Notes
         public HorizontalAlignment Alignment =>
             Notes.Count == 0 ? HorizontalAlignment.Center : HorizontalAlignment.Left;
 
-        public ReactiveCommand<Unit, Unit> AddCommand { get; }
+        public ReactiveCommand<Unit, Unit> Add { get; }
 
         private bool _canAdd;
-        public bool CanAdd
+        private bool CanAdd
         {
             get => _canAdd;
             set => this.RaiseAndSetIfChanged(ref _canAdd, value);
         }
 
-        public delegate IPinnedLocationNoteAreaVM Factory(ILocation location);
-
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="undoRedoManager">
+        /// The undo/redo manager.
+        /// </param>
+        /// <param name="undoableFactory">
+        /// A factory for creating undoable actions.
+        /// </param>
+        /// <param name="notesFactory">
+        /// An Autofac factory for creating the notes collection.
+        /// </param>
         /// <param name="location">
         /// The location to be represented.
         /// </param>
@@ -52,7 +59,7 @@ namespace OpenTracker.ViewModels.PinnedLocations.Notes
 
             Notes = notesFactory(location);
 
-            AddCommand = ReactiveCommand.Create(Add, this.WhenAnyValue(x => x.CanAdd));
+            Add = ReactiveCommand.Create(AddImpl, this.WhenAnyValue(x => x.CanAdd));
 
             Notes.CollectionChanged += OnNotesChanged;
 
@@ -92,7 +99,7 @@ namespace OpenTracker.ViewModels.PinnedLocations.Notes
         /// <summary>
         /// Adds a new note to the location.
         /// </summary>
-        private void Add()
+        private void AddImpl()
         {
             _undoRedoManager.NewAction(_undoableFactory.GetAddNote(_location));
         }

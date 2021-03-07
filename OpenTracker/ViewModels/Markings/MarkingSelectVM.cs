@@ -20,8 +20,7 @@ namespace OpenTracker.ViewModels.Markings
         private readonly IUndoableFactory _undoableFactory;
         private readonly IMarking _marking;
 
-        public double Scale =>
-            _layoutSettings.UIScale;
+        public double Scale => _layoutSettings.UIScale;
         public List<IMarkingSelectItemVMBase> Buttons { get; }
         public double Width { get; }
         public double Height { get; }
@@ -33,8 +32,8 @@ namespace OpenTracker.ViewModels.Markings
             set => this.RaiseAndSetIfChanged(ref _popupOpen, value);
         }
 
-        public ReactiveCommand<MarkType?, Unit> ChangeMarkingCommand { get; }
-        public ReactiveCommand<Unit, Unit> ClearMarkingCommand { get; }
+        public ReactiveCommand<MarkType?, Unit> ChangeMarking { get; }
+        public ReactiveCommand<Unit, Unit> ClearMarking { get; }
 
         /// <summary>
         /// Constructor
@@ -74,8 +73,8 @@ namespace OpenTracker.ViewModels.Markings
             Width = width;
             Height = height;
 
-            ChangeMarkingCommand = ReactiveCommand.Create<MarkType?>(ChangeMarking);
-            ClearMarkingCommand = ReactiveCommand.Create(ClearMarking);
+            ChangeMarking = ReactiveCommand.Create<MarkType?>(ChangeMarkingImpl);
+            ClearMarking = ReactiveCommand.Create(ClearMarkingImpl);
 
             _layoutSettings.PropertyChanged += OnLayoutChanged;
         }
@@ -100,7 +99,7 @@ namespace OpenTracker.ViewModels.Markings
         /// <summary>
         /// Clears the marking of the section.
         /// </summary>
-        private void ClearMarking()
+        private void ClearMarkingImpl()
         {
             _undoRedoManager.NewAction(_undoableFactory.GetSetMarking(_marking, MarkType.Unknown));
             PopupOpen = false;
@@ -112,7 +111,7 @@ namespace OpenTracker.ViewModels.Markings
         /// <param name="marking">
         /// The marking to be set.
         /// </param>
-        private void ChangeMarking(MarkType? marking)
+        private void ChangeMarkingImpl(MarkType? marking)
         {
             if (!marking.HasValue)
             {

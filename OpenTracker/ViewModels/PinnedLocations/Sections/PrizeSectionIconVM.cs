@@ -1,4 +1,5 @@
 ﻿using Avalonia.Input;
+using Avalonia.Threading;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.Sections;
@@ -10,7 +11,6 @@ using System.Linq;
 using System.Reactive;
 using System.Text;
 using System.Threading.Tasks;
-using Avalonia.Threading;
 
 namespace OpenTracker.ViewModels.PinnedLocations.Sections
 {
@@ -50,7 +50,7 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
             }
         }
         
-        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
+        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
 
         public delegate PrizeSectionIconVM Factory(IPrizeSection section);
 
@@ -79,7 +79,7 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
 
             _section = section;
             
-            HandleClickCommand = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClick);
+            HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
 
             _section.PropertyChanged += OnSectionChanged;
             _section.PrizePlacement.PropertyChanged += OnPrizeChanged; 
@@ -152,7 +152,7 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
         /// <param name="e">
         /// The PointerReleased event args.
         /// </param>
-        private void HandleClick(PointerReleasedEventArgs e)
+        private void HandleClickImpl(PointerReleasedEventArgs e)
         {
             switch (e.InitialPressMouseButton)
             {

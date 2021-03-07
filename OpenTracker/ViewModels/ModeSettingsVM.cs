@@ -11,7 +11,7 @@ using System.Reactive;
 namespace OpenTracker.ViewModels
 {
     /// <summary>
-    /// This is the ViewModel for the mode settings popup control.
+    /// This class contains the mode settings popup control ViewModel data.
     /// </summary>
     public class ModeSettingsVM : ViewModelBase, IModeSettingsVM
     {
@@ -26,117 +26,87 @@ namespace OpenTracker.ViewModels
             set => this.RaiseAndSetIfChanged(ref _popupOpen, value);
         }
 
-        public bool BasicItemPlacement =>
-            _mode.ItemPlacement == ItemPlacement.Basic;
-        public bool AdvancedItemPlacement =>
-            _mode.ItemPlacement == ItemPlacement.Advanced;
+        public bool BasicItemPlacement => _mode.ItemPlacement == ItemPlacement.Basic;
+        public bool AdvancedItemPlacement => _mode.ItemPlacement == ItemPlacement.Advanced;
 
-        public bool MapShuffle =>
-            _mode.MapShuffle;
-        public bool CompassShuffle =>
-            _mode.CompassShuffle;
-        public bool SmallKeyShuffle =>
-            _mode.SmallKeyShuffle;
-        public bool BigKeyShuffle =>
-            _mode.BigKeyShuffle;
+        public bool MapShuffle => _mode.MapShuffle;
+        public bool CompassShuffle => _mode.CompassShuffle;
+        public bool SmallKeyShuffle => _mode.SmallKeyShuffle;
+        public bool BigKeyShuffle => _mode.BigKeyShuffle;
 
-        public bool StandardOpenWorldState =>
-            _mode.WorldState == WorldState.StandardOpen;
-        public bool InvertedWorldState =>
-            _mode.WorldState == WorldState.Inverted;
+        public bool StandardOpenWorldState => _mode.WorldState == WorldState.StandardOpen;
+        public bool InvertedWorldState => _mode.WorldState == WorldState.Inverted;
 
-        public bool EntranceShuffleNone =>
-            _mode.EntranceShuffle == Models.Modes.EntranceShuffle.None;
-        public bool EntranceShuffleDungeon =>
-            _mode.EntranceShuffle == Models.Modes.EntranceShuffle.Dungeon;
-        public bool EntranceShuffleAll =>
-            _mode.EntranceShuffle == Models.Modes.EntranceShuffle.All;
-        public bool EntranceShuffleInsanity =>
-            _mode.EntranceShuffle == EntranceShuffle.Insanity;
+        public bool EntranceShuffleNone => _mode.EntranceShuffle == EntranceShuffle.None;
+        public bool EntranceShuffleDungeon => _mode.EntranceShuffle == EntranceShuffle.Dungeon;
+        public bool EntranceShuffleAll => _mode.EntranceShuffle == EntranceShuffle.All;
+        public bool EntranceShuffleInsanity => _mode.EntranceShuffle == EntranceShuffle.Insanity;
 
-        public bool BossShuffle =>
-            _mode.BossShuffle;
-        public bool EnemyShuffle =>
-            _mode.EnemyShuffle;
-        public bool GuaranteedBossItems =>
-            _mode.GuaranteedBossItems;
-        public bool ShopShuffle =>
-            _mode.ShopShuffle;
-        public bool GenericKeys =>
-            _mode.GenericKeys;
-        public bool TakeAnyLocations =>
-            _mode.TakeAnyLocations;
-        public bool KeyDropShuffle =>
-            _mode.KeyDropShuffle;
+        public bool BossShuffle => _mode.BossShuffle;
+        public bool EnemyShuffle => _mode.EnemyShuffle;
+        public bool GuaranteedBossItems => _mode.GuaranteedBossItems;
+        public bool ShopShuffle => _mode.ShopShuffle;
+        public bool GenericKeys => _mode.GenericKeys;
+        public bool TakeAnyLocations => _mode.TakeAnyLocations;
+        public bool KeyDropShuffle => _mode.KeyDropShuffle;
         
-        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
+        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
 
-        public ReactiveCommand<string, Unit> ChangeItemPlacementCommand { get; }
-        public ReactiveCommand<string, Unit> ChangeWorldStateCommand { get; }
-        public ReactiveCommand<string, Unit> ChangeEntranceShuffleCommand { get; }
+        public ReactiveCommand<string, Unit> ChangeItemPlacement { get; }
+        public ReactiveCommand<string, Unit> ChangeWorldState { get; }
+        public ReactiveCommand<string, Unit> ChangeEntranceShuffle { get; }
 
-        public ReactiveCommand<Unit, Unit> ToggleMapShuffleCommand { get; }
-        public ReactiveCommand<Unit, Unit> ToggleCompassShuffleCommand { get; }
-        public ReactiveCommand<Unit, Unit> ToggleSmallKeyShuffleCommand { get; }
-        public ReactiveCommand<Unit, Unit> ToggleBigKeyShuffleCommand { get; }
+        public ReactiveCommand<Unit, Unit> ToggleMapShuffle { get; }
+        public ReactiveCommand<Unit, Unit> ToggleCompassShuffle { get; }
+        public ReactiveCommand<Unit, Unit> ToggleSmallKeyShuffle { get; }
+        public ReactiveCommand<Unit, Unit> ToggleBigKeyShuffle { get; }
 
-        public ReactiveCommand<Unit, Unit> ToggleBossShuffleCommand { get; }
-        public ReactiveCommand<Unit, Unit> ToggleEnemyShuffleCommand { get; }
-        public ReactiveCommand<Unit, Unit> ToggleGuaranteedBossItemsCommand { get; }
-        public ReactiveCommand<Unit, Unit> ToggleShopShuffleCommand { get; }
-        public ReactiveCommand<Unit, Unit> ToggleGenericKeysCommand { get; }
-        public ReactiveCommand<Unit, Unit> ToggleTakeAnyLocationsCommand { get; }
-        public ReactiveCommand<Unit, Unit> ToggleKeyDropShuffleCommand { get; }
+        public ReactiveCommand<Unit, Unit> ToggleBossShuffle { get; }
+        public ReactiveCommand<Unit, Unit> ToggleEnemyShuffle { get; }
+        public ReactiveCommand<Unit, Unit> ToggleGuaranteedBossItems { get; }
+        public ReactiveCommand<Unit, Unit> ToggleShopShuffle { get; }
+        public ReactiveCommand<Unit, Unit> ToggleGenericKeys { get; }
+        public ReactiveCommand<Unit, Unit> ToggleTakeAnyLocations { get; }
+        public ReactiveCommand<Unit, Unit> ToggleKeyDropShuffle { get; }
 
-        public ModeSettingsVM(
-            IMode mode, IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory)
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="mode">
+        /// The mode settings data.
+        /// </param>
+        /// <param name="undoRedoManager">
+        /// The undo/redo manager.
+        /// </param>
+        /// <param name="undoableFactory">
+        /// A factory for creating undoable actions.
+        /// </param>
+        public ModeSettingsVM(IMode mode, IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory)
         {
             _mode = mode;
             _undoRedoManager = undoRedoManager;
             _undoableFactory = undoableFactory;
 
-            HandleClickCommand = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClick);
+            HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
 
-            ChangeItemPlacementCommand = ReactiveCommand.Create<string>(
-                ChangeItemPlacement, this.WhenAnyValue(x => x.StandardOpenWorldState));
-            ChangeWorldStateCommand = ReactiveCommand.Create<string>(ChangeWorldState);
-            ChangeEntranceShuffleCommand = ReactiveCommand.Create<string>(ChangeEntranceShuffle);
+            ChangeItemPlacement = ReactiveCommand.Create<string>(
+                ChangeItemPlacementImpl, this.WhenAnyValue(x => x.StandardOpenWorldState));
+            ChangeWorldState = ReactiveCommand.Create<string>(ChangeWorldStateImpl);
+            ChangeEntranceShuffle = ReactiveCommand.Create<string>(ChangeEntranceShuffleImpl);
             
-            ToggleMapShuffleCommand = ReactiveCommand.Create(ToggleMapShuffle);
-            ToggleCompassShuffleCommand = ReactiveCommand.Create(ToggleCompassShuffle);
-            ToggleSmallKeyShuffleCommand = ReactiveCommand.Create(ToggleSmallKeyShuffle);
-            ToggleBigKeyShuffleCommand = ReactiveCommand.Create(ToggleBigKeyShuffle);
-            ToggleBossShuffleCommand = ReactiveCommand.Create(ToggleBossShuffle);
-            ToggleEnemyShuffleCommand = ReactiveCommand.Create(ToggleEnemyShuffle);
-            ToggleGuaranteedBossItemsCommand = ReactiveCommand.Create(ToggleGuaranteedBossItems);
-            ToggleShopShuffleCommand = ReactiveCommand.Create(ToggleShopShuffle);
-            ToggleGenericKeysCommand = ReactiveCommand.Create(ToggleGenericKeys);
-            ToggleTakeAnyLocationsCommand = ReactiveCommand.Create(ToggleTakeAnyLocations);
-            ToggleKeyDropShuffleCommand = ReactiveCommand.Create(ToggleKeyDropShuffle);
+            ToggleMapShuffle = ReactiveCommand.Create(ToggleMapShuffleImpl);
+            ToggleCompassShuffle = ReactiveCommand.Create(ToggleCompassShuffleImpl);
+            ToggleSmallKeyShuffle = ReactiveCommand.Create(ToggleSmallKeyShuffleImpl);
+            ToggleBigKeyShuffle = ReactiveCommand.Create(ToggleBigKeyShuffleImpl);
+            ToggleBossShuffle = ReactiveCommand.Create(ToggleBossShuffleImpl);
+            ToggleEnemyShuffle = ReactiveCommand.Create(ToggleEnemyShuffleImpl);
+            ToggleGuaranteedBossItems = ReactiveCommand.Create(ToggleGuaranteedBossItemsImpl);
+            ToggleShopShuffle = ReactiveCommand.Create(ToggleShopShuffleImpl);
+            ToggleGenericKeys = ReactiveCommand.Create(ToggleGenericKeysImpl);
+            ToggleTakeAnyLocations = ReactiveCommand.Create(ToggleTakeAnyLocationsImpl);
+            ToggleKeyDropShuffle = ReactiveCommand.Create(ToggleKeyDropShuffleImpl);
 
             _mode.PropertyChanged += OnModeChanged;
-        }
-
-        /// <summary>
-        /// Opens the mode settings popup control.
-        /// </summary>
-        private void OpenModeSettingsPopup()
-        {
-            PopupOpen = true;
-        }
-
-        /// <summary>
-        /// Handles clicking the control.
-        /// </summary>
-        /// <param name="e">
-        /// The pointer released event args.
-        /// </param>
-        private void HandleClick(PointerReleasedEventArgs e)
-        {
-            if (e.InitialPressMouseButton == MouseButton.Left)
-            {
-                OpenModeSettingsPopup();
-            }
         }
 
         /// <summary>
@@ -212,12 +182,34 @@ namespace OpenTracker.ViewModels
         }
 
         /// <summary>
+        /// Opens the mode settings popup control.
+        /// </summary>
+        private void OpenModeSettingsPopup()
+        {
+            PopupOpen = true;
+        }
+
+        /// <summary>
+        /// Handles clicking the control.
+        /// </summary>
+        /// <param name="e">
+        /// The pointer released event args.
+        /// </param>
+        private void HandleClickImpl(PointerReleasedEventArgs e)
+        {
+            if (e.InitialPressMouseButton == MouseButton.Left)
+            {
+                OpenModeSettingsPopup();
+            }
+        }
+
+        /// <summary>
         /// Sets the Item Placement setting to the specified value.
         /// </summary>
         /// <param name="itemPlacementString">
         /// A string representing the new item placement setting.
         /// </param>
-        private void ChangeItemPlacement(string itemPlacementString)
+        private void ChangeItemPlacementImpl(string itemPlacementString)
         {
             PopupOpen = false;
             
@@ -233,7 +225,7 @@ namespace OpenTracker.ViewModels
         /// <param name="worldStateString">
         /// A string representing the new world state setting.
         /// </param>
-        private void ChangeWorldState(string worldStateString)
+        private void ChangeWorldStateImpl(string worldStateString)
         {
             PopupOpen = false;
             
@@ -246,7 +238,7 @@ namespace OpenTracker.ViewModels
         /// <summary>
         /// Changes the entrance shuffle setting.
         /// </summary>
-        private void ChangeEntranceShuffle(string entranceShuffleString)
+        private void ChangeEntranceShuffleImpl(string entranceShuffleString)
         {
             PopupOpen = false;
             
@@ -259,7 +251,7 @@ namespace OpenTracker.ViewModels
         /// <summary>
         /// Toggles the map shuffle setting.
         /// </summary>
-        private void ToggleMapShuffle()
+        private void ToggleMapShuffleImpl()
         {
             PopupOpen = false;
             
@@ -269,7 +261,7 @@ namespace OpenTracker.ViewModels
         /// <summary>
         /// Toggles the compass shuffle setting.
         /// </summary>
-        private void ToggleCompassShuffle()
+        private void ToggleCompassShuffleImpl()
         {
             PopupOpen = false;
             
@@ -279,7 +271,7 @@ namespace OpenTracker.ViewModels
         /// <summary>
         /// Toggles the small key shuffle setting.
         /// </summary>
-        private void ToggleSmallKeyShuffle()
+        private void ToggleSmallKeyShuffleImpl()
         {
             PopupOpen = false;
             
@@ -289,7 +281,7 @@ namespace OpenTracker.ViewModels
         /// <summary>
         /// Toggles the big key shuffle setting.
         /// </summary>
-        private void ToggleBigKeyShuffle()
+        private void ToggleBigKeyShuffleImpl()
         {
             PopupOpen = false;
             
@@ -299,7 +291,7 @@ namespace OpenTracker.ViewModels
         /// <summary>
         /// Toggles the boss shuffle setting.
         /// </summary>
-        private void ToggleBossShuffle()
+        private void ToggleBossShuffleImpl()
         {
             PopupOpen = false;
             
@@ -309,7 +301,7 @@ namespace OpenTracker.ViewModels
         /// <summary>
         /// Toggles the enemy shuffle setting.
         /// </summary>
-        private void ToggleEnemyShuffle()
+        private void ToggleEnemyShuffleImpl()
         {
             PopupOpen = false;
             
@@ -319,7 +311,7 @@ namespace OpenTracker.ViewModels
         /// <summary>
         /// Toggles the guaranteed boss items setting.
         /// </summary>
-        private void ToggleGuaranteedBossItems()
+        private void ToggleGuaranteedBossItemsImpl()
         {
             PopupOpen = false;
             
@@ -329,7 +321,7 @@ namespace OpenTracker.ViewModels
         /// <summary>
         /// Toggles the shop shuffle setting.
         /// </summary>
-        private void ToggleShopShuffle()
+        private void ToggleShopShuffleImpl()
         {
             PopupOpen = false;
             
@@ -339,7 +331,7 @@ namespace OpenTracker.ViewModels
         /// <summary>
         /// Toggles the generic keys setting.
         /// </summary>
-        private void ToggleGenericKeys()
+        private void ToggleGenericKeysImpl()
         {
             PopupOpen = false;
             
@@ -349,7 +341,7 @@ namespace OpenTracker.ViewModels
         /// <summary>
         /// Toggles the take any locations setting.
         /// </summary>
-        private void ToggleTakeAnyLocations()
+        private void ToggleTakeAnyLocationsImpl()
         {
             PopupOpen = false;
             
@@ -359,7 +351,7 @@ namespace OpenTracker.ViewModels
         /// <summary>
         /// Toggles the key drop shuffle setting.
         /// </summary>
-        private void ToggleKeyDropShuffle()
+        private void ToggleKeyDropShuffleImpl()
         {
             PopupOpen = false;
             

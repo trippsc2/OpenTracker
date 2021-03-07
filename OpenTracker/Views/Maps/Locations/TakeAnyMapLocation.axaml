@@ -18,22 +18,22 @@
       
       <ia:EventTriggerBehavior EventName="PointerReleased"
                                SourceObject="{Binding #panel}">
-        <ia:InvokeCommandAction Command="{Binding HandleClickCommand}" />
+        <ia:InvokeCommandAction Command="{Binding HandleClick}" />
       </ia:EventTriggerBehavior>
       
       <ia:EventTriggerBehavior EventName="DoubleTapped"
                                SourceObject="{Binding #panel}">
-        <ia:InvokeCommandAction Command="{Binding HandleDoubleClickCommand}" />
+        <ia:InvokeCommandAction Command="{Binding HandleDoubleClick}" />
       </ia:EventTriggerBehavior>
       
       <ia:EventTriggerBehavior EventName="PointerEnter"
                                SourceObject="{Binding #panel}">
-        <ia:InvokeCommandAction Command="{Binding HandlePointerEnterCommand}" />
+        <ia:InvokeCommandAction Command="{Binding HandlePointerEnter}" />
       </ia:EventTriggerBehavior>
 
       <ia:EventTriggerBehavior EventName="PointerLeave"
                                SourceObject="{Binding #panel}">
-        <ia:InvokeCommandAction Command="{Binding HandlePointerLeaveCommand}" />
+        <ia:InvokeCommandAction Command="{Binding HandlePointerLeave}" />
       </ia:EventTriggerBehavior>
       
     </i:Interaction.Behaviors>

@@ -13,29 +13,26 @@ using System.Threading.Tasks;
 namespace OpenTracker.ViewModels.PinnedLocations.Sections
 {
     /// <summary>
-    /// This is the ViewModel of the section control.
+    /// This class contains the section control ViewModel data.
     /// </summary>
     public class SectionVM : ViewModelBase, ISectionVM
     {
         private readonly IColorSettings _colorSettings;
         private readonly ISection _section;
 
-        public Color FontColor =>
-            Color.Parse(_colorSettings.AccessibilityColors[_section.Accessibility]);
-        public bool Visible =>
-            _section.Requirement.Met;
-        public string Name =>
-            _section.Name;
-        public bool NormalAccessibility =>
-            _section.Accessibility == AccessibilityLevel.Normal;
+        public Color FontColor => Color.Parse(_colorSettings.AccessibilityColors[_section.Accessibility]);
+        public bool Visible => _section.Requirement.Met;
+        public string Name => _section.Name;
+        public bool NormalAccessibility => _section.Accessibility == AccessibilityLevel.Normal;
 
         public List<ISectionIconVMBase> Icons { get; }
-
-        public delegate ISectionVM Factory(ISection section, List<ISectionIconVMBase> icons);
 
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="colorSettings">
+        /// The color settings data.
+        /// </param>
         /// <param name="section">
         /// The section to be represented.
         /// </param>
@@ -54,8 +51,7 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the ObservableCollection for the
-        /// accessibility colors.
+        /// Subscribes to the PropertyChanged event on the ObservableCollection for the accessibility colors.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.

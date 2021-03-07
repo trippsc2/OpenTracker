@@ -1,13 +1,18 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:OpenTracker.ViewModels.Markings;assembly=OpenTracker"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vc="clr-namespace:OpenTracker.ValueConverters;assembly=OpenTracker"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="OpenTracker.Views.Markings.MarkingSelectButton">
-  <Button Command="{Binding $parent[ItemsControl].DataContext.ChangeMarkingCommand}"
+             mc:Ignorable="d" x:Class="OpenTracker.Views.Markings.MarkingSelectButton">
+  
+  <Design.DataContext>
+    <vm:MarkingSelectButtonVM />
+  </Design.DataContext>
+  
+  <Button Command="{Binding $parent[ItemsControl].DataContext.ChangeMarking}"
           Background="{DynamicResource ThemeBackgroundBrush}" BorderThickness="0"
           CommandParameter="{Binding Marking}">
-    <ContentControl Content="{Binding Image}" Height="32" Width="32" />
+    <ContentControl Content="{Binding Image}"
+                    Height="32" Width="32" />
   </Button>
 </UserControl>

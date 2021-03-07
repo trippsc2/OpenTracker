@@ -1,4 +1,5 @@
 ﻿using Avalonia.Input;
+using Avalonia.Threading;
 using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.Sections;
 using OpenTracker.Models.UndoRedo;
@@ -6,7 +7,6 @@ using OpenTracker.Utils;
 using ReactiveUI;
 using System.ComponentModel;
 using System.Reactive;
-using Avalonia.Threading;
 
 namespace OpenTracker.ViewModels.PinnedLocations.Sections
 {
@@ -33,22 +33,18 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
                 {
                     case AccessibilityLevel.None:
                     case AccessibilityLevel.Inspect:
-                    {
                         return "avares://OpenTracker/Assets/Images/chest0.png";
-                    }
                     case AccessibilityLevel.Partial:
                     case AccessibilityLevel.SequenceBreak:
                     case AccessibilityLevel.Normal:
-                    {
                         return "avares://OpenTracker/Assets/Images/chest1.png";
-                    }
+                    default:
+                        return "avares://OpenTracker/Assets/Images/chest2.png";
                 }
-
-                return "avares://OpenTracker/Assets/Images/chest2.png";
             }
         }
         
-        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
+        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
 
         public delegate ShopSectionIconVM Factory(IShopSection section);
 
@@ -72,7 +68,7 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
 
             _section = section;
             
-            HandleClickCommand = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClick);
+            HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
 
             _section.PropertyChanged += OnSectionChanged;
         }
@@ -120,7 +116,7 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
         /// <param name="e">
         /// The PointerReleased event args.
         /// </param>
-        private void HandleClick(PointerReleasedEventArgs e)
+        private void HandleClickImpl(PointerReleasedEventArgs e)
         {
             switch (e.InitialPressMouseButton)
             {

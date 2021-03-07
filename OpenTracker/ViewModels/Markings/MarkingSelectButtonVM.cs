@@ -5,7 +5,7 @@ using OpenTracker.ViewModels.Markings.Images;
 namespace OpenTracker.ViewModels.Markings
 {
     /// <summary>
-    /// This is the ViewModel for the marking select button control.
+    /// This class contains the marking select button control ViewModel data.
     /// </summary>
     public class MarkingSelectButtonVM : ViewModelBase, IMarkingSelectItemVMBase
     {
@@ -17,6 +17,9 @@ namespace OpenTracker.ViewModels.Markings
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="markingImages">
+        /// The marking image control dictionary.
+        /// </param>
         /// <param name="marking">
         /// The marking to be represented by this button.
         /// </param>
@@ -24,7 +27,7 @@ namespace OpenTracker.ViewModels.Markings
         {
             Marking = marking;
 
-            if (Marking != null)
+            if (!(Marking is null))
             {
                 Image = markingImages[Marking.Value];
             }
