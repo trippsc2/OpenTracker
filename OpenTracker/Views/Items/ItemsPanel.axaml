@@ -9,32 +9,9 @@
 		<vm:ItemsPanelVM />
 	</Design.DataContext>
 	
-	<Border Classes="ControlBorder" Margin="1">
-		<StackPanel Orientation="Vertical">
-
-			<Border Classes="UIPanelTitle">
-				<Grid ColumnDefinitions="Auto,*,Auto">
-					<TextBlock Classes="UIPanelTitleText" Grid.Column="0" Text="Items" />
-					<ContentControl Content="{Binding ModeSettings}" Grid.Column="2" />
-				</Grid>
-			</Border>
-
-			<LayoutTransformControl>
-
-				<LayoutTransformControl.LayoutTransform>
-					<ScaleTransform ScaleX="{Binding Scale}"
-					                ScaleY="{Binding Scale}" />
-				</LayoutTransformControl.LayoutTransform>
-
-				<Border Classes="UIPanelBody ItemsPanelBody">
-					<StackPanel Orientation="{Binding Orientation}">
-						<ContentControl Content="{Binding LargeItems}" />
-						<ContentControl Content="{Binding SmallItems}" />
-					</StackPanel>
-				</Border>
-			</LayoutTransformControl>
-
-		</StackPanel>
-	</Border>
+	<StackPanel Orientation="{Binding Orientation}">
+		<ContentControl Content="{Binding LargeItems}" />
+		<ContentControl Content="{Binding SmallItems}" />
+	</StackPanel>
 	
 </UserControl>

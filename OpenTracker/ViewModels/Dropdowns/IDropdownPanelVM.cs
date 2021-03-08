@@ -1,9 +1,11 @@
-﻿namespace OpenTracker.ViewModels.Dropdowns
+﻿using OpenTracker.ViewModels.UIPanels;
+
+namespace OpenTracker.ViewModels.Dropdowns
 {
     /// <summary>
-    /// This is the interface for the dropdown panel ViewModel.
+    /// This interface contains the dropdown panel control ViewModel data.
     /// </summary>
-    public interface IDropdownPanelVM
+    public interface IDropdownPanelVM : IUIPanelBodyVMBase
     {
     }
 }

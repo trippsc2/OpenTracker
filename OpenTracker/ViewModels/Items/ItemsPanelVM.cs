@@ -1,16 +1,17 @@
 ﻿using Avalonia.Layout;
+using Avalonia.Threading;
 using OpenTracker.Models.Settings;
 using OpenTracker.Utils;
 using OpenTracker.ViewModels.Items.Large;
 using OpenTracker.ViewModels.Items.Small;
+using OpenTracker.ViewModels.UIPanels;
 using ReactiveUI;
 using System.ComponentModel;
-using Avalonia.Threading;
 
 namespace OpenTracker.ViewModels.Items
 {
     /// <summary>
-    /// This is the ViewModel class for the Items panel control.
+    /// This class contains the items panel body control ViewModel data.
     /// </summary>
     public class ItemsPanelVM : ViewModelBase, IItemsPanelVM
     {
@@ -19,40 +20,37 @@ namespace OpenTracker.ViewModels.Items
         private readonly IHorizontalSmallItemPanelVM _horizontalSmallItemPanel;
         private readonly IVerticalSmallItemPanelVM _verticalSmallItemPanel;
 
-        public double Scale =>
-            _layoutSettings.UIScale;
-        public Orientation Orientation =>
-            _layoutSettings.CurrentLayoutOrientation;
+        public Orientation Orientation => _layoutSettings.CurrentLayoutOrientation;
 
-        public IModeSettingsVM ModeSettings { get; }
         public ILargeItemPanelVM LargeItems { get; }
-        public ISmallItemPanelVM SmallItems
-        {
-            get
-            {
-                if (Orientation == Orientation.Horizontal)
-                {
-                    return _horizontalSmallItemPanel;
-                }
-
-                return _verticalSmallItemPanel;
-            }
-        }
+        public ISmallItemPanelVM SmallItems =>
+            Orientation == Orientation.Horizontal ?
+                (ISmallItemPanelVM) _horizontalSmallItemPanel : _verticalSmallItemPanel;
 
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="layoutSettings">
+        /// The layout settings data.
+        /// </param>
+        /// <param name="horizontalSmallItemPanel">
+        /// The horizontal small item panel control.
+        /// </param>
+        /// <param name="verticalSmallItemPanel">
+        /// The vertical small item panel control.
+        /// </param>
+        /// <param name="largeItems">
+        /// The large item panel control.
+        /// </param>
         public ItemsPanelVM(
             ILayoutSettings layoutSettings, IHorizontalSmallItemPanelVM horizontalSmallItemPanel,
-            IVerticalSmallItemPanelVM verticalSmallItemPanel, IModeSettingsVM modeSettings,
-            ILargeItemPanelVM largeItems)
+            IVerticalSmallItemPanelVM verticalSmallItemPanel, ILargeItemPanelVM largeItems)
         {
             _layoutSettings = layoutSettings;
 
             _horizontalSmallItemPanel = horizontalSmallItemPanel;
             _verticalSmallItemPanel = verticalSmallItemPanel;
 
-            ModeSettings = modeSettings;
             LargeItems = largeItems;
 
             PropertyChanged += OnPropertyChanged;
@@ -77,7 +75,7 @@ namespace OpenTracker.ViewModels.Items
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the LayoutSettings class.
+        /// Subscribes to the PropertyChanged event on the ILayoutSettings interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -90,11 +88,6 @@ namespace OpenTracker.ViewModels.Items
             if (e.PropertyName == nameof(ILayoutSettings.CurrentLayoutOrientation))
             {
                 await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Orientation)));
-            }
-
-            if (e.PropertyName == nameof(ILayoutSettings.UIScale))
-            {
-                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Scale)));
             }
         }
     }

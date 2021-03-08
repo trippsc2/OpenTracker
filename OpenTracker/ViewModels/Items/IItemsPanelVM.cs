@@ -1,6 +1,8 @@
-﻿namespace OpenTracker.ViewModels.Items
+﻿using OpenTracker.ViewModels.UIPanels;
+
+namespace OpenTracker.ViewModels.Items
 {
-    public interface IItemsPanelVM
+    public interface IItemsPanelVM : IUIPanelBodyVMBase
     {
     }
 }

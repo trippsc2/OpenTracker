@@ -12,6 +12,7 @@ using ReactiveUI;
 using System.ComponentModel;
 using System.Reactive;
 using System.Threading.Tasks;
+using OpenTracker.ViewModels.Areas;
 
 namespace OpenTracker.ViewModels.Maps.Connections
 {

@@ -22,7 +22,7 @@
 
         <MenuItem Classes="InnerMenu" Command="{Binding Open}">
           <MenuItem.Header>
-            <Grid ColumnDefinitions="Auto,*,Auto">
+            <Grid ColumnDefinitions="Auto * Auto">
               <TextBlock Text="Open..." />
               <TextBlock Classes="MenuHotkey" Text="Ctrl+O" Grid.Column="2" />
             </Grid>
@@ -31,7 +31,7 @@
 
         <MenuItem Classes="InnerMenu" Command="{Binding Save}">
           <MenuItem.Header>
-            <Grid ColumnDefinitions="Auto,*,Auto">
+            <Grid ColumnDefinitions="Auto * Auto">
               <TextBlock Text="Save" />
               <TextBlock Classes="MenuHotkey" Text="Ctrl+S" Grid.Column="2" />
             </Grid>
@@ -49,7 +49,7 @@
 
         <MenuItem Classes="InnerMenu" Command="{Binding Reset}">
           <MenuItem.Header>
-            <Grid ColumnDefinitions="Auto,*,Auto">
+            <Grid ColumnDefinitions="Auto * Auto">
               <TextBlock Text="Reset" />
               <TextBlock Classes="MenuHotkey" Text="F5" Grid.Column="2" />
             </Grid>
@@ -60,7 +60,7 @@
         <MenuItem Classes="InnerMenu" Command="{Binding Close}"
                   CommandParameter="{Binding $parent[view:MainWindow]}">
           <MenuItem.Header>
-            <Grid ColumnDefinitions="Auto,*,Auto">
+            <Grid ColumnDefinitions="Auto * Auto">
               <TextBlock Text="Close" />
               <TextBlock Classes="MenuHotkey" Text="Alt+F4" Grid.Column="2" />
             </Grid>
@@ -73,7 +73,7 @@
 
         <MenuItem Classes="InnerMenu" Command="{Binding Undo}">
           <MenuItem.Header>
-            <Grid ColumnDefinitions="Auto,*,Auto">
+            <Grid ColumnDefinitions="Auto * Auto">
               <TextBlock Text="Undo" />
               <TextBlock Classes="MenuHotkey" Text="Ctrl+Z" Grid.Column="2" />
             </Grid>
@@ -82,7 +82,7 @@
 
         <MenuItem Classes="InnerMenu" Command="{Binding Redo}">
           <MenuItem.Header>
-            <Grid ColumnDefinitions="Auto,*,Auto">
+            <Grid ColumnDefinitions="Auto * Auto">
               <TextBlock Text="Redo" />
               <TextBlock Classes="MenuHotkey" Text="Ctrl+Y" Grid.Column="2" />
             </Grid>
@@ -127,17 +127,16 @@
 
         <Separator />
 
-        <MenuItem Classes="InnerMenu"
-                  Command="{Binding ToggleDisplayAllLocations}">
+        <MenuItem Classes="InnerMenu" Command="{Binding ToggleDisplayAllLocations}">
 
           <MenuItem.Icon>
             <CheckBox Classes="Menu" IsChecked="{Binding DisplayAllLocations}" />
           </MenuItem.Icon>
 
           <MenuItem.Header>
-            <Grid ColumnDefinitions="Auto,*,Auto">
+            <Grid ColumnDefinitions="Auto * Auto">
               <TextBlock Text="Display All Locations" />
-              <TextBlock Margin="10,0,0,0" Text="F11" Grid.Column="2" />
+              <TextBlock Classes="MenuHotkey" Text="F11" Grid.Column="2" />
             </Grid>
           </MenuItem.Header>
 
@@ -379,8 +378,7 @@
         </MenuItem>
 
         <Separator />
-        <MenuItem Classes="InnerMenu" Command="{Binding About}"
-                  Header="About..." />
+        <MenuItem Classes="InnerMenu" Command="{Binding About}" Header="About..." />
 
       </MenuItem>
 

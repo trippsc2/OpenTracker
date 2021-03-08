@@ -1,55 +1,56 @@
 ﻿using Autofac;
 using OpenTracker.Models.AutoTracking;
-using OpenTracker.Models.AutoTracking.Values;
 using OpenTracker.Models.AutoTracking.Logging;
+using OpenTracker.Models.AutoTracking.SNESConnectors;
+using OpenTracker.Models.AutoTracking.Values;
+using OpenTracker.Models.BossPlacements;
+using OpenTracker.Models.Connections;
 using OpenTracker.Models.Dropdowns;
+using OpenTracker.Models.DungeonItems;
+using OpenTracker.Models.DungeonNodes;
+using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.Items;
+using OpenTracker.Models.KeyDoors;
+using OpenTracker.Models.KeyLayouts;
+using OpenTracker.Models.Locations;
+using OpenTracker.Models.Modes;
+using OpenTracker.Models.NodeConnections;
+using OpenTracker.Models.Requirements;
+using OpenTracker.Models.RequirementNodes;
+using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.SaveLoad;
+using OpenTracker.Models.Sections;
+using OpenTracker.Models.SequenceBreaks;
 using OpenTracker.Models.Settings;
+using OpenTracker.Models.Reset;
+using OpenTracker.Models.UndoRedo;
+using OpenTracker.Utils;
+using OpenTracker.Utils.Dialog;
+using OpenTracker.ViewModels;
+using OpenTracker.ViewModels.Areas;
 using OpenTracker.ViewModels.AutoTracking;
+using OpenTracker.ViewModels.BossSelect;
+using OpenTracker.ViewModels.ColorSelect;
 using OpenTracker.ViewModels.Dropdowns;
+using OpenTracker.ViewModels.Items;
+using OpenTracker.ViewModels.Items.Small;
+using OpenTracker.ViewModels.Items.Large;
+using OpenTracker.ViewModels.Maps.Connections;
+using OpenTracker.ViewModels.Maps.Locations;
+using OpenTracker.ViewModels.Markings;
+using OpenTracker.ViewModels.Markings.Images;
+using OpenTracker.ViewModels.PinnedLocations;
+using OpenTracker.ViewModels.PinnedLocations.Sections;
 using OpenTracker.ViewModels.SequenceBreaks;
+using OpenTracker.ViewModels.UIPanels;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using OpenTracker.Models.BossPlacements;
-using OpenTracker.Models.Connections;
-using OpenTracker.Models.NodeConnections;
-using OpenTracker.Models.Locations;
-using OpenTracker.Models.Dungeons;
-using OpenTracker.Models.Sections;
-using OpenTracker.Models.Requirements;
-using OpenTracker.Models.RequirementNodes;
-using OpenTracker.Models.KeyDoors;
-using OpenTracker.Models.KeyLayouts;
-using OpenTracker.Models.Modes;
-using OpenTracker.Models.PrizePlacements;
-using OpenTracker.Models.SequenceBreaks;
-using OpenTracker.Models.UndoRedo;
-using OpenTracker.Models.Reset;
-using OpenTracker.ViewModels.Items.Small;
-using OpenTracker.ViewModels.Items.Large;
-using OpenTracker.ViewModels.Markings;
-using OpenTracker.ViewModels.Markings.Images;
-using OpenTracker.ViewModels.PinnedLocations.Sections;
-using OpenTracker.ViewModels.Maps;
-using OpenTracker.Utils;
-using OpenTracker.Utils.Dialog;
-using OpenTracker.ViewModels.BossSelect;
-using OpenTracker.ViewModels.ColorSelect;
-using OpenTracker.ViewModels.Items;
-using OpenTracker.ViewModels.PinnedLocations;
-using OpenTracker.ViewModels;
-using OpenTracker.ViewModels.Maps.Connections;
-using OpenTracker.ViewModels.Maps.Locations;
-using OpenTracker.Models.DungeonItems;
-using OpenTracker.Models.DungeonNodes;
-using OpenTracker.Models.AutoTracking.SNESConnectors;
 
 namespace OpenTracker
 {
     /// <summary>
-    /// This is the class for creating and configuring the Autofac container.
+    /// This class contains the logic to create and configure the Autofac container.
     /// </summary>
     public static class ContainerConfig
     {
@@ -263,6 +264,7 @@ namespace OpenTracker
                 nameof(ColorSettings),
                 nameof(LayoutSettings),
                 nameof(TrackerSettings),
+                nameof(UIPanelAreaVM),
                 nameof(AutoTrackerDialogVM),
                 nameof(AutoTrackerLogVM),
                 nameof(AutoTrackerStatusVM),
@@ -276,7 +278,7 @@ namespace OpenTracker
                 nameof(SmallItemPanelVM),
                 nameof(SmallItemVMFactory),
                 nameof(MapAreaVM),
-                nameof(MapAreaVMFactory),
+                nameof(MapAreaFactory),
                 nameof(MapConnectionCollection),
                 nameof(MapLocationVMFactory),
                 nameof(MarkingSelectFactory),
@@ -289,11 +291,11 @@ namespace OpenTracker
                 nameof(SectionVMFactory),
                 nameof(SequenceBreakControlFactory),
                 nameof(SequenceBreakDialogVM),
+                nameof(UIPanelFactory),
                 nameof(AboutDialogVM),
                 nameof(MainWindowVM),
                 nameof(ModeSettingsVM),
-                nameof(StatusBarVM),
-                nameof(UIPanelVM)
+                nameof(StatusBarVM)
             };
 
         /// <summary>
@@ -328,6 +330,9 @@ namespace OpenTracker
         /// <param name="builder">
         /// The container builder.
         /// </param>
+        /// <param name="skip">
+        /// A list of strings representing types that should not be registered.
+        /// </param>
         /// <param name="self">
         /// A list of strings representing types that should be registered to themselves.
         /// </param>
@@ -335,8 +340,8 @@ namespace OpenTracker
         /// A list of strings representing types that should be registered as a single instance.
         /// </param>
         private static void RegisterNamespace(
-            Assembly assembly, ContainerBuilder builder, List<string> skip, List<string> self,
-            List<string> singleInstance)
+            Assembly assembly, ContainerBuilder builder, ICollection<string> skip, ICollection<string> self,
+            ICollection<string> singleInstance)
         {
             foreach (var type in assembly.GetTypes())
             {
@@ -347,6 +352,12 @@ namespace OpenTracker
 
                 if (self.Contains(type.Name))
                 {
+                    if (singleInstance.Contains(type.Name))
+                    {
+                        builder.RegisterType(type).AsSelf().SingleInstance();
+                        continue;
+                    }
+                    
                     builder.RegisterType(type).AsSelf();
                     continue;
                 }

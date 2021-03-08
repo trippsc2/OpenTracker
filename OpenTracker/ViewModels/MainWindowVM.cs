@@ -5,7 +5,7 @@ using Avalonia.Threading;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.Settings;
 using OpenTracker.Utils;
-using OpenTracker.ViewModels.Maps;
+using OpenTracker.ViewModels.Areas;
 using ReactiveUI;
 using System.ComponentModel;
 using System.Reactive;
@@ -73,7 +73,7 @@ namespace OpenTracker.ViewModels
 
         public ITopMenuVM TopMenu { get; }
         public IStatusBarVM StatusBar { get; }
-        public IUIPanelVM UIPanel { get; }
+        public IUIPanelAreaVM UIPanel { get; }
         public IMapAreaVM MapArea { get; }
 
         public ReactiveCommand<Unit, Unit> Open { get; }
@@ -107,7 +107,7 @@ namespace OpenTracker.ViewModels
         /// </param>
         public MainWindowVM(
             IAppSettings appSettings, ISaveLoadManager saveLoadManager, ITopMenuVM topMenu, IStatusBarVM statusBar,
-            IUIPanelVM uiPanel, IMapAreaVM mapArea)
+            IUIPanelAreaVM uiPanel, IMapAreaVM mapArea)
         {
             _appSettings = appSettings;
             _saveLoadManager = saveLoadManager;

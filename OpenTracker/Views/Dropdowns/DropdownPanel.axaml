@@ -9,35 +9,13 @@
     <vm:DropdownPanelVM />
   </Design.DataContext>
   
-  <Border Classes="ControlBorder" Margin="1" IsVisible="{Binding Visible}">
-    <StackPanel Orientation="Vertical">
-
-      <Border Classes="UIPanelTitle">
-        <Grid ColumnDefinitions="Auto,*,Auto">
-          <TextBlock Classes="UIPanelTitleText" Grid.Column="0" Text="Dropdowns" />
-        </Grid>
-      </Border>
-
-      <LayoutTransformControl>
-
-        <LayoutTransformControl.LayoutTransform>
-          <ScaleTransform ScaleX="{Binding Scale}"
-                          ScaleY="{Binding Scale}" />
-        </LayoutTransformControl.LayoutTransform>
-
-        <Border Classes="UIPanelBody LocationsPanelBody">
-          <ItemsControl Items="{Binding Dropdowns}">
-            <ItemsControl.ItemsPanel>
-              <ItemsPanelTemplate>
-                <WrapPanel ItemWidth="34" ItemHeight="40" MaxWidth="238" MaxHeight="200" Orientation="Horizontal"
-                           HorizontalAlignment="Left" VerticalAlignment="Top" />
-              </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-          </ItemsControl>
-        </Border>
-      </LayoutTransformControl>
-
-    </StackPanel>
-  </Border>
+  <ItemsControl Items="{Binding Dropdowns}">
+    <ItemsControl.ItemsPanel>
+      <ItemsPanelTemplate>
+        <WrapPanel ItemWidth="34" ItemHeight="40" MaxWidth="238" MaxHeight="200" Orientation="Horizontal"
+                   HorizontalAlignment="Left" VerticalAlignment="Top" />
+      </ItemsPanelTemplate>
+    </ItemsControl.ItemsPanel>
+  </ItemsControl>
   
 </UserControl>

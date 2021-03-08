@@ -2,13 +2,14 @@
 using Avalonia.Threading;
 using OpenTracker.Models.Settings;
 using OpenTracker.Utils;
+using OpenTracker.ViewModels.Maps;
 using OpenTracker.ViewModels.Maps.Connections;
 using OpenTracker.ViewModels.Maps.Locations;
 using ReactiveUI;
 using System.Collections.Generic;
 using System.ComponentModel;
 
-namespace OpenTracker.ViewModels.Maps
+namespace OpenTracker.ViewModels.Areas
 {
     /// <summary>
     /// This is the ViewModel of the map area control.
@@ -27,7 +28,7 @@ namespace OpenTracker.ViewModels.Maps
         /// <summary>
         /// Constructor
         /// </summary>
-        public MapAreaVM(ILayoutSettings layoutSettings, IMapAreaVMFactory factory, IMapConnectionCollection connectors)
+        public MapAreaVM(ILayoutSettings layoutSettings, IMapAreaFactory factory, IMapConnectionCollection connectors)
         {
             _layoutSettings = layoutSettings;
 

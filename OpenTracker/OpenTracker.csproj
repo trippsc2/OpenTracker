@@ -21,6 +21,14 @@
     <Compile Remove="bin\**" />
     <EmbeddedResource Remove="bin\**" />
     <None Remove="bin\**" />
+    <Compile Update="Views\Sections\UIPanelSection.axaml.cs">
+      <DependentUpon>UIPanel.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Areas\MapArea.axaml.cs">
+      <DependentUpon>MapArea.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Autofac" Version="6.1.0" />

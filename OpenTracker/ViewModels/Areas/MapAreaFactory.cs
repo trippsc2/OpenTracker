@@ -1,20 +1,21 @@
 ﻿using OpenTracker.Models.Locations;
+using OpenTracker.ViewModels.Maps;
 using OpenTracker.ViewModels.Maps.Locations;
 using System;
 using System.Collections.Generic;
 
-namespace OpenTracker.ViewModels.Maps
+namespace OpenTracker.ViewModels.Areas
 {
     /// <summary>
     /// This is the class for creating map area control ViewModel classes.
     /// </summary>
-    public class MapAreaVMFactory : IMapAreaVMFactory
+    public class MapAreaFactory : IMapAreaFactory
     {
         private readonly ILocationDictionary _locations;
         private readonly IMapLocationVMFactory _locationFactory;
         private readonly IMapVM.Factory _mapFactory;
 
-        public MapAreaVMFactory(
+        public MapAreaFactory(
             ILocationDictionary locations, IMapLocationVMFactory locationFactory,
             IMapVM.Factory mapFactory)
         {

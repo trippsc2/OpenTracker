@@ -1,20 +1,18 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Layout;
+using Avalonia.Threading;
 using OpenTracker.Models.Settings;
 using OpenTracker.Utils;
-using OpenTracker.ViewModels.Dropdowns;
-using OpenTracker.ViewModels.Items;
-using OpenTracker.ViewModels.PinnedLocations;
+using OpenTracker.ViewModels.UIPanels;
 using ReactiveUI;
 using System.ComponentModel;
-using Avalonia.Threading;
 
-namespace OpenTracker.ViewModels
+namespace OpenTracker.ViewModels.Areas
 {
     /// <summary>
-    /// This is the class for the UI panels ViewModel.
+    /// This class contains the UI panel section control ViewModel data.
     /// </summary>
-    public class UIPanelVM : ViewModelBase, IUIPanelVM
+    public class UIPanelAreaVM : ViewModelBase, IUIPanelAreaVM
     {
         private readonly ILayoutSettings _layoutSettings;
         public Dock ItemsDock =>
@@ -24,9 +22,9 @@ namespace OpenTracker.ViewModels
                 _ => _layoutSettings.VerticalItemsPlacement
             };
 
-        public IDropdownPanelVM Dropdowns { get; }
-        public IItemsPanelVM Items { get; }
-        public IPinnedLocationsPanelVM Locations { get; }
+        public IUIPanelVM Dropdowns { get; }
+        public IUIPanelVM Items { get; }
+        public IUIPanelVM Locations { get; }
 
         /// <summary>
         /// Constructor
@@ -34,24 +32,17 @@ namespace OpenTracker.ViewModels
         /// <param name="layoutSettings">
         /// The layout settings.
         /// </param>
-        /// <param name="dropdowns">
-        /// The dropdowns panel.
+        /// <param name="factory">
+        /// A factory for creating UI panel controls.
         /// </param>
-        /// <param name="items">
-        /// The items panel.
-        /// </param>
-        /// <param name="locations">
-        /// The pinned locations panel.
-        /// </param>
-        public UIPanelVM(
-            ILayoutSettings layoutSettings, IDropdownPanelVM dropdowns, IItemsPanelVM items,
-            IPinnedLocationsPanelVM locations)
+        public UIPanelAreaVM(
+            ILayoutSettings layoutSettings, IUIPanelFactory factory)
         {
             _layoutSettings = layoutSettings;
 
-            Dropdowns = dropdowns;
-            Items = items;
-            Locations = locations;
+            Dropdowns = factory.GetUIPanelVM(UIPanelType.Dropdown);
+            Items = factory.GetUIPanelVM(UIPanelType.Item);
+            Locations = factory.GetUIPanelVM(UIPanelType.Location);
 
             _layoutSettings.PropertyChanged += OnLayoutChanged;
         }

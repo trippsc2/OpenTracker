@@ -1,11 +1,11 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
-namespace OpenTracker.Views
+namespace OpenTracker.Views.Areas
 {
-    public class UIPanel : UserControl
+    public class MapArea : UserControl
     {
-        public UIPanel()
+        public MapArea()
         {
             InitializeComponent();
         }
