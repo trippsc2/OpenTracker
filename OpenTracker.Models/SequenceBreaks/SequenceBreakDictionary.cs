@@ -1,6 +1,5 @@
 ﻿using OpenTracker.Models.SaveLoad;
 using OpenTracker.Utils;
-using System;
 using System.Collections.Generic;
 
 namespace OpenTracker.Models.SequenceBreaks
@@ -31,17 +30,6 @@ namespace OpenTracker.Models.SequenceBreaks
         }
 
         /// <summary>
-        /// Resets all contained sequence breaks to their starting values.
-        /// </summary>
-        public void Reset()
-        {
-            foreach (var sequenceBreak in Values)
-            {
-                sequenceBreak.Reset();
-            }
-        }
-
-        /// <summary>
         /// Returns a dictionary of sequence break save data.
         /// </summary>
         /// <returns>
@@ -67,7 +55,7 @@ namespace OpenTracker.Models.SequenceBreaks
         {
             if (saveData == null)
             {
-                throw new ArgumentNullException(nameof(saveData));
+                return;
             }
 
             foreach (var type in saveData.Keys)
