@@ -65,6 +65,10 @@
       <DependentUpon>VerticalSmallItemPanel.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\Dialogs\SequenceBreakDialog.axaml.cs">
+      <DependentUpon>SequenceBreakDialog.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Autofac" Version="6.1.0" />

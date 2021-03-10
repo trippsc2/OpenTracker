@@ -2,7 +2,7 @@
 using Avalonia.Markup.Xaml;
 using OpenTracker.Utils.Dialog;
 
-namespace OpenTracker.Views.SequenceBreaks
+namespace OpenTracker.Views.Dialogs
 {
     public class SequenceBreakDialog : DialogWindowBase
     {

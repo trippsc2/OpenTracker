@@ -1,15 +1,14 @@
-﻿using OpenTracker.Utils.Dialog;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using OpenTracker.Utils.Dialog;
+using OpenTracker.ViewModels.SequenceBreaks;
 
-namespace OpenTracker.ViewModels.SequenceBreaks
+namespace OpenTracker.ViewModels.Dialogs
 {
     /// <summary>
-    /// This is the ViewModel of the sequence break dialog window.
+    /// This class contains the sequence break dialog window ViewModel data.
     /// </summary>
     public class SequenceBreakDialogVM : DialogViewModelBase, ISequenceBreakDialogVM
     {
-        private readonly ISequenceBreakControlFactory _factory;
-
         public List<ISequenceBreakControlVM> BombDuplication { get; }
         public List<ISequenceBreakControlVM> BombJumps { get; }
         public List<ISequenceBreakControlVM> DarkRooms { get; }
@@ -25,14 +24,12 @@ namespace OpenTracker.ViewModels.SequenceBreaks
         /// </param>
         public SequenceBreakDialogVM(ISequenceBreakControlFactory factory)
         {
-            _factory = factory;
-
-            BombDuplication = _factory.GetBombDuplicationSequenceBreaks();
-            BombJumps = _factory.GetBombJumpsSequenceBreaks();
-            DarkRooms = _factory.GetDarkRoomsSequenceBreaks();
-            FakeFlippersWaterWalk = _factory.GetFakeFlippersWaterWalkSequenceBreaks();
-            SuperBunny = _factory.GetSuperBunnySequenceBreaks();
-            Other = _factory.GetOtherSequenceBreaks();
+            BombDuplication = factory.GetBombDuplicationSequenceBreaks();
+            BombJumps = factory.GetBombJumpsSequenceBreaks();
+            DarkRooms = factory.GetDarkRoomsSequenceBreaks();
+            FakeFlippersWaterWalk = factory.GetFakeFlippersWaterWalkSequenceBreaks();
+            SuperBunny = factory.GetSuperBunnySequenceBreaks();
+            Other = factory.GetOtherSequenceBreaks();
         }
     }
 }
