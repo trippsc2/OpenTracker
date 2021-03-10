@@ -1,12 +1,12 @@
-﻿using Avalonia.Threading;
+﻿using System.ComponentModel;
+using System.Threading.Tasks;
+using Avalonia.Threading;
 using OpenTracker.Models.Markings;
 using OpenTracker.Utils;
 using OpenTracker.ViewModels.Markings.Images;
 using ReactiveUI;
-using System.ComponentModel;
-using System.Threading.Tasks;
 
-namespace OpenTracker.ViewModels.Maps.Locations.Tooltip
+namespace OpenTracker.ViewModels.Tooltips
 {
     /// <summary>
     /// This class contains the map location tooltip marking control ViewModel data.

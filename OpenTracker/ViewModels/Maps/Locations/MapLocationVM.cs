@@ -10,12 +10,12 @@ using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
-using OpenTracker.ViewModels.Maps.Locations.Tooltip;
 using ReactiveUI;
 using System.ComponentModel;
 using System.Globalization;
 using System.Reactive;
 using System.Threading.Tasks;
+using OpenTracker.ViewModels.Tooltips;
 
 namespace OpenTracker.ViewModels.Maps.Locations
 {
@@ -96,8 +96,8 @@ namespace OpenTracker.ViewModels.Maps.Locations
         }
         public bool Visible =>
             _mapLocation.Requirement.Met && (_appSettings.Tracker.DisplayAllLocations ||
-            (_mapLocation.Location!.Accessibility != AccessibilityLevel.Cleared &&
-            _mapLocation.Location.Accessibility != AccessibilityLevel.None));
+            _mapLocation.Location!.Accessibility != AccessibilityLevel.Cleared &&
+            _mapLocation.Location.Accessibility != AccessibilityLevel.None);
         public string Color => _appSettings.Colors.AccessibilityColors[_mapLocation.Location!.Accessibility];
         public Thickness BorderSize =>
             _mode.EntranceShuffle >= EntranceShuffle.All ? new Thickness(5) : new Thickness(9);

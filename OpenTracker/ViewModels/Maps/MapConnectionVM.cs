@@ -1,4 +1,7 @@
-﻿using Avalonia;
+﻿using System.ComponentModel;
+using System.Reactive;
+using System.Threading.Tasks;
+using Avalonia;
 using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Threading;
@@ -8,13 +11,10 @@ using OpenTracker.Models.Modes;
 using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
-using ReactiveUI;
-using System.ComponentModel;
-using System.Reactive;
-using System.Threading.Tasks;
 using OpenTracker.ViewModels.Areas;
+using ReactiveUI;
 
-namespace OpenTracker.ViewModels.Maps.Connections
+namespace OpenTracker.ViewModels.Maps
 {
     /// <summary>
     /// This class contains map connection control ViewModel data.

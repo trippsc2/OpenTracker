@@ -12,13 +12,13 @@ using OpenTracker.Models.Sections;
 using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
-using OpenTracker.ViewModels.Maps.Locations.Tooltip;
 using ReactiveUI;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reactive;
 using System.Threading.Tasks;
 using Avalonia.Threading;
+using OpenTracker.ViewModels.Tooltips;
 
 namespace OpenTracker.ViewModels.Maps.Locations
 {

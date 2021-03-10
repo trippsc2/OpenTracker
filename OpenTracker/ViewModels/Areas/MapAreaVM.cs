@@ -3,7 +3,6 @@ using Avalonia.Threading;
 using OpenTracker.Models.Settings;
 using OpenTracker.Utils;
 using OpenTracker.ViewModels.Maps;
-using OpenTracker.ViewModels.Maps.Connections;
 using OpenTracker.ViewModels.Maps.Locations;
 using ReactiveUI;
 using System.Collections.Generic;
@@ -18,8 +17,7 @@ namespace OpenTracker.ViewModels.Areas
     {
         private readonly ILayoutSettings _layoutSettings;
 
-        public Orientation Orientation => 
-            _layoutSettings.CurrentMapOrientation;
+        public Orientation Orientation => _layoutSettings.CurrentMapOrientation;
 
         public List<IMapVM> Maps { get; }
         public IMapConnectionCollection Connectors { get; }

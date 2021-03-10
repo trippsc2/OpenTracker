@@ -21,26 +21,22 @@ namespace OpenTracker.ValueConverters
         /// <returns>
         /// A bitmap URI from the string.
         /// </returns>
-        public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
-            if (value == null)
+            switch (value)
             {
-                return null;
-            }
-
-            if (value is string @string && targetType == typeof(IImage))
-            {
-                var uri = new Uri(@string, UriKind.RelativeOrAbsolute);
-                var scheme = uri.IsAbsoluteUri ? uri.Scheme : "file";
-
-                switch (scheme)
+                case null:
+                    return null;
+                case string @string when targetType == typeof(IImage):
                 {
-                    case "file":
-                        {
+                    var uri = new Uri(@string, UriKind.RelativeOrAbsolute);
+                    var scheme = uri.IsAbsoluteUri ? uri.Scheme : "file";
+
+                    switch (scheme)
+                    {
+                        case "file":
                             return new Bitmap(@string);
-                        }
-                    default:
-                        {
+                        default:
                             try
                             {
                                 var assets = AvaloniaLocator.Current.GetService<IAssetLoader>();
@@ -51,11 +47,11 @@ namespace OpenTracker.ValueConverters
                                 Debug.WriteLine(ex.Message);
                                 return null;
                             }
-                        }
+                    }
                 }
+                default:
+                    throw new NotSupportedException();
             }
-
-            throw new NotSupportedException();
         }
 
         // Not implemented.  Bitmap bindings are always one-way.

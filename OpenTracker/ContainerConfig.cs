@@ -35,7 +35,6 @@ using OpenTracker.ViewModels.Dialogs;
 using OpenTracker.ViewModels.Dropdowns;
 using OpenTracker.ViewModels.Items;
 using OpenTracker.ViewModels.Items.Adapters;
-using OpenTracker.ViewModels.Maps.Connections;
 using OpenTracker.ViewModels.Maps.Locations;
 using OpenTracker.ViewModels.Markings;
 using OpenTracker.ViewModels.Markings.Images;
@@ -47,6 +46,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using OpenTracker.ViewModels.Dungeons;
+using OpenTracker.ViewModels.Maps;
 
 namespace OpenTracker
 {

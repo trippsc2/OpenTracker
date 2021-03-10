@@ -1,11 +1,11 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
-namespace OpenTracker.Views.Maps.Connections
+namespace OpenTracker.Views.Tooltips
 {
-    public class MapConnection : UserControl
+    public class MapLocationToolTipMarking : UserControl
     {
-        public MapConnection()
+        public MapLocationToolTipMarking()
         {
             InitializeComponent();
         }

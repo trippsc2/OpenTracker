@@ -69,6 +69,18 @@
       <DependentUpon>SequenceBreakDialog.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\Maps\MapConnection.axaml.cs">
+      <DependentUpon>MapConnection.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Tooltips\MapLocationToolTip.axaml.cs">
+      <DependentUpon>MapLocationToolTip.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Tooltips\MapLocationToolTipMarking.axaml.cs">
+      <DependentUpon>MapLocationToolTipMarking.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Autofac" Version="6.1.0" />

@@ -32,20 +32,21 @@ namespace OpenTracker.Models.Settings
         /// The color settings.
         /// </param>
         public AppSettings(
-            IBoundsSettings bounds, ITrackerSettings tracker, ILayoutSettings layout,
-            IColorSettings colors)
+            IBoundsSettings bounds, ITrackerSettings tracker, ILayoutSettings layout, IColorSettings colors)
         {
             Bounds = bounds;
             Tracker = tracker;
             Layout = layout;
             Colors = colors;
 
-            var saveData = JsonConversion.Load<AppSettingsSaveData>(AppPath.AppSettingsFilePath);
+            var saveData = JsonConversion.Load<AppSettingsSaveData?>(AppPath.AppSettingsFilePath);
 
-            if (saveData != null)
+            if (saveData is null)
             {
-                Load(saveData);
+                return;
             }
+            
+            Load(saveData);
         }
 
         /// <summary>
