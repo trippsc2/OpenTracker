@@ -6,6 +6,7 @@ namespace OpenTracker.ViewModels.UIPanels
     public enum UIPanelType
     {
         Item,
+        Dungeon,
         Dropdown,
         Location
     }

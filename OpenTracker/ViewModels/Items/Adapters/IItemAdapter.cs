@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using System.Reactive;
 using Avalonia.Input;
+using OpenTracker.ViewModels.BossSelect;
 using ReactiveUI;
 
 namespace OpenTracker.ViewModels.Items.Adapters
@@ -14,5 +15,6 @@ namespace OpenTracker.ViewModels.Items.Adapters
         string? Label { get; }
         ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
         string LabelColor { get; }
+        IBossSelectPopupVM? BossSelect { get; }
     }
 }

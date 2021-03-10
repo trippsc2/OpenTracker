@@ -1,37 +1,36 @@
+using System.ComponentModel;
+using System.Reactive;
 using Avalonia.Input;
 using Avalonia.Threading;
-using OpenTracker.Models.Items;
+using OpenTracker.Models.Sections;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
-using ReactiveUI;
-using System.ComponentModel;
-using System.Globalization;
-using System.Reactive;
 using OpenTracker.ViewModels.BossSelect;
+using ReactiveUI;
 
 namespace OpenTracker.ViewModels.Items.Adapters
 {
     /// <summary>
-    /// This class contains the logic to adapts item data to an item control. 
+    /// This class contains the logic to adapt prize data to an item control.
     /// </summary>
-    public class ItemAdapter : ViewModelBase, IItemAdapter
+    public class StaticPrizeAdapter : ViewModelBase, IItemAdapter
     {
         private readonly IUndoRedoManager _undoRedoManager;
         private readonly IUndoableFactory _undoableFactory;
 
-        private readonly IItem _item;
+        private readonly IPrizeSection _section;
         private readonly string _imageSourceBase;
 
-        public string ImageSource => $"{_imageSourceBase}{_item.Current.ToString(CultureInfo.InvariantCulture)}.png";
+        public string ImageSource => _imageSourceBase + (_section.IsAvailable() ? "0.png" : "1.png");
         public string? Label { get; } = null;
         public string LabelColor { get; } = "#ffffffff";
-        
+
         public IBossSelectPopupVM? BossSelect { get; } = null;
         
         public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
 
-        public delegate ItemAdapter Factory(IItem item, string imageSourceBase);
-        
+        public delegate StaticPrizeAdapter Factory(IPrizeSection section, string imageSourceBase);
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -39,30 +38,31 @@ namespace OpenTracker.ViewModels.Items.Adapters
         /// The undo/redo manager.
         /// </param>
         /// <param name="undoableFactory">
-        /// A factory for creating undoable actions.
+        /// The factory for creating undoable actions.
         /// </param>
         /// <param name="imageSourceBase">
         /// A string representing the base image source.
         /// </param>
-        /// <param name="item">
+        /// <param name="section">
         /// An item that is to be represented by this control.
         /// </param>
-        public ItemAdapter(
-            IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory, IItem item, string imageSourceBase)
+        public StaticPrizeAdapter(
+            IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory, IPrizeSection section,
+            string imageSourceBase)
         {
             _undoRedoManager = undoRedoManager;
             _undoableFactory = undoableFactory;
 
-            _item = item;
+            _section = section;
             _imageSourceBase = imageSourceBase;
-
+            
             HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
 
-            _item.PropertyChanged += OnItemChanged;
+            _section.PropertyChanged += OnSectionChanged;
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the IItem interface.
+        /// Subscribes to the PropertyChanged event on the IPrizeSection interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -70,28 +70,29 @@ namespace OpenTracker.ViewModels.Items.Adapters
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private async void OnItemChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnSectionChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(IItem.Current))
+            if (e.PropertyName == nameof(ISection.Available))
             {
                 await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(ImageSource)));
             }
         }
 
         /// <summary>
-        /// Creates an undoable action to add an item and sends it to the undo/redo manager.
+        /// Creates an undoable action to collect the prize section, ignoring logic, and sends it to the undo/redo
+        /// manager.
         /// </summary>
-        private void AddItem()
+        private void CollectSection()
         {
-            _undoRedoManager.NewAction(_undoableFactory.GetAddItem(_item));
+            _undoRedoManager.NewAction(_undoableFactory.GetCollectSection(_section, true));
         }
 
         /// <summary>
-        /// Creates an undoable action to remove an item and sends it to the undo/redo manager.
+        /// Creates an undoable action to un-collect the prize section and sends it to the undo/redo manager.
         /// </summary>
-        private void RemoveItem()
+        private void UncollectSection()
         {
-            _undoRedoManager.NewAction(_undoableFactory.GetRemoveItem(_item));
+            _undoRedoManager.NewAction(_undoableFactory.GetUncollectSection(_section));
         }
 
         /// <summary>
@@ -105,10 +106,10 @@ namespace OpenTracker.ViewModels.Items.Adapters
             switch (e.InitialPressMouseButton)
             {
                 case MouseButton.Left:
-                    AddItem();
+                    CollectSection();
                     break;
                 case MouseButton.Right:
-                    RemoveItem();
+                    UncollectSection();
                     break;
             }
         }

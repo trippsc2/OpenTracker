@@ -3,6 +3,7 @@ using OpenTracker.ViewModels.Dropdowns;
 using OpenTracker.ViewModels.Items;
 using OpenTracker.ViewModels.PinnedLocations;
 using System;
+using OpenTracker.ViewModels.Dungeons;
 
 namespace OpenTracker.ViewModels.UIPanels
 {
@@ -13,11 +14,13 @@ namespace OpenTracker.ViewModels.UIPanels
     {
         private readonly IRequirementDictionary _requirements;
         private readonly IModeSettingsVM _modeSettings;
-        private readonly IItemsPanelVM _items;
-        private readonly IDropdownPanelVM _dropdowns;
+        private readonly IDungeonPanelVM _dungeons;
         private readonly IPinnedLocationsPanelVM _pinnedLocations;
+        private readonly IItemVMFactory _itemFactory;
+        private readonly IDropdownVMFactory _dropdownFactory;
         
         private readonly IUIPanelVM.Factory _factory;
+        private readonly ILargeItemPanelVM.Factory _largeFactory;
 
         /// <summary>
         /// Constructor
@@ -28,29 +31,38 @@ namespace OpenTracker.ViewModels.UIPanels
         /// <param name="modeSettings">
         /// The mode settings control.
         /// </param>
-        /// <param name="items">
-        /// The items panel body control.
+        /// <param name="itemFactory">
+        /// The factory for creating item controls.
         /// </param>
-        /// <param name="dropdowns">
-        /// The dropdowns panel body control.
+        /// <param name="dungeons">
+        /// The dungeons panel body control.
         /// </param>
         /// <param name="pinnedLocations">
         /// The pinned locations panel body control.
         /// </param>
+        /// <param name="dropdownFactory">
+        /// The factory for creating dropdown controls.
+        /// </param>
         /// <param name="factory">
         /// An Autofac factory for creating UI panel controls.
         /// </param>
+        /// <param name="largeFactory">
+        /// The items panel body control.
+        /// </param>
         public UIPanelFactory(
-            IRequirementDictionary requirements, IModeSettingsVM modeSettings, IItemsPanelVM items,
-            IDropdownPanelVM dropdowns, IPinnedLocationsPanelVM pinnedLocations, IUIPanelVM.Factory factory)
+            IRequirementDictionary requirements, IModeSettingsVM modeSettings, IItemVMFactory itemFactory,
+            IDungeonPanelVM dungeons, IPinnedLocationsPanelVM pinnedLocations, IDropdownVMFactory dropdownFactory,
+            IUIPanelVM.Factory factory, ILargeItemPanelVM.Factory largeFactory)
         {
             _requirements = requirements;
             _modeSettings = modeSettings;
-            _items = items;
-            _dropdowns = dropdowns;
+            _dungeons = dungeons;
             _pinnedLocations = pinnedLocations;
+            _itemFactory = itemFactory;
+            _dropdownFactory = dropdownFactory;
             
             _factory = factory;
+            _largeFactory = largeFactory;
         }
 
         /// <summary>
@@ -67,6 +79,7 @@ namespace OpenTracker.ViewModels.UIPanels
             return type switch
             {
                 UIPanelType.Item => _requirements[RequirementType.NoRequirement],
+                UIPanelType.Dungeon => _requirements[RequirementType.NoRequirement],
                 UIPanelType.Dropdown => _requirements[RequirementType.EntranceShuffleAllInsanity],
                 UIPanelType.Location => _requirements[RequirementType.NoRequirement],
                 _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
@@ -87,6 +100,7 @@ namespace OpenTracker.ViewModels.UIPanels
             return type switch
             {
                 UIPanelType.Item => "Items",
+                UIPanelType.Dungeon => "Dungeons",
                 UIPanelType.Dropdown => "Dropdowns",
                 UIPanelType.Location => "Locations",
                 _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
@@ -107,6 +121,7 @@ namespace OpenTracker.ViewModels.UIPanels
             return type switch
             {
                 UIPanelType.Item => false,
+                UIPanelType.Dungeon => true,
                 UIPanelType.Dropdown => false,
                 UIPanelType.Location => true,
                 _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
@@ -126,8 +141,9 @@ namespace OpenTracker.ViewModels.UIPanels
         {
             return type switch
             {
-                UIPanelType.Item => _items,
-                UIPanelType.Dropdown => _dropdowns,
+                UIPanelType.Item => _largeFactory(_itemFactory.GetLargeItemControlVMs()),
+                UIPanelType.Dungeon => _dungeons,
+                UIPanelType.Dropdown => _largeFactory(_dropdownFactory.GetDropdownVMs()),
                 UIPanelType.Location => _pinnedLocations,
                 _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
             };

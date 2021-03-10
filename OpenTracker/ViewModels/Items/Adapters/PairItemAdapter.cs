@@ -7,6 +7,7 @@ using Avalonia.Threading;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
+using OpenTracker.ViewModels.BossSelect;
 using ReactiveUI;
 
 namespace OpenTracker.ViewModels.Items.Adapters
@@ -28,6 +29,8 @@ namespace OpenTracker.ViewModels.Items.Adapters
 
         public string? Label { get; } = null;
         public string LabelColor { get; } = "#ffffffff";
+        
+        public IBossSelectPopupVM? BossSelect { get; } = null;
         
         public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
 

@@ -9,6 +9,7 @@ using OpenTracker.Models.Items;
 using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
+using OpenTracker.ViewModels.BossSelect;
 using ReactiveUI;
 
 namespace OpenTracker.ViewModels.Items.Adapters
@@ -29,11 +30,31 @@ namespace OpenTracker.ViewModels.Items.Adapters
         public string LabelColor =>
             _item.Known ? _item.Current == 0 ? _colorSettings.EmphasisFontColor : "#ffffffff" :
                 _colorSettings.AccessibilityColors[AccessibilityLevel.SequenceBreak];
+
+        public IBossSelectPopupVM? BossSelect { get; } = null;
         
         public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
 
         public delegate CrystalRequirementAdapter Factory(ICrystalRequirementItem item, string imageSource);
         
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="colorSettings">
+        /// The color settings data.
+        /// </param>
+        /// <param name="undoRedoManager">
+        /// The undo/redo manager.
+        /// </param>
+        /// <param name="undoableFactory">
+        /// A factory for creating undoable actions.
+        /// </param>
+        /// <param name="item">
+        /// The crystal requirement item.
+        /// </param>
+        /// <param name="imageSource">
+        /// The image source of the crystal requirement.
+        /// </param>
         public CrystalRequirementAdapter(
             IColorSettings colorSettings, IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory,
             ICrystalRequirementItem item, string imageSource)
@@ -74,7 +95,7 @@ namespace OpenTracker.ViewModels.Items.Adapters
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the ColorSettings class.
+        /// Subscribes to the PropertyChanged event on the IColorSettings interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.

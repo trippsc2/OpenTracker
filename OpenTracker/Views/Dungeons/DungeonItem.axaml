@@ -1,17 +1,17 @@
-<UserControl xmlns="https://github.com/avaloniaui"
+﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:vm="clr-namespace:OpenTracker.ViewModels.Items"
+             xmlns:vm="clr-namespace:OpenTracker.ViewModels.Dungeons"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:i="using:Avalonia.Xaml.Interactivity"
              xmlns:ia="using:Avalonia.Xaml.Interactions.Core"
-             mc:Ignorable="d" x:Class="OpenTracker.Views.Items.LargeItem">
+             mc:Ignorable="d" x:Class="OpenTracker.Views.Dungeons.DungeonItem">
   
   <Design.DataContext>
-    <vm:LargeItemVM />
+    <vm:DungeonItemVM />
   </Design.DataContext>
-  
-  <Panel Classes="ItemControl">
+
+  <Panel Classes="DungeonItem" IsVisible="{Binding Visible}">
 
     <i:Interaction.Behaviors>
       <ia:EventTriggerBehavior EventName="PointerReleased">

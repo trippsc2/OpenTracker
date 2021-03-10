@@ -18,11 +18,13 @@
     
     <Image Source="{Binding ImageSource, Converter={StaticResource BitmapValueConverter}}" />
     
-    <Border Classes="LargeItemCount" IsVisible="{Binding LabelVisible}">
-      <TextBlock Classes="LargeItemCount"
+    <Border Classes="ItemCount" IsVisible="{Binding LabelVisible}">
+      <TextBlock Classes="ItemCount"
                  Text="{Binding Label}"
                  Foreground="{Binding LabelColor}" />
     </Border>
+    
+    <ContentControl Content="{Binding BossSelect}" />
     
   </Panel>
   

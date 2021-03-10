@@ -1,0 +1,38 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vc="clr-namespace:OpenTracker.ValueConverters;assembly=OpenTracker"
+             xmlns:i="using:Avalonia.Xaml.Interactivity"
+             xmlns:ia="using:Avalonia.Xaml.Interactions.Core"
+             xmlns:dungeons="clr-namespace:OpenTracker.ViewModels.Dungeons"
+             mc:Ignorable="d" x:Class="OpenTracker.Views.Dungeons.DungeonItemSection">
+  
+  <Design.DataContext>
+    <dungeons:DungeonItemSectionVM />
+  </Design.DataContext>
+
+  <UserControl.Resources>
+    <vc:BitmapValueConverter x:Key="BitmapValueConverter" />
+  </UserControl.Resources>
+
+  <StackPanel Name="panel" Orientation="Horizontal">
+    
+    <i:Interaction.Behaviors>
+      <ia:EventTriggerBehavior EventName="PointerReleased"
+                               SourceObject="{Binding #panel}">
+        <ia:InvokeCommandAction Command="{Binding HandleClick}" />
+      </ia:EventTriggerBehavior>
+    </i:Interaction.Behaviors>
+    
+    <Image Height="16" Width="16" Source="{Binding Path=ImageSource, Converter={StaticResource BitmapValueConverter}}" />
+
+    <Border Classes="ItemCount">
+      <TextBlock Classes="ItemCount"
+                 Text="{Binding Path=NumberString}"
+                 Foreground="{Binding Path=FontColor}" />
+    </Border>
+
+  </StackPanel>
+  
+</UserControl>

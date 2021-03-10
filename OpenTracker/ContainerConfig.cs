@@ -31,10 +31,10 @@ using OpenTracker.ViewModels.Areas;
 using OpenTracker.ViewModels.AutoTracking;
 using OpenTracker.ViewModels.BossSelect;
 using OpenTracker.ViewModels.ColorSelect;
+using OpenTracker.ViewModels.Dialogs;
 using OpenTracker.ViewModels.Dropdowns;
 using OpenTracker.ViewModels.Items;
-using OpenTracker.ViewModels.Items.Small;
-using OpenTracker.ViewModels.Items.Large;
+using OpenTracker.ViewModels.Items.Adapters;
 using OpenTracker.ViewModels.Maps.Connections;
 using OpenTracker.ViewModels.Maps.Locations;
 using OpenTracker.ViewModels.Markings;
@@ -46,7 +46,7 @@ using OpenTracker.ViewModels.UIPanels;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using OpenTracker.ViewModels.Dialogs;
+using OpenTracker.ViewModels.Dungeons;
 
 namespace OpenTracker
 {
@@ -215,7 +215,7 @@ namespace OpenTracker
         private static List<string> GUISkipTypes =>
             new List<string>
             {
-                nameof(SmallItemPanelVM)
+                nameof(OrientedDungeonPanelVMBase)
             };
 
         private static List<string> GUISelfTypes =>
@@ -224,17 +224,15 @@ namespace OpenTracker
                 nameof(AlwaysDisplayDungeonItemsRequirement),
                 nameof(DisplayMapsCompassesRequirement),
                 nameof(ItemsPanelOrientationRequirement),
-                nameof(CrystalRequirementLargeItemVM),
-                nameof(PairLargeItemVM),
-                nameof(PrizeLargeItemVM),
-                nameof(SmallKeyLargeItemVM),
-                nameof(BigKeySmallItemVM),
-                nameof(BossSmallItemVM),
-                nameof(DungeonItemSmallItemVM),
-                nameof(PrizeSmallItemVM),
-                nameof(SmallItemVM),
-                nameof(SmallKeySmallItemVM),
-                nameof(SpacerSmallItemVM),
+                nameof(BossAdapter),
+                nameof(CrystalRequirementAdapter),
+                nameof(DropdownAdapter),
+                nameof(DungeonSmallKeyAdapter),
+                nameof(ItemAdapter),
+                nameof(PairItemAdapter),
+                nameof(PrizeAdapter),
+                nameof(SmallKeyAdapter),
+                nameof(StaticPrizeAdapter),
                 nameof(DungeonMapLocationVM),
                 nameof(EntranceMapLocationVM),
                 nameof(MapLocationVM),
@@ -270,13 +268,14 @@ namespace OpenTracker
                 nameof(AutoTrackerStatusVM),
                 nameof(BossSelectFactory),
                 nameof(ColorSelectDialogVM),
-                nameof(DropdownPanelVM),
                 nameof(DropdownVMFactory),
-                nameof(ItemsPanelVM),
-                nameof(LargeItemPanelVM),
-                nameof(LargeItemVMFactory),
-                nameof(SmallItemPanelVM),
-                nameof(SmallItemVMFactory),
+                nameof(DungeonPanelVM),
+                nameof(DungeonVMDictionary),
+                nameof(DungeonVMFactory),
+                nameof(HorizontalDungeonPanelVM),
+                nameof(VerticalDungeonPanelVM),
+                nameof(ItemVMDictionary),
+                nameof(ItemVMFactory),
                 nameof(MapAreaVM),
                 nameof(MapAreaFactory),
                 nameof(MapConnectionCollection),

@@ -1,66 +1,94 @@
 using System.ComponentModel;
+using System.Linq;
 using System.Reactive;
+using System.Text;
 using Avalonia.Input;
 using Avalonia.Threading;
+using OpenTracker.Models.Items;
+using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.Sections;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
-using OpenTracker.ViewModels.Items.Large;
+using OpenTracker.ViewModels.BossSelect;
 using ReactiveUI;
 
 namespace OpenTracker.ViewModels.Items.Adapters
 {
     /// <summary>
-    /// This class contains the logic to adapt prize data to an item control.
+    /// This class contains the logic to adapt dungeon prize data to an item control.
     /// </summary>
     public class PrizeAdapter : ViewModelBase, IItemAdapter
     {
+        private readonly IPrizeDictionary _prizes;
         private readonly IUndoRedoManager _undoRedoManager;
         private readonly IUndoableFactory _undoableFactory;
 
         private readonly IPrizeSection _section;
-        private readonly string _imageSourceBase;
 
-        public string ImageSource => _imageSourceBase + (_section.IsAvailable() ? "0.png" : "1.png");
-        public string? Label { get; } = null;
-        public string LabelColor { get; } = "#ffffffff";
+        public string ImageSource
+        {
+            get
+            {
+                var sb = new StringBuilder();
+                sb.Append("avares://OpenTracker/Assets/Images/Prizes/");
 
+                sb.Append(_section.PrizePlacement.Prize is null ?
+                    "unknown" : _prizes.FirstOrDefault(
+                            x => x.Value == _section.PrizePlacement.Prize).Key.ToString()
+                        .ToLowerInvariant());
+
+                sb.Append(_section.IsAvailable() ? "0" : "1");
+                sb.Append(".png");
+
+                return sb.ToString();
+            }
+        }
+        
         public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
 
-        public delegate PrizeLargeItemVM Factory(IPrizeSection section, string imageSourceBase);
+        public delegate PrizeAdapter Factory(IPrizeSection section);
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="undoRedoManager">
-        /// The undo/redo manager.
-        /// </param>
-        /// <param name="undoableFactory">
-        /// The factory for creating undoable actions.
-        /// </param>
-        /// <param name="imageSourceBase">
-        /// A string representing the base image source.
-        /// </param>
-        /// <param name="section">
-        /// An item that is to be represented by this control.
-        /// </param>
+        public string? Label { get; } = null;
+        public string LabelColor { get; } = "#ffffffff";
+        
+        public IBossSelectPopupVM? BossSelect { get; } = null;
+
         public PrizeAdapter(
-            IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory, IPrizeSection section,
-            string imageSourceBase)
+            IPrizeDictionary prizes, IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory,
+            IPrizeSection section)
         {
+            _prizes = prizes;
             _undoRedoManager = undoRedoManager;
             _undoableFactory = undoableFactory;
 
             _section = section;
-            _imageSourceBase = imageSourceBase;
             
             HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
 
             _section.PropertyChanged += OnSectionChanged;
+            _section.PrizePlacement.PropertyChanged += OnPrizeChanged;
+        }
+        
+
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the IPrizePlacement interface.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
+        private async void OnPrizeChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(IPrizePlacement.Prize))
+            {
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(ImageSource)));
+            }
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the IPrizeSection interface.
+        /// Subscribes to the PropertyChanged event on the ISection interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -77,20 +105,19 @@ namespace OpenTracker.ViewModels.Items.Adapters
         }
 
         /// <summary>
-        /// Creates an undoable action to collect the prize section, ignoring logic, and sends it to the undo/redo
-        /// manager.
+        /// Creates an undoable action to toggle the prize section and sends it to the undo/redo manager.
         /// </summary>
-        private void CollectSection()
+        private void TogglePrize()
         {
-            _undoRedoManager.NewAction(_undoableFactory.GetCollectSection(_section, true));
+            _undoRedoManager.NewAction(_undoableFactory.GetTogglePrize(_section, true));
         }
 
         /// <summary>
-        /// Creates an undoable action to un-collect the prize section and sends it to the undo/redo manager.
+        /// Creates an undoable action to change the prize and sends it to the undo/redo manager.
         /// </summary>
-        private void UncollectSection()
+        private void ChangePrize()
         {
-            _undoRedoManager.NewAction(_undoableFactory.GetUncollectSection(_section));
+            _undoRedoManager.NewAction(_undoableFactory.GetChangePrize(_section.PrizePlacement));
         }
 
         /// <summary>
@@ -104,10 +131,10 @@ namespace OpenTracker.ViewModels.Items.Adapters
             switch (e.InitialPressMouseButton)
             {
                 case MouseButton.Left:
-                    CollectSection();
+                    TogglePrize();
                     break;
                 case MouseButton.Right:
-                    UncollectSection();
+                    ChangePrize();
                     break;
             }
         }

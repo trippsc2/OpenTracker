@@ -1,6 +1,7 @@
 using Avalonia.Input;
 using Avalonia.Threading;
 using OpenTracker.Models.Items;
+using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
 using ReactiveUI;
@@ -12,50 +13,53 @@ using OpenTracker.ViewModels.BossSelect;
 namespace OpenTracker.ViewModels.Items.Adapters
 {
     /// <summary>
-    /// This class contains the logic to adapts item data to an item control. 
+    /// This class contains the logic to adapt generic small key data to an item control.
     /// </summary>
-    public class ItemAdapter : ViewModelBase, IItemAdapter
+    public class SmallKeyAdapter : ViewModelBase, IItemAdapter
     {
+        private readonly IColorSettings _colorSettings;
         private readonly IUndoRedoManager _undoRedoManager;
         private readonly IUndoableFactory _undoableFactory;
 
         private readonly IItem _item;
-        private readonly string _imageSourceBase;
 
-        public string ImageSource => $"{_imageSourceBase}{_item.Current.ToString(CultureInfo.InvariantCulture)}.png";
-        public string? Label { get; } = null;
-        public string LabelColor { get; } = "#ffffffff";
+        public string ImageSource =>
+            $"avares://OpenTracker/Assets/Images/Items/smallkey{(_item.Current > 0 ? "1" : "0")}.png";
+        public string? Label =>
+            _item.Current.ToString(CultureInfo.InvariantCulture) + (_item.CanAdd() ? "" : "*");
+        public string LabelColor => _item.CanAdd() ? "#ffffffff" : _colorSettings.EmphasisFontColor;
         
         public IBossSelectPopupVM? BossSelect { get; } = null;
         
         public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
 
-        public delegate ItemAdapter Factory(IItem item, string imageSourceBase);
-        
+        public delegate SmallKeyAdapter Factory(IItem item);
+
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="colorSettings">
+        /// The color settings data.
+        /// </param>
         /// <param name="undoRedoManager">
         /// The undo/redo manager.
         /// </param>
         /// <param name="undoableFactory">
         /// A factory for creating undoable actions.
         /// </param>
-        /// <param name="imageSourceBase">
-        /// A string representing the base image source.
-        /// </param>
         /// <param name="item">
         /// An item that is to be represented by this control.
         /// </param>
-        public ItemAdapter(
-            IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory, IItem item, string imageSourceBase)
+        public SmallKeyAdapter(
+            IColorSettings colorSettings, IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory,
+            IItem item)
         {
+            _colorSettings = colorSettings;
             _undoRedoManager = undoRedoManager;
             _undoableFactory = undoableFactory;
 
             _item = item;
-            _imageSourceBase = imageSourceBase;
-
+            
             HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
 
             _item.PropertyChanged += OnItemChanged;
@@ -74,7 +78,12 @@ namespace OpenTracker.ViewModels.Items.Adapters
         {
             if (e.PropertyName == nameof(IItem.Current))
             {
-                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(ImageSource)));
+                await Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    this.RaisePropertyChanged(nameof(ImageSource));
+                    this.RaisePropertyChanged(nameof(Label));
+                    this.RaisePropertyChanged(nameof(LabelColor));
+                });
             }
         }
 

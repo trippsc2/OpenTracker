@@ -1,11 +1,11 @@
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
 namespace OpenTracker.Views.Items
 {
-    public class LargeItem : UserControl
+    public class LargeItemPanel : UserControl
     {
-        public LargeItem()
+        public LargeItemPanel()
         {
             InitializeComponent();
         }

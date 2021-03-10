@@ -45,6 +45,26 @@
       <DependentUpon>AutoTrackerDialog.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\Items\LargeItem.axaml.cs">
+      <DependentUpon>LargeItem.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Dungeons\DungeonItemSection.axaml.cs">
+      <DependentUpon>DungeonItemSectionItem.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Dungeons\HorizontalDungeonPanel.axaml.cs">
+      <DependentUpon>HorizontalSmallItemPanel.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Dungeons\DungeonItem.axaml.cs">
+      <DependentUpon>SmallItem.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Dungeons\VerticalDungeonPanel.axaml.cs">
+      <DependentUpon>VerticalSmallItemPanel.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Autofac" Version="6.1.0" />
@@ -99,5 +119,8 @@
     <None Update="triforce.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Dropdowns\Dropdown.axaml" />
   </ItemGroup>
 </Project>

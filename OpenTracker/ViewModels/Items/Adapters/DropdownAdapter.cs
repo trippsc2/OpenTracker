@@ -1,37 +1,33 @@
+using System.ComponentModel;
+using System.Reactive;
 using Avalonia.Input;
 using Avalonia.Threading;
-using OpenTracker.Models.Items;
+using OpenTracker.Models.Dropdowns;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
-using ReactiveUI;
-using System.ComponentModel;
-using System.Globalization;
-using System.Reactive;
 using OpenTracker.ViewModels.BossSelect;
+using ReactiveUI;
 
 namespace OpenTracker.ViewModels.Items.Adapters
 {
-    /// <summary>
-    /// This class contains the logic to adapts item data to an item control. 
-    /// </summary>
-    public class ItemAdapter : ViewModelBase, IItemAdapter
+    public class DropdownAdapter : ViewModelBase, IItemAdapter
     {
         private readonly IUndoRedoManager _undoRedoManager;
         private readonly IUndoableFactory _undoableFactory;
 
-        private readonly IItem _item;
+        private readonly IDropdown _dropdown;
         private readonly string _imageSourceBase;
 
-        public string ImageSource => $"{_imageSourceBase}{_item.Current.ToString(CultureInfo.InvariantCulture)}.png";
+        public bool Visible => _dropdown.RequirementMet;
+        public string ImageSource => _imageSourceBase + (_dropdown.Checked ? "1" : "0") + ".png";
         public string? Label { get; } = null;
         public string LabelColor { get; } = "#ffffffff";
-        
         public IBossSelectPopupVM? BossSelect { get; } = null;
-        
+
         public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
 
-        public delegate ItemAdapter Factory(IItem item, string imageSourceBase);
-        
+        public delegate DropdownAdapter Factory(IDropdown dropdown, string imageSourceBase);
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -39,30 +35,31 @@ namespace OpenTracker.ViewModels.Items.Adapters
         /// The undo/redo manager.
         /// </param>
         /// <param name="undoableFactory">
-        /// A factory for creating undoable actions.
+        /// The factory for creating undoable actions.
         /// </param>
         /// <param name="imageSourceBase">
         /// A string representing the base image source.
         /// </param>
-        /// <param name="item">
+        /// <param name="dropdown">
         /// An item that is to be represented by this control.
         /// </param>
-        public ItemAdapter(
-            IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory, IItem item, string imageSourceBase)
+        public DropdownAdapter(
+            IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory, IDropdown dropdown,
+            string imageSourceBase)
         {
             _undoRedoManager = undoRedoManager;
             _undoableFactory = undoableFactory;
 
-            _item = item;
+            _dropdown = dropdown;
             _imageSourceBase = imageSourceBase;
 
             HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
 
-            _item.PropertyChanged += OnItemChanged;
+            _dropdown.PropertyChanged += OnDropdownChanged;
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the IItem interface.
+        /// Subscribes to the PropertyChanged event on the IDropdown interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -70,32 +67,37 @@ namespace OpenTracker.ViewModels.Items.Adapters
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private async void OnItemChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnDropdownChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(IItem.Current))
+            switch (e.PropertyName)
             {
-                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(ImageSource)));
+                case nameof(IDropdown.RequirementMet):
+                    await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Visible)));
+                    break;
+                case nameof(IDropdown.Checked):
+                    await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(ImageSource)));
+                    break;
             }
         }
 
         /// <summary>
-        /// Creates an undoable action to add an item and sends it to the undo/redo manager.
+        /// Creates a new undoable action to check the dropdown to the undo/redo manager.
         /// </summary>
-        private void AddItem()
+        private void CheckDropdown()
         {
-            _undoRedoManager.NewAction(_undoableFactory.GetAddItem(_item));
+            _undoRedoManager.NewAction(_undoableFactory.GetCheckDropdown(_dropdown));
         }
 
         /// <summary>
-        /// Creates an undoable action to remove an item and sends it to the undo/redo manager.
+        /// Creates a new undoable action to uncheck the dropdown to the undo/redo manager.
         /// </summary>
-        private void RemoveItem()
+        private void UncheckDropdown()
         {
-            _undoRedoManager.NewAction(_undoableFactory.GetRemoveItem(_item));
+            _undoRedoManager.NewAction(_undoableFactory.GetUncheckDropdown(_dropdown));
         }
 
         /// <summary>
-        /// Handles clicking the control.
+        /// Handles the dropdown being clicked.
         /// </summary>
         /// <param name="e">
         /// The pointer released event args.
@@ -105,10 +107,10 @@ namespace OpenTracker.ViewModels.Items.Adapters
             switch (e.InitialPressMouseButton)
             {
                 case MouseButton.Left:
-                    AddItem();
+                    CheckDropdown();
                     break;
                 case MouseButton.Right:
-                    RemoveItem();
+                    UncheckDropdown();
                     break;
             }
         }

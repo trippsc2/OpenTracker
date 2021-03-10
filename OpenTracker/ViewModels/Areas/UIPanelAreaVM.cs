@@ -24,6 +24,7 @@ namespace OpenTracker.ViewModels.Areas
 
         public IUIPanelVM Dropdowns { get; }
         public IUIPanelVM Items { get; }
+        public IUIPanelVM Dungeons { get; }
         public IUIPanelVM Locations { get; }
 
         /// <summary>
@@ -42,6 +43,7 @@ namespace OpenTracker.ViewModels.Areas
 
             Dropdowns = factory.GetUIPanelVM(UIPanelType.Dropdown);
             Items = factory.GetUIPanelVM(UIPanelType.Item);
+            Dungeons = factory.GetUIPanelVM(UIPanelType.Dungeon);
             Locations = factory.GetUIPanelVM(UIPanelType.Location);
 
             _layoutSettings.PropertyChanged += OnLayoutChanged;

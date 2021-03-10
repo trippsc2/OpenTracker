@@ -13,6 +13,8 @@
     <ContentControl DockPanel.Dock="{Binding ItemsDock, Mode=OneWay}"
                     Content="{Binding Dropdowns}" />
     <ContentControl DockPanel.Dock="{Binding ItemsDock, Mode=OneWay}"
+                    Content="{Binding Dungeons}" />
+    <ContentControl DockPanel.Dock="{Binding ItemsDock, Mode=OneWay}"
                     Content="{Binding Items}" />
 		<ContentControl Content="{Binding Locations}" />
 	</DockPanel>
