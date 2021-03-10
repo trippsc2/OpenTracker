@@ -1,4 +1,4 @@
-﻿namespace OpenTracker.ViewModels.AutoTracking
+﻿namespace OpenTracker.ViewModels.Dialogs
 {
     /// <summary>
     /// This interface contains the autotracker dialog window ViewModel.

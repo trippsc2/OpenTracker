@@ -2,18 +2,17 @@
 using ReactiveUI;
 using System.Reactive;
 
-namespace OpenTracker.ViewModels
+namespace OpenTracker.ViewModels.Dialogs
 {
     /// <summary>
     /// This is the ViewModel for the error box dialog window.
     /// </summary>
     public class ErrorBoxDialogVM : DialogViewModelBase, IErrorBoxDialogVM
     {
-        public ReactiveCommand<Unit, Unit> OkCommand { get; }
         public string Title { get; }
         public string Text { get; }
 
-        public delegate IErrorBoxDialogVM Factory(string title, string text);
+        public ReactiveCommand<Unit, Unit> OkCommand { get; }
 
         /// <summary>
         /// Constructor

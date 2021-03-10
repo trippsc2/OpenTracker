@@ -46,6 +46,7 @@ using OpenTracker.ViewModels.UIPanels;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using OpenTracker.ViewModels.Dialogs;
 
 namespace OpenTracker
 {
@@ -224,7 +225,6 @@ namespace OpenTracker
                 nameof(DisplayMapsCompassesRequirement),
                 nameof(ItemsPanelOrientationRequirement),
                 nameof(CrystalRequirementLargeItemVM),
-                nameof(LargeItemVM),
                 nameof(PairLargeItemVM),
                 nameof(PrizeLargeItemVM),
                 nameof(SmallKeyLargeItemVM),

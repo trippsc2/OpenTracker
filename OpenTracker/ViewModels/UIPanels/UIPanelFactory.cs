@@ -1,8 +1,8 @@
-using OpenTracker.ViewModels.Items;
-using System;
 using OpenTracker.Models.Requirements;
 using OpenTracker.ViewModels.Dropdowns;
+using OpenTracker.ViewModels.Items;
 using OpenTracker.ViewModels.PinnedLocations;
+using System;
 
 namespace OpenTracker.ViewModels.UIPanels
 {
@@ -107,7 +107,7 @@ namespace OpenTracker.ViewModels.UIPanels
             return type switch
             {
                 UIPanelType.Item => false,
-                UIPanelType.Dropdown => true,
+                UIPanelType.Dropdown => false,
                 UIPanelType.Location => true,
                 _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
             };

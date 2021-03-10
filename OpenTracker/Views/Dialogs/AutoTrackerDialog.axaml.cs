@@ -1,12 +1,12 @@
-﻿using Avalonia;
+using Avalonia;
 using Avalonia.Markup.Xaml;
 using OpenTracker.Utils.Dialog;
 
-namespace OpenTracker.Views
+namespace OpenTracker.Views.Dialogs
 {
-    public class AboutDialog : DialogWindowBase
+    public class AutoTrackerDialog : DialogWindowBase
     {
-        public AboutDialog()
+        public AutoTrackerDialog()
         {
             InitializeComponent();
 #if DEBUG

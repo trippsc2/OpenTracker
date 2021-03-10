@@ -11,6 +11,7 @@ using System.IO;
 using System.Reactive;
 using System.Threading.Tasks;
 using OpenTracker.Utils.Dialog;
+using OpenTracker.ViewModels.Dialogs;
 using LogLevel = OpenTracker.Models.AutoTracking.Logging.LogLevel;
 
 namespace OpenTracker.ViewModels.AutoTracking

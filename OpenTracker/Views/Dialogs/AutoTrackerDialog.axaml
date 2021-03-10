@@ -1,9 +1,9 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="clr-namespace:OpenTracker.ViewModels.AutoTracking;assembly=OpenTracker"
+        xmlns:vm="clr-namespace:OpenTracker.ViewModels.Dialogs;assembly=OpenTracker"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" x:Class="OpenTracker.Views.AutoTracking.AutoTrackerDialog"
+        mc:Ignorable="d" x:Class="OpenTracker.Views.Dialogs.AutoTrackerDialog"
         WindowStartupLocation="CenterScreen" Icon="avares://OpenTracker/Assets/Images/triforce.png"
         Title="OpenTracker - Auto-Tracker" Width="420" Height="630" Padding="5">
   

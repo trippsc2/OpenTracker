@@ -6,8 +6,7 @@
              xmlns:vc="clr-namespace:OpenTracker.ValueConverters;assembly=OpenTracker"
              xmlns:i="using:Avalonia.Xaml.Interactivity"
              xmlns:ia="using:Avalonia.Xaml.Interactions.Core"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="OpenTracker.Views.Items.Large.LargeItem">
+             mc:Ignorable="d" x:Class="OpenTracker.Views.Items.Large.LargeItem">
   
   <Design.DataContext>
     <vm:LargeItemVM />

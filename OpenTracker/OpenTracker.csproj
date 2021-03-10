@@ -29,6 +29,22 @@
       <DependentUpon>MapArea.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\Dialogs\AboutDialog.axaml.cs">
+      <DependentUpon>AboutDialog.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Dialogs\ErrorBoxDialog.axaml.cs">
+      <DependentUpon>ErrorBoxDialog.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Dialogs\MessageBoxDialog.axaml.cs">
+      <DependentUpon>MessageBoxDialog.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Dialogs\AutoTrackerDialog.axaml.cs">
+      <DependentUpon>AutoTrackerDialog.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Autofac" Version="6.1.0" />

@@ -1,17 +1,14 @@
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using OpenTracker.Utils.Dialog;
 
-namespace OpenTracker.Views.AutoTracking
+namespace OpenTracker.Views.Items
 {
-    public class AutoTrackerDialog : DialogWindowBase
+    public class LargeItem : UserControl
     {
-        public AutoTrackerDialog()
+        public LargeItem()
         {
             InitializeComponent();
-#if DEBUG
-            this.AttachDevTools();
-#endif
         }
 
         private void InitializeComponent()

@@ -17,6 +17,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Reactive;
 using System.Threading.Tasks;
+using OpenTracker.ViewModels.Dialogs;
 
 namespace OpenTracker.ViewModels
 {

@@ -2,6 +2,7 @@
 using OpenTracker.Models.AutoTracking;
 using OpenTracker.Models.AutoTracking.Logging;
 using OpenTracker.Utils.Dialog;
+using OpenTracker.ViewModels.AutoTracking;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.ComponentModel;
 using System.Reactive;
 using System.Threading.Tasks;
 
-namespace OpenTracker.ViewModels.AutoTracking
+namespace OpenTracker.ViewModels.Dialogs
 {
     /// <summary>
     /// This class contains the auto-tracker dialog window ViewModel.
@@ -21,8 +22,7 @@ namespace OpenTracker.ViewModels.AutoTracking
         private readonly DispatcherTimer _memoryCheckTimer;
         private int _tickCount;
 
-        public bool UriTextBoxEnabled =>
-            _autoTracker.CanConnect();
+        public bool UriTextBoxEnabled => _autoTracker.CanConnect();
 
         private string _uriString = "ws://localhost:8080";
         public string UriString
@@ -31,11 +31,9 @@ namespace OpenTracker.ViewModels.AutoTracking
             set => this.RaiseAndSetIfChanged(ref _uriString, value);
         }
 
-        public bool DevicesComboBoxEnabled =>
-            _autoTracker.CanStart() && Devices.Count > 0;
+        public bool DevicesComboBoxEnabled => _autoTracker.CanStart() && Devices.Count > 0;
 
-        public List<string> Devices =>
-            _autoTracker.Devices;
+        public List<string> Devices => _autoTracker.Devices;
 
         private string? _device;
         public string? Device
@@ -44,39 +42,38 @@ namespace OpenTracker.ViewModels.AutoTracking
             set => this.RaiseAndSetIfChanged(ref _device, value);
         }
 
-        public bool RaceIllegalTracking =>
-            _autoTracker.RaceIllegalTracking;
-
-        private bool _canConnect;
-        public bool CanConnect
-        {
-            get => _canConnect;
-            private set => this.RaiseAndSetIfChanged(ref _canConnect, value);
-        }
-
-        private bool _canGetDevices;
-        public bool CanGetDevices
-        {
-            get => _canGetDevices;
-            private set => this.RaiseAndSetIfChanged(ref _canGetDevices, value);
-        }
-
-        private bool _canDisconnect;
-        public bool CanDisconnect
-        {
-            get => _canDisconnect;
-            private set => this.RaiseAndSetIfChanged(ref _canDisconnect, value);
-        }
-
-        private bool _canStart;
-        public bool CanStart
-        {
-            get => _canStart;
-            private set => this.RaiseAndSetIfChanged(ref _canStart, value);
-        }
+        public bool RaceIllegalTracking => _autoTracker.RaceIllegalTracking;
 
         public IAutoTrackerLogVM Log { get; }
         public IAutoTrackerStatusVM Status { get; }
+
+        private bool _canConnect;
+        private bool CanConnect
+        {
+            get => _canConnect;
+            set => this.RaiseAndSetIfChanged(ref _canConnect, value);
+        }
+
+        private bool _canGetDevices;
+        private bool CanGetDevices
+        {
+            get => _canGetDevices;
+            set => this.RaiseAndSetIfChanged(ref _canGetDevices, value);
+        }
+
+        private bool _canDisconnect;
+        private bool CanDisconnect
+        {
+            get => _canDisconnect;
+            set => this.RaiseAndSetIfChanged(ref _canDisconnect, value);
+        }
+
+        private bool _canStart;
+        private bool CanStart
+        {
+            get => _canStart;
+            set => this.RaiseAndSetIfChanged(ref _canStart, value);
+        }
 
         public ReactiveCommand<Unit, Unit> ConnectCommand { get; }
         public ReactiveCommand<Unit, Unit> GetDevicesCommand { get; }
@@ -86,20 +83,16 @@ namespace OpenTracker.ViewModels.AutoTracking
         public ReactiveCommand<Unit, Unit> ToggleRaceIllegalTrackingCommand { get; }
 
         private readonly ObservableAsPropertyHelper<bool> _isConnecting;
-        public bool IsConnecting =>
-            _isConnecting.Value;
+        private bool IsConnecting => _isConnecting.Value;
 
         private readonly ObservableAsPropertyHelper<bool> _isGettingDevices;
-        public bool IsGettingDevices =>
-            _isGettingDevices.Value;
+        private bool IsGettingDevices => _isGettingDevices.Value;
 
         private readonly ObservableAsPropertyHelper<bool> _isDisconnecting;
-        public bool IsDisconnecting =>
-            _isDisconnecting.Value;
+        private bool IsDisconnecting => _isDisconnecting.Value;
 
         private readonly ObservableAsPropertyHelper<bool> _isStarting;
-        public bool IsStarting =>
-            _isStarting.Value;
+        private bool IsStarting => _isStarting.Value;
 
         /// <summary>
         /// Constructor

@@ -2,11 +2,11 @@
 using Avalonia.Markup.Xaml;
 using OpenTracker.Utils.Dialog;
 
-namespace OpenTracker.Views.ColorSelect
+namespace OpenTracker.Views.Dialogs
 {
-    public class ColorSelectDialog : DialogWindowBase
+    public class AboutDialog : DialogWindowBase
     {
-        public ColorSelectDialog()
+        public AboutDialog()
         {
             InitializeComponent();
 #if DEBUG
