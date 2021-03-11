@@ -138,5 +138,13 @@
   </ItemGroup>
   <ItemGroup>
     <UpToDateCheckInput Remove="Views\Dropdowns\Dropdown.axaml" />
+    <UpToDateCheckInput Remove="Views\Maps\Locations\DungeonMapLocation.axaml" />
+    <UpToDateCheckInput Remove="Views\Maps\Locations\EntranceMapLocation.axaml" />
+    <UpToDateCheckInput Remove="Views\Maps\Locations\MapLocation.axaml" />
+    <UpToDateCheckInput Remove="Views\Maps\Locations\MarkableDungeonMapLocation.axaml" />
+    <UpToDateCheckInput Remove="Views\Maps\Locations\MarkableMapLocation.axaml" />
+    <UpToDateCheckInput Remove="Views\Maps\Locations\MarkingMapLocation.axaml" />
+    <UpToDateCheckInput Remove="Views\Maps\Locations\ShopMapLocation.axaml" />
+    <UpToDateCheckInput Remove="Views\Maps\Locations\TakeAnyMapLocation.axaml" />
   </ItemGroup>
 </Project>

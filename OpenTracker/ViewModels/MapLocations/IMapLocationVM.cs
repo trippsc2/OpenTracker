@@ -2,6 +2,7 @@ using Avalonia.Controls;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Requirements;
 using OpenTracker.ViewModels.Markings;
+using OpenTracker.ViewModels.Tooltips;
 
 namespace OpenTracker.ViewModels.MapLocations
 {
@@ -9,6 +10,6 @@ namespace OpenTracker.ViewModels.MapLocations
     {
         delegate IMapLocationVM Factory(
             IMapLocation mapLocation, IRequirement? dockRequirement, Dock metDock, Dock unmetDock,
-            IMapLocationMarkingVM? marking, IMarkingSelectVM? markingSelect, IShapedMapLocationVMBase location);
+            IMapLocationMarkingVM? marking, IShapedMapLocationVMBase location, IMapLocationToolTipVM toolTip);
     }
 }

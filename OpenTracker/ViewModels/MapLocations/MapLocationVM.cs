@@ -43,10 +43,10 @@ namespace OpenTracker.ViewModels.MapLocations
 
                 if (_appSettings.Layout.CurrentMapOrientation == Orientation.Vertical)
                 {
-                    return x + 23;
+                    return x + 23.0;
                 }
 
-                return _mapLocation.Map == MapID.DarkWorld ? x + 2046 : x + 13;
+                return _mapLocation.Map == MapID.DarkWorld ? x + 2046.0 : x + 13.0;
             }
         }
 
@@ -58,10 +58,10 @@ namespace OpenTracker.ViewModels.MapLocations
 
                 if (_appSettings.Layout.CurrentMapOrientation == Orientation.Horizontal)
                 {
-                    return y + 2046;
+                    return y + 23.0;
                 }
 
-                return _mapLocation.Map == MapID.DarkWorld ? y + 2046 : y + 13;
+                return _mapLocation.Map == MapID.DarkWorld ? y + 2046.0 : y + 13.0;
             }
         }
 
@@ -76,17 +76,12 @@ namespace OpenTracker.ViewModels.MapLocations
 
                 if (MarkingDock == Dock.Left)
                 {
-                    return -55;
+                    return -56.0;
                 }
 
-                var offsetDifference = -27.5 - Location.OffsetX;
+                var offsetDifference = -28.0 - Location.OffsetX;
 
-                if (offsetDifference >= 0)
-                {
-                    return 0;
-                }
-
-                return offsetDifference;
+                return offsetDifference >= 0 ? 0.0 : offsetDifference;
             }
         }
 
@@ -96,22 +91,17 @@ namespace OpenTracker.ViewModels.MapLocations
             {
                 if (Marking is null || MarkingDock == Dock.Bottom)
                 {
-                    return 0;
+                    return 0.0;
                 }
 
                 if (MarkingDock == Dock.Top)
                 {
-                    return -55;
+                    return -56.0;
                 }
                 
-                var offsetDifference = -27.5 - Location.OffsetX;
+                var offsetDifference = -28.0 - Location.OffsetX;
 
-                if (offsetDifference >= 0)
-                {
-                    return 0;
-                }
-
-                return offsetDifference;
+                return offsetDifference >= 0 ? 0.0 : offsetDifference;
             }
         }
 

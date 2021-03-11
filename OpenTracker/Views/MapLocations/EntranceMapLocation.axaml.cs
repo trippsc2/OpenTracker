@@ -1,11 +1,11 @@
-﻿using Avalonia.Controls;
+using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
-namespace OpenTracker.Views.Maps.Locations
+namespace OpenTracker.Views.MapLocations
 {
-    public class MarkableMapLocation : UserControl
+    public class EntranceMapLocation : UserControl
     {
-        public MarkableMapLocation()
+        public EntranceMapLocation()
         {
             InitializeComponent();
         }

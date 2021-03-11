@@ -1,4 +1,7 @@
-﻿using Autofac;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using Autofac;
 using OpenTracker.Models.AutoTracking;
 using OpenTracker.Models.AutoTracking.Logging;
 using OpenTracker.Models.AutoTracking.SNESConnectors;
@@ -33,20 +36,17 @@ using OpenTracker.ViewModels.BossSelect;
 using OpenTracker.ViewModels.ColorSelect;
 using OpenTracker.ViewModels.Dialogs;
 using OpenTracker.ViewModels.Dropdowns;
+using OpenTracker.ViewModels.Dungeons;
 using OpenTracker.ViewModels.Items;
 using OpenTracker.ViewModels.Items.Adapters;
-using OpenTracker.ViewModels.Maps.Locations;
+using OpenTracker.ViewModels.MapLocations;
+using OpenTracker.ViewModels.Maps;
 using OpenTracker.ViewModels.Markings;
 using OpenTracker.ViewModels.Markings.Images;
 using OpenTracker.ViewModels.PinnedLocations;
 using OpenTracker.ViewModels.PinnedLocations.Sections;
 using OpenTracker.ViewModels.SequenceBreaks;
 using OpenTracker.ViewModels.UIPanels;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using OpenTracker.ViewModels.Dungeons;
-using OpenTracker.ViewModels.Maps;
 
 namespace OpenTracker
 {
@@ -233,12 +233,9 @@ namespace OpenTracker
                 nameof(PrizeAdapter),
                 nameof(SmallKeyAdapter),
                 nameof(StaticPrizeAdapter),
-                nameof(DungeonMapLocationVM),
                 nameof(EntranceMapLocationVM),
-                nameof(MapLocationVM),
-                nameof(MarkableDungeonMapLocationVM),
-                nameof(MarkableMapLocationVM),
                 nameof(ShopMapLocationVM),
+                nameof(StandardMapLocationVM),
                 nameof(TakeAnyMapLocationVM),
                 nameof(MarkingSelectButtonVM),
                 nameof(MarkingSelectSpacerVM),
@@ -262,6 +259,8 @@ namespace OpenTracker
                 nameof(ColorSettings),
                 nameof(LayoutSettings),
                 nameof(TrackerSettings),
+                nameof(MapAreaVM),
+                nameof(MapAreaFactory),
                 nameof(UIPanelAreaVM),
                 nameof(AutoTrackerDialogVM),
                 nameof(AutoTrackerLogVM),
@@ -276,10 +275,8 @@ namespace OpenTracker
                 nameof(VerticalDungeonPanelVM),
                 nameof(ItemVMDictionary),
                 nameof(ItemVMFactory),
-                nameof(MapAreaVM),
-                nameof(MapAreaFactory),
-                nameof(MapConnectionCollection),
                 nameof(MapLocationVMFactory),
+                nameof(MapConnectionCollection),
                 nameof(MarkingSelectFactory),
                 nameof(MarkingImageDictionary),
                 nameof(MarkingImageFactory),

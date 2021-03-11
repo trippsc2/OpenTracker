@@ -1,8 +1,8 @@
-﻿using OpenTracker.Models.Locations;
-using OpenTracker.ViewModels.Maps;
-using OpenTracker.ViewModels.Maps.Locations;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using OpenTracker.Models.Locations;
+using OpenTracker.ViewModels.MapLocations;
+using OpenTracker.ViewModels.Maps;
 
 namespace OpenTracker.ViewModels.Areas
 {
@@ -48,15 +48,15 @@ namespace OpenTracker.ViewModels.Areas
         /// <returns>
         /// An observable collection of map location control ViewModel instances.
         /// </returns>
-        public List<IMapLocationVMBase> GetMapLocationControlVMs()
+        public List<IMapLocationVM> GetMapLocationControlVMs()
         {
-            var mapLocations = new List<IMapLocationVMBase>();
+            var mapLocations = new List<IMapLocationVM>();
 
             foreach (LocationID id in Enum.GetValues(typeof(LocationID)))
             {
                 foreach (var mapLocation in _locations[id].MapLocations)
                 {
-                    mapLocations.Add(_locationFactory.GetMapLocationControlVM(mapLocation));
+                    mapLocations.Add(_locationFactory.GetMapLocation(mapLocation));
                 }
             }
 

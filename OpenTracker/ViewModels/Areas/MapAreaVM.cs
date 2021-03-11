@@ -1,12 +1,12 @@
-﻿using Avalonia.Layout;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
+using Avalonia.Layout;
 using Avalonia.Threading;
 using OpenTracker.Models.Settings;
 using OpenTracker.Utils;
+using OpenTracker.ViewModels.MapLocations;
 using OpenTracker.ViewModels.Maps;
-using OpenTracker.ViewModels.Maps.Locations;
 using ReactiveUI;
-using System.Collections.Generic;
-using System.ComponentModel;
 
 namespace OpenTracker.ViewModels.Areas
 {
@@ -21,7 +21,7 @@ namespace OpenTracker.ViewModels.Areas
 
         public List<IMapVM> Maps { get; }
         public IMapConnectionCollection Connectors { get; }
-        public List<IMapLocationVMBase> MapLocations { get; }
+        public List<IMapLocationVM> MapLocations { get; }
 
         /// <summary>
         /// Constructor

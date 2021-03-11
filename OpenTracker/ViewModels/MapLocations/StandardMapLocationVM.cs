@@ -130,6 +130,7 @@ namespace OpenTracker.ViewModels.MapLocations
             PropertyChanged += OnPropertyChanged;
             _trackerSettings.PropertyChanged += OnTrackerSettingsChanged;
             _mode.PropertyChanged += OnModeChanged;
+            _colorProvider.PropertyChanged += OnColorProviderChanged;
             _mapLocation.Location.PropertyChanged += OnLocationChanged;
         }
         
@@ -161,6 +162,32 @@ namespace OpenTracker.ViewModels.MapLocations
                 case nameof(Label):
                     await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(LabelVisible)));
                     break;
+            }
+        }
+
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the IMapLocationColorProvider interface.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
+        private async void OnColorProviderChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(IMapLocationColorProvider.BorderColor):
+                    await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(BorderColor)));
+                    break;
+                case nameof(IMapLocationColorProvider.Color):
+                    await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Color)));
+                    break;
+            }
+            if (e.PropertyName == nameof(IMapLocationColorProvider.BorderColor))
+            {
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(LabelVisible)));
             }
         }
 

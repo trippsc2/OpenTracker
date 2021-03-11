@@ -3,7 +3,7 @@ using Avalonia.Interactivity;
 using Avalonia.Xaml.Interactions.DragAndDrop;
 using OpenTracker.Models.Locations;
 
-namespace OpenTracker.ViewModels.Maps.Locations
+namespace OpenTracker.ViewModels.MapLocations
 {
     /// <summary>
     /// This class contains the entrance drop handler logic.
