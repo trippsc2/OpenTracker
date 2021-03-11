@@ -31,11 +31,14 @@ namespace OpenTracker.Models.Locations
             get => _accessibility;
             private set
             {
-                if (_accessibility != value)
+                if (_accessibility == value)
                 {
-                    _accessibility = value;
-                    OnPropertyChanged(nameof(Accessibility));
+                    return;
                 }
+                
+                _accessibility = value;
+                OnPropertyChanged(nameof(Accessibility));
+                UpdateVisible();
             }
         }
 
@@ -45,11 +48,13 @@ namespace OpenTracker.Models.Locations
             get => _available;
             private set
             {
-                if (_available != value)
+                if (_available == value)
                 {
-                    _available = value;
-                    OnPropertyChanged(nameof(Available));
+                    return;
                 }
+                
+                _available = value;
+                OnPropertyChanged(nameof(Available));
             }
         }
 
@@ -59,11 +64,13 @@ namespace OpenTracker.Models.Locations
             get => _accessible;
             private set
             {
-                if (_accessible != value)
+                if (_accessible == value)
                 {
-                    _accessible = value;
-                    OnPropertyChanged(nameof(Accessible));
+                    return;
                 }
+                
+                _accessible = value;
+                OnPropertyChanged(nameof(Accessible));
             }
         }
 
@@ -73,11 +80,29 @@ namespace OpenTracker.Models.Locations
             get => _total;
             private set
             {
-                if (_total != value)
+                if (_total == value)
                 {
-                    _total = value;
-                    OnPropertyChanged(nameof(Total));
+                    return;
                 }
+                
+                _total = value;
+                OnPropertyChanged(nameof(Total));
+            }
+        }
+
+        private bool _visible;
+        public bool Visible
+        {
+            get => _visible;
+            private set
+            {
+                if (_visible == value)
+                {
+                    return;
+                }
+
+                _visible = value;
+                OnPropertyChanged(nameof(Visible));
             }
         }
 
@@ -103,8 +128,8 @@ namespace OpenTracker.Models.Locations
         /// The ID of the location.
         /// </param>
         public Location(ILocationFactory factory, IMapLocationFactory mapLocationFactory,
-            ISectionFactory sectionFactory, IMarking.Factory markingFactory, 
-            ILocationNoteCollection notes, LocationID id)
+            ISectionFactory sectionFactory, IMarking.Factory markingFactory, ILocationNoteCollection notes,
+            LocationID id)
         {
             _markingFactory = markingFactory;
 
@@ -270,6 +295,19 @@ namespace OpenTracker.Models.Locations
         }
 
         /// <summary>
+        /// Updates whether the location is currently visible.
+        /// </summary>
+        private void UpdateVisible()
+        {
+            Visible = Accessibility switch
+            {
+                AccessibilityLevel.None => Sections[0] is IEntranceSection,
+                AccessibilityLevel.Cleared => false,
+                _ => true
+            };
+        }
+
+        /// <summary>
         /// Returns whether the location can be cleared.
         /// </summary>
         /// <returns>
@@ -339,7 +377,7 @@ namespace OpenTracker.Models.Locations
 
             Notes.Clear();
 
-            for (int i = 0; i < saveData.Sections!.Count; i++)
+            for (var i = 0; i < saveData.Sections!.Count; i++)
             {
                 Sections[i].Load(saveData.Sections[i]);
             }
@@ -348,14 +386,7 @@ namespace OpenTracker.Models.Locations
             {
                 var newMarking = _markingFactory();
 
-                if (marking.HasValue)
-                {
-                    newMarking.Mark = marking.Value;
-                }
-                else
-                {
-                    newMarking.Mark = MarkType.Unknown;
-                }
+                newMarking.Mark = marking ?? MarkType.Unknown;
 
                 Notes.Add(newMarking);
             }

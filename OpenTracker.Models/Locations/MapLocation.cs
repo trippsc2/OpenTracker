@@ -1,4 +1,5 @@
-﻿using OpenTracker.Models.Requirements;
+﻿using System.ComponentModel;
+using OpenTracker.Models.Requirements;
 
 namespace OpenTracker.Models.Locations
 {
@@ -12,6 +13,11 @@ namespace OpenTracker.Models.Locations
         public MapID Map { get; }
         public double X { get; }
         public double Y { get; }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        public bool RequirementMet => Requirement.Met;
+        public bool Visible => Location.Visible;
 
         /// <summary>
         /// Constructor
@@ -31,14 +37,61 @@ namespace OpenTracker.Models.Locations
         /// <param name="requirement">
         /// The mode requirement for displaying this map location.
         /// </param>
-        public MapLocation(
-            MapID map, double x, double y, ILocation location, IRequirement requirement)
+        public MapLocation(MapID map, double x, double y, ILocation location, IRequirement requirement)
         {
             Map = map;
             X = x;
             Y = y;
             Location = location;
             Requirement = requirement;
+
+            Location.PropertyChanged += OnLocationChanged;
+            Requirement.PropertyChanged += OnRequirementChanged;
+        }
+
+        /// <summary>
+        /// Raises the PropertyChanged event for the specified property.
+        /// </summary>
+        /// <param name="propertyName">
+        /// The string of the property name of the changed property.
+        /// </param>
+        private void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the ILocation interface.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
+        private void OnLocationChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ILocation.Visible))
+            {
+                OnPropertyChanged(nameof(Visible));
+            }
+        }
+
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the IRequirement interface.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
+        private void OnRequirementChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(IRequirement.Met))
+            {
+                OnPropertyChanged(nameof(RequirementMet));
+            }
         }
     }
 }

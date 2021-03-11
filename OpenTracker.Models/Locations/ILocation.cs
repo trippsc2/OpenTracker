@@ -20,6 +20,7 @@ namespace OpenTracker.Models.Locations
         List<ISection> Sections { get; }
         int Total { get; }
         ILocationNoteCollection Notes { get; }
+        bool Visible { get; }
 
         delegate ILocation Factory(LocationID id);
 
