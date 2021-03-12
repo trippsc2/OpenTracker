@@ -242,12 +242,8 @@ namespace OpenTracker
                 nameof(ItemMarkingImageVM),
                 nameof(MarkingImageVM),
                 nameof(BossSectionIconVM),
-                nameof(EntranceSectionIconVM),
-                nameof(ItemSectionIconVM),
                 nameof(MarkingSectionIconVM),
-                nameof(PrizeSectionIconVM),
-                nameof(ShopSectionIconVM),
-                nameof(TakeAnySectionIconVM)
+                nameof(PrizeSectionIconVM)
             };
 
         private static List<string> GUISingleInstanceTypes =>

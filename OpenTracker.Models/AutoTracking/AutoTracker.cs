@@ -31,22 +31,25 @@ namespace OpenTracker.Models.AutoTracking
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        private ISNESConnector _snesConnector;
+        private ISNESConnector? _snesConnector;
         private ISNESConnector SNESConnector
         {
-            get => _snesConnector;
+            get => _snesConnector!;
             set
             {
-                if (_snesConnector != value)
+                if (_snesConnector == value)
                 {
-                    if (!(_snesConnector is null))
-                    {
-                        _snesConnector.StatusChanged -= OnStatusChanged;
-                    }
-                    _snesConnector = value;
-                    _snesConnector.StatusChanged += OnStatusChanged;
-                    Status = ConnectionStatus.NotConnected;
+                    return;
                 }
+                
+                if (!(_snesConnector is null))
+                {
+                    _snesConnector.StatusChanged -= OnStatusChanged;
+                }
+                
+                _snesConnector = value;
+                _snesConnector.StatusChanged += OnStatusChanged;
+                Status = ConnectionStatus.NotConnected;
             }
         }
 

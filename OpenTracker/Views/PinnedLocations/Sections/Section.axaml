@@ -25,13 +25,11 @@
       <i:Interaction.Behaviors>
         <ia:DataTriggerBehavior Binding="{Binding NormalAccessibility}"
                                 ComparisonCondition="Equal" Value="True">
-          <ia:ChangePropertyAction TargetObject="{Binding #sectionName}"
-                                   PropertyName="Foreground" Value="{DynamicResource NormalBrush}" />
+          <ia:ChangePropertyAction PropertyName="Foreground" Value="{DynamicResource NormalBrush}" />
         </ia:DataTriggerBehavior>
         <ia:DataTriggerBehavior Binding="{Binding NormalAccessibility}"
                                 ComparisonCondition="NotEqual" Value="True">
-          <ia:ChangePropertyAction TargetObject="{Binding #sectionName}"
-                                   PropertyName="Foreground" Value="{DynamicResource AccessibilityBrush}" />
+          <ia:ChangePropertyAction PropertyName="Foreground" Value="{DynamicResource AccessibilityBrush}" />
         </ia:DataTriggerBehavior>
       </i:Interaction.Behaviors>
     </TextBlock>

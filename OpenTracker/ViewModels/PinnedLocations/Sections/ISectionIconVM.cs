@@ -1,4 +1,4 @@
-﻿using OpenTracker.Utils;
+﻿using OpenTracker.Models.Sections;
 
 namespace OpenTracker.ViewModels.PinnedLocations.Sections
 {
@@ -6,7 +6,8 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
     /// This is the base class to type restrict the section icon control to valid ViewModel
     /// classes.
     /// </summary>
-    public interface ISectionIconVMBase
+    public interface ISectionIconVM
     {
+        delegate ISectionIconVM Factory(ISectionIconImageProvider imageProvider, ISection section, bool labelVisible);
     }
 }

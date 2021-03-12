@@ -25,7 +25,7 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
         public string Name => _section.Name;
         public bool NormalAccessibility => _section.Accessibility == AccessibilityLevel.Normal;
 
-        public List<ISectionIconVMBase> Icons { get; }
+        public List<ISectionIconVM> Icons { get; }
 
         /// <summary>
         /// Constructor
@@ -39,7 +39,7 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
         /// <param name="icons">
         /// The observable collection of section icon control ViewModel instances.
         /// </param>
-        public SectionVM(IColorSettings colorSettings, ISection section, List<ISectionIconVMBase> icons)
+        public SectionVM(IColorSettings colorSettings, ISection section, List<ISectionIconVM> icons)
         {
             _colorSettings = colorSettings;
             _section = section;

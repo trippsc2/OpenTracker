@@ -15,8 +15,7 @@
   <Panel Name="panel">
 
     <i:Interaction.Behaviors>
-      <ia:EventTriggerBehavior EventName="PointerReleased"
-                               SourceObject="{Binding #panel}">
+      <ia:EventTriggerBehavior EventName="PointerReleased">
         <ia:InvokeCommandAction Command="{Binding HandleClick}" />
       </ia:EventTriggerBehavior>
     </i:Interaction.Behaviors>

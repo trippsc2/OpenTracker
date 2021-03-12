@@ -1,19 +1,19 @@
-﻿using Avalonia.Input;
+﻿using System.ComponentModel;
+using System.Reactive;
+using Avalonia.Input;
 using Avalonia.Threading;
 using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.Modes;
 using OpenTracker.Utils;
 using OpenTracker.ViewModels.BossSelect;
 using ReactiveUI;
-using System.ComponentModel;
-using System.Reactive;
 
 namespace OpenTracker.ViewModels.PinnedLocations.Sections
 {
     /// <summary>
     /// This class contains boss section icon control ViewModel data.
     /// </summary>
-    public class BossSectionIconVM : ViewModelBase, ISectionIconVMBase
+    public class BossSectionIconVM : ViewModelBase, ISectionIconVM
     {
         private readonly IMode _mode;
         private readonly IBossPlacement _bossPlacement;

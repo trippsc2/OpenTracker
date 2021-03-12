@@ -17,7 +17,7 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
     /// <summary>
     /// This class contains the prize section icon control ViewModel data.
     /// </summary>
-    public class PrizeSectionIconVM : ViewModelBase, ISectionIconVMBase
+    public class PrizeSectionIconVM : ViewModelBase, ISectionIconVM
     {
         private readonly IPrizeDictionary _prizes;
         private readonly IUndoRedoManager _undoRedoManager;

@@ -15,7 +15,7 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
     /// <summary>
     /// This class contains the section marking icon control ViewModel data.
     /// </summary>
-    public class MarkingSectionIconVM : ViewModelBase, ISectionIconVMBase
+    public class MarkingSectionIconVM : ViewModelBase, ISectionIconVM
     {
         private readonly IMarkingImageDictionary _markingImages;
 

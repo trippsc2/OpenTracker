@@ -1,30 +1,29 @@
-﻿using Avalonia.Input;
+using System.ComponentModel;
+using System.Globalization;
+using System.Reactive;
+using Avalonia.Input;
 using Avalonia.Threading;
 using OpenTracker.Models.Sections;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
 using ReactiveUI;
-using System.ComponentModel;
-using System.Reactive;
 
 namespace OpenTracker.ViewModels.PinnedLocations.Sections
 {
-    /// <summary>
-    /// This class contains entrance section icon control ViewModel data.
-    /// </summary>
-    public class EntranceSectionIconVM : ViewModelBase, ISectionIconVMBase
+    public class SectionIconVM : ViewModelBase, ISectionIconVM
     {
         private readonly IUndoRedoManager _undoRedoManager;
         private readonly IUndoableFactory _undoableFactory;
 
-        private readonly IEntranceSection _section;
+        private readonly ISectionIconImageProvider _imageProvider;
+        private readonly ISection _section;
 
-        public string ImageSource =>
-            "avares://OpenTracker/Assets/Images/door" + (_section.IsAvailable() ? "0" : "1") + ".png";
+        public string ImageSource => _imageProvider.ImageSource;
+
+        public bool LabelVisible { get; }
+        public string Label => _section.Available.ToString(CultureInfo.InvariantCulture);
         
         public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
-
-        public delegate EntranceSectionIconVM Factory(IEntranceSection section);
 
         /// <summary>
         /// Constructor
@@ -35,24 +34,35 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
         /// <param name="undoableFactory">
         /// A factory for creating undoable actions.
         /// </param>
-        /// <param name="section">
-        /// The entrance section to be represented.
+        /// <param name="imageProvider">
+        /// The section icon image control provider.
         /// </param>
-        public EntranceSectionIconVM(
-            IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory, IEntranceSection section)
+        /// <param name="section">
+        /// The section data.
+        /// </param>
+        /// <param name="labelVisible">
+        /// A boolean representing whether the label is visible.
+        /// </param>
+        public SectionIconVM(
+            IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory, ISectionIconImageProvider imageProvider,
+            ISection section, bool labelVisible)
         {
             _undoRedoManager = undoRedoManager;
             _undoableFactory = undoableFactory;
 
+            _imageProvider = imageProvider;
             _section = section;
-            
+
+            LabelVisible = labelVisible;
+
             HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
 
+            _imageProvider.PropertyChanged += OnImageProviderChanged;
             _section.PropertyChanged += OnSectionChanged;
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the IBossSection interface.
+        /// Subscribes to the PropertyChanged event on the ISectionIconImageProvider interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -60,11 +70,28 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private async void OnSectionChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnImageProviderChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(ISection.Accessibility) || e.PropertyName == nameof(ISection.Available))
+            if (e.PropertyName == nameof(ISectionIconImageProvider.ImageSource))
             {
                 await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(ImageSource)));
+            }
+        }
+
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the ISection interface.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
+        private async void OnSectionChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ISection.Available))
+            {
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Label)));
             }
         }
 
@@ -98,14 +125,10 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
             switch (e.InitialPressMouseButton)
             {
                 case MouseButton.Left:
-                {
                     CollectSection((e.KeyModifiers & KeyModifiers.Control) > 0);
-                }
                     break;
                 case MouseButton.Right:
-                {
                     UncollectSection();
-                }
                     break;
             }
         }

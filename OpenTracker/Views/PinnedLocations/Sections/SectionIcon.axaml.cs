@@ -1,11 +1,12 @@
-﻿using Avalonia.Controls;
+using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
 namespace OpenTracker.Views.PinnedLocations.Sections
 {
-    public class TakeAnySectionIcon : UserControl
+    public class SectionIcon : UserControl
     {
-        public TakeAnySectionIcon()
+        public SectionIcon()
         {
             InitializeComponent();
         }
