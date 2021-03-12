@@ -13,6 +13,6 @@ namespace OpenTracker.ViewModels
         double? Y { get; set; }
 
         void ChangeLayout(Orientation orientation);
-        void Close(bool maximized, Rect bounds, PixelPoint pixelPoint);
+        void OnClose(bool maximized, Rect bounds, PixelPoint pixelPoint);
     }
 }

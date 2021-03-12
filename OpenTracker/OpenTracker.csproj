@@ -81,6 +81,10 @@
       <DependentUpon>MapLocationToolTipMarking.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\Menus\TopMenu.axaml.cs">
+      <DependentUpon>TopMenu.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Autofac" Version="6.1.0" />
@@ -146,5 +150,10 @@
     <UpToDateCheckInput Remove="Views\Maps\Locations\MarkingMapLocation.axaml" />
     <UpToDateCheckInput Remove="Views\Maps\Locations\ShopMapLocation.axaml" />
     <UpToDateCheckInput Remove="Views\Maps\Locations\TakeAnyMapLocation.axaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\SaveLoad\Stream" />
+    <Folder Include="ViewModels\Stream" />
+    <Folder Include="Views\Stream" />
   </ItemGroup>
 </Project>

@@ -10,13 +10,15 @@ using ReactiveUI;
 using System.ComponentModel;
 using System.Reactive;
 using System.Text;
+using OpenTracker.Utils.Dialog;
+using OpenTracker.ViewModels.Menus;
 
 namespace OpenTracker.ViewModels
 {
     /// <summary>
     /// This class contains the main window ViewModel data.
     /// </summary>
-    public class MainWindowVM : ViewModelBase, IMainWindowVM
+    public class MainWindowVM : DialogViewModelBase, IMainWindowVM
     {
         private readonly IAppSettings _appSettings;
         private readonly ISaveLoadManager _saveLoadManager;
@@ -106,13 +108,13 @@ namespace OpenTracker.ViewModels
         /// The map area control.
         /// </param>
         public MainWindowVM(
-            IAppSettings appSettings, ISaveLoadManager saveLoadManager, ITopMenuVM topMenu, IStatusBarVM statusBar,
+            IAppSettings appSettings, ISaveLoadManager saveLoadManager, ITopMenuVM.Factory topMenu, IStatusBarVM statusBar,
             IUIPanelAreaVM uiPanel, IMapAreaVM mapArea)
         {
             _appSettings = appSettings;
             _saveLoadManager = saveLoadManager;
 
-            TopMenu = topMenu;
+            TopMenu = topMenu(() => Close());
             StatusBar = statusBar;
             UIPanel = uiPanel;
             MapArea = mapArea;
@@ -213,7 +215,7 @@ namespace OpenTracker.ViewModels
         /// <param name="pixelPoint">
         /// The pixel point representing the current window position.
         /// </param>
-        public void Close(bool maximized, Rect bounds, PixelPoint pixelPoint)
+        public void OnClose(bool maximized, Rect bounds, PixelPoint pixelPoint)
         {
             SaveAppSettings(maximized, bounds, pixelPoint);
         }

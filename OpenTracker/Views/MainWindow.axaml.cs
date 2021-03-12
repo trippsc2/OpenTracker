@@ -7,10 +7,11 @@ using OpenTracker.ViewModels;
 using System;
 using System.ComponentModel;
 using System.Linq;
+using OpenTracker.Utils.Dialog;
 
 namespace OpenTracker.Views
 {
-    public class MainWindow : Window
+    public class MainWindow : DialogWindowBase
     {
         private Orientation? _orientation;
 
@@ -38,7 +39,7 @@ namespace OpenTracker.Views
 
         private void OnClose(object? sender, CancelEventArgs e)
         {
-            ViewModel!.Close(WindowState == WindowState.Maximized, Bounds, Position);
+            ViewModel!.OnClose(WindowState == WindowState.Maximized, Bounds, Position);
         }
 
         private void OnDataContextChanged(object? sender, EventArgs e)

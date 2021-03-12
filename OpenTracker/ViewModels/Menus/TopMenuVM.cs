@@ -1,5 +1,11 @@
-﻿using Avalonia.Controls;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Reactive;
+using System.Threading.Tasks;
+using Avalonia.Controls;
 using Avalonia.Layout;
+using Avalonia.ThemeManager;
 using Avalonia.Threading;
 using Newtonsoft.Json;
 using OpenTracker.Models.Reset;
@@ -8,18 +14,11 @@ using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
 using OpenTracker.Utils.Dialog;
-using OpenTracker.ViewModels.AutoTracking;
 using OpenTracker.ViewModels.ColorSelect;
-using OpenTracker.ViewModels.SequenceBreaks;
-using ReactiveUI;
-using System;
-using System.ComponentModel;
-using System.Globalization;
-using System.Reactive;
-using System.Threading.Tasks;
 using OpenTracker.ViewModels.Dialogs;
+using ReactiveUI;
 
-namespace OpenTracker.ViewModels
+namespace OpenTracker.ViewModels.Menus
 {
     /// <summary>
     /// This class contains the top menu control ViewModel data.
@@ -41,6 +40,10 @@ namespace OpenTracker.ViewModels
 
         private readonly IErrorBoxDialogVM.Factory _errorBoxFactory;
         private readonly IMessageBoxDialogVM.Factory _messageBoxFactory;
+        
+        public List<IMenuItemVM> Items { get; }
+        
+        public IThemeSelector Selector { get; }
 
         public bool DisplayAllLocations =>
             _appSettings.Tracker.DisplayAllLocations;
@@ -101,7 +104,7 @@ namespace OpenTracker.ViewModels
         public ReactiveCommand<Unit, Unit> Save { get; }
         public ReactiveCommand<Unit, Unit> SaveAs { get; }
         public ReactiveCommand<Unit, Unit> Reset { get; }
-        public ReactiveCommand<Window, Unit> Close { get; }
+        public ReactiveCommand<Unit, Unit> Close { get; }
 
         private readonly ObservableAsPropertyHelper<bool> _isOpening;
         private bool IsOpening => _isOpening.Value;
@@ -145,13 +148,13 @@ namespace OpenTracker.ViewModels
         private readonly ObservableAsPropertyHelper<bool> _isOpeningColorSelect;
         private bool IsOpeningColorSelect => _isOpeningColorSelect.Value;
 
-        public ReactiveCommand<string, Unit> ChangeLayoutOrientation { get; }
-        public ReactiveCommand<string, Unit> ChangeMapOrientation { get; }
-        public ReactiveCommand<string, Unit> ChangeHorizontalUIPanelPlacement { get; }
-        public ReactiveCommand<string, Unit> ChangeVerticalUIPanelPlacement { get; }
-        public ReactiveCommand<string, Unit> ChangeHorizontalItemsPlacement { get; }
-        public ReactiveCommand<string, Unit> ChangeVerticalItemsPlacement { get; }
-        public ReactiveCommand<string, Unit> ChangeUIScale { get; }
+        public ReactiveCommand<Orientation?, Unit> ChangeLayoutOrientation { get; }
+        public ReactiveCommand<Orientation?, Unit> ChangeMapOrientation { get; }
+        public ReactiveCommand<Dock, Unit> ChangeHorizontalUIPanelPlacement { get; }
+        public ReactiveCommand<Dock, Unit> ChangeVerticalUIPanelPlacement { get; }
+        public ReactiveCommand<Dock, Unit> ChangeHorizontalItemsPlacement { get; }
+        public ReactiveCommand<Dock, Unit> ChangeVerticalItemsPlacement { get; }
+        public ReactiveCommand<double, Unit> ChangeUIScale { get; }
 
         public ReactiveCommand<Unit, Unit> About { get; }
 
@@ -166,7 +169,8 @@ namespace OpenTracker.ViewModels
             IUndoRedoManager undoRedoManager, IDialogService dialogService, IFileDialogService fileDialogService,
             IAutoTrackerDialogVM autoTrackerDialog, IColorSelectDialogVM colorSelectDialog,
             ISequenceBreakDialogVM sequenceBreakDialog, IAboutDialogVM aboutDialog,
-            IErrorBoxDialogVM.Factory errorBoxFactory, IMessageBoxDialogVM.Factory messageBoxFactory)
+            IErrorBoxDialogVM.Factory errorBoxFactory, IMessageBoxDialogVM.Factory messageBoxFactory,
+            IMenuItemFactory factory, IThemeSelector selector, Action closeAction)
         {
             _appSettings = appSettings;
             _resetManager = resetManager;
@@ -184,6 +188,8 @@ namespace OpenTracker.ViewModels
             _errorBoxFactory = errorBoxFactory;
             _messageBoxFactory = messageBoxFactory;
 
+            Selector = selector;
+            
             Open = ReactiveCommand.CreateFromTask(OpenImpl);
             Open.IsExecuting.ToProperty(this, x => x.IsOpening, out _isOpening);
 
@@ -196,7 +202,7 @@ namespace OpenTracker.ViewModels
             Reset = ReactiveCommand.CreateFromTask(ResetImpl);
             Reset.IsExecuting.ToProperty(this, x => x.IsResetting, out _isResetting);
             
-            Close = ReactiveCommand.Create<Window>(CloseImpl);
+            Close = ReactiveCommand.Create(closeAction);
 
             Undo = ReactiveCommand.CreateFromTask(UndoImpl, this.WhenAnyValue(x => x.CanUndo));
             Undo.IsExecuting.ToProperty(this, x => x.IsUndoing, out _isUndoing);
@@ -221,17 +227,23 @@ namespace OpenTracker.ViewModels
             ColorSelect.IsExecuting.ToProperty(
                 this, x => x.IsOpeningColorSelect, out _isOpeningColorSelect);
 
-            ChangeLayoutOrientation = ReactiveCommand.Create<string>(ChangeLayoutOrientationImpl);
-            ChangeMapOrientation = ReactiveCommand.Create<string>(ChangeMapOrientationImpl);
-            ChangeHorizontalUIPanelPlacement = ReactiveCommand.Create<string>(ChangeHorizontalUIPanelPlacementImpl);
-            ChangeVerticalUIPanelPlacement = ReactiveCommand.Create<string>(ChangeVerticalUIPanelPlacementImpl);
-            ChangeHorizontalItemsPlacement = ReactiveCommand.Create<string>(ChangeHorizontalItemsPlacementImpl);
-            ChangeVerticalItemsPlacement = ReactiveCommand.Create<string>(ChangeVerticalItemsPlacementImpl);
-            ChangeUIScale = ReactiveCommand.Create<string>(ChangeUIScaleImpl);
+            ChangeLayoutOrientation = ReactiveCommand.Create<Orientation?>(ChangeLayoutOrientationImpl);
+            ChangeMapOrientation = ReactiveCommand.Create<Orientation?>(ChangeMapOrientationImpl);
+            ChangeHorizontalUIPanelPlacement = ReactiveCommand.Create<Dock>(ChangeHorizontalUIPanelPlacementImpl);
+            ChangeVerticalUIPanelPlacement = ReactiveCommand.Create<Dock>(ChangeVerticalUIPanelPlacementImpl);
+            ChangeHorizontalItemsPlacement = ReactiveCommand.Create<Dock>(ChangeHorizontalItemsPlacementImpl);
+            ChangeVerticalItemsPlacement = ReactiveCommand.Create<Dock>(ChangeVerticalItemsPlacementImpl);
+            ChangeUIScale = ReactiveCommand.Create<double>(ChangeUIScaleImpl);
 
             About = ReactiveCommand.CreateFromTask(AboutImpl);
             About.IsExecuting.ToProperty(
                 this, x => x.IsOpeningAbout, out _isOpeningAbout);
+
+            Items = factory.GetMenuItems(
+                Open, Save, SaveAs, Reset, Close, Undo, Redo, AutoTracker, SequenceBreaks, ToggleDisplayAllLocations,
+                ToggleShowItemCountsOnMap, ToggleDisplayMapsCompasses, ToggleAlwaysDisplayDungeonItems, ColorSelect,
+                ChangeLayoutOrientation, ChangeHorizontalUIPanelPlacement, ChangeHorizontalItemsPlacement,
+                ChangeVerticalUIPanelPlacement, ChangeVerticalItemsPlacement, ChangeMapOrientation, ChangeUIScale);
 
             _undoRedoManager.PropertyChanged += OnUndoRedoManagerChanged;
             _appSettings.Tracker.PropertyChanged += OnTrackerSettingsChanged;
@@ -550,108 +562,78 @@ namespace OpenTracker.ViewModels
         /// <summary>
         /// Sets the layout orientation to the specified value.
         /// </summary>
-        /// <param name="orientationString">
-        /// A string representing the new layout orientation value.
+        /// <param name="newValue">
+        /// The new orientation value.
         /// </param>
-        private void ChangeLayoutOrientationImpl(string orientationString)
+        private void ChangeLayoutOrientationImpl(Orientation? newValue)
         {
-            if (orientationString == "Dynamic")
-            {
-                _appSettings.Layout.LayoutOrientation = null;
-                return;
-            }
-            
-            if (Enum.TryParse(orientationString, out Orientation orientation))
-            {
-                _appSettings.Layout.LayoutOrientation = orientation;
-            }
+            _appSettings.Layout.LayoutOrientation = newValue;
         }
 
         /// <summary>
         /// Sets the map orientation to the specified value.
         /// </summary>
-        /// <param name="orientationString">
-        /// A string representing the new map orientation value.
+        /// <param name="newValue">
+        /// The new orientation value.
         /// </param>
-        private void ChangeMapOrientationImpl(string orientationString)
+        private void ChangeMapOrientationImpl(Orientation? newValue)
         {
-            if (orientationString == "Dynamic")
-            {
-                _appSettings.Layout.MapOrientation = null;
-                return;
-            }
-            
-            if (Enum.TryParse(orientationString, out Orientation orientation))
-            {
-                _appSettings.Layout.MapOrientation = orientation;
-            }
+            _appSettings.Layout.MapOrientation = newValue;
         }
 
         /// <summary>
         /// Sets the horizontal UI panel orientation to the specified value.
         /// </summary>
-        /// <param name="dockString">
-        /// A string representing the new horizontal UI panel orientation value.
+        /// <param name="newValue">
+        /// The new dock value.
         /// </param>
-        private void ChangeHorizontalUIPanelPlacementImpl(string dockString)
+        private void ChangeHorizontalUIPanelPlacementImpl(Dock newValue)
         {
-            if (Enum.TryParse(dockString, out Dock dock))
-            {
-                _appSettings.Layout.HorizontalUIPanelPlacement = dock;
-            }
+            _appSettings.Layout.HorizontalUIPanelPlacement = newValue;
         }
 
         /// <summary>
         /// Sets the vertical UI panel orientation to the specified value.
         /// </summary>
-        /// <param name="dockString">
-        /// A string representing the new vertical UI panel orientation value.
+        /// <param name="newValue">
+        /// The new dock value.
         /// </param>
-        private void ChangeVerticalUIPanelPlacementImpl(string dockString)
+        private void ChangeVerticalUIPanelPlacementImpl(Dock newValue)
         {
-            if (Enum.TryParse(dockString, out Dock dock))
-            {
-                _appSettings.Layout.VerticalUIPanelPlacement = dock;
-            }
+            _appSettings.Layout.VerticalUIPanelPlacement = newValue;
         }
 
         /// <summary>
         /// Sets the horizontal items placement orientation to the specified value.
         /// </summary>
-        /// <param name="dockString">
-        /// A string representing the new horizontal items placement orientation value.
+        /// <param name="newValue">
+        /// The new dock value.
         /// </param>
-        private void ChangeHorizontalItemsPlacementImpl(string dockString)
+        private void ChangeHorizontalItemsPlacementImpl(Dock newValue)
         {
-            if (Enum.TryParse(dockString, out Dock dock))
-            {
-                _appSettings.Layout.HorizontalItemsPlacement = dock;
-            }
+            _appSettings.Layout.HorizontalItemsPlacement = newValue;
         }
 
         /// <summary>
         /// Sets the vertical items placement orientation to the specified value.
         /// </summary>
-        /// <param name="dockString">
-        /// A string representing the new vertical items placement orientation value.
+        /// <param name="newValue">
+        /// The new dock value.
         /// </param>
-        private void ChangeVerticalItemsPlacementImpl(string dockString)
+        private void ChangeVerticalItemsPlacementImpl(Dock newValue) 
         {
-            if (Enum.TryParse(dockString, out Dock dock))
-            {
-                _appSettings.Layout.VerticalItemsPlacement = dock;
-            }
+            _appSettings.Layout.VerticalItemsPlacement = newValue;
         }
 
         /// <summary>
         /// Sets the UI scale to the specified value.
         /// </summary>
-        /// <param name="uiScaleValue">
+        /// <param name="newValue">
         /// A floating point number representing the UI scale value.
         /// </param>
-        private void ChangeUIScaleImpl(string uiScaleValue)
+        private void ChangeUIScaleImpl(double newValue)
         {
-            _appSettings.Layout.UIScale = double.Parse(uiScaleValue, CultureInfo.InvariantCulture);
+            _appSettings.Layout.UIScale = newValue;
         }
 
         /// <summary>

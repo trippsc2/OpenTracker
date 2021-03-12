@@ -80,7 +80,10 @@ namespace OpenTracker.Utils.Dialog
         /// </summary>
         private void CenterDialog()
         {
-            _ = ParentWindow ?? throw new NullReferenceException();
+            if (ParentWindow is null)
+            {
+                return;
+            }
 
             var x = ParentWindow.Position.X + (ParentWindow.Bounds.Width - Width) / 2;
             var y = ParentWindow.Position.Y + (ParentWindow.Bounds.Height - Height) / 2;

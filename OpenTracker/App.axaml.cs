@@ -16,8 +16,6 @@ namespace OpenTracker
 {
     public class App : Application
     {
-        public static IThemeSelector? Selector { get; private set; }
-
         private static void CopyDefaultThemesToAppData()
         {
             var themePath = AppPath.AppDataThemesPath;
@@ -41,40 +39,41 @@ namespace OpenTracker
             }
         }
 
-        private static void MakeDefaultThemeFirst()
+        private static void MakeDefaultThemeFirst(IThemeSelector selector)
         {
-            foreach (var theme in Selector!.Themes!)
+            foreach (var theme in selector.Themes!)
             {
                 if (theme.Name != "Default")
                 {
                     continue;
                 }
                 
-                Selector.Themes.Remove(theme);
-                Selector.Themes.Insert(0, theme);
+                selector.Themes.Remove(theme);
+                selector.Themes.Insert(0, theme);
                 break;
             }
         }
 
-        private void InitializeThemes()
+        private static IThemeSelector InitializeThemes(IComponentContext scope)
         {
             CopyDefaultThemesToAppData();
-            Selector = ThemeSelector.Create(AppPath.AppDataThemesPath, this);
-            MakeDefaultThemeFirst();
+            var selector = scope.Resolve<IThemeSelector>();
+            MakeDefaultThemeFirst(selector);
+
+            return selector;
         }
 
-        private static void SetThemeToLastOrDefault()
+        private static void SetThemeToLastOrDefault(IThemeSelector selector)
         {
             var lastThemeFilePath = AppPath.LastThemeFilePath;
 
             if (File.Exists(lastThemeFilePath))
             {
-                Selector!.LoadSelectedTheme(lastThemeFilePath);
+                selector.LoadSelectedTheme(lastThemeFilePath);
+                return;
             }
-            else
-            {
-                Selector!.ApplyTheme(Selector!.Themes![0]);
-            }
+            
+            selector.ApplyTheme(selector.Themes![0]);
         }
 
         public override void Initialize()
@@ -89,11 +88,11 @@ namespace OpenTracker
         {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                InitializeThemes();
 
                 desktop.ShutdownMode = ShutdownMode.OnMainWindowClose;
 
-                using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+                using var scope = ContainerConfig.Configure(this).BeginLifetimeScope();
+                var selector = InitializeThemes(scope);
                 
                 var saveLoadManager = scope.Resolve<ISaveLoadManager>();
                 saveLoadManager.OpenSequenceBreaks(AppPath.SequenceBreakPath);
@@ -102,12 +101,12 @@ namespace OpenTracker
                     DataContext = scope.Resolve<IMainWindowVM>()
                 };
                 
-                SetThemeToLastOrDefault();
+                SetThemeToLastOrDefault(selector);
 
                 desktop.Exit += (sender, e) =>
                 {
                     saveLoadManager.SaveSequenceBreaks(AppPath.SequenceBreakPath);
-                    Selector!.SaveSelectedTheme(AppPath.LastThemeFilePath);
+                    selector.SaveSelectedTheme(AppPath.LastThemeFilePath);
                 };
             }
 

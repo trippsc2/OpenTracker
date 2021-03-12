@@ -27,7 +27,7 @@ namespace OpenTracker.Utils.Dialog
     }
 
     /// <summary>
-    /// This is the base class for all dialgo window ViewModels that don't require a result.
+    /// This is the base class for all dialog window ViewModels that don't require a result.
     /// </summary>
     public class DialogViewModelBase : DialogViewModelBase<object>
     {

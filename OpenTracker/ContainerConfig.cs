@@ -2,6 +2,8 @@
 using System.Linq;
 using System.Reflection;
 using Autofac;
+using Avalonia;
+using Avalonia.ThemeManager;
 using OpenTracker.Models.AutoTracking;
 using OpenTracker.Models.AutoTracking.Logging;
 using OpenTracker.Models.AutoTracking.SNESConnectors;
@@ -43,6 +45,7 @@ using OpenTracker.ViewModels.MapLocations;
 using OpenTracker.ViewModels.Maps;
 using OpenTracker.ViewModels.Markings;
 using OpenTracker.ViewModels.Markings.Images;
+using OpenTracker.ViewModels.Menus;
 using OpenTracker.ViewModels.PinnedLocations;
 using OpenTracker.ViewModels.PinnedLocations.Sections;
 using OpenTracker.ViewModels.SequenceBreaks;
@@ -241,6 +244,7 @@ namespace OpenTracker
                 nameof(MarkingSelectSpacerVM),
                 nameof(ItemMarkingImageVM),
                 nameof(MarkingImageVM),
+                nameof(MenuItemCheckBoxVM),
                 nameof(BossSectionIconVM),
                 nameof(MarkingSectionIconVM),
                 nameof(PrizeSectionIconVM)
@@ -276,6 +280,7 @@ namespace OpenTracker
                 nameof(MarkingSelectFactory),
                 nameof(MarkingImageDictionary),
                 nameof(MarkingImageFactory),
+                nameof(MenuItemFactory),
                 nameof(PinnedLocationDictionary),
                 nameof(PinnedLocationsPanelVM),
                 nameof(PinnedLocationVMCollection),
@@ -296,7 +301,7 @@ namespace OpenTracker
         /// <returns>
         /// A new Autofac container.
         /// </returns>
-        public static IContainer Configure()
+        public static IContainer Configure(Application? app = null)
         {
             var builder = new ContainerBuilder();
 
@@ -309,6 +314,12 @@ namespace OpenTracker
             RegisterNamespace(
                 Assembly.Load(nameof(OpenTracker)), builder, GUISkipTypes, GUISelfTypes,
                 GUISingleInstanceTypes);
+
+            if (!(app is null))
+            {
+                builder.Register((c) => ThemeSelector.Create(AppPath.AppDataThemesPath, app))
+                    .SingleInstance();
+            }
 
             return builder.Build();
         }

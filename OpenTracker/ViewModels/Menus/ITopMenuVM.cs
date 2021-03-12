@@ -1,7 +1,8 @@
-﻿using ReactiveUI;
+﻿using System;
 using System.Reactive;
+using ReactiveUI;
 
-namespace OpenTracker.ViewModels
+namespace OpenTracker.ViewModels.Menus
 {
     /// <summary>
     /// This interface contains the top menu control ViewModel data.
@@ -15,5 +16,7 @@ namespace OpenTracker.ViewModels
         ReactiveCommand<Unit, Unit> Open { get; }
         ReactiveCommand<Unit, Unit> Save { get; }
         ReactiveCommand<Unit, Unit> SaveAs { get; }
+
+        delegate ITopMenuVM Factory(Action closeAction);
     }
 }

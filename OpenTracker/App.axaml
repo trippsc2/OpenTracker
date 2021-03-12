@@ -267,6 +267,7 @@
 		</Style>
 		
 		<Style Selector="TextBlock.MenuHotkey">
+			<Setter Property="HorizontalAlignment" Value="Right" />
 			<Setter Property="Margin" Value="10 0 0 0" />
 		</Style>
 
