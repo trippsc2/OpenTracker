@@ -27,8 +27,8 @@
     
     <Image Height="16" Width="16" Source="{Binding Path=ImageSource, Converter={StaticResource BitmapValueConverter}}" />
 
-    <Border Classes="ItemCount">
-      <TextBlock Classes="ItemCount"
+    <Border Classes="ItemLabel">
+      <TextBlock Classes="ItemLabel"
                  Text="{Binding Path=NumberString}"
                  Foreground="{Binding Path=FontColor}" />
     </Border>

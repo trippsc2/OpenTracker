@@ -18,8 +18,8 @@
     
     <Image Source="{Binding ImageSource, Converter={StaticResource BitmapValueConverter}}" />
     
-    <Border Classes="ItemCount" IsVisible="{Binding LabelVisible}">
-      <TextBlock Classes="ItemCount"
+    <Border Classes="ItemLabel" IsVisible="{Binding LabelVisible}">
+      <TextBlock Classes="ItemLabel"
                  Text="{Binding Label}"
                  Foreground="{Binding LabelColor}" />
     </Border>

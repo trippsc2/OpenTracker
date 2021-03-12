@@ -27,9 +27,9 @@
     <Image Source="{Binding ImageSource, Converter={StaticResource BitmapValueConverter}}"
            Height="32" Width="32" />
     
-    <Border Classes="SectionCount"
+    <Border Classes="SectionLabel"
             IsVisible="{Binding LabelVisible}">
-      <TextBlock Classes="SectionCount" Text="{Binding Label}" />
+      <TextBlock Classes="SectionLabel" Text="{Binding Label}" />
     </Border>
   
   </Panel>

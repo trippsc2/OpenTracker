@@ -3,8 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vc="clr-namespace:OpenTracker.ValueConverters;assembly=OpenTracker"
-             mc:Ignorable="d"
-             x:Class="OpenTracker.Views.Maps.Map">
+             mc:Ignorable="d" x:Class="OpenTracker.Views.Maps.Map">
 	
 	<UserControl.Resources>
 		<vc:BitmapValueConverter x:Key="BitmapValueConverter" />

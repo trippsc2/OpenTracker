@@ -25,9 +25,9 @@
     </StackPanel>
     
     <StackPanel DockPanel.Dock="Bottom" Margin="10" Orientation="Horizontal" HorizontalAlignment="Center">
-      <Button Classes="AutoTrackerSmall"
+      <Button Classes="AutoTracker"
               Command="{Binding ResetLogCommand}">Reset Log</Button>
-      <Button Classes="AutoTrackerSmall"
+      <Button Classes="AutoTracker"
               Command="{Binding SaveLogCommand}">Save Log</Button>
     </StackPanel>
 

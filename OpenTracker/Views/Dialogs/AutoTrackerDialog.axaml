@@ -24,9 +24,9 @@
       </StackPanel>
 
       <StackPanel Margin="10" Orientation="Horizontal" HorizontalAlignment="Center">
-        <Button Classes="AutoTrackerSmall"
+        <Button Classes="AutoTracker"
                 Command="{Binding GetDevicesCommand}">Get Devices</Button>
-        <Button Classes="AutoTrackerSmall"
+        <Button Classes="AutoTracker"
                 Command="{Binding DisconnectCommand}">Disconnect</Button>
       </StackPanel>
 
@@ -45,7 +45,7 @@
                 This may not work correctly in all randomizer versions.">Race Illegal Tracking</CheckBox>
 
       <StackPanel Margin="10" Orientation="Horizontal" HorizontalAlignment="Center">
-        <Button Classes="AutoTrackerBig"
+        <Button Classes="AutoTrackerStart"
                 Command="{Binding StartCommand}">Start Auto-tracking</Button>
       </StackPanel>
 

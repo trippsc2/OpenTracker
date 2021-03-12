@@ -31,9 +31,9 @@
             Background="{Binding Color}" 
             BorderBrush="{Binding BorderColor}"
             BorderThickness="{Binding BorderSize}">
-      <Border Classes="MapLocationNumber"
+      <Border Classes="MapLocationLabel"
               IsVisible="{Binding LabelVisible}">
-        <TextBlock Classes="MapLocationNumber"
+        <TextBlock Classes="MapLocationLabel"
                    Foreground="{Binding Color}"
                    Text="{Binding Label}" />
       </Border>

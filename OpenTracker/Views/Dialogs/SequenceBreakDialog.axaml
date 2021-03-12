@@ -12,11 +12,11 @@
   </Design.DataContext>
   
   <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-    <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+    <StackPanel>
       
-      <TextBlock Classes="SequenceBreakTitle" Grid.Row="0" Text="Bomb Duplication" />
+      <TextBlock Classes="SequenceBreakTitle" Text="Bomb Duplication" />
 
-      <Panel HorizontalAlignment="Stretch" Grid.Row="1">
+      <Panel HorizontalAlignment="Stretch">
         <ItemsControl Items="{Binding BombDuplication}">
           <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
@@ -26,9 +26,9 @@
         </ItemsControl>
       </Panel>
 
-      <TextBlock Classes="SequenceBreakTitle" Grid.Row="2" Text="Bomb Jumps" />
+      <TextBlock Classes="SequenceBreakTitle" Text="Bomb Jumps" />
 
-      <Panel HorizontalAlignment="Stretch" Grid.Row="3">
+      <Panel HorizontalAlignment="Stretch">
         <ItemsControl Items="{Binding BombJumps}">
           <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
@@ -38,9 +38,9 @@
         </ItemsControl>
       </Panel>
 
-      <TextBlock Classes="SequenceBreakTitle" Grid.Row="4" Text="Dark Rooms" />
+      <TextBlock Classes="SequenceBreakTitle" Text="Dark Rooms" />
 
-      <Panel HorizontalAlignment="Stretch" Grid.Row="5">
+      <Panel HorizontalAlignment="Stretch">
         <ItemsControl Items="{Binding DarkRooms}">
           <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
@@ -50,9 +50,9 @@
         </ItemsControl>
       </Panel>
 
-      <TextBlock Classes="SequenceBreakTitle" Grid.Row="6" Text="Fake Flippers/WaterWalk" />
+      <TextBlock Classes="SequenceBreakTitle" Text="Fake Flippers/WaterWalk" />
 
-      <Panel HorizontalAlignment="Stretch" Grid.Row="7">
+      <Panel HorizontalAlignment="Stretch">
         <ItemsControl Items="{Binding FakeFlippersWaterWalk}">
           <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
@@ -62,9 +62,9 @@
         </ItemsControl>
       </Panel>
       
-      <TextBlock Classes="SequenceBreakTitle" Grid.Row="8" Text="Super Bunny" />
+      <TextBlock Classes="SequenceBreakTitle" Text="Super Bunny" />
 
-      <Panel HorizontalAlignment="Stretch" Grid.Row="9">
+      <Panel HorizontalAlignment="Stretch">
         <ItemsControl Items="{Binding SuperBunny}">
           <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
@@ -74,9 +74,9 @@
         </ItemsControl>
       </Panel>
 
-      <TextBlock Classes="SequenceBreakTitle" Grid.Row="10" Text="Other" />
+      <TextBlock Classes="SequenceBreakTitle" Text="Other" />
 
-      <Panel HorizontalAlignment="Stretch" Grid.Row="11">
+      <Panel HorizontalAlignment="Stretch">
         <ItemsControl Items="{Binding Other}">
           <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
@@ -86,6 +86,6 @@
         </ItemsControl>
       </Panel>
 
-    </Grid>
+    </StackPanel>
   </ScrollViewer>
 </Window>
