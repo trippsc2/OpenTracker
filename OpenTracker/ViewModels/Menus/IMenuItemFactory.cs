@@ -12,6 +12,6 @@ namespace OpenTracker.ViewModels.Menus
             ICommand toggleAlwaysDisplayDungeonItems, ICommand colorSelect, ICommand changeLayoutOrientation,
             ICommand changeHorizontalUIPanelPlacement, ICommand changeHorizontalItemsPlacement,
             ICommand changeVerticalUIPanelPlacement, ICommand changeVerticalItemsPlacement,
-            ICommand changeMapOrientation, ICommand changeUIScale);
+            ICommand changeMapOrientation, ICommand changeUIScale, ICommand about);
     }
 }

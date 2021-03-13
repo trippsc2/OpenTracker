@@ -225,8 +225,13 @@ namespace OpenTracker
             new List<string>
             {
                 nameof(AlwaysDisplayDungeonItemsRequirement),
+                nameof(DisplayAllLocationsRequirement),
                 nameof(DisplayMapsCompassesRequirement),
+                nameof(HorizontalItemsPanelPlacementRequirement),
+                nameof(HorizontalUIPanelPlacementRequirement),
                 nameof(ItemsPanelOrientationRequirement),
+                nameof(LayoutOrientationRequirement),
+                nameof(ShowItemCountsOnMapRequirement),
                 nameof(BossAdapter),
                 nameof(CrystalRequirementAdapter),
                 nameof(DropdownAdapter),
