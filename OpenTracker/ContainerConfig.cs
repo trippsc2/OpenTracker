@@ -226,6 +226,7 @@ namespace OpenTracker
             new List<string>
             {
                 nameof(AlwaysDisplayDungeonItemsRequirement),
+                nameof(CaptureWindowOpenRequirement),
                 nameof(DisplayAllLocationsRequirement),
                 nameof(DisplayMapsCompassesRequirement),
                 nameof(HorizontalItemsPanelPlacementRequirement),

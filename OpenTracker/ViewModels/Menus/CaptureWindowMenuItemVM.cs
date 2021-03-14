@@ -22,13 +22,13 @@ namespace OpenTracker.ViewModels.Menus
         public IList<IMenuItemVM> Items { get; } = new List<IMenuItemVM>();
 
         public CaptureWindowMenuItemVM(
-            MenuItemCheckBoxVM.Factory iconFactory, CaptureWindowOpenRequirement.Factory captureWindowOpenFactory,
-            ICaptureWindowVM captureWindow, ICommand openCaptureWindow)
+            ICaptureManager captureManager, MenuItemCheckBoxVM.Factory iconFactory,
+            CaptureWindowOpenRequirement.Factory captureWindowOpenFactory, ICaptureWindowVM captureWindow)
         {
             _captureWindow = captureWindow;
             
             Icon = iconFactory(captureWindowOpenFactory(captureWindow));
-            Command = openCaptureWindow;
+            Command = captureManager.OpenCaptureWindow;
             CommandParameter = captureWindow;
 
             _captureWindow.PropertyChanged += OnCaptureWindowChanged;

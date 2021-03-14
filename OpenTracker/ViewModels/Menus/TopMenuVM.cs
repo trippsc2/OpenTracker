@@ -14,6 +14,7 @@ using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
 using OpenTracker.Utils.Dialog;
 using OpenTracker.Utils.Themes;
+using OpenTracker.ViewModels.Capture;
 using OpenTracker.ViewModels.ColorSelect;
 using OpenTracker.ViewModels.Dialogs;
 using ReactiveUI;
@@ -112,12 +113,12 @@ namespace OpenTracker.ViewModels.Menus
         /// Constructor
         /// </summary>
         public TopMenuVM(
-            IAppSettings appSettings, IResetManager resetManager, ISaveLoadManager saveLoadManager,
-            IUndoRedoManager undoRedoManager, IDialogService dialogService, IFileDialogService fileDialogService,
-            IThemeManager themeManager, IAutoTrackerDialogVM autoTrackerDialog, IColorSelectDialogVM colorSelectDialog,
-            ISequenceBreakDialogVM sequenceBreakDialog, IAboutDialogVM aboutDialog,
-            IErrorBoxDialogVM.Factory errorBoxFactory, IMessageBoxDialogVM.Factory messageBoxFactory,
-            IMenuItemFactory factory, Action closeAction)
+            IAppSettings appSettings, ICaptureManager captureManager, IResetManager resetManager,
+            ISaveLoadManager saveLoadManager, IUndoRedoManager undoRedoManager, IDialogService dialogService,
+            IFileDialogService fileDialogService, IThemeManager themeManager, IAutoTrackerDialogVM autoTrackerDialog,
+            IColorSelectDialogVM colorSelectDialog, ISequenceBreakDialogVM sequenceBreakDialog,
+            IAboutDialogVM aboutDialog, IErrorBoxDialogVM.Factory errorBoxFactory,
+            IMessageBoxDialogVM.Factory messageBoxFactory, IMenuItemFactory factory, Action closeAction)
         {
             _appSettings = appSettings;
             _resetManager = resetManager;
@@ -193,6 +194,8 @@ namespace OpenTracker.ViewModels.Menus
                 ToggleAlwaysDisplayDungeonItems, ColorSelect, ChangeLayoutOrientation, ChangeHorizontalUIPanelPlacement,
                 ChangeHorizontalItemsPlacement, ChangeVerticalUIPanelPlacement, ChangeVerticalItemsPlacement,
                 ChangeMapOrientation, ChangeUIScale, About);
+            
+            captureManager.GenerateInitialData();
 
             _undoRedoManager.PropertyChanged += OnUndoRedoManagerChanged;
         }

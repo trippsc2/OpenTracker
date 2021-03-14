@@ -4,5 +4,6 @@ namespace OpenTracker.ViewModels.Capture
 {
     public interface ICaptureWindowCollection : IObservableCollection<ICaptureWindowVM>
     {
+        delegate ICaptureWindowCollection Factory();
     }
 }

@@ -1,15 +1,21 @@
-using OpenTracker.Utils;
+using OpenTracker.Utils.Dialog;
 using ReactiveUI;
 
 namespace OpenTracker.ViewModels.Capture
 {
-    public class CaptureWindowVM : ViewModelBase, ICaptureWindowVM
+    public class CaptureWindowVM : DialogViewModelBase, ICaptureWindowVM
     {
+        public string Title => $"OpenTracker - {Name}";
+        
         private string _name;
         public string Name
         {
             get => _name;
-            set => this.RaiseAndSetIfChanged(ref _name, value);
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _name, value);
+                this.RaisePropertyChanged(nameof(Title));
+            }
         }
         
         private bool _open;

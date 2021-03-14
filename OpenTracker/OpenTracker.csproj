@@ -152,7 +152,5 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\SaveLoad\Stream" />
-    <Folder Include="ViewModels\Stream" />
-    <Folder Include="Views\Capture" />
   </ItemGroup>
 </Project>

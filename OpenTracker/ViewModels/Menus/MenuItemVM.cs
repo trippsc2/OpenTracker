@@ -19,7 +19,7 @@ namespace OpenTracker.ViewModels.Menus
         public MenuItemVM(
             MenuItemCheckBoxVM.Factory checkBoxFactory, IMenuHotkeyHeaderVM.Factory hotkeyFactory, string header,
             IRequirement? checkBoxRequirement = null, string? hotkey = null, ICommand? command = null,
-            object? commandParameter = null, List<IMenuItemVM>? items = null)
+            object? commandParameter = null, IList<IMenuItemVM>? items = null)
         {
             if (hotkey is null)
             {

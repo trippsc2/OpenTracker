@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Linq;
 
 namespace OpenTracker.Utils
@@ -13,10 +11,8 @@ namespace OpenTracker.Utils
         private readonly List<TViewModel> _list;
         private readonly IObservableCollection<TModel> _model;
 
-        public int Count =>
-            _list.Count;
-        public bool IsReadOnly =>
-            ((ICollection<TViewModel>)_list).IsReadOnly;
+        public int Count => _list.Count;
+        public bool IsReadOnly => ((ICollection<TViewModel>)_list).IsReadOnly;
 
         public TViewModel this[int index]
         {
