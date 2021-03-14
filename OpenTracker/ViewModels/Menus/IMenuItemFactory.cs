@@ -7,7 +7,8 @@ namespace OpenTracker.ViewModels.Menus
     {
         List<IMenuItemVM> GetMenuItems(ICommand open, ICommand save, ICommand saveAs, ICommand reset, ICommand close,
             ICommand undo, ICommand redo,
-            ICommand autoTracker, ICommand sequenceBreaks, ICommand changeTheme, ICommand toggleDisplayAllLocations,
+            ICommand autoTracker, ICommand sequenceBreaks, ICommand captureDesign, ICommand changeTheme,
+            ICommand toggleDisplayAllLocations,
             ICommand toggleShowItemCountsOnMap, ICommand toggleDisplayMapsCompasses,
             ICommand toggleAlwaysDisplayDungeonItems, ICommand colorSelect, ICommand changeLayoutOrientation,
             ICommand changeHorizontalUIPanelPlacement, ICommand changeHorizontalItemsPlacement,

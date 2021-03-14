@@ -2,11 +2,11 @@ using Avalonia;
 using Avalonia.Markup.Xaml;
 using OpenTracker.Utils.Dialog;
 
-namespace OpenTracker.Views.Capture
+namespace OpenTracker.Views.Capture.Design
 {
-    public class CaptureWindow : DialogWindowBase
+    public class CaptureDesignDialog : DialogWindowBase
     {
-        public CaptureWindow()
+        public CaptureDesignDialog()
         {
             InitializeComponent();
 #if DEBUG

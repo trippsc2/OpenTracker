@@ -3,13 +3,18 @@
         xmlns:vm="clr-namespace:OpenTracker.ViewModels.Capture;assembly=OpenTracker"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" x:Class="OpenTracker.Views.Capture.CaptureWindow"
+        mc:Ignorable="d" x:Class="OpenTracker.Views.Capture.CaptureWindow" IsHitTestVisible="False"
         Title="{Binding Title}"
+        Background="{Binding BackgroundColor}"
         Height="{Binding Height, Mode=TwoWay}"
         Width="{Binding Width, Mode=TwoWay}">
   
   <Design.DataContext>
     <vm:CaptureWindowVM />
   </Design.DataContext>
+  
+  <Viewbox>
+    
+  </Viewbox>
   
 </Window>

@@ -15,6 +15,7 @@ using OpenTracker.Utils;
 using OpenTracker.Utils.Dialog;
 using OpenTracker.Utils.Themes;
 using OpenTracker.ViewModels.Capture;
+using OpenTracker.ViewModels.Capture.Design;
 using OpenTracker.ViewModels.ColorSelect;
 using OpenTracker.ViewModels.Dialogs;
 using ReactiveUI;
@@ -36,6 +37,7 @@ namespace OpenTracker.ViewModels.Menus
         private readonly IThemeManager _themeManager;
 
         private readonly IAutoTrackerDialogVM _autoTrackerDialog;
+        private readonly ICaptureDesignDialogVM _captureDesignDialog;
         private readonly ISequenceBreakDialogVM _sequenceBreakDialog;
         private readonly IColorSelectDialogVM _colorSelectDialog;
         private readonly IAboutDialogVM _aboutDialog;
@@ -83,6 +85,11 @@ namespace OpenTracker.ViewModels.Menus
 
         private readonly ObservableAsPropertyHelper<bool> _isOpeningSequenceBreak;
         private bool IsOpeningSequenceBreak => _isOpeningSequenceBreak.Value;
+        
+        public ReactiveCommand<Unit, Unit> CaptureDesign { get; }
+
+        private readonly ObservableAsPropertyHelper<bool> _isOpeningCaptureDesign;
+        public bool IsOpeningCaptureDesign => _isOpeningCaptureDesign.Value;
 
         public ReactiveCommand<ITheme, Unit> ChangeTheme { get; }
         
@@ -116,9 +123,10 @@ namespace OpenTracker.ViewModels.Menus
             IAppSettings appSettings, ICaptureManager captureManager, IResetManager resetManager,
             ISaveLoadManager saveLoadManager, IUndoRedoManager undoRedoManager, IDialogService dialogService,
             IFileDialogService fileDialogService, IThemeManager themeManager, IAutoTrackerDialogVM autoTrackerDialog,
-            IColorSelectDialogVM colorSelectDialog, ISequenceBreakDialogVM sequenceBreakDialog,
-            IAboutDialogVM aboutDialog, IErrorBoxDialogVM.Factory errorBoxFactory,
-            IMessageBoxDialogVM.Factory messageBoxFactory, IMenuItemFactory factory, Action closeAction)
+            ICaptureDesignDialogVM captureDesignDialog, IColorSelectDialogVM colorSelectDialog,
+            ISequenceBreakDialogVM sequenceBreakDialog, IAboutDialogVM aboutDialog,
+            IErrorBoxDialogVM.Factory errorBoxFactory, IMessageBoxDialogVM.Factory messageBoxFactory,
+            IMenuItemFactory factory, Action closeAction)
         {
             _appSettings = appSettings;
             _resetManager = resetManager;
@@ -130,13 +138,14 @@ namespace OpenTracker.ViewModels.Menus
             _themeManager = themeManager;
 
             _autoTrackerDialog = autoTrackerDialog;
+            _captureDesignDialog = captureDesignDialog;
             _colorSelectDialog = colorSelectDialog;
             _sequenceBreakDialog = sequenceBreakDialog;
             _aboutDialog = aboutDialog;
 
             _errorBoxFactory = errorBoxFactory;
             _messageBoxFactory = messageBoxFactory;
-            
+
             Open = ReactiveCommand.CreateFromTask(OpenImpl);
             Open.IsExecuting.ToProperty(this, x => x.IsOpening, out _isOpening);
 
@@ -165,6 +174,10 @@ namespace OpenTracker.ViewModels.Menus
             SequenceBreaks.IsExecuting.ToProperty(
                 this, x => x.IsOpeningSequenceBreak, out _isOpeningSequenceBreak);
 
+            CaptureDesign = ReactiveCommand.CreateFromTask(CaptureDesignImpl);
+            CaptureDesign.IsExecuting.ToProperty(
+                this, x => x.IsOpeningCaptureDesign, out _isOpeningCaptureDesign);
+
             ChangeTheme = ReactiveCommand.Create<ITheme>(ChangeThemeImpl);
             
             ToggleDisplayAllLocations = ReactiveCommand.Create(ToggleDisplayAllLocationsImpl);
@@ -189,7 +202,7 @@ namespace OpenTracker.ViewModels.Menus
                 this, x => x.IsOpeningAbout, out _isOpeningAbout);
 
             Items = factory.GetMenuItems(
-                Open, Save, SaveAs, Reset, Close, Undo, Redo, AutoTracker, SequenceBreaks, ChangeTheme,
+                Open, Save, SaveAs, Reset, Close, Undo, Redo, AutoTracker, SequenceBreaks, CaptureDesign, ChangeTheme,
                 ToggleDisplayAllLocations, ToggleShowItemCountsOnMap, ToggleDisplayMapsCompasses,
                 ToggleAlwaysDisplayDungeonItems, ColorSelect, ChangeLayoutOrientation, ChangeHorizontalUIPanelPlacement,
                 ChangeHorizontalItemsPlacement, ChangeVerticalUIPanelPlacement, ChangeVerticalItemsPlacement,
@@ -387,6 +400,15 @@ namespace OpenTracker.ViewModels.Menus
         {
             await Dispatcher.UIThread.InvokeAsync(async () =>
                 await _dialogService.ShowDialogAsync(_sequenceBreakDialog, false));
+        }
+
+        /// <summary>
+        /// Opens the Design Capture Windows dialog window.
+        /// </summary>
+        private async Task CaptureDesignImpl()
+        {
+            await Dispatcher.UIThread.InvokeAsync(async () =>
+                await _dialogService.ShowDialogAsync(_captureDesignDialog, false));
         }
 
         /// <summary>

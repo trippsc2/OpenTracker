@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using OpenTracker.Utils.Dialog;
 using ReactiveUI;
 
@@ -38,6 +39,9 @@ namespace OpenTracker.ViewModels.Capture
             get => _width;
             set => this.RaiseAndSetIfChanged(ref _width, value);
         }
+
+        public ObservableCollection<ICaptureControlVM> Contents { get; } =
+            new ObservableCollection<ICaptureControlVM>();
 
         public CaptureWindowVM(string name)
         {

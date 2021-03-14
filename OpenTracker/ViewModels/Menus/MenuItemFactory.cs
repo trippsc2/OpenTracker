@@ -92,13 +92,14 @@ namespace OpenTracker.ViewModels.Menus
             };
         }
 
-        private List<IMenuItemVM> GetCaptureMenuItems(ICaptureWindowMenuCollection captureWindowMenuItems)
+        private List<IMenuItemVM> GetCaptureMenuItems(
+            ICaptureWindowMenuCollection captureWindowMenuItems, ICommand captureDesign)
         {
             return new List<IMenuItemVM>
             {
-                _itemFactory("Design Capture Windows..."),
+                _itemFactory("Windows", items: captureWindowMenuItems),
                 _itemFactory("-"),
-                _itemFactory("Windows", items: captureWindowMenuItems)
+                _itemFactory("Design Capture Windows...", command: captureDesign)
             };
         }
 
@@ -221,8 +222,8 @@ namespace OpenTracker.ViewModels.Menus
 
         public List<IMenuItemVM> GetMenuItems(
             ICommand open, ICommand save, ICommand saveAs, ICommand reset, ICommand close, ICommand undo, ICommand redo,
-            ICommand autoTracker, ICommand sequenceBreaks, ICommand changeTheme, ICommand toggleDisplayAllLocations,
-            ICommand toggleShowItemCountsOnMap, ICommand toggleDisplayMapsCompasses,
+            ICommand autoTracker, ICommand sequenceBreaks, ICommand captureDesign, ICommand changeTheme,
+            ICommand toggleDisplayAllLocations, ICommand toggleShowItemCountsOnMap, ICommand toggleDisplayMapsCompasses,
             ICommand toggleAlwaysDisplayDungeonItems, ICommand colorSelect, ICommand changeLayoutOrientation,
             ICommand changeHorizontalUIPanelPlacement, ICommand changeHorizontalItemsPlacement,
             ICommand changeVerticalUIPanelPlacement, ICommand changeVerticalItemsPlacement,
@@ -232,7 +233,7 @@ namespace OpenTracker.ViewModels.Menus
             {
                 _itemFactory("File", items: GetFileMenuItems(open, save, saveAs, reset, close)),
                 _itemFactory("Tracker", items: GetTrackerMenuItems(undo, redo, autoTracker, sequenceBreaks)),
-                _itemFactory("Capture", items: GetCaptureMenuItems(_captureWindowMenuItems)),
+                _itemFactory("Capture", items: GetCaptureMenuItems(_captureWindowMenuItems, captureDesign)),
                 _itemFactory("View", items: GetViewMenuItems(
                     changeTheme, toggleDisplayAllLocations, toggleShowItemCountsOnMap, toggleDisplayMapsCompasses,
                     toggleAlwaysDisplayDungeonItems, colorSelect, changeLayoutOrientation,
