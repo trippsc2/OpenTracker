@@ -2,8 +2,6 @@
 using System.Linq;
 using System.Reflection;
 using Autofac;
-using Avalonia;
-using Avalonia.ThemeManager;
 using OpenTracker.Models.AutoTracking;
 using OpenTracker.Models.AutoTracking.Logging;
 using OpenTracker.Models.AutoTracking.SNESConnectors;
@@ -31,6 +29,7 @@ using OpenTracker.Models.Reset;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
 using OpenTracker.Utils.Dialog;
+using OpenTracker.Utils.Themes;
 using OpenTracker.ViewModels;
 using OpenTracker.ViewModels.Areas;
 using OpenTracker.ViewModels.AutoTracking;
@@ -69,6 +68,7 @@ namespace OpenTracker
             {
                 nameof(DialogService),
                 nameof(FileDialogService),
+                nameof(ThemeManager),
                 nameof(MainWindowProvider)
             };
 
@@ -231,7 +231,12 @@ namespace OpenTracker
                 nameof(HorizontalUIPanelPlacementRequirement),
                 nameof(ItemsPanelOrientationRequirement),
                 nameof(LayoutOrientationRequirement),
+                nameof(MapOrientationRequirement),
                 nameof(ShowItemCountsOnMapRequirement),
+                nameof(ThemeSelectedRequirement),
+                nameof(UIScaleRequirement),
+                nameof(VerticalItemsPanelPlacementRequirement),
+                nameof(VerticalUIPanelPlacementRequirement),
                 nameof(BossAdapter),
                 nameof(CrystalRequirementAdapter),
                 nameof(DropdownAdapter),
@@ -306,7 +311,7 @@ namespace OpenTracker
         /// <returns>
         /// A new Autofac container.
         /// </returns>
-        public static IContainer Configure(Application? app = null)
+        public static IContainer Configure()
         {
             var builder = new ContainerBuilder();
 
@@ -319,13 +324,7 @@ namespace OpenTracker
             RegisterNamespace(
                 Assembly.Load(nameof(OpenTracker)), builder, GUISkipTypes, GUISelfTypes,
                 GUISingleInstanceTypes);
-
-            if (!(app is null))
-            {
-                builder.Register((c) => ThemeSelector.Create(AppPath.AppDataThemesPath, app))
-                    .SingleInstance();
-            }
-
+            
             return builder.Build();
         }
 

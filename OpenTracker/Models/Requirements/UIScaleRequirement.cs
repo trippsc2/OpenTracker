@@ -44,7 +44,7 @@ namespace OpenTracker.Models.Requirements
         /// </param>
         private void OnLayoutSettingsChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(ILayoutSettings.VerticalItemsPlacement))
+            if (e.PropertyName == nameof(ILayoutSettings.UIScale))
             {
                 UpdateValue();
             }

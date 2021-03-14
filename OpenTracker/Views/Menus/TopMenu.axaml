@@ -3,18 +3,12 @@
              xmlns:vm="clr-namespace:OpenTracker.ViewModels.Menus;assembly=OpenTracker"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:view="clr-namespace:OpenTracker.Views;assembly=OpenTracker"
-             xmlns:manager="clr-namespace:Avalonia.ThemeManager;assembly=Avalonia.ThemeManager"
              mc:Ignorable="d" x:Class="OpenTracker.Views.Menus.TopMenu">
   
   <Design.DataContext>
     <vm:TopMenuVM />
   </Design.DataContext>
-
-  <UserControl.Resources>
-    <manager:ObjectEqualityMultiConverter x:Key="ObjectEqualityMultiConverter" />
-  </UserControl.Resources>
-
+  
   <Border Classes="ControlBorder" BorderThickness="0 0 0 1">
     <Menu Items="{Binding Items}">
       <Menu.Styles>

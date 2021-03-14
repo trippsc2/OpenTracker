@@ -123,7 +123,6 @@
     <PackageReference Include="Tmds.DBus" Version="0.9.1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Avalonia.ThemeManager\Avalonia.ThemeManager.csproj" />
     <ProjectReference Include="..\OpenTracker.Models\OpenTracker.Models.csproj" />
     <ProjectReference Include="..\OpenTracker.Utils\OpenTracker.Utils.csproj" />
   </ItemGroup>

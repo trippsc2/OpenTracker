@@ -5,7 +5,6 @@ using System.Reactive;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Layout;
-using Avalonia.ThemeManager;
 using Avalonia.Threading;
 using Newtonsoft.Json;
 using OpenTracker.Models.Reset;
@@ -14,6 +13,7 @@ using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
 using OpenTracker.Utils.Dialog;
+using OpenTracker.Utils.Themes;
 using OpenTracker.ViewModels.ColorSelect;
 using OpenTracker.ViewModels.Dialogs;
 using ReactiveUI;
@@ -32,6 +32,7 @@ namespace OpenTracker.ViewModels.Menus
 
         private readonly IDialogService _dialogService;
         private readonly IFileDialogService _fileDialogService;
+        private readonly IThemeManager _themeManager;
 
         private readonly IAutoTrackerDialogVM _autoTrackerDialog;
         private readonly ISequenceBreakDialogVM _sequenceBreakDialog;
@@ -42,8 +43,7 @@ namespace OpenTracker.ViewModels.Menus
         private readonly IMessageBoxDialogVM.Factory _messageBoxFactory;
         
         public List<IMenuItemVM> Items { get; }
-        
-        public IThemeSelector Selector { get; }
+
 
         public ReactiveCommand<Unit, Unit> Open { get; }
         public ReactiveCommand<Unit, Unit> Save { get; }
@@ -83,6 +83,8 @@ namespace OpenTracker.ViewModels.Menus
         private readonly ObservableAsPropertyHelper<bool> _isOpeningSequenceBreak;
         private bool IsOpeningSequenceBreak => _isOpeningSequenceBreak.Value;
 
+        public ReactiveCommand<ITheme, Unit> ChangeTheme { get; }
+        
         public ReactiveCommand<Unit, Unit> ToggleDisplayAllLocations { get; }
         public ReactiveCommand<Unit, Unit> ToggleShowItemCountsOnMap { get; }
         public ReactiveCommand<Unit, Unit> ToggleDisplayMapsCompasses { get; }
@@ -112,10 +114,10 @@ namespace OpenTracker.ViewModels.Menus
         public TopMenuVM(
             IAppSettings appSettings, IResetManager resetManager, ISaveLoadManager saveLoadManager,
             IUndoRedoManager undoRedoManager, IDialogService dialogService, IFileDialogService fileDialogService,
-            IAutoTrackerDialogVM autoTrackerDialog, IColorSelectDialogVM colorSelectDialog,
+            IThemeManager themeManager, IAutoTrackerDialogVM autoTrackerDialog, IColorSelectDialogVM colorSelectDialog,
             ISequenceBreakDialogVM sequenceBreakDialog, IAboutDialogVM aboutDialog,
             IErrorBoxDialogVM.Factory errorBoxFactory, IMessageBoxDialogVM.Factory messageBoxFactory,
-            IMenuItemFactory factory, IThemeSelector selector, Action closeAction)
+            IMenuItemFactory factory, Action closeAction)
         {
             _appSettings = appSettings;
             _resetManager = resetManager;
@@ -124,6 +126,7 @@ namespace OpenTracker.ViewModels.Menus
 
             _dialogService = dialogService;
             _fileDialogService = fileDialogService;
+            _themeManager = themeManager;
 
             _autoTrackerDialog = autoTrackerDialog;
             _colorSelectDialog = colorSelectDialog;
@@ -132,8 +135,6 @@ namespace OpenTracker.ViewModels.Menus
 
             _errorBoxFactory = errorBoxFactory;
             _messageBoxFactory = messageBoxFactory;
-
-            Selector = selector;
             
             Open = ReactiveCommand.CreateFromTask(OpenImpl);
             Open.IsExecuting.ToProperty(this, x => x.IsOpening, out _isOpening);
@@ -163,6 +164,8 @@ namespace OpenTracker.ViewModels.Menus
             SequenceBreaks.IsExecuting.ToProperty(
                 this, x => x.IsOpeningSequenceBreak, out _isOpeningSequenceBreak);
 
+            ChangeTheme = ReactiveCommand.Create<ITheme>(ChangeThemeImpl);
+            
             ToggleDisplayAllLocations = ReactiveCommand.Create(ToggleDisplayAllLocationsImpl);
             ToggleShowItemCountsOnMap = ReactiveCommand.Create(ToggleShowItemCountsOnMapImpl);
             ToggleDisplayMapsCompasses = ReactiveCommand.Create(ToggleDisplayMapsCompassesImpl);
@@ -185,11 +188,11 @@ namespace OpenTracker.ViewModels.Menus
                 this, x => x.IsOpeningAbout, out _isOpeningAbout);
 
             Items = factory.GetMenuItems(
-                Open, Save, SaveAs, Reset, Close, Undo, Redo, AutoTracker, SequenceBreaks, ToggleDisplayAllLocations,
-                ToggleShowItemCountsOnMap, ToggleDisplayMapsCompasses, ToggleAlwaysDisplayDungeonItems, ColorSelect,
-                ChangeLayoutOrientation, ChangeHorizontalUIPanelPlacement, ChangeHorizontalItemsPlacement,
-                ChangeVerticalUIPanelPlacement, ChangeVerticalItemsPlacement, ChangeMapOrientation, ChangeUIScale,
-                About);
+                Open, Save, SaveAs, Reset, Close, Undo, Redo, AutoTracker, SequenceBreaks, ChangeTheme,
+                ToggleDisplayAllLocations, ToggleShowItemCountsOnMap, ToggleDisplayMapsCompasses,
+                ToggleAlwaysDisplayDungeonItems, ColorSelect, ChangeLayoutOrientation, ChangeHorizontalUIPanelPlacement,
+                ChangeHorizontalItemsPlacement, ChangeVerticalUIPanelPlacement, ChangeVerticalItemsPlacement,
+                ChangeMapOrientation, ChangeUIScale, About);
 
             _undoRedoManager.PropertyChanged += OnUndoRedoManagerChanged;
         }
@@ -381,6 +384,17 @@ namespace OpenTracker.ViewModels.Menus
         {
             await Dispatcher.UIThread.InvokeAsync(async () =>
                 await _dialogService.ShowDialogAsync(_sequenceBreakDialog, false));
+        }
+
+        /// <summary>
+        /// Changes the currently selected theme.
+        /// </summary>
+        /// <param name="theme">
+        /// The theme to be selected.
+        /// </param>
+        private void ChangeThemeImpl(ITheme theme)
+        {
+            _themeManager.SelectedTheme = theme;
         }
 
         /// <summary>

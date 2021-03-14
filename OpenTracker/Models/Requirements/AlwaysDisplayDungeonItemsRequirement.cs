@@ -11,8 +11,7 @@ namespace OpenTracker.Models.Requirements
         private readonly ILayoutSettings _layoutSettings;
         private readonly bool _expectedValue;
 
-        public delegate AlwaysDisplayDungeonItemsRequirement Factory(
-            bool expectedValue);
+        public delegate AlwaysDisplayDungeonItemsRequirement Factory(bool expectedValue);
 
         /// <summary>
         /// Constructor
@@ -23,8 +22,7 @@ namespace OpenTracker.Models.Requirements
         /// <param name="expectedValue">
         /// A boolean representing the expected value.
         /// </param>
-        public AlwaysDisplayDungeonItemsRequirement(
-            ILayoutSettings layoutSettings, bool expectedValue)
+        public AlwaysDisplayDungeonItemsRequirement(ILayoutSettings layoutSettings, bool expectedValue)
         {
             _layoutSettings = layoutSettings;
             _expectedValue = expectedValue;
