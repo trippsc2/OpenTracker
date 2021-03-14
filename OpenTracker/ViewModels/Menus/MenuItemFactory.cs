@@ -13,6 +13,7 @@ namespace OpenTracker.ViewModels.Menus
     /// </summary>
     public class MenuItemFactory : IMenuItemFactory
     {
+        private readonly ICaptureWindowMenuCollection _captureWindowMenuItems;
         private readonly IThemeManager _themeManager;
         
         private readonly IMenuItemVM.Factory _itemFactory;
@@ -31,8 +32,8 @@ namespace OpenTracker.ViewModels.Menus
         private readonly UIScaleRequirement.Factory _uiScaleFactory;
 
         public MenuItemFactory(
-            IThemeManager themeManager, IMenuItemVM.Factory itemFactory,
-            ThemeSelectedRequirement.Factory themeSelectedFactory,
+            ICaptureWindowMenuCollection captureWindowMenuItems, IThemeManager themeManager,
+            IMenuItemVM.Factory itemFactory, ThemeSelectedRequirement.Factory themeSelectedFactory,
             DisplayAllLocationsRequirement.Factory displayAllLocationsFactory,
             ShowItemCountsOnMapRequirement.Factory showItemCountsOnMapFactory,
             DisplayMapsCompassesRequirement.Factory displayMapsCompassesFactory,
@@ -45,9 +46,11 @@ namespace OpenTracker.ViewModels.Menus
             MapOrientationRequirement.Factory mapOrientationFactory, UIScaleRequirement.Factory uiScaleFactory)
         {
             _themeManager = themeManager;
+            _captureWindowMenuItems = captureWindowMenuItems;
             
             _itemFactory = itemFactory;
 
+            _themeSelectedFactory = themeSelectedFactory;
             _displayAllLocationsFactory = displayAllLocationsFactory;
             _showItemCountsOnMapFactory = showItemCountsOnMapFactory;
             _displayMapsCompassesFactory = displayMapsCompassesFactory;
@@ -57,9 +60,8 @@ namespace OpenTracker.ViewModels.Menus
             _horizontalItemsPanelPlacementFactory = horizontalItemsPanelPlacementFactory;
             _verticalUIPanelPlacementFactory = verticalUIPanelPlacementFactory;
             _verticalItemsPanelPlacementFactory = verticalItemsPanelPlacementFactory;
-            _uiScaleFactory = uiScaleFactory;
-            _themeSelectedFactory = themeSelectedFactory;
             _mapOrientationFactory = mapOrientationFactory;
+            _uiScaleFactory = uiScaleFactory;
         }
 
         private List<IMenuItemVM> GetFileMenuItems(
@@ -90,13 +92,13 @@ namespace OpenTracker.ViewModels.Menus
             };
         }
 
-        private List<IMenuItemVM> GetStreamMenuItems()
+        private List<IMenuItemVM> GetCaptureMenuItems(ICaptureWindowMenuCollection captureWindowMenuItems)
         {
             return new List<IMenuItemVM>
             {
-                _itemFactory("Design Stream Windows..."),
+                _itemFactory("Design Capture Windows..."),
                 _itemFactory("-"),
-                _itemFactory("Windows")
+                _itemFactory("Windows", items: captureWindowMenuItems)
             };
         }
 
@@ -230,7 +232,7 @@ namespace OpenTracker.ViewModels.Menus
             {
                 _itemFactory("File", items: GetFileMenuItems(open, save, saveAs, reset, close)),
                 _itemFactory("Tracker", items: GetTrackerMenuItems(undo, redo, autoTracker, sequenceBreaks)),
-                _itemFactory("Stream", items: GetStreamMenuItems()),
+                _itemFactory("Capture", items: GetCaptureMenuItems(_captureWindowMenuItems)),
                 _itemFactory("View", items: GetViewMenuItems(
                     changeTheme, toggleDisplayAllLocations, toggleShowItemCountsOnMap, toggleDisplayMapsCompasses,
                     toggleAlwaysDisplayDungeonItems, colorSelect, changeLayoutOrientation,

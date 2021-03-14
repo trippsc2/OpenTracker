@@ -2,10 +2,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Input;
 using OpenTracker.Models.Requirements;
+using OpenTracker.Utils;
 
 namespace OpenTracker.ViewModels.Menus
 {
-    public interface IMenuItemVM : INotifyPropertyChanged
+    public interface IMenuItemVM : IModelWrapper, INotifyPropertyChanged
     {
         IMenuItemIconVM? Icon { get; }
         object Header { get; }
@@ -15,6 +16,6 @@ namespace OpenTracker.ViewModels.Menus
 
         delegate IMenuItemVM Factory(
             string header, IRequirement? checkBoxRequirement = null, string? hotkey = null, ICommand? command = null,
-            object? commandParameter = null, List<IMenuItemVM>? items = null);
+            object? commandParameter = null, IList<IMenuItemVM>? items = null);
     }
 }

@@ -28,7 +28,7 @@ namespace OpenTracker.Utils
 
         public ViewModelCollection(IObservableCollection<TModel> model)
         {
-            _model = model ?? throw new ArgumentNullException(nameof(model));
+            _model = model;
             _list = new List<TViewModel>(from m in _model select CreateViewModel(m));
             _model.CollectionChanged += OnModelCollectionChanged;
         }

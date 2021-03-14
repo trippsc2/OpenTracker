@@ -34,6 +34,7 @@ using OpenTracker.ViewModels;
 using OpenTracker.ViewModels.Areas;
 using OpenTracker.ViewModels.AutoTracking;
 using OpenTracker.ViewModels.BossSelect;
+using OpenTracker.ViewModels.Capture;
 using OpenTracker.ViewModels.ColorSelect;
 using OpenTracker.ViewModels.Dialogs;
 using OpenTracker.ViewModels.Dropdowns;
@@ -276,6 +277,8 @@ namespace OpenTracker
                 nameof(AutoTrackerLogVM),
                 nameof(AutoTrackerStatusVM),
                 nameof(BossSelectFactory),
+                nameof(CaptureManager),
+                nameof(CaptureWindowCollection),
                 nameof(ColorSelectDialogVM),
                 nameof(DropdownVMFactory),
                 nameof(DungeonPanelVM),
@@ -290,6 +293,7 @@ namespace OpenTracker
                 nameof(MarkingSelectFactory),
                 nameof(MarkingImageDictionary),
                 nameof(MarkingImageFactory),
+                nameof(CaptureWindowMenuCollection),
                 nameof(MenuItemFactory),
                 nameof(PinnedLocationDictionary),
                 nameof(PinnedLocationsPanelVM),
