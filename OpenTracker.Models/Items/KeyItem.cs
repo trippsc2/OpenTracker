@@ -1,7 +1,9 @@
-﻿using OpenTracker.Models.AutoTracking.Values;
-using OpenTracker.Models.Modes;
-using System;
+﻿using System;
 using System.ComponentModel;
+using OpenTracker.Models.AutoTracking.Values;
+using OpenTracker.Models.Modes;
+using OpenTracker.Models.SaveLoad;
+using ReactiveUI;
 
 namespace OpenTracker.Models.Items
 {
@@ -14,8 +16,7 @@ namespace OpenTracker.Models.Items
         private readonly int _maximum;
         private readonly int _keyDropMaximumDelta;
 
-        private int EffectiveMaximum =>
-            _mode.KeyDropShuffle ? _maximum + _keyDropMaximumDelta : _maximum;
+        private int EffectiveMaximum => _mode.KeyDropShuffle ? _maximum + _keyDropMaximumDelta : _maximum;
 
         public new delegate KeyItem Factory(
             int maximum, int keyDropMaximumDelta, int starting, IAutoTrackValue? autoTrackValue);
@@ -23,6 +24,9 @@ namespace OpenTracker.Models.Items
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="saveLoadManager">
+        /// The save/load manager.
+        /// </param>
         /// <param name="mode">
         /// The mode settings.
         /// </param>
@@ -39,9 +43,8 @@ namespace OpenTracker.Models.Items
         /// The auto track value.
         /// </param>
         public KeyItem(
-            IMode mode, int maximum, int keyDropMaximumDelta, int starting,
-            IAutoTrackValue? autoTrackValue)
-            : base(starting, autoTrackValue)
+            ISaveLoadManager saveLoadManager, IMode mode, int maximum, int keyDropMaximumDelta, int starting,
+            IAutoTrackValue? autoTrackValue) : base(saveLoadManager, starting, autoTrackValue)
         {
             if (starting > maximum)
             {
@@ -51,6 +54,8 @@ namespace OpenTracker.Models.Items
             _mode = mode;
             _maximum = maximum;
             _keyDropMaximumDelta = keyDropMaximumDelta;
+
+            _mode.PropertyChanged += OnModeChanged;
         }
 
         /// <summary>
@@ -71,7 +76,7 @@ namespace OpenTracker.Models.Items
                     Current = EffectiveMaximum;
                 }
 
-                OnPropertyChanged(nameof(Current));
+                this.RaisePropertyChanged(nameof(Current));
             }
         }
 

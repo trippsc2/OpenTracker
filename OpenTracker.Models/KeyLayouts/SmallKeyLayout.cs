@@ -5,6 +5,7 @@ using OpenTracker.Models.Modes;
 using OpenTracker.Models.Requirements;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace OpenTracker.Models.KeyLayouts
 {
@@ -22,12 +23,15 @@ namespace OpenTracker.Models.KeyLayouts
         private readonly IDungeon _dungeon;
 
         public delegate SmallKeyLayout Factory(
-            int count, List<DungeonItemID> smallKeyLocations, bool bigKeyInLocations,
-            List<IKeyLayout> children, IDungeon dungeon, IRequirement requirement);
+            int count, List<DungeonItemID> smallKeyLocations, bool bigKeyInLocations, List<IKeyLayout> children,
+            IDungeon dungeon, IRequirement requirement);
 
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="mode">
+        /// The mode data settings.
+        /// </param>
         /// <param name="count">
         /// A 32-bit signed integer representing the number of keys that must be contained in the
         /// list of locations.
@@ -122,26 +126,17 @@ namespace OpenTracker.Models.KeyLayouts
                 return false;
             }
 
-            int inaccessible = 0;
+            var inaccessible = 0;
 
             foreach (var item in _smallKeyLocations)
             {
                 switch (dungeonData.DungeonItems[item].Accessibility)
                 {
-                    case AccessibilityLevel.SequenceBreak:
-                        {
-                            if (!state.SequenceBreak)
-                            {
-                                inaccessible++;
-                            }
-                        }
-                        break;
                     case AccessibilityLevel.Normal:
+                    case AccessibilityLevel.SequenceBreak when state.SequenceBreak:
                         break;
                     default:
-                        {
-                            inaccessible++;
-                        }
+                        inaccessible++;
                         break;
                 }
             }
@@ -151,28 +146,12 @@ namespace OpenTracker.Models.KeyLayouts
                 inaccessible--;
             }
 
-            if (!ValidateMinimumKeyCount(state.KeysCollected, inaccessible))
-            {
-                return false;
-            }
+            var dungeonSmallKeys = _mode.KeyDropShuffle ? _dungeon.SmallKeys + _dungeon.SmallKeyDrops.Count :
+                _dungeon.SmallKeys;
 
-            int dungeonSmallKeys = _mode.KeyDropShuffle ?
-                _dungeon.SmallKeys + _dungeon.SmallKeyDrops.Count : _dungeon.SmallKeys;
-
-            if (!ValidateMaximumKeyCount(dungeonSmallKeys, state.KeysCollected, inaccessible))
-            {
-                return false;
-            }
-
-            foreach (var child in _children)
-            {
-                if (child.CanBeTrue(dungeonData, state))
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return ValidateMinimumKeyCount(state.KeysCollected, inaccessible) &&
+                   ValidateMaximumKeyCount(dungeonSmallKeys, state.KeysCollected, inaccessible) &&
+                   _children.Any(child => child.CanBeTrue(dungeonData, state));
         }
     }
 }

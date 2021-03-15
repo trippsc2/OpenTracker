@@ -4,6 +4,7 @@ using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.Requirements;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace OpenTracker.Models.KeyLayouts
 {
@@ -17,8 +18,7 @@ namespace OpenTracker.Models.KeyLayouts
         private readonly IRequirement _requirement;
 
         public delegate BigKeyLayout Factory(
-            List<DungeonItemID> bigKeyLocations, List<IKeyLayout> children,
-            IRequirement requirement);
+            List<DungeonItemID> bigKeyLocations, List<IKeyLayout> children, IRequirement requirement);
 
         /// <summary>
         /// Constructor
@@ -33,8 +33,7 @@ namespace OpenTracker.Models.KeyLayouts
         /// The requirement for this key layout to be valid.
         /// </param>
         public BigKeyLayout(
-            List<DungeonItemID> bigKeyLocations, List<IKeyLayout> children,
-            IRequirement requirement)
+            List<DungeonItemID> bigKeyLocations, List<IKeyLayout> children, IRequirement requirement)
         {
             _bigKeyLocations = bigKeyLocations;
             _children = children;
@@ -47,11 +46,8 @@ namespace OpenTracker.Models.KeyLayouts
         /// <param name="dungeonData">
         /// The dungeon mutable data.
         /// </param>
-        /// <param name="smallKeys">
-        /// A 32-bit signed integer representing the number of small keys collected.
-        /// </param>
-        /// <param name="bigKey">
-        /// A boolean representing whether the big key was collected.
+        /// <param name="state">
+        /// The dungeon state data.
         /// </param>
         /// <returns>
         /// A boolean representing whether the key layout is possible.
@@ -68,57 +64,31 @@ namespace OpenTracker.Models.KeyLayouts
                 return false;
             }
 
-            int accessible = 0;
-            int inaccessible = 0;
+            var accessible = 0;
+            var inaccessible = 0;
 
             foreach (var item in _bigKeyLocations)
             {
                 switch (dungeonData.DungeonItems[item].Accessibility)
                 {
-                    case AccessibilityLevel.SequenceBreak:
-                        {
-                            if (state.SequenceBreak)
-                            {
-                                accessible++;
-                            }
-                            else
-                            {
-                                inaccessible++;
-                            }
-                        }
-                        break;
                     case AccessibilityLevel.Normal:
-                        {
-                            accessible++;
-                        }
+                    case AccessibilityLevel.SequenceBreak when state.SequenceBreak:
+                        accessible++;
                         break;
                     default:
-                        {
-                            inaccessible++;
-                        }
+                        inaccessible++;
                         break;
                 }
             }
 
-            if (state.BigKeyCollected && accessible == 0)
+            switch (state.BigKeyCollected)
             {
-                return false;
+                case true when accessible == 0:
+                case false when inaccessible == 0:
+                    return false;
             }
 
-            if (!state.BigKeyCollected && inaccessible == 0)
-            {
-                return false;
-            }
-
-            foreach (var child in _children)
-            {
-                if (child.CanBeTrue(dungeonData, state))
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return _children.Any(child => child.CanBeTrue(dungeonData, state));
         }
     }
 }

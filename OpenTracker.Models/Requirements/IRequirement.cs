@@ -1,13 +1,14 @@
 ﻿using OpenTracker.Models.AccessibilityLevels;
 using System;
 using System.ComponentModel;
+using ReactiveUI;
 
 namespace OpenTracker.Models.Requirements
 {
     /// <summary>
     /// This is the interface for requirements.
     /// </summary>
-    public interface IRequirement : INotifyPropertyChanged
+    public interface IRequirement : IReactiveObject
     {
         bool Met { get; }
         AccessibilityLevel Accessibility { get; }

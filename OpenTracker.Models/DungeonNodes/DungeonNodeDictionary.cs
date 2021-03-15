@@ -1,11 +1,11 @@
-﻿using OpenTracker.Models.Dungeons;
+﻿using System.Collections.Generic;
+using OpenTracker.Models.Dungeons;
 using OpenTracker.Utils;
-using System.Collections.Generic;
 
 namespace OpenTracker.Models.DungeonNodes
 {
     /// <summary>
-    /// This is the class the dictionary container for dungeon nodes.
+    /// This class contains the dictionary container for dungeon nodes.
     /// </summary>
     public class DungeonNodeDictionary : LazyDictionary<DungeonNodeID, IDungeonNode>,
         IDungeonNodeDictionary
@@ -22,8 +22,7 @@ namespace OpenTracker.Models.DungeonNodes
         /// <param name="dungeonData">
         /// The dungeon data.
         /// </param>
-        public DungeonNodeDictionary(
-            IDungeonNode.Factory factory, IMutableDungeon dungeonData)
+        public DungeonNodeDictionary(IDungeonNode.Factory factory, IMutableDungeon dungeonData)
             : base(new Dictionary<DungeonNodeID, IDungeonNode>())
         {
             _factory = factory;

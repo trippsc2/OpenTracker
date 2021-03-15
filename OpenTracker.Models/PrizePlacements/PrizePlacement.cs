@@ -1,35 +1,23 @@
-﻿using OpenTracker.Models.Items;
+﻿using System.Linq;
+using OpenTracker.Models.Items;
 using OpenTracker.Models.SaveLoad;
-using System;
-using System.ComponentModel;
-using System.Linq;
+using ReactiveUI;
 
 namespace OpenTracker.Models.PrizePlacements
 {
     /// <summary>
     /// This class contains prize placement data.
     /// </summary>
-    public class PrizePlacement : IPrizePlacement
+    public class PrizePlacement : ReactiveObject, IPrizePlacement
     {
         private readonly IPrizeDictionary _prizes;
         private readonly IItem? _startingPrize;
-
-        public event PropertyChangingEventHandler? PropertyChanging;
-        public event PropertyChangedEventHandler? PropertyChanged;
 
         private IItem? _prize;
         public IItem? Prize
         {
             get => _prize;
-            set
-            {
-                if (_prize != value)
-                {
-                    OnPropertyChanging(nameof(Prize));
-                    _prize = value;
-                    OnPropertyChanged(nameof(Prize));
-                }
-            }
+            set => this.RaiseAndSetIfChanged(ref _prize, value);
         }
 
         /// <summary>
@@ -47,28 +35,6 @@ namespace OpenTracker.Models.PrizePlacements
             _startingPrize = startingPrize;
 
             Prize = startingPrize;
-        }
-
-        /// <summary>
-        /// Raises the PropertyChanging event for the specified property.
-        /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changing property.
-        /// </param>
-        private void OnPropertyChanging(string propertyName)
-        {
-            PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(propertyName));
-        }
-
-        /// <summary>
-        /// Raises the PropertyChanged event for the specified property.
-        /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changed property.
-        /// </param>
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         /// <summary>
@@ -93,17 +59,8 @@ namespace OpenTracker.Models.PrizePlacements
             }
             else
             {
-                PrizeType type = _prizes.FirstOrDefault(
-                    x => x.Value == Prize).Key;
-
-                if (type == PrizeType.GreenPendant)
-                {
-                    Prize = null;
-                }
-                else
-                {
-                    Prize = _prizes[type + 1];
-                }
+                var type = _prizes.FirstOrDefault(x => x.Value == Prize).Key;
+                Prize = type == PrizeType.GreenPendant ? null : _prizes[type + 1];
             }
         }
 
@@ -143,21 +100,14 @@ namespace OpenTracker.Models.PrizePlacements
         /// <summary>
         /// Loads prize placement save data.
         /// </summary>
-        public void Load(PrizePlacementSaveData saveData)
+        public void Load(PrizePlacementSaveData? saveData)
         {
-            if (saveData == null)
+            if (saveData is null)
             {
-                throw new ArgumentNullException(nameof(saveData));
+                return;
             }
 
-            if (saveData.Prize == null)
-            {
-                Prize = null;
-            }
-            else
-            {
-                Prize = _prizes[saveData.Prize.Value];
-            }
+            Prize = saveData.Prize == null ? null : _prizes[saveData.Prize.Value];
         }
     }
 }

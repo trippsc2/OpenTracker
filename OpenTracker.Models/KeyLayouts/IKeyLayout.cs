@@ -3,7 +3,7 @@
 namespace OpenTracker.Models.KeyLayouts
 {
     /// <summary>
-    /// This is the interface for key layouts.
+    /// This interface contains the key layout data.
     /// </summary>
     public interface IKeyLayout
     {

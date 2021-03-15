@@ -1,12 +1,13 @@
 ﻿using OpenTracker.Models.SaveLoad;
 using System.ComponentModel;
+using ReactiveUI;
 
 namespace OpenTracker.Models.Modes
 {
     /// <summary>
     /// This interface contains game mode settings data.
     /// </summary>
-    public interface IMode : INotifyPropertyChanged
+    public interface IMode : IReactiveObject
     {
         bool BigKeyShuffle { get; set; }
         bool BossShuffle { get; set; }

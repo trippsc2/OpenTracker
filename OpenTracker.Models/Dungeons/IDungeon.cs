@@ -1,17 +1,17 @@
-﻿using OpenTracker.Models.DungeonItems;
+﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using OpenTracker.Models.DungeonItems;
 using OpenTracker.Models.DungeonNodes;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.KeyDoors;
 using OpenTracker.Models.KeyLayouts;
 using OpenTracker.Models.Locations;
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
 
 namespace OpenTracker.Models.Dungeons
 {
     /// <summary>
-    /// This is the interface containing dungeon data.
+    /// This interface contains the dungeon data.
     /// </summary>
     public interface IDungeon : ILocation
     {

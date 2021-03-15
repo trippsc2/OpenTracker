@@ -1,15 +1,15 @@
-﻿using OpenTracker.Models.AccessibilityLevels;
+﻿using System.Collections.Generic;
+using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.RequirementNodes;
 using OpenTracker.Models.Requirements;
-using System.Collections.Generic;
-using System.ComponentModel;
+using ReactiveUI;
 
 namespace OpenTracker.Models.NodeConnections
 {
     /// <summary>
     /// This interface contains node connection data.
     /// </summary>
-    public interface INodeConnection : INotifyPropertyChanged
+    public interface INodeConnection : IReactiveObject
     {
         AccessibilityLevel Accessibility { get; }
         IRequirement Requirement { get; }

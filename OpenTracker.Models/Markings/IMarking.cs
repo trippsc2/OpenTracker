@@ -1,11 +1,11 @@
-﻿using System.ComponentModel;
+﻿using ReactiveUI;
 
 namespace OpenTracker.Models.Markings
 {
     /// <summary>
     /// This interface contains marking data.
     /// </summary>
-    public interface IMarking : INotifyPropertyChanging, INotifyPropertyChanged
+    public interface IMarking : IReactiveObject
     {
         MarkType Mark { get; set; }
 

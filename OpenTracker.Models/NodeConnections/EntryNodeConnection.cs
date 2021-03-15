@@ -4,22 +4,20 @@ using OpenTracker.Models.Requirements;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using ReactiveUI;
 
 namespace OpenTracker.Models.NodeConnections
 {
     /// <summary>
     /// This class contains dungeon entry node connection data.
     /// </summary>
-    public class EntryNodeConnection : INodeConnection
+    public class EntryNodeConnection : ReactiveObject, INodeConnection
     {
         private readonly IRequirementNode _fromNode;
 
         public IRequirement Requirement { get; }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        public AccessibilityLevel Accessibility =>
-            _fromNode.Accessibility;
+        
+        public AccessibilityLevel Accessibility => _fromNode.Accessibility;
 
         public delegate EntryNodeConnection Factory(IRequirementNode fromNode);
 
@@ -41,18 +39,7 @@ namespace OpenTracker.Models.NodeConnections
 
             _fromNode.PropertyChanged += OnNodeChanged;
         }
-
-        /// <summary>
-        /// Raises the PropertyChanged event for the specified property.
-        /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changed property.
-        /// </param>
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
+        
         /// <summary>
         /// Subscribes to the PropertyChanged event on the IRequirementNode interface.
         /// </summary>
@@ -66,7 +53,7 @@ namespace OpenTracker.Models.NodeConnections
         {
             if (e.PropertyName == nameof(IRequirementNode.Accessibility))
             {
-                OnPropertyChanged(nameof(Accessibility));
+                this.RaisePropertyChanged(nameof(Accessibility));
             }
         }
 

@@ -12,7 +12,7 @@ using System.Collections.Generic;
 namespace OpenTracker.Models.Dungeons
 {
     /// <summary>
-    /// This is class contains creation logic for dungeons.
+    /// This class contains the creation logic for dungeons.
     /// </summary>
     public class DungeonFactory : IDungeonFactory
     {

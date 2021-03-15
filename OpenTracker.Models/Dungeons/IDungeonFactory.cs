@@ -9,7 +9,7 @@ using System.Collections.Generic;
 namespace OpenTracker.Models.Dungeons
 {
     /// <summary>
-    /// This is interface contains creation logic for dungeons.
+    /// This interface contains the creation logic for dungeons.
     /// </summary>
     public interface IDungeonFactory
     {

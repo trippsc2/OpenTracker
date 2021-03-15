@@ -1,22 +1,20 @@
-﻿using OpenTracker.Models.AccessibilityLevels;
-using System;
-using System.ComponentModel;
+﻿using System;
+using OpenTracker.Models.AccessibilityLevels;
+using ReactiveUI;
 
 namespace OpenTracker.Models.Requirements
 {
     /// <summary>
     /// This class contains unchanging requirement data.
     /// </summary>
-    public class StaticRequirement : IRequirement
+    public class StaticRequirement : ReactiveObject, IRequirement
     {
-        public bool Met =>
-            true;
+        public bool Met => true;
 
         public bool Testing { get; set; }
 
         public AccessibilityLevel Accessibility { get; }
 
-        public event PropertyChangedEventHandler? PropertyChanged;
         public event EventHandler? ChangePropagated;
 
         public delegate StaticRequirement Factory(AccessibilityLevel accessibility);

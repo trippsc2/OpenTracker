@@ -29,11 +29,8 @@ namespace OpenTracker.Models.KeyLayouts
         /// <param name="dungeonData">
         /// The dungeon mutable data.
         /// </param>
-        /// <param name="smallKeys">
-        /// A 32-bit signed integer representing the number of small keys collected.
-        /// </param>
-        /// <param name="bigKey">
-        /// A boolean representing whether the big key was collected.
+        /// <param name="state">
+        /// The dungeon state data.
         /// </param>
         /// <returns>
         /// A boolean representing whether the key layout is possible.

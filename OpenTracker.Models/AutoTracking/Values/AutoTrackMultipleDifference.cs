@@ -1,38 +1,24 @@
 ﻿using System;
 using System.ComponentModel;
+using ReactiveUI;
 
 namespace OpenTracker.Models.AutoTracking.Values
 {
     /// <summary>
     /// This is the class for representing the auto-tracking result value of subtracting a pair of values.
     /// </summary>
-    public class AutoTrackMultipleDifference : IAutoTrackValue
+    public class AutoTrackMultipleDifference : ReactiveObject, IAutoTrackValue
     {
         private readonly IAutoTrackValue _value1;
         private readonly IAutoTrackValue _value2;
 
-        public int? CurrentValue
-        {
-            get
-            {
-                if (_value1.CurrentValue.HasValue)
-                {
-                    if (_value2.CurrentValue.HasValue)
-                    {
-                        return Math.Max(0, _value1.CurrentValue.Value - _value2.CurrentValue.Value);
-                    }
+        public int? CurrentValue =>
+            _value1.CurrentValue.HasValue ?
+                (int?) (_value2.CurrentValue.HasValue ?
+                    Math.Max(0, _value1.CurrentValue.Value - _value2.CurrentValue.Value) :
+                    _value1.CurrentValue.Value) : null;
 
-                    return _value1.CurrentValue.Value;
-                }
-
-                return null;
-            }
-        }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        public delegate AutoTrackMultipleDifference Factory(
-            IAutoTrackValue value1, IAutoTrackValue value2);
+        public delegate AutoTrackMultipleDifference Factory(IAutoTrackValue value1, IAutoTrackValue value2);
 
         /// <summary>
         /// Constructor
@@ -65,7 +51,7 @@ namespace OpenTracker.Models.AutoTracking.Values
         {
             if (e.PropertyName == nameof(IAutoTrackValue.CurrentValue))
             {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentValue)));
+                this.RaisePropertyChanged(nameof(CurrentValue));
             }
         }
     }

@@ -1,20 +1,19 @@
 ﻿using System.ComponentModel;
 using OpenTracker.Models.Requirements;
+using ReactiveUI;
 
 namespace OpenTracker.Models.Locations
 {
     /// <summary>
     /// This class contains map location data.
     /// </summary>
-    public class MapLocation : IMapLocation
+    public class MapLocation : ReactiveObject, IMapLocation
     {
         public ILocation Location { get; }
         public IRequirement Requirement { get; }
         public MapID Map { get; }
         public double X { get; }
         public double Y { get; }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
 
         public bool RequirementMet => Requirement.Met;
         public bool Visible => Location.Visible;
@@ -50,17 +49,6 @@ namespace OpenTracker.Models.Locations
         }
 
         /// <summary>
-        /// Raises the PropertyChanged event for the specified property.
-        /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changed property.
-        /// </param>
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        /// <summary>
         /// Subscribes to the PropertyChanged event on the ILocation interface.
         /// </summary>
         /// <param name="sender">
@@ -73,7 +61,7 @@ namespace OpenTracker.Models.Locations
         {
             if (e.PropertyName == nameof(ILocation.Visible))
             {
-                OnPropertyChanged(nameof(Visible));
+                this.RaisePropertyChanged(nameof(Visible));
             }
         }
 
@@ -90,7 +78,7 @@ namespace OpenTracker.Models.Locations
         {
             if (e.PropertyName == nameof(IRequirement.Met))
             {
-                OnPropertyChanged(nameof(RequirementMet));
+                this.RaisePropertyChanged(nameof(RequirementMet));
             }
         }
     }

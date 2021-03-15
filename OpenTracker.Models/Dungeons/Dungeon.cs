@@ -1,4 +1,10 @@
-﻿using OpenTracker.Models.AccessibilityLevels;
+﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Threading;
+using System.Threading.Tasks;
+using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.DungeonItems;
 using OpenTracker.Models.DungeonNodes;
 using OpenTracker.Models.Items;
@@ -11,12 +17,6 @@ using OpenTracker.Models.RequirementNodes;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Sections;
 using OpenTracker.Utils;
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace OpenTracker.Models.Dungeons
 {
@@ -30,7 +30,7 @@ namespace OpenTracker.Models.Dungeons
         private readonly IMutableDungeon.Factory _mutableDungeonFactory;
         private readonly IDungeonState.Factory _stateFactory;
 
-        private static readonly ConstrainedTaskScheduler _taskScheduler =
+        private static readonly ConstrainedTaskScheduler TaskScheduler =
             new ConstrainedTaskScheduler(Math.Max(1, Environment.ProcessorCount - 1));
 
         public event EventHandler<IMutableDungeon>? DungeonDataCreated;
@@ -54,69 +54,52 @@ namespace OpenTracker.Models.Dungeons
         public List<IKeyLayout> KeyLayouts { get; }
         public List<DungeonNodeID> Nodes { get; }
         public List<IRequirementNode> EntryNodes { get; }
-        public ConcurrentQueue<IMutableDungeon> DungeonDataQueue { get; } =
-            new ConcurrentQueue<IMutableDungeon>();
+        public ConcurrentQueue<IMutableDungeon> DungeonDataQueue { get; } = new ConcurrentQueue<IMutableDungeon>();
 
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="items">
+        /// The item dictionary.
+        /// </param>
+        /// <param name="mode">
+        /// The mode data.
+        /// </param>
+        /// <param name="mutableDungeonFactory">
+        /// An Autofac factory for creating mutable dungeon data.
+        /// </param>
+        /// <param name="locationFactory">
+        /// The location factory.
+        /// </param>
+        /// <param name="mapLocationFactory">
+        /// The map location factory.
+        /// </param>
+        /// <param name="sectionFactory">
+        /// The section factory.
+        /// </param>
+        /// <param name="markingFactory">
+        /// The marking factory.
+        /// </param>
+        /// <param name="notes">
+        /// A new collection of location notes.
+        /// </param>
+        /// <param name="dungeonFactory">
+        /// The dungeon factory.
+        /// </param>
+        /// <param name="keyLayoutFactory">
+        /// A factory for creating key layouts.
+        /// </param>
+        /// <param name="stateFactory">
+        /// An Autofac factory for creating dungeon state data.
+        /// </param>
         /// <param name="id">
         /// The ID of the location.
         /// </param>
-        /// <param name="name">
-        /// A string representing the name of the dungeon.
-        /// </param>
-        /// <param name="mapLocations">
-        /// A list of map locations.
-        /// </param>
-        /// <param name="map">
-        /// A 32-bit signed integer representing the number of maps in the dungeon.
-        /// </param>
-        /// <param name="compass">
-        /// A 32-bit signed integer representing the number of compasses in the dungeon.
-        /// </param>
-        /// <param name="smallKeys">
-        /// A 32-bit signed integer representing the number of small keys in the dungeon.
-        /// </param>
-        /// <param name="bigKey">
-        /// A 32-bit signed integer representing the number of big keys in the dungeon.
-        /// </param>
-        /// <param name="mapItem">
-        /// The map item.
-        /// </param>
-        /// <param name="compassItem">
-        /// The compass item.
-        /// </param>
-        /// <param name="smallKeyItem">
-        /// The small key item.
-        /// </param>
-        /// <param name="bigKeyItem">
-        /// The big key item.
-        /// </param>
-        /// <param name="nodes">
-        /// A list of dungeon node IDs within the dungeon.
-        /// </param>
-        /// <param name="items">
-        /// A list of dungeon item IDs within the dungeon.
-        /// </param>
-        /// <param name="bosses">
-        /// A list of dungeon item IDs for bosses within the dungeon.
-        /// </param>
-        /// <param name="smallKeyDoors">
-        /// A list of small key door IDs within the dungeon.
-        /// </param>
-        /// <param name="bigKeyDoors">
-        /// A list of big key door IDs within the dungeon.
-        /// </param>
-        /// <param name="entryNodes">
-        /// A list of entry nodes for this dungeon.
-        /// </param>
         public Dungeon(
             IItemDictionary items, IMode mode, IMutableDungeon.Factory mutableDungeonFactory,
-            ILocationFactory locationFactory, IMapLocationFactory mapLocationFactory,
-            ISectionFactory sectionFactory, IMarking.Factory markingFactory,
-            ILocationNoteCollection notes, IDungeonFactory dungeonFactory,
-            IKeyLayoutFactory keyDoorFactory, IDungeonState.Factory stateFactory, LocationID id)
+            ILocationFactory locationFactory, IMapLocationFactory mapLocationFactory, ISectionFactory sectionFactory,
+            IMarking.Factory markingFactory, ILocationNoteCollection notes, IDungeonFactory dungeonFactory,
+            IKeyLayoutFactory keyLayoutFactory, IDungeonState.Factory stateFactory, LocationID id)
             : base(locationFactory, mapLocationFactory, sectionFactory, markingFactory, notes, id)
         {
             _items = items;
@@ -145,7 +128,7 @@ namespace OpenTracker.Models.Dungeons
             SmallKeyDoors = dungeonFactory.GetDungeonSmallKeyDoors(id);
             BigKeyDoors = dungeonFactory.GetDungeonBigKeyDoors(id);
 
-            KeyLayouts = keyDoorFactory.GetDungeonKeyLayouts(this);
+            KeyLayouts = keyLayoutFactory.GetDungeonKeyLayouts(this);
             EntryNodes = dungeonFactory.GetDungeonEntryNodes(id);
 
             foreach (var section in Sections)
@@ -329,28 +312,19 @@ namespace OpenTracker.Models.Dungeons
         /// <returns>
         /// A list of 32-bit signed integers.
         /// </returns>
-        private List<int> GetSmallKeyValues()
+        private IEnumerable<int> GetSmallKeyValues()
         {
-            List<int> smallKeyValues = new List<int>();
-            int maximumKeys = _mode.KeyDropShuffle ?
-                SmallKeys + SmallKeyDrops.Count : SmallKeys;
+            var smallKeyValues = new List<int>();
+            var maximumKeys = _mode.KeyDropShuffle ? SmallKeys + SmallKeyDrops.Count : SmallKeys;
 
             if (_mode.SmallKeyShuffle)
-            {
-                if (SmallKeyItem != null)
-                {
-                    smallKeyValues.Add(Math.Min(maximumKeys, SmallKeyItem.Current +
-                        (_mode.GenericKeys ?
-                        _items[ItemType.SmallKey].Current : 0)));
-                }
-                else
-                {
-                    smallKeyValues.Add(0);
-                }
+            { 
+                smallKeyValues.Add(Math.Min(maximumKeys, SmallKeyItem.Current +
+                    (_mode.GenericKeys ? _items[ItemType.SmallKey].Current : 0)));
             }
             else
             {
-                for (int i = 0; i <= maximumKeys; i++)
+                for (var i = 0; i <= maximumKeys; i++)
                 {
                     smallKeyValues.Add(i);
                 }
@@ -415,7 +389,7 @@ namespace OpenTracker.Models.Dungeons
         /// </param>
         private void PopulateInitialDungeonStates(BlockingCollection<IDungeonState> collection)
         {
-            List<int> smallKeyValues = GetSmallKeyValues();
+            IEnumerable<int> smallKeyValues = GetSmallKeyValues();
             List<bool> bigKeyValues = GetBigKeyValues();
 
             foreach (var smallKeyValue in smallKeyValues)
@@ -435,6 +409,9 @@ namespace OpenTracker.Models.Dungeons
         /// <summary>
         /// Process the dungeon state permutation.
         /// </summary>
+        /// <param name="dungeonData">
+        /// The mutable dungeon data.
+        /// </param>
         /// <param name="state">
         /// The permutation to be processed.
         /// </param>
@@ -445,13 +422,12 @@ namespace OpenTracker.Models.Dungeons
         /// The next queue to which this permutation will be added.
         /// </param>
         private void ProcessDungeonState(
-            IMutableDungeon dungeonData, IDungeonState state,
-            BlockingCollection<IDungeonState> finalQueue,
+            IMutableDungeon dungeonData, IDungeonState state, BlockingCollection<IDungeonState> finalQueue,
             BlockingCollection<IDungeonState>? nextQueue)
         {
             dungeonData.ApplyState(state);
 
-            int availableKeys = dungeonData.GetAvailableSmallKeys(state.SequenceBreak) +
+            var availableKeys = dungeonData.GetAvailableSmallKeys(state.SequenceBreak) +
                 state.KeysCollected - state.UnlockedDoors.Count;
 
             if (availableKeys == 0)
@@ -488,12 +464,20 @@ namespace OpenTracker.Models.Dungeons
         /// <summary>
         /// Process the final dungeon state permutation.
         /// </summary>
+        /// <param name="dungeonData">
+        /// The mutable dungeon data.
+        /// </param>
         /// <param name="state">
         /// The permutation to be processed.
         /// </param>
+        /// <param name="inLogicQueue">
+        /// The queue of results that were achieved without sequence breaks.
+        /// </param>
+        /// <param name="outOfLogicQueue">
+        /// The queue of results that were achieved with sequence breaks.
+        /// </param>
         private static void ProcessFinalDungeonState(
-            IMutableDungeon dungeonData, IDungeonState state,
-            BlockingCollection<IDungeonResult> inLogicQueue,
+            IMutableDungeon dungeonData, IDungeonState state, BlockingCollection<IDungeonResult> inLogicQueue,
             BlockingCollection<IDungeonResult> outOfLogicQueue)
         {
             dungeonData.ApplyState(state);
@@ -544,23 +528,18 @@ namespace OpenTracker.Models.Dungeons
 
                     foreach (var item in keyDoorPermutationQueue[currentIteration].GetConsumingEnumerable())
                     {
-                        if (keyDoorPermutationQueue.Count > currentIteration + 1)
-                        {
-                            ProcessDungeonState(dungeonData, item, finalQueue,
-                                keyDoorPermutationQueue[currentIteration + 1]);
-                        }
-                        else
-                        {
-                            ProcessDungeonState(dungeonData, item, finalQueue, null);
-                        }
+                        ProcessDungeonState(
+                            dungeonData, item, finalQueue,
+                            keyDoorPermutationQueue.Count > currentIteration + 1 ?
+                                keyDoorPermutationQueue[currentIteration + 1] : null);
                     }
 
                     ReturnDungeonData(dungeonData);
                 },
-                CancellationToken.None, TaskCreationOptions.None, _taskScheduler));
+                CancellationToken.None, TaskCreationOptions.None, TaskScheduler));
             }
 
-            for (int i = 0; i < keyDoorTasks.Count; i++)
+            for (var i = 0; i < keyDoorTasks.Count; i++)
             {
                 keyDoorTasks[i].Wait();
                 keyDoorPermutationQueue[i].Dispose();
@@ -581,13 +560,12 @@ namespace OpenTracker.Models.Dungeons
 
                 foreach (var item in finalQueue.GetConsumingEnumerable())
                 {
-                    ProcessFinalDungeonState(dungeonData, item, resultInLogicQueue,
-                        resultOutOfLogicQueue);
+                    ProcessFinalDungeonState(dungeonData, item, resultInLogicQueue, resultOutOfLogicQueue);
                 }
 
                 ReturnDungeonData(dungeonData);
             },
-            CancellationToken.None, TaskCreationOptions.None, _taskScheduler);
+            CancellationToken.None, TaskCreationOptions.None, TaskScheduler);
 
             finalKeyDoorTask.Wait();
             finalQueue.Dispose();

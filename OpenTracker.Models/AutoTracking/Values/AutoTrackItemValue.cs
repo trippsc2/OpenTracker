@@ -1,19 +1,17 @@
 ﻿using OpenTracker.Models.Items;
 using System.ComponentModel;
+using ReactiveUI;
 
 namespace OpenTracker.Models.AutoTracking.Values
 {
     /// <summary>
     /// This is the class for representing the auto-tracking result value of a hidden item count.
     /// </summary>
-    public class AutoTrackItemValue : IAutoTrackValue
+    public class AutoTrackItemValue : ReactiveObject, IAutoTrackValue
     {
         private readonly IItem _item;
 
-        public int? CurrentValue => 
-            _item.Current;
-
-        public event PropertyChangedEventHandler? PropertyChanged;
+        public int? CurrentValue => _item.Current;
 
         public delegate AutoTrackItemValue Factory(IItem item);
 
@@ -43,7 +41,7 @@ namespace OpenTracker.Models.AutoTracking.Values
         {
             if (e.PropertyName == nameof(IItem.Current))
             {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentValue)));
+                this.RaisePropertyChanged(nameof(CurrentValue));
             }
         }
     }

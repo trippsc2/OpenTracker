@@ -1,15 +1,15 @@
-﻿using OpenTracker.Models.AccessibilityLevels;
+﻿using System.Collections.Generic;
+using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.Sections;
-using System.Collections.Generic;
-using System.ComponentModel;
+using ReactiveUI;
 
 namespace OpenTracker.Models.Locations
 {
     /// <summary>
     /// This interface contains location data.
     /// </summary>
-    public interface ILocation : ISaveable<LocationSaveData>, INotifyPropertyChanged
+    public interface ILocation : IReactiveObject, ISaveable<LocationSaveData>
     {
         AccessibilityLevel Accessibility { get; }
         int Accessible { get; }

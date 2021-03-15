@@ -1,21 +1,19 @@
 ﻿using OpenTracker.Models.Requirements;
 using System.ComponentModel;
+using ReactiveUI;
 
 namespace OpenTracker.Models.AutoTracking.Values
 {
     /// <summary>
     /// This is the class for representing the auto-tracking result value that is conditional.
     /// </summary>
-    public class AutoTrackConditionalValue : IAutoTrackValue
+    public class AutoTrackConditionalValue : ReactiveObject, IAutoTrackValue
     {
         private readonly IRequirement _condition;
         private readonly IAutoTrackValue? _trueValue;
         private readonly IAutoTrackValue? _falseValue;
 
-        public int? CurrentValue =>
-            _condition.Met ? _trueValue?.CurrentValue : _falseValue?.CurrentValue;
-
-        public event PropertyChangedEventHandler? PropertyChanged;
+        public int? CurrentValue => _condition.Met ? _trueValue?.CurrentValue : _falseValue?.CurrentValue;
 
         public delegate AutoTrackConditionalValue Factory(
             IRequirement condition, IAutoTrackValue? trueValue, IAutoTrackValue? falseValue);
@@ -91,7 +89,7 @@ namespace OpenTracker.Models.AutoTracking.Values
         /// </summary>
         private void UpdateValue()
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentValue)));
+            this.RaisePropertyChanged(nameof(CurrentValue));
         }
     }
 }

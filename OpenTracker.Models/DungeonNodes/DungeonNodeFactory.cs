@@ -1,14 +1,14 @@
-﻿using OpenTracker.Models.Dungeons;
+﻿using System.Collections.Generic;
+using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.KeyDoors;
 using OpenTracker.Models.NodeConnections;
 using OpenTracker.Models.RequirementNodes;
 using OpenTracker.Models.Requirements;
-using System.Collections.Generic;
 
 namespace OpenTracker.Models.DungeonNodes
 {
     /// <summary>
-    /// This is the class contains creation logic for dungeon nodes.
+    /// This class contains the creation logic for dungeon nodes.
     /// </summary>
     public class DungeonNodeFactory : IDungeonNodeFactory
     {

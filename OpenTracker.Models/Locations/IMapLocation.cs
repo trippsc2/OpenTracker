@@ -1,12 +1,13 @@
 ﻿using System.ComponentModel;
 using OpenTracker.Models.Requirements;
+using ReactiveUI;
 
 namespace OpenTracker.Models.Locations
 {
     /// <summary>
     /// This interface contains map location data.
     /// </summary>
-    public interface IMapLocation : INotifyPropertyChanged
+    public interface IMapLocation : IReactiveObject
     {
         ILocation Location { get; }
         MapID Map { get; }

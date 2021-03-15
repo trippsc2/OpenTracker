@@ -1,18 +1,19 @@
-﻿using OpenTracker.Models.AccessibilityLevels;
-using OpenTracker.Models.Markings;
-using OpenTracker.Models.SaveLoad;
-using OpenTracker.Models.Sections;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
+using OpenTracker.Models.AccessibilityLevels;
+using OpenTracker.Models.Markings;
+using OpenTracker.Models.SaveLoad;
+using OpenTracker.Models.Sections;
+using ReactiveUI;
 
 namespace OpenTracker.Models.Locations
 {
     /// <summary>
     /// This class contains location data.
     /// </summary>
-    public class Location : ILocation
+    public class Location : ReactiveObject, ILocation
     {
         private readonly IMarking.Factory _markingFactory;
 
@@ -23,87 +24,39 @@ namespace OpenTracker.Models.Locations
         public List<ISection> Sections { get; }
         public ILocationNoteCollection Notes { get; }
 
-        public event PropertyChangedEventHandler? PropertyChanged;
-
         private AccessibilityLevel _accessibility;
         public AccessibilityLevel Accessibility
         {
             get => _accessibility;
-            private set
-            {
-                if (_accessibility == value)
-                {
-                    return;
-                }
-                
-                _accessibility = value;
-                OnPropertyChanged(nameof(Accessibility));
-                UpdateVisible();
-            }
+            private set => this.RaiseAndSetIfChanged(ref _accessibility, value);
         }
 
         private int _available;
         public int Available
         {
             get => _available;
-            private set
-            {
-                if (_available == value)
-                {
-                    return;
-                }
-                
-                _available = value;
-                OnPropertyChanged(nameof(Available));
-            }
+            private set => this.RaiseAndSetIfChanged(ref _available, value);
         }
 
         private int _accessible;
         public int Accessible
         {
             get => _accessible;
-            private set
-            {
-                if (_accessible == value)
-                {
-                    return;
-                }
-                
-                _accessible = value;
-                OnPropertyChanged(nameof(Accessible));
-            }
+            private set => this.RaiseAndSetIfChanged(ref _accessible, value);
         }
 
         private int _total;
         public int Total
         {
             get => _total;
-            private set
-            {
-                if (_total == value)
-                {
-                    return;
-                }
-                
-                _total = value;
-                OnPropertyChanged(nameof(Total));
-            }
+            private set => this.RaiseAndSetIfChanged(ref _total, value);
         }
 
         private bool _visible;
         public bool Visible
         {
             get => _visible;
-            private set
-            {
-                if (_visible == value)
-                {
-                    return;
-                }
-
-                _visible = value;
-                OnPropertyChanged(nameof(Visible));
-            }
+            private set => this.RaiseAndSetIfChanged(ref _visible, value);
         }
 
         /// <summary>
@@ -127,9 +80,9 @@ namespace OpenTracker.Models.Locations
         /// <param name="id">
         /// The ID of the location.
         /// </param>
-        public Location(ILocationFactory factory, IMapLocationFactory mapLocationFactory,
-            ISectionFactory sectionFactory, IMarking.Factory markingFactory, ILocationNoteCollection notes,
-            LocationID id)
+        public Location(
+            ILocationFactory factory, IMapLocationFactory mapLocationFactory, ISectionFactory sectionFactory,
+            IMarking.Factory markingFactory, ILocationNoteCollection notes, LocationID id)
         {
             _markingFactory = markingFactory;
 
@@ -138,6 +91,8 @@ namespace OpenTracker.Models.Locations
             MapLocations = mapLocationFactory.GetMapLocations(this);
             Sections = sectionFactory.GetSections(ID);
             Notes = notes;
+
+            PropertyChanged += OnPropertyChanged;
 
             foreach (ISection section in Sections)
             {
@@ -151,14 +106,20 @@ namespace OpenTracker.Models.Locations
         }
 
         /// <summary>
-        /// Raises the PropertyChanged event for the specified property.
+        /// Subscribes to the PropertyChanged event on this object.
         /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changed property.
+        /// <param name="sender">
+        /// The sending object of the event.
         /// </param>
-        private void OnPropertyChanged(string propertyName)
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
+        private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            if (e.PropertyName == nameof(Accessibility))
+            {
+                UpdateVisible();
+            }
         }
 
         /// <summary>

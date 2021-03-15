@@ -1,17 +1,14 @@
 ﻿using System.ComponentModel;
+using ReactiveUI;
 
 namespace OpenTracker.Models.AutoTracking.Values
 {
     /// <summary>
     /// This is the class for representing the auto-tracking result of a static value.
     /// </summary>
-    public class AutoTrackStaticValue : IAutoTrackValue
+    public class AutoTrackStaticValue : ReactiveObject, IAutoTrackValue
     {
-        private readonly int _value;
-
-        public int? CurrentValue => _value;
-
-        public event PropertyChangedEventHandler? PropertyChanged;
+        public int? CurrentValue { get; }
 
         public delegate AutoTrackStaticValue Factory(int value);
 
@@ -23,7 +20,7 @@ namespace OpenTracker.Models.AutoTracking.Values
         /// </param>
         public AutoTrackStaticValue(int value)
         {
-            _value = value;
+            CurrentValue = value;
         }
     }
 }

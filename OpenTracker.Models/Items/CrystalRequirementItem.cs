@@ -1,4 +1,6 @@
-﻿using OpenTracker.Models.AutoTracking.Values;
+﻿using System.ComponentModel;
+using OpenTracker.Models.SaveLoad;
+using ReactiveUI;
 
 namespace OpenTracker.Models.Items
 {
@@ -11,15 +13,7 @@ namespace OpenTracker.Models.Items
         public bool Known
         {
             get => _known;
-            set
-            {
-                if (_known != value)
-                {
-                    _known = value;
-                    OnPropertyChanged(nameof(Known));
-                    OnPropertyChanged(nameof(Current));
-                }
-            }
+            set => this.RaiseAndSetIfChanged(ref _known, value);
         }
 
         public new delegate CrystalRequirementItem Factory();
@@ -27,8 +21,30 @@ namespace OpenTracker.Models.Items
         /// <summary>
         /// Constructor
         /// </summary>
-        public CrystalRequirementItem() : base(0, 7, null)
+        /// <param name="saveLoadManager">
+        /// The save/load manager.
+        /// </param>
+        public CrystalRequirementItem(ISaveLoadManager saveLoadManager)
+            : base(saveLoadManager, 0, 7, null)
         {
+            PropertyChanged += OnPropertyChanged;
+        }
+        
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on this object.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
+        private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Known))
+            {
+                this.RaisePropertyChanged(nameof(Current));
+            }
         }
 
         /// <summary>

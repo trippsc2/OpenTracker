@@ -4,33 +4,25 @@ using OpenTracker.Models.Requirements;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using ReactiveUI;
 
 namespace OpenTracker.Models.NodeConnections
 {
     /// <summary>
     /// This class contains node connection data.
     /// </summary>
-    public class NodeConnection : INodeConnection
+    public class NodeConnection : ReactiveObject, INodeConnection
     {
         private readonly IRequirementNode _fromNode;
         private readonly IRequirementNode _toNode;
 
         public IRequirement Requirement { get; }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-
+        
         private AccessibilityLevel _accessibility;
         public AccessibilityLevel Accessibility
         {
             get => _accessibility;
-            private set
-            {
-                if (_accessibility != value)
-                {
-                    _accessibility = value;
-                    OnPropertyChanged(nameof(Accessibility));
-                }
-            }
+            private set => this.RaiseAndSetIfChanged(ref _accessibility, value);
         }
 
         public delegate NodeConnection Factory(
@@ -48,8 +40,7 @@ namespace OpenTracker.Models.NodeConnections
         /// <param name="requirement">
         /// The requirement for the connection to be accessible.
         /// </param>
-        public NodeConnection(
-            IRequirementNode fromNode, IRequirementNode toNode, IRequirement requirement)
+        public NodeConnection(IRequirementNode fromNode, IRequirementNode toNode, IRequirement requirement)
         {
             _fromNode = fromNode;
             _toNode = toNode;
@@ -61,18 +52,7 @@ namespace OpenTracker.Models.NodeConnections
 
             UpdateAccessibility();
         }
-
-        /// <summary>
-        /// Raises the PropertyChanged event for the specified property.
-        /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changed property.
-        /// </param>
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
+        
         /// <summary>
         /// Subscribes to the PropertyChanged event on the IRequirementNode interface.
         /// </summary>
@@ -132,14 +112,12 @@ namespace OpenTracker.Models.NodeConnections
             }
 
             if (Requirement.Accessibility == AccessibilityLevel.None ||
-                _fromNode.Accessibility == AccessibilityLevel.None ||
-                excludedNodes.Contains(_fromNode))
+                _fromNode.Accessibility == AccessibilityLevel.None || excludedNodes.Contains(_fromNode))
             {
                 return AccessibilityLevel.None;
             }
 
-            List<IRequirementNode> newExcludedNodes = excludedNodes.GetRange(
-                0, excludedNodes.Count);
+            List<IRequirementNode> newExcludedNodes = excludedNodes.GetRange(0, excludedNodes.Count);
             newExcludedNodes.Add(_toNode);
 
             return AccessibilityLevelMethods.Min(Requirement.Accessibility,

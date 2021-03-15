@@ -1,5 +1,6 @@
-﻿using OpenTracker.Models.AutoTracking.Values;
-using System;
+﻿using System;
+using OpenTracker.Models.AutoTracking.Values;
+using OpenTracker.Models.SaveLoad;
 
 namespace OpenTracker.Models.Items
 {
@@ -10,12 +11,14 @@ namespace OpenTracker.Models.Items
     {
         private readonly int _maximum;
 
-        public new delegate CappedItem Factory(
-            int starting, int maximum, IAutoTrackValue? autoTrackValue);
+        public new delegate CappedItem Factory(int starting, int maximum, IAutoTrackValue? autoTrackValue);
 
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="saveLoadManager">
+        /// The save/load manager.
+        /// </param>
         /// <param name="starting">
         /// A 32-bit signed integer representing the starting value of the item.
         /// </param>
@@ -25,8 +28,8 @@ namespace OpenTracker.Models.Items
         /// <param name="autoTrackValue">
         /// The auto track value.
         /// </param>
-        public CappedItem(int starting, int maximum, IAutoTrackValue? autoTrackValue)
-            : base(starting, autoTrackValue)
+        public CappedItem(ISaveLoadManager saveLoadManager, int starting, int maximum, IAutoTrackValue? autoTrackValue)
+            : base(saveLoadManager, starting, autoTrackValue)
         {
             if (starting > maximum)
             {

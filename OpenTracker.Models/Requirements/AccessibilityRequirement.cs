@@ -1,58 +1,58 @@
 ﻿using OpenTracker.Models.AccessibilityLevels;
 using System;
 using System.ComponentModel;
+using ReactiveUI;
 
 namespace OpenTracker.Models.Requirements
 {
     /// <summary>
     /// This base class contains non-boolean requirement data.
     /// </summary>
-    public abstract class AccessibilityRequirement : IRequirement
+    public abstract class AccessibilityRequirement : ReactiveObject, IRequirement
     {
         public event EventHandler? ChangePropagated;
-        public event PropertyChangedEventHandler? PropertyChanged;
 
         private AccessibilityLevel _accessibility;
         public AccessibilityLevel Accessibility
         {
             get => _accessibility;
-            private set
-            {
-                if (_accessibility != value)
-                {
-                    _accessibility = value;
-                    OnPropertyChanged();
-                }
-            }
+            private set => this.RaiseAndSetIfChanged(ref _accessibility, value);
         }
 
         private bool _testing;
         public bool Testing
         {
             get => _testing;
-            set
-            {
-                if (_testing == value)
-                {
-                    return;
-                }
-
-                _testing = value;
-                UpdateValue();
-            }
+            set => this.RaiseAndSetIfChanged(ref _testing, value);
         }
 
-        public bool Met => 
-            Accessibility > AccessibilityLevel.None;
+        public bool Met => Accessibility > AccessibilityLevel.None;
+        
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        protected AccessibilityRequirement()
+        {
+            PropertyChanged += OnPropertyChanged;
+        }
 
         /// <summary>
         /// Raises the PropertyChanged and ChangePropagated events for all properties.
         /// </summary>
-        private void OnPropertyChanged()
+        private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Met)));
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Accessibility)));
-            ChangePropagated?.Invoke(this, EventArgs.Empty);
+            switch (e.PropertyName)
+            {
+                case nameof(Accessibility):
+                    this.RaisePropertyChanged(nameof(Met));
+                    break;
+                case nameof(Met):
+                    ChangePropagated?.Invoke(this, EventArgs.Empty);
+                    break;
+                case nameof(Testing):
+                    UpdateValue();
+                    break;
+            }
         }
 
         /// <summary>

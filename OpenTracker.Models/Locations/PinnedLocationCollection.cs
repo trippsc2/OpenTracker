@@ -6,8 +6,7 @@ namespace OpenTracker.Models.Locations
     /// <summary>
     /// This class contains the collection container for pinned location data.
     /// </summary>
-    public class PinnedLocationCollection : ObservableCollection<ILocation>,
-        IPinnedLocationCollection
+    public class PinnedLocationCollection : ObservableCollection<ILocation>, IPinnedLocationCollection
     {
         private readonly ILocationDictionary _locations;
 

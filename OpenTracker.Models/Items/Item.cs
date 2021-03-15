@@ -2,31 +2,25 @@
 using OpenTracker.Models.SaveLoad;
 using System;
 using System.ComponentModel;
+using ReactiveUI;
 
 namespace OpenTracker.Models.Items
 {
     /// <summary>
     /// This class contains item data.
     /// </summary>
-    public class Item : IItem
+    public class Item : ReactiveObject, IItem
     {
+        private readonly ISaveLoadManager _saveLoadManager;
+        
         private readonly int _starting;
         private readonly IAutoTrackValue? _autoTrackValue;
-
-        public event PropertyChangedEventHandler? PropertyChanged;
 
         private int _current;
         public int Current
         {
             get => _current;
-            set
-            {
-                if (_current != value)
-                {
-                    _current = value;
-                    OnPropertyChanged(nameof(Current));
-                }
-            }
+            set => this.RaiseAndSetIfChanged(ref _current, value);
         }
 
         public delegate Item Factory(int starting, IAutoTrackValue? autoTrackValue);
@@ -34,39 +28,30 @@ namespace OpenTracker.Models.Items
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="type">
-        /// The item type.
+        /// <param name="saveLoadManager">
+        /// The save/load manager.
         /// </param>
         /// <param name="starting">
         /// A 32-bit signed integer representing the starting value of the item.
         /// </param>
         /// <param name="autoTrackValue">
-        /// The autotrack value.
+        /// The auto-track value.
         /// </param>
-        public Item(int starting, IAutoTrackValue? autoTrackValue)
+        public Item(ISaveLoadManager saveLoadManager, int starting, IAutoTrackValue? autoTrackValue)
         {
+            _saveLoadManager = saveLoadManager;
+            
             _starting = starting;
             _autoTrackValue = autoTrackValue;
 
             Current = _starting;
 
-            if (_autoTrackValue != null)
+            if (!(_autoTrackValue is null))
             {
                 _autoTrackValue.PropertyChanged += OnAutoTrackChanged;
             }
         }
-
-        /// <summary>
-        /// Raises the PropertyChanged event for the specified property.
-        /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changed property.
-        /// </param>
-        protected void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
+        
         /// <summary>
         /// Subscribes to the PropertyChanged event on the IAutoTrackValue interface.
         /// </summary>
@@ -85,18 +70,22 @@ namespace OpenTracker.Models.Items
         }
 
         /// <summary>
-        /// Update the Current property to match the autotracking value.
+        /// Update the Current property to match the auto-tracking value.
         /// </summary>
         private void AutoTrackUpdate()
         {
-            if (_autoTrackValue!.CurrentValue.HasValue)
+            if (!_autoTrackValue!.CurrentValue.HasValue)
             {
-                if (Current != _autoTrackValue.CurrentValue.Value)
-                {
-                    Current = _autoTrackValue.CurrentValue.Value;
-                    //SaveLoadManager.Instance.Unsaved = true;
-                }
+                return;
             }
+
+            if (Current == _autoTrackValue.CurrentValue.Value)
+            {
+                return;
+            }
+            
+            Current = _autoTrackValue.CurrentValue.Value;
+            _saveLoadManager.Unsaved = true;
         }
 
         /// <summary>

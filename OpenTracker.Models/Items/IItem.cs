@@ -1,12 +1,13 @@
 ﻿using OpenTracker.Models.SaveLoad;
 using System.ComponentModel;
+using ReactiveUI;
 
 namespace OpenTracker.Models.Items
 {
     /// <summary>
     /// This interface contains item data.
     /// </summary>
-    public interface IItem : INotifyPropertyChanged, ISaveable<ItemSaveData>
+    public interface IItem : IReactiveObject, ISaveable<ItemSaveData>
     {
         int Current { get; set; }
 

@@ -9,8 +9,7 @@ namespace OpenTracker.Models.Dungeons
     public interface IDungeonState
     {
         delegate IDungeonState Factory(
-            List<KeyDoorID> unlockedDoors, int keysCollected, bool bigKeyCollected,
-            bool sequenceBreak);
+            List<KeyDoorID> unlockedDoors, int keysCollected, bool bigKeyCollected, bool sequenceBreak);
 
         bool BigKeyCollected { get; }
         int KeysCollected { get; }
