@@ -4,7 +4,7 @@ using System.ComponentModel;
 namespace OpenTracker.Models.AutoTracking.Values
 {
     /// <summary>
-    /// This is the class for representing the autotracking result value that is conditional.
+    /// This is the class for representing the auto-tracking result value that is conditional.
     /// </summary>
     public class AutoTrackConditionalValue : IAutoTrackValue
     {
@@ -12,28 +12,8 @@ namespace OpenTracker.Models.AutoTracking.Values
         private readonly IAutoTrackValue? _trueValue;
         private readonly IAutoTrackValue? _falseValue;
 
-        public int? CurrentValue
-        {
-            get
-            {
-                if (_condition.Met)
-                {
-                    if (_trueValue == null)
-                    {
-                        return null;
-                    }
-
-                    return _trueValue.CurrentValue;
-                }
-
-                if (_falseValue == null)
-                {
-                    return null;
-                }
-
-                return _falseValue.CurrentValue;
-            }
-        }
+        public int? CurrentValue =>
+            _condition.Met ? _trueValue?.CurrentValue : _falseValue?.CurrentValue;
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -61,12 +41,12 @@ namespace OpenTracker.Models.AutoTracking.Values
 
             _condition.PropertyChanged += OnRequirementChanged;
 
-            if (_trueValue != null)
+            if (!(_trueValue is null))
             {
                 _trueValue.PropertyChanged += OnValueChanged;
             }
 
-            if (_falseValue != null)
+            if (!(_falseValue is null))
             {
                 _falseValue.PropertyChanged += OnValueChanged;
             }

@@ -31,8 +31,8 @@
 		/// A boolean representing whether the memory address was successfully translated.
 		/// </returns>
 		private static bool MapAddressInRange(
-			uint address, uint sourceRangeBegin, uint sourceRangeEnd,
-			uint destinationRangeBegin, out uint mappedAddress)
+			uint address, uint sourceRangeBegin, uint sourceRangeEnd, uint destinationRangeBegin,
+			out uint mappedAddress)
 		{
 			if (address >= sourceRangeBegin && address <= sourceRangeEnd)
 			{

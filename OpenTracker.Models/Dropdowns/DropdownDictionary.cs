@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace OpenTracker.Models.Dropdowns
 {
     /// <summary>
-    /// This is the class for the dictionary container of dropdowns.
+    /// This class contains the dictionary container of dropdowns.
     /// </summary>
     public class DropdownDictionary : LazyDictionary<DropdownID, IDropdown>,
         IDropdownDictionary
@@ -17,7 +17,7 @@ namespace OpenTracker.Models.Dropdowns
         /// Constructor
         /// </summary>
         /// <param name="factory">
-        /// The factory for creating new dropdowns.
+        /// A factory for creating new dropdowns.
         /// </param>
         public DropdownDictionary(IDropdownFactory.Factory factory)
             : base(new Dictionary<DropdownID, IDropdown>())

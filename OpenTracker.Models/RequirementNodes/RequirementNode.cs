@@ -1,83 +1,57 @@
-﻿using OpenTracker.Models.AccessibilityLevels;
-using OpenTracker.Models.Modes;
-using OpenTracker.Models.NodeConnections;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using OpenTracker.Models.AccessibilityLevels;
+using OpenTracker.Models.Modes;
+using OpenTracker.Models.NodeConnections;
+using ReactiveUI;
 
 namespace OpenTracker.Models.RequirementNodes
 {
     /// <summary>
     /// This class contains requirement node data.
     /// </summary>
-    public class RequirementNode : IRequirementNode
+    public class RequirementNode : ReactiveObject, IRequirementNode
     {
         private readonly IMode _mode;
         private readonly IRequirementNodeFactory _factory;
 
+#if DEBUG        
         private readonly RequirementNodeID _id;
+#endif
         private readonly bool _start;
 
         private readonly List<INodeConnection> _connections =
             new List<INodeConnection>();
 
-        public event PropertyChangedEventHandler? PropertyChanged;
         public event EventHandler? ChangePropagated;
 
         private bool _alwaysAccessible;
         public bool AlwaysAccessible
         {
             get => _alwaysAccessible;
-            set
-            {
-                if (_alwaysAccessible != value)
-                {
-                    _alwaysAccessible = value;
-                    UpdateAccessibility();
-                }
-            }
+            set => this.RaiseAndSetIfChanged(ref _alwaysAccessible, value);
         }
 
         private int _exitsAccessible;
         public int ExitsAccessible
         {
             get => _exitsAccessible;
-            set
-            {
-                if (_exitsAccessible != value)
-                {
-                    _exitsAccessible = value;
-                    UpdateAccessibility();
-                }
-            }
+            set => this.RaiseAndSetIfChanged(ref _exitsAccessible, value);
         }
 
         private int _dungeonExitsAccessible;
         public int DungeonExitsAccessible
         {
             get => _dungeonExitsAccessible;
-            set
-            {
-                if (_dungeonExitsAccessible != value)
-                {
-                    _dungeonExitsAccessible = value;
-                    OnPropertyChanged(nameof(DungeonExitsAccessible));
-                }
-            }
+            set => this.RaiseAndSetIfChanged(ref _dungeonExitsAccessible, value);
         }
 
         private int _insanityExitsAccessible;
         public int InsanityExitsAccessible
         {
             get => _insanityExitsAccessible;
-            set
-            {
-                if (_insanityExitsAccessible != value)
-                {
-                    _insanityExitsAccessible = value;
-                    OnPropertyChanged(nameof(InsanityExitsAccessible));
-                }
-            }
+            set => this.RaiseAndSetIfChanged(ref _insanityExitsAccessible, value);
         }
 
         private AccessibilityLevel _accessibility;
@@ -86,11 +60,13 @@ namespace OpenTracker.Models.RequirementNodes
             get => _accessibility;
             private set
             {
-                if (_accessibility != value)
+                if (_accessibility == value)
                 {
-                    _accessibility = value;
-                    OnPropertyChanged(nameof(Accessibility));
+                    return;
                 }
+                
+                this.RaiseAndSetIfChanged(ref _accessibility, value);
+                ChangePropagated?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -120,35 +96,36 @@ namespace OpenTracker.Models.RequirementNodes
         {
             _mode = mode;
             _factory = factory;
+#if DEBUG
             _id = id;
+#endif
             _start = start;
             AlwaysAccessible = _start;
 
+            PropertyChanged += OnPropertyChanged;
             requirementNodes.ItemCreated += OnNodeCreated;
             _mode.PropertyChanged += OnModeChanged;
         }
 
         /// <summary>
-        /// Raises the PropertyChanged event for the specified property.
+        /// Subscribes to the PropertyChanged event on this object.
         /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changed property.
+        /// <param name="sender">
+        /// The sending object of the event.
         /// </param>
-        private void OnPropertyChanged(string propertyName)
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
+        private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-
-            if (propertyName == nameof(ExitsAccessible) ||
-                propertyName == nameof(DungeonExitsAccessible) ||
-                propertyName == nameof(AlwaysAccessible) ||
-                propertyName == nameof(InsanityExitsAccessible))
+            switch (e.PropertyName)
             {
-                UpdateAccessibility();
-            }
-
-            if (propertyName == nameof(Accessibility))
-            {
-                ChangePropagated?.Invoke(this, new EventArgs());
+                case nameof(ExitsAccessible):
+                case nameof(DungeonExitsAccessible):
+                case nameof(AlwaysAccessible):
+                case nameof(InsanityExitsAccessible):
+                    UpdateAccessibility();
+                    break;
             }
         }
 

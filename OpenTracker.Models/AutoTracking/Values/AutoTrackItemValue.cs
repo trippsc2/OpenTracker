@@ -4,7 +4,7 @@ using System.ComponentModel;
 namespace OpenTracker.Models.AutoTracking.Values
 {
     /// <summary>
-    /// This is the class for representing the autotracking result value of a hidden item count.
+    /// This is the class for representing the auto-tracking result value of a hidden item count.
     /// </summary>
     public class AutoTrackItemValue : IAutoTrackValue
     {

@@ -1,11 +1,11 @@
-﻿using System.ComponentModel;
+﻿using ReactiveUI;
 
 namespace OpenTracker.Models.AutoTracking
 {
     /// <summary>
-    /// This is the interface for representing a SNES memory flag.
+    /// This interface contains SNES memory flag data.
     /// </summary>
-    public interface IMemoryFlag : INotifyPropertyChanged
+    public interface IMemoryFlag : IReactiveObject
     {
         bool Status { get; }
 

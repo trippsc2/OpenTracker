@@ -1,9 +1,7 @@
-﻿using WebSocketSharp;
-
-namespace OpenTracker.Models.AutoTracking.Logging
+﻿namespace OpenTracker.Models.AutoTracking.Logging
 {
     /// <summary>
-    /// This is the interface for log messages for autotracking.
+    /// This is the interface for log messages for auto-tracking.
     /// </summary>
     public interface ILogMessage
     {

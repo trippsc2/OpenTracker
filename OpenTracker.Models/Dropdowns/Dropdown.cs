@@ -1,33 +1,24 @@
-﻿using OpenTracker.Models.Requirements;
+﻿using System.ComponentModel;
+using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
-using System.ComponentModel;
+using ReactiveUI;
 
 namespace OpenTracker.Models.Dropdowns
 {
     /// <summary>
-    /// This is the class for dropdown data.
+    /// This class contains dropdown data.
     /// </summary>
-    public class Dropdown : IDropdown
+    public class Dropdown : ReactiveObject, IDropdown
     {
         private readonly IRequirement _requirement;
 
-        public bool RequirementMet =>
-            _requirement.Met;
-
-        public event PropertyChangedEventHandler? PropertyChanged;
+        public bool RequirementMet => _requirement.Met;
 
         private bool _checked;
         public bool Checked
         {
             get => _checked;
-            set
-            {
-                if (_checked != value)
-                {
-                    _checked = value;
-                    OnPropertyChanged(nameof(Checked));
-                }
-            }
+            set => this.RaiseAndSetIfChanged(ref _checked, value);
         }
 
         /// <summary>
@@ -44,17 +35,6 @@ namespace OpenTracker.Models.Dropdowns
         }
 
         /// <summary>
-        /// Raises the PropertyChanged event for the specified property.
-        /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changed property.
-        /// </param>
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        /// <summary>
         /// Subscribes to the PropertyChanged event on the IRequirement interface.
         /// </summary>
         /// <param name="sender">
@@ -65,9 +45,9 @@ namespace OpenTracker.Models.Dropdowns
         /// </param>
         private void OnRequirementChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(IRequirement.Accessibility))
+            if (e.PropertyName == nameof(IRequirement.Met))
             {
-                OnPropertyChanged(nameof(RequirementMet));
+                this.RaisePropertyChanged(nameof(RequirementMet));
             }
         }
 

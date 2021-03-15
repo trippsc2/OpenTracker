@@ -1,44 +1,38 @@
-﻿using OpenTracker.Models.AccessibilityLevels;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.NodeConnections;
 using OpenTracker.Models.RequirementNodes;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+using ReactiveUI;
 
 namespace OpenTracker.Models.DungeonNodes
 {
     /// <summary>
-    /// This is the class for dungeon requirement node.
+    /// This class contains the dungeon requirement node data.
     /// </summary>
-    public class DungeonNode : IDungeonNode
+    public class DungeonNode : ReactiveObject, IDungeonNode
     {
         private readonly IDungeonNodeFactory _factory;
         private readonly IMutableDungeon _dungeonData;
+#if DEBUG        
         private readonly DungeonNodeID _id;
+#endif
 
         public int ExitsAccessible { get; set; }
         public int DungeonExitsAccessible { get; set; }
         public int InsanityExitsAccessible { get; set; }
 
-        public List<INodeConnection> Connections { get; } =
-            new List<INodeConnection>();
+        public List<INodeConnection> Connections { get; } = new List<INodeConnection>();
 
-        public event PropertyChangedEventHandler? PropertyChanged;
         public event EventHandler? ChangePropagated;
 
         private bool _alwaysAccessible;
         public bool AlwaysAccessible
         {
             get => _alwaysAccessible;
-            set
-            {
-                if (_alwaysAccessible != value)
-                {
-                    _alwaysAccessible = value;
-                    UpdateAccessibility();
-                }
-            }
+            set => this.RaiseAndSetIfChanged(ref _alwaysAccessible, value);
         }
 
         private AccessibilityLevel _accessibility;
@@ -47,11 +41,13 @@ namespace OpenTracker.Models.DungeonNodes
             get => _accessibility;
             private set
             {
-                if (_accessibility != value)
+                if (_accessibility == value)
                 {
-                    _accessibility = value;
-                    OnPropertyChanged(nameof(Accessibility));
+                    return;
                 }
+                
+                this.RaiseAndSetIfChanged(ref _accessibility, value);
+                ChangePropagated?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -67,26 +63,35 @@ namespace OpenTracker.Models.DungeonNodes
         /// <param name="dungeonData">
         /// The mutable dungeon data parent class.
         /// </param>
-        public DungeonNode(
-            IDungeonNodeFactory factory, IMutableDungeon dungeonData, DungeonNodeID id)
+        public DungeonNode(IDungeonNodeFactory factory, IMutableDungeon dungeonData, DungeonNodeID id)
         {
             _factory = factory;
             _dungeonData = dungeonData;
+#if DEBUG
             _id = id;
+#endif
 
+            PropertyChanged += OnPropertyChanged;
             dungeonData.Nodes.ItemCreated += OnNodeCreated;
         }
 
         /// <summary>
-        /// Raises the PropertyChanged event for the specified property.
+        /// Subscribes to the PropertyChanged event on this object.
         /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changed property.
+        /// <param name="sender">
+        /// The sending object of the event.
         /// </param>
-        private void OnPropertyChanged(string propertyName)
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
+        private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            ChangePropagated?.Invoke(this, new EventArgs());
+            switch (e.PropertyName)
+            {
+                case nameof(AlwaysAccessible):
+                    UpdateAccessibility();
+                    break;
+            }
         }
 
         /// <summary>
@@ -100,21 +105,23 @@ namespace OpenTracker.Models.DungeonNodes
         /// </param>
         private void OnNodeCreated(object? sender, KeyValuePair<DungeonNodeID, IDungeonNode> e)
         {
-            if (e.Value == this)
+            if (e.Value != this)
             {
-                var nodes = (sender as IDungeonNodeDictionary) ??
-                    throw new ArgumentNullException(nameof(sender));
+                return;
+            }
+            
+            var nodes = sender as IDungeonNodeDictionary ??
+                throw new ArgumentNullException(nameof(sender));
 
-                nodes.ItemCreated -= OnNodeCreated;
+            nodes.ItemCreated -= OnNodeCreated;
 
-                _factory.PopulateNodeConnections(_dungeonData, e.Key, this, Connections);
+            _factory.PopulateNodeConnections(_dungeonData, e.Key, this, Connections);
 
-                UpdateAccessibility();
+            UpdateAccessibility();
 
-                foreach (var connection in Connections)
-                {
-                    connection.PropertyChanged += OnConnectionChanged;
-                }
+            foreach (var connection in Connections)
+            {
+                connection.PropertyChanged += OnConnectionChanged;
             }
         }
 
@@ -160,7 +167,7 @@ namespace OpenTracker.Models.DungeonNodes
                 return AccessibilityLevel.Normal;
             }
 
-            AccessibilityLevel finalAccessibility = AccessibilityLevel.None;
+            var finalAccessibility = AccessibilityLevel.None;
 
             foreach (var connection in Connections)
             {

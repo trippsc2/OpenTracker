@@ -1,7 +1,7 @@
 ﻿namespace OpenTracker.Models.BossPlacements
 {
     /// <summary>
-    /// This is the enum type for boss placement ID.
+    /// This enum type contains boss placement ID data.
     /// </summary>
     public enum BossPlacementID
     {

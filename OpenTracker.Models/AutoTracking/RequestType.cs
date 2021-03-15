@@ -3,7 +3,7 @@
 namespace OpenTracker.Models.AutoTracking
 {
     /// <summary>
-    /// This is the class containing data for a request sent to the USB2SNES websocket.
+    /// This class contains auto-tracking request data.
     /// </summary>
     public class RequestType : IRequestType
     {
@@ -28,8 +28,7 @@ namespace OpenTracker.Models.AutoTracking
         /// The operands of the request.
         /// </param>
         public RequestType(
-            string opcode, string space = "SNES", List<string>? flags = null,
-            List<string>? operands = null)
+            string opcode, string space = "SNES", List<string>? flags = null, List<string>? operands = null)
         {
             Opcode = opcode;
             Space = space;

@@ -1,8 +1,7 @@
 ﻿namespace OpenTracker.Models.AutoTracking
 {
     /// <summary>
-    /// This is the enum type for the type address translation to perform on the
-    /// provided memory addresses.
+    /// This enum type contains the address translation mode data.
     /// </summary>
     public enum TranslationMode
     {

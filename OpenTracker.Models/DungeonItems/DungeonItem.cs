@@ -4,13 +4,14 @@ using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.RequirementNodes;
 using System.Collections.Generic;
 using System.ComponentModel;
+using ReactiveUI;
 
 namespace OpenTracker.Models.DungeonItems
 {
     /// <summary>
     /// This class contains mutable dungeon item data.
     /// </summary>
-    public class DungeonItem : IDungeonItem
+    public class DungeonItem : ReactiveObject, IDungeonItem
     {
         private readonly IMutableDungeon _dungeonData;
 #if DEBUG
@@ -18,22 +19,11 @@ namespace OpenTracker.Models.DungeonItems
 #endif
         private readonly IRequirementNode _node;
 
-        public event PropertyChangedEventHandler? PropertyChanged;
-
         private AccessibilityLevel _accessibility;
         public AccessibilityLevel Accessibility
         {
             get => _accessibility;
-            private set
-            {
-                if (_accessibility == value)
-                {
-                    return;
-                }
-                
-                _accessibility = value;
-                OnPropertyChanged(nameof(Accessibility));
-            }
+            private set => this.RaiseAndSetIfChanged(ref _accessibility, value);
         }
 
         /// <summary>
@@ -48,8 +38,7 @@ namespace OpenTracker.Models.DungeonItems
         /// <param name="node">
         /// The dungeon node to which this item belongs.
         /// </param>
-        public DungeonItem(
-            IMutableDungeon dungeonData, DungeonItemID id, IRequirementNode node)
+        public DungeonItem(IMutableDungeon dungeonData, DungeonItemID id, IRequirementNode node)
         {
             _dungeonData = dungeonData;
 #if DEBUG
@@ -58,17 +47,6 @@ namespace OpenTracker.Models.DungeonItems
             _node = node;
 
             _dungeonData.DungeonItems.ItemCreated += OnDungeonItemCreated;
-        }
-
-        /// <summary>
-        /// Raises the PropertyChanged event for the specified property.
-        /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changed property.
-        /// </param>
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         /// <summary>

@@ -1,11 +1,11 @@
-﻿using System.ComponentModel;
+﻿using ReactiveUI;
 
 namespace OpenTracker.Models.AutoTracking
 {
     /// <summary>
-    /// This is the interface for representing a SNES memory address.
+    /// This interface contains SNES memory address data.
     /// </summary>
-    public interface IMemoryAddress : INotifyPropertyChanged
+    public interface IMemoryAddress : IReactiveObject
     {
         byte Value { get; set; }
 

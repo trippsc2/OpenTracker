@@ -1,4 +1,6 @@
 using System.Collections.ObjectModel;
+using Avalonia.Media;
+using JetBrains.Annotations;
 using OpenTracker.Utils.Dialog;
 using ReactiveUI;
 
@@ -18,12 +20,12 @@ namespace OpenTracker.ViewModels.Capture
                 this.RaisePropertyChanged(nameof(Title));
             }
         }
-        
-        private bool _open;
-        public bool Open
+
+        private SolidColorBrush? _backgroundColor;
+        public SolidColorBrush? BackgroundColor
         {
-            get => _open;
-            set => this.RaiseAndSetIfChanged(ref _open, value);
+            get => _backgroundColor;
+            set => this.RaiseAndSetIfChanged(ref _backgroundColor, value);
         }
 
         private double? _height;

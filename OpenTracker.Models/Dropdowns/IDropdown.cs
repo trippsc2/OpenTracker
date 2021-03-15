@@ -1,13 +1,14 @@
 ﻿using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
 using System.ComponentModel;
+using ReactiveUI;
 
 namespace OpenTracker.Models.Dropdowns
 {
     /// <summary>
-    /// This is the interface for dropdown data.
+    /// This interface contains dropdown data.
     /// </summary>
-    public interface IDropdown : INotifyPropertyChanged, ISaveable<DropdownSaveData>
+    public interface IDropdown : IReactiveObject, ISaveable<DropdownSaveData>
     {
         bool Checked { get; set; }
         bool RequirementMet { get; }

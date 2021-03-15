@@ -1,37 +1,18 @@
 ﻿using System.ComponentModel;
+using ReactiveUI;
 
 namespace OpenTracker.Models.AutoTracking
 {
     /// <summary>
-    /// This is the class for representing a SNES memory address.
+    /// This class contains SNES memory address data.
     /// </summary>
-    public class MemoryAddress : IMemoryAddress
+    public class MemoryAddress : ReactiveObject, IMemoryAddress
     {
-        public event PropertyChangedEventHandler? PropertyChanged;
-
         private byte _value;
         public byte Value
         {
             get => _value;
-            set
-            {
-                if (_value != value)
-                {
-                    _value = value;
-                    OnPropertyChanged(nameof(Value));
-                }
-            }
-        }
-
-        /// <summary>
-        /// Raises the PropertyChanged event for the specified property.
-        /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changed property.
-        /// </param>
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            set => this.RaiseAndSetIfChanged(ref _value, value);
         }
 
         /// <summary>

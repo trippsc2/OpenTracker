@@ -1,10 +1,10 @@
-﻿using Newtonsoft.Json;
-using OpenTracker.Models.AutoTracking.Logging;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using OpenTracker.Models.AutoTracking.Logging;
 using WebSocketSharp;
 using LogLevel = OpenTracker.Models.AutoTracking.Logging.LogLevel;
 
@@ -53,19 +53,21 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
             get => _socket;
             set
             {
-                if (_socket != value)
+                if (_socket == value)
                 {
-                    if (_socket != null)
-                    {
-                        _socket.OnMessage -= HandleMessage;
-                    }
+                    return;
+                }
+                
+                if (_socket != null)
+                {
+                    _socket.OnMessage -= HandleMessage;
+                }
 
-                    _socket = value;
+                _socket = value;
 
-                    if (_socket != null)
-                    {
-                        _socket.OnMessage += HandleMessage;
-                    }
+                if (_socket != null)
+                {
+                    _socket.OnMessage += HandleMessage;
                 }
             }
         }

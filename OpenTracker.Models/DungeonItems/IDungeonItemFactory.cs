@@ -3,7 +3,7 @@
 namespace OpenTracker.Models.DungeonItems
 {
     /// <summary>
-    /// This is the interface for the creation logic for dungeon items.
+    /// This interface contains the creation logic for dungeon items.
     /// </summary>
     public interface IDungeonItemFactory
     {

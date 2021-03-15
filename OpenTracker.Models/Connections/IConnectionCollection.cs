@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace OpenTracker.Models.Connections
 {
     /// <summary>
-    /// This is the interface for the collection container of map connections between map locations.
+    /// This interface contains the collection container for map connections.
     /// </summary>
     public interface IConnectionCollection : IObservableCollection<IConnection>,
         ISaveable<List<ConnectionSaveData>>

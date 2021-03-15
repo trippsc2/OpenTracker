@@ -1,7 +1,7 @@
 ﻿namespace OpenTracker.Models.AutoTracking
 {
     /// <summary>
-    /// This is the enum type for Autotracking connector status.
+    /// This enum type contains auto-tracking connector status data.
     /// </summary>
     public enum ConnectionStatus 
     {

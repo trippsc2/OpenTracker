@@ -3,7 +3,7 @@
 namespace OpenTracker.Models.AutoTracking.Values
 {
     /// <summary>
-    /// This is the base class representing autotracking result value.
+    /// This is the base class representing auto-tracking result value.
     /// </summary>
     public abstract class AutoTrackValue : IAutoTrackValue
     {

@@ -1,12 +1,12 @@
-﻿using OpenTracker.Models.DungeonNodes;
+﻿using System;
+using OpenTracker.Models.DungeonNodes;
 using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.RequirementNodes;
-using System;
 
 namespace OpenTracker.Models.DungeonItems
 {
     /// <summary>
-    /// This is the class for the creation logic for dungeon items.
+    /// This class contains the creation logic for dungeon items.
     /// </summary>
     public class DungeonItemFactory : IDungeonItemFactory
     {

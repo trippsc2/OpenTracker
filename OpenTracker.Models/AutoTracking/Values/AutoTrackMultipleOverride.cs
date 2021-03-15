@@ -4,7 +4,7 @@ using System.ComponentModel;
 namespace OpenTracker.Models.AutoTracking.Values
 {
     /// <summary>
-    /// This is the class for representing the autotracking result value of an ordered priority
+    /// This is the class for representing the auto-tracking result value of an ordered priority
     /// list of results.
     /// </summary>
     public class AutoTrackMultipleOverride : AutoTrackValue
@@ -17,7 +17,7 @@ namespace OpenTracker.Models.AutoTracking.Values
         /// Constructor
         /// </summary>
         /// <param name="values">
-        /// The list of autotracking result values.
+        /// The list of auto-tracking result values.
         /// </param>
         public AutoTrackMultipleOverride(List<IAutoTrackValue> values)
         {

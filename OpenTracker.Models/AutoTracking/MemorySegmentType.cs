@@ -1,7 +1,7 @@
 ﻿namespace OpenTracker.Models.AutoTracking
 {
     /// <summary>
-    /// This is the enum type for memory segment type.
+    /// This enum type contains memory segment type data.
     /// </summary>
     public enum MemorySegmentType
     {

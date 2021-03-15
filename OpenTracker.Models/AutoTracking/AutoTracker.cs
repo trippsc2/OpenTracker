@@ -1,16 +1,15 @@
 ﻿using OpenTracker.Models.AutoTracking.SNESConnectors;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Threading.Tasks;
-using WebSocketSharp;
+using ReactiveUI;
 
 namespace OpenTracker.Models.AutoTracking
 {
     /// <summary>
-    /// This is the class containing autotracking data and methods
+    /// This class contains auto-tracking logic and data.
     /// </summary>
-    public class AutoTracker : IAutoTracker
+    public class AutoTracker : ReactiveObject, IAutoTracker
     {
         private readonly IMemoryAddress.Factory _addressFactory;
 
@@ -21,75 +20,31 @@ namespace OpenTracker.Models.AutoTracking
         private bool CanReadMemory =>
             Status == ConnectionStatus.Connected;
         private bool IsInGame =>
-            !(_inGameStatus is null) && _inGameStatus > 0x05 && _inGameStatus != 0x14 &&
-            _inGameStatus < 0x20;
+            !(_inGameStatus is null) && _inGameStatus > 0x05 && _inGameStatus != 0x14 && _inGameStatus < 0x20;
 
-        public Action<LogLevel, string>? LogHandler { get; set; }
+        public Dictionary<ulong, IMemoryAddress> MemoryAddresses { get; } = new Dictionary<ulong, IMemoryAddress>();
 
-        public Dictionary<ulong, IMemoryAddress> MemoryAddresses { get; } =
-            new Dictionary<ulong, IMemoryAddress>();
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        private ISNESConnector? _snesConnector;
-        private ISNESConnector SNESConnector
-        {
-            get => _snesConnector!;
-            set
-            {
-                if (_snesConnector == value)
-                {
-                    return;
-                }
-                
-                if (!(_snesConnector is null))
-                {
-                    _snesConnector.StatusChanged -= OnStatusChanged;
-                }
-                
-                _snesConnector = value;
-                _snesConnector.StatusChanged += OnStatusChanged;
-                Status = ConnectionStatus.NotConnected;
-            }
-        }
+        private ISNESConnector SNESConnector { get; }
 
         private List<string> _devices = new List<string>();
         public List<string> Devices
         {
             get => _devices;
-            private set
-            {
-                if (_devices != value)
-                {
-                    _devices = value;
-                    OnPropertyChanged(nameof(Devices));
-                }
-            }
+            private set => this.RaiseAndSetIfChanged(ref _devices, value);
         }
 
         private bool _raceIllegalTracking;
         public bool RaceIllegalTracking
         {
             get => _raceIllegalTracking;
-            set
-            {
-                _raceIllegalTracking = value;
-                OnPropertyChanged(nameof(RaceIllegalTracking));
-            }
+            set => this.RaiseAndSetIfChanged(ref _raceIllegalTracking, value);
         }
 
         private ConnectionStatus _status;
         public ConnectionStatus Status
         {
             get => _status;
-            private set
-            {
-                if (_status != value)
-                {
-                    _status = value;
-                    OnPropertyChanged(nameof(Status));
-                }
-            }
+            private set => this.RaiseAndSetIfChanged(ref _status, value);
         }
 
         /// <summary>
@@ -101,12 +56,12 @@ namespace OpenTracker.Models.AutoTracking
         /// <param name="addressFactory">
         /// An Autofac factory for creating memory addresses.
         /// </param>
-        public AutoTracker(
-            ISNESConnector snesConnector, IMemoryAddress.Factory addressFactory)
+        public AutoTracker(IMemoryAddress.Factory addressFactory, ISNESConnector snesConnector)
         {
             _addressFactory = addressFactory;
             
             SNESConnector = snesConnector;
+            SNESConnector.StatusChanged += OnStatusChanged;
 
             foreach (MemorySegmentType type in Enum.GetValues(typeof(MemorySegmentType)))
             {
@@ -148,17 +103,6 @@ namespace OpenTracker.Models.AutoTracking
                     CreateMemoryAddress(MemorySegmentType.NPCItem, i);
                 }
             }
-        }
-
-        /// <summary>
-        /// Raises the PropertyChanged event for the specified property.
-        /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changed property.
-        /// </param>
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         /// <summary>
@@ -348,7 +292,7 @@ namespace OpenTracker.Models.AutoTracking
         }
 
         /// <summary>
-        /// Disconnects the autotracker.
+        /// Disconnects the auto-tracker.
         /// </summary>
         public async Task Disconnect()
         { 
@@ -362,10 +306,10 @@ namespace OpenTracker.Models.AutoTracking
         }
 
         /// <summary>
-        /// Returns whether autotracking can be started.
+        /// Returns whether auto-tracking can be started.
         /// </summary>
         /// <returns>
-        /// A boolean representing whether autotracking can be started.
+        /// A boolean representing whether auto-tracking can be started.
         /// </returns>
         public bool CanStart()
         {
@@ -373,7 +317,7 @@ namespace OpenTracker.Models.AutoTracking
         }
 
         /// <summary>
-        /// Starts autotracking.
+        /// Starts auto-tracking.
         /// </summary>
         public async Task Start(string device)
         {

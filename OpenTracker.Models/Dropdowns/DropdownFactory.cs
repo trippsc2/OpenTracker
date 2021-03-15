@@ -1,10 +1,10 @@
-﻿using OpenTracker.Models.Requirements;
-using System;
+﻿using System;
+using OpenTracker.Models.Requirements;
 
 namespace OpenTracker.Models.Dropdowns
 {
     /// <summary>
-    /// This is the class contianing the creation logic for dropdowns.
+    /// This class contains the creation logic for dropdowns.
     /// </summary>
     public class DropdownFactory : IDropdownFactory
     {

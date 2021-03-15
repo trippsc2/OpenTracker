@@ -1,7 +1,7 @@
 ﻿namespace OpenTracker.Models.Dropdowns
 {
     /// <summary>
-    /// This is the interface contianing the creation logic for dropdowns.
+    /// This interface contains the creation logic for dropdowns.
     /// </summary>
     public interface IDropdownFactory
     {

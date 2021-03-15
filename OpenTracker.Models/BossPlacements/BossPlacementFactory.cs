@@ -3,7 +3,7 @@
 namespace OpenTracker.Models.BossPlacements
 {
     /// <summary>
-    /// This is the class for creation logic for boss placements.
+    /// This class contains the creation logic for boss placements.
     /// </summary>
     public class BossPlacementFactory : IBossPlacementFactory
     {

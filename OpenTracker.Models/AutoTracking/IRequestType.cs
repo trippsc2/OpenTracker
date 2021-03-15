@@ -2,6 +2,9 @@
 
 namespace OpenTracker.Models.AutoTracking
 {
+    /// <summary>
+    /// This interface contains auto-tracker request data.
+    /// </summary>
     public interface IRequestType
     {
         List<string>? Flags { get; }
@@ -10,7 +13,6 @@ namespace OpenTracker.Models.AutoTracking
         string Space { get; }
 
         delegate IRequestType Factory(
-            string opcode, string space = "SNES", List<string>? flags = null,
-            List<string>? operands = null);
+            string opcode, string space = "SNES", List<string>? flags = null, List<string>? operands = null);
     }
 }

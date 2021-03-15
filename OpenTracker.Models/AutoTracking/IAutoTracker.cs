@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel;
 using System.Threading.Tasks;
+using ReactiveUI;
 
 namespace OpenTracker.Models.AutoTracking
 {
     /// <summary>
-    /// This is the interface containing autotracking data and methods
+    /// This interface contains auto-tracking logic and data.
     /// </summary>
-    public interface IAutoTracker : INotifyPropertyChanged
+    public interface IAutoTracker : IReactiveObject
     {
         List<string> Devices { get; }
         bool RaceIllegalTracking { get; set; }

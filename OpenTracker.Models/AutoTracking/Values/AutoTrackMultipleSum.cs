@@ -4,7 +4,7 @@ using System.ComponentModel;
 namespace OpenTracker.Models.AutoTracking.Values
 {
     /// <summary>
-    /// This is the class for representing the autotracking result value of a list of results to
+    /// This is the class for representing the auto-tracking result value of a list of results to
     /// be summed.
     /// </summary>
     public class AutoTrackMultipleSum : AutoTrackValue
@@ -17,7 +17,7 @@ namespace OpenTracker.Models.AutoTracking.Values
         /// Constructor
         /// </summary>
         /// <param name="values">
-        /// The list of autotracking result values.
+        /// The list of auto-tracking result values.
         /// </param>
         public AutoTrackMultipleSum(List<IAutoTrackValue> values)
         {

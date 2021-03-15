@@ -1,30 +1,21 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
+using ReactiveUI;
 
 namespace OpenTracker.Models.AutoTracking
 {
     /// <summary>
-    /// This is the class for representing a SNES memory flag.
+    /// This class contains SNES memory flag data.
     /// </summary>
-    public class MemoryFlag : IMemoryFlag
+    public class MemoryFlag : ReactiveObject, IMemoryFlag
     {
         private readonly IMemoryAddress _memoryAddress;
         private readonly byte _flag;
-
-        public event PropertyChangedEventHandler? PropertyChanged;
 
         private bool _status;
         public bool Status
         {
             get => _status;
-            private set
-            {
-                if (_status != value)
-                {
-                    _status = value;
-                    OnPropertyChanged(nameof(Status));
-                }
-            }
+            private set => this.RaiseAndSetIfChanged(ref _status, value);
         }
 
         /// <summary>
@@ -34,30 +25,18 @@ namespace OpenTracker.Models.AutoTracking
         /// The memory address.
         /// </param>
         /// <param name="flag">
-        /// The 8-bit bitwise flag.
+        /// An 8-bit unsigned integer representing the bitwise flag.
         /// </param>
         public MemoryFlag(IMemoryAddress memoryAddress, byte flag)
         {
-            _memoryAddress = memoryAddress ??
-                throw new ArgumentNullException(nameof(memoryAddress));
+            _memoryAddress = memoryAddress;
             _flag = flag;
 
             _memoryAddress.PropertyChanged += OnMemoryChanged;
         }
 
         /// <summary>
-        /// Raises the PropertyChanged event for the specified property.
-        /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changed property.
-        /// </param>
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        /// <summary>
-        /// Subscribes to the PropertyChanged event on the IMemoryAddress class.
+        /// Subscribes to the PropertyChanged event on the IMemoryAddress interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.

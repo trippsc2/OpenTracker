@@ -1,7 +1,7 @@
 ﻿namespace OpenTracker.Models.BossPlacements
 {
     /// <summary>
-    /// This is the interface for creation logic for boss placements.
+    /// This interface contains the creation logic for boss placements.
     /// </summary>
     public interface IBossPlacementFactory
     {

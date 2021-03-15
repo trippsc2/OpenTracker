@@ -2,13 +2,14 @@
 using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.RequirementNodes;
 using System.ComponentModel;
+using ReactiveUI;
 
 namespace OpenTracker.Models.DungeonItems
 {
     /// <summary>
     /// This is the interface for a dungeon item.
     /// </summary>
-    public interface IDungeonItem : INotifyPropertyChanged
+    public interface IDungeonItem : IReactiveObject
     {
         AccessibilityLevel Accessibility { get; }
 

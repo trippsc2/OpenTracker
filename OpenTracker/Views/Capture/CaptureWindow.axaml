@@ -3,9 +3,10 @@
         xmlns:vm="clr-namespace:OpenTracker.ViewModels.Capture;assembly=OpenTracker"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:i="using:Avalonia.Xaml.Interactivity"
+        xmlns:ia="using:Avalonia.Xaml.Interactions.Core"
         mc:Ignorable="d" x:Class="OpenTracker.Views.Capture.CaptureWindow" IsHitTestVisible="False"
-        Title="{Binding Title}"
-        Background="{Binding BackgroundColor}"
+        UseLayoutRounding="True" Title="{Binding Title}"
         Height="{Binding Height, Mode=TwoWay}"
         Width="{Binding Width, Mode=TwoWay}">
   
@@ -13,8 +14,22 @@
     <vm:CaptureWindowVM />
   </Design.DataContext>
   
-  <Viewbox>
+  <i:Interaction.Behaviors>
+
+    <ia:DataTriggerBehavior Binding="{Binding BackgroundColor}"
+                            ComparisonCondition="Equal" Value="{x:Null}">
+      <ia:ChangePropertyAction PropertyName="Background" Value="{DynamicResource DefaultBackground}" />
+    </ia:DataTriggerBehavior>
     
-  </Viewbox>
+    <ia:DataTriggerBehavior Binding="{Binding BackgroundColor}"
+                            ComparisonCondition="NotEqual" Value="{x:Null}">
+      <ia:ChangePropertyAction PropertyName="Background" Value="{Binding BackgroundColor}" />
+    </ia:DataTriggerBehavior>
+    
+  </i:Interaction.Behaviors>
+  
+  <Window.Resources>
+    <SolidColorBrush x:Key="DefaultBackground" Color="{DynamicResource ThemeBackgroundColor}" />
+  </Window.Resources>
   
 </Window>

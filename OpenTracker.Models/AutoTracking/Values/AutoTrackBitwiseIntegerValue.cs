@@ -3,7 +3,7 @@
 namespace OpenTracker.Models.AutoTracking.Values
 {
     /// <summary>
-    /// This is the class for representing the autotracking result value of a memory address
+    /// This is the class for representing the auto-tracking result value of a memory address
     /// bitwise integer.
     /// </summary>
     public class AutoTrackBitwiseIntegerValue : AutoTrackValue
@@ -24,7 +24,7 @@ namespace OpenTracker.Models.AutoTracking.Values
         /// <param name="mask">
         /// The bitwise mask of to be represented.
         /// </param>
-        /// <param name="adjustment">
+        /// <param name="shift">
         /// The number of bitwise digits to right shift the address value.
         /// </param>
         public AutoTrackBitwiseIntegerValue(IMemoryAddress address, byte mask, int shift)

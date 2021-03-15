@@ -1,14 +1,14 @@
-﻿using OpenTracker.Models.AccessibilityLevels;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using OpenTracker.Models.AccessibilityLevels;
+using ReactiveUI;
 
 namespace OpenTracker.Models.RequirementNodes
 {
     /// <summary>
     /// This interface contains requirement node data.
     /// </summary>
-    public interface IRequirementNode : INotifyPropertyChanged
+    public interface IRequirementNode : IReactiveObject
     {
         AccessibilityLevel Accessibility { get; }
         bool AlwaysAccessible { get; set; }

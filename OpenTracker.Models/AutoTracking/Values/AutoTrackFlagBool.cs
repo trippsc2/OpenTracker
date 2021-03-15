@@ -3,7 +3,7 @@
 namespace OpenTracker.Models.AutoTracking.Values
 {
     /// <summary>
-    /// This is the class for representing the autotracking result value of a memory flag.
+    /// This is the class for representing the auto-tracking result value of a memory flag.
     /// </summary>
     public class AutoTrackFlagBool : AutoTrackValue
     {

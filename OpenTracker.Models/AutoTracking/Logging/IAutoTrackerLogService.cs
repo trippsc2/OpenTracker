@@ -1,10 +1,9 @@
 ﻿using System.Collections.ObjectModel;
-using WebSocketSharp;
 
 namespace OpenTracker.Models.AutoTracking.Logging
 {
     /// <summary>
-    /// This interface handles logging the autotracker.
+    /// This interface handles logging the auto-tracker.
     /// </summary>
     public interface IAutoTrackerLogService
     {

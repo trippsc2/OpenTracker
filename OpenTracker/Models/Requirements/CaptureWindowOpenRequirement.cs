@@ -36,7 +36,7 @@ namespace OpenTracker.Models.Requirements
         /// </param>
         private void OnCaptureWindowChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(ICaptureWindowVM.Open))
+            if (e.PropertyName == nameof(ICaptureWindowVM.IsOpen))
             {
                 UpdateValue();
             }
@@ -44,7 +44,7 @@ namespace OpenTracker.Models.Requirements
 
         protected override bool ConditionMet()
         {
-            return _captureWindow.Open;
+            return _captureWindow.IsOpen;
         }
     }
 }

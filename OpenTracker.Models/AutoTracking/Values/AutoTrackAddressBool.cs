@@ -3,7 +3,7 @@
 namespace OpenTracker.Models.AutoTracking.Values
 {
     /// <summary>
-    /// This is the class for representing the autotracking result value of a comparison of a SNES
+    /// This is the class for representing the auto-tracking result value of a comparison of a SNES
     /// memory address to a given value.
     /// </summary>
     public class AutoTrackAddressBool : AutoTrackValue

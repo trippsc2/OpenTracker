@@ -3,7 +3,7 @@
 namespace OpenTracker.Models.AutoTracking.Values
 {
     /// <summary>
-    /// This is the class for representing the autotracking result value of a memory address value.
+    /// This is the class for representing the auto-tracking result value of a memory address value.
     /// </summary>
     public class AutoTrackAddressValue : AutoTrackValue
     {

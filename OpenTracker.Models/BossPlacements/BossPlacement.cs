@@ -1,32 +1,23 @@
 ﻿using OpenTracker.Models.Modes;
 using OpenTracker.Models.SaveLoad;
-using System.ComponentModel;
+using ReactiveUI;
 
 namespace OpenTracker.Models.BossPlacements
 {
     /// <summary>
-    /// This is the class for a boss placement.
+    /// This class contains boss placement data.
     /// </summary>
-    public class BossPlacement : IBossPlacement
+    public class BossPlacement : ReactiveObject, IBossPlacement
     {
         private readonly IMode _mode;
 
         public BossType DefaultBoss { get; }
 
-        public event PropertyChangedEventHandler? PropertyChanged;
-
         private BossType? _boss;
         public BossType? Boss
         {
             get => _boss;
-            set
-            {
-                if (_boss != value)
-                {
-                    _boss = value;
-                    OnPropertyChanged(nameof(Boss));
-                }
-            }
+            set => this.RaiseAndSetIfChanged(ref _boss, value);
         }
 
         /// <summary>
@@ -48,18 +39,6 @@ namespace OpenTracker.Models.BossPlacements
             {
                 Boss = BossType.Aga;
             }
-
-        }
-
-        /// <summary>
-        /// Raises the PropertyChanged event for the specified property.
-        /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changed property.
-        /// </param>
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         /// <summary>
@@ -70,12 +49,7 @@ namespace OpenTracker.Models.BossPlacements
         /// </returns>
         public BossType? GetCurrentBoss()
         {
-            if (_mode.BossShuffle)
-            {
-                return Boss;
-            }
-
-            return DefaultBoss;
+            return _mode.BossShuffle ? Boss : DefaultBoss;
         }
 
         /// <summary>

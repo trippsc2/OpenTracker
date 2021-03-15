@@ -1,12 +1,12 @@
-﻿using OpenTracker.Models.Locations;
-using OpenTracker.Models.SaveLoad;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using OpenTracker.Models.Locations;
+using OpenTracker.Models.SaveLoad;
 
 namespace OpenTracker.Models.Connections
 {
     /// <summary>
-    /// This is the class for the collection container of map connections between map locations.
+    /// This class contains the collection container for map connections.
     /// </summary>
     public class ConnectionCollection : ObservableCollection<IConnection>, IConnectionCollection
     {

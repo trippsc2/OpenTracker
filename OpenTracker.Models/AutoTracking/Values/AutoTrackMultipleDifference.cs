@@ -4,7 +4,7 @@ using System.ComponentModel;
 namespace OpenTracker.Models.AutoTracking.Values
 {
     /// <summary>
-    /// This is the class for representing the autotracking result value of subtracting a pair of values.
+    /// This is the class for representing the auto-tracking result value of subtracting a pair of values.
     /// </summary>
     public class AutoTrackMultipleDifference : IAutoTrackValue
     {

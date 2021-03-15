@@ -9,8 +9,7 @@ namespace OpenTracker.Models.AutoTracking.Logging
     {
         private readonly ILogMessage.Factory _messageFactory;
         
-        public ObservableCollection<ILogMessage> LogCollection { get; } =
-            new ObservableCollection<ILogMessage>();
+        public ObservableCollection<ILogMessage> LogCollection { get; } = new ObservableCollection<ILogMessage>();
         
         /// <summary>
         /// Constructor

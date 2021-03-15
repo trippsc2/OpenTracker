@@ -1,11 +1,11 @@
-﻿using OpenTracker.Models.Dungeons;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using OpenTracker.Models.Dungeons;
 
 namespace OpenTracker.Models.DungeonItems
 {
     /// <summary>
-    /// This is the interface is the dictionary container of dungeon items.
+    /// This interface contains the dictionary container of dungeon items.
     /// </summary>
     public interface IDungeonItemDictionary : IDictionary<DungeonItemID, IDungeonItem>,
         ICollection<KeyValuePair<DungeonItemID, IDungeonItem>>

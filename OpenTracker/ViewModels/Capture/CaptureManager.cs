@@ -24,15 +24,8 @@ namespace OpenTracker.ViewModels.Capture
 
         private async Task OpenCaptureWindowImpl(ICaptureWindowVM captureWindow)
         {
-            if (captureWindow.Open)
-            {
-                return;
-            }
-
-            captureWindow.Open = true;
             await Dispatcher.UIThread.InvokeAsync(async () =>
                 await _dialogService.ShowDialogAsync(captureWindow));
-            captureWindow.Open = false;
         }
 
         public void GenerateInitialData()

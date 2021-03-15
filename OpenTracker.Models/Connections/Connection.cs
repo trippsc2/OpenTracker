@@ -4,7 +4,7 @@ using OpenTracker.Models.SaveLoad;
 namespace OpenTracker.Models.Connections
 {
     /// <summary>
-    /// This is the class for connections between two entrance map locations.
+    /// This class contains the map location connection data.
     /// </summary>
     public class Connection : IConnection
     {
@@ -28,18 +28,13 @@ namespace OpenTracker.Models.Connections
 
         public override bool Equals(object? obj)
         {
-            if (obj == null)
+            return obj switch
             {
-                return false;
-            }
-
-            if (obj is IConnection connection)
-            {
-                return (Location1 == connection.Location1 || Location1 == connection.Location2) &&
-                    (Location2 == connection.Location2 || Location2 == connection.Location1);
-            }
-
-            return false;
+                null => false,
+                IConnection connection => (Location1 == connection.Location1 || Location1 == connection.Location2) &&
+                                          (Location2 == connection.Location2 || Location2 == connection.Location1),
+                _ => false
+            };
         }
 
         public override int GetHashCode()
