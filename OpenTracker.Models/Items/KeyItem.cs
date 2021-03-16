@@ -18,7 +18,7 @@ namespace OpenTracker.Models.Items
 
         private int EffectiveMaximum => _mode.KeyDropShuffle ? _maximum + _keyDropMaximumDelta : _maximum;
 
-        public new delegate KeyItem Factory(
+        public delegate KeyItem Factory(
             int maximum, int keyDropMaximumDelta, int starting, IAutoTrackValue? autoTrackValue);
 
         /// <summary>

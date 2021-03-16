@@ -1527,21 +1527,21 @@ namespace OpenTracker.Models.DungeonNodes
                     {
                         connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.TRB1], node,
                             dungeonData.KeyDoors[KeyDoorID.TRB1BigKeyDoor].Requirement));
-                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.TRPastB1toB2KeyDoor],
+                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.TRPastB1ToB2KeyDoor],
                             node, _requirements[RequirementType.NoRequirement]));
                     }
                     break;
-                case DungeonNodeID.TRPastB1toB2KeyDoor:
+                case DungeonNodeID.TRPastB1ToB2KeyDoor:
                     {
                         connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.TRB1RightSide], node,
-                            dungeonData.KeyDoors[KeyDoorID.TRB1toB2KeyDoor].Requirement));
+                            dungeonData.KeyDoors[KeyDoorID.TRB1ToB2KeyDoor].Requirement));
                         connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.TRB2DarkRoomTop],
                             node, _requirements[RequirementType.NoRequirement]));
                     }
                     break;
                 case DungeonNodeID.TRB2DarkRoomTop:
                     {
-                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.TRPastB1toB2KeyDoor], node,
+                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.TRPastB1ToB2KeyDoor], node,
                             _requirements[RequirementType.DarkRoomTR]));
                         connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.TRB2DarkRoomBottom], node,
                             _requirements[RequirementType.CaneOfSomaria]));

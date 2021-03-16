@@ -1,7 +1,6 @@
 ﻿using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
-using System.ComponentModel;
 using ReactiveUI;
 
 namespace OpenTracker.Models.Sections

@@ -7,6 +7,7 @@ using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.SequenceBreaks;
 using System.Collections.Generic;
+using OpenTracker.Models.Prizes;
 using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Requirements

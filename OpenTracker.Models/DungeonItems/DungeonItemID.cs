@@ -127,7 +127,7 @@
         TRLaserBridgeTopLeft,
         TRLaserBridgeTopRight,
         TRLaserBridgeBottomLeft,
-        TRLaserBrdigeBottomRight,
+        TRLaserBridgeBottomRight,
         TRBoss,
         TRPokey1Drop,
         TRPokey2Drop,

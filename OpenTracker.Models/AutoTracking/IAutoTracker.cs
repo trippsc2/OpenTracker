@@ -11,7 +11,6 @@ namespace OpenTracker.Models.AutoTracking
     {
         List<string> Devices { get; }
         bool RaceIllegalTracking { get; set; }
-        Dictionary<ulong, IMemoryAddress> MemoryAddresses { get; }
         ConnectionStatus Status { get; }
 
         Task InGameCheck();

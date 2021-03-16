@@ -15,7 +15,7 @@ namespace OpenTracker.Views
     {
         private Orientation? _orientation;
 
-        private IMainWindowVM? ViewModel => DataContext as IMainWindowVM;
+        private new IMainWindowVM? ViewModel => DataContext as IMainWindowVM;
 
         public MainWindow()
         {

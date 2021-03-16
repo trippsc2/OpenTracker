@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using ReactiveUI;
 
-namespace OpenTracker.Models.AutoTracking
+namespace OpenTracker.Models.AutoTracking.Memory
 {
     /// <summary>
     /// This class contains SNES memory flag data.
@@ -11,8 +11,8 @@ namespace OpenTracker.Models.AutoTracking
         private readonly IMemoryAddress _memoryAddress;
         private readonly byte _flag;
 
-        private bool _status;
-        public bool Status
+        private bool? _status;
+        public bool? Status
         {
             get => _status;
             private set => this.RaiseAndSetIfChanged(ref _status, value);
@@ -57,6 +57,12 @@ namespace OpenTracker.Models.AutoTracking
         /// </summary>
         private void UpdateFlag()
         {
+            if (_memoryAddress.Value is null)
+            {
+                Status = null;
+                return;
+            }
+            
             Status = (_memoryAddress.Value & _flag) != 0;
         }
     }

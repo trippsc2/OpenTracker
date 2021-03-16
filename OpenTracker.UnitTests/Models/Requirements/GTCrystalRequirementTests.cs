@@ -2,6 +2,7 @@
 using Autofac;
 using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.Items;
+using OpenTracker.Models.Prizes;
 using OpenTracker.Models.Requirements;
 using Xunit;
 

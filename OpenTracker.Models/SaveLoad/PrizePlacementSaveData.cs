@@ -1,4 +1,4 @@
-﻿using OpenTracker.Models.Items;
+﻿using OpenTracker.Models.Prizes;
 
 namespace OpenTracker.Models.SaveLoad
 {

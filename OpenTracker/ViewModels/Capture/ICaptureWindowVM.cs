@@ -1,5 +1,4 @@
 using Avalonia.Media;
-using ReactiveUI;
 
 namespace OpenTracker.ViewModels.Capture
 {

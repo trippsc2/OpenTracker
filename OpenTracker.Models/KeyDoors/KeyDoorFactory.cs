@@ -109,7 +109,7 @@ namespace OpenTracker.Models.KeyDoors
                 KeyDoorID.TR1FSecondKeyDoor => dungeonData.Nodes[DungeonNodeID.TRF1SecondKeyDoor],
                 KeyDoorID.TR1FThirdKeyDoor => dungeonData.Nodes[DungeonNodeID.TRF1PastSecondKeyDoor],
                 KeyDoorID.TRB1BigKeyChestKeyDoor => dungeonData.Nodes[DungeonNodeID.TRB1BigKeyChestKeyDoor],
-                KeyDoorID.TRB1toB2KeyDoor => dungeonData.Nodes[DungeonNodeID.TRB1RightSide],
+                KeyDoorID.TRB1ToB2KeyDoor => dungeonData.Nodes[DungeonNodeID.TRB1RightSide],
                 KeyDoorID.TRB2KeyDoor => dungeonData.Nodes[DungeonNodeID.TRB2KeyDoor],
                 KeyDoorID.TRBigChest => dungeonData.Nodes[DungeonNodeID.TRB1BigChestArea],
                 KeyDoorID.TRB1BigKeyDoor => dungeonData.Nodes[DungeonNodeID.TRB1BigKeyDoor],

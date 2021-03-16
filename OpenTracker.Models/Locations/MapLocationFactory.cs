@@ -31,8 +31,8 @@ namespace OpenTracker.Models.Locations
         /// <summary>
         /// Returns the list of map locations for the specified location.
         /// </summary>
-        /// <param name="id">
-        /// The location ID.
+        /// <param name="location">
+        /// The location data.
         /// </param>
         /// <returns>
         /// The list of map locations.

@@ -19,7 +19,7 @@ namespace OpenTracker.Models.Requirements
         /// <param name="mode">
         /// The mode settings.
         /// </param>
-        /// <param name="bossShuffle">
+        /// <param name="expectedValue">
         /// The expected boss shuffle value.
         /// </param>
         public BossShuffleRequirement(IMode mode, bool expectedValue)

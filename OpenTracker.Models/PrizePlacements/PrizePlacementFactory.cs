@@ -1,4 +1,4 @@
-﻿using OpenTracker.Models.Items;
+﻿using OpenTracker.Models.Prizes;
 
 namespace OpenTracker.Models.PrizePlacements
 {
@@ -13,6 +13,9 @@ namespace OpenTracker.Models.PrizePlacements
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="prizes">
+        /// The prize dictionary.
+        /// </param>
         /// <param name="factory">
         /// A factory that creates prize placements.
         /// </param>

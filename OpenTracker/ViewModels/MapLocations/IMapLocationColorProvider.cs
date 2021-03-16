@@ -1,4 +1,3 @@
-using System.ComponentModel;
 using System.Reactive;
 using Avalonia.Input;
 using OpenTracker.Models.Locations;

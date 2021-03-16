@@ -75,7 +75,7 @@
         TR1FSecondKeyDoor,
         TR1FThirdKeyDoor,
         TRB1BigKeyChestKeyDoor,
-        TRB1toB2KeyDoor,
+        TRB1ToB2KeyDoor,
         TRB2KeyDoor,
         TRBigChest,
         TRB1BigKeyDoor,

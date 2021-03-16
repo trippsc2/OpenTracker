@@ -35,7 +35,7 @@ namespace OpenTracker.Models.Dungeons
 
         event EventHandler<IMutableDungeon>? DungeonDataCreated;
 
-        new delegate IDungeon Factory(LocationID id);
+        delegate IDungeon Factory(LocationID id);
 
         void FinishMutableDungeonCreation(IMutableDungeon dungeonData);
     }

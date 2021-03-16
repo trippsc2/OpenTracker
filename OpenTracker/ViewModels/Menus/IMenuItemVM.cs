@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Windows.Input;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Utils;

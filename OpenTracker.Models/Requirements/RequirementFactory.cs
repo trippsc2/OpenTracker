@@ -6,6 +6,7 @@ using OpenTracker.Models.RequirementNodes;
 using OpenTracker.Models.SequenceBreaks;
 using System;
 using System.Collections.Generic;
+using OpenTracker.Models.Prizes;
 
 namespace OpenTracker.Models.Requirements
 {
@@ -716,9 +717,6 @@ namespace OpenTracker.Models.Requirements
         /// <summary>
         /// Returns a new requirement of the proper type.
         /// </summary>
-        /// <param name="game">
-        /// The game data.
-        /// </param>
         /// <param name="type">
         /// The requirement type.
         /// </param>

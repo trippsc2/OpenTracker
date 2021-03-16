@@ -57,10 +57,13 @@ namespace OpenTracker.Models.BossPlacements
         /// </summary>
         public void Reset()
         {
-            if (DefaultBoss != BossType.Aga)
+            if (DefaultBoss == BossType.Aga)
             {
-                Boss = null;
+                Boss = BossType.Aga;
+                return;
             }
+
+            Boss = null;
         }
 
         /// <summary>

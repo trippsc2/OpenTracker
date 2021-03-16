@@ -16,6 +16,9 @@ namespace OpenTracker.Models.Requirements
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="mode">
+        /// The mode settings data.
+        /// </param>
         /// <param name="expectedValue">
         /// A boolean representing the required compass shuffle value.
         /// </param>

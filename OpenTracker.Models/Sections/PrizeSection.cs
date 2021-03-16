@@ -2,7 +2,6 @@
 using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.Requirements;
-using System;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.Sections
@@ -17,7 +16,7 @@ namespace OpenTracker.Models.Sections
 
         public IPrizePlacement PrizePlacement { get; }
 
-        public new delegate PrizeSection Factory(
+        public delegate PrizeSection Factory(
             string name, IBossPlacement bossPlacement, IPrizePlacement prizePlacement,
             IAutoTrackValue? autoTrackValue, IRequirement requirement,
             bool alwaysClearable = false);
@@ -35,7 +34,7 @@ namespace OpenTracker.Models.Sections
         /// The prize placement of this section.
         /// </param>
         /// <param name="autoTrackValue">
-        /// The section autotrack value.
+        /// The section auto-track value.
         /// </param>
         /// <param name="requirement">
         /// The requirement for this section to be visible.
@@ -44,14 +43,12 @@ namespace OpenTracker.Models.Sections
         /// A boolean representing whether the section is always clearable (used for GT final).
         /// </param>
         public PrizeSection(
-            string name, IBossPlacement bossPlacement, IPrizePlacement prizePlacement,
-            IAutoTrackValue? autoTrackValue, IRequirement requirement,
-            bool alwaysClearable = false) : base(name, bossPlacement, requirement)
+            string name, IBossPlacement bossPlacement, IPrizePlacement prizePlacement, IAutoTrackValue? autoTrackValue,
+            IRequirement requirement, bool alwaysClearable = false) : base(name, bossPlacement, requirement)
         {
             _alwaysClearable = alwaysClearable;
             _autoTrackValue = autoTrackValue;
-            PrizePlacement = prizePlacement ??
-                throw new ArgumentNullException(nameof(prizePlacement));
+            PrizePlacement = prizePlacement;
 
             PropertyChanged += OnPropertyChanged;
             PrizePlacement.PropertyChanging += OnPrizeChanging;
@@ -74,19 +71,18 @@ namespace OpenTracker.Models.Sections
         /// </param>
         private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(Available))
+            if (e.PropertyName != nameof(Available) || PrizePlacement.Prize is null)
             {
-                if (PrizePlacement.Prize != null)
-                {
-                    if (IsAvailable())
-                    {
-                        PrizePlacement.Prize.Remove();
-                    }
-                    else
-                    {
-                        PrizePlacement.Prize.Add();
-                    }
-                }
+                return;
+            }
+            
+            if (IsAvailable())
+            {
+                PrizePlacement.Prize.Remove();
+            }
+            else
+            {
+                PrizePlacement.Prize.Add();
             }
         }
 
@@ -101,13 +97,14 @@ namespace OpenTracker.Models.Sections
         /// </param>
         private void OnPrizeChanging(object? sender, PropertyChangingEventArgs e)
         {
-            if (e.PropertyName == nameof(IPrizePlacement.Prize))
+            if (e.PropertyName != nameof(IPrizePlacement.Prize))
             {
-                if (!IsAvailable() && PrizePlacement != null &&
-                PrizePlacement.Prize != null)
-                {
-                    PrizePlacement.Prize.Remove();
-                }
+                return;
+            }
+            
+            if (!IsAvailable())
+            {
+                PrizePlacement.Prize?.Remove();
             }
         }
 
@@ -122,13 +119,14 @@ namespace OpenTracker.Models.Sections
         /// </param>
         private void OnPrizeChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(IPrizePlacement.Prize))
+            if (e.PropertyName != nameof(IPrizePlacement.Prize))
             {
-                if (!IsAvailable() && PrizePlacement != null &&
-                PrizePlacement.Prize != null)
-                {
-                    PrizePlacement.Prize.Add();
-                }
+                return;
+            }
+            
+            if (!IsAvailable())
+            {
+                PrizePlacement.Prize?.Add();
             }
         }
 

@@ -26,7 +26,7 @@ namespace OpenTracker.ViewModels.Items.Adapters
         
         public string ImageSource { get; }
         
-        public string? Label => _item.Known ? (7 - _item.Current).ToString(CultureInfo.InvariantCulture) : "?";
+        public string Label => _item.Known ? (7 - _item.Current).ToString(CultureInfo.InvariantCulture) : "?";
         public string LabelColor =>
             _item.Known ? _item.Current == 0 ? _colorSettings.EmphasisFontColor : "#ffffffff" :
                 _colorSettings.AccessibilityColors[AccessibilityLevel.SequenceBreak];

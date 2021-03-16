@@ -1,6 +1,5 @@
 using System.Collections.ObjectModel;
 using Avalonia.Media;
-using JetBrains.Annotations;
 using OpenTracker.Utils.Dialog;
 using ReactiveUI;
 

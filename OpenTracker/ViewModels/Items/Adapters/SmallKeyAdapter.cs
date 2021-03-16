@@ -25,8 +25,7 @@ namespace OpenTracker.ViewModels.Items.Adapters
 
         public string ImageSource =>
             $"avares://OpenTracker/Assets/Images/Items/smallkey{(_item.Current > 0 ? "1" : "0")}.png";
-        public string? Label =>
-            _item.Current.ToString(CultureInfo.InvariantCulture) + (_item.CanAdd() ? "" : "*");
+        public string Label => _item.Current.ToString(CultureInfo.InvariantCulture) + (_item.CanAdd() ? "" : "*");
         public string LabelColor => _item.CanAdd() ? "#ffffffff" : _colorSettings.EmphasisFontColor;
         
         public IBossSelectPopupVM? BossSelect { get; } = null;

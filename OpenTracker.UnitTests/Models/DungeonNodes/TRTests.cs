@@ -1356,7 +1356,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                     new RequirementNodeID[0],
                     new DungeonNodeID[]
                     {
-                        DungeonNodeID.TRPastB1toB2KeyDoor
+                        DungeonNodeID.TRPastB1ToB2KeyDoor
                     },
                     new KeyDoorID[0],
                     new (ItemType, int)[0],
@@ -1382,7 +1382,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                     new (ItemType, int)[0],
                     new (SequenceBreakType, bool)[0],
                     LocationID.TurtleRock,
-                    DungeonNodeID.TRPastB1toB2KeyDoor,
+                    DungeonNodeID.TRPastB1ToB2KeyDoor,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1395,12 +1395,12 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                     },
                     new KeyDoorID[]
                     {
-                        KeyDoorID.TRB1toB2KeyDoor
+                        KeyDoorID.TRB1ToB2KeyDoor
                     },
                     new (ItemType, int)[0],
                     new (SequenceBreakType, bool)[0],
                     LocationID.TurtleRock,
-                    DungeonNodeID.TRPastB1toB2KeyDoor,
+                    DungeonNodeID.TRPastB1ToB2KeyDoor,
                     AccessibilityLevel.Normal
                 }
             };
@@ -1417,7 +1417,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                     new (ItemType, int)[0],
                     new (SequenceBreakType, bool)[0],
                     LocationID.TurtleRock,
-                    DungeonNodeID.TRPastB1toB2KeyDoor,
+                    DungeonNodeID.TRPastB1ToB2KeyDoor,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1432,7 +1432,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                     new (ItemType, int)[0],
                     new (SequenceBreakType, bool)[0],
                     LocationID.TurtleRock,
-                    DungeonNodeID.TRPastB1toB2KeyDoor,
+                    DungeonNodeID.TRPastB1ToB2KeyDoor,
                     AccessibilityLevel.Normal
                 }
             };
@@ -1446,7 +1446,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                     new RequirementNodeID[0],
                     new DungeonNodeID[]
                     {
-                        DungeonNodeID.TRPastB1toB2KeyDoor
+                        DungeonNodeID.TRPastB1ToB2KeyDoor
                     },
                     new KeyDoorID[0],
                     new (ItemType, int)[]
@@ -1467,7 +1467,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                     new RequirementNodeID[0],
                     new DungeonNodeID[]
                     {
-                        DungeonNodeID.TRPastB1toB2KeyDoor
+                        DungeonNodeID.TRPastB1ToB2KeyDoor
                     },
                     new KeyDoorID[0],
                     new (ItemType, int)[]
@@ -1488,7 +1488,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                     new RequirementNodeID[0],
                     new DungeonNodeID[]
                     {
-                        DungeonNodeID.TRPastB1toB2KeyDoor
+                        DungeonNodeID.TRPastB1ToB2KeyDoor
                     },
                     new KeyDoorID[0],
                     new (ItemType, int)[]

@@ -1,4 +1,4 @@
-﻿namespace OpenTracker.Models.Items
+﻿namespace OpenTracker.Models.Prizes
 {
     /// <summary>
     /// This is the enum type for prize types.

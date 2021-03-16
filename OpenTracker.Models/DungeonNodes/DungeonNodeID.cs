@@ -202,7 +202,7 @@
         TRBigChest,
         TRB1BigKeyDoor,
         TRB1RightSide,
-        TRPastB1toB2KeyDoor,
+        TRPastB1ToB2KeyDoor,
         TRB2DarkRoomTop,
         TRB2DarkRoomBottom,
         TRB2PastDarkMaze,

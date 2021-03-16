@@ -22,6 +22,8 @@ namespace OpenTracker.Models.AutoTracking.Values
         public AutoTrackMultipleSum(List<IAutoTrackValue> values)
         {
             _values = values;
+            
+            UpdateValue();
 
             foreach (var value in values)
             {
@@ -51,6 +53,11 @@ namespace OpenTracker.Models.AutoTracking.Values
         /// </summary>
         protected override int? GetNewValue()
         {
+            if (!_values.Exists(x => x.CurrentValue.HasValue))
+            {
+                return null;
+            }
+            
             var newValue = _values.Where(value => value.CurrentValue.HasValue).Sum(
                 value => value.CurrentValue ?? 0);
 

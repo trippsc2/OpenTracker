@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using ReactiveUI;
+﻿using ReactiveUI;
 
 namespace OpenTracker.Models.Markings
 {

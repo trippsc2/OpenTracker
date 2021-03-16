@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using OpenTracker.Models.AutoTracking.Memory;
 
 namespace OpenTracker.Models.AutoTracking.Values
 {
@@ -26,6 +27,8 @@ namespace OpenTracker.Models.AutoTracking.Values
             _flag = flag;
             _trueValue = trueValue;
 
+            UpdateValue();
+
             _flag.PropertyChanged += OnMemoryChanged;
         }
 
@@ -51,7 +54,12 @@ namespace OpenTracker.Models.AutoTracking.Values
         /// </summary>
         protected override int? GetNewValue()
         {
-            return _flag.Status ? _trueValue : 0;
+            if (_flag.Status is null)
+            {
+                return null;
+            }
+            
+            return _flag.Status.Value ? _trueValue : 0;
         }
     }
 }

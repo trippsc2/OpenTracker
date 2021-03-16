@@ -431,7 +431,7 @@ namespace OpenTracker.Models.DungeonItems
                 case DungeonItemID.TRLaserBridgeTopLeft:
                 case DungeonItemID.TRLaserBridgeTopRight:
                 case DungeonItemID.TRLaserBridgeBottomLeft:
-                case DungeonItemID.TRLaserBrdigeBottomRight:
+                case DungeonItemID.TRLaserBridgeBottomRight:
                     {
                         return dungeonData.Nodes[DungeonNodeID.TRLaserBridgeChests];
                     }

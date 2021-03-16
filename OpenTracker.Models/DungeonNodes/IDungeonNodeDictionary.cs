@@ -7,8 +7,7 @@ namespace OpenTracker.Models.DungeonNodes
     /// <summary>
     /// This interface contains the dictionary container for dungeon nodes.
     /// </summary>
-    public interface IDungeonNodeDictionary : IDictionary<DungeonNodeID, IDungeonNode>,
-        ICollection<KeyValuePair<DungeonNodeID, IDungeonNode>>
+    public interface IDungeonNodeDictionary : IDictionary<DungeonNodeID, IDungeonNode>
     {
         event EventHandler<KeyValuePair<DungeonNodeID, IDungeonNode>> ItemCreated;
 

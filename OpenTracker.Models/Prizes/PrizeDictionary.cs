@@ -1,8 +1,9 @@
-﻿using OpenTracker.Models.SaveLoad;
+﻿using System.Collections.Generic;
+using OpenTracker.Models.Items;
+using OpenTracker.Models.SaveLoad;
 using OpenTracker.Utils;
-using System.Collections.Generic;
 
-namespace OpenTracker.Models.Items
+namespace OpenTracker.Models.Prizes
 {
     /// <summary>
     /// This class contains the dictionary container for prize data.

@@ -97,7 +97,7 @@ namespace OpenTracker.Utils
         /// </param>
         private void UpdateWithNotification(TKey key, TValue value)
         {
-            if (_dictionary.TryGetValue(key, out TValue existing))
+            if (_dictionary.TryGetValue(key, out var existing))
             {
                 _dictionary[key] = value;
 
@@ -121,7 +121,7 @@ namespace OpenTracker.Utils
         /// <returns></returns>
         private bool RemoveWithNotification(TKey key)
         {
-            if (_dictionary.TryGetValue(key, out TValue value) && _dictionary.Remove(key))
+            if (_dictionary.TryGetValue(key, out var value) && _dictionary.Remove(key))
             {
                 CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(
                     NotifyCollectionChangedAction.Remove,

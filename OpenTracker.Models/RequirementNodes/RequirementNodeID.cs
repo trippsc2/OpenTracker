@@ -46,7 +46,7 @@
         MagicBatLedge,
         MagicBat,
         RaceGameLedge,
-        RaceGameLegdeNotBunny,
+        RaceGameLedgeNotBunny,
         SouthOfGroveLedge,
         SouthOfGrove,
         GroveDiggingSpot,

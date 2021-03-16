@@ -1,5 +1,4 @@
 using OpenTracker.Models.Requirements;
-using OpenTracker.Utils;
 
 namespace OpenTracker.ViewModels.UIPanels
 {

@@ -1,6 +1,5 @@
 ﻿using OpenTracker.Models.Items;
 using OpenTracker.Models.PrizePlacements;
-using System.Linq;
 
 namespace OpenTracker.Models.UndoRedo
 {

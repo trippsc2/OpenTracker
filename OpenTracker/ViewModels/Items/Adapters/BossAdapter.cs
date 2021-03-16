@@ -73,6 +73,11 @@ namespace OpenTracker.ViewModels.Items.Adapters
         /// </summary>
         private void OpenBossSelect()
         {
+            if (BossSelect is null)
+            {
+                return;
+            }
+            
             BossSelect.PopupOpen = true;
         }
 

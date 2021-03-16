@@ -1,6 +1,5 @@
 ﻿using Avalonia.Input;
 using Avalonia.Threading;
-using OpenTracker.Models.Items;
 using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.Sections;
 using OpenTracker.Models.UndoRedo;
@@ -11,6 +10,7 @@ using System.Linq;
 using System.Reactive;
 using System.Text;
 using System.Threading.Tasks;
+using OpenTracker.Models.Prizes;
 
 namespace OpenTracker.ViewModels.PinnedLocations.Sections
 {

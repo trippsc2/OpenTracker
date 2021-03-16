@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using OpenTracker.Models.Requirements;
+﻿using OpenTracker.Models.Requirements;
 using ReactiveUI;
 
 namespace OpenTracker.Models.Locations

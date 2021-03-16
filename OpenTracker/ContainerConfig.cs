@@ -4,6 +4,7 @@ using System.Reflection;
 using Autofac;
 using OpenTracker.Models.AutoTracking;
 using OpenTracker.Models.AutoTracking.Logging;
+using OpenTracker.Models.AutoTracking.Memory;
 using OpenTracker.Models.AutoTracking.SNESConnectors;
 using OpenTracker.Models.AutoTracking.Values;
 using OpenTracker.Models.BossPlacements;
@@ -21,6 +22,7 @@ using OpenTracker.Models.NodeConnections;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.RequirementNodes;
 using OpenTracker.Models.PrizePlacements;
+using OpenTracker.Models.Prizes;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.Sections;
 using OpenTracker.Models.SequenceBreaks;
@@ -181,8 +183,9 @@ namespace OpenTracker
         private static List<string> ModelsSingleInstanceTypes =>
             new List<string>
             {
-                nameof(AutoTracker),
                 nameof(AutoTrackerLogService),
+                nameof(MemoryAddressProvider),
+                nameof(AutoTracker),
                 nameof(SNESConnector),
                 nameof(BossPlacementDictionary),
                 nameof(BossPlacementFactory),

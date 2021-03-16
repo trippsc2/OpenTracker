@@ -220,7 +220,7 @@ namespace OpenTracker.ViewModels.AutoTracking
         /// </returns>
         private async Task<string?> OpenSaveFileDialog()
         {
-            return await Dispatcher.UIThread.InvokeAsync<string?>(async () =>
+            return await Dispatcher.UIThread.InvokeAsync(async () =>
                 await _fileDialogService.ShowSaveDialogAsync());
         }
 

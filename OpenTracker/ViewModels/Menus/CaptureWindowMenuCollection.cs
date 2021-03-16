@@ -1,9 +1,5 @@
-using System.Reactive;
-using System.Threading.Tasks;
 using OpenTracker.Utils;
-using OpenTracker.Utils.Dialog;
 using OpenTracker.ViewModels.Capture;
-using ReactiveUI;
 
 namespace OpenTracker.ViewModels.Menus
 {

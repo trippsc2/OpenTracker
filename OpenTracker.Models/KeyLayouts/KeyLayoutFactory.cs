@@ -3296,7 +3296,7 @@ namespace OpenTracker.Models.KeyLayouts
                                                     DungeonItemID.TRLaserBridgeTopLeft,
                                                     DungeonItemID.TRLaserBridgeTopRight,
                                                     DungeonItemID.TRLaserBridgeBottomLeft,
-                                                    DungeonItemID.TRLaserBrdigeBottomRight
+                                                    DungeonItemID.TRLaserBridgeBottomRight
                                                 }, false,
                                                 new List<IKeyLayout>
                                                 {
@@ -3321,7 +3321,7 @@ namespace OpenTracker.Models.KeyLayouts
                                     DungeonItemID.TRLaserBridgeTopLeft,
                                     DungeonItemID.TRLaserBridgeTopRight,
                                     DungeonItemID.TRLaserBridgeBottomLeft,
-                                    DungeonItemID.TRLaserBrdigeBottomRight
+                                    DungeonItemID.TRLaserBridgeBottomRight
                                 }, false,
                                 new List<IKeyLayout>
                                 {
@@ -3379,7 +3379,7 @@ namespace OpenTracker.Models.KeyLayouts
                                                             DungeonItemID.TRLaserBridgeTopLeft,
                                                             DungeonItemID.TRLaserBridgeTopRight,
                                                             DungeonItemID.TRLaserBridgeBottomLeft,
-                                                            DungeonItemID.TRLaserBrdigeBottomRight
+                                                            DungeonItemID.TRLaserBridgeBottomRight
                                                         }, true,
                                                         new List<IKeyLayout>
                                                         {
@@ -3438,7 +3438,7 @@ namespace OpenTracker.Models.KeyLayouts
                                                             DungeonItemID.TRLaserBridgeTopLeft,
                                                             DungeonItemID.TRLaserBridgeTopRight,
                                                             DungeonItemID.TRLaserBridgeBottomLeft,
-                                                            DungeonItemID.TRLaserBrdigeBottomRight
+                                                            DungeonItemID.TRLaserBridgeBottomRight
                                                         }, false,
                                                         new List<IKeyLayout>
                                                         {
@@ -3462,7 +3462,7 @@ namespace OpenTracker.Models.KeyLayouts
                                     DungeonItemID.TRLaserBridgeTopLeft,
                                     DungeonItemID.TRLaserBridgeTopRight,
                                     DungeonItemID.TRLaserBridgeBottomLeft,
-                                    DungeonItemID.TRLaserBrdigeBottomRight
+                                    DungeonItemID.TRLaserBridgeBottomRight
                                 },
                                 new List<IKeyLayout>
                                 {
@@ -3482,7 +3482,7 @@ namespace OpenTracker.Models.KeyLayouts
                                             DungeonItemID.TRLaserBridgeTopLeft,
                                             DungeonItemID.TRLaserBridgeTopRight,
                                             DungeonItemID.TRLaserBridgeBottomLeft,
-                                            DungeonItemID.TRLaserBrdigeBottomRight
+                                            DungeonItemID.TRLaserBridgeBottomRight
                                         }, true,
                                         new List<IKeyLayout>
                                         {
@@ -3512,7 +3512,7 @@ namespace OpenTracker.Models.KeyLayouts
                                             DungeonItemID.TRLaserBridgeTopLeft,
                                             DungeonItemID.TRLaserBridgeTopRight,
                                             DungeonItemID.TRLaserBridgeBottomLeft,
-                                            DungeonItemID.TRLaserBrdigeBottomRight
+                                            DungeonItemID.TRLaserBridgeBottomRight
                                         }, false,
                                         new List<IKeyLayout>
                                         {
@@ -3561,7 +3561,7 @@ namespace OpenTracker.Models.KeyLayouts
                                                     DungeonItemID.TRLaserBridgeTopLeft,
                                                     DungeonItemID.TRLaserBridgeTopRight,
                                                     DungeonItemID.TRLaserBridgeBottomLeft,
-                                                    DungeonItemID.TRLaserBrdigeBottomRight,
+                                                    DungeonItemID.TRLaserBridgeBottomRight,
                                                     DungeonItemID.TRPokey1Drop,
                                                     DungeonItemID.TRPokey2Drop
                                                 }, false,
@@ -3588,7 +3588,7 @@ namespace OpenTracker.Models.KeyLayouts
                                     DungeonItemID.TRLaserBridgeTopLeft,
                                     DungeonItemID.TRLaserBridgeTopRight,
                                     DungeonItemID.TRLaserBridgeBottomLeft,
-                                    DungeonItemID.TRLaserBrdigeBottomRight,
+                                    DungeonItemID.TRLaserBridgeBottomRight,
                                     DungeonItemID.TRPokey1Drop,
                                     DungeonItemID.TRPokey2Drop
                                 }, false,
@@ -3650,7 +3650,7 @@ namespace OpenTracker.Models.KeyLayouts
                                                             DungeonItemID.TRLaserBridgeTopLeft,
                                                             DungeonItemID.TRLaserBridgeTopRight,
                                                             DungeonItemID.TRLaserBridgeBottomLeft,
-                                                            DungeonItemID.TRLaserBrdigeBottomRight,
+                                                            DungeonItemID.TRLaserBridgeBottomRight,
                                                             DungeonItemID.TRPokey1Drop,
                                                             DungeonItemID.TRPokey2Drop
                                                         }, true,
@@ -3713,7 +3713,7 @@ namespace OpenTracker.Models.KeyLayouts
                                                             DungeonItemID.TRLaserBridgeTopLeft,
                                                             DungeonItemID.TRLaserBridgeTopRight,
                                                             DungeonItemID.TRLaserBridgeBottomLeft,
-                                                            DungeonItemID.TRLaserBrdigeBottomRight,
+                                                            DungeonItemID.TRLaserBridgeBottomRight,
                                                             DungeonItemID.TRPokey1Drop
                                                         }, false,
                                                         new List<IKeyLayout>
@@ -3776,7 +3776,7 @@ namespace OpenTracker.Models.KeyLayouts
                                                             DungeonItemID.TRLaserBridgeTopLeft,
                                                             DungeonItemID.TRLaserBridgeTopRight,
                                                             DungeonItemID.TRLaserBridgeBottomLeft,
-                                                            DungeonItemID.TRLaserBrdigeBottomRight,
+                                                            DungeonItemID.TRLaserBridgeBottomRight,
                                                             DungeonItemID.TRPokey1Drop,
                                                             DungeonItemID.TRPokey2Drop
                                                         }, false,
@@ -3802,7 +3802,7 @@ namespace OpenTracker.Models.KeyLayouts
                                     DungeonItemID.TRLaserBridgeTopLeft,
                                     DungeonItemID.TRLaserBridgeTopRight,
                                     DungeonItemID.TRLaserBridgeBottomLeft,
-                                    DungeonItemID.TRLaserBrdigeBottomRight
+                                    DungeonItemID.TRLaserBridgeBottomRight
                                 },
                                 new List<IKeyLayout>
                                 {
@@ -3822,7 +3822,7 @@ namespace OpenTracker.Models.KeyLayouts
                                             DungeonItemID.TRLaserBridgeTopLeft,
                                             DungeonItemID.TRLaserBridgeTopRight,
                                             DungeonItemID.TRLaserBridgeBottomLeft,
-                                            DungeonItemID.TRLaserBrdigeBottomRight,
+                                            DungeonItemID.TRLaserBridgeBottomRight,
                                             DungeonItemID.TRPokey1Drop,
                                             DungeonItemID.TRPokey2Drop
                                         }, true,
@@ -3854,7 +3854,7 @@ namespace OpenTracker.Models.KeyLayouts
                                             DungeonItemID.TRLaserBridgeTopLeft,
                                             DungeonItemID.TRLaserBridgeTopRight,
                                             DungeonItemID.TRLaserBridgeBottomLeft,
-                                            DungeonItemID.TRLaserBrdigeBottomRight,
+                                            DungeonItemID.TRLaserBridgeBottomRight,
                                             DungeonItemID.TRPokey1Drop,
                                             DungeonItemID.TRPokey2Drop
                                         }, false,

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using OpenTracker.Models.AutoTracking.Memory;
 
 namespace OpenTracker.Models.AutoTracking.Values
 {
@@ -55,7 +56,12 @@ namespace OpenTracker.Models.AutoTracking.Values
 
         protected override int? GetNewValue()
         {
-            var newValue = _address.Value + _adjustment;
+            if (_address.Value is null)
+            {
+                return null;
+            }
+            
+            var newValue = _address.Value.Value + _adjustment;
 
             return newValue > _maximum ? (int?) null : newValue;
         }

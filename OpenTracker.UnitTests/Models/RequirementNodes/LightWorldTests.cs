@@ -2,6 +2,7 @@
 using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Modes;
+using OpenTracker.Models.Prizes;
 using OpenTracker.Models.RequirementNodes;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.SequenceBreaks;

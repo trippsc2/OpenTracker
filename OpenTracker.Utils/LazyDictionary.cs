@@ -14,8 +14,7 @@ namespace OpenTracker.Utils
     /// <typeparam name="TValue">
     /// The type of the dictionary value.
     /// </typeparam>
-    public abstract class LazyDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
-        ICollection<KeyValuePair<TKey, TValue>>
+    public abstract class LazyDictionary<TKey, TValue> : IDictionary<TKey, TValue>
         where TKey : notnull
     {
         private readonly IDictionary<TKey, TValue> _dictionary;

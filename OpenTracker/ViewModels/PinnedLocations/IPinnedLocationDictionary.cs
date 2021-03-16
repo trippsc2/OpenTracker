@@ -3,8 +3,7 @@ using System.Collections.Generic;
 
 namespace OpenTracker.ViewModels.PinnedLocations
 {
-    public interface IPinnedLocationDictionary : IDictionary<LocationID, IPinnedLocationVM>,
-        ICollection<KeyValuePair<LocationID, IPinnedLocationVM>>
+    public interface IPinnedLocationDictionary : IDictionary<LocationID, IPinnedLocationVM>
     {
     }
 }

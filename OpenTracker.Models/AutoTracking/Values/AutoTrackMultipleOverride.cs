@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 
 namespace OpenTracker.Models.AutoTracking.Values
 {
@@ -23,6 +22,8 @@ namespace OpenTracker.Models.AutoTracking.Values
         public AutoTrackMultipleOverride(List<IAutoTrackValue> values)
         {
             _values = values;
+
+            UpdateValue();
 
             foreach (var value in values)
             {
@@ -47,22 +48,26 @@ namespace OpenTracker.Models.AutoTracking.Values
             }
         }
 
-        /// <summary>
-        /// Updates the current value of this value.
-        /// </summary>
         protected override int? GetNewValue()
         {
-            if (!_values.Exists(value => value.CurrentValue.HasValue))
+            var valuesNotNull = _values.FindAll(x => x.CurrentValue.HasValue);
+
+            if (valuesNotNull.Count == 0)
             {
                 return null;
             }
+
+            var result = 0;
             
-            foreach (var value in _values.Where(value => value.CurrentValue.HasValue && value.CurrentValue > 0))
+            foreach (var value in valuesNotNull)
             {
-                return value.CurrentValue;
+                if (result < value.CurrentValue)
+                {
+                    result = value.CurrentValue.Value;
+                }
             }
 
-            return 0;
+            return result;
         }
     }
 }

@@ -361,15 +361,15 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
 
                 using var openEvent = new ManualResetEvent(false);
 
-                void onOpen(object? sender, EventArgs e)
+                void OnOpen(object? sender, EventArgs e)
                 {
                     openEvent.Set();
                 }
 
-                Socket.OnOpen += onOpen;
+                Socket.OnOpen += OnOpen;
                 Socket.Connect();
                 var result = openEvent.WaitOne(timeOutInMs);
-                Socket.OnOpen -= onOpen;
+                Socket.OnOpen -= OnOpen;
 
                 if (result)
                 {

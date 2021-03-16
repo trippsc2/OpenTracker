@@ -2,7 +2,7 @@
 using Avalonia.Markup.Xaml;
 using OpenTracker.Utils.Dialog;
 
-namespace OpenTracker.Views
+namespace OpenTracker.Views.Dialogs
 {
     public class MessageBoxDialog : DialogWindowBase<bool>
     {

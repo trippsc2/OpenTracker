@@ -3,6 +3,7 @@
              xmlns:vm="clr-namespace:OpenTracker.ViewModels.Areas;assembly=OpenTracker"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:mapLocations="clr-namespace:OpenTracker.ViewModels.MapLocations"
              mc:Ignorable="d" x:Class="OpenTracker.Views.Areas.MapArea">
   
   <Design.DataContext>
@@ -33,6 +34,9 @@
           
           <ItemsControl.Styles>
             <Style Selector="ItemsControl.Canvas > ContentPresenter">
+              <Design.DataContext>
+                <mapLocations:MapLocationVM />
+              </Design.DataContext>
               <Setter Property="Canvas.Left" Value="{Binding CanvasX}" />
               <Setter Property="Canvas.Top" Value="{Binding CanvasY}" />
             </Style>

@@ -1,8 +1,6 @@
 ﻿using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.Requirements;
-using System;
-using System.ComponentModel;
 using ReactiveUI;
 
 namespace OpenTracker.Models.KeyDoors

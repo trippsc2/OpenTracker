@@ -10,8 +10,7 @@ namespace OpenTracker.Utils
         [ThreadStatic]
         private static bool _currentThreadIsProcessingItems;
 
-        private int _pendingTaskCount = 0;
-        private int _waitingTaskCount = 0;
+        private int _pendingTaskCount;
 
         private readonly int _concurrentTasks;
         private readonly LinkedList<Task> _tasks =
@@ -32,7 +31,7 @@ namespace OpenTracker.Utils
 
         private void NotifyThreadPoolOfPendingWork()
         {
-            ThreadPool.UnsafeQueueUserWorkItem((object? state) =>
+            ThreadPool.UnsafeQueueUserWorkItem(state =>
             {
                 _currentThreadIsProcessingItems = true;
 
@@ -52,7 +51,6 @@ namespace OpenTracker.Utils
 
                             item = _tasks.First!.Value;
                             _tasks.RemoveFirst();
-                            _waitingTaskCount--;
                         }
 
                         TryExecuteTask(item);
@@ -96,7 +94,6 @@ namespace OpenTracker.Utils
             lock (_tasks)
             {
                 _tasks.AddLast(task);
-                _waitingTaskCount++;
 
                 if (_pendingTaskCount < _concurrentTasks)
                 {
@@ -136,7 +133,6 @@ namespace OpenTracker.Utils
             {
                 if (_tasks.Remove(task))
                 {
-                    _waitingTaskCount--;
                     return true;
                 }
 

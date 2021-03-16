@@ -1,6 +1,5 @@
 ﻿using OpenTracker.Models.Items;
 using OpenTracker.Models.SaveLoad;
-using System.ComponentModel;
 using ReactiveUI;
 
 namespace OpenTracker.Models.PrizePlacements

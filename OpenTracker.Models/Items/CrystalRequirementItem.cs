@@ -16,7 +16,7 @@ namespace OpenTracker.Models.Items
             set => this.RaiseAndSetIfChanged(ref _known, value);
         }
 
-        public new delegate CrystalRequirementItem Factory();
+        public delegate CrystalRequirementItem Factory();
 
         /// <summary>
         /// Constructor

@@ -1,7 +1,6 @@
 ﻿using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.RequirementNodes;
-using System.ComponentModel;
 using ReactiveUI;
 
 namespace OpenTracker.Models.DungeonItems

@@ -1,4 +1,3 @@
-using System.ComponentModel;
 using OpenTracker.Models.Sections;
 using ReactiveUI;
 

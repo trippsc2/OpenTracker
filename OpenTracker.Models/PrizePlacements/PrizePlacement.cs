@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using OpenTracker.Models.Items;
+using OpenTracker.Models.Prizes;
 using OpenTracker.Models.SaveLoad;
 using ReactiveUI;
 

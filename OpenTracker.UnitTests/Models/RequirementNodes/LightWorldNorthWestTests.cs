@@ -2,6 +2,7 @@
 using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Modes;
+using OpenTracker.Models.Prizes;
 using OpenTracker.Models.RequirementNodes;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.SequenceBreaks;
@@ -1886,7 +1887,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.RaceGameLedge
                     },
-                    RequirementNodeID.RaceGameLegdeNotBunny,
+                    RequirementNodeID.RaceGameLedgeNotBunny,
                     false,
                     AccessibilityLevel.None
                 },
@@ -1903,7 +1904,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
-                    RequirementNodeID.RaceGameLegdeNotBunny,
+                    RequirementNodeID.RaceGameLedgeNotBunny,
                     false,
                     AccessibilityLevel.Normal
                 },
@@ -1923,7 +1924,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.RaceGameLedge
                     },
-                    RequirementNodeID.RaceGameLegdeNotBunny,
+                    RequirementNodeID.RaceGameLedgeNotBunny,
                     false,
                     AccessibilityLevel.Normal
                 }

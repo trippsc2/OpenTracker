@@ -654,7 +654,7 @@ namespace OpenTracker.Models.Sections
                 case LocationID.RaceGame:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.RaceGameLegdeNotBunny];
+                            RequirementNodeID.RaceGameLedgeNotBunny];
                     }
                 case LocationID.Library:
                 case LocationID.BonkRocks:
@@ -1962,9 +1962,6 @@ namespace OpenTracker.Models.Sections
         /// <param name="id">
         /// The location ID.
         /// </param>
-        /// <param name="location">
-        /// The location parent class.
-        /// </param>
         /// <returns>
         /// A list of sections.
         /// </returns>
@@ -2042,7 +2039,7 @@ namespace OpenTracker.Models.Sections
                     {
                         return new List<ISection>
                         {
-                            GetItemSection(id, 0),
+                            GetItemSection(id),
                             GetItemSection(id, 1)
                         };
                     }
@@ -2051,7 +2048,7 @@ namespace OpenTracker.Models.Sections
                     {
                         return new List<ISection>
                         {
-                            GetVisibleItemSection(id, 0),
+                            GetVisibleItemSection(id),
                             GetItemSection(id, 1)
                         };
                     }
@@ -2059,7 +2056,7 @@ namespace OpenTracker.Models.Sections
                     {
                         return new List<ISection>
                         {
-                            GetDungeonItemSection(id, 0)
+                            GetDungeonItemSection(id)
                         };
                     }
                 case LocationID.AgahnimTower:
@@ -2075,7 +2072,7 @@ namespace OpenTracker.Models.Sections
                     {
                         return new List<ISection>
                         {
-                            GetDungeonItemSection(id, 0),
+                            GetDungeonItemSection(id),
                             GetPrizeSection(id, 1)
                         };
                     }
@@ -2083,7 +2080,7 @@ namespace OpenTracker.Models.Sections
                     {
                         return new List<ISection>
                         {
-                            GetMarkableDungeonItemSection(id, 0),
+                            GetMarkableDungeonItemSection(id),
                             GetPrizeSection(id, 1)
                         };
                     }
@@ -2091,7 +2088,7 @@ namespace OpenTracker.Models.Sections
                     {
                         return new List<ISection>
                         {
-                            GetMarkableDungeonItemSection(id, 0),
+                            GetMarkableDungeonItemSection(id),
                             GetBossSection(id, 1),
                             GetBossSection(id, 2),
                             GetBossSection(id, 3),

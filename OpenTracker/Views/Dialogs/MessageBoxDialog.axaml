@@ -3,7 +3,7 @@
         xmlns:vm="clr-namespace:OpenTracker.ViewModels.Dialogs;assembly=OpenTracker"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" x:Class="OpenTracker.Views.MessageBoxDialog"
+        mc:Ignorable="d" x:Class="OpenTracker.Views.Dialogs.MessageBoxDialog"
         CanResize="False" MaxWidth="400" SizeToContent="Height" Padding="5" WindowStartupLocation="CenterOwner"
         Icon="avares://OpenTracker/Assets/Images/triforce.png"
         Title="{Binding Title}">

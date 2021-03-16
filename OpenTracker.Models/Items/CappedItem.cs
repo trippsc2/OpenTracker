@@ -11,7 +11,7 @@ namespace OpenTracker.Models.Items
     {
         private readonly int _maximum;
 
-        public new delegate CappedItem Factory(int starting, int maximum, IAutoTrackValue? autoTrackValue);
+        public delegate CappedItem Factory(int starting, int maximum, IAutoTrackValue? autoTrackValue);
 
         /// <summary>
         /// Constructor

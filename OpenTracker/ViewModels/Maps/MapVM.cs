@@ -42,6 +42,12 @@ namespace OpenTracker.ViewModels.Maps
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="layoutSettings">
+        /// The layout settings data.
+        /// </param>
+        /// <param name="mode">
+        /// The mode settings data.
+        /// </param>
         /// <param name="id">
         /// The map identity.
         /// </param>

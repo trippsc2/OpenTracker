@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using OpenTracker.Models.AutoTracking.Memory;
 
 namespace OpenTracker.Models.AutoTracking.Values
 {
@@ -58,6 +59,11 @@ namespace OpenTracker.Models.AutoTracking.Values
         /// </summary>
         protected override int? GetNewValue()
         {
+            if (_address.Value is null)
+            {
+                return null;
+            }
+            
             var maskedValue = (byte)(_address.Value & _mask);
             var newValue = (byte)(maskedValue >> _shift);
             return newValue;

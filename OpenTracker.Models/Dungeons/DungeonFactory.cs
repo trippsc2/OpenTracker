@@ -2,10 +2,8 @@
 using OpenTracker.Models.DungeonNodes;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.KeyDoors;
-using OpenTracker.Models.KeyLayouts;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.RequirementNodes;
-using OpenTracker.Models.Sections;
 using System;
 using System.Collections.Generic;
 
@@ -647,7 +645,7 @@ namespace OpenTracker.Models.Dungeons
                     DungeonNodeID.TRB1BigChestArea,
                     DungeonNodeID.TRBigChest,
                     DungeonNodeID.TRB1RightSide,
-                    DungeonNodeID.TRPastB1toB2KeyDoor,
+                    DungeonNodeID.TRPastB1ToB2KeyDoor,
                     DungeonNodeID.TRB2DarkRoomTop,
                     DungeonNodeID.TRB2DarkRoomBottom,
                     DungeonNodeID.TRB2PastDarkMaze,
@@ -876,7 +874,7 @@ namespace OpenTracker.Models.Dungeons
                             DungeonItemID.TRLaserBridgeTopLeft,
                             DungeonItemID.TRLaserBridgeTopRight,
                             DungeonItemID.TRLaserBridgeBottomLeft,
-                            DungeonItemID.TRLaserBrdigeBottomRight,
+                            DungeonItemID.TRLaserBridgeBottomRight,
                             DungeonItemID.TRBoss
                         };
                     }
@@ -1322,7 +1320,7 @@ namespace OpenTracker.Models.Dungeons
                             KeyDoorID.TR1FSecondKeyDoor,
                             KeyDoorID.TR1FThirdKeyDoor,
                             KeyDoorID.TRB1BigKeyChestKeyDoor,
-                            KeyDoorID.TRB1toB2KeyDoor,
+                            KeyDoorID.TRB1ToB2KeyDoor,
                             KeyDoorID.TRB2KeyDoor
                         };
                     }

@@ -1,6 +1,5 @@
 ﻿using OpenTracker.Models.AccessibilityLevels;
 using System;
-using System.ComponentModel;
 using ReactiveUI;
 
 namespace OpenTracker.Models.Requirements

@@ -12,6 +12,6 @@ namespace OpenTracker.Models.DungeonNodes
     {
         List<INodeConnection> Connections { get; }
 
-        new delegate IDungeonNode Factory(IMutableDungeon dungeonData, DungeonNodeID id);
+        delegate IDungeonNode Factory(IMutableDungeon dungeonData, DungeonNodeID id);
     }
 }

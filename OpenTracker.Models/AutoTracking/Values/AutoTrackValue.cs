@@ -11,7 +11,7 @@ namespace OpenTracker.Models.AutoTracking.Values
         public int? CurrentValue
         {
             get => _currentValue;
-            protected set => this.RaiseAndSetIfChanged(ref _currentValue, value);
+            private set => this.RaiseAndSetIfChanged(ref _currentValue, value);
         }
 
         /// <summary>

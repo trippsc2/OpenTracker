@@ -1,6 +1,5 @@
 ﻿using OpenTracker.Models.NodeConnections;
 using OpenTracker.Models.Requirements;
-using System;
 using System.Collections.Generic;
 
 namespace OpenTracker.Models.RequirementNodes
@@ -435,7 +434,7 @@ namespace OpenTracker.Models.RequirementNodes
 
                     }
                     break;
-                case RequirementNodeID.RaceGameLegdeNotBunny:
+                case RequirementNodeID.RaceGameLedgeNotBunny:
                     {
                         connections.Add(_connectionFactory(
                             _requirementNodes[RequirementNodeID.RaceGameLedge], node,

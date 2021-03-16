@@ -23,32 +23,43 @@ namespace OpenTracker.UnitTests.Models.AutoTracking.Values
         }
 
         [Theory]
-        [InlineData(null, null, false, null)]
-        [InlineData(0, null, false, null)]
-        [InlineData(1, null, false, null)]
-        [InlineData(null, 0, false, 0)]
-        [InlineData(0, 0, false, 0)]
-        [InlineData(1, 0, false, 0)]
-        [InlineData(null, 1, false, 1)]
-        [InlineData(0, 1, false, 1)]
-        [InlineData(1, 1, false, 1)]
-        [InlineData(null, null, true, null)]
-        [InlineData(0, null, true, 0)]
-        [InlineData(1, null, true, 1)]
-        [InlineData(null, 0, true, null)]
-        [InlineData(0, 0, true, 0)]
-        [InlineData(1, 0, true, 1)]
-        [InlineData(null, 1, true, null)]
-        [InlineData(0, 1, true, 0)]
-        [InlineData(1, 1, true, 1)]
-        public void ValueChanged_CurrentValueShouldMatchExpected(
-            int? trueValue, int? falseValue, bool conditionMet, int? expected)
+        [InlineData(null, null, null, false)]
+        [InlineData(null, 0, null, false)]
+        [InlineData(null, 1, null, false)]
+        [InlineData(0, null, 0, false)]
+        [InlineData(0, 0, 0, false)]
+        [InlineData(0, 1, 0, false)]
+        [InlineData(1, null, 1, false)]
+        [InlineData(1, 0, 1, false)]
+        [InlineData(1, 1, 1, false)]
+        [InlineData(null, null, null, true)]
+        [InlineData(0, 0, null, true)]
+        [InlineData(1, 1, null, true)]
+        [InlineData(null, null, 0, true)]
+        [InlineData(0, 0, 0, true)]
+        [InlineData(1, 1, 0, true)]
+        [InlineData(null, null, 1, true)]
+        [InlineData(0, 0, 1, true)]
+        [InlineData(1, 1, 1, true)]
+        public void CurrentValue_ShouldEqualExpected(int? expected, int? trueValue, int? falseValue, bool conditionMet)
         {
             _trueValue.CurrentValue.Returns(trueValue);
             _falseValue.CurrentValue.Returns(falseValue);
             _condition.Met.Returns(conditionMet);
 
             Assert.Equal(expected, _sut.CurrentValue);
+        }
+
+        [Fact]
+        public void ConditionChanged_ShouldRaisePropertyChanged()
+        {
+            _trueValue.CurrentValue.Returns(12);
+            _falseValue.CurrentValue.Returns(11);
+            _condition.Met.Returns(true);
+            
+            Assert.PropertyChanged(_sut, nameof(IAutoTrackValue.CurrentValue),
+                () => _condition.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                    _condition, new PropertyChangedEventArgs(nameof(IRequirement.Met))));
         }
 
         [Fact]
@@ -59,8 +70,11 @@ namespace OpenTracker.UnitTests.Models.AutoTracking.Values
             _condition.Met.Returns(true);
             
             Assert.PropertyChanged(_sut, nameof(IAutoTrackValue.CurrentValue),
-                () => _condition.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
-                    _condition, new PropertyChangedEventArgs(nameof(IRequirement.Met))));
+                () => _trueValue.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                    _trueValue, new PropertyChangedEventArgs(nameof(IAutoTrackValue.CurrentValue))));
+            Assert.PropertyChanged(_sut, nameof(IAutoTrackValue.CurrentValue),
+                () => _falseValue.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                    _falseValue, new PropertyChangedEventArgs(nameof(IAutoTrackValue.CurrentValue))));
         }
     }
 }

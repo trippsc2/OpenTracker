@@ -17,6 +17,9 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="mode">
+        /// The mode settings data.
+        /// </param>
         /// <param name="worldState">
         /// The new world state setting.
         /// </param>

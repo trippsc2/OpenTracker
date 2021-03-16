@@ -11,7 +11,6 @@ namespace OpenTracker.Models.Requirements
     /// </summary>
     public class BossRequirement : AccessibilityRequirement
     {
-        private readonly IMode _mode;
         private readonly IRequirementDictionary _requirements;
         private readonly IBossPlacement _bossPlacement;
 
@@ -58,11 +57,10 @@ namespace OpenTracker.Models.Requirements
         public BossRequirement(
             IMode mode, IRequirementDictionary requirements, IBossPlacement bossPlacement)
         {
-            _mode = mode;
             _requirements = requirements;
             _bossPlacement = bossPlacement;
 
-            _mode.PropertyChanged += OnModeChanged;
+            mode.PropertyChanged += OnModeChanged;
             _bossPlacement.PropertyChanged += OnBossPlacementChanged;
             
             UpdateRequirement();

@@ -1,6 +1,7 @@
 ﻿using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.Items;
 using System.ComponentModel;
+using OpenTracker.Models.Prizes;
 
 namespace OpenTracker.Models.Requirements
 {
