@@ -1,18 +1,18 @@
-﻿using OpenTracker.Models.AccessibilityLevels;
+﻿using System.ComponentModel;
+using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.Markings;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.RequirementNodes;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
-using System;
-using System.ComponentModel;
+using ReactiveUI;
 
 namespace OpenTracker.Models.Sections
 {
     /// <summary>
     /// This class contains dropdown section data.
     /// </summary>
-    public class DropdownSection : IEntranceSection
+    public class DropdownSection : ReactiveObject, IEntranceSection
     {
         private readonly IMode _mode;
         private readonly IRequirementNode _exitNode;
@@ -22,41 +22,23 @@ namespace OpenTracker.Models.Sections
         public IRequirement Requirement { get; }
         public bool UserManipulated { get; set; }
         public IMarking Marking { get; }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        public AccessibilityLevel Accessibility
-        {
-            get
-            {
-                if (_mode.EntranceShuffle == EntranceShuffle.Insanity)
-                {
-                    return _holeNode.Accessibility;
-                }
-
-                return AccessibilityLevelMethods.Max(_holeNode.Accessibility,
-                    _exitNode.Accessibility > AccessibilityLevel.Inspect ?
-                    AccessibilityLevel.Inspect : AccessibilityLevel.None);
-            }
-        }
+        
+        public AccessibilityLevel Accessibility =>
+            _mode.EntranceShuffle == EntranceShuffle.Insanity ? _holeNode.Accessibility :
+                AccessibilityLevelMethods.Max(
+                    _holeNode.Accessibility, _exitNode.Accessibility > AccessibilityLevel.Inspect ?
+                        AccessibilityLevel.Inspect : AccessibilityLevel.None);
 
         private int _available;
+
         public int Available
         {
             get => _available;
-            set
-            {
-                if (_available != value)
-                {
-                    _available = value;
-                    OnPropertyChanged(nameof(Available));
-                }
-            }
+            set => this.RaiseAndSetIfChanged(ref _available, value);
         }
 
         public delegate DropdownSection Factory(
-            string name, IRequirementNode? exitNode, IRequirementNode holeNode,
-            IRequirement requirement);
+            string name, IRequirementNode? exitNode, IRequirementNode holeNode, IRequirement requirement);
 
         /// <summary>
         /// Constructor
@@ -80,8 +62,8 @@ namespace OpenTracker.Models.Sections
         /// The requirement for this section to be visible.
         /// </param>
         public DropdownSection(
-            IMode mode, IMarking marking, string name, IRequirementNode? exitNode,
-            IRequirementNode holeNode, IRequirement requirement)
+            IMode mode, IMarking marking, string name, IRequirementNode? exitNode, IRequirementNode holeNode,
+            IRequirement requirement)
         {
             _mode = mode;
             _exitNode = exitNode!;
@@ -98,17 +80,6 @@ namespace OpenTracker.Models.Sections
         }
 
         /// <summary>
-        /// Raises the PropertyChanged event for the specified property.
-        /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changed property.
-        /// </param>
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        /// <summary>
         /// Subscribes to the PropertyChanged event on the IRequirementNode interface.
         /// </summary>
         /// <param name="sender">
@@ -121,7 +92,7 @@ namespace OpenTracker.Models.Sections
         {
             if (e.PropertyName == nameof(IRequirementNode.Accessibility))
             {
-                OnPropertyChanged(nameof(Accessibility));
+                this.RaisePropertyChanged(nameof(Accessibility));
             }
         }
 
@@ -138,7 +109,7 @@ namespace OpenTracker.Models.Sections
         {
             if (e.PropertyName == nameof(IMode.EntranceShuffle))
             {
-                OnPropertyChanged(nameof(Accessibility));
+                this.RaisePropertyChanged(nameof(Accessibility));
             }
         }
 
@@ -218,7 +189,7 @@ namespace OpenTracker.Models.Sections
         {
             if (saveData == null)
             {
-                throw new ArgumentNullException(nameof(saveData));
+                return;
             }
 
             Available = saveData.Available;

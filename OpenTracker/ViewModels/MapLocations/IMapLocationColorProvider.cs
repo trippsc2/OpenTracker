@@ -6,7 +6,7 @@ using ReactiveUI;
 
 namespace OpenTracker.ViewModels.MapLocations
 {
-    public interface IMapLocationColorProvider : INotifyPropertyChanged
+    public interface IMapLocationColorProvider : IReactiveObject
     {
         string BorderColor { get; }
         string Color { get; }

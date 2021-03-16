@@ -8,15 +8,18 @@ using OpenTracker.Models.SaveLoad;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using ReactiveUI;
 
 namespace OpenTracker.Models.Sections
 {
     /// <summary>
     /// This class contains dungeon item section data.
     /// </summary>
-    public class DungeonItemSection : IDungeonItemSection
+    public class DungeonItemSection : ReactiveObject, IDungeonItemSection
     {
         private readonly IMode _mode;
+        private readonly ISaveLoadManager _saveLoadManager;
+        
         private readonly LocationID _locationID;
         private IDungeon? _dungeon;
         private readonly IAutoTrackValue? _autoTrackValue;
@@ -27,62 +30,32 @@ namespace OpenTracker.Models.Sections
         public IRequirement Requirement { get; }
         public bool UserManipulated { get; set; }
 
-        public event PropertyChangedEventHandler? PropertyChanged;
-
         private AccessibilityLevel _accessibility;
         public AccessibilityLevel Accessibility
         {
             get => _accessibility;
-            set
-            {
-                if (_accessibility != value)
-                {
-                    _accessibility = value;
-                    OnPropertyChanged(nameof(Accessibility));
-                }
-            }
+            set => this.RaiseAndSetIfChanged(ref _accessibility, value);
         }
 
         private int _available;
         public int Available
         {
             get => _available;
-            set
-            {
-                if (_available != value)
-                {
-                    _available = value;
-                    OnPropertyChanged(nameof(Available));
-                }
-            }
+            set => this.RaiseAndSetIfChanged(ref _available, value);
         }
 
         private int _accessible;
         public int Accessible
         {
             get => _accessible;
-            set
-            {
-                if (_accessible != value)
-                {
-                    _accessible = value;
-                    OnPropertyChanged(nameof(Accessible));
-                }
-            }
+            set => this.RaiseAndSetIfChanged(ref _accessible, value);
         }
 
         private int _total;
         public int Total
         {
             get => _total;
-            private set
-            {
-                if (_total != value)
-                {
-                    _total = value;
-                    OnPropertyChanged(nameof(Total));
-                }
-            }
+            private set => this.RaiseAndSetIfChanged(ref _total, value);
         }
 
         public delegate DungeonItemSection Factory(
@@ -97,6 +70,9 @@ namespace OpenTracker.Models.Sections
         /// <param name="mode">
         /// The mode settings.
         /// </param>
+        /// <param name="saveLoadManager">
+        /// The save/load manager.
+        /// </param>
         /// <param name="locationID">
         /// The ID of the dungeon to which this section belongs.
         /// </param>
@@ -107,10 +83,12 @@ namespace OpenTracker.Models.Sections
         /// The requirement for this section to be visible.
         /// </param>
         public DungeonItemSection(
-            ILocationDictionary locations, IMode mode, LocationID locationID,
+            ILocationDictionary locations, IMode mode, ISaveLoadManager saveLoadManager, LocationID locationID,
             IAutoTrackValue? autoTrackValue, IRequirement requirement)
         {
             _mode = mode;
+            _saveLoadManager = saveLoadManager;
+            
             _locationID = locationID;
             _autoTrackValue = autoTrackValue;
             Requirement = requirement;
@@ -123,18 +101,7 @@ namespace OpenTracker.Models.Sections
                 _autoTrackValue.PropertyChanged += OnAutoTrackValueChanged;
             }
         }
-
-        /// <summary>
-        /// Raises the PropertyChanged event for the specified property.
-        /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changed property.
-        /// </param>
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
+        
         /// <summary>
         /// Subscribes to the ItemCreated event on the ILocationDictionary interface.
         /// </summary>
@@ -146,14 +113,16 @@ namespace OpenTracker.Models.Sections
         /// </param>
         private void OnLocationCreated(object? sender, KeyValuePair<LocationID, ILocation> e)
         {
-            if (e.Key == _locationID)
+            if (e.Key != _locationID)
             {
-                ((ILocationDictionary)sender!).ItemCreated -= OnLocationCreated;
-
-                _dungeon = (IDungeon)e.Value;
-
-                SetTotal();
+                return;
             }
+            
+            ((ILocationDictionary)sender!).ItemCreated -= OnLocationCreated;
+
+            _dungeon = (IDungeon)e.Value;
+
+            SetTotal();
         }
 
         /// <summary>
@@ -167,12 +136,9 @@ namespace OpenTracker.Models.Sections
         /// </param>
         private void OnModeChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(IMode.WorldState) ||
-                e.PropertyName == nameof(IMode.MapShuffle) ||
-                e.PropertyName == nameof(IMode.CompassShuffle) ||
-                e.PropertyName == nameof(IMode.SmallKeyShuffle) ||
-                e.PropertyName == nameof(IMode.BigKeyShuffle) ||
-                e.PropertyName == nameof(IMode.KeyDropShuffle))
+            if (e.PropertyName == nameof(IMode.WorldState) || e.PropertyName == nameof(IMode.MapShuffle) ||
+                e.PropertyName == nameof(IMode.CompassShuffle) || e.PropertyName == nameof(IMode.SmallKeyShuffle) ||
+                e.PropertyName == nameof(IMode.BigKeyShuffle) || e.PropertyName == nameof(IMode.KeyDropShuffle))
             {
                 SetTotal();
             }
@@ -196,7 +162,7 @@ namespace OpenTracker.Models.Sections
         }
 
         /// <summary>
-        /// Updates the value of the section from autotracking.
+        /// Updates the value of the section from auto-tracking.
         /// </summary>
         private void AutoTrackUpdate()
         {
@@ -205,7 +171,7 @@ namespace OpenTracker.Models.Sections
                 if (Available != Total - _autoTrackValue.CurrentValue.Value)
                 {
                     Available = Total - _autoTrackValue.CurrentValue.Value;
-                    //SaveLoadManager.Instance.Unsaved = true;
+                    _saveLoadManager.Unsaved = true;
                 }
             }
         }
@@ -213,9 +179,6 @@ namespace OpenTracker.Models.Sections
         /// <summary>
         /// Sets the total based on whether dungeon items are shuffled.
         /// </summary>
-        /// <param name="updateAccessibility">
-        /// A boolean representing whether to call the UpdateAccessibiliy method at the end.
-        /// </param>
         private void SetTotal()
         {
             if (_dungeon == null)

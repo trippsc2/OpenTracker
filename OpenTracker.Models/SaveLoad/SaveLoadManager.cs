@@ -1,4 +1,8 @@
-﻿using OpenTracker.Models.BossPlacements;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Reflection;
+using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.Connections;
 using OpenTracker.Models.Dropdowns;
 using OpenTracker.Models.Items;
@@ -6,19 +10,16 @@ using OpenTracker.Models.Locations;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.SaveLoad.Converters;
-using OpenTracker.Utils;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Reflection;
 using OpenTracker.Models.SequenceBreaks;
+using OpenTracker.Utils;
+using ReactiveUI;
 
 namespace OpenTracker.Models.SaveLoad
 {
     /// <summary>
     /// This class contains logic managing saving and loading game data.
     /// </summary>
-    public class SaveLoadManager : ISaveLoadManager
+    public class SaveLoadManager : ReactiveObject, ISaveLoadManager
     {
         private readonly IMode _mode;
         private readonly IItemDictionary _items;
@@ -29,40 +30,19 @@ namespace OpenTracker.Models.SaveLoad
         private readonly IDropdownDictionary _dropdowns;
         private readonly IPinnedLocationCollection _pinnedLocations;
         private readonly ISequenceBreakDictionary _sequenceBreaks;
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        private string? _currentFilename;
+        
+        private string? _currentFilePath;
         public string? CurrentFilePath
         {
-            get => _currentFilename;
-            private set
-            {
-                if (_currentFilename == value)
-                {
-                    return;
-                }
-                
-                _currentFilename = value;
-                _unsaved = false;
-                OnPropertyChanged(nameof(CurrentFilePath));
-            }
+            get => _currentFilePath;
+            private set => this.RaiseAndSetIfChanged(ref _currentFilePath, value);
         }
 
         private bool _unsaved;
         public bool Unsaved
         {
             get => _unsaved;
-            set
-            {
-                if (_unsaved == value)
-                {
-                    return;
-                }
-                
-                _unsaved = value;
-                OnPropertyChanged(nameof(Unsaved));
-            }
+            set => this.RaiseAndSetIfChanged(ref _unsaved, value);
         }
 
         /// <summary>
@@ -109,17 +89,25 @@ namespace OpenTracker.Models.SaveLoad
             _dropdowns = dropdowns;
             _pinnedLocations = pinnedLocations;
             _sequenceBreaks = sequenceBreaks;
+
+            PropertyChanged += OnPropertyChanged;
         }
 
         /// <summary>
-        /// Raises the PropertyChanged event for the specified property.
+        /// Subscribes to the PropertyChanged event on this object.
         /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changed property.
+        /// <param name="sender">
+        /// The sending object of the event.
         /// </param>
-        private void OnPropertyChanged(string propertyName)
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
+        private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            if (e.PropertyName == nameof(CurrentFilePath))
+            {
+                Unsaved = false;
+            }
         }
 
         /// <summary>

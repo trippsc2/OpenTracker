@@ -1,43 +1,27 @@
-﻿using OpenTracker.Models.AccessibilityLevels;
+﻿using System.Collections.Generic;
+using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Utils;
-using System.Collections.Generic;
-using System.ComponentModel;
+using ReactiveUI;
 
 namespace OpenTracker.Models.Settings
 {
     /// <summary>
     /// This class contains color settings data.
     /// </summary>
-    public class ColorSettings : IColorSettings
+    public class ColorSettings : ReactiveObject, IColorSettings
     {
-        public event PropertyChangedEventHandler? PropertyChanged;
-
         private string _emphasisFontColor = "#ff00ff00";
         public string EmphasisFontColor
         {
             get => _emphasisFontColor;
-            set
-            {
-                if (_emphasisFontColor != value)
-                {
-                    _emphasisFontColor = value;
-                    OnPropertyChanged(nameof(EmphasisFontColor));
-                }
-            }
+            set => this.RaiseAndSetIfChanged(ref _emphasisFontColor, value);
         }
 
         private string _connectorColor = "#ff40e0d0";
         public string ConnectorColor
         {
             get => _connectorColor;
-            set
-            {
-                if (_connectorColor != value)
-                {
-                    _connectorColor = value;
-                    OnPropertyChanged(nameof(ConnectorColor));
-                }
-            }
+            set => this.RaiseAndSetIfChanged(ref _connectorColor, value);
         }
 
         public ObservableDictionary<AccessibilityLevel, string> AccessibilityColors { get; } =
@@ -51,16 +35,5 @@ namespace OpenTracker.Models.Settings
                     { AccessibilityLevel.Normal, "#ff00ff00" },
                     { AccessibilityLevel.Cleared, "#ff333333" }
                 });
-
-        /// <summary>
-        /// Raises the PropertyChanged event for the specified property.
-        /// </summary>
-        /// <param name="propertyName">
-        /// A string representing the property name that changed.
-        /// </param>
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
     }
 }

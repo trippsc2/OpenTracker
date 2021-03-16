@@ -2,13 +2,14 @@
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
 using System.ComponentModel;
+using ReactiveUI;
 
 namespace OpenTracker.Models.Sections
 {
     /// <summary>
     /// This base interface contains section data.
     /// </summary>
-    public interface ISection : INotifyPropertyChanged
+    public interface ISection : IReactiveObject
     {
         string Name { get; }
         IRequirement Requirement { get; }

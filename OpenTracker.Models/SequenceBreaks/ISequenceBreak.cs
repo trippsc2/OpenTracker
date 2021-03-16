@@ -1,12 +1,13 @@
 ﻿using OpenTracker.Models.SaveLoad;
 using System.ComponentModel;
+using ReactiveUI;
 
 namespace OpenTracker.Models.SequenceBreaks
 {
     /// <summary>
     /// This interface contains sequence breaks.
     /// </summary>
-    public interface ISequenceBreak : INotifyPropertyChanged
+    public interface ISequenceBreak : IReactiveObject
     {
         bool Enabled { get; set; }
 

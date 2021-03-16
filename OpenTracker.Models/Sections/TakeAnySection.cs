@@ -4,38 +4,28 @@ using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
 using System;
 using System.ComponentModel;
+using ReactiveUI;
 
 namespace OpenTracker.Models.Sections
 {
     /// <summary>
     /// This class contains take any section data.
     /// </summary>
-    public class TakeAnySection : ITakeAnySection
+    public class TakeAnySection : ReactiveObject, ITakeAnySection
     {
         private readonly IRequirementNode _node;
 
-        public string Name =>
-            "Take Any";
+        public string Name { get; } = "Take Any";
         public IRequirement Requirement { get; }
         public bool UserManipulated { get; set; }
 
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        public AccessibilityLevel Accessibility =>
-            _node.Accessibility;
+        public AccessibilityLevel Accessibility => _node.Accessibility;
 
         private int _available;
         public int Available
         {
             get => _available;
-            set
-            {
-                if (_available != value)
-                {
-                    _available = value;
-                    OnPropertyChanged(nameof(Available));
-                }
-            }
+            set => this.RaiseAndSetIfChanged(ref _available, value);
         }
 
         public delegate TakeAnySection Factory(IRequirementNode node, IRequirement requirement);
@@ -59,17 +49,6 @@ namespace OpenTracker.Models.Sections
         }
 
         /// <summary>
-        /// Raises the PropertyChanged event for the specified property.
-        /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changed property.
-        /// </param>
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        /// <summary>
         /// Subscribes to the PropertyChanged event on the IRequirementNode interface.
         /// </summary>
         /// <param name="sender">
@@ -82,7 +61,7 @@ namespace OpenTracker.Models.Sections
         {
             if (e.PropertyName == nameof(IRequirementNode.Accessibility))
             {
-                OnPropertyChanged(nameof(Accessibility));
+                this.RaisePropertyChanged(nameof(Accessibility));
             }
         }
 

@@ -1,29 +1,20 @@
 ﻿using OpenTracker.Models.SaveLoad;
-using System.ComponentModel;
+using ReactiveUI;
 
 namespace OpenTracker.Models.SequenceBreaks
 {
     /// <summary>
     /// This class contains sequence breaks.
     /// </summary>
-    public class SequenceBreak : ISequenceBreak
+    public class SequenceBreak : ReactiveObject, ISequenceBreak
     {
         private readonly bool _starting;
-
-        public event PropertyChangedEventHandler? PropertyChanged;
 
         private bool _enabled = true;
         public bool Enabled
         {
             get => _enabled;
-            set
-            {
-                if (_enabled != value)
-                {
-                    _enabled = value;
-                    OnPropertyChanged(nameof(Enabled));
-                }
-            }
+            set => this.RaiseAndSetIfChanged(ref _enabled, value);
         }
 
         public delegate ISequenceBreak Factory(bool starting = true);
@@ -37,17 +28,6 @@ namespace OpenTracker.Models.SequenceBreaks
         public SequenceBreak(bool starting = true)
         {
             _starting = starting;
-        }
-
-        /// <summary>
-        /// Raises the PropertyChanged event for the specified property.
-        /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changed property.
-        /// </param>
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         /// <summary>

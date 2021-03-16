@@ -2,53 +2,36 @@
 using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
-using System;
-using System.ComponentModel;
+using ReactiveUI;
 
 namespace OpenTracker.Models.Sections
 {
     /// <summary>
     /// This class contains boss section data (GT LW boss re-fights)
     /// </summary>
-    public class BossSection : IBossSection
+    public class BossSection : ReactiveObject, IBossSection
     {
         public string Name { get; }
         public IRequirement Requirement { get; }
         public bool UserManipulated { get; set; }
         public IBossPlacement BossPlacement { get; }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-
+        
         private AccessibilityLevel _accessibility;
+
         public AccessibilityLevel Accessibility
         {
             get => _accessibility;
-            set
-            {
-                if (_accessibility != value)
-                {
-                    _accessibility = value;
-                    OnPropertyChanged(nameof(Accessibility));
-                }
-            }
+            set => this.RaiseAndSetIfChanged(ref _accessibility, value);
         }
 
         private int _available;
         public int Available
         {
             get => _available;
-            set
-            {
-                if (_available != value)
-                {
-                    _available = value;
-                    OnPropertyChanged(nameof(Available));
-                }
-            }
+            set => this.RaiseAndSetIfChanged(ref _available, value);
         }
 
-        public delegate BossSection Factory(
-            string name, IBossPlacement bossPlacement, IRequirement requirement);
+        public delegate BossSection Factory(string name, IBossPlacement bossPlacement, IRequirement requirement);
 
         /// <summary>
         /// Constructor
@@ -62,24 +45,12 @@ namespace OpenTracker.Models.Sections
         /// <param name="requirement">
         /// The requirement for this section to be visible.
         /// </param>
-        public BossSection(
-            string name, IBossPlacement bossPlacement, IRequirement requirement)
+        public BossSection(string name, IBossPlacement bossPlacement, IRequirement requirement)
         {
             Name = name;
             BossPlacement = bossPlacement;
             Requirement = requirement;
             Available = 1;
-        }
-
-        /// <summary>
-        /// Raises the PropertyChanged event for the specified property.
-        /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changed property.
-        /// </param>
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         /// <summary>

@@ -5,7 +5,7 @@ using ReactiveUI;
 
 namespace OpenTracker.ViewModels.MapLocations
 {
-    public interface IShapedMapLocationVMBase : INotifyPropertyChanged
+    public interface IShapedMapLocationVMBase : IReactiveObject
     {
         double OffsetX { get; }
         double OffsetY { get; }

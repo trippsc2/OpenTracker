@@ -1,23 +1,21 @@
-﻿using OpenTracker.Models.AccessibilityLevels;
+﻿using System.ComponentModel;
+using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.Markings;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
-using System;
-using System.ComponentModel;
+using ReactiveUI;
 
 namespace OpenTracker.Models.Sections
 {
     /// <summary>
     /// This class contains markable data for a dungeon item section.
     /// </summary>
-    public class MarkableDungeonItemSection : IMarkableSection, IDungeonItemSection
+    public class MarkableDungeonItemSection : ReactiveObject, IMarkableSection, IDungeonItemSection
     {
         private readonly IDungeonItemSection _section;
 
-        public string Name =>
-            _section.Name;
-        public IRequirement Requirement =>
-            _section.Requirement;
+        public string Name => _section.Name;
+        public IRequirement Requirement => _section.Requirement;
 
         public bool UserManipulated
         {
@@ -29,11 +27,8 @@ namespace OpenTracker.Models.Sections
             get => _section.Available;
             set => _section.Available = value;
         }
-        public int Total =>
-            _section.Total;
+        public int Total => _section.Total;
         public IMarking Marking { get; }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
 
         public AccessibilityLevel Accessibility
         {
@@ -77,14 +72,16 @@ namespace OpenTracker.Models.Sections
         /// </param>
         private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
-            PropertyChanged?.Invoke(this, e);
+            this.RaisePropertyChanged(e.PropertyName);
 
-            if (e.PropertyName == nameof(ISection.Available))
+            if (e.PropertyName != nameof(ISection.Available))
             {
-                if (!IsAvailable())
-                {
-                    Marking.Mark = MarkType.Unknown;
-                }
+                return;
+            }
+            
+            if (!IsAvailable())
+            {
+                Marking.Mark = MarkType.Unknown;
             }
         }
 
@@ -101,8 +98,7 @@ namespace OpenTracker.Models.Sections
                 return true;
             }
 
-            return IsAvailable() && Accessibility == AccessibilityLevel.Inspect &&
-                Marking.Mark != MarkType.Unknown;
+            return IsAvailable() && Accessibility == AccessibilityLevel.Inspect && Marking.Mark != MarkType.Unknown;
         }
 
         /// <summary>
@@ -166,11 +162,11 @@ namespace OpenTracker.Models.Sections
         /// <summary>
         /// Loads section save data.
         /// </summary>
-        public void Load(SectionSaveData saveData)
+        public void Load(SectionSaveData? saveData)
         {
             if (saveData == null)
             {
-                throw new ArgumentNullException(nameof(saveData));
+                return;
             }
 
             Available = saveData.Available;

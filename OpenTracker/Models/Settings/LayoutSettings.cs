@@ -1,208 +1,130 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Layout;
 using System.ComponentModel;
+using ReactiveUI;
 
 namespace OpenTracker.Models.Settings
 {
     /// <summary>
     /// This class contains GUI layout settings data.
     /// </summary>
-    public class LayoutSettings : ILayoutSettings
+    public class LayoutSettings : ReactiveObject, ILayoutSettings
     {
-        public event PropertyChangedEventHandler? PropertyChanged;
-
         private bool _displayMapsCompasses;
         public bool DisplayMapsCompasses
         {
             get => _displayMapsCompasses;
-            set
-            {
-                if (_displayMapsCompasses != value)
-                {
-                    _displayMapsCompasses = value;
-                    OnPropertyChanged(nameof(DisplayMapsCompasses));
-                }
-            }
+            set => this.RaiseAndSetIfChanged(ref _displayMapsCompasses, value);
         }
 
         private bool _alwaysDisplayDungeonItems;
         public bool AlwaysDisplayDungeonItems
         {
             get => _alwaysDisplayDungeonItems;
-            set
-            {
-                if (_alwaysDisplayDungeonItems != value)
-                {
-                    _alwaysDisplayDungeonItems = value;
-                    OnPropertyChanged(nameof(AlwaysDisplayDungeonItems));
-                }
-            }
+            set => this.RaiseAndSetIfChanged(ref _alwaysDisplayDungeonItems, value);
         }
 
         private Orientation _currentDynamicOrientation;
         public Orientation CurrentDynamicOrientation
         {
             get => _currentDynamicOrientation;
-            set
-            {
-                if (_currentDynamicOrientation != value)
-                {
-                    _currentDynamicOrientation = value;
-                    OnPropertyChanged(nameof(CurrentDynamicOrientation));
-                }
-            }
+            set => this.RaiseAndSetIfChanged(ref _currentDynamicOrientation, value);
         }
 
         private Orientation _currentLayoutOrientation;
         public Orientation CurrentLayoutOrientation
         {
             get => _currentLayoutOrientation;
-            private set
-            {
-                if (_currentLayoutOrientation != value)
-                {
-                    _currentLayoutOrientation = value;
-                    OnPropertyChanged(nameof(CurrentLayoutOrientation));
-                }
-            }
+            private set => this.RaiseAndSetIfChanged(ref _currentLayoutOrientation, value);
         }
 
         private Orientation _currentMapOrientation;
         public Orientation CurrentMapOrientation
         {
             get => _currentMapOrientation;
-            private set
-            {
-                if (_currentMapOrientation != value)
-                {
-                    _currentMapOrientation = value;
-                    OnPropertyChanged(nameof(CurrentMapOrientation));
-                }
-            }
+            private set => this.RaiseAndSetIfChanged(ref _currentMapOrientation, value);
         }
 
         private Orientation? _layoutOrientation;
         public Orientation? LayoutOrientation
         {
             get => _layoutOrientation;
-            set
-            {
-                if (_layoutOrientation != value)
-                {
-                    _layoutOrientation = value;
-                    OnPropertyChanged(nameof(LayoutOrientation));
-                }
-            }
+            set => this.RaiseAndSetIfChanged(ref _layoutOrientation, value);
         }
 
         private Orientation? _mapOrientation;
         public Orientation? MapOrientation
         {
             get => _mapOrientation;
-            set
-            {
-                if (_mapOrientation != value)
-                {
-                    _mapOrientation = value;
-                    OnPropertyChanged(nameof(MapOrientation));
-                }
-            }
+            set => this.RaiseAndSetIfChanged(ref _mapOrientation, value);
         }
 
         private Dock _horizontalUIPanelPlacement = Dock.Bottom;
         public Dock HorizontalUIPanelPlacement
         {
             get => _horizontalUIPanelPlacement;
-            set
-            {
-                if (_horizontalUIPanelPlacement != value)
-                {
-                    _horizontalUIPanelPlacement = value;
-                    OnPropertyChanged(nameof(HorizontalUIPanelPlacement));
-                }
-            }
+            set => this.RaiseAndSetIfChanged(ref _horizontalUIPanelPlacement, value);
         }
 
         private Dock _verticalUIPanelPlacement = Dock.Left;
         public Dock VerticalUIPanelPlacement
         {
             get => _verticalUIPanelPlacement;
-            set
-            {
-                if (_verticalUIPanelPlacement != value)
-                {
-                    _verticalUIPanelPlacement = value;
-                    OnPropertyChanged(nameof(VerticalUIPanelPlacement));
-                }
-            }
+            set => this.RaiseAndSetIfChanged(ref _verticalUIPanelPlacement, value);
         }
 
         private Dock _horizontalItemsPlacement = Dock.Left;
         public Dock HorizontalItemsPlacement
         {
             get => _horizontalItemsPlacement;
-            set
-            {
-                if (_horizontalItemsPlacement != value)
-                {
-                    _horizontalItemsPlacement = value;
-                    OnPropertyChanged(nameof(HorizontalItemsPlacement));
-                }
-            }
+            set => this.RaiseAndSetIfChanged(ref _horizontalItemsPlacement, value);
         }
 
         private Dock _verticalItemsPlacement = Dock.Bottom;
         public Dock VerticalItemsPlacement
         {
             get => _verticalItemsPlacement;
-            set
-            {
-                if (_verticalItemsPlacement != value)
-                {
-                    _verticalItemsPlacement = value;
-                    OnPropertyChanged(nameof(VerticalItemsPlacement));
-                }
-            }
+            set => this.RaiseAndSetIfChanged(ref _verticalItemsPlacement, value);
         }
 
         private double _uiScale = 1.0;
         public double UIScale
         {
             get => _uiScale;
-            set
-            {
-                if (_uiScale != value)
-                {
-                    _uiScale = value;
-                    OnPropertyChanged(nameof(UIScale));
-                }
-            }
+            set => this.RaiseAndSetIfChanged(ref _uiScale, value);
         }
 
         /// <summary>
-        /// Raises the PropertyChanged event for the specified property.
+        /// Constructor
         /// </summary>
-        /// <param name="propertyName">
-        /// A string representing the property name that changed.
-        /// </param>
-        private void OnPropertyChanged(string propertyName)
+        public LayoutSettings()
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged += OnPropertyChanged;
+        }
 
-            if (propertyName == nameof(CurrentDynamicOrientation))
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on this object.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the CollectionChanged event.
+        /// </param>
+        private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
             {
-                UpdateLayoutOrientation();
-                UpdateMapOrientation();
-            }
-
-            if (propertyName == nameof(LayoutOrientation))
-            {
-                UpdateLayoutOrientation();
-            }
-
-            if (propertyName == nameof(MapOrientation))
-            {
-                UpdateMapOrientation();
+                case nameof(CurrentDynamicOrientation):
+                    UpdateLayoutOrientation();
+                    UpdateMapOrientation();
+                    break;
+                case nameof(LayoutOrientation):
+                    UpdateLayoutOrientation();
+                    break;
+                case nameof(MapOrientation):
+                    UpdateMapOrientation();
+                    break;
             }
         }
 

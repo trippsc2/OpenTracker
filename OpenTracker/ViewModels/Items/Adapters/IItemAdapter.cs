@@ -9,7 +9,7 @@ namespace OpenTracker.ViewModels.Items.Adapters
     /// <summary>
     /// This interface contains the logic to adapt data for an item control.
     /// </summary>
-    public interface IItemAdapter : INotifyPropertyChanged
+    public interface IItemAdapter : IReactiveObject
     {
         string ImageSource { get; }
         string? Label { get; }

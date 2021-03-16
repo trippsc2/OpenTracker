@@ -17,8 +17,8 @@ namespace OpenTracker.Utils
     /// The type of the value of the dictionary.
     /// </typeparam>
     [Serializable()]
-    public class ObservableDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
-        ICollection<KeyValuePair<TKey, TValue>>, INotifyCollectionChanged, INotifyPropertyChanged
+    public class ObservableDictionary<TKey, TValue> : IDictionary<TKey, TValue>, INotifyCollectionChanged,
+        INotifyPropertyChanged
         where TKey : notnull
     {
         private readonly IDictionary<TKey, TValue> _dictionary;

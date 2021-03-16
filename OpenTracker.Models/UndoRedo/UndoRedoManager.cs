@@ -2,22 +2,20 @@
 using OpenTracker.Utils;
 using System;
 using System.Collections.Specialized;
-using System.ComponentModel;
+using ReactiveUI;
 
 namespace OpenTracker.Models.UndoRedo
 {
     /// <summary>
     /// This class contains logic managing undo/redo actions.
     /// </summary>
-    public class UndoRedoManager : IUndoRedoManager
+    public class UndoRedoManager : ReactiveObject, IUndoRedoManager
     {
         private readonly ISaveLoadManager _saveLoadManager;
 
         private readonly ObservableStack<IUndoable> _undoableActions = new ObservableStack<IUndoable>();
         private readonly ObservableStack<IUndoable> _redoableActions = new ObservableStack<IUndoable>();
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-
+        
         public bool CanUndo => _undoableActions.Count > 0;
         public bool CanRedo => _redoableActions.Count > 0;
 
@@ -36,17 +34,6 @@ namespace OpenTracker.Models.UndoRedo
         }
 
         /// <summary>
-        /// Raises the PropertyChanged event for the specified property.
-        /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changed property.
-        /// </param>
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        /// <summary>
         /// Subscribes to the CollectionChanged event on the undoable actions observable stack.
         /// </summary>
         /// <param name="sender">
@@ -57,7 +44,7 @@ namespace OpenTracker.Models.UndoRedo
         /// </param>
         private void OnUndoChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
-            OnPropertyChanged(nameof(CanUndo));
+            this.RaisePropertyChanged(nameof(CanUndo));
         }
 
         /// <summary>
@@ -71,7 +58,7 @@ namespace OpenTracker.Models.UndoRedo
         /// </param>
         private void OnRedoChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
-            OnPropertyChanged(nameof(CanRedo));
+            this.RaisePropertyChanged(nameof(CanRedo));
         }
 
         /// <summary>

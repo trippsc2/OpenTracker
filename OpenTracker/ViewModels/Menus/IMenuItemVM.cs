@@ -3,10 +3,11 @@ using System.ComponentModel;
 using System.Windows.Input;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Utils;
+using ReactiveUI;
 
 namespace OpenTracker.ViewModels.Menus
 {
-    public interface IMenuItemVM : IModelWrapper, INotifyPropertyChanged
+    public interface IMenuItemVM : IModelWrapper, IReactiveObject
     {
         IMenuItemIconVM? Icon { get; }
         object Header { get; }

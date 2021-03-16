@@ -6,14 +6,17 @@ using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
 using System;
 using System.ComponentModel;
+using ReactiveUI;
 
 namespace OpenTracker.Models.Sections
 {
     /// <summary>
     /// This class contains item sections with marking data.
     /// </summary>
-    public class VisibleItemSection : IMarkableSection, IItemSection
+    public class VisibleItemSection : ReactiveObject, IMarkableSection, IItemSection
     {
+        private readonly ISaveLoadManager _saveLoadManager;
+        
         private readonly IRequirementNode? _visibleNode;
         private readonly IRequirementNode _node;
         private readonly IAutoTrackValue? _autoTrackValue;
@@ -24,58 +27,36 @@ namespace OpenTracker.Models.Sections
         public bool UserManipulated { get; set; }
         public IMarking Marking { get; }
 
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        public AccessibilityLevel Accessibility
-        {
-            get
-            {
-                if (_visibleNode == null)
-                {
-                    return _node.Accessibility;
-                }
-
-                return AccessibilityLevelMethods.Max(_node.Accessibility,
-                    _visibleNode.Accessibility > AccessibilityLevel.Inspect ?
-                    AccessibilityLevel.Inspect : AccessibilityLevel.None);
-            }
-        }
+        public AccessibilityLevel Accessibility =>
+            _visibleNode == null ? _node.Accessibility :
+                AccessibilityLevelMethods.Max(
+                    _node.Accessibility, _visibleNode.Accessibility > AccessibilityLevel.Inspect ?
+                        AccessibilityLevel.Inspect : AccessibilityLevel.None);
 
         private int _available;
         public int Available
         {
             get => _available;
-            set
-            {
-                if (_available != value)
-                {
-                    _available = value;
-                    OnPropertyChanged(nameof(Available));
-                }
-            }
+            set => this.RaiseAndSetIfChanged(ref _available, value);
         }
 
         private int _accessible;
         public int Accessible
         {
             get => _accessible;
-            private set
-            {
-                if (_accessible != value)
-                {
-                    _accessible = value;
-                    OnPropertyChanged(nameof(Accessible));
-                }
-            }
+            private set => this.RaiseAndSetIfChanged(ref _accessible, value);
         }
 
         public delegate VisibleItemSection Factory(
-            string name, int total, IRequirementNode node, IAutoTrackValue? autoTrackValue,
-            IRequirement requirement, IRequirementNode? visibleNode = null);
+            string name, int total, IRequirementNode node, IAutoTrackValue? autoTrackValue, IRequirement requirement,
+            IRequirementNode? visibleNode = null);
 
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="saveLoadManager">
+        /// The save/load manager.
+        /// </param>
         /// <param name="marking">
         /// The section marking.
         /// </param>
@@ -89,7 +70,7 @@ namespace OpenTracker.Models.Sections
         /// The requirement node to which this section belongs.
         /// </param>
         /// <param name="autoTrackValue">
-        /// The autotracking value for this section.
+        /// The auto-tracking value for this section.
         /// </param>
         /// <param name="requirement">
         /// The requirement for the section to be visible.
@@ -98,10 +79,11 @@ namespace OpenTracker.Models.Sections
         /// The node that provides Inspect accessibility for this section.
         /// </param>
         public VisibleItemSection(
-            IMarking marking, string name, int total, IRequirementNode node,
-            IAutoTrackValue? autoTrackValue, IRequirement requirement,
-            IRequirementNode? visibleNode = null)
+            ISaveLoadManager saveLoadManager, IMarking marking, string name, int total, IRequirementNode node,
+            IAutoTrackValue? autoTrackValue, IRequirement requirement, IRequirementNode? visibleNode = null)
         {
+            _saveLoadManager = saveLoadManager;
+            
             _node = node;
             _autoTrackValue = autoTrackValue;
             _visibleNode = visibleNode;
@@ -112,6 +94,7 @@ namespace OpenTracker.Models.Sections
             Requirement = requirement;
             Available = Total;
 
+            PropertyChanged += OnPropertyChanged;
             _node.PropertyChanged += OnNodeChanged;
             UpdateAccessible();
 
@@ -127,16 +110,17 @@ namespace OpenTracker.Models.Sections
         }
 
         /// <summary>
-        /// Raises the PropertyChanged event for the specified property.
+        /// Subscribes to the PropertyChanged event on this object.
         /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changed property.
+        /// <param name="sender">
+        /// The sending object of the event.
         /// </param>
-        private void OnPropertyChanged(string propertyName)
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
+        private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-
-            if (propertyName == nameof(Available))
+            if (e.PropertyName == nameof(Available))
             {
                 UpdateAccessible();
             }
@@ -153,11 +137,13 @@ namespace OpenTracker.Models.Sections
         /// </param>
         private void OnNodeChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(IRequirementNode.Accessibility))
+            if (e.PropertyName != nameof(IRequirementNode.Accessibility))
             {
-                OnPropertyChanged(nameof(Accessibility));
-                UpdateAccessible();
+                return;
             }
+            
+            this.RaisePropertyChanged(nameof(Accessibility));
+            UpdateAccessible();
         }
 
         /// <summary>
@@ -178,7 +164,7 @@ namespace OpenTracker.Models.Sections
         }
 
         /// <summary>
-        /// Updates the section available/accessible count from the autotracked value.
+        /// Updates the section available/accessible count from the auto-tracked value.
         /// </summary>
         private void AutoTrackUpdate()
         {
@@ -187,7 +173,7 @@ namespace OpenTracker.Models.Sections
                 if (Available != Total - _autoTrackValue.CurrentValue.Value)
                 {
                     Available = Total - _autoTrackValue.CurrentValue.Value;
-                    //SaveLoadManager.Instance.Unsaved = true;
+                    _saveLoadManager.Unsaved = true;
                 }
             }
         }
@@ -200,11 +186,10 @@ namespace OpenTracker.Models.Sections
             if (Accessibility >= AccessibilityLevel.SequenceBreak)
             {
                 Accessible = Available;
+                return;
             }
-            else
-            {
-                Accessible = 0;
-            }
+
+            Accessible = 0;
         }
 
         /// <summary>
@@ -215,9 +200,8 @@ namespace OpenTracker.Models.Sections
         /// </returns>
         public bool CanBeCleared(bool force)
         {
-            return IsAvailable() && (force || Accessibility > AccessibilityLevel.Inspect
-                || (Accessibility == AccessibilityLevel.Inspect &&
-                Marking.Mark == MarkType.Unknown));
+            return IsAvailable() && (force || Accessibility > AccessibilityLevel.Inspect ||
+                Accessibility == AccessibilityLevel.Inspect && Marking.Mark == MarkType.Unknown);
         }
 
         /// <summary>

@@ -5,13 +5,14 @@ using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
 using System;
 using System.ComponentModel;
+using ReactiveUI;
 
 namespace OpenTracker.Models.Sections
 {
     /// <summary>
     /// This class contains entrance section data.
     /// </summary>
-    public class EntranceSection : IEntranceSection
+    public class EntranceSection : ReactiveObject, IEntranceSection
     {
         private readonly IRequirementNode _node;
         private readonly IRequirementNode? _exitProvided;
@@ -21,28 +22,17 @@ namespace OpenTracker.Models.Sections
         public bool UserManipulated { get; set; }
         public IMarking Marking { get; }
 
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        public AccessibilityLevel Accessibility =>
-            _node.Accessibility;
+        public AccessibilityLevel Accessibility => _node.Accessibility;
 
         private int _available;
         public int Available
         {
             get => _available;
-            set
-            {
-                if (_available != value)
-                {
-                    _available = value;
-                    OnPropertyChanged(nameof(Available));
-                }
-            }
+            set => this.RaiseAndSetIfChanged(ref _available, value);
         }
 
         public delegate EntranceSection Factory(
-            string name, IRequirementNode? exitProvided, IRequirementNode node,
-            IRequirement requirement);
+            string name, IRequirementNode? exitProvided, IRequirementNode node, IRequirement requirement);
 
         /// <summary>
         /// Constructor
@@ -74,33 +64,33 @@ namespace OpenTracker.Models.Sections
             Available = 1;
             Requirement = requirement;
 
+            PropertyChanged += OnPropertyChanged;
             _node.PropertyChanged += OnNodeChanged;
         }
 
         /// <summary>
-        /// Raises the PropertyChanged event for the specified property.
+        /// Subscribes to the PropertyChanged event on this object.
         /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changed property.
+        /// <param name="sender">
+        /// The sending object of the event.
         /// </param>
-        private void OnPropertyChanged(string propertyName)
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
+        private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-
-            if (propertyName == nameof(Available))
+            if (e.PropertyName != nameof(Available) || _exitProvided is null)
             {
-                if (_exitProvided != null)
-                {
-                    if (IsAvailable())
-                    {
-                        _exitProvided.ExitsAccessible--;
-                    }
-                    else
-                    {
-                        _exitProvided.ExitsAccessible++;
-                    }
-                }
+                return;
             }
+            
+            if (IsAvailable())
+            {
+                _exitProvided.ExitsAccessible--;
+                return;
+            }
+
+            _exitProvided.ExitsAccessible++;
         }
 
         /// <summary>
@@ -116,7 +106,7 @@ namespace OpenTracker.Models.Sections
         {
             if (e.PropertyName == nameof(IRequirementNode.Accessibility))
             {
-                OnPropertyChanged(nameof(Accessibility));
+                this.RaisePropertyChanged(nameof(Accessibility));
             }
         }
 

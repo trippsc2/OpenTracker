@@ -1,11 +1,12 @@
 ﻿using System.ComponentModel;
+using ReactiveUI;
 
 namespace OpenTracker.Models.SaveLoad
 {
     /// <summary>
     /// This interface contains logic managing saving and loading game data.
     /// </summary>
-    public interface ISaveLoadManager : INotifyPropertyChanged
+    public interface ISaveLoadManager : IReactiveObject
     {
         string? CurrentFilePath { get; }
         bool Unsaved { get; set; }
