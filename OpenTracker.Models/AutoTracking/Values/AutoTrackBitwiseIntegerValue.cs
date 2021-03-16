@@ -3,8 +3,7 @@
 namespace OpenTracker.Models.AutoTracking.Values
 {
     /// <summary>
-    /// This is the class for representing the auto-tracking result value of a memory address
-    /// bitwise integer.
+    /// This class contains the auto-tracking result value of a memory address bitwise integer.
     /// </summary>
     public class AutoTrackBitwiseIntegerValue : AutoTrackValue
     {
@@ -12,8 +11,7 @@ namespace OpenTracker.Models.AutoTracking.Values
         private readonly byte _mask;
         private readonly int _shift;
 
-        public delegate AutoTrackBitwiseIntegerValue Factory(
-            IMemoryAddress address, byte mask, int shift);
+        public delegate AutoTrackBitwiseIntegerValue Factory(IMemoryAddress address, byte mask, int shift);
 
         /// <summary>
         /// Constructor
@@ -32,6 +30,8 @@ namespace OpenTracker.Models.AutoTracking.Values
             _address = address;
             _mask = mask;
             _shift = shift;
+            
+            UpdateValue();
 
             _address.PropertyChanged += OnMemoryChanged;
         }
@@ -49,18 +49,18 @@ namespace OpenTracker.Models.AutoTracking.Values
         {
             if (e.PropertyName == nameof(IMemoryAddress.Value))
             {
-                UpdateCurrentValue();
+                UpdateValue();
             }
         }
 
         /// <summary>
         /// Updates the current value of this value.
         /// </summary>
-        private void UpdateCurrentValue()
+        protected override int? GetNewValue()
         {
-            byte maskedValue = (byte)(_address.Value & _mask);
-            byte newValue = (byte)(maskedValue >> _shift);
-            CurrentValue = newValue;
+            var maskedValue = (byte)(_address.Value & _mask);
+            var newValue = (byte)(maskedValue >> _shift);
+            return newValue;
         }
     }
 }

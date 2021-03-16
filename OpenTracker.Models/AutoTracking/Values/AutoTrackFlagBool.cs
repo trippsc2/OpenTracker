@@ -3,7 +3,7 @@
 namespace OpenTracker.Models.AutoTracking.Values
 {
     /// <summary>
-    /// This is the class for representing the auto-tracking result value of a memory flag.
+    /// This class contains the auto-tracking result value of a memory flag.
     /// </summary>
     public class AutoTrackFlagBool : AutoTrackValue
     {
@@ -42,16 +42,16 @@ namespace OpenTracker.Models.AutoTracking.Values
         {
             if (e.PropertyName == nameof(IMemoryFlag.Status))
             {
-                UpdateCurrentValue();
+                UpdateValue();
             }
         }
 
         /// <summary>
         /// Updates the current value of this value.
         /// </summary>
-        private void UpdateCurrentValue()
+        protected override int? GetNewValue()
         {
-            CurrentValue = _flag.Status ? _trueValue : 0;
+            return _flag.Status ? _trueValue : 0;
         }
     }
 }

@@ -3,7 +3,7 @@
 namespace OpenTracker.Models.AutoTracking.Values
 {
     /// <summary>
-    /// This is the class for representing the auto-tracking result value of a memory address value.
+    /// This class contains the auto-tracking result value of a memory address value.
     /// </summary>
     public class AutoTrackAddressValue : AutoTrackValue
     {
@@ -31,6 +31,8 @@ namespace OpenTracker.Models.AutoTracking.Values
             _maximum = maximum;
             _adjustment = adjustment;
 
+            UpdateValue();
+            
             _address.PropertyChanged += OnMemoryChanged;
         }
 
@@ -47,25 +49,15 @@ namespace OpenTracker.Models.AutoTracking.Values
         {
             if (e.PropertyName == nameof(IMemoryAddress.Value))
             {
-                UpdateCurrentValue();
+                UpdateValue();
             }
         }
 
-        /// <summary>
-        /// Updates the current value of this value.
-        /// </summary>
-        private void UpdateCurrentValue()
+        protected override int? GetNewValue()
         {
-            int newValue = _address.Value + _adjustment;
+            var newValue = _address.Value + _adjustment;
 
-            if (newValue > _maximum)
-            {
-                CurrentValue = null;
-            }
-            else
-            {
-                CurrentValue = newValue;
-            }
+            return newValue > _maximum ? (int?) null : newValue;
         }
     }
 }

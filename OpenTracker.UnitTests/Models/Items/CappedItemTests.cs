@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Autofac;
+using Autofac.Core;
 using OpenTracker.Models.Items;
 using Xunit;
 
@@ -11,9 +12,12 @@ namespace OpenTracker.UnitTests.Models.Items
         [InlineData(3, 2)]
         public void Ctor_ExceptionTests(int starting, int maximum)
         {
-            Assert.Throws<ArgumentOutOfRangeException>(() =>
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var factory = scope.Resolve<CappedItem.Factory>();
+            
+            Assert.Throws<DependencyResolutionException>(() =>
             {
-                var item = new CappedItem(starting, maximum, null);
+                factory(starting, maximum, null);
             });
         }
 
@@ -24,7 +28,10 @@ namespace OpenTracker.UnitTests.Models.Items
         [InlineData(1, 2, true)]
         public void CanAdd_Tests(int starting, int maximum, bool expected)
         {
-            var item = new CappedItem(starting, maximum, null);
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var factory = scope.Resolve<CappedItem.Factory>();
+
+            var item = factory(starting, maximum, null);
 
             Assert.Equal(expected, item.CanAdd());
         }
@@ -36,7 +43,10 @@ namespace OpenTracker.UnitTests.Models.Items
         [InlineData(1, 2, 2)]
         public void Add_Tests(int starting, int maximum, int expected)
         {
-            var item = new CappedItem(starting, maximum, null);
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var factory = scope.Resolve<CappedItem.Factory>();
+
+            var item = factory(starting, maximum, null);
             item.Add();
 
             Assert.Equal(expected, item.Current);
@@ -50,7 +60,10 @@ namespace OpenTracker.UnitTests.Models.Items
         [InlineData(1, 2, 0)]
         public void Remove_Tests(int starting, int maximum, int expected)
         {
-            var item = new CappedItem(starting, maximum, null);
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var factory = scope.Resolve<CappedItem.Factory>();
+
+            var item = factory(starting, maximum, null);
             item.Remove();
 
             Assert.Equal(expected, item.Current);

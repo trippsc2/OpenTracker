@@ -61,7 +61,7 @@ namespace OpenTracker.Models.AutoTracking.Values
         /// </param>
         private void OnRequirementChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(IRequirement.Accessibility))
+            if (e.PropertyName == nameof(IRequirement.Met))
             {
                 UpdateValue();
             }

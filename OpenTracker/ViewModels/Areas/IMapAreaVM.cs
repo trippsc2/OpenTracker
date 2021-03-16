@@ -1,5 +1,4 @@
 ﻿using Avalonia.Layout;
-using System.ComponentModel;
 using ReactiveUI;
 
 namespace OpenTracker.ViewModels.Areas

@@ -11,8 +11,7 @@ using LogLevel = OpenTracker.Models.AutoTracking.Logging.LogLevel;
 namespace OpenTracker.Models.AutoTracking.SNESConnectors
 {
     /// <summary>
-    /// This class contains logic for the SNES connector using WebSocketSharp to connect to
-    /// (Q)USB2SNES.
+    /// This class contains logic for the SNES connector using WebSocketSharp to connect to (Q)USB2SNES.
     /// </summary>
     public class SNESConnector : ISNESConnector
     {
@@ -26,8 +25,7 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         private string? _uri;
         private string? _device;
 
-        private bool Connected =>
-            Socket != null && Socket.IsAlive;
+        private bool Connected => Socket != null && Socket.IsAlive;
 
         public event EventHandler<ConnectionStatus>? StatusChanged;
 
@@ -72,8 +70,6 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
             }
         }
 
-        public delegate SNESConnector Factory();
-
         /// <summary>
         /// Constructor
         /// </summary>
@@ -83,8 +79,7 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         /// <param name="requestFactory">
         /// An Autofac factory for creating requests.
         /// </param>
-        public SNESConnector(
-            IAutoTrackerLogService logService, IRequestType.Factory requestFactory)
+        public SNESConnector(IAutoTrackerLogService logService, IRequestType.Factory requestFactory)
         {
             _logService = logService;
             _requestFactory = requestFactory;
@@ -162,8 +157,7 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         /// An enumerator of the resulting strings of the response.
         /// </returns>
         private IEnumerable<string>? GetJsonResults(
-            string requestName, IRequestType request, bool ignoreErrors = false,
-            int timeOutInMs = 4096)
+            string requestName, IRequestType request, bool ignoreErrors = false, int timeOutInMs = 4096)
         {
             string[]? results = null;
 

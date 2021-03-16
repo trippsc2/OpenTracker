@@ -1,10 +1,9 @@
-﻿using System.ComponentModel;
-using ReactiveUI;
+﻿using ReactiveUI;
 
 namespace OpenTracker.Models.AutoTracking.Values
 {
     /// <summary>
-    /// This is the base class representing auto-tracking result value.
+    /// This base class contains the auto-tracking result value data.
     /// </summary>
     public abstract class AutoTrackValue : ReactiveObject, IAutoTrackValue
     {
@@ -13,6 +12,22 @@ namespace OpenTracker.Models.AutoTracking.Values
         {
             get => _currentValue;
             protected set => this.RaiseAndSetIfChanged(ref _currentValue, value);
+        }
+
+        /// <summary>
+        /// Returns the new value for the CurrentValue property.
+        /// </summary>
+        /// <returns>
+        /// A nullable 32-bit signed integer representing the new auto-tracking result value.
+        /// </returns>
+        protected abstract int? GetNewValue();
+
+        /// <summary>
+        /// Updates the CurrentValue property.
+        /// </summary>
+        protected void UpdateValue()
+        {
+            CurrentValue = GetNewValue();
         }
     }
 }

@@ -3,8 +3,7 @@
 namespace OpenTracker.Models.AutoTracking.Values
 {
     /// <summary>
-    /// This is the class for representing the auto-tracking result value of a comparison of a SNES
-    /// memory address to a given value.
+    /// This class contains the auto-tracking result value of a comparison of a SNES memory address to a given value.
     /// </summary>
     public class AutoTrackAddressBool : AutoTrackValue
     {
@@ -12,8 +11,7 @@ namespace OpenTracker.Models.AutoTracking.Values
         private readonly byte _comparison;
         private readonly int _trueValue;
 
-        public delegate AutoTrackAddressBool Factory(
-            IMemoryAddress address, byte comparison, int trueValue);
+        public delegate AutoTrackAddressBool Factory(IMemoryAddress address, byte comparison, int trueValue);
 
         /// <summary>
         /// Constructor
@@ -32,6 +30,8 @@ namespace OpenTracker.Models.AutoTracking.Values
             _address = address;
             _comparison = comparison;
             _trueValue = trueValue;
+            
+            UpdateValue();
 
             _address.PropertyChanged += OnMemoryChanged;
         }
@@ -49,16 +49,13 @@ namespace OpenTracker.Models.AutoTracking.Values
         {
             if (e.PropertyName == nameof(IMemoryAddress.Value))
             {
-                UpdateCurrentValue();
+                UpdateValue();
             }
         }
 
-        /// <summary>
-        /// Updates the current value of this value.
-        /// </summary>
-        private void UpdateCurrentValue()
+        protected override int? GetNewValue()
         {
-            CurrentValue = _address.Value > _comparison ? _trueValue : 0;
+            return _address.Value > _comparison ? _trueValue : 0;
         }
     }
 }

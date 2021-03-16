@@ -1,4 +1,5 @@
 ﻿using System;
+using Autofac;
 using OpenTracker.Models.Items;
 using Xunit;
 
@@ -12,7 +13,10 @@ namespace OpenTracker.UnitTests.Models.Items
         [InlineData(2, 2)]
         public void Ctor_CurrentTests(int starting, int expected)
         {
-            var item = new Item(starting, null);
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var factory = scope.Resolve<Item.Factory>();
+
+            var item = factory(starting, null);
 
             Assert.Equal(expected, item.Current);
         }
@@ -23,7 +27,10 @@ namespace OpenTracker.UnitTests.Models.Items
         [InlineData(2, true)]
         public void CanAdd_Tests(int starting, bool expected)
         {
-            var item = new Item(starting, null);
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var factory = scope.Resolve<Item.Factory>();
+
+            var item = factory(starting, null);
 
             Assert.Equal(expected, item.CanAdd());
         }
@@ -34,7 +41,10 @@ namespace OpenTracker.UnitTests.Models.Items
         [InlineData(2, 3)]
         public void Add_Tests(int starting, int expected)
         {
-            var item = new Item(starting, null);
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var factory = scope.Resolve<Item.Factory>();
+
+            var item = factory(starting, null);
             item.Add();
 
             Assert.Equal(expected, item.Current);
@@ -46,7 +56,10 @@ namespace OpenTracker.UnitTests.Models.Items
         [InlineData(2, true)]
         public void CanRemove_Tests(int starting, bool expected)
         {
-            var item = new Item(starting, null);
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var factory = scope.Resolve<Item.Factory>();
+            
+            var item = factory(starting, null);
 
             Assert.Equal(expected, item.CanRemove());
         }
@@ -57,7 +70,10 @@ namespace OpenTracker.UnitTests.Models.Items
         [InlineData(3, 2)]
         public void Remove_Tests(int starting, int expected)
         {
-            var item = new Item(starting, null);
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var factory = scope.Resolve<Item.Factory>();
+
+            var item = factory(starting, null);
             item.Remove();
 
             Assert.Equal(expected, item.Current);
@@ -66,7 +82,10 @@ namespace OpenTracker.UnitTests.Models.Items
         [Fact]
         public void Remove_ExceptionTest()
         {
-            var item = new Item(0, null);
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var factory = scope.Resolve<Item.Factory>();
+
+            var item = factory(0, null);
             Assert.Throws<Exception>(() => { item.Remove(); });
         }
 
@@ -76,7 +95,10 @@ namespace OpenTracker.UnitTests.Models.Items
         [InlineData(2, 2)]
         public void Reset_Tests(int starting, int expected)
         {
-            var item = new Item(starting, null);
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var factory = scope.Resolve<Item.Factory>();
+
+            var item = factory(starting, null);
             item.Add();
             item.Reset();
 
@@ -86,7 +108,10 @@ namespace OpenTracker.UnitTests.Models.Items
         [Fact]
         public void PropertyChanged_Tests()
         {
-            var item = new Item(0, null);
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var factory = scope.Resolve<Item.Factory>();
+
+            var item = factory(0, null);
 
             Assert.PropertyChanged(item, nameof(IItem.Current), () => { item.Add(); });
         }

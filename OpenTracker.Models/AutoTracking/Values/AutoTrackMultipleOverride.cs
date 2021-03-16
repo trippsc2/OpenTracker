@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 
 namespace OpenTracker.Models.AutoTracking.Values
 {
@@ -42,23 +43,26 @@ namespace OpenTracker.Models.AutoTracking.Values
         {
             if (e.PropertyName == nameof(IAutoTrackValue.CurrentValue))
             {
-                UpdateCurrentValue();
+                UpdateValue();
             }
         }
 
         /// <summary>
         /// Updates the current value of this value.
         /// </summary>
-        private void UpdateCurrentValue()
+        protected override int? GetNewValue()
         {
-            foreach (var value in _values)
+            if (!_values.Exists(value => value.CurrentValue.HasValue))
             {
-                if (value.CurrentValue.HasValue && value.CurrentValue > 0)
-                {
-                    CurrentValue = value.CurrentValue;
-                    break;
-                }
+                return null;
             }
+            
+            foreach (var value in _values.Where(value => value.CurrentValue.HasValue && value.CurrentValue > 0))
+            {
+                return value.CurrentValue;
+            }
+
+            return 0;
         }
     }
 }

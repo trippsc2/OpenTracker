@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 
 namespace OpenTracker.Models.AutoTracking.Values
 {
     /// <summary>
-    /// This is the class for representing the auto-tracking result value of a list of results to
-    /// be summed.
+    /// This class contains the auto-tracking result value of a list of results to be summed.
     /// </summary>
     public class AutoTrackMultipleSum : AutoTrackValue
     {
@@ -42,26 +42,19 @@ namespace OpenTracker.Models.AutoTracking.Values
         {
             if (e.PropertyName == nameof(IAutoTrackValue.CurrentValue))
             {
-                UpdateCurrentValue();
+                UpdateValue();
             }
         }
 
         /// <summary>
         /// Updates the current value of this value.
         /// </summary>
-        private void UpdateCurrentValue()
+        protected override int? GetNewValue()
         {
-            int newValue = 0;
+            var newValue = _values.Where(value => value.CurrentValue.HasValue).Sum(
+                value => value.CurrentValue ?? 0);
 
-            foreach (var value in _values)
-            {
-                if (value.CurrentValue.HasValue)
-                {
-                    newValue += value.CurrentValue.Value;
-                }
-            }
-
-            CurrentValue = newValue;
+            return newValue;
         }
     }
 }
