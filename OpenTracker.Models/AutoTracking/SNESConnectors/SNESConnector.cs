@@ -169,15 +169,21 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
                 {
                     _logService.Log(LogLevel.Info, $"Request {requestName} response received.");
 
-                    if (!(JsonConvert.DeserializeObject<Dictionary<string, string[]>>(
-                            e.Data) is Dictionary<string, string[]> dictionary) ||
-                        !dictionary.TryGetValue("Results", out var deserialized))
+                    var dictionary = JsonConvert.DeserializeObject<Dictionary<string, string[]>?>(e.Data);
+
+                    if (dictionary is null)
+                    {
+                        return;
+                    }
+
+                    if (!dictionary.TryGetValue("Results", out var deserialized))
                     {
                         return;
                     }
                     
                     _logService.Log(LogLevel.Debug, $"Request {requestName} successfully deserialized.");
                     results = deserialized;
+                    // ReSharper disable once AccessToDisposedClosure
                     readEvent.Set();
                 };
 
@@ -363,6 +369,7 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
 
                 void OnOpen(object? sender, EventArgs e)
                 {
+                    // ReSharper disable once AccessToDisposedClosure
                     openEvent.Set();
                 }
 
@@ -513,11 +520,12 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
                             return;
                         }
 
-                        for (int i = 0; i < buffer.Length; i++)
+                        for (var i = 0; i < buffer.Length; i++)
                         {
                             buffer[i] = e.RawData[Math.Min(i, e.RawData.Length - 1)];
                         }
 
+                        // ReSharper disable once AccessToDisposedClosure
                         readEvent.Set();
                     };
 

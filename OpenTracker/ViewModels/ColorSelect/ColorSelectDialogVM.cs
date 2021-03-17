@@ -24,8 +24,11 @@ namespace OpenTracker.ViewModels.ColorSelect
         /// </param>
         public ColorSelectDialogVM(IColorSelectControlVM.Factory factory)
         {
-            foreach (ColorType type in Enum.GetValues(typeof(ColorType)))
+            // TODO - Convert to foreach in .NET 5
+            for (var i = 0; i < Enum.GetValues(typeof(ColorType)).Length; i++)
             {
+                var type = (ColorType)i;
+
                 switch (type)
                 {
                     case ColorType.EmphasisFont:
@@ -42,7 +45,7 @@ namespace OpenTracker.ViewModels.ColorSelect
                         ConnectorColors.Add(factory(type));
                         break;
                     default:
-                        throw new ArgumentOutOfRangeException(nameof(type));
+                        throw new NotImplementedException("This color type is not implemented.");
                 }
             }
         }

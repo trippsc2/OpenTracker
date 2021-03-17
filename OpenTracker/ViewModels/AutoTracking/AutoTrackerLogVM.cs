@@ -51,13 +51,10 @@ namespace OpenTracker.ViewModels.AutoTracking
         public ReactiveCommand<Unit, Unit> SaveLogCommand { get; }
         
         private readonly ObservableAsPropertyHelper<bool> _isResettingLog;
-        public bool IsResettingLog =>
-            _isResettingLog.Value;
+        private bool IsResettingLog => _isResettingLog.Value;
 
         private readonly ObservableAsPropertyHelper<bool> _isSavingLog;
-        public bool IsSavingLog =>
-            _isSavingLog.Value;
-
+        private bool IsSavingLog => _isSavingLog.Value;
 
         /// <summary>
         /// Constructor
@@ -84,10 +81,11 @@ namespace OpenTracker.ViewModels.AutoTracking
             _fileDialogService = fileDialogService;
 
             _errorBoxFactory = errorBoxFactory;
-
-            foreach (LogLevel level in Enum.GetValues(typeof(LogLevel)))
+            
+            // TODO - Convert to foreach in .NET 5
+            for (var i = 0; i < Enum.GetValues(typeof(LogLevel)).Length; i++)
             {
-                LogLevelOptions.Add(level.ToString());
+                LogLevelOptions.Add(((LogLevel)i).ToString());                
             }
 
             ResetLogCommand = ReactiveCommand.CreateFromTask(ResetLog);
@@ -142,10 +140,13 @@ namespace OpenTracker.ViewModels.AutoTracking
 
             foreach (var item in e.NewItems)
             {
-                if (item != null && item is ILogMessage message &&
-                    message.LogLevel >= _logLevel)
+                switch (item)
                 {
-                    await AddLog(message);
+                    case null:
+                        continue;
+                    case ILogMessage message when message.LogLevel >= _logLevel:
+                        await AddLog(message);
+                        break;
                 }
             }
         }
@@ -232,9 +233,9 @@ namespace OpenTracker.ViewModels.AutoTracking
             var path = await OpenSaveFileDialog();
             
             if (path is null)
-                {
-                    return;
-                }
+            {
+                return;
+            }
 
             try
             {
@@ -249,22 +250,13 @@ namespace OpenTracker.ViewModels.AutoTracking
             }
             catch (Exception ex)
             {
-                string message;
-
-                switch (ex)
+                string message = ex switch
                 {
-                    case UnauthorizedAccessException _:
-                    {
-                        message = "Unable to save to the selected directory.  Check the file permissions and try again.";
-                    }
-                        break;
-                    default:
-                    {
-                        message = ex.Message;
-                    }
-                        break;
-                } 
-                
+                    UnauthorizedAccessException _ =>
+                        "Unable to save to the selected directory.  Check the file permissions and try again.",
+                    _ => ex.Message
+                };
+
                 await OpenErrorBox(message);
             }
         }

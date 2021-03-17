@@ -16,8 +16,7 @@ namespace OpenTracker.ViewModels.Areas
         private readonly IMapVM.Factory _mapFactory;
 
         public MapAreaFactory(
-            ILocationDictionary locations, IMapLocationVMFactory locationFactory,
-            IMapVM.Factory mapFactory)
+            ILocationDictionary locations, IMapLocationVMFactory locationFactory, IMapVM.Factory mapFactory)
         {
             _locations = locations;
             _locationFactory = locationFactory;
@@ -34,9 +33,9 @@ namespace OpenTracker.ViewModels.Areas
         {
             var maps = new List<IMapVM>();
 
-            foreach (MapID map in Enum.GetValues(typeof(MapID)))
+            for (var i = 0; i < Enum.GetValues(typeof(MapID)).Length; i++)
             {
-                maps.Add(_mapFactory(map));
+                maps.Add(_mapFactory((MapID)i));
             }
 
             return maps;
@@ -52,9 +51,10 @@ namespace OpenTracker.ViewModels.Areas
         {
             var mapLocations = new List<IMapLocationVM>();
 
-            foreach (LocationID id in Enum.GetValues(typeof(LocationID)))
+            // TODO - Convert to foreach in .NET 5
+            for (var i = 0; i < Enum.GetValues(typeof(LocationID)).Length; i++)
             {
-                foreach (var mapLocation in _locations[id].MapLocations)
+                foreach (var mapLocation in _locations[(LocationID)i].MapLocations)
                 {
                     mapLocations.Add(_locationFactory.GetMapLocation(mapLocation));
                 }

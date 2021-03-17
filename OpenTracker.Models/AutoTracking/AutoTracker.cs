@@ -18,9 +18,19 @@ namespace OpenTracker.Models.AutoTracking
         private byte? _inGameStatus;
 
         private bool CanReadMemory => Status == ConnectionStatus.Connected;
-        private bool IsInGame =>
-            !(_inGameStatus is null) && _inGameStatus > 0x05 && _inGameStatus != 0x14 && _inGameStatus < 0x20;
-        
+        private bool IsInGame
+        {
+            get
+            {
+                if (_inGameStatus is null)
+                {
+                    return false;
+                }
+                
+                return _inGameStatus > 0x05 && _inGameStatus != 0x14 && _inGameStatus < 0x20;
+            }
+        }
+
         private List<string> _devices = new List<string>();
         public List<string> Devices
         {
@@ -132,9 +142,10 @@ namespace OpenTracker.Models.AutoTracking
         {
             if (CanReadMemory && IsInGame)
             {
-                foreach (MemorySegmentType segment in Enum.GetValues(typeof(MemorySegmentType)))
+                // TODO - Convert to foreach in .NET 5
+                for (var i = 0; i < Enum.GetValues(typeof(MemorySegmentType)).Length; i++)
                 {
-                    await MemoryCheck(segment);
+                    await MemoryCheck((MemorySegmentType)i);
                 }
             }
         }

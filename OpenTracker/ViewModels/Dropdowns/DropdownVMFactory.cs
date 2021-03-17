@@ -93,9 +93,10 @@ namespace OpenTracker.ViewModels.Dropdowns
         {
             var result = new List<ILargeItemVM>();
 
-            foreach (DropdownID id in Enum.GetValues(typeof(DropdownID)))
+            // TODO - Convert to foreach in .NET 5
+            for (var i = 0; i < Enum.GetValues(typeof(DropdownID)).Length; i++)
             {
-                result.Add(_dropdownControls[id]);
+                result.Add(_dropdownControls[(DropdownID)i]);
             }
 
             return result;

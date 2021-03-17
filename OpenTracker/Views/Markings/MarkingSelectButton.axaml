@@ -9,9 +9,11 @@
     <vm:MarkingSelectButtonVM />
   </Design.DataContext>
   
-  <Button Command="{Binding $parent[ItemsControl].DataContext.ChangeMarking}"
-          Background="{DynamicResource ThemeBackgroundBrush}" BorderThickness="0"
+  <Button Background="{DynamicResource ThemeBackgroundBrush}" BorderThickness="0"
           CommandParameter="{Binding Marking}">
+    <Button.Command>
+      <Binding Path="$parent[ItemsControl].DataContext.ChangeMarking" />
+    </Button.Command>
     <ContentControl Content="{Binding Image}"
                     Height="32" Width="32" />
   </Button>

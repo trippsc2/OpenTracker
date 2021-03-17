@@ -27,6 +27,13 @@ namespace OpenTracker.Views
 #endif
         }
 
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            ViewModel?.OnClose(WindowState == WindowState.Maximized, Bounds, Position);
+
+            base.OnClosing(e);
+        }
+
         private void InitializeComponent()
         {
             AvaloniaXamlLoader.Load(this);
@@ -35,11 +42,6 @@ namespace OpenTracker.Views
         private void OnBoundsChanged(MainWindow window, AvaloniaPropertyChangedEventArgs e)
         {
             ChangeLayout(Bounds);
-        }
-
-        private void OnClose(object? sender, CancelEventArgs e)
-        {
-            ViewModel!.OnClose(WindowState == WindowState.Maximized, Bounds, Position);
         }
 
         private void OnDataContextChanged(object? sender, EventArgs e)
