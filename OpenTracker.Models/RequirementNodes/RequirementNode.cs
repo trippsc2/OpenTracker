@@ -16,13 +16,9 @@ namespace OpenTracker.Models.RequirementNodes
         private readonly IMode _mode;
         private readonly IRequirementNodeFactory _factory;
 
-#if DEBUG        
-        private readonly RequirementNodeID _id;
-#endif
         private readonly bool _start;
 
-        private readonly List<INodeConnection> _connections =
-            new List<INodeConnection>();
+        private readonly List<INodeConnection> _connections = new List<INodeConnection>();
 
         public event EventHandler? ChangePropagated;
 
@@ -84,21 +80,15 @@ namespace OpenTracker.Models.RequirementNodes
         /// <param name="factory">
         /// The requirement node factory.
         /// </param>
-        /// <param name="id">
-        /// The requirement node identity.
-        /// </param>
         /// <param name="start">
         /// A boolean representing whether the node is the start node.
         /// </param>
         public RequirementNode(
-            IMode mode, IRequirementNodeDictionary requirementNodes,
-            IRequirementNodeFactory factory, RequirementNodeID id, bool start)
+            IMode mode, IRequirementNodeDictionary requirementNodes, IRequirementNodeFactory factory, bool start)
         {
             _mode = mode;
             _factory = factory;
-#if DEBUG
-            _id = id;
-#endif
+
             _start = start;
             AlwaysAccessible = _start;
 
@@ -140,19 +130,21 @@ namespace OpenTracker.Models.RequirementNodes
         /// </param>
         private void OnNodeCreated(object? sender, KeyValuePair<RequirementNodeID, IRequirementNode> e)
         {
-            if (e.Value == this)
+            if (e.Value != this)
             {
-                var requirementNodes = ((IRequirementNodeDictionary)sender!);
+                return;
+            }
+            
+            var requirementNodes = ((IRequirementNodeDictionary)sender!);
 
-                requirementNodes.ItemCreated -= OnNodeCreated;
-                _factory.PopulateNodeConnections(e.Key, this, _connections);
+            requirementNodes.ItemCreated -= OnNodeCreated;
+            _factory.PopulateNodeConnections(e.Key, this, _connections);
 
-                UpdateAccessibility();
+            UpdateAccessibility();
 
-                foreach (var connection in _connections)
-                {
-                    connection.PropertyChanged += OnConnectionChanged;
-                }
+            foreach (var connection in _connections)
+            {
+                connection.PropertyChanged += OnConnectionChanged;
             }
         }
 

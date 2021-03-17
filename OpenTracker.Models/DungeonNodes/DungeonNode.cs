@@ -16,9 +16,6 @@ namespace OpenTracker.Models.DungeonNodes
     {
         private readonly IDungeonNodeFactory _factory;
         private readonly IMutableDungeon _dungeonData;
-#if DEBUG        
-        private readonly DungeonNodeID _id;
-#endif
 
         public int ExitsAccessible { get; set; }
         public int DungeonExitsAccessible { get; set; }
@@ -57,19 +54,13 @@ namespace OpenTracker.Models.DungeonNodes
         /// <param name="factory">
         /// The dungeon node factory for creating node connections.
         /// </param>
-        /// <param name="id">
-        /// The node identity.
-        /// </param>
         /// <param name="dungeonData">
         /// The mutable dungeon data parent class.
         /// </param>
-        public DungeonNode(IDungeonNodeFactory factory, IMutableDungeon dungeonData, DungeonNodeID id)
+        public DungeonNode(IDungeonNodeFactory factory, IMutableDungeon dungeonData)
         {
             _factory = factory;
             _dungeonData = dungeonData;
-#if DEBUG
-            _id = id;
-#endif
 
             PropertyChanged += OnPropertyChanged;
             dungeonData.Nodes.ItemCreated += OnNodeCreated;

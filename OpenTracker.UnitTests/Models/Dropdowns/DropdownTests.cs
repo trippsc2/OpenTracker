@@ -21,8 +21,7 @@ namespace OpenTracker.UnitTests.Models.Dropdowns
         [Fact]
         public void Checked_ShouldRaisePropertyChanged()
         {
-            Assert.PropertyChanged(_sut, nameof(IDropdown.Checked),
-                () => _sut.Checked = true);
+            Assert.PropertyChanged(_sut, nameof(IDropdown.Checked), () => _sut.Checked = true);
         }
 
         [Fact]

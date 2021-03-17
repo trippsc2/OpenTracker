@@ -1,9 +1,9 @@
-﻿using OpenTracker.Models.AccessibilityLevels;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
+using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.DungeonNodes;
 using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.RequirementNodes;
-using System.Collections.Generic;
-using System.ComponentModel;
 using ReactiveUI;
 
 namespace OpenTracker.Models.DungeonItems
@@ -14,9 +14,6 @@ namespace OpenTracker.Models.DungeonItems
     public class DungeonItem : ReactiveObject, IDungeonItem
     {
         private readonly IMutableDungeon _dungeonData;
-#if DEBUG
-        private readonly DungeonItemID _id;
-#endif
         private readonly IRequirementNode _node;
 
         private AccessibilityLevel _accessibility;
@@ -32,18 +29,12 @@ namespace OpenTracker.Models.DungeonItems
         /// <param name="dungeonData">
         /// The mutable dungeon data parent class.
         /// </param>
-        /// <param name="id">
-        /// The item identity.
-        /// </param>
         /// <param name="node">
         /// The dungeon node to which this item belongs.
         /// </param>
-        public DungeonItem(IMutableDungeon dungeonData, DungeonItemID id, IRequirementNode node)
+        public DungeonItem(IMutableDungeon dungeonData, IRequirementNode node)
         {
             _dungeonData = dungeonData;
-#if DEBUG
-            _id = id;
-#endif
             _node = node;
 
             _dungeonData.DungeonItems.ItemCreated += OnDungeonItemCreated;
