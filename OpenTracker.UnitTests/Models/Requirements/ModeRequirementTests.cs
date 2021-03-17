@@ -12,20 +12,20 @@ namespace OpenTracker.UnitTests.Models.Requirements
     public class ModeRequirementTests
     {
         [Theory]
-        [MemberData(nameof(ItemPlacement_Data))]
-        [MemberData(nameof(SmallKeyShuffle_Data))]
-        [MemberData(nameof(BigKeyShuffle_Data))]
-        [MemberData(nameof(WorldState_Data))]
-        [MemberData(nameof(EntranceShuffle_Data))]
-        [MemberData(nameof(BossShuffle_Data))]
-        [MemberData(nameof(EnemyShuffle_Data))]
-        [MemberData(nameof(GuaranteedBossItems_Data))]
-        [MemberData(nameof(GenericKeys_Data))]
-        [MemberData(nameof(TakeAnyLocations_Data))]
-        [MemberData(nameof(DungeonItemShuffle_Data))]
-        [MemberData(nameof(WorldState_Entrance_Data))]
-        [MemberData(nameof(TakeAny_Entrance_Data))]
-        public void AccessibiltyTests(
+        [MemberData(nameof(ItemPlacementData))]
+        [MemberData(nameof(SmallKeyShuffleData))]
+        [MemberData(nameof(BigKeyShuffleData))]
+        [MemberData(nameof(WorldStateData))]
+        [MemberData(nameof(EntranceShuffleData))]
+        [MemberData(nameof(BossShuffleData))]
+        [MemberData(nameof(EnemyShuffleData))]
+        [MemberData(nameof(GuaranteedBossItemsData))]
+        [MemberData(nameof(GenericKeysData))]
+        [MemberData(nameof(TakeAnyLocationsData))]
+        [MemberData(nameof(DungeonItemShuffleData))]
+        [MemberData(nameof(WorldStateEntranceData))]
+        [MemberData(nameof(TakeAnyEntranceData))]
+        public void AccessibilityTests(
             ModeSaveData modeData, RequirementType type, AccessibilityLevel expected)
         {
             var container = ContainerConfig.Configure();
@@ -38,7 +38,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
             Assert.Equal(expected, requirements[type].Accessibility);
         }
     
-        public static IEnumerable<object[]> ItemPlacement_Data =>
+        public static IEnumerable<object[]> ItemPlacementData =>
             new List<object[]>
             {
                 new object[]
@@ -79,7 +79,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                 }
             };
     
-        public static IEnumerable<object[]> SmallKeyShuffle_Data =>
+        public static IEnumerable<object[]> SmallKeyShuffleData =>
             new List<object[]>
             {
                 new object[]
@@ -120,7 +120,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                 }
             };
     
-        public static IEnumerable<object[]> BigKeyShuffle_Data =>
+        public static IEnumerable<object[]> BigKeyShuffleData =>
             new List<object[]>
             {
                 new object[]
@@ -161,7 +161,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                 }
             };
     
-        public static IEnumerable<object[]> WorldState_Data =>
+        public static IEnumerable<object[]> WorldStateData =>
             new List<object[]>
             {
                 new object[]
@@ -202,7 +202,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                 }
             };
     
-        public static IEnumerable<object[]> EntranceShuffle_Data =>
+        public static IEnumerable<object[]> EntranceShuffleData =>
             new List<object[]>
             {
                 new object[]
@@ -351,7 +351,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                 }
             };
     
-        public static IEnumerable<object[]> BossShuffle_Data =>
+        public static IEnumerable<object[]> BossShuffleData =>
             new List<object[]>
             {
                 new object[]
@@ -392,7 +392,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                 }
             };
     
-        public static IEnumerable<object[]> EnemyShuffle_Data =>
+        public static IEnumerable<object[]> EnemyShuffleData =>
             new List<object[]>
             {
                 new object[]
@@ -433,7 +433,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                 }
             };
     
-        public static IEnumerable<object[]> GuaranteedBossItems_Data =>
+        public static IEnumerable<object[]> GuaranteedBossItemsData =>
             new List<object[]>
             {
                 new object[]
@@ -474,7 +474,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                 }
             };
     
-        public static IEnumerable<object[]> GenericKeys_Data =>
+        public static IEnumerable<object[]> GenericKeysData =>
             new List<object[]>
             {
                 new object[]
@@ -497,7 +497,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                 }
             };
     
-        public static IEnumerable<object[]> TakeAnyLocations_Data =>
+        public static IEnumerable<object[]> TakeAnyLocationsData =>
             new List<object[]>
             {
                 new object[]
@@ -520,7 +520,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                 }
             };
     
-        public static IEnumerable<object[]> DungeonItemShuffle_Data =>
+        public static IEnumerable<object[]> DungeonItemShuffleData =>
             new List<object[]>
             {
                 new object[]
@@ -685,7 +685,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                 }
             };
     
-        public static IEnumerable<object[]> WorldState_Entrance_Data =>
+        public static IEnumerable<object[]> WorldStateEntranceData =>
             new List<object[]>
             {
                 new object[]
@@ -930,7 +930,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                 }
             };
     
-        public static IEnumerable<object[]> TakeAny_Entrance_Data =>
+        public static IEnumerable<object[]> TakeAnyEntranceData =>
             new List<object[]>
             {
                 new object[]

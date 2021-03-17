@@ -15,32 +15,32 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
     public class HCTests : DungeonNodeTestBase
     {
         [Theory]
-        [MemberData(nameof(HCSanctuaryEntry_To_HCSanctuary))]
-        [MemberData(nameof(HCBack_To_HCSanctuary))]
-        [MemberData(nameof(HCFrontEntry_To_HCFront))]
-        [MemberData(nameof(HCPastEscapeFirstKeyDoor_To_HCFront))]
-        [MemberData(nameof(HCDarkRoomFront_To_HCFront))]
-        [MemberData(nameof(HCFront_To_HCEscapeFirstKeyDoor))]
-        [MemberData(nameof(HCPastEscapeFirstKeyDoor_To_HCEscapeFirstKeyDoor))]
-        [MemberData(nameof(HCFront_To_HCPastEscapeFirstKeyDoor))]
-        [MemberData(nameof(HCPastEscapeSecondKeyDoor_To_HCPastEscapeFirstKeyDoor))]
-        [MemberData(nameof(HCPastEscapeFirstKeyDoor_To_HCEscapeSecondKeyDoor))]
-        [MemberData(nameof(HCPastEscapeSecondKeyDoor_To_HCEscapeSecondKeyDoor))]
-        [MemberData(nameof(HCPastEscapeFirstKeyDoor_To_HCPastEscapeSecondKeyDoor))]
-        [MemberData(nameof(HCFront_To_HCDarkRoomFront))]
-        [MemberData(nameof(HCPastDarkCrossKeyDoor_To_HCDarkRoomFront))]
-        [MemberData(nameof(HCDarkRoomFront_To_HCDarkCrossKeyDoor))]
-        [MemberData(nameof(HCPastDarkCrossKeyDoor_To_HCDarkCrossKeyDoor))]
-        [MemberData(nameof(HCDarkRoomFront_To_HCPastDarkCrossKeyDoor))]
-        [MemberData(nameof(HCPastSewerRatRoomKeyDoor_To_HCPastDarkCrossKeyDoor))]
-        [MemberData(nameof(HCPastDarkCrossKeyDoor_To_HCSewerRatRoomKeyDoor))]
-        [MemberData(nameof(HCPastSewerRatRoomKeyDoor_To_HCSewerRatRoomKeyDoor))]
-        [MemberData(nameof(HCDarkRoomBack_To_HCPastSewerRatRoomKeyDoor))]
-        [MemberData(nameof(HCPastDarkCrossKeyDoor_To_HCPastSewerRatRoomKeyDoor))]
-        [MemberData(nameof(HCPastSewerRatRoomKeyDoor_To_HCDarkRoomBack))]
-        [MemberData(nameof(HCBack_To_HCDarkRoomBack))]
-        [MemberData(nameof(HCBackEntry_To_HCBack))]
-        [MemberData(nameof(HCDarkRoomBack_To_HCBack))]
+        [MemberData(nameof(HCSanctuaryEntryToHCSanctuary))]
+        [MemberData(nameof(HCBackToHCSanctuary))]
+        [MemberData(nameof(HCFrontEntryToHCFront))]
+        [MemberData(nameof(HCPastEscapeFirstKeyDoorToHCFront))]
+        [MemberData(nameof(HCDarkRoomFrontToHCFront))]
+        [MemberData(nameof(HCFrontToHCEscapeFirstKeyDoor))]
+        [MemberData(nameof(HCPastEscapeFirstKeyDoorToHCEscapeFirstKeyDoor))]
+        [MemberData(nameof(HCFrontToHCPastEscapeFirstKeyDoor))]
+        [MemberData(nameof(HCPastEscapeSecondKeyDoorToHCPastEscapeFirstKeyDoor))]
+        [MemberData(nameof(HCPastEscapeFirstKeyDoorToHCEscapeSecondKeyDoor))]
+        [MemberData(nameof(HCPastEscapeSecondKeyDoorToHCEscapeSecondKeyDoor))]
+        [MemberData(nameof(HCPastEscapeFirstKeyDoorToHCPastEscapeSecondKeyDoor))]
+        [MemberData(nameof(HCFrontToHCDarkRoomFront))]
+        [MemberData(nameof(HCPastDarkCrossKeyDoorToHCDarkRoomFront))]
+        [MemberData(nameof(HCDarkRoomFrontToHCDarkCrossKeyDoor))]
+        [MemberData(nameof(HCPastDarkCrossKeyDoorToHCDarkCrossKeyDoor))]
+        [MemberData(nameof(HCDarkRoomFrontToHCPastDarkCrossKeyDoor))]
+        [MemberData(nameof(HCPastSewerRatRoomKeyDoorToHCPastDarkCrossKeyDoor))]
+        [MemberData(nameof(HCPastDarkCrossKeyDoorToHCSewerRatRoomKeyDoor))]
+        [MemberData(nameof(HCPastSewerRatRoomKeyDoorToHCSewerRatRoomKeyDoor))]
+        [MemberData(nameof(HCDarkRoomBackToHCPastSewerRatRoomKeyDoor))]
+        [MemberData(nameof(HCPastDarkCrossKeyDoorToHCPastSewerRatRoomKeyDoor))]
+        [MemberData(nameof(HCPastSewerRatRoomKeyDoorToHCDarkRoomBack))]
+        [MemberData(nameof(HCBackToHCDarkRoomBack))]
+        [MemberData(nameof(HCBackEntryToHCBack))]
+        [MemberData(nameof(HCDarkRoomBackToHCBack))]
         public override void Tests(
             ModeSaveData modeData, RequirementNodeID[] accessibleEntryNodes,
             DungeonNodeID[] accessibleNodes, KeyDoorID[] unlockedDoors, (ItemType, int)[] items,
@@ -52,7 +52,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 sequenceBreaks, dungeonID, id, expected);
         }
         
-        public static IEnumerable<object[]> HCSanctuaryEntry_To_HCSanctuary =>
+        public static IEnumerable<object[]> HCSanctuaryEntryToHCSanctuary =>
             new List<object[]>
             {
                 new object[]
@@ -91,7 +91,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                     {
                         WorldState = WorldState.Inverted
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.HCSanctuaryEntry
                     },
@@ -105,7 +105,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> HCBack_To_HCSanctuary =>
+        public static IEnumerable<object[]> HCBackToHCSanctuary =>
             new List<object[]>
             {
                 new object[]
@@ -130,7 +130,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                         WorldState = WorldState.Inverted
                     },
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.HCBack
                     },
@@ -143,7 +143,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 },
             };
         
-        public static IEnumerable<object[]> HCFrontEntry_To_HCFront =>
+        public static IEnumerable<object[]> HCFrontEntryToHCFront =>
             new List<object[]>
             {
                 new object[]
@@ -182,7 +182,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                     {
                         WorldState = WorldState.Inverted
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.HCFrontEntry
                     },
@@ -196,7 +196,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
            };
         
-        public static IEnumerable<object[]> HCPastEscapeFirstKeyDoor_To_HCFront =>
+        public static IEnumerable<object[]> HCPastEscapeFirstKeyDoorToHCFront =>
             new List<object[]>
             {
                 new object[]
@@ -206,7 +206,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                         WorldState = WorldState.Inverted
                     },
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.HCPastEscapeFirstKeyDoor
                     },
@@ -224,11 +224,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                         WorldState = WorldState.Inverted
                     },
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.HCPastEscapeFirstKeyDoor
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.HCEscapeFirstKeyDoor
                     },
@@ -240,7 +240,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> HCDarkRoomFront_To_HCFront =>
+        public static IEnumerable<object[]> HCDarkRoomFrontToHCFront =>
             new List<object[]>
             {
                 new object[]
@@ -265,7 +265,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                         WorldState = WorldState.Inverted
                     },
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.HCDarkRoomFront
                     },
@@ -278,7 +278,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> HCFront_To_HCEscapeFirstKeyDoor =>
+        public static IEnumerable<object[]> HCFrontToHCEscapeFirstKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -318,7 +318,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                         WorldState = WorldState.Inverted
                     },
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.HCFront
                     },
@@ -331,7 +331,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 },
             };
         
-        public static IEnumerable<object[]> HCPastEscapeFirstKeyDoor_To_HCEscapeFirstKeyDoor =>
+        public static IEnumerable<object[]> HCPastEscapeFirstKeyDoorToHCEscapeFirstKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -356,7 +356,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                         WorldState = WorldState.Inverted
                     },
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.HCPastEscapeFirstKeyDoor
                     },
@@ -369,14 +369,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> HCFront_To_HCPastEscapeFirstKeyDoor =>
+        public static IEnumerable<object[]> HCFrontToHCPastEscapeFirstKeyDoor =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.HCFront
                     },
@@ -391,11 +391,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.HCFront
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.HCEscapeFirstKeyDoor
                     },
@@ -407,14 +407,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> HCPastEscapeSecondKeyDoor_To_HCPastEscapeFirstKeyDoor =>
+        public static IEnumerable<object[]> HCPastEscapeSecondKeyDoorToHCPastEscapeFirstKeyDoor =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.HCPastEscapeSecondKeyDoor
                     },
@@ -429,11 +429,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.HCPastEscapeSecondKeyDoor
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.HCEscapeSecondKeyDoor
                     },
@@ -445,7 +445,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> HCPastEscapeFirstKeyDoor_To_HCEscapeSecondKeyDoor =>
+        public static IEnumerable<object[]> HCPastEscapeFirstKeyDoorToHCEscapeSecondKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -464,7 +464,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.HCPastEscapeFirstKeyDoor
                     },
@@ -477,7 +477,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> HCPastEscapeSecondKeyDoor_To_HCEscapeSecondKeyDoor =>
+        public static IEnumerable<object[]> HCPastEscapeSecondKeyDoorToHCEscapeSecondKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -496,7 +496,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.HCPastEscapeSecondKeyDoor
                     },
@@ -509,14 +509,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> HCPastEscapeFirstKeyDoor_To_HCPastEscapeSecondKeyDoor =>
+        public static IEnumerable<object[]> HCPastEscapeFirstKeyDoorToHCPastEscapeSecondKeyDoor =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.HCPastEscapeFirstKeyDoor
                     },
@@ -531,11 +531,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.HCPastEscapeFirstKeyDoor
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.HCEscapeSecondKeyDoor
                     },
@@ -547,7 +547,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> HCFront_To_HCDarkRoomFront =>
+        public static IEnumerable<object[]> HCFrontToHCDarkRoomFront =>
             new List<object[]>
             {
                 new object[]
@@ -557,12 +557,12 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                         ItemPlacement = ItemPlacement.Advanced
                     },
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.HCFront
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 0),
                         (ItemType.FireRod, 0)
@@ -582,12 +582,12 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                         ItemPlacement = ItemPlacement.Basic
                     },
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.HCFront
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 0),
                         (ItemType.FireRod, 0)
@@ -607,12 +607,12 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                         ItemPlacement = ItemPlacement.Advanced
                     },
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.HCFront
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 0),
                         (ItemType.FireRod, 0)
@@ -632,12 +632,12 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                         ItemPlacement = ItemPlacement.Basic
                     },
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.HCFront
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 0),
                         (ItemType.FireRod, 0)
@@ -657,12 +657,12 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                         ItemPlacement = ItemPlacement.Advanced
                     },
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.HCFront
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 1),
                         (ItemType.FireRod, 0)
@@ -682,12 +682,12 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                         ItemPlacement = ItemPlacement.Advanced
                     },
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.HCFront
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 0),
                         (ItemType.FireRod, 1)
@@ -707,12 +707,12 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                         ItemPlacement = ItemPlacement.Basic
                     },
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.HCFront
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 1),
                         (ItemType.FireRod, 0)
@@ -727,14 +727,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> HCPastDarkCrossKeyDoor_To_HCDarkRoomFront =>
+        public static IEnumerable<object[]> HCPastDarkCrossKeyDoorToHCDarkRoomFront =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.HCPastDarkCrossKeyDoor
                     },
@@ -752,11 +752,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.HCPastDarkCrossKeyDoor
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.HCDarkCrossKeyDoor
                     },
@@ -771,7 +771,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> HCDarkRoomFront_To_HCDarkCrossKeyDoor =>
+        public static IEnumerable<object[]> HCDarkRoomFrontToHCDarkCrossKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -793,7 +793,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.HCDarkRoomFront
                     },
@@ -809,7 +809,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> HCPastDarkCrossKeyDoor_To_HCDarkCrossKeyDoor =>
+        public static IEnumerable<object[]> HCPastDarkCrossKeyDoorToHCDarkCrossKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -831,7 +831,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.HCPastDarkCrossKeyDoor
                     },
@@ -847,14 +847,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> HCDarkRoomFront_To_HCPastDarkCrossKeyDoor =>
+        public static IEnumerable<object[]> HCDarkRoomFrontToHCPastDarkCrossKeyDoor =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.HCDarkRoomFront
                     },
@@ -869,11 +869,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.HCDarkRoomFront
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.HCDarkCrossKeyDoor
                     },
@@ -885,14 +885,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> HCPastSewerRatRoomKeyDoor_To_HCPastDarkCrossKeyDoor =>
+        public static IEnumerable<object[]> HCPastSewerRatRoomKeyDoorToHCPastDarkCrossKeyDoor =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.HCPastSewerRatRoomKeyDoor
                     },
@@ -907,11 +907,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.HCPastSewerRatRoomKeyDoor
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.HCSewerRatRoomKeyDoor
                     },
@@ -923,7 +923,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> HCPastDarkCrossKeyDoor_To_HCSewerRatRoomKeyDoor =>
+        public static IEnumerable<object[]> HCPastDarkCrossKeyDoorToHCSewerRatRoomKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -942,7 +942,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.HCPastDarkCrossKeyDoor
                     },
@@ -955,7 +955,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> HCPastSewerRatRoomKeyDoor_To_HCSewerRatRoomKeyDoor =>
+        public static IEnumerable<object[]> HCPastSewerRatRoomKeyDoorToHCSewerRatRoomKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -974,7 +974,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.HCPastSewerRatRoomKeyDoor
                     },
@@ -987,7 +987,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> HCDarkRoomBack_To_HCPastSewerRatRoomKeyDoor =>
+        public static IEnumerable<object[]> HCDarkRoomBackToHCPastSewerRatRoomKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -1006,7 +1006,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.HCDarkRoomBack
                     },
@@ -1019,14 +1019,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> HCPastDarkCrossKeyDoor_To_HCPastSewerRatRoomKeyDoor =>
+        public static IEnumerable<object[]> HCPastDarkCrossKeyDoorToHCPastSewerRatRoomKeyDoor =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.HCPastDarkCrossKeyDoor
                     },
@@ -1041,11 +1041,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.HCPastDarkCrossKeyDoor
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.HCSewerRatRoomKeyDoor
                     },
@@ -1057,7 +1057,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> HCPastSewerRatRoomKeyDoor_To_HCDarkRoomBack =>
+        public static IEnumerable<object[]> HCPastSewerRatRoomKeyDoorToHCDarkRoomBack =>
             new List<object[]>
             {
                 new object[]
@@ -1076,7 +1076,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.HCPastSewerRatRoomKeyDoor
                     },
@@ -1089,7 +1089,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> HCBack_To_HCDarkRoomBack =>
+        public static IEnumerable<object[]> HCBackToHCDarkRoomBack =>
             new List<object[]>
             {
                 new object[]
@@ -1099,12 +1099,12 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                         ItemPlacement = ItemPlacement.Advanced
                     },
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.HCBack
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 0),
                         (ItemType.FireRod, 0)
@@ -1124,12 +1124,12 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                         ItemPlacement = ItemPlacement.Basic
                     },
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.HCBack
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 0),
                         (ItemType.FireRod, 0)
@@ -1149,12 +1149,12 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                         ItemPlacement = ItemPlacement.Advanced
                     },
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.HCBack
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 0),
                         (ItemType.FireRod, 0)
@@ -1174,12 +1174,12 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                         ItemPlacement = ItemPlacement.Basic
                     },
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.HCBack
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 0),
                         (ItemType.FireRod, 0)
@@ -1199,12 +1199,12 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                         ItemPlacement = ItemPlacement.Advanced
                     },
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.HCBack
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 1),
                         (ItemType.FireRod, 0)
@@ -1224,12 +1224,12 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                         ItemPlacement = ItemPlacement.Advanced
                     },
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.HCBack
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 0),
                         (ItemType.FireRod, 1)
@@ -1249,12 +1249,12 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                         ItemPlacement = ItemPlacement.Basic
                     },
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.HCBack
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 1),
                         (ItemType.FireRod, 0)
@@ -1269,7 +1269,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> HCBackEntry_To_HCBack =>
+        public static IEnumerable<object[]> HCBackEntryToHCBack =>
             new List<object[]>
             {
                 new object[]
@@ -1287,7 +1287,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.HCBackEntry
                     },
@@ -1301,7 +1301,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> HCDarkRoomBack_To_HCBack =>
+        public static IEnumerable<object[]> HCDarkRoomBackToHCBack =>
              new List<object[]>
              {
                 new object[]
@@ -1320,7 +1320,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.HCDarkRoomBack
                     },

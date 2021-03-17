@@ -14,38 +14,38 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
     public class SWTests : DungeonNodeTestBase
     {
         [Theory]
-        [MemberData(nameof(SWFrontEntry_To_SWBigChestAreaBottom))]
-        [MemberData(nameof(SWBigChestAreaTop_To_SWBigChestAreaBottom))]
-        [MemberData(nameof(SWFrontLeftSide_To_SWBigChestAreaBottom))]
-        [MemberData(nameof(SWFrontRightSide_To_SWBigChestAreaBottom))]
-        [MemberData(nameof(SWFrontEntry_To_SWBigChestAreaTop))]
-        [MemberData(nameof(SWBigChestAreaBottom_To_SWBigChestAreaTop))]
-        [MemberData(nameof(SWBigChestAreaTop_To_SWBigChest))]
-        [MemberData(nameof(SWFrontLeftSide_To_SWFrontLeftKeyDoor))]
-        [MemberData(nameof(SWBigChestAreaBottom_To_SWFrontLeftKeyDoor))]
-        [MemberData(nameof(SWFrontEntry_To_SWFrontLeftSide))]
-        [MemberData(nameof(SWBigChestAreaBottom_To_SWFrontLeftSide))]
-        [MemberData(nameof(SWFrontRightSide_To_SWFrontRightKeyDoor))]
-        [MemberData(nameof(SWBigChestAreaBottom_To_SWFrontRightKeyDoor))]
-        [MemberData(nameof(SWFrontEntry_To_SWFrontRightSide))]
-        [MemberData(nameof(SWFrontLeftSide_To_SWFrontRightSide))]
-        [MemberData(nameof(SWBigChestAreaBottom_To_SWFrontRightSide))]
-        [MemberData(nameof(SWFrontEntry_To_SWFrontBackConnector))]
-        [MemberData(nameof(SWPastTheWorthlessKeyDoor_To_SWFrontBackConnector))]
-        [MemberData(nameof(SWFrontBackConnector_To_SWWorthlessKeyDoor))]
-        [MemberData(nameof(SWPastTheWorthlessKeyDoor_To_SWWorthlessKeyDoor))]
-        [MemberData(nameof(SWFrontBackConnector_To_SWPastTheWorthlessKeyDoor))]
-        [MemberData(nameof(SWBackEntry_To_SWBack))]
-        [MemberData(nameof(SWBackFirstKeyDoor_To_SWBack))]
-        [MemberData(nameof(SWBack_To_SWBackFirstKeyDoor))]
-        [MemberData(nameof(SWBackPastFirstKeyDoor_To_SWBackFirstKeyDoor))]
-        [MemberData(nameof(SWBack_To_SWBackPastFirstKeyDoor))]
-        [MemberData(nameof(SWBackPastFirstKeyDoor_To_SWBackPastFourTorchRoom))]
-        [MemberData(nameof(SWBackPastFourTorchRoom_To_SWBackPastCurtains))]
-        [MemberData(nameof(SWBossRoom_To_SWBackPastCurtains))]
-        [MemberData(nameof(SWBackPastCurtains_To_SWBackSecondKeyDoor))]
-        [MemberData(nameof(SWBossRoom_To_SWBackSecondKeyDoor))]
-        [MemberData(nameof(SWBackPastCurtains_To_SWBossRoom))]
+        [MemberData(nameof(SWFrontEntryToSWBigChestAreaBottom))]
+        [MemberData(nameof(SWBigChestAreaTopToSWBigChestAreaBottom))]
+        [MemberData(nameof(SWFrontLeftSideToSWBigChestAreaBottom))]
+        [MemberData(nameof(SWFrontRightSideToSWBigChestAreaBottom))]
+        [MemberData(nameof(SWFrontEntryToSWBigChestAreaTop))]
+        [MemberData(nameof(SWBigChestAreaBottomToSWBigChestAreaTop))]
+        [MemberData(nameof(SWBigChestAreaTopToSWBigChest))]
+        [MemberData(nameof(SWFrontLeftSideToSWFrontLeftKeyDoor))]
+        [MemberData(nameof(SWBigChestAreaBottomToSWFrontLeftKeyDoor))]
+        [MemberData(nameof(SWFrontEntryToSWFrontLeftSide))]
+        [MemberData(nameof(SWBigChestAreaBottomToSWFrontLeftSide))]
+        [MemberData(nameof(SWFrontRightSideToSWFrontRightKeyDoor))]
+        [MemberData(nameof(SWBigChestAreaBottomToSWFrontRightKeyDoor))]
+        [MemberData(nameof(SWFrontEntryToSWFrontRightSide))]
+        [MemberData(nameof(SWFrontLeftSideToSWFrontRightSide))]
+        [MemberData(nameof(SWBigChestAreaBottomToSWFrontRightSide))]
+        [MemberData(nameof(SWFrontEntryToSWFrontBackConnector))]
+        [MemberData(nameof(SWPastTheWorthlessKeyDoorToSWFrontBackConnector))]
+        [MemberData(nameof(SWFrontBackConnectorToSWWorthlessKeyDoor))]
+        [MemberData(nameof(SWPastTheWorthlessKeyDoorToSWWorthlessKeyDoor))]
+        [MemberData(nameof(SWFrontBackConnectorToSWPastTheWorthlessKeyDoor))]
+        [MemberData(nameof(SWBackEntryToSWBack))]
+        [MemberData(nameof(SWBackFirstKeyDoorToSWBack))]
+        [MemberData(nameof(SWBackToSWBackFirstKeyDoor))]
+        [MemberData(nameof(SWBackPastFirstKeyDoorToSWBackFirstKeyDoor))]
+        [MemberData(nameof(SWBackToSWBackPastFirstKeyDoor))]
+        [MemberData(nameof(SWBackPastFirstKeyDoorToSWBackPastFourTorchRoom))]
+        [MemberData(nameof(SWBackPastFourTorchRoomToSWBackPastCurtains))]
+        [MemberData(nameof(SWBossRoomToSWBackPastCurtains))]
+        [MemberData(nameof(SWBackPastCurtainsToSWBackSecondKeyDoor))]
+        [MemberData(nameof(SWBossRoomToSWBackSecondKeyDoor))]
+        [MemberData(nameof(SWBackPastCurtainsToSWBossRoom))]
         public override void Tests(
             ModeSaveData modeData, RequirementNodeID[] accessibleEntryNodes,
             DungeonNodeID[] accessibleNodes, KeyDoorID[] unlockedDoors, (ItemType, int)[] items,
@@ -57,7 +57,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 sequenceBreaks, dungeonID, id, expected);
         }
         
-        public static IEnumerable<object[]> SWFrontEntry_To_SWBigChestAreaBottom =>
+        public static IEnumerable<object[]> SWFrontEntryToSWBigChestAreaBottom =>
             new List<object[]>
             {
                 new object[]
@@ -75,7 +75,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.SWFrontEntry
                     },
@@ -89,7 +89,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> SWBigChestAreaTop_To_SWBigChestAreaBottom =>
+        public static IEnumerable<object[]> SWBigChestAreaTopToSWBigChestAreaBottom =>
             new List<object[]>
             {
                 new object[]
@@ -108,7 +108,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SWBigChestAreaTop
                     },
@@ -121,14 +121,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> SWFrontLeftSide_To_SWBigChestAreaBottom =>
+        public static IEnumerable<object[]> SWFrontLeftSideToSWBigChestAreaBottom =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SWFrontLeftSide
                     },
@@ -143,11 +143,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SWFrontLeftSide
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.SWFrontLeftKeyDoor
                     },
@@ -159,14 +159,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> SWFrontRightSide_To_SWBigChestAreaBottom =>
+        public static IEnumerable<object[]> SWFrontRightSideToSWBigChestAreaBottom =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SWFrontRightSide
                     },
@@ -181,11 +181,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SWFrontRightSide
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.SWFrontRightKeyDoor
                     },
@@ -197,7 +197,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> SWFrontEntry_To_SWBigChestAreaTop =>
+        public static IEnumerable<object[]> SWFrontEntryToSWBigChestAreaTop =>
             new List<object[]>
             {
                 new object[]
@@ -215,7 +215,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.SWFrontEntry
                     },
@@ -229,14 +229,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> SWBigChestAreaBottom_To_SWBigChestAreaTop =>
+        public static IEnumerable<object[]> SWBigChestAreaBottomToSWBigChestAreaTop =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SWBigChestAreaBottom
                     },
@@ -257,7 +257,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SWBigChestAreaBottom
                     },
@@ -278,7 +278,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SWBigChestAreaBottom
                     },
@@ -297,14 +297,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> SWBigChestAreaTop_To_SWBigChest =>
+        public static IEnumerable<object[]> SWBigChestAreaTopToSWBigChest =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SWBigChestAreaTop
                     },
@@ -319,11 +319,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SWBigChestAreaTop
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.SWBigChest
                     },
@@ -335,7 +335,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> SWFrontLeftSide_To_SWFrontLeftKeyDoor =>
+        public static IEnumerable<object[]> SWFrontLeftSideToSWFrontLeftKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -354,7 +354,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SWFrontLeftSide
                     },
@@ -367,7 +367,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> SWBigChestAreaBottom_To_SWFrontLeftKeyDoor =>
+        public static IEnumerable<object[]> SWBigChestAreaBottomToSWFrontLeftKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -386,7 +386,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SWBigChestAreaBottom
                     },
@@ -399,7 +399,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> SWFrontEntry_To_SWFrontLeftSide =>
+        public static IEnumerable<object[]> SWFrontEntryToSWFrontLeftSide =>
             new List<object[]>
             {
                 new object[]
@@ -417,7 +417,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.SWFrontEntry
                     },
@@ -431,14 +431,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> SWBigChestAreaBottom_To_SWFrontLeftSide =>
+        public static IEnumerable<object[]> SWBigChestAreaBottomToSWFrontLeftSide =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SWBigChestAreaBottom
                     },
@@ -453,11 +453,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SWBigChestAreaBottom
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.SWFrontLeftKeyDoor
                     },
@@ -469,7 +469,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> SWFrontRightSide_To_SWFrontRightKeyDoor =>
+        public static IEnumerable<object[]> SWFrontRightSideToSWFrontRightKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -488,7 +488,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SWFrontRightSide
                     },
@@ -501,7 +501,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> SWBigChestAreaBottom_To_SWFrontRightKeyDoor =>
+        public static IEnumerable<object[]> SWBigChestAreaBottomToSWFrontRightKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -520,7 +520,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SWBigChestAreaBottom
                     },
@@ -533,7 +533,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> SWFrontEntry_To_SWFrontRightSide =>
+        public static IEnumerable<object[]> SWFrontEntryToSWFrontRightSide =>
             new List<object[]>
             {
                 new object[]
@@ -551,7 +551,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.SWFrontEntry
                     },
@@ -565,7 +565,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> SWFrontLeftSide_To_SWFrontRightSide =>
+        public static IEnumerable<object[]> SWFrontLeftSideToSWFrontRightSide =>
             new List<object[]>
             {
                 new object[]
@@ -584,7 +584,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SWFrontLeftSide
                     },
@@ -597,14 +597,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> SWBigChestAreaBottom_To_SWFrontRightSide =>
+        public static IEnumerable<object[]> SWBigChestAreaBottomToSWFrontRightSide =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SWBigChestAreaBottom
                     },
@@ -619,11 +619,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SWBigChestAreaBottom
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.SWFrontRightKeyDoor
                     },
@@ -635,7 +635,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> SWFrontEntry_To_SWFrontBackConnector =>
+        public static IEnumerable<object[]> SWFrontEntryToSWFrontBackConnector =>
             new List<object[]>
             {
                 new object[]
@@ -653,7 +653,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.SWFrontEntry
                     },
@@ -667,14 +667,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> SWPastTheWorthlessKeyDoor_To_SWFrontBackConnector =>
+        public static IEnumerable<object[]> SWPastTheWorthlessKeyDoorToSWFrontBackConnector =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SWPastTheWorthlessKeyDoor
                     },
@@ -689,11 +689,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SWPastTheWorthlessKeyDoor
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.SWWorthlessKeyDoor
                     },
@@ -705,7 +705,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> SWFrontBackConnector_To_SWWorthlessKeyDoor =>
+        public static IEnumerable<object[]> SWFrontBackConnectorToSWWorthlessKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -724,7 +724,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SWFrontBackConnector
                     },
@@ -737,7 +737,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> SWPastTheWorthlessKeyDoor_To_SWWorthlessKeyDoor =>
+        public static IEnumerable<object[]> SWPastTheWorthlessKeyDoorToSWWorthlessKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -756,7 +756,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SWPastTheWorthlessKeyDoor
                     },
@@ -769,14 +769,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> SWFrontBackConnector_To_SWPastTheWorthlessKeyDoor =>
+        public static IEnumerable<object[]> SWFrontBackConnectorToSWPastTheWorthlessKeyDoor =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SWFrontBackConnector
                     },
@@ -791,11 +791,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SWFrontBackConnector
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.SWWorthlessKeyDoor
                     },
@@ -807,7 +807,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> SWBackEntry_To_SWBack =>
+        public static IEnumerable<object[]> SWBackEntryToSWBack =>
             new List<object[]>
             {
                 new object[]
@@ -825,7 +825,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.SWBackEntry
                     },
@@ -839,14 +839,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> SWBackFirstKeyDoor_To_SWBack =>
+        public static IEnumerable<object[]> SWBackFirstKeyDoorToSWBack =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SWBackFirstKeyDoor
                     },
@@ -861,11 +861,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SWBackFirstKeyDoor
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.SWBackFirstKeyDoor
                     },
@@ -877,7 +877,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> SWBack_To_SWBackFirstKeyDoor =>
+        public static IEnumerable<object[]> SWBackToSWBackFirstKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -896,7 +896,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SWBack
                     },
@@ -909,7 +909,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> SWBackPastFirstKeyDoor_To_SWBackFirstKeyDoor =>
+        public static IEnumerable<object[]> SWBackPastFirstKeyDoorToSWBackFirstKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -928,7 +928,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SWBackPastFirstKeyDoor
                     },
@@ -941,14 +941,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> SWBack_To_SWBackPastFirstKeyDoor =>
+        public static IEnumerable<object[]> SWBackToSWBackPastFirstKeyDoor =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SWBack
                     },
@@ -963,11 +963,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SWBack
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.SWBackFirstKeyDoor
                     },
@@ -979,14 +979,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> SWBackPastFirstKeyDoor_To_SWBackPastFourTorchRoom =>
+        public static IEnumerable<object[]> SWBackPastFirstKeyDoorToSWBackPastFourTorchRoom =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SWBackPastFirstKeyDoor
                     },
@@ -1004,7 +1004,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SWBackPastFirstKeyDoor
                     },
@@ -1020,14 +1020,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> SWBackPastFourTorchRoom_To_SWBackPastCurtains =>
+        public static IEnumerable<object[]> SWBackPastFourTorchRoomToSWBackPastCurtains =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SWBackPastFourTorchRoom
                     },
@@ -1045,7 +1045,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SWBackPastFourTorchRoom
                     },
@@ -1063,7 +1063,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SWBackPastFourTorchRoom
                     },
@@ -1079,14 +1079,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> SWBossRoom_To_SWBackPastCurtains =>
+        public static IEnumerable<object[]> SWBossRoomToSWBackPastCurtains =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SWBossRoom
                     },
@@ -1101,11 +1101,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SWBossRoom
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.SWBackSecondKeyDoor
                     },
@@ -1117,7 +1117,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> SWBackPastCurtains_To_SWBackSecondKeyDoor =>
+        public static IEnumerable<object[]> SWBackPastCurtainsToSWBackSecondKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -1136,7 +1136,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SWBackPastCurtains
                     },
@@ -1149,7 +1149,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> SWBossRoom_To_SWBackSecondKeyDoor =>
+        public static IEnumerable<object[]> SWBossRoomToSWBackSecondKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -1168,7 +1168,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SWBossRoom
                     },
@@ -1181,14 +1181,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> SWBackPastCurtains_To_SWBossRoom =>
+        public static IEnumerable<object[]> SWBackPastCurtainsToSWBossRoom =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SWBackPastCurtains
                     },
@@ -1203,11 +1203,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SWBackPastCurtains
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.SWBackSecondKeyDoor
                     },

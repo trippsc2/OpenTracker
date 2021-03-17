@@ -10,7 +10,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
 	public class SequenceBreakRequirementTests
     {
 		[Theory]
-		[MemberData(nameof(SequenceBreak_Data))]
+		[MemberData(nameof(SequenceBreakData))]
 		public void Enabled_AccessibilityTests(SequenceBreakType sequenceBreak, RequirementType type)
 		{
 			var container = ContainerConfig.Configure();
@@ -25,7 +25,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
 		}
  
 		[Theory]
-		[MemberData(nameof(SequenceBreak_Data))]
+		[MemberData(nameof(SequenceBreakData))]
 		public void Disabled_AccessibilityTests(SequenceBreakType sequenceBreak, RequirementType type)
 		{
 			var container = ContainerConfig.Configure();
@@ -39,7 +39,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
 				AccessibilityLevel.None, requirements[type].Accessibility);
 		}
  
-		public static IEnumerable<object[]> SequenceBreak_Data =>
+		public static IEnumerable<object[]> SequenceBreakData =>
             new List<object[]>
 			{
 				new object[]

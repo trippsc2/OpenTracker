@@ -161,7 +161,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 0),
@@ -182,7 +182,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 1),
                         (ItemType.RedBoomerang, 1),
@@ -203,7 +203,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 1),
                         (ItemType.RedBoomerang, 0),
@@ -224,7 +224,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 1),
@@ -245,7 +245,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 0),
@@ -266,7 +266,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 0),

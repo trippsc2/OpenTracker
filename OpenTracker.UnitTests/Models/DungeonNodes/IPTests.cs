@@ -14,50 +14,50 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
     public class IPTests : DungeonNodeTestBase
     {
         [Theory]
-        [MemberData(nameof(IPEntry_To_IP))]
-        [MemberData(nameof(IP_To_IPPastEntranceFreezorRoom))]
-        [MemberData(nameof(IPPastEntranceFreezorRoom_To_IPB1LeftSide))]
-        [MemberData(nameof(IPB2PastLiftBlock_To_IPB1RightSide))]
-        [MemberData(nameof(IPB1LeftSide_To_IPB1RightSide))]
-        [MemberData(nameof(IPB1LeftSide_To_IPB2LeftSide))]
-        [MemberData(nameof(IPB2PastKeyDoor_To_IPB2LeftSide))]
-        [MemberData(nameof(IPB2LeftSide_To_IPB2KeyDoor))]
-        [MemberData(nameof(IPB2PastKeyDoor_To_IPB2KeyDoor))]
-        [MemberData(nameof(IPB2LeftSide_To_IPB2PastKeyDoor))]
-        [MemberData(nameof(IPSpikeRoom_To_IPB2PastKeyDoor))]
-        [MemberData(nameof(IPB4FreezorRoom_To_IPB2PastKeyDoor))]
-        [MemberData(nameof(IPSpikeRoom_To_IPB2PastHammerBlocks))]
-        [MemberData(nameof(IPB2PastHammerBlocks_To_IPB2PastLiftBlock))]
-        [MemberData(nameof(IPB2PastKeyDoor_To_IPB3KeyDoor))]
-        [MemberData(nameof(IPSpikeRoom_To_IPB3KeyDoor))]
-        [MemberData(nameof(IPB1RightSide_To_IPSpikeRoom))]
-        [MemberData(nameof(IPB2PastKeyDoor_To_IPSpikeRoom))]
-        [MemberData(nameof(IPB4RightSide_To_IPSpikeRoom))]
-        [MemberData(nameof(IPSpikeRoom_To_IPB4RightSide))]
-        [MemberData(nameof(IPB4IceRoom_To_IPB4RightSide))]
-        [MemberData(nameof(IPB2PastKeyDoor_To_IPB4IceRoom))]
-        [MemberData(nameof(IPB4PastKeyDoor_To_IPB4IceRoom))]
-        [MemberData(nameof(IPB2PastKeyDoor_To_IPB4FreezorRoom))]
-        [MemberData(nameof(IPB4FreezorRoom_To_IPFreezorChest))]
-        [MemberData(nameof(IPB4PastKeyDoor_To_IPB4KeyDoor))]
-        [MemberData(nameof(IPB4IceRoom_To_IPB4KeyDoor))]
-        [MemberData(nameof(IPB4IceRoom_To_IPB4PastKeyDoor))]
-        [MemberData(nameof(IPB5_To_IPB4PastKeyDoor))]
-        [MemberData(nameof(IPB4FreezorRoom_To_IPBigChestArea))]
-        [MemberData(nameof(IPBigChestArea_To_IPBigChest))]
-        [MemberData(nameof(IPB4FreezorRoom_To_IPB5))]
-        [MemberData(nameof(IPB4PastKeyDoor_To_IPB5))]
-        [MemberData(nameof(IPB5_To_IPB5PastBigKeyDoor))]
-        [MemberData(nameof(IPB5PastBigKeyDoor_To_IPB6))]
-        [MemberData(nameof(IPB6PastKeyDoor_To_IPB6))]
-        [MemberData(nameof(IPB5_To_IPB6))]
-        [MemberData(nameof(IPB6_To_IPB6KeyDoor))]
-        [MemberData(nameof(IPB6PastKeyDoor_To_IPB6KeyDoor))]
-        [MemberData(nameof(IPB6_To_IPB6PastKeyDoor))]
-        [MemberData(nameof(IPB6_To_IPB6PreBossRoom))]
-        [MemberData(nameof(IPB6PastKeyDoor_To_IPB6PreBossRoom))]
-        [MemberData(nameof(IPB6PreBossRoom_To_IPB6PastHammerBlocks))]
-        [MemberData(nameof(IPB6PastHammerBlocks_To_IPB6PastLiftBlock))]
+        [MemberData(nameof(IPEntryToIP))]
+        [MemberData(nameof(IPToIPPastEntranceFreezorRoom))]
+        [MemberData(nameof(IPPastEntranceFreezorRoomToIPB1LeftSide))]
+        [MemberData(nameof(IPB2PastLiftBlockToIPB1RightSide))]
+        [MemberData(nameof(IPB1LeftSideToIPB1RightSide))]
+        [MemberData(nameof(IPB1LeftSideToIPB2LeftSide))]
+        [MemberData(nameof(IPB2PastKeyDoorToIPB2LeftSide))]
+        [MemberData(nameof(IPB2LeftSideToIPB2KeyDoor))]
+        [MemberData(nameof(IPB2PastKeyDoorToIPB2KeyDoor))]
+        [MemberData(nameof(IPB2LeftSideToIPB2PastKeyDoor))]
+        [MemberData(nameof(IPSpikeRoomToIPB2PastKeyDoor))]
+        [MemberData(nameof(IPB4FreezorRoomToIPB2PastKeyDoor))]
+        [MemberData(nameof(IPSpikeRoomToIPB2PastHammerBlocks))]
+        [MemberData(nameof(IPB2PastHammerBlocksToIPB2PastLiftBlock))]
+        [MemberData(nameof(IPB2PastKeyDoorToIPB3KeyDoor))]
+        [MemberData(nameof(IPSpikeRoomToIPB3KeyDoor))]
+        [MemberData(nameof(IPB1RightSideToIPSpikeRoom))]
+        [MemberData(nameof(IPB2PastKeyDoorToIPSpikeRoom))]
+        [MemberData(nameof(IPB4RightSideToIPSpikeRoom))]
+        [MemberData(nameof(IPSpikeRoomToIPB4RightSide))]
+        [MemberData(nameof(IPB4IceRoomToIPB4RightSide))]
+        [MemberData(nameof(IPB2PastKeyDoorToIPB4IceRoom))]
+        [MemberData(nameof(IPB4PastKeyDoorToIPB4IceRoom))]
+        [MemberData(nameof(IPB2PastKeyDoorToIPB4FreezorRoom))]
+        [MemberData(nameof(IPB4FreezorRoomToIPFreezorChest))]
+        [MemberData(nameof(IPB4PastKeyDoorToIPB4KeyDoor))]
+        [MemberData(nameof(IPB4IceRoomToIPB4KeyDoor))]
+        [MemberData(nameof(IPB4IceRoomToIPB4PastKeyDoor))]
+        [MemberData(nameof(IPB5ToIPB4PastKeyDoor))]
+        [MemberData(nameof(IPB4FreezorRoomToIPBigChestArea))]
+        [MemberData(nameof(IPBigChestAreaToIPBigChest))]
+        [MemberData(nameof(IPB4FreezorRoomToIPB5))]
+        [MemberData(nameof(IPB4PastKeyDoorToIPB5))]
+        [MemberData(nameof(IPB5ToIPB5PastBigKeyDoor))]
+        [MemberData(nameof(IPB5PastBigKeyDoorToIPB6))]
+        [MemberData(nameof(IPB6PastKeyDoorToIPB6))]
+        [MemberData(nameof(IPB5ToIPB6))]
+        [MemberData(nameof(IPB6ToIPB6KeyDoor))]
+        [MemberData(nameof(IPB6PastKeyDoorToIPB6KeyDoor))]
+        [MemberData(nameof(IPB6ToIPB6PastKeyDoor))]
+        [MemberData(nameof(IPB6ToIPB6PreBossRoom))]
+        [MemberData(nameof(IPB6PastKeyDoorToIPB6PreBossRoom))]
+        [MemberData(nameof(IPB6PreBossRoomToIPB6PastHammerBlocks))]
+        [MemberData(nameof(IPB6PastHammerBlocksToIPB6PastLiftBlock))]
         public override void Tests(
             ModeSaveData modeData, RequirementNodeID[] accessibleEntryNodes,
             DungeonNodeID[] accessibleNodes, KeyDoorID[] unlockedDoors, (ItemType, int)[] items,
@@ -69,7 +69,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 sequenceBreaks, dungeonID, id, expected);
         }
         
-        public static IEnumerable<object[]> IPEntry_To_IP =>
+        public static IEnumerable<object[]> IPEntryToIP =>
             new List<object[]>
             {
                 new object[]
@@ -87,7 +87,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.IPEntry
                     },
@@ -101,19 +101,19 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> IP_To_IPPastEntranceFreezorRoom =>
+        public static IEnumerable<object[]> IPToIPPastEntranceFreezorRoom =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IP
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.FireRod, 0),
                         (ItemType.Bombos, 1),
@@ -128,12 +128,12 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IP
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.FireRod, 1),
                         (ItemType.Bombos, 0),
@@ -148,12 +148,12 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IP
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.FireRod, 0),
                         (ItemType.Bombos, 1),
@@ -168,12 +168,12 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IP
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.FireRod, 0),
                         (ItemType.Bombos, 1),
@@ -186,14 +186,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> IPPastEntranceFreezorRoom_To_IPB1LeftSide =>
+        public static IEnumerable<object[]> IPPastEntranceFreezorRoomToIPB1LeftSide =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPPastEntranceFreezorRoom
                     },
@@ -208,11 +208,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPPastEntranceFreezorRoom
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.IP1FKeyDoor
                     },
@@ -224,7 +224,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> IPB2PastLiftBlock_To_IPB1RightSide =>
+        public static IEnumerable<object[]> IPB2PastLiftBlockToIPB1RightSide =>
             new List<object[]>
             {
                 new object[]
@@ -243,7 +243,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB2PastLiftBlock
                     },
@@ -256,14 +256,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> IPB1LeftSide_To_IPB1RightSide =>
+        public static IEnumerable<object[]> IPB1LeftSideToIPB1RightSide =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB1LeftSide
                     },
@@ -284,7 +284,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB1LeftSide
                     },
@@ -303,7 +303,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> IPB1LeftSide_To_IPB2LeftSide =>
+        public static IEnumerable<object[]> IPB1LeftSideToIPB2LeftSide =>
             new List<object[]>
             {
                 new object[]
@@ -322,7 +322,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB1LeftSide
                     },
@@ -335,14 +335,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> IPB2PastKeyDoor_To_IPB2LeftSide =>
+        public static IEnumerable<object[]> IPB2PastKeyDoorToIPB2LeftSide =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB2PastKeyDoor
                     },
@@ -357,11 +357,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB2PastKeyDoor
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.IPB2KeyDoor
                     },
@@ -373,7 +373,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> IPB2LeftSide_To_IPB2KeyDoor =>
+        public static IEnumerable<object[]> IPB2LeftSideToIPB2KeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -392,7 +392,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB2LeftSide
                     },
@@ -405,7 +405,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> IPB2PastKeyDoor_To_IPB2KeyDoor =>
+        public static IEnumerable<object[]> IPB2PastKeyDoorToIPB2KeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -424,7 +424,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB2PastKeyDoor
                     },
@@ -437,14 +437,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> IPB2LeftSide_To_IPB2PastKeyDoor =>
+        public static IEnumerable<object[]> IPB2LeftSideToIPB2PastKeyDoor =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB2LeftSide
                     },
@@ -459,11 +459,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB2LeftSide
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.IPB2KeyDoor
                     },
@@ -475,14 +475,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> IPSpikeRoom_To_IPB2PastKeyDoor =>
+        public static IEnumerable<object[]> IPSpikeRoomToIPB2PastKeyDoor =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPSpikeRoom
                     },
@@ -497,11 +497,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPSpikeRoom
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.IPB3KeyDoor
                     },
@@ -513,7 +513,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> IPB4FreezorRoom_To_IPB2PastKeyDoor =>
+        public static IEnumerable<object[]> IPB4FreezorRoomToIPB2PastKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -532,7 +532,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB4FreezorRoom
                     },
@@ -545,14 +545,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> IPSpikeRoom_To_IPB2PastHammerBlocks =>
+        public static IEnumerable<object[]> IPSpikeRoomToIPB2PastHammerBlocks =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPSpikeRoom
                     },
@@ -570,7 +570,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPSpikeRoom
                     },
@@ -586,14 +586,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> IPB2PastHammerBlocks_To_IPB2PastLiftBlock =>
+        public static IEnumerable<object[]> IPB2PastHammerBlocksToIPB2PastLiftBlock =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB2PastHammerBlocks
                     },
@@ -611,7 +611,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB2PastHammerBlocks
                     },
@@ -627,7 +627,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> IPB2PastKeyDoor_To_IPB3KeyDoor =>
+        public static IEnumerable<object[]> IPB2PastKeyDoorToIPB3KeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -646,7 +646,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB2PastKeyDoor
                     },
@@ -659,7 +659,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> IPSpikeRoom_To_IPB3KeyDoor =>
+        public static IEnumerable<object[]> IPSpikeRoomToIPB3KeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -678,7 +678,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPSpikeRoom
                     },
@@ -691,7 +691,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> IPB1RightSide_To_IPSpikeRoom =>
+        public static IEnumerable<object[]> IPB1RightSideToIPSpikeRoom =>
             new List<object[]>
             {
                 new object[]
@@ -710,7 +710,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB1RightSide
                     },
@@ -723,14 +723,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> IPB2PastKeyDoor_To_IPSpikeRoom =>
+        public static IEnumerable<object[]> IPB2PastKeyDoorToIPSpikeRoom =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB2PastKeyDoor
                     },
@@ -748,11 +748,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB2PastKeyDoor
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.IPB3KeyDoor
                     },
@@ -767,7 +767,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> IPB4RightSide_To_IPSpikeRoom =>
+        public static IEnumerable<object[]> IPB4RightSideToIPSpikeRoom =>
             new List<object[]>
             {
                 new object[]
@@ -786,7 +786,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB4RightSide
                     },
@@ -799,7 +799,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> IPSpikeRoom_To_IPB4RightSide =>
+        public static IEnumerable<object[]> IPSpikeRoomToIPB4RightSide =>
             new List<object[]>
             {
                 new object[]
@@ -818,7 +818,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPSpikeRoom
                     },
@@ -831,24 +831,24 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> IPB4IceRoom_To_IPB4RightSide =>
+        public static IEnumerable<object[]> IPB4IceRoomToIPB4RightSide =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB4IceRoom
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Hookshot, 0),
                         (ItemType.Boots, 1)
                     },
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.Hover, false),
                         (SequenceBreakType.BombJumpIPHookshotGap, false)
@@ -861,17 +861,17 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB4IceRoom
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Hookshot, 0),
                         (ItemType.Boots, 0)
                     },
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.Hover, false),
                         (SequenceBreakType.BombJumpIPHookshotGap, true)
@@ -884,17 +884,17 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB4IceRoom
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Hookshot, 0),
                         (ItemType.Boots, 1)
                     },
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.Hover, true),
                         (SequenceBreakType.BombJumpIPHookshotGap, false)
@@ -907,17 +907,17 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB4IceRoom
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Hookshot, 1),
                         (ItemType.Boots, 0)
                     },
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.Hover, true),
                         (SequenceBreakType.BombJumpIPHookshotGap, true)
@@ -928,7 +928,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> IPB2PastKeyDoor_To_IPB4IceRoom =>
+        public static IEnumerable<object[]> IPB2PastKeyDoorToIPB4IceRoom =>
             new List<object[]>
             {
                 new object[]
@@ -947,7 +947,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB2PastKeyDoor
                     },
@@ -960,14 +960,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> IPB4PastKeyDoor_To_IPB4IceRoom =>
+        public static IEnumerable<object[]> IPB4PastKeyDoorToIPB4IceRoom =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB4PastKeyDoor
                     },
@@ -982,11 +982,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB4PastKeyDoor
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.IPB4KeyDoor
                     },
@@ -998,7 +998,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> IPB2PastKeyDoor_To_IPB4FreezorRoom =>
+        public static IEnumerable<object[]> IPB2PastKeyDoorToIPB4FreezorRoom =>
             new List<object[]>
             {
                 new object[]
@@ -1017,7 +1017,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB2PastKeyDoor
                     },
@@ -1030,19 +1030,19 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> IPB4FreezorRoom_To_IPFreezorChest =>
+        public static IEnumerable<object[]> IPB4FreezorRoomToIPFreezorChest =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB4FreezorRoom
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.FireRod, 0),
                         (ItemType.Bombos, 1),
@@ -1057,12 +1057,12 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB4FreezorRoom
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.FireRod, 1),
                         (ItemType.Bombos, 0),
@@ -1077,12 +1077,12 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB4FreezorRoom
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.FireRod, 0),
                         (ItemType.Bombos, 1),
@@ -1097,12 +1097,12 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB4FreezorRoom
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.FireRod, 0),
                         (ItemType.Bombos, 1),
@@ -1115,7 +1115,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> IPB4PastKeyDoor_To_IPB4KeyDoor =>
+        public static IEnumerable<object[]> IPB4PastKeyDoorToIPB4KeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -1134,7 +1134,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB4PastKeyDoor
                     },
@@ -1147,7 +1147,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> IPB4IceRoom_To_IPB4KeyDoor =>
+        public static IEnumerable<object[]> IPB4IceRoomToIPB4KeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -1166,7 +1166,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB4IceRoom
                     },
@@ -1179,20 +1179,20 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> IPB4IceRoom_To_IPB4PastKeyDoor =>
+        public static IEnumerable<object[]> IPB4IceRoomToIPB4PastKeyDoor =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB4IceRoom
                     },
                     new KeyDoorID[0],
                     new (ItemType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.BombJumpIPHookshotGap, false),
                         (SequenceBreakType.BombJumpIPFreezorRoomGap, false)
@@ -1205,16 +1205,16 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB4IceRoom
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.IPB4KeyDoor
                     },
                     new (ItemType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.BombJumpIPHookshotGap, false),
                         (SequenceBreakType.BombJumpIPFreezorRoomGap, false)
@@ -1225,7 +1225,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> IPB5_To_IPB4PastKeyDoor =>
+        public static IEnumerable<object[]> IPB5ToIPB4PastKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -1244,7 +1244,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB5
                     },
@@ -1257,7 +1257,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> IPB4FreezorRoom_To_IPBigChestArea =>
+        public static IEnumerable<object[]> IPB4FreezorRoomToIPBigChestArea =>
             new List<object[]>
             {
                 new object[]
@@ -1276,7 +1276,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB4FreezorRoom
                     },
@@ -1289,14 +1289,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> IPBigChestArea_To_IPBigChest =>
+        public static IEnumerable<object[]> IPBigChestAreaToIPBigChest =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPBigChestArea
                     },
@@ -1311,11 +1311,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPBigChestArea
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.IPBigChest
                     },
@@ -1327,7 +1327,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> IPB4FreezorRoom_To_IPB5 =>
+        public static IEnumerable<object[]> IPB4FreezorRoomToIPB5 =>
             new List<object[]>
             {
                 new object[]
@@ -1346,7 +1346,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB4FreezorRoom
                     },
@@ -1359,7 +1359,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> IPB4PastKeyDoor_To_IPB5 =>
+        public static IEnumerable<object[]> IPB4PastKeyDoorToIPB5 =>
             new List<object[]>
             {
                 new object[]
@@ -1378,7 +1378,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB4PastKeyDoor
                     },
@@ -1391,14 +1391,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> IPB5_To_IPB5PastBigKeyDoor =>
+        public static IEnumerable<object[]> IPB5ToIPB5PastBigKeyDoor =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB5
                     },
@@ -1413,11 +1413,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB5
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.IPBigKeyDoor
                     },
@@ -1429,14 +1429,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> IPB5PastBigKeyDoor_To_IPB6 =>
+        public static IEnumerable<object[]> IPB5PastBigKeyDoorToIPB6 =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB5PastBigKeyDoor
                     },
@@ -1451,11 +1451,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB5PastBigKeyDoor
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.IPB5KeyDoor
                     },
@@ -1467,14 +1467,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> IPB6PastKeyDoor_To_IPB6 =>
+        public static IEnumerable<object[]> IPB6PastKeyDoorToIPB6 =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB6PastKeyDoor
                     },
@@ -1489,11 +1489,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB6PastKeyDoor
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.IPB6KeyDoor
                     },
@@ -1505,14 +1505,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> IPB5_To_IPB6 =>
+        public static IEnumerable<object[]> IPB5ToIPB6 =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB5
                     },
@@ -1521,7 +1521,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                     {
                         (ItemType.CaneOfSomaria, 1)
                     },
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.BombJumpIPBJ, false),
                         (SequenceBreakType.IPIceBreaker, false)
@@ -1534,7 +1534,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB5
                     },
@@ -1543,7 +1543,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                     {
                         (ItemType.CaneOfSomaria, 0)
                     },
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.BombJumpIPBJ, true),
                         (SequenceBreakType.IPIceBreaker, false)
@@ -1556,7 +1556,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB5
                     },
@@ -1565,7 +1565,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                     {
                         (ItemType.CaneOfSomaria, 1)
                     },
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.BombJumpIPBJ, false),
                         (SequenceBreakType.IPIceBreaker, true)
@@ -1576,7 +1576,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> IPB6_To_IPB6KeyDoor =>
+        public static IEnumerable<object[]> IPB6ToIPB6KeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -1595,7 +1595,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB6
                     },
@@ -1608,7 +1608,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> IPB6PastKeyDoor_To_IPB6KeyDoor =>
+        public static IEnumerable<object[]> IPB6PastKeyDoorToIPB6KeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -1627,7 +1627,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB6PastKeyDoor
                     },
@@ -1640,14 +1640,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> IPB6_To_IPB6PastKeyDoor =>
+        public static IEnumerable<object[]> IPB6ToIPB6PastKeyDoor =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB6
                     },
@@ -1662,11 +1662,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB6
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.IPB6KeyDoor
                     },
@@ -1678,14 +1678,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> IPB6_To_IPB6PreBossRoom =>
+        public static IEnumerable<object[]> IPB6ToIPB6PreBossRoom =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB6
                     },
@@ -1706,7 +1706,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB6
                     },
@@ -1727,7 +1727,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB6
                     },
@@ -1746,7 +1746,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> IPB6PastKeyDoor_To_IPB6PreBossRoom =>
+        public static IEnumerable<object[]> IPB6PastKeyDoorToIPB6PreBossRoom =>
             new List<object[]>
             {
                 new object[]
@@ -1765,7 +1765,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB6PastKeyDoor
                     },
@@ -1778,14 +1778,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> IPB6PreBossRoom_To_IPB6PastHammerBlocks =>
+        public static IEnumerable<object[]> IPB6PreBossRoomToIPB6PastHammerBlocks =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB6PreBossRoom
                     },
@@ -1803,7 +1803,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB6PreBossRoom
                     },
@@ -1819,14 +1819,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> IPB6PastHammerBlocks_To_IPB6PastLiftBlock =>
+        public static IEnumerable<object[]> IPB6PastHammerBlocksToIPB6PastLiftBlock =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB6PastHammerBlocks
                     },
@@ -1844,7 +1844,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.IPB6PastHammerBlocks
                     },

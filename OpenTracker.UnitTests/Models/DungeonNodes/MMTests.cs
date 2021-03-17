@@ -15,46 +15,46 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
     public class MMTests : DungeonNodeTestBase
     {
         [Theory]
-        [MemberData(nameof(MMEntry_To_MM))]
-        [MemberData(nameof(MM_To_MMPastEntranceGap))]
-        [MemberData(nameof(MMB1TopSide_To_MMPastEntranceGap))]
-        [MemberData(nameof(MMB1LeftSidePastFirstKeyDoor_To_MMPastEntranceGap))]
-        [MemberData(nameof(MMPastEntranceGap_To_MMBigChest))]
-        [MemberData(nameof(MMPastEntranceGap_To_MMB1TopLeftKeyDoor))]
-        [MemberData(nameof(MMB1TopSide_To_MMB1TopLeftKeyDoor))]
-        [MemberData(nameof(MMPastEntranceGap_To_MMB1TopRightKeyDoor))]
-        [MemberData(nameof(MMB1TopSide_To_MMB1TopRightKeyDoor))]
-        [MemberData(nameof(MMPastEntranceGap_To_MMB1TopSide))]
-        [MemberData(nameof(MMB1PastPortalBigKeyDoor_To_MMB1TopSide))]
-        [MemberData(nameof(MMB1PastBridgeBigKeyDoor_To_MMB1TopSide))]
-        [MemberData(nameof(MMB1TopSide_To_MMB1LobbyBeyondBlueBlocks))]
-        [MemberData(nameof(MMB1LeftSidePastFirstKeyDoor_To_MMB1LobbyBeyondBlueBlocks))]
-        [MemberData(nameof(MMB1RightSideBeyondBlueBlocks_To_MMB1LobbyBeyondBlueBlocks))]
-        [MemberData(nameof(MMB1LobbyBeyondBlueBlocks_To_MMB1RightSideKeyDoor))]
-        [MemberData(nameof(MMB1RightSideBeyondBlueBlocks_To_MMB1RightSideKeyDoor))]
-        [MemberData(nameof(MMB1TopSide_To_MMB1RightSideBeyondBlueBlocks))]
-        [MemberData(nameof(MMB1LeftSidePastFirstKeyDoor_To_MMB1RightSideBeyondBlueBlocks))]
-        [MemberData(nameof(MMB1LobbyBeyondBlueBlocks_To_MMB1RightSideBeyondBlueBlocks))]
-        [MemberData(nameof(MMPastEntranceGap_To_MMB1LeftSideFirstKeyDoor))]
-        [MemberData(nameof(MMB1LeftSidePastFirstKeyDoor_To_MMB1LeftSideFirstKeyDoor))]
-        [MemberData(nameof(MMPastEntranceGap_To_MMB1LeftSidePastFirstKeyDoor))]
-        [MemberData(nameof(MMB1LeftSidePastSecondKeyDoor_To_MMB1LeftSidePastFirstKeyDoor))]
-        [MemberData(nameof(MMB1LeftSidePastFirstKeyDoor_To_MMB1LeftSideSecondKeyDoor))]
-        [MemberData(nameof(MMB1LeftSidePastSecondKeyDoor_To_MMB1LeftSideSecondKeyDoor))]
-        [MemberData(nameof(MMB1LeftSidePastFirstKeyDoor_To_MMB1LeftSidePastSecondKeyDoor))]
-        [MemberData(nameof(MMB1LeftSidePastSecondKeyDoor_To_MMB1PastFourTorchRoom))]
-        [MemberData(nameof(MMB1LeftSidePastSecondKeyDoor_To_MMF1PastFourTorchRoom))]
-        [MemberData(nameof(MMPastEntranceGap_To_MMB1PastPortalBigKeyDoor))]
-        [MemberData(nameof(MMB1TopSide_To_MMBridgeBigKeyDoor))]
-        [MemberData(nameof(MMB1PastBridgeBigKeyDoor_To_MMBridgeBigKeyDoor))]
-        [MemberData(nameof(MMB1TopSide_To_MMB1PastBridgeBigKeyDoor))]
-        [MemberData(nameof(MMB2PastWorthlessKeyDoor_To_MMDarkRoom))]
-        [MemberData(nameof(MMB1PastBridgeBigKeyDoor_To_MMDarkRoom))]
-        [MemberData(nameof(MMDarkRoom_To_MMB2WorthlessKeyDoor))]
-        [MemberData(nameof(MMB2PastWorthlessKeyDoor_To_MMB2WorthlessKeyDoor))]
-        [MemberData(nameof(MMDarkRoom_To_MMB2PastWorthlessKeyDoor))]
-        [MemberData(nameof(MMDarkRoom_To_MMB2PastCaneOfSomariaSwitch))]
-        [MemberData(nameof(MMB2PastCaneOfSomariaSwitch_To_MMBossRoom))]
+        [MemberData(nameof(MMEntryToMM))]
+        [MemberData(nameof(MMToMMPastEntranceGap))]
+        [MemberData(nameof(MMB1TopSideToMMPastEntranceGap))]
+        [MemberData(nameof(MMB1LeftSidePastFirstKeyDoorToMMPastEntranceGap))]
+        [MemberData(nameof(MMPastEntranceGapToMMBigChest))]
+        [MemberData(nameof(MMPastEntranceGapToMMB1TopLeftKeyDoor))]
+        [MemberData(nameof(MMB1TopSideToMMB1TopLeftKeyDoor))]
+        [MemberData(nameof(MMPastEntranceGapToMMB1TopRightKeyDoor))]
+        [MemberData(nameof(MMB1TopSideToMMB1TopRightKeyDoor))]
+        [MemberData(nameof(MMPastEntranceGapToMMB1TopSide))]
+        [MemberData(nameof(MMB1PastPortalBigKeyDoorToMMB1TopSide))]
+        [MemberData(nameof(MMB1PastBridgeBigKeyDoorToMMB1TopSide))]
+        [MemberData(nameof(MMB1TopSideToMMB1LobbyBeyondBlueBlocks))]
+        [MemberData(nameof(MMB1LeftSidePastFirstKeyDoorToMMB1LobbyBeyondBlueBlocks))]
+        [MemberData(nameof(MMB1RightSideBeyondBlueBlocksToMMB1LobbyBeyondBlueBlocks))]
+        [MemberData(nameof(MMB1LobbyBeyondBlueBlocksToMMB1RightSideKeyDoor))]
+        [MemberData(nameof(MMB1RightSideBeyondBlueBlocksToMMB1RightSideKeyDoor))]
+        [MemberData(nameof(MMB1TopSideToMMB1RightSideBeyondBlueBlocks))]
+        [MemberData(nameof(MMB1LeftSidePastFirstKeyDoorToMMB1RightSideBeyondBlueBlocks))]
+        [MemberData(nameof(MMB1LobbyBeyondBlueBlocksToMMB1RightSideBeyondBlueBlocks))]
+        [MemberData(nameof(MMPastEntranceGapToMMB1LeftSideFirstKeyDoor))]
+        [MemberData(nameof(MMB1LeftSidePastFirstKeyDoorToMMB1LeftSideFirstKeyDoor))]
+        [MemberData(nameof(MMPastEntranceGapToMMB1LeftSidePastFirstKeyDoor))]
+        [MemberData(nameof(MMB1LeftSidePastSecondKeyDoorToMMB1LeftSidePastFirstKeyDoor))]
+        [MemberData(nameof(MMB1LeftSidePastFirstKeyDoorToMMB1LeftSideSecondKeyDoor))]
+        [MemberData(nameof(MMB1LeftSidePastSecondKeyDoorToMMB1LeftSideSecondKeyDoor))]
+        [MemberData(nameof(MMB1LeftSidePastFirstKeyDoorToMMB1LeftSidePastSecondKeyDoor))]
+        [MemberData(nameof(MMB1LeftSidePastSecondKeyDoorToMMB1PastFourTorchRoom))]
+        [MemberData(nameof(MMB1LeftSidePastSecondKeyDoorToMMF1PastFourTorchRoom))]
+        [MemberData(nameof(MMPastEntranceGapToMMB1PastPortalBigKeyDoor))]
+        [MemberData(nameof(MMB1TopSideToMMBridgeBigKeyDoor))]
+        [MemberData(nameof(MMB1PastBridgeBigKeyDoorToMMBridgeBigKeyDoor))]
+        [MemberData(nameof(MMB1TopSideToMMB1PastBridgeBigKeyDoor))]
+        [MemberData(nameof(MMB2PastWorthlessKeyDoorToMMDarkRoom))]
+        [MemberData(nameof(MMB1PastBridgeBigKeyDoorToMMDarkRoom))]
+        [MemberData(nameof(MMDarkRoomToMMB2WorthlessKeyDoor))]
+        [MemberData(nameof(MMB2PastWorthlessKeyDoorToMMB2WorthlessKeyDoor))]
+        [MemberData(nameof(MMDarkRoomToMMB2PastWorthlessKeyDoor))]
+        [MemberData(nameof(MMDarkRoomToMMB2PastCaneOfSomariaSwitch))]
+        [MemberData(nameof(MMB2PastCaneOfSomariaSwitchToMMBossRoom))]
         public override void Tests(
             ModeSaveData modeData, RequirementNodeID[] accessibleEntryNodes,
             DungeonNodeID[] accessibleNodes, KeyDoorID[] unlockedDoors, (ItemType, int)[] items,
@@ -66,7 +66,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 sequenceBreaks, dungeonID, id, expected);
         }
         
-        public static IEnumerable<object[]> MMEntry_To_MM =>
+        public static IEnumerable<object[]> MMEntryToMM =>
             new List<object[]>
             {
                 new object[]
@@ -84,7 +84,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.MMEntry
                     },
@@ -98,7 +98,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> MM_To_MMPastEntranceGap =>
+        public static IEnumerable<object[]> MMToMMPastEntranceGap =>
             new List<object[]>
             {
                 new object[]
@@ -108,17 +108,17 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                         ItemPlacement = ItemPlacement.Advanced
                     },
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MM
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Hookshot, 0),
                         (ItemType.Boots, 0)
                     },
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.BonkOverLedge, true),
                         (SequenceBreakType.Hover, true)
@@ -134,17 +134,17 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                         ItemPlacement = ItemPlacement.Basic
                     },
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MM
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Hookshot, 0),
                         (ItemType.Boots, 1)
                     },
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.BonkOverLedge, false),
                         (SequenceBreakType.Hover, false)
@@ -160,17 +160,17 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                         ItemPlacement = ItemPlacement.Basic
                     },
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MM
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Hookshot, 0),
                         (ItemType.Boots, 1)
                     },
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.BonkOverLedge, true),
                         (SequenceBreakType.Hover, false)
@@ -186,17 +186,17 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                         ItemPlacement = ItemPlacement.Basic
                     },
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MM
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Hookshot, 0),
                         (ItemType.Boots, 1)
                     },
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.BonkOverLedge, false),
                         (SequenceBreakType.Hover, true)
@@ -212,17 +212,17 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                         ItemPlacement = ItemPlacement.Advanced
                     },
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MM
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Hookshot, 1),
                         (ItemType.Boots, 0)
                     },
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.BonkOverLedge, true),
                         (SequenceBreakType.Hover, true)
@@ -238,17 +238,17 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                         ItemPlacement = ItemPlacement.Advanced
                     },
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MM
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Hookshot, 0),
                         (ItemType.Boots, 1)
                     },
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.BonkOverLedge, true),
                         (SequenceBreakType.Hover, true)
@@ -264,17 +264,17 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                         ItemPlacement = ItemPlacement.Basic
                     },
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MM
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Hookshot, 1),
                         (ItemType.Boots, 0)
                     },
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.BonkOverLedge, true),
                         (SequenceBreakType.Hover, true)
@@ -285,14 +285,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> MMB1TopSide_To_MMPastEntranceGap =>
+        public static IEnumerable<object[]> MMB1TopSideToMMPastEntranceGap =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMB1TopSide
                     },
@@ -307,11 +307,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMB1TopSide
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.MMB1TopLeftKeyDoor
                     },
@@ -325,11 +325,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMB1TopSide
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.MMB1TopRightKeyDoor
                     },
@@ -341,14 +341,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> MMB1LeftSidePastFirstKeyDoor_To_MMPastEntranceGap =>
+        public static IEnumerable<object[]> MMB1LeftSidePastFirstKeyDoorToMMPastEntranceGap =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMB1LeftSidePastFirstKeyDoor
                     },
@@ -363,11 +363,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMB1LeftSidePastFirstKeyDoor
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.MMB1LeftSideFirstKeyDoor
                     },
@@ -379,14 +379,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> MMPastEntranceGap_To_MMBigChest =>
+        public static IEnumerable<object[]> MMPastEntranceGapToMMBigChest =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMPastEntranceGap
                     },
@@ -401,11 +401,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMPastEntranceGap
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.MMBigChest
                     },
@@ -417,7 +417,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> MMPastEntranceGap_To_MMB1TopLeftKeyDoor =>
+        public static IEnumerable<object[]> MMPastEntranceGapToMMB1TopLeftKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -436,7 +436,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMPastEntranceGap
                     },
@@ -449,7 +449,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> MMB1TopSide_To_MMB1TopLeftKeyDoor =>
+        public static IEnumerable<object[]> MMB1TopSideToMMB1TopLeftKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -468,7 +468,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMB1TopSide
                     },
@@ -481,7 +481,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> MMPastEntranceGap_To_MMB1TopRightKeyDoor =>
+        public static IEnumerable<object[]> MMPastEntranceGapToMMB1TopRightKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -500,7 +500,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMPastEntranceGap
                     },
@@ -513,7 +513,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> MMB1TopSide_To_MMB1TopRightKeyDoor =>
+        public static IEnumerable<object[]> MMB1TopSideToMMB1TopRightKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -532,7 +532,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMB1TopSide
                     },
@@ -545,14 +545,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> MMPastEntranceGap_To_MMB1TopSide =>
+        public static IEnumerable<object[]> MMPastEntranceGapToMMB1TopSide =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMPastEntranceGap
                     },
@@ -567,11 +567,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMPastEntranceGap
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.MMB1TopLeftKeyDoor
                     },
@@ -585,11 +585,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMPastEntranceGap
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.MMB1TopRightKeyDoor
                     },
@@ -601,7 +601,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> MMB1PastPortalBigKeyDoor_To_MMB1TopSide =>
+        public static IEnumerable<object[]> MMB1PastPortalBigKeyDoorToMMB1TopSide =>
             new List<object[]>
             {
                 new object[]
@@ -620,7 +620,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMB1PastPortalBigKeyDoor
                     },
@@ -633,14 +633,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> MMB1PastBridgeBigKeyDoor_To_MMB1TopSide =>
+        public static IEnumerable<object[]> MMB1PastBridgeBigKeyDoorToMMB1TopSide =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMB1PastBridgeBigKeyDoor
                     },
@@ -655,11 +655,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMB1PastBridgeBigKeyDoor
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.MMBridgeBigKeyDoor
                     },
@@ -671,7 +671,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> MMB1TopSide_To_MMB1LobbyBeyondBlueBlocks =>
+        public static IEnumerable<object[]> MMB1TopSideToMMB1LobbyBeyondBlueBlocks =>
             new List<object[]>
             {
                 new object[]
@@ -690,7 +690,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMB1TopSide
                     },
@@ -703,7 +703,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> MMB1LeftSidePastFirstKeyDoor_To_MMB1LobbyBeyondBlueBlocks =>
+        public static IEnumerable<object[]> MMB1LeftSidePastFirstKeyDoorToMMB1LobbyBeyondBlueBlocks =>
             new List<object[]>
             {
                 new object[]
@@ -722,7 +722,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMB1LeftSidePastFirstKeyDoor
                     },
@@ -735,14 +735,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> MMB1RightSideBeyondBlueBlocks_To_MMB1LobbyBeyondBlueBlocks =>
+        public static IEnumerable<object[]> MMB1RightSideBeyondBlueBlocksToMMB1LobbyBeyondBlueBlocks =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMB1RightSideBeyondBlueBlocks
                     },
@@ -757,11 +757,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMB1RightSideBeyondBlueBlocks
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.MMB1RightSideKeyDoor
                     },
@@ -773,7 +773,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> MMB1LobbyBeyondBlueBlocks_To_MMB1RightSideKeyDoor =>
+        public static IEnumerable<object[]> MMB1LobbyBeyondBlueBlocksToMMB1RightSideKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -792,7 +792,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMB1LobbyBeyondBlueBlocks
                     },
@@ -805,7 +805,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> MMB1RightSideBeyondBlueBlocks_To_MMB1RightSideKeyDoor =>
+        public static IEnumerable<object[]> MMB1RightSideBeyondBlueBlocksToMMB1RightSideKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -824,7 +824,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMB1RightSideBeyondBlueBlocks
                     },
@@ -837,7 +837,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> MMB1TopSide_To_MMB1RightSideBeyondBlueBlocks =>
+        public static IEnumerable<object[]> MMB1TopSideToMMB1RightSideBeyondBlueBlocks =>
             new List<object[]>
             {
                 new object[]
@@ -856,7 +856,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMB1TopSide
                     },
@@ -869,7 +869,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> MMB1LeftSidePastFirstKeyDoor_To_MMB1RightSideBeyondBlueBlocks =>
+        public static IEnumerable<object[]> MMB1LeftSidePastFirstKeyDoorToMMB1RightSideBeyondBlueBlocks =>
             new List<object[]>
             {
                 new object[]
@@ -888,7 +888,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMB1LeftSidePastFirstKeyDoor
                     },
@@ -901,14 +901,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> MMB1LobbyBeyondBlueBlocks_To_MMB1RightSideBeyondBlueBlocks =>
+        public static IEnumerable<object[]> MMB1LobbyBeyondBlueBlocksToMMB1RightSideBeyondBlueBlocks =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMB1LobbyBeyondBlueBlocks
                     },
@@ -923,11 +923,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMB1LobbyBeyondBlueBlocks
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.MMB1RightSideKeyDoor
                     },
@@ -939,7 +939,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> MMPastEntranceGap_To_MMB1LeftSideFirstKeyDoor =>
+        public static IEnumerable<object[]> MMPastEntranceGapToMMB1LeftSideFirstKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -958,7 +958,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMPastEntranceGap
                     },
@@ -971,7 +971,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> MMB1LeftSidePastFirstKeyDoor_To_MMB1LeftSideFirstKeyDoor =>
+        public static IEnumerable<object[]> MMB1LeftSidePastFirstKeyDoorToMMB1LeftSideFirstKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -990,7 +990,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMB1LeftSidePastFirstKeyDoor
                     },
@@ -1003,14 +1003,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> MMPastEntranceGap_To_MMB1LeftSidePastFirstKeyDoor =>
+        public static IEnumerable<object[]> MMPastEntranceGapToMMB1LeftSidePastFirstKeyDoor =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMPastEntranceGap
                     },
@@ -1025,11 +1025,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMPastEntranceGap
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.MMB1LeftSideFirstKeyDoor
                     },
@@ -1041,14 +1041,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> MMB1LeftSidePastSecondKeyDoor_To_MMB1LeftSidePastFirstKeyDoor =>
+        public static IEnumerable<object[]> MMB1LeftSidePastSecondKeyDoorToMMB1LeftSidePastFirstKeyDoor =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMB1LeftSidePastSecondKeyDoor
                     },
@@ -1063,11 +1063,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMB1LeftSidePastSecondKeyDoor
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.MMB1LeftSideSecondKeyDoor
                     },
@@ -1079,7 +1079,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> MMB1LeftSidePastFirstKeyDoor_To_MMB1LeftSideSecondKeyDoor =>
+        public static IEnumerable<object[]> MMB1LeftSidePastFirstKeyDoorToMMB1LeftSideSecondKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -1098,7 +1098,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMB1LeftSidePastFirstKeyDoor
                     },
@@ -1111,7 +1111,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> MMB1LeftSidePastSecondKeyDoor_To_MMB1LeftSideSecondKeyDoor =>
+        public static IEnumerable<object[]> MMB1LeftSidePastSecondKeyDoorToMMB1LeftSideSecondKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -1130,7 +1130,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMB1LeftSidePastSecondKeyDoor
                     },
@@ -1143,14 +1143,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> MMB1LeftSidePastFirstKeyDoor_To_MMB1LeftSidePastSecondKeyDoor =>
+        public static IEnumerable<object[]> MMB1LeftSidePastFirstKeyDoorToMMB1LeftSidePastSecondKeyDoor =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMB1LeftSidePastFirstKeyDoor
                     },
@@ -1165,11 +1165,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMB1LeftSidePastFirstKeyDoor
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.MMB1LeftSideSecondKeyDoor
                     },
@@ -1181,19 +1181,19 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> MMB1LeftSidePastSecondKeyDoor_To_MMB1PastFourTorchRoom =>
+        public static IEnumerable<object[]> MMB1LeftSidePastSecondKeyDoorToMMB1PastFourTorchRoom =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMB1LeftSidePastSecondKeyDoor
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 0),
                         (ItemType.FireRod, 0)
@@ -1207,12 +1207,12 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMB1LeftSidePastSecondKeyDoor
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 1),
                         (ItemType.FireRod, 0)
@@ -1226,12 +1226,12 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMB1LeftSidePastSecondKeyDoor
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 0),
                         (ItemType.FireRod, 1)
@@ -1243,19 +1243,19 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> MMB1LeftSidePastSecondKeyDoor_To_MMF1PastFourTorchRoom =>
+        public static IEnumerable<object[]> MMB1LeftSidePastSecondKeyDoorToMMF1PastFourTorchRoom =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMB1LeftSidePastSecondKeyDoor
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 0),
                         (ItemType.FireRod, 0)
@@ -1269,12 +1269,12 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMB1LeftSidePastSecondKeyDoor
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 1),
                         (ItemType.FireRod, 0)
@@ -1288,12 +1288,12 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMB1LeftSidePastSecondKeyDoor
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 0),
                         (ItemType.FireRod, 1)
@@ -1305,14 +1305,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> MMPastEntranceGap_To_MMB1PastPortalBigKeyDoor =>
+        public static IEnumerable<object[]> MMPastEntranceGapToMMB1PastPortalBigKeyDoor =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMPastEntranceGap
                     },
@@ -1327,11 +1327,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMPastEntranceGap
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.MMPortalBigKeyDoor
                     },
@@ -1343,7 +1343,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> MMB1TopSide_To_MMBridgeBigKeyDoor =>
+        public static IEnumerable<object[]> MMB1TopSideToMMBridgeBigKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -1362,7 +1362,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMB1TopSide
                     },
@@ -1375,7 +1375,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> MMB1PastBridgeBigKeyDoor_To_MMBridgeBigKeyDoor =>
+        public static IEnumerable<object[]> MMB1PastBridgeBigKeyDoorToMMBridgeBigKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -1394,7 +1394,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMB1PastBridgeBigKeyDoor
                     },
@@ -1407,14 +1407,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> MMB1TopSide_To_MMB1PastBridgeBigKeyDoor =>
+        public static IEnumerable<object[]> MMB1TopSideToMMB1PastBridgeBigKeyDoor =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMB1TopSide
                     },
@@ -1429,11 +1429,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMB1TopSide
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.MMBridgeBigKeyDoor
                     },
@@ -1445,14 +1445,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> MMB2PastWorthlessKeyDoor_To_MMDarkRoom =>
+        public static IEnumerable<object[]> MMB2PastWorthlessKeyDoorToMMDarkRoom =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMB2PastWorthlessKeyDoor
                     },
@@ -1467,11 +1467,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMB2PastWorthlessKeyDoor
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.MMB2WorthlessKeyDoor
                     },
@@ -1483,14 +1483,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> MMB1PastBridgeBigKeyDoor_To_MMDarkRoom =>
+        public static IEnumerable<object[]> MMB1PastBridgeBigKeyDoorToMMDarkRoom =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMB1PastBridgeBigKeyDoor
                     },
@@ -1511,7 +1511,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMB1PastBridgeBigKeyDoor
                     },
@@ -1532,7 +1532,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMB1PastBridgeBigKeyDoor
                     },
@@ -1551,7 +1551,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> MMDarkRoom_To_MMB2WorthlessKeyDoor =>
+        public static IEnumerable<object[]> MMDarkRoomToMMB2WorthlessKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -1570,7 +1570,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMDarkRoom
                     },
@@ -1583,7 +1583,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> MMB2PastWorthlessKeyDoor_To_MMB2WorthlessKeyDoor =>
+        public static IEnumerable<object[]> MMB2PastWorthlessKeyDoorToMMB2WorthlessKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -1602,7 +1602,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMB2PastWorthlessKeyDoor
                     },
@@ -1615,14 +1615,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> MMDarkRoom_To_MMB2PastWorthlessKeyDoor =>
+        public static IEnumerable<object[]> MMDarkRoomToMMB2PastWorthlessKeyDoor =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMDarkRoom
                     },
@@ -1637,11 +1637,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMDarkRoom
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.MMB2WorthlessKeyDoor
                     },
@@ -1653,14 +1653,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> MMDarkRoom_To_MMB2PastCaneOfSomariaSwitch =>
+        public static IEnumerable<object[]> MMDarkRoomToMMB2PastCaneOfSomariaSwitch =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMDarkRoom
                     },
@@ -1678,7 +1678,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMDarkRoom
                     },
@@ -1694,14 +1694,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> MMB2PastCaneOfSomariaSwitch_To_MMBossRoom =>
+        public static IEnumerable<object[]> MMB2PastCaneOfSomariaSwitchToMMBossRoom =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMB2PastCaneOfSomariaSwitch
                     },
@@ -1716,11 +1716,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.MMB2PastCaneOfSomariaSwitch
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.MMBossRoomBigKeyDoor
                     },

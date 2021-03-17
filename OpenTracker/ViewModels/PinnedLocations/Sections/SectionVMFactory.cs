@@ -1,6 +1,6 @@
 ﻿using System;
-using OpenTracker.Models.Sections;
 using System.Collections.Generic;
+using OpenTracker.Models.Sections;
 
 namespace OpenTracker.ViewModels.PinnedLocations.Sections
 {
@@ -40,7 +40,7 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
         /// <returns>
         /// A string representing the start of the image source.
         /// </returns>
-        private string GetImageSourceBase(ISection section)
+        private static string GetImageSourceBase(ISection section)
         {
             switch (section)
             {
@@ -64,7 +64,7 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
         /// <returns>
         /// A boolean representing whether the section label should be visible.
         /// </returns>
-        private bool GetLabelVisible(ISection section)
+        private static bool GetLabelVisible(ISection section)
         {
             switch (section)
             {

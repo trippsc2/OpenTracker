@@ -13,54 +13,54 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
     public class DungeonEntryTests : RequirementNodeTestBase
     {
         [Theory]
-        [MemberData(nameof(EntranceDungeon_To_HCSanctuaryEntry))]
-        [MemberData(nameof(LightWorldNotBunnyOrSuperBunnyMirror_To_HCSanctuaryEntry))]
-        [MemberData(nameof(EntranceDungeon_To_HCFrontEntry))]
-        [MemberData(nameof(LightWorldNotBunnyOrDungeonRevive_To_HCFrontEntry))]
-        [MemberData(nameof(EntranceDungeon_To_HCBackEntry))]
-        [MemberData(nameof(EscapeGrave_To_HCBackEntry))]
-        [MemberData(nameof(EntranceDungeon_To_ATEntry))]
-        [MemberData(nameof(AgahnimTowerEntrance_To_ATEntry))]
-        [MemberData(nameof(GanonsTowerEntrance_To_ATEntry))]
-        [MemberData(nameof(EntranceDungeon_To_EPEntry))]
-        [MemberData(nameof(LightWorldNotBunnyOrDungeonRevive_To_EPEntry))]
-        [MemberData(nameof(EntranceDungeon_To_DPFrontEntry))]
-        [MemberData(nameof(DesertPalaceFrontEntrance_To_DPFrontEntry))]
-        [MemberData(nameof(EntranceDungeon_To_DPLeftEntry))]
-        [MemberData(nameof(DesertLedge_To_DPLeftEntry))]
-        [MemberData(nameof(EntranceDungeon_To_DPBackEntry))]
-        [MemberData(nameof(DesertBack_To_DPBackEntry))]
-        [MemberData(nameof(EntranceDungeon_To_ToHEntry))]
-        [MemberData(nameof(DeathMountainWestTopNotBunny_To_ToHEntry))]
-        [MemberData(nameof(DeathMountainWestTop_To_ToHEntry))]
-        [MemberData(nameof(EntranceDungeon_To_PoDEntry))]
-        [MemberData(nameof(DarkWorldEastNotBunny_To_PoDEntry))]
-        [MemberData(nameof(EntranceDungeon_To_SPEntry))]
-        [MemberData(nameof(LightWorldInvertedNotBunny_To_SPEntry))]
-        [MemberData(nameof(DarkWorldSouthStandardOpenNotBunny_To_SPEntry))]
-        [MemberData(nameof(DarkWorldWestNotBunny_To_SWFrontEntry))]
-        [MemberData(nameof(DarkWorldWest_To_SWFrontEntry))]
-        [MemberData(nameof(EntranceDungeon_To_SWBackEntry))]
-        [MemberData(nameof(SkullWoodsBack_To_SWBackEntry))]
-        [MemberData(nameof(EntranceDungeon_To_TTEntry))]
-        [MemberData(nameof(DarkWorldWestNotBunny_To_TTEntry))]
-        [MemberData(nameof(EntranceDungeon_To_IPEntry))]
-        [MemberData(nameof(IcePalaceIsland_To_IPEntry))]
-        [MemberData(nameof(EntranceDungeon_To_MMEntry))]
-        [MemberData(nameof(MiseryMireEntrance_To_MMEntry))]
-        [MemberData(nameof(EntranceDungeon_To_TRFrontEntry))]
-        [MemberData(nameof(TurtleRockFrontEntrance_To_TRFrontEntry))]
-        [MemberData(nameof(TRFrontEntry_To_TRFrontEntryStandardOpen))]
-        [MemberData(nameof(TRFrontEntryStandardOpen_To_TRFrontEntryStandardOpenNonEntrance))]
-        [MemberData(nameof(TRFrontEntryStandardOpenNonEntrance_To_TRFrontToKeyDoors))]
-        [MemberData(nameof(TRFrontToKeyDoors_To_TRKeyDoorsToMiddleExit))]
-        [MemberData(nameof(EntranceDungeon_To_TRMiddleEntry))]
-        [MemberData(nameof(TurtleRockTunnel_To_TRMiddleEntry))]
-        [MemberData(nameof(EntranceDungeon_To_TRBackEntry))]
-        [MemberData(nameof(TurtleRockSafetyDoor_To_TRBackEntry))]
-        [MemberData(nameof(EntranceDungeon_To_GTEntry))]
-        [MemberData(nameof(AgahnimTowerEntrance_To_GTEntry))]
-        [MemberData(nameof(GanonsTowerEntranceStandardOpen_To_GTEntry))]
+        [MemberData(nameof(EntranceDungeonToHCSanctuaryEntry))]
+        [MemberData(nameof(LightWorldNotBunnyOrSuperBunnyMirrorToHCSanctuaryEntry))]
+        [MemberData(nameof(EntranceDungeonToHCFrontEntry))]
+        [MemberData(nameof(LightWorldNotBunnyOrDungeonReviveToHCFrontEntry))]
+        [MemberData(nameof(EntranceDungeonToHCBackEntry))]
+        [MemberData(nameof(EscapeGraveToHCBackEntry))]
+        [MemberData(nameof(EntranceDungeonToATEntry))]
+        [MemberData(nameof(AgahnimTowerEntranceToATEntry))]
+        [MemberData(nameof(GanonsTowerEntranceToATEntry))]
+        [MemberData(nameof(EntranceDungeonToEPEntry))]
+        [MemberData(nameof(LightWorldNotBunnyOrDungeonReviveToEPEntry))]
+        [MemberData(nameof(EntranceDungeonToDPFrontEntry))]
+        [MemberData(nameof(DesertPalaceFrontEntranceToDPFrontEntry))]
+        [MemberData(nameof(EntranceDungeonToDPLeftEntry))]
+        [MemberData(nameof(DesertLedgeToDPLeftEntry))]
+        [MemberData(nameof(EntranceDungeonToDPBackEntry))]
+        [MemberData(nameof(DesertBackToDPBackEntry))]
+        [MemberData(nameof(EntranceDungeonToToHEntry))]
+        [MemberData(nameof(DeathMountainWestTopNotBunnyToToHEntry))]
+        [MemberData(nameof(DeathMountainWestTopToToHEntry))]
+        [MemberData(nameof(EntranceDungeonToPoDEntry))]
+        [MemberData(nameof(DarkWorldEastNotBunnyToPoDEntry))]
+        [MemberData(nameof(EntranceDungeonToSPEntry))]
+        [MemberData(nameof(LightWorldInvertedNotBunnyToSPEntry))]
+        [MemberData(nameof(DarkWorldSouthStandardOpenNotBunnyToSPEntry))]
+        [MemberData(nameof(DarkWorldWestNotBunnyToSWFrontEntry))]
+        [MemberData(nameof(DarkWorldWestToSWFrontEntry))]
+        [MemberData(nameof(EntranceDungeonToSWBackEntry))]
+        [MemberData(nameof(SkullWoodsBackToSWBackEntry))]
+        [MemberData(nameof(EntranceDungeonToTTEntry))]
+        [MemberData(nameof(DarkWorldWestNotBunnyToTTEntry))]
+        [MemberData(nameof(EntranceDungeonToIPEntry))]
+        [MemberData(nameof(IcePalaceIslandToIPEntry))]
+        [MemberData(nameof(EntranceDungeonToMMEntry))]
+        [MemberData(nameof(MiseryMireEntranceToMMEntry))]
+        [MemberData(nameof(EntranceDungeonToTRFrontEntry))]
+        [MemberData(nameof(TurtleRockFrontEntranceToTRFrontEntry))]
+        [MemberData(nameof(TRFrontEntryToTRFrontEntryStandardOpen))]
+        [MemberData(nameof(TRFrontEntryStandardOpenToTRFrontEntryStandardOpenNonEntrance))]
+        [MemberData(nameof(TRFrontEntryStandardOpenNonEntranceToTRFrontToKeyDoors))]
+        [MemberData(nameof(TRFrontToKeyDoorsToTRKeyDoorsToMiddleExit))]
+        [MemberData(nameof(EntranceDungeonToTRMiddleEntry))]
+        [MemberData(nameof(TurtleRockTunnelToTRMiddleEntry))]
+        [MemberData(nameof(EntranceDungeonToTRBackEntry))]
+        [MemberData(nameof(TurtleRockSafetyDoorToTRBackEntry))]
+        [MemberData(nameof(EntranceDungeonToGTEntry))]
+        [MemberData(nameof(AgahnimTowerEntranceToGTEntry))]
+        [MemberData(nameof(GanonsTowerEntranceStandardOpenToGTEntry))]
         public override void Tests(
             ModeSaveData modeData, (ItemType, int)[] items, (PrizeType, int)[] prizes,
             (SequenceBreakType, bool)[] sequenceBreaks, RequirementNodeID[] accessibleNodes,
@@ -70,7 +70,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 modeData, items, prizes, sequenceBreaks, accessibleNodes, id, towerCrystalsKnown, expected);
         }
     
-        public static IEnumerable<object[]> EntranceDungeon_To_HCSanctuaryEntry =>
+        public static IEnumerable<object[]> EntranceDungeonToHCSanctuaryEntry =>
             new List<object[]>
             {
                 new object[]
@@ -110,7 +110,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.EntranceDungeonAllInsanity
                     },
@@ -120,7 +120,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> LightWorldNotBunnyOrSuperBunnyMirror_To_HCSanctuaryEntry =>
+        public static IEnumerable<object[]> LightWorldNotBunnyOrSuperBunnyMirrorToHCSanctuaryEntry =>
             new List<object[]>
             {
                 new object[]
@@ -146,7 +146,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.LightWorldNotBunnyOrSuperBunnyMirror
                     },
@@ -156,7 +156,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> EntranceDungeon_To_HCFrontEntry =>
+        public static IEnumerable<object[]> EntranceDungeonToHCFrontEntry =>
             new List<object[]>
             {
                 new object[]
@@ -196,7 +196,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.EntranceDungeonAllInsanity
                     },
@@ -206,7 +206,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> LightWorldNotBunnyOrDungeonRevive_To_HCFrontEntry =>
+        public static IEnumerable<object[]> LightWorldNotBunnyOrDungeonReviveToHCFrontEntry =>
             new List<object[]>
             {
                 new object[]
@@ -232,7 +232,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.LightWorldNotBunnyOrDungeonRevive
                     },
@@ -242,7 +242,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> EntranceDungeon_To_HCBackEntry =>
+        public static IEnumerable<object[]> EntranceDungeonToHCBackEntry =>
             new List<object[]>
             {
                 new object[]
@@ -262,7 +262,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.EntranceDungeonAllInsanity
                     },
@@ -272,7 +272,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> EscapeGrave_To_HCBackEntry =>
+        public static IEnumerable<object[]> EscapeGraveToHCBackEntry =>
             new List<object[]>
             {
                 new object[]
@@ -292,7 +292,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.EscapeGrave
                     },
@@ -302,7 +302,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> EntranceDungeon_To_ATEntry =>
+        public static IEnumerable<object[]> EntranceDungeonToATEntry =>
             new List<object[]>
             {
                 new object[]
@@ -322,7 +322,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.EntranceDungeonAllInsanity
                     },
@@ -332,7 +332,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> AgahnimTowerEntrance_To_ATEntry =>
+        public static IEnumerable<object[]> AgahnimTowerEntranceToATEntry =>
             new List<object[]>
             {
                 new object[]
@@ -344,7 +344,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.AgahnimTowerEntrance
                     },
@@ -361,7 +361,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.AgahnimTowerEntrance
                     },
@@ -371,7 +371,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> GanonsTowerEntrance_To_ATEntry =>
+        public static IEnumerable<object[]> GanonsTowerEntranceToATEntry =>
             new List<object[]>
             {
                 new object[]
@@ -383,7 +383,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.GanonsTowerEntrance
                     },
@@ -400,7 +400,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.GanonsTowerEntrance
                     },
@@ -410,7 +410,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> EntranceDungeon_To_EPEntry =>
+        public static IEnumerable<object[]> EntranceDungeonToEPEntry =>
             new List<object[]>
             {
                 new object[]
@@ -450,7 +450,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.EntranceDungeonAllInsanity
                     },
@@ -460,7 +460,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> LightWorldNotBunnyOrDungeonRevive_To_EPEntry =>
+        public static IEnumerable<object[]> LightWorldNotBunnyOrDungeonReviveToEPEntry =>
             new List<object[]>
             {
                 new object[]
@@ -486,7 +486,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.LightWorldNotBunnyOrDungeonRevive
                     },
@@ -496,7 +496,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> EntranceDungeon_To_DPFrontEntry =>
+        public static IEnumerable<object[]> EntranceDungeonToDPFrontEntry =>
             new List<object[]>
             {
                 new object[]
@@ -516,7 +516,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.EntranceDungeonAllInsanity
                     },
@@ -526,7 +526,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DesertPalaceFrontEntrance_To_DPFrontEntry =>
+        public static IEnumerable<object[]> DesertPalaceFrontEntranceToDPFrontEntry =>
             new List<object[]>
             {
                 new object[]
@@ -564,7 +564,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         (SequenceBreakType.DungeonRevive, false)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DesertPalaceFrontEntrance
                     },
@@ -587,7 +587,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         (SequenceBreakType.DungeonRevive, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DesertPalaceFrontEntrance
                     },
@@ -610,7 +610,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         (SequenceBreakType.DungeonRevive, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DesertPalaceFrontEntrance
                     },
@@ -633,7 +633,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         (SequenceBreakType.DungeonRevive, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DesertPalaceFrontEntrance
                     },
@@ -643,7 +643,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> EntranceDungeon_To_DPLeftEntry =>
+        public static IEnumerable<object[]> EntranceDungeonToDPLeftEntry =>
             new List<object[]>
             {
                 new object[]
@@ -663,7 +663,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.EntranceDungeonAllInsanity
                     },
@@ -673,7 +673,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DesertLedge_To_DPLeftEntry =>
+        public static IEnumerable<object[]> DesertLedgeToDPLeftEntry =>
             new List<object[]>
             {
                 new object[]
@@ -693,7 +693,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DesertLedge
                     },
@@ -703,7 +703,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> EntranceDungeon_To_DPBackEntry =>
+        public static IEnumerable<object[]> EntranceDungeonToDPBackEntry =>
             new List<object[]>
             {
                 new object[]
@@ -723,7 +723,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.EntranceDungeonAllInsanity
                     },
@@ -733,7 +733,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DesertBack_To_DPBackEntry =>
+        public static IEnumerable<object[]> DesertBackToDPBackEntry =>
             new List<object[]>
             {
                 new object[]
@@ -753,7 +753,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DesertBack
                     },
@@ -763,7 +763,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> EntranceDungeon_To_ToHEntry =>
+        public static IEnumerable<object[]> EntranceDungeonToToHEntry =>
             new List<object[]>
             {
                 new object[]
@@ -783,7 +783,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.EntranceDungeonAllInsanity
                     },
@@ -793,7 +793,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DeathMountainWestTopNotBunny_To_ToHEntry =>
+        public static IEnumerable<object[]> DeathMountainWestTopNotBunnyToToHEntry =>
             new List<object[]>
             {
                 new object[]
@@ -813,7 +813,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DeathMountainWestTopNotBunny
                     },
@@ -823,7 +823,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DeathMountainWestTop_To_ToHEntry =>
+        public static IEnumerable<object[]> DeathMountainWestTopToToHEntry =>
             new List<object[]>
             {
                 new object[]
@@ -838,7 +838,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         (SequenceBreakType.DungeonRevive, false)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DeathMountainWestTop
                     },
@@ -858,7 +858,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         (SequenceBreakType.DungeonRevive, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DeathMountainWestTop
                     },
@@ -878,7 +878,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         (SequenceBreakType.DungeonRevive, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DeathMountainWestTop
                     },
@@ -888,7 +888,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> EntranceDungeon_To_PoDEntry =>
+        public static IEnumerable<object[]> EntranceDungeonToPoDEntry =>
             new List<object[]>
             {
                 new object[]
@@ -908,7 +908,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.EntranceDungeonAllInsanity
                     },
@@ -918,7 +918,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DarkWorldEastNotBunny_To_PoDEntry =>
+        public static IEnumerable<object[]> DarkWorldEastNotBunnyToPoDEntry =>
             new List<object[]>
             {
                 new object[]
@@ -938,7 +938,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldEastNotBunny
                     },
@@ -948,7 +948,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> EntranceDungeon_To_SPEntry =>
+        public static IEnumerable<object[]> EntranceDungeonToSPEntry =>
             new List<object[]>
             {
                 new object[]
@@ -968,7 +968,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.EntranceDungeonAllInsanity
                     },
@@ -978,7 +978,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> LightWorldInvertedNotBunny_To_SPEntry =>
+        public static IEnumerable<object[]> LightWorldInvertedNotBunnyToSPEntry =>
             new List<object[]>
             {
                 new object[]
@@ -990,7 +990,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.LightWorldInvertedNotBunny
                     },
@@ -1007,7 +1007,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.LightWorldInvertedNotBunny
                     },
@@ -1017,7 +1017,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DarkWorldSouthStandardOpenNotBunny_To_SPEntry =>
+        public static IEnumerable<object[]> DarkWorldSouthStandardOpenNotBunnyToSPEntry =>
             new List<object[]>
             {
                 new object[]
@@ -1029,7 +1029,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldSouthStandardOpenNotBunny
                     },
@@ -1046,7 +1046,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldSouthStandardOpenNotBunny
                     },
@@ -1056,7 +1056,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DarkWorldWestNotBunny_To_SWFrontEntry =>
+        public static IEnumerable<object[]> DarkWorldWestNotBunnyToSWFrontEntry =>
             new List<object[]>
             {
                 new object[]
@@ -1076,7 +1076,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldWestNotBunny
                     },
@@ -1086,7 +1086,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DarkWorldWest_To_SWFrontEntry =>
+        public static IEnumerable<object[]> DarkWorldWestToSWFrontEntry =>
             new List<object[]>
             {
                 new object[]
@@ -1098,7 +1098,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         (SequenceBreakType.DungeonRevive, false)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldWest
                     },
@@ -1115,7 +1115,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         (SequenceBreakType.DungeonRevive, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldWest
                     },
@@ -1125,7 +1125,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> EntranceDungeon_To_SWBackEntry =>
+        public static IEnumerable<object[]> EntranceDungeonToSWBackEntry =>
             new List<object[]>
             {
                 new object[]
@@ -1145,7 +1145,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.EntranceDungeonAllInsanity
                     },
@@ -1155,7 +1155,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> SkullWoodsBack_To_SWBackEntry =>
+        public static IEnumerable<object[]> SkullWoodsBackToSWBackEntry =>
             new List<object[]>
             {
                 new object[]
@@ -1175,7 +1175,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.SkullWoodsBack
                     },
@@ -1185,7 +1185,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> EntranceDungeon_To_TTEntry =>
+        public static IEnumerable<object[]> EntranceDungeonToTTEntry =>
             new List<object[]>
             {
                 new object[]
@@ -1205,7 +1205,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.EntranceDungeonAllInsanity
                     },
@@ -1215,7 +1215,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DarkWorldWestNotBunny_To_TTEntry =>
+        public static IEnumerable<object[]> DarkWorldWestNotBunnyToTTEntry =>
             new List<object[]>
             {
                 new object[]
@@ -1235,7 +1235,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldWestNotBunny
                     },
@@ -1245,7 +1245,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> EntranceDungeon_To_IPEntry =>
+        public static IEnumerable<object[]> EntranceDungeonToIPEntry =>
             new List<object[]>
             {
                 new object[]
@@ -1265,7 +1265,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.EntranceDungeonAllInsanity
                     },
@@ -1275,7 +1275,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> IcePalaceIsland_To_IPEntry =>
+        public static IEnumerable<object[]> IcePalaceIslandToIPEntry =>
             new List<object[]>
             {
                 new object[]
@@ -1293,7 +1293,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         (SequenceBreakType.DungeonRevive, false)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.IcePalaceIsland
                     },
@@ -1316,7 +1316,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         (SequenceBreakType.DungeonRevive, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.IcePalaceIsland
                     },
@@ -1359,7 +1359,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         (SequenceBreakType.DungeonRevive, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.IcePalaceIsland
                     },
@@ -1382,7 +1382,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         (SequenceBreakType.DungeonRevive, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.IcePalaceIsland
                     },
@@ -1392,7 +1392,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> EntranceDungeon_To_MMEntry =>
+        public static IEnumerable<object[]> EntranceDungeonToMMEntry =>
             new List<object[]>
             {
                 new object[]
@@ -1412,7 +1412,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.EntranceDungeonAllInsanity
                     },
@@ -1422,7 +1422,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> MiseryMireEntrance_To_MMEntry =>
+        public static IEnumerable<object[]> MiseryMireEntranceToMMEntry =>
             new List<object[]>
             {
                 new object[]
@@ -1442,7 +1442,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.MiseryMireEntrance
                     },
@@ -1452,7 +1452,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> EntranceDungeon_To_TRFrontEntry =>
+        public static IEnumerable<object[]> EntranceDungeonToTRFrontEntry =>
             new List<object[]>
             {
                 new object[]
@@ -1472,7 +1472,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.EntranceDungeonAllInsanity
                     },
@@ -1482,7 +1482,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> TurtleRockFrontEntrance_To_TRFrontEntry =>
+        public static IEnumerable<object[]> TurtleRockFrontEntranceToTRFrontEntry =>
             new List<object[]>
             {
                 new object[]
@@ -1502,7 +1502,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.TurtleRockFrontEntrance
                     },
@@ -1512,7 +1512,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> TRFrontEntry_To_TRFrontEntryStandardOpen =>
+        public static IEnumerable<object[]> TRFrontEntryToTRFrontEntryStandardOpen =>
             new List<object[]>
             {
                 new object[]
@@ -1524,7 +1524,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.TRFrontEntry
                     },
@@ -1541,7 +1541,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.TRFrontEntry
                     },
@@ -1551,7 +1551,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> TRFrontEntryStandardOpen_To_TRFrontEntryStandardOpenNonEntrance =>
+        public static IEnumerable<object[]> TRFrontEntryStandardOpenToTRFrontEntryStandardOpenNonEntrance =>
             new List<object[]>
             {
                 new object[]
@@ -1563,7 +1563,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.TRFrontEntryStandardOpen
                     },
@@ -1580,7 +1580,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.TRFrontEntryStandardOpen
                     },
@@ -1597,7 +1597,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.TRFrontEntryStandardOpen
                     },
@@ -1607,7 +1607,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> TRFrontEntryStandardOpenNonEntrance_To_TRFrontToKeyDoors =>
+        public static IEnumerable<object[]> TRFrontEntryStandardOpenNonEntranceToTRFrontToKeyDoors =>
             new List<object[]>
             {
                 new object[]
@@ -1619,7 +1619,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.TRFrontEntryStandardOpenEntranceNone
                     },
@@ -1636,7 +1636,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.TRFrontEntryStandardOpenEntranceNone
                     },
@@ -1646,7 +1646,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> TRFrontToKeyDoors_To_TRKeyDoorsToMiddleExit =>
+        public static IEnumerable<object[]> TRFrontToKeyDoorsToTRKeyDoorsToMiddleExit =>
             new List<object[]>
             {
                 new object[]
@@ -1657,7 +1657,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         GenericKeys = false,
                         KeyDropShuffle = false
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.FireRod, 0),
                         (ItemType.SmallKey, 0),
@@ -1665,7 +1665,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.TRFrontToKeyDoors
                     },
@@ -1681,7 +1681,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         GenericKeys = false,
                         KeyDropShuffle = false
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.FireRod, 1),
                         (ItemType.SmallKey, 0),
@@ -1689,7 +1689,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.TRFrontToKeyDoors
                     },
@@ -1705,7 +1705,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         GenericKeys = false,
                         KeyDropShuffle = false
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.FireRod, 0),
                         (ItemType.SmallKey, 2),
@@ -1713,7 +1713,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.TRFrontToKeyDoors
                     },
@@ -1729,7 +1729,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         GenericKeys = false,
                         KeyDropShuffle = false
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.FireRod, 0),
                         (ItemType.SmallKey, 0),
@@ -1737,7 +1737,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.TRFrontToKeyDoors
                     },
@@ -1753,7 +1753,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         GenericKeys = true,
                         KeyDropShuffle = false
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.FireRod, 0),
                         (ItemType.SmallKey, 0),
@@ -1761,7 +1761,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.TRFrontToKeyDoors
                     },
@@ -1777,7 +1777,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         GenericKeys = true,
                         KeyDropShuffle = false
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.FireRod, 1),
                         (ItemType.SmallKey, 0),
@@ -1785,7 +1785,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.TRFrontToKeyDoors
                     },
@@ -1801,7 +1801,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         GenericKeys = true,
                         KeyDropShuffle = false
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.FireRod, 0),
                         (ItemType.SmallKey, 0),
@@ -1809,7 +1809,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.TRFrontToKeyDoors
                     },
@@ -1825,7 +1825,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         GenericKeys = false,
                         KeyDropShuffle = true
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.FireRod, 0),
                         (ItemType.SmallKey, 0),
@@ -1833,7 +1833,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.TRFrontToKeyDoors
                     },
@@ -1849,7 +1849,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         GenericKeys = false,
                         KeyDropShuffle = true
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.FireRod, 1),
                         (ItemType.SmallKey, 0),
@@ -1857,7 +1857,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.TRFrontToKeyDoors
                     },
@@ -1873,7 +1873,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         GenericKeys = false,
                         KeyDropShuffle = true
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.FireRod, 0),
                         (ItemType.SmallKey, 3),
@@ -1881,7 +1881,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.TRFrontToKeyDoors
                     },
@@ -1897,7 +1897,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         GenericKeys = false,
                         KeyDropShuffle = true
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.FireRod, 0),
                         (ItemType.SmallKey, 0),
@@ -1905,7 +1905,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.TRFrontToKeyDoors
                     },
@@ -1921,7 +1921,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         GenericKeys = true,
                         KeyDropShuffle = true
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.FireRod, 0),
                         (ItemType.SmallKey, 0),
@@ -1929,7 +1929,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.TRFrontToKeyDoors
                     },
@@ -1945,7 +1945,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         GenericKeys = true,
                         KeyDropShuffle = true
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.FireRod, 1),
                         (ItemType.SmallKey, 0),
@@ -1953,7 +1953,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.TRFrontToKeyDoors
                     },
@@ -1969,7 +1969,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         GenericKeys = true,
                         KeyDropShuffle = true
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.FireRod, 0),
                         (ItemType.SmallKey, 0),
@@ -1977,7 +1977,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.TRFrontToKeyDoors
                     },
@@ -1993,7 +1993,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         GenericKeys = false,
                         KeyDropShuffle = false
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.FireRod, 0),
                         (ItemType.SmallKey, 0),
@@ -2001,7 +2001,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.TRFrontToKeyDoors
                     },
@@ -2017,7 +2017,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         GenericKeys = false,
                         KeyDropShuffle = false
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.FireRod, 0),
                         (ItemType.SmallKey, 2),
@@ -2025,7 +2025,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.TRFrontToKeyDoors
                     },
@@ -2041,7 +2041,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         GenericKeys = false,
                         KeyDropShuffle = true
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.FireRod, 0),
                         (ItemType.SmallKey, 0),
@@ -2049,7 +2049,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.TRFrontToKeyDoors
                     },
@@ -2065,7 +2065,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         GenericKeys = false,
                         KeyDropShuffle = true
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.FireRod, 0),
                         (ItemType.SmallKey, 3),
@@ -2073,7 +2073,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.TRFrontToKeyDoors
                     },
@@ -2089,7 +2089,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         GenericKeys = false,
                         KeyDropShuffle = false
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.FireRod, 1),
                         (ItemType.SmallKey, 0),
@@ -2097,7 +2097,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.TRFrontToKeyDoors
                     },
@@ -2113,7 +2113,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         GenericKeys = false,
                         KeyDropShuffle = false
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.FireRod, 0),
                         (ItemType.SmallKey, 0),
@@ -2121,7 +2121,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.TRFrontToKeyDoors
                     },
@@ -2137,7 +2137,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         GenericKeys = true,
                         KeyDropShuffle = false
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.FireRod, 0),
                         (ItemType.SmallKey, 2),
@@ -2145,7 +2145,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.TRFrontToKeyDoors
                     },
@@ -2161,7 +2161,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         GenericKeys = true,
                         KeyDropShuffle = false
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.FireRod, 0),
                         (ItemType.SmallKey, 1),
@@ -2169,7 +2169,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.TRFrontToKeyDoors
                     },
@@ -2185,7 +2185,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         GenericKeys = true,
                         KeyDropShuffle = false
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.FireRod, 0),
                         (ItemType.SmallKey, 0),
@@ -2193,7 +2193,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.TRFrontToKeyDoors
                     },
@@ -2209,7 +2209,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         GenericKeys = false,
                         KeyDropShuffle = true
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.FireRod, 1),
                         (ItemType.SmallKey, 0),
@@ -2217,7 +2217,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.TRFrontToKeyDoors
                     },
@@ -2233,7 +2233,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         GenericKeys = false,
                         KeyDropShuffle = true
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.FireRod, 0),
                         (ItemType.SmallKey, 0),
@@ -2241,7 +2241,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.TRFrontToKeyDoors
                     },
@@ -2257,7 +2257,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         GenericKeys = true,
                         KeyDropShuffle = true
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.FireRod, 0),
                         (ItemType.SmallKey, 3),
@@ -2265,7 +2265,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.TRFrontToKeyDoors
                     },
@@ -2281,7 +2281,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         GenericKeys = true,
                         KeyDropShuffle = true
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.FireRod, 0),
                         (ItemType.SmallKey, 2),
@@ -2289,7 +2289,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.TRFrontToKeyDoors
                     },
@@ -2305,7 +2305,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         GenericKeys = true,
                         KeyDropShuffle = true
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.FireRod, 0),
                         (ItemType.SmallKey, 1),
@@ -2313,7 +2313,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.TRFrontToKeyDoors
                     },
@@ -2329,7 +2329,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         GenericKeys = true,
                         KeyDropShuffle = true
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.FireRod, 0),
                         (ItemType.SmallKey, 0),
@@ -2337,7 +2337,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.TRFrontToKeyDoors
                     },
@@ -2347,7 +2347,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> EntranceDungeon_To_TRMiddleEntry =>
+        public static IEnumerable<object[]> EntranceDungeonToTRMiddleEntry =>
             new List<object[]>
             {
                 new object[]
@@ -2367,7 +2367,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.EntranceDungeonAllInsanity
                     },
@@ -2377,7 +2377,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> TurtleRockTunnel_To_TRMiddleEntry =>
+        public static IEnumerable<object[]> TurtleRockTunnelToTRMiddleEntry =>
             new List<object[]>
             {
                 new object[]
@@ -2397,7 +2397,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.TurtleRockTunnel
                     },
@@ -2407,7 +2407,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> EntranceDungeon_To_TRBackEntry =>
+        public static IEnumerable<object[]> EntranceDungeonToTRBackEntry =>
             new List<object[]>
             {
                 new object[]
@@ -2427,7 +2427,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.EntranceDungeonAllInsanity
                     },
@@ -2437,7 +2437,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> TurtleRockSafetyDoor_To_TRBackEntry =>
+        public static IEnumerable<object[]> TurtleRockSafetyDoorToTRBackEntry =>
             new List<object[]>
             {
                 new object[]
@@ -2457,7 +2457,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.TurtleRockSafetyDoor
                     },
@@ -2467,7 +2467,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> EntranceDungeon_To_GTEntry =>
+        public static IEnumerable<object[]> EntranceDungeonToGTEntry =>
             new List<object[]>
             {
                 new object[]
@@ -2487,7 +2487,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.EntranceDungeonAllInsanity
                     },
@@ -2497,7 +2497,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> AgahnimTowerEntrance_To_GTEntry =>
+        public static IEnumerable<object[]> AgahnimTowerEntranceToGTEntry =>
             new List<object[]>
             {
                 new object[]
@@ -2509,7 +2509,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.AgahnimTowerEntrance
                     },
@@ -2526,7 +2526,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.AgahnimTowerEntrance
                     },
@@ -2536,7 +2536,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> GanonsTowerEntranceStandardOpen_To_GTEntry =>
+        public static IEnumerable<object[]> GanonsTowerEntranceStandardOpenToGTEntry =>
             new List<object[]>
             {
                 new object[]
@@ -2574,7 +2574,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         (SequenceBreakType.DungeonRevive, false)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.GanonsTowerEntranceStandardOpen
                     },
@@ -2597,7 +2597,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         (SequenceBreakType.DungeonRevive, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.GanonsTowerEntranceStandardOpen
                     },
@@ -2620,7 +2620,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         (SequenceBreakType.DungeonRevive, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.GanonsTowerEntranceStandardOpen
                     },
@@ -2643,7 +2643,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         (SequenceBreakType.DungeonRevive, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.GanonsTowerEntranceStandardOpen
                     },

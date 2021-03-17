@@ -34,7 +34,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 1),
                         (ItemType.Hammer, 0),
@@ -59,7 +59,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 1),
                         (ItemType.Hammer, 0),
@@ -84,7 +84,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 1),
                         (ItemType.Hammer, 0),
@@ -109,7 +109,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 1),
                         (ItemType.Hammer, 0),
@@ -134,7 +134,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 1),
                         (ItemType.Hammer, 0),
@@ -159,7 +159,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 2),
                         (ItemType.Hammer, 0),
@@ -184,7 +184,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 1),
                         (ItemType.Hammer, 1),
@@ -209,7 +209,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 1),
                         (ItemType.Hammer, 0),
@@ -234,7 +234,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 1),
                         (ItemType.Hammer, 0),
@@ -259,7 +259,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 1),
                         (ItemType.Hammer, 0),
@@ -284,7 +284,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 1),
                         (ItemType.Hammer, 0),
@@ -309,7 +309,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 1),
                         (ItemType.Hammer, 0),
@@ -334,7 +334,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 1),
                         (ItemType.Hammer, 0),
@@ -359,7 +359,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 1),
                         (ItemType.Hammer, 0),
@@ -384,7 +384,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 1),
                         (ItemType.Hammer, 0),
@@ -409,7 +409,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 1),
                         (ItemType.Hammer, 0),
@@ -439,7 +439,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 1),
                         (ItemType.Hammer, 0),
@@ -460,7 +460,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 2),
                         (ItemType.Hammer, 0),
@@ -481,7 +481,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 1),
                         (ItemType.Hammer, 1),
@@ -502,7 +502,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 1),
                         (ItemType.Hammer, 0),
@@ -523,7 +523,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 1),
                         (ItemType.Hammer, 0),
@@ -544,7 +544,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 1),
                         (ItemType.Hammer, 0),
@@ -565,7 +565,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 1),
                         (ItemType.Hammer, 0),
@@ -586,7 +586,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 1),
                         (ItemType.Hammer, 0),
@@ -612,7 +612,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 1),
                         (ItemType.Hammer, 0)
@@ -628,7 +628,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 2),
                         (ItemType.Hammer, 0)
@@ -644,7 +644,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 1),
                         (ItemType.Hammer, 1)
@@ -665,7 +665,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 1),
                         (ItemType.Hammer, 0),
@@ -682,7 +682,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 2),
                         (ItemType.Hammer, 0),
@@ -699,7 +699,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 1),
                         (ItemType.Hammer, 1),
@@ -716,7 +716,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 1),
                         (ItemType.Hammer, 0),

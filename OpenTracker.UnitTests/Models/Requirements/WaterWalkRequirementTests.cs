@@ -95,7 +95,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                     {
                         EntranceShuffle = EntranceShuffle.None
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Flippers, 0),
                         (ItemType.MoonPearl, 0)
@@ -117,7 +117,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                     {
                         EntranceShuffle = EntranceShuffle.None
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Flippers, 1),
                         (ItemType.MoonPearl, 1)
@@ -139,7 +139,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                     {
                         EntranceShuffle = EntranceShuffle.None
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Flippers, 0),
                         (ItemType.MoonPearl, 1)
@@ -161,7 +161,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                     {
                         EntranceShuffle = EntranceShuffle.Dungeon
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Flippers, 0),
                         (ItemType.MoonPearl, 0)
@@ -183,7 +183,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                     {
                         EntranceShuffle = EntranceShuffle.Dungeon
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Flippers, 1),
                         (ItemType.MoonPearl, 1)
@@ -205,7 +205,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                     {
                         EntranceShuffle = EntranceShuffle.Dungeon
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Flippers, 0),
                         (ItemType.MoonPearl, 1)
@@ -227,7 +227,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                     {
                         EntranceShuffle = EntranceShuffle.All
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Flippers, 0),
                         (ItemType.MoonPearl, 1)
@@ -249,7 +249,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                     {
                         EntranceShuffle = EntranceShuffle.All
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Flippers, 1),
                         (ItemType.MoonPearl, 1)
@@ -271,7 +271,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                     {
                         EntranceShuffle = EntranceShuffle.None
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Flippers, 0),
                         (ItemType.MoonPearl, 1)
@@ -293,7 +293,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                     {
                         EntranceShuffle = EntranceShuffle.Dungeon
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Flippers, 0),
                         (ItemType.MoonPearl, 1)
@@ -315,7 +315,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                     {
                         EntranceShuffle = EntranceShuffle.All
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Flippers, 0),
                         (ItemType.MoonPearl, 0)

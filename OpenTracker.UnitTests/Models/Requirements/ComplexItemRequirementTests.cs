@@ -452,7 +452,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                      {
                          ItemPlacement = ItemPlacement.Basic
                      },
-                     new (ItemType, int)[]
+                     new[]
                      {
                          (ItemType.Cape, 0),
                          (ItemType.CaneOfByrna, 0),
@@ -475,7 +475,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                      {
                          ItemPlacement = ItemPlacement.Basic
                      },
-                     new (ItemType, int)[]
+                     new[]
                      {
                          (ItemType.Cape, 0),
                          (ItemType.CaneOfByrna, 0),
@@ -498,7 +498,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                      {
                          ItemPlacement = ItemPlacement.Basic
                      },
-                     new (ItemType, int)[]
+                     new[]
                      {
                          (ItemType.Cape, 0),
                          (ItemType.CaneOfByrna, 0),
@@ -521,7 +521,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                      {
                          ItemPlacement = ItemPlacement.Basic
                      },
-                     new (ItemType, int)[]
+                     new[]
                      {
                          (ItemType.Cape, 0),
                          (ItemType.CaneOfByrna, 0),
@@ -544,7 +544,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                      {
                          ItemPlacement = ItemPlacement.Advanced
                      },
-                     new (ItemType, int)[]
+                     new[]
                      {
                          (ItemType.Cape, 0),
                          (ItemType.CaneOfByrna, 0),
@@ -567,7 +567,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                      {
                          ItemPlacement = ItemPlacement.Basic
                      },
-                     new (ItemType, int)[]
+                     new[]
                      {
                          (ItemType.Cape, 1),
                          (ItemType.CaneOfByrna, 0),
@@ -590,7 +590,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                      {
                          ItemPlacement = ItemPlacement.Basic
                      },
-                     new (ItemType, int)[]
+                     new[]
                      {
                          (ItemType.Cape, 0),
                          (ItemType.CaneOfByrna, 1),
@@ -613,7 +613,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                      {
                          ItemPlacement = ItemPlacement.Basic
                      },
-                     new (ItemType, int)[]
+                     new[]
                      {
                          (ItemType.Cape, 0),
                          (ItemType.CaneOfByrna, 0),
@@ -638,7 +638,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                  new object[]
                  {
                      new ModeSaveData(),
-                     new (ItemType, int)[]
+                     new[]
                      {
                          (ItemType.Mushroom, 1),
                          (ItemType.CaneOfSomaria, 0),
@@ -658,7 +658,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                  new object[]
                  {
                      new ModeSaveData(),
-                     new (ItemType, int)[]
+                     new[]
                      {
                          (ItemType.Mushroom, 1),
                          (ItemType.CaneOfSomaria, 1),
@@ -678,7 +678,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                  new object[]
                  {
                      new ModeSaveData(),
-                     new (ItemType, int)[]
+                     new[]
                      {
                          (ItemType.Mushroom, 1),
                          (ItemType.CaneOfSomaria, 1),
@@ -698,7 +698,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                  new object[]
                  {
                      new ModeSaveData(),
-                     new (ItemType, int)[]
+                     new[]
                      {
                          (ItemType.Mushroom, 0),
                          (ItemType.CaneOfSomaria, 0),
@@ -730,7 +730,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                      {
                          (ItemType.Book, 0)
                      },
-                     new (PrizeType, int)[]
+                     new[]
                      {
                          (PrizeType.Pendant, 0),
                          (PrizeType.GreenPendant, 0)
@@ -755,7 +755,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                      {
                          (ItemType.Book, 0)
                      },
-                     new (PrizeType, int)[]
+                     new[]
                      {
                          (PrizeType.Pendant, 1),
                          (PrizeType.GreenPendant, 1)
@@ -780,7 +780,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                      {
                          (ItemType.Book, 0)
                      },
-                     new (PrizeType, int)[]
+                     new[]
                      {
                          (PrizeType.Pendant, 0),
                          (PrizeType.GreenPendant, 0)
@@ -805,7 +805,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                      {
                          (ItemType.Book, 0)
                      },
-                     new (PrizeType, int)[]
+                     new[]
                      {
                          (PrizeType.Pendant, 1),
                          (PrizeType.GreenPendant, 1)
@@ -830,7 +830,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                      {
                          (ItemType.Book, 0)
                      },
-                     new (PrizeType, int)[]
+                     new[]
                      {
                          (PrizeType.Pendant, 2),
                          (PrizeType.GreenPendant, 1)
@@ -855,7 +855,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                      {
                          (ItemType.Book, 1)
                      },
-                     new (PrizeType, int)[]
+                     new[]
                      {
                          (PrizeType.Pendant, 0),
                          (PrizeType.GreenPendant, 0)
@@ -880,7 +880,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                      {
                          (ItemType.Book, 1)
                      },
-                     new (PrizeType, int)[]
+                     new[]
                      {
                          (PrizeType.Pendant, 0),
                          (PrizeType.GreenPendant, 0)
@@ -905,7 +905,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                      {
                          (ItemType.Book, 0)
                      },
-                     new (PrizeType, int)[]
+                     new[]
                      {
                          (PrizeType.Pendant, 2),
                          (PrizeType.GreenPendant, 1)
@@ -930,7 +930,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                      {
                          (ItemType.Book, 0)
                      },
-                     new (PrizeType, int)[]
+                     new[]
                      {
                          (PrizeType.Pendant, 2),
                          (PrizeType.GreenPendant, 1)
@@ -955,7 +955,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                      {
                          (ItemType.Book, 1)
                      },
-                     new (PrizeType, int)[]
+                     new[]
                      {
                          (PrizeType.Pendant, 2),
                          (PrizeType.GreenPendant, 1)
@@ -1037,7 +1037,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                  new object[]
                  {
                      new ModeSaveData(),
-                     new (ItemType, int)[]
+                     new[]
                      {
                          (ItemType.Book, 0),
                          (ItemType.Sword, 1),
@@ -1054,7 +1054,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                  new object[]
                  {
                      new ModeSaveData(),
-                     new (ItemType, int)[]
+                     new[]
                      {
                          (ItemType.Book, 0),
                          (ItemType.Sword, 0),
@@ -1071,7 +1071,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                  new object[]
                  {
                      new ModeSaveData(),
-                     new (ItemType, int)[]
+                     new[]
                      {
                          (ItemType.Book, 0),
                          (ItemType.Sword, 3),
@@ -1088,7 +1088,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                  new object[]
                  {
                      new ModeSaveData(),
-                     new (ItemType, int)[]
+                     new[]
                      {
                          (ItemType.Book, 1),
                          (ItemType.Sword, 1),
@@ -1105,7 +1105,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                  new object[]
                  {
                      new ModeSaveData(),
-                     new (ItemType, int)[]
+                     new[]
                      {
                          (ItemType.Book, 1),
                          (ItemType.Sword, 1),
@@ -1122,7 +1122,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                  new object[]
                  {
                      new ModeSaveData(),
-                     new (ItemType, int)[]
+                     new[]
                      {
                          (ItemType.Book, 1),
                          (ItemType.Sword, 0),
@@ -1139,7 +1139,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                  new object[]
                  {
                      new ModeSaveData(),
-                     new (ItemType, int)[]
+                     new[]
                      {
                          (ItemType.Book, 1),
                          (ItemType.Sword, 2),
@@ -1156,7 +1156,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                  new object[]
                  {
                      new ModeSaveData(),
-                     new (ItemType, int)[]
+                     new[]
                      {
                          (ItemType.Book, 1),
                          (ItemType.Sword, 0),
@@ -1173,7 +1173,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                  new object[]
                  {
                      new ModeSaveData(),
-                     new (ItemType, int)[]
+                     new[]
                      {
                          (ItemType.Book, 1),
                          (ItemType.Sword, 3),
@@ -1352,7 +1352,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                          SmallKeyShuffle = true,
                          GenericKeys = false
                      },
-                     new (ItemType, int)[]
+                     new[]
                      {
                          (ItemType.FireRod, 0),
                          (ItemType.SmallKey, 0)
@@ -1375,7 +1375,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                          SmallKeyShuffle = true,
                          GenericKeys = false
                      },
-                     new (ItemType, int)[]
+                     new[]
                      {
                          (ItemType.FireRod, 1),
                          (ItemType.SmallKey, 0)
@@ -1398,7 +1398,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                          SmallKeyShuffle = true,
                          GenericKeys = false
                      },
-                     new (ItemType, int)[]
+                     new[]
                      {
                          (ItemType.FireRod, 0),
                          (ItemType.SmallKey, 2)
@@ -1421,7 +1421,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                          SmallKeyShuffle = true,
                          GenericKeys = false
                      },
-                     new (ItemType, int)[]
+                     new[]
                      {
                          (ItemType.FireRod, 0),
                          (ItemType.SmallKey, 0)
@@ -1444,7 +1444,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                          SmallKeyShuffle = true,
                          GenericKeys = true
                      },
-                     new (ItemType, int)[]
+                     new[]
                      {
                          (ItemType.FireRod, 0),
                          (ItemType.SmallKey, 0)
@@ -1467,7 +1467,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                          SmallKeyShuffle = true,
                          GenericKeys = true
                      },
-                     new (ItemType, int)[]
+                     new[]
                      {
                          (ItemType.FireRod, 1),
                          (ItemType.SmallKey, 0)
@@ -1490,7 +1490,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                          SmallKeyShuffle = true,
                          GenericKeys = true
                      },
-                     new (ItemType, int)[]
+                     new[]
                      {
                          (ItemType.FireRod, 0),
                          (ItemType.SmallKey, 0)
@@ -1513,7 +1513,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                          SmallKeyShuffle = false,
                          GenericKeys = false
                      },
-                     new (ItemType, int)[]
+                     new[]
                      {
                          (ItemType.FireRod, 0),
                          (ItemType.SmallKey, 0)
@@ -1536,7 +1536,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                          SmallKeyShuffle = false,
                          GenericKeys = false
                      },
-                     new (ItemType, int)[]
+                     new[]
                      {
                          (ItemType.FireRod, 0),
                          (ItemType.SmallKey, 2)
@@ -1559,7 +1559,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                          SmallKeyShuffle = false,
                          GenericKeys = false
                      },
-                     new (ItemType, int)[]
+                     new[]
                      {
                          (ItemType.FireRod, 1),
                          (ItemType.SmallKey, 0)
@@ -1582,7 +1582,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                          SmallKeyShuffle = true,
                          GenericKeys = false
                      },
-                     new (ItemType, int)[]
+                     new[]
                      {
                          (ItemType.FireRod, 0),
                          (ItemType.SmallKey, 0)
@@ -1605,7 +1605,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                          SmallKeyShuffle = true,
                          GenericKeys = true
                      },
-                     new (ItemType, int)[]
+                     new[]
                      {
                          (ItemType.FireRod, 0),
                          (ItemType.SmallKey, 2)
@@ -1628,7 +1628,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                          SmallKeyShuffle = true,
                          GenericKeys = true
                      },
-                     new (ItemType, int)[]
+                     new[]
                      {
                          (ItemType.FireRod, 0),
                          (ItemType.SmallKey, 1)
@@ -1651,7 +1651,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                          SmallKeyShuffle = true,
                          GenericKeys = true
                      },
-                     new (ItemType, int)[]
+                     new[]
                      {
                          (ItemType.FireRod, 0),
                          (ItemType.SmallKey, 0)
@@ -1675,7 +1675,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                  new object[]
                  {
                      new ModeSaveData(),
-                     new (ItemType, int)[]
+                     new[]
                      {
                          (ItemType.CaneOfByrna, 0),
                          (ItemType.Cape, 1),
@@ -1693,7 +1693,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                  new object[]
                  {
                      new ModeSaveData(),
-                     new (ItemType, int)[]
+                     new[]
                      {
                          (ItemType.CaneOfByrna, 1),
                          (ItemType.Cape, 0),
@@ -1711,7 +1711,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                  new object[]
                  {
                      new ModeSaveData(),
-                     new (ItemType, int)[]
+                     new[]
                      {
                          (ItemType.CaneOfByrna, 0),
                          (ItemType.Cape, 1),
@@ -1729,7 +1729,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                  new object[]
                  {
                      new ModeSaveData(),
-                     new (ItemType, int)[]
+                     new[]
                      {
                          (ItemType.CaneOfByrna, 0),
                          (ItemType.Cape, 1),

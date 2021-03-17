@@ -13,31 +13,31 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
     public class DarkWorldSouthEastTests : RequirementNodeTestBase
     {
         [Theory]
-        [MemberData(nameof(DarkWorldWestNotBunny_To_DWLakeHyliaFlippers))]
-        [MemberData(nameof(DarkWorldSouthNotBunny_To_DWLakeHyliaFlippers))]
-        [MemberData(nameof(DWWitchAreaNotBunny_To_DWLakeHyliaFlippers))]
-        [MemberData(nameof(DarkWorldEastNotBunny_To_DWLakeHyliaFlippers))]
-        [MemberData(nameof(DarkWorldSouthEastNotBunny_To_DWLakeHyliaFlippers))]
-        [MemberData(nameof(IcePalaceIslandInverted_To_DWLakeHyliaFlippers))]
-        [MemberData(nameof(DarkWorldWestNotBunny_To_DWLakeHyliaFakeFlippers))]
-        [MemberData(nameof(DarkWorldSouthNotBunny_To_DWLakeHyliaFakeFlippers))]
-        [MemberData(nameof(DWWitchAreaNotBunny_To_DWLakeHyliaFakeFlippers))]
-        [MemberData(nameof(DarkWorldEastNotBunny_To_DWLakeHyliaFakeFlippers))]
-        [MemberData(nameof(DarkWorldSouthEastNotBunny_To_DWLakeHyliaFakeFlippers))]
-        [MemberData(nameof(IcePalaceIslandInverted_To_DWLakeHyliaFakeFlippers))]
-        [MemberData(nameof(DarkWorldWestNotBunny_To_DWLakeHyliaWaterWalk))]
-        [MemberData(nameof(LakeHyliaFairyIsland_To_IcePalaceIsland))]
-        [MemberData(nameof(LakeHyliaFairyIslandStandardOpen_To_IcePalaceIsland))]
-        [MemberData(nameof(DWLakeHyliaFlippers_To_IcePalaceIsland))]
-        [MemberData(nameof(DWLakeHyliaFakeFlippers_To_IcePalaceIsland))]
-        [MemberData(nameof(DWLakeHyliaWaterWalk_To_IcePalaceIsland))]
-        [MemberData(nameof(IcePalaceIsland_To_IcePalaceIslandInverted))]
-        [MemberData(nameof(LightWorldMirror_To_DarkWorldSouthEast))]
-        [MemberData(nameof(DWLakeHyliaFlippers_To_DarkWorldSouthEast))]
-        [MemberData(nameof(DWLakeHyliaFakeFlippers_To_DarkWorldSouthEast))]
-        [MemberData(nameof(DWLakeHyliaWaterWalk_To_DarkWorldSouthEast))]
-        [MemberData(nameof(DarkWorldSouthEast_To_DarkWorldSouthEastNotBunny))]
-        [MemberData(nameof(DarkWorldSouthEastNotBunny_To_DarkWorldSouthEastLift1))]
+        [MemberData(nameof(DarkWorldWestNotBunnyToDWLakeHyliaFlippers))]
+        [MemberData(nameof(DarkWorldSouthNotBunnyToDWLakeHyliaFlippers))]
+        [MemberData(nameof(DWWitchAreaNotBunnyToDWLakeHyliaFlippers))]
+        [MemberData(nameof(DarkWorldEastNotBunnyToDWLakeHyliaFlippers))]
+        [MemberData(nameof(DarkWorldSouthEastNotBunnyToDWLakeHyliaFlippers))]
+        [MemberData(nameof(IcePalaceIslandInvertedToDWLakeHyliaFlippers))]
+        [MemberData(nameof(DarkWorldWestNotBunnyToDWLakeHyliaFakeFlippers))]
+        [MemberData(nameof(DarkWorldSouthNotBunnyToDWLakeHyliaFakeFlippers))]
+        [MemberData(nameof(DWWitchAreaNotBunnyToDWLakeHyliaFakeFlippers))]
+        [MemberData(nameof(DarkWorldEastNotBunnyToDWLakeHyliaFakeFlippers))]
+        [MemberData(nameof(DarkWorldSouthEastNotBunnyToDWLakeHyliaFakeFlippers))]
+        [MemberData(nameof(IcePalaceIslandInvertedToDWLakeHyliaFakeFlippers))]
+        [MemberData(nameof(DarkWorldWestNotBunnyToDWLakeHyliaWaterWalk))]
+        [MemberData(nameof(LakeHyliaFairyIslandToIcePalaceIsland))]
+        [MemberData(nameof(LakeHyliaFairyIslandStandardOpenToIcePalaceIsland))]
+        [MemberData(nameof(DWLakeHyliaFlippersToIcePalaceIsland))]
+        [MemberData(nameof(DWLakeHyliaFakeFlippersToIcePalaceIsland))]
+        [MemberData(nameof(DWLakeHyliaWaterWalkToIcePalaceIsland))]
+        [MemberData(nameof(IcePalaceIslandToIcePalaceIslandInverted))]
+        [MemberData(nameof(LightWorldMirrorToDarkWorldSouthEast))]
+        [MemberData(nameof(DWLakeHyliaFlippersToDarkWorldSouthEast))]
+        [MemberData(nameof(DWLakeHyliaFakeFlippersToDarkWorldSouthEast))]
+        [MemberData(nameof(DWLakeHyliaWaterWalkToDarkWorldSouthEast))]
+        [MemberData(nameof(DarkWorldSouthEastToDarkWorldSouthEastNotBunny))]
+        [MemberData(nameof(DarkWorldSouthEastNotBunnyToDarkWorldSouthEastLift1))]
         public override void Tests(
             ModeSaveData modeData, (ItemType, int)[] items, (PrizeType, int)[] prizes,
             (SequenceBreakType, bool)[] sequenceBreaks, RequirementNodeID[] accessibleNodes,
@@ -47,7 +47,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 modeData, items, prizes, sequenceBreaks, accessibleNodes, id, towerCrystalsKnown, expected);
         }
     
-        public static IEnumerable<object[]> DarkWorldWestNotBunny_To_DWLakeHyliaFlippers =>
+        public static IEnumerable<object[]> DarkWorldWestNotBunnyToDWLakeHyliaFlippers =>
             new List<object[]>
             {
                 new object[]
@@ -59,7 +59,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldWestNotBunny
                     },
@@ -76,7 +76,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldWestNotBunny
                     },
@@ -86,7 +86,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DarkWorldSouthNotBunny_To_DWLakeHyliaFlippers =>
+        public static IEnumerable<object[]> DarkWorldSouthNotBunnyToDWLakeHyliaFlippers =>
             new List<object[]>
             {
                 new object[]
@@ -98,7 +98,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldSouthNotBunny
                     },
@@ -115,7 +115,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldSouthNotBunny
                     },
@@ -125,7 +125,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DWWitchAreaNotBunny_To_DWLakeHyliaFlippers =>
+        public static IEnumerable<object[]> DWWitchAreaNotBunnyToDWLakeHyliaFlippers =>
             new List<object[]>
             {
                 new object[]
@@ -137,7 +137,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DWWitchAreaNotBunny
                     },
@@ -154,7 +154,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DWWitchAreaNotBunny
                     },
@@ -164,7 +164,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DarkWorldEastNotBunny_To_DWLakeHyliaFlippers =>
+        public static IEnumerable<object[]> DarkWorldEastNotBunnyToDWLakeHyliaFlippers =>
             new List<object[]>
             {
                 new object[]
@@ -176,7 +176,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldEastNotBunny
                     },
@@ -193,7 +193,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldEastNotBunny
                     },
@@ -203,7 +203,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DarkWorldSouthEastNotBunny_To_DWLakeHyliaFlippers =>
+        public static IEnumerable<object[]> DarkWorldSouthEastNotBunnyToDWLakeHyliaFlippers =>
             new List<object[]>
             {
                 new object[]
@@ -215,7 +215,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldSouthEastNotBunny
                     },
@@ -232,7 +232,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldSouthEastNotBunny
                     },
@@ -242,7 +242,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> IcePalaceIslandInverted_To_DWLakeHyliaFlippers =>
+        public static IEnumerable<object[]> IcePalaceIslandInvertedToDWLakeHyliaFlippers =>
             new List<object[]>
             {
                 new object[]
@@ -254,7 +254,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.IcePalaceIslandInverted
                     },
@@ -271,7 +271,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.IcePalaceIslandInverted
                     },
@@ -281,13 +281,13 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DarkWorldWestNotBunny_To_DWLakeHyliaFakeFlippers =>
+        public static IEnumerable<object[]> DarkWorldWestNotBunnyToDWLakeHyliaFakeFlippers =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 0),
@@ -296,7 +296,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersQirnJump, true),
@@ -310,7 +310,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 0),
@@ -319,13 +319,13 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersQirnJump, false),
                         (SequenceBreakType.FakeFlippersSplashDeletion, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldWestNotBunny
                     },
@@ -336,7 +336,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 1),
                         (ItemType.RedBoomerang, 0),
@@ -345,13 +345,13 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersQirnJump, false),
                         (SequenceBreakType.FakeFlippersSplashDeletion, false)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldWestNotBunny
                     },
@@ -362,7 +362,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 1),
@@ -371,13 +371,13 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersQirnJump, false),
                         (SequenceBreakType.FakeFlippersSplashDeletion, false)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldWestNotBunny
                     },
@@ -388,7 +388,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 0),
@@ -397,13 +397,13 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersQirnJump, false),
                         (SequenceBreakType.FakeFlippersSplashDeletion, false)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldWestNotBunny
                     },
@@ -414,7 +414,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 0),
@@ -423,13 +423,13 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersQirnJump, false),
                         (SequenceBreakType.FakeFlippersSplashDeletion, false)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldWestNotBunny
                     },
@@ -440,7 +440,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 0),
@@ -449,13 +449,13 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 1)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, false),
                         (SequenceBreakType.FakeFlippersQirnJump, false),
                         (SequenceBreakType.FakeFlippersSplashDeletion, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldWestNotBunny
                     },
@@ -466,7 +466,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 0),
@@ -475,13 +475,13 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersQirnJump, true),
                         (SequenceBreakType.FakeFlippersSplashDeletion, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldWestNotBunny
                     },
@@ -492,7 +492,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 1),
                         (ItemType.RedBoomerang, 0),
@@ -501,13 +501,13 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersQirnJump, false),
                         (SequenceBreakType.FakeFlippersSplashDeletion, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldWestNotBunny
                     },
@@ -518,7 +518,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 1),
@@ -527,13 +527,13 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersQirnJump, false),
                         (SequenceBreakType.FakeFlippersSplashDeletion, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldWestNotBunny
                     },
@@ -544,7 +544,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 0),
@@ -553,13 +553,13 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersQirnJump, false),
                         (SequenceBreakType.FakeFlippersSplashDeletion, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldWestNotBunny
                     },
@@ -570,7 +570,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 0),
@@ -579,13 +579,13 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersQirnJump, false),
                         (SequenceBreakType.FakeFlippersSplashDeletion, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldWestNotBunny
                     },
@@ -596,7 +596,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 0),
@@ -605,13 +605,13 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 1)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersQirnJump, false),
                         (SequenceBreakType.FakeFlippersSplashDeletion, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldWestNotBunny
                     },
@@ -621,13 +621,13 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DarkWorldSouthNotBunny_To_DWLakeHyliaFakeFlippers =>
+        public static IEnumerable<object[]> DarkWorldSouthNotBunnyToDWLakeHyliaFakeFlippers =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 0),
@@ -636,12 +636,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersSplashDeletion, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldSouthNotBunny
                     },
@@ -652,7 +652,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 1),
                         (ItemType.RedBoomerang, 0),
@@ -661,12 +661,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersSplashDeletion, false)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldSouthNotBunny
                     },
@@ -677,7 +677,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 1),
@@ -686,12 +686,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersSplashDeletion, false)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldSouthNotBunny
                     },
@@ -702,7 +702,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 0),
@@ -711,12 +711,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersSplashDeletion, false)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldSouthNotBunny
                     },
@@ -727,7 +727,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 0),
@@ -736,12 +736,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersSplashDeletion, false)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldSouthNotBunny
                     },
@@ -752,7 +752,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 0),
@@ -761,12 +761,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 1)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, false),
                         (SequenceBreakType.FakeFlippersSplashDeletion, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldSouthNotBunny
                     },
@@ -777,7 +777,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 1),
                         (ItemType.RedBoomerang, 0),
@@ -786,12 +786,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersSplashDeletion, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldSouthNotBunny
                     },
@@ -802,7 +802,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 1),
@@ -811,12 +811,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersSplashDeletion, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldSouthNotBunny
                     },
@@ -827,7 +827,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 0),
@@ -836,12 +836,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersSplashDeletion, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldSouthNotBunny
                     },
@@ -852,7 +852,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 0),
@@ -861,12 +861,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersSplashDeletion, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldSouthNotBunny
                     },
@@ -877,7 +877,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 0),
@@ -886,12 +886,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 1)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersSplashDeletion, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldSouthNotBunny
                     },
@@ -901,13 +901,13 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DWWitchAreaNotBunny_To_DWLakeHyliaFakeFlippers =>
+        public static IEnumerable<object[]> DWWitchAreaNotBunnyToDWLakeHyliaFakeFlippers =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 0),
@@ -916,12 +916,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersSplashDeletion, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DWWitchAreaNotBunny
                     },
@@ -932,7 +932,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 1),
                         (ItemType.RedBoomerang, 0),
@@ -941,12 +941,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersSplashDeletion, false)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DWWitchAreaNotBunny
                     },
@@ -957,7 +957,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 1),
@@ -966,12 +966,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersSplashDeletion, false)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DWWitchAreaNotBunny
                     },
@@ -982,7 +982,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 0),
@@ -991,12 +991,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersSplashDeletion, false)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DWWitchAreaNotBunny
                     },
@@ -1007,7 +1007,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 0),
@@ -1016,12 +1016,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersSplashDeletion, false)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DWWitchAreaNotBunny
                     },
@@ -1032,7 +1032,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 0),
@@ -1041,12 +1041,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 1)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, false),
                         (SequenceBreakType.FakeFlippersSplashDeletion, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DWWitchAreaNotBunny
                     },
@@ -1057,7 +1057,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 1),
                         (ItemType.RedBoomerang, 0),
@@ -1066,12 +1066,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersSplashDeletion, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DWWitchAreaNotBunny
                     },
@@ -1082,7 +1082,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 1),
@@ -1091,12 +1091,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersSplashDeletion, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DWWitchAreaNotBunny
                     },
@@ -1107,7 +1107,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 0),
@@ -1116,12 +1116,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersSplashDeletion, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DWWitchAreaNotBunny
                     },
@@ -1132,7 +1132,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 0),
@@ -1141,12 +1141,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersSplashDeletion, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DWWitchAreaNotBunny
                     },
@@ -1157,7 +1157,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 0),
@@ -1166,12 +1166,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 1)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersSplashDeletion, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DWWitchAreaNotBunny
                     },
@@ -1181,13 +1181,13 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DarkWorldEastNotBunny_To_DWLakeHyliaFakeFlippers =>
+        public static IEnumerable<object[]> DarkWorldEastNotBunnyToDWLakeHyliaFakeFlippers =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 0),
@@ -1196,12 +1196,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersSplashDeletion, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldEastNotBunny
                     },
@@ -1212,7 +1212,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 1),
                         (ItemType.RedBoomerang, 0),
@@ -1221,12 +1221,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersSplashDeletion, false)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldEastNotBunny
                     },
@@ -1237,7 +1237,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 1),
@@ -1246,12 +1246,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersSplashDeletion, false)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldEastNotBunny
                     },
@@ -1262,7 +1262,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 0),
@@ -1271,12 +1271,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersSplashDeletion, false)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldEastNotBunny
                     },
@@ -1287,7 +1287,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 0),
@@ -1296,12 +1296,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersSplashDeletion, false)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldEastNotBunny
                     },
@@ -1312,7 +1312,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 0),
@@ -1321,12 +1321,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 1)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, false),
                         (SequenceBreakType.FakeFlippersSplashDeletion, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldEastNotBunny
                     },
@@ -1337,7 +1337,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 1),
                         (ItemType.RedBoomerang, 0),
@@ -1346,12 +1346,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersSplashDeletion, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldEastNotBunny
                     },
@@ -1362,7 +1362,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 1),
@@ -1371,12 +1371,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersSplashDeletion, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldEastNotBunny
                     },
@@ -1387,7 +1387,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 0),
@@ -1396,12 +1396,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersSplashDeletion, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldEastNotBunny
                     },
@@ -1412,7 +1412,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 0),
@@ -1421,12 +1421,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersSplashDeletion, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldEastNotBunny
                     },
@@ -1437,7 +1437,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 0),
@@ -1446,12 +1446,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 1)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersSplashDeletion, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldEastNotBunny
                     },
@@ -1461,13 +1461,13 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DarkWorldSouthEastNotBunny_To_DWLakeHyliaFakeFlippers =>
+        public static IEnumerable<object[]> DarkWorldSouthEastNotBunnyToDWLakeHyliaFakeFlippers =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 0),
@@ -1476,12 +1476,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersSplashDeletion, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldSouthEastNotBunny
                     },
@@ -1492,7 +1492,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 1),
                         (ItemType.RedBoomerang, 0),
@@ -1501,12 +1501,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersSplashDeletion, false)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldSouthEastNotBunny
                     },
@@ -1517,7 +1517,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 1),
@@ -1526,12 +1526,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersSplashDeletion, false)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldSouthEastNotBunny
                     },
@@ -1542,7 +1542,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 0),
@@ -1551,12 +1551,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersSplashDeletion, false)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldSouthEastNotBunny
                     },
@@ -1567,7 +1567,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 0),
@@ -1576,12 +1576,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersSplashDeletion, false)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldSouthEastNotBunny
                     },
@@ -1592,7 +1592,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 0),
@@ -1601,12 +1601,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 1)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, false),
                         (SequenceBreakType.FakeFlippersSplashDeletion, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldSouthEastNotBunny
                     },
@@ -1617,7 +1617,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 1),
                         (ItemType.RedBoomerang, 0),
@@ -1626,12 +1626,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersSplashDeletion, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldSouthEastNotBunny
                     },
@@ -1642,7 +1642,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 1),
@@ -1651,12 +1651,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersSplashDeletion, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldSouthEastNotBunny
                     },
@@ -1667,7 +1667,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 0),
@@ -1676,12 +1676,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersSplashDeletion, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldSouthEastNotBunny
                     },
@@ -1692,7 +1692,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 0),
@@ -1701,12 +1701,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersSplashDeletion, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldSouthEastNotBunny
                     },
@@ -1717,7 +1717,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 0),
@@ -1726,12 +1726,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 1)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersSplashDeletion, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldSouthEastNotBunny
                     },
@@ -1741,13 +1741,13 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> IcePalaceIslandInverted_To_DWLakeHyliaFakeFlippers =>
+        public static IEnumerable<object[]> IcePalaceIslandInvertedToDWLakeHyliaFakeFlippers =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 0),
@@ -1756,12 +1756,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersSplashDeletion, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.IcePalaceIslandInverted
                     },
@@ -1772,7 +1772,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 1),
                         (ItemType.RedBoomerang, 0),
@@ -1781,12 +1781,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersSplashDeletion, false)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.IcePalaceIslandInverted
                     },
@@ -1797,7 +1797,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 1),
@@ -1806,12 +1806,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersSplashDeletion, false)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.IcePalaceIslandInverted
                     },
@@ -1822,7 +1822,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 0),
@@ -1831,12 +1831,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersSplashDeletion, false)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.IcePalaceIslandInverted
                     },
@@ -1847,7 +1847,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 0),
@@ -1856,12 +1856,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersSplashDeletion, false)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.IcePalaceIslandInverted
                     },
@@ -1872,7 +1872,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 0),
@@ -1881,12 +1881,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 1)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, false),
                         (SequenceBreakType.FakeFlippersSplashDeletion, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.IcePalaceIslandInverted
                     },
@@ -1897,7 +1897,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 1),
                         (ItemType.RedBoomerang, 0),
@@ -1906,12 +1906,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersSplashDeletion, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.IcePalaceIslandInverted
                     },
@@ -1922,7 +1922,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 1),
@@ -1931,12 +1931,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersSplashDeletion, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.IcePalaceIslandInverted
                     },
@@ -1947,7 +1947,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 0),
@@ -1956,12 +1956,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersSplashDeletion, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.IcePalaceIslandInverted
                     },
@@ -1972,7 +1972,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 0),
@@ -1981,12 +1981,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersSplashDeletion, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.IcePalaceIslandInverted
                     },
@@ -1997,7 +1997,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.RedBoomerang, 0),
@@ -2006,12 +2006,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Bottle, 1)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersFairyRevival, true),
                         (SequenceBreakType.FakeFlippersSplashDeletion, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.IcePalaceIslandInverted
                     },
@@ -2021,7 +2021,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DarkWorldWestNotBunny_To_DWLakeHyliaWaterWalk =>
+        public static IEnumerable<object[]> DarkWorldWestNotBunnyToDWLakeHyliaWaterWalk =>
             new List<object[]>
             {
                 new object[]
@@ -2036,7 +2036,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         (SequenceBreakType.WaterWalk, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldWestNotBunny
                     },
@@ -2056,7 +2056,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         (SequenceBreakType.WaterWalk, false)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldWestNotBunny
                     },
@@ -2076,7 +2076,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         (SequenceBreakType.WaterWalk, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldWestNotBunny
                     },
@@ -2086,7 +2086,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> LakeHyliaFairyIsland_To_IcePalaceIsland =>
+        public static IEnumerable<object[]> LakeHyliaFairyIslandToIcePalaceIsland =>
             new List<object[]>
             {
                 new object[]
@@ -2101,7 +2101,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.LakeHyliaFairyIsland
                     },
@@ -2121,7 +2121,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.LakeHyliaFairyIsland
                     },
@@ -2141,7 +2141,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.LakeHyliaFairyIsland
                     },
@@ -2151,7 +2151,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> LakeHyliaFairyIslandStandardOpen_To_IcePalaceIsland =>
+        public static IEnumerable<object[]> LakeHyliaFairyIslandStandardOpenToIcePalaceIsland =>
             new List<object[]>
             {
                 new object[]
@@ -2163,7 +2163,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.LakeHyliaFairyIslandStandardOpen
                     },
@@ -2180,7 +2180,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.LakeHyliaFairyIslandStandardOpen
                     },
@@ -2190,7 +2190,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DWLakeHyliaFlippers_To_IcePalaceIsland =>
+        public static IEnumerable<object[]> DWLakeHyliaFlippersToIcePalaceIsland =>
             new List<object[]>
             {
                 new object[]
@@ -2202,7 +2202,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DWLakeHyliaFlippers
                     },
@@ -2219,7 +2219,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DWLakeHyliaFlippers
                     },
@@ -2229,7 +2229,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DWLakeHyliaFakeFlippers_To_IcePalaceIsland =>
+        public static IEnumerable<object[]> DWLakeHyliaFakeFlippersToIcePalaceIsland =>
             new List<object[]>
             {
                 new object[]
@@ -2241,7 +2241,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DWLakeHyliaFakeFlippers
                     },
@@ -2258,7 +2258,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DWLakeHyliaFakeFlippers
                     },
@@ -2268,7 +2268,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DWLakeHyliaWaterWalk_To_IcePalaceIsland =>
+        public static IEnumerable<object[]> DWLakeHyliaWaterWalkToIcePalaceIsland =>
             new List<object[]>
             {
                 new object[]
@@ -2280,7 +2280,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DWLakeHyliaWaterWalk
                     },
@@ -2297,7 +2297,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DWLakeHyliaWaterWalk
                     },
@@ -2307,7 +2307,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> IcePalaceIsland_To_IcePalaceIslandInverted =>
+        public static IEnumerable<object[]> IcePalaceIslandToIcePalaceIslandInverted =>
             new List<object[]>
             {
                 new object[]
@@ -2319,7 +2319,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.IcePalaceIsland
                     },
@@ -2336,7 +2336,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.IcePalaceIsland
                     },
@@ -2346,7 +2346,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> LightWorldMirror_To_DarkWorldSouthEast =>
+        public static IEnumerable<object[]> LightWorldMirrorToDarkWorldSouthEast =>
             new List<object[]>
             {
                 new object[]
@@ -2366,7 +2366,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.LightWorldMirror
                     },
@@ -2376,7 +2376,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DWLakeHyliaFlippers_To_DarkWorldSouthEast =>
+        public static IEnumerable<object[]> DWLakeHyliaFlippersToDarkWorldSouthEast =>
             new List<object[]>
             {
                 new object[]
@@ -2396,7 +2396,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DWLakeHyliaFlippers
                     },
@@ -2406,7 +2406,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DWLakeHyliaFakeFlippers_To_DarkWorldSouthEast =>
+        public static IEnumerable<object[]> DWLakeHyliaFakeFlippersToDarkWorldSouthEast =>
             new List<object[]>
             {
                 new object[]
@@ -2426,7 +2426,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DWLakeHyliaFakeFlippers
                     },
@@ -2436,7 +2436,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DWLakeHyliaWaterWalk_To_DarkWorldSouthEast =>
+        public static IEnumerable<object[]> DWLakeHyliaWaterWalkToDarkWorldSouthEast =>
             new List<object[]>
             {
                 new object[]
@@ -2456,7 +2456,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DWLakeHyliaWaterWalk
                     },
@@ -2466,7 +2466,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DarkWorldSouthEast_To_DarkWorldSouthEastNotBunny =>
+        public static IEnumerable<object[]> DarkWorldSouthEastToDarkWorldSouthEastNotBunny =>
             new List<object[]>
             {
                 new object[]
@@ -2481,7 +2481,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldSouthEast
                     },
@@ -2518,7 +2518,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldSouthEast
                     },
@@ -2538,7 +2538,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldSouthEast
                     },
@@ -2548,7 +2548,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DarkWorldSouthEastNotBunny_To_DarkWorldSouthEastLift1 =>
+        public static IEnumerable<object[]> DarkWorldSouthEastNotBunnyToDarkWorldSouthEastLift1 =>
             new List<object[]>
             {
                 new object[]
@@ -2560,7 +2560,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldSouthEastNotBunny
                     },
@@ -2577,7 +2577,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldSouthEastNotBunny
                     },

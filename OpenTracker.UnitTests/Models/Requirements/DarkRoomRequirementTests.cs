@@ -163,7 +163,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                     {
                         ItemPlacement = ItemPlacement.Advanced
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 0),
                         (ItemType.FireRod, 0)
@@ -185,7 +185,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                     {
                         ItemPlacement = ItemPlacement.Basic
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 0),
                         (ItemType.FireRod, 0)
@@ -207,7 +207,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                     {
                         ItemPlacement = ItemPlacement.Basic
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 0),
                         (ItemType.FireRod, 1)
@@ -229,7 +229,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                     {
                         ItemPlacement = ItemPlacement.Advanced
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 0),
                         (ItemType.FireRod, 0)
@@ -251,7 +251,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                     {
                         ItemPlacement = ItemPlacement.Basic
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 0),
                         (ItemType.FireRod, 0)
@@ -273,7 +273,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                     {
                         ItemPlacement = ItemPlacement.Basic
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 0),
                         (ItemType.FireRod, 1)
@@ -295,7 +295,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                     {
                         ItemPlacement = ItemPlacement.Advanced
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 1),
                         (ItemType.FireRod, 0)
@@ -317,7 +317,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                     {
                         ItemPlacement = ItemPlacement.Advanced
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 0),
                         (ItemType.FireRod, 1)
@@ -339,7 +339,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                     {
                         ItemPlacement = ItemPlacement.Basic
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 1),
                         (ItemType.FireRod, 0)
@@ -484,7 +484,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                     {
                         ItemPlacement = ItemPlacement.Advanced
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 0),
                         (ItemType.FireRod, 0)
@@ -506,7 +506,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                     {
                         ItemPlacement = ItemPlacement.Basic
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 0),
                         (ItemType.FireRod, 0)
@@ -528,7 +528,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                     {
                         ItemPlacement = ItemPlacement.Basic
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 0),
                         (ItemType.FireRod, 1)
@@ -550,7 +550,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                     {
                         ItemPlacement = ItemPlacement.Advanced
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 0),
                         (ItemType.FireRod, 0)
@@ -572,7 +572,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                     {
                         ItemPlacement = ItemPlacement.Basic
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 0),
                         (ItemType.FireRod, 0)
@@ -594,7 +594,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                     {
                         ItemPlacement = ItemPlacement.Basic
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 0),
                         (ItemType.FireRod, 1)
@@ -616,7 +616,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                     {
                         ItemPlacement = ItemPlacement.Advanced
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 1),
                         (ItemType.FireRod, 0)
@@ -638,7 +638,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                     {
                         ItemPlacement = ItemPlacement.Advanced
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 0),
                         (ItemType.FireRod, 1)
@@ -660,7 +660,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                     {
                         ItemPlacement = ItemPlacement.Basic
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 1),
                         (ItemType.FireRod, 0)
@@ -687,7 +687,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                     {
                         ItemPlacement = ItemPlacement.Advanced
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 0),
                         (ItemType.FireRod, 0)
@@ -709,7 +709,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                     {
                         ItemPlacement = ItemPlacement.Basic
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 0),
                         (ItemType.FireRod, 0)
@@ -731,7 +731,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                     {
                         ItemPlacement = ItemPlacement.Basic
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 0),
                         (ItemType.FireRod, 1)
@@ -753,7 +753,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                     {
                         ItemPlacement = ItemPlacement.Advanced
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 0),
                         (ItemType.FireRod, 0)
@@ -775,7 +775,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                     {
                         ItemPlacement = ItemPlacement.Basic
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 0),
                         (ItemType.FireRod, 0)
@@ -797,7 +797,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                     {
                         ItemPlacement = ItemPlacement.Basic
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 0),
                         (ItemType.FireRod, 1)
@@ -819,7 +819,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                     {
                         ItemPlacement = ItemPlacement.Advanced
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 1),
                         (ItemType.FireRod, 0)
@@ -841,7 +841,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                     {
                         ItemPlacement = ItemPlacement.Advanced
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 0),
                         (ItemType.FireRod, 1)
@@ -863,7 +863,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                     {
                         ItemPlacement = ItemPlacement.Basic
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 1),
                         (ItemType.FireRod, 0)

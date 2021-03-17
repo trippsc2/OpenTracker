@@ -13,16 +13,16 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
     public class MireAreaTests : RequirementNodeTestBase
     {
         [Theory]
-        [MemberData(nameof(LightWorldMirror_To_MireArea))]
-        [MemberData(nameof(DWMirePortal_To_MireArea))]
-        [MemberData(nameof(MireArea_To_MireAreaMirror))]
-        [MemberData(nameof(MireArea_To_MireAreaNotBunny))]
-        [MemberData(nameof(MireAreaNotBunny_To_MireAreaNotBunnyOrSuperBunnyMirror))]
-        [MemberData(nameof(MireArea_To_MireAreaNotBunnyOrSuperBunnyMirror))]
-        [MemberData(nameof(MireAreaNotBunny_To_MiseryMireEntrance))]
-        [MemberData(nameof(FluteInverted_To_DWMirePortal))]
-        [MemberData(nameof(LWMirePortalStandardOpen_To_DWMirePortal))]
-        [MemberData(nameof(DWMirePortal_To_DWMirePortalInverted))]
+        [MemberData(nameof(LightWorldMirrorToMireArea))]
+        [MemberData(nameof(DWMirePortalToMireArea))]
+        [MemberData(nameof(MireAreaToMireAreaMirror))]
+        [MemberData(nameof(MireAreaToMireAreaNotBunny))]
+        [MemberData(nameof(MireAreaNotBunnyToMireAreaNotBunnyOrSuperBunnyMirror))]
+        [MemberData(nameof(MireAreaToMireAreaNotBunnyOrSuperBunnyMirror))]
+        [MemberData(nameof(MireAreaNotBunnyToMiseryMireEntrance))]
+        [MemberData(nameof(FluteInvertedToDWMirePortal))]
+        [MemberData(nameof(LWMirePortalStandardOpenToDWMirePortal))]
+        [MemberData(nameof(DWMirePortalToDWMirePortalInverted))]
         public override void Tests(
             ModeSaveData modeData, (ItemType, int)[] items, (PrizeType, int)[] prizes,
             (SequenceBreakType, bool)[] sequenceBreaks, RequirementNodeID[] accessibleNodes,
@@ -32,7 +32,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 modeData, items, prizes, sequenceBreaks, accessibleNodes, id, towerCrystalsKnown, expected);
         }
     
-        public static IEnumerable<object[]> LightWorldMirror_To_MireArea =>
+        public static IEnumerable<object[]> LightWorldMirrorToMireArea =>
             new List<object[]>
             {
                 new object[]
@@ -52,7 +52,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.LightWorldMirror
                     },
@@ -62,7 +62,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DWMirePortal_To_MireArea =>
+        public static IEnumerable<object[]> DWMirePortalToMireArea =>
             new List<object[]>
             {
                 new object[]
@@ -82,7 +82,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DWMirePortal
                     },
@@ -92,7 +92,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> MireArea_To_MireAreaMirror =>
+        public static IEnumerable<object[]> MireAreaToMireAreaMirror =>
             new List<object[]>
             {
                 new object[]
@@ -107,7 +107,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.MireArea
                     },
@@ -127,7 +127,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.MireArea
                     },
@@ -147,7 +147,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.MireArea
                     },
@@ -157,7 +157,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> MireArea_To_MireAreaNotBunny =>
+        public static IEnumerable<object[]> MireAreaToMireAreaNotBunny =>
             new List<object[]>
             {
                 new object[]
@@ -172,7 +172,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.MireArea
                     },
@@ -209,7 +209,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.MireArea
                     },
@@ -229,7 +229,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.MireArea
                     },
@@ -239,7 +239,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> MireAreaNotBunny_To_MireAreaNotBunnyOrSuperBunnyMirror =>
+        public static IEnumerable<object[]> MireAreaNotBunnyToMireAreaNotBunnyOrSuperBunnyMirror =>
             new List<object[]>
             {
                 new object[]
@@ -259,7 +259,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.MireAreaNotBunny
                     },
@@ -269,7 +269,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> MireArea_To_MireAreaNotBunnyOrSuperBunnyMirror =>
+        public static IEnumerable<object[]> MireAreaToMireAreaNotBunnyOrSuperBunnyMirror =>
             new List<object[]>
             {
                 new object[]
@@ -284,7 +284,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         (SequenceBreakType.SuperBunnyMirror, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.MireArea
                     },
@@ -304,7 +304,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         (SequenceBreakType.SuperBunnyMirror, false)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.MireArea
                     },
@@ -324,7 +324,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         (SequenceBreakType.SuperBunnyMirror, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.MireArea
                     },
@@ -334,13 +334,13 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> MireAreaNotBunny_To_MiseryMireEntrance =>
+        public static IEnumerable<object[]> MireAreaNotBunnyToMiseryMireEntrance =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 1),
                         (ItemType.Bombos, 0),
@@ -352,7 +352,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.MireAreaNotBunny
                     },
@@ -363,7 +363,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 1),
                         (ItemType.Bombos, 1),
@@ -375,7 +375,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.MireAreaNotBunny
                     },
@@ -386,7 +386,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 0),
                         (ItemType.Bombos, 1),
@@ -398,7 +398,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.MireAreaNotBunny
                     },
@@ -409,7 +409,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 0),
                         (ItemType.Bombos, 1),
@@ -421,7 +421,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.MireAreaNotBunny
                     },
@@ -432,7 +432,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 0),
                         (ItemType.Bombos, 0),
@@ -444,7 +444,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.MireAreaNotBunny
                     },
@@ -455,7 +455,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 0),
                         (ItemType.Bombos, 0),
@@ -467,7 +467,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.MireAreaNotBunny
                     },
@@ -478,7 +478,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 0),
                         (ItemType.Bombos, 0),
@@ -490,7 +490,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.MireAreaNotBunny
                     },
@@ -501,7 +501,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 0),
                         (ItemType.Bombos, 0),
@@ -513,7 +513,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.MireAreaNotBunny
                     },
@@ -524,7 +524,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 2),
                         (ItemType.Bombos, 1),
@@ -536,7 +536,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.MireAreaNotBunny
                     },
@@ -547,7 +547,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 2),
                         (ItemType.Bombos, 1),
@@ -559,7 +559,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.MireAreaNotBunny
                     },
@@ -570,7 +570,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 2),
                         (ItemType.Bombos, 0),
@@ -582,7 +582,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.MireAreaNotBunny
                     },
@@ -593,7 +593,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 2),
                         (ItemType.Bombos, 0),
@@ -605,7 +605,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.MireAreaNotBunny
                     },
@@ -616,7 +616,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 2),
                         (ItemType.Bombos, 0),
@@ -628,7 +628,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.MireAreaNotBunny
                     },
@@ -639,7 +639,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 2),
                         (ItemType.Bombos, 0),
@@ -651,7 +651,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.MireAreaNotBunny
                     },
@@ -662,7 +662,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 0),
                         (ItemType.Bombos, 1),
@@ -674,7 +674,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.MireAreaNotBunny
                     },
@@ -685,7 +685,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 0),
                         (ItemType.Bombos, 1),
@@ -697,7 +697,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.MireAreaNotBunny
                     },
@@ -708,7 +708,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 0),
                         (ItemType.Bombos, 0),
@@ -720,7 +720,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.MireAreaNotBunny
                     },
@@ -731,7 +731,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 0),
                         (ItemType.Bombos, 0),
@@ -743,7 +743,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.MireAreaNotBunny
                     },
@@ -754,7 +754,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 0),
                         (ItemType.Bombos, 0),
@@ -766,7 +766,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.MireAreaNotBunny
                     },
@@ -777,7 +777,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 0),
                         (ItemType.Bombos, 0),
@@ -789,7 +789,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.MireAreaNotBunny
                     },
@@ -800,7 +800,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 0),
                         (ItemType.Bombos, 1),
@@ -812,7 +812,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.MireAreaNotBunny
                     },
@@ -823,7 +823,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 2),
                         (ItemType.Bombos, 1),
@@ -835,7 +835,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.MireAreaNotBunny
                     },
@@ -846,7 +846,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 2),
                         (ItemType.Bombos, 1),
@@ -858,7 +858,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.MireAreaNotBunny
                     },
@@ -869,7 +869,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 2),
                         (ItemType.Bombos, 0),
@@ -881,7 +881,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.MireAreaNotBunny
                     },
@@ -892,7 +892,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 2),
                         (ItemType.Bombos, 0),
@@ -904,7 +904,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.MireAreaNotBunny
                     },
@@ -915,7 +915,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 2),
                         (ItemType.Bombos, 0),
@@ -927,7 +927,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.MireAreaNotBunny
                     },
@@ -938,7 +938,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 2),
                         (ItemType.Bombos, 0),
@@ -950,7 +950,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.MireAreaNotBunny
                     },
@@ -961,7 +961,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 2),
                         (ItemType.Bombos, 1),
@@ -973,7 +973,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.MireAreaNotBunny
                     },
@@ -983,7 +983,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> FluteInverted_To_DWMirePortal =>
+        public static IEnumerable<object[]> FluteInvertedToDWMirePortal =>
             new List<object[]>
             {
                 new object[]
@@ -1003,7 +1003,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.FluteInverted
                     },
@@ -1013,7 +1013,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> LWMirePortalStandardOpen_To_DWMirePortal =>
+        public static IEnumerable<object[]> LWMirePortalStandardOpenToDWMirePortal =>
             new List<object[]>
             {
                 new object[]
@@ -1025,7 +1025,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.LWMirePortalStandardOpen
                     },
@@ -1042,7 +1042,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.LWMirePortalStandardOpen
                     },
@@ -1052,7 +1052,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DWMirePortal_To_DWMirePortalInverted =>
+        public static IEnumerable<object[]> DWMirePortalToDWMirePortalInverted =>
             new List<object[]>
             {
                 new object[]
@@ -1064,7 +1064,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DWMirePortal
                     },
@@ -1081,7 +1081,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DWMirePortal
                     },

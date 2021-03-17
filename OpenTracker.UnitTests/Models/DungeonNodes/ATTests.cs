@@ -14,31 +14,30 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
     public class ATTests : DungeonNodeTestBase
     {
         [Theory]
-        [MemberData(nameof(ATEntry_To_AT))]
-        [MemberData(nameof(AT_To_ATDarkMaze))]
-        [MemberData(nameof(ATDarkMaze_To_ATPastFirstKeyDoor))]
-        [MemberData(nameof(ATPastSecondKeyDoor_To_ATPastFirstKeyDoor))]
-        [MemberData(nameof(ATPastFirstKeyDoor_To_ATSecondKeyDoor))]
-        [MemberData(nameof(ATPastSecondKeyDoor_To_ATSecondKeyDoor))]
-        [MemberData(nameof(ATPastFirstKeyDoor_To_ATPastSecondKeyDoor))]
-        [MemberData(nameof(ATPastSecondKeyDoor_To_ATPastThirdKeyDoor))]
-        [MemberData(nameof(ATPastFourthKeyDoor_To_ATPastThirdKeyDoor))]
-        [MemberData(nameof(ATPastThirdKeyDoor_To_ATFourthKeyDoor))]
-        [MemberData(nameof(ATPastFourthKeyDoor_To_ATFourthKeyDoor))]
-        [MemberData(nameof(ATPastThirdKeyDoor_To_ATPastFourthKeyDoor))]
-        [MemberData(nameof(ATPastFourthKeyDoor_To_ATBossRoom))]
+        [MemberData(nameof(ATEntryToAT))]
+        [MemberData(nameof(ATToATDarkMaze))]
+        [MemberData(nameof(ATDarkMazeToATPastFirstKeyDoor))]
+        [MemberData(nameof(ATPastSecondKeyDoorToATPastFirstKeyDoor))]
+        [MemberData(nameof(ATPastFirstKeyDoorToATSecondKeyDoor))]
+        [MemberData(nameof(ATPastSecondKeyDoorToATSecondKeyDoor))]
+        [MemberData(nameof(ATPastFirstKeyDoorToATPastSecondKeyDoor))]
+        [MemberData(nameof(ATPastSecondKeyDoorToATPastThirdKeyDoor))]
+        [MemberData(nameof(ATPastFourthKeyDoorToATPastThirdKeyDoor))]
+        [MemberData(nameof(ATPastThirdKeyDoorToATFourthKeyDoor))]
+        [MemberData(nameof(ATPastFourthKeyDoorToATFourthKeyDoor))]
+        [MemberData(nameof(ATPastThirdKeyDoorToATPastFourthKeyDoor))]
+        [MemberData(nameof(ATPastFourthKeyDoorToATBossRoom))]
         public override void Tests(
-            ModeSaveData modeData, RequirementNodeID[] accessibleEntryNodes,
-            DungeonNodeID[] accessibleNodes, KeyDoorID[] unlockedDoors, (ItemType, int)[] items,
-            (SequenceBreakType, bool)[] sequenceBreaks, LocationID dungeonID, DungeonNodeID id,
-            AccessibilityLevel expected)
+            ModeSaveData modeData, RequirementNodeID[] accessibleEntryNodes, DungeonNodeID[] accessibleNodes,
+            KeyDoorID[] unlockedDoors, (ItemType, int)[] items, (SequenceBreakType, bool)[] sequenceBreaks,
+            LocationID dungeonID, DungeonNodeID id, AccessibilityLevel expected)
         {
             base.Tests(
                 modeData, accessibleEntryNodes, accessibleNodes, unlockedDoors, items,
                 sequenceBreaks, dungeonID, id, expected);
         }
         
-        public static IEnumerable<object[]> ATEntry_To_AT =>
+        public static IEnumerable<object[]> ATEntryToAT =>
             new List<object[]>
             {
                 new object[]
@@ -56,7 +55,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.ATEntry
                     },
@@ -70,14 +69,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> AT_To_ATDarkMaze =>
+        public static IEnumerable<object[]> ATToATDarkMaze =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.AT
                     },
@@ -98,7 +97,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.AT
                     },
@@ -119,7 +118,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.AT
                     },
@@ -138,14 +137,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> ATDarkMaze_To_ATPastFirstKeyDoor =>
+        public static IEnumerable<object[]> ATDarkMazeToATPastFirstKeyDoor =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.ATDarkMaze
                     },
@@ -160,11 +159,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.ATDarkMaze
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.ATFirstKeyDoor
                     },
@@ -176,14 +175,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> ATPastSecondKeyDoor_To_ATPastFirstKeyDoor =>
+        public static IEnumerable<object[]> ATPastSecondKeyDoorToATPastFirstKeyDoor =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.ATPastSecondKeyDoor
                     },
@@ -198,11 +197,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.ATPastSecondKeyDoor
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.ATSecondKeyDoor
                     },
@@ -214,7 +213,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> ATPastFirstKeyDoor_To_ATSecondKeyDoor =>
+        public static IEnumerable<object[]> ATPastFirstKeyDoorToATSecondKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -233,7 +232,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.ATPastFirstKeyDoor
                     },
@@ -246,7 +245,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> ATPastSecondKeyDoor_To_ATSecondKeyDoor =>
+        public static IEnumerable<object[]> ATPastSecondKeyDoorToATSecondKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -265,7 +264,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.ATPastSecondKeyDoor
                     },
@@ -278,14 +277,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> ATPastFirstKeyDoor_To_ATPastSecondKeyDoor =>
+        public static IEnumerable<object[]> ATPastFirstKeyDoorToATPastSecondKeyDoor =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.ATPastFirstKeyDoor
                     },
@@ -300,11 +299,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.ATPastFirstKeyDoor
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.ATSecondKeyDoor
                     },
@@ -316,14 +315,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> ATPastSecondKeyDoor_To_ATPastThirdKeyDoor =>
+        public static IEnumerable<object[]> ATPastSecondKeyDoorToATPastThirdKeyDoor =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.ATPastSecondKeyDoor
                     },
@@ -338,11 +337,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.ATPastSecondKeyDoor
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.ATThirdKeyDoor
                     },
@@ -354,14 +353,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> ATPastFourthKeyDoor_To_ATPastThirdKeyDoor =>
+        public static IEnumerable<object[]> ATPastFourthKeyDoorToATPastThirdKeyDoor =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.ATPastFourthKeyDoor
                     },
@@ -376,11 +375,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.ATPastFourthKeyDoor
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.ATFourthKeyDoor
                     },
@@ -392,7 +391,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> ATPastThirdKeyDoor_To_ATFourthKeyDoor =>
+        public static IEnumerable<object[]> ATPastThirdKeyDoorToATFourthKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -411,7 +410,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.ATPastThirdKeyDoor
                     },
@@ -424,7 +423,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> ATPastFourthKeyDoor_To_ATFourthKeyDoor =>
+        public static IEnumerable<object[]> ATPastFourthKeyDoorToATFourthKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -443,7 +442,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.ATPastFourthKeyDoor
                     },
@@ -456,14 +455,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> ATPastThirdKeyDoor_To_ATPastFourthKeyDoor =>
+        public static IEnumerable<object[]> ATPastThirdKeyDoorToATPastFourthKeyDoor =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.ATPastThirdKeyDoor
                     },
@@ -478,11 +477,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.ATPastThirdKeyDoor
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.ATFourthKeyDoor
                     },
@@ -494,14 +493,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> ATPastFourthKeyDoor_To_ATBossRoom =>
+        public static IEnumerable<object[]> ATPastFourthKeyDoorToATBossRoom =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.ATPastFourthKeyDoor
                     },
@@ -519,7 +518,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.ATPastFourthKeyDoor
                     },
@@ -537,7 +536,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.ATPastFourthKeyDoor
                     },

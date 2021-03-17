@@ -101,7 +101,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bottle, 0),
                         (ItemType.HalfMagic, 0)
@@ -117,7 +117,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bottle, 1),
                         (ItemType.HalfMagic, 0)
@@ -133,7 +133,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bottle, 0),
                         (ItemType.HalfMagic, 1)
@@ -149,7 +149,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bottle, 1),
                         (ItemType.HalfMagic, 1)

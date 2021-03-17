@@ -93,7 +93,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 0),
                         (ItemType.FireRod, 0)
@@ -109,7 +109,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 1),
                         (ItemType.FireRod, 0)
@@ -125,7 +125,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 0),
                         (ItemType.FireRod, 1)

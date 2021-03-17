@@ -14,33 +14,33 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
     public class SPTests : DungeonNodeTestBase
     {
         [Theory]
-        [MemberData(nameof(SPEntry_To_SP))]
-        [MemberData(nameof(SP_To_SPAfterRiver))]
-        [MemberData(nameof(SPAfterRiver_To_SPB1))]
-        [MemberData(nameof(SPB1PastFirstRightKeyDoor_To_SPB1))]
-        [MemberData(nameof(SPB1_To_SPB1FirstRightKeyDoor))]
-        [MemberData(nameof(SPB1PastFirstRightKeyDoor_To_SPB1FirstRightKeyDoor))]
-        [MemberData(nameof(SPB1_To_SPB1PastFirstRightKeyDoor))]
-        [MemberData(nameof(SPB1PastSecondRightKeyDoor_To_SPB1PastFirstRightKeyDoor))]
-        [MemberData(nameof(SPB1PastFirstRightKeyDoor_To_SPB1SecondRightKeyDoor))]
-        [MemberData(nameof(SPB1PastSecondRightKeyDoor_To_SPB1SecondRightKeyDoor))]
-        [MemberData(nameof(SPB1PastFirstRightKeyDoor_To_SPB1PastSecondRightKeyDoor))]
-        [MemberData(nameof(SPB1PastSecondRightKeyDoor_To_SPB1PastRightHammerBlocks))]
-        [MemberData(nameof(SPB1PastLeftKeyDoor_To_SPB1PastRightHammerBlocks))]
-        [MemberData(nameof(SPB1PastRightHammerBlocks_To_SPB1KeyLedge))]
-        [MemberData(nameof(SPB1PastRightHammerBlocks_To_SPB1LeftKeyDoor))]
-        [MemberData(nameof(SPB1PastLeftKeyDoor_To_SPB1LeftKeyDoor))]
-        [MemberData(nameof(SPB1PastRightHammerBlocks_To_SPB1PastLeftKeyDoor))]
-        [MemberData(nameof(SPB1PastRightHammerBlocks_To_SPBigChest))]
-        [MemberData(nameof(SPB1PastRightHammerBlocks_To_SPB1Back))]
-        [MemberData(nameof(SPB1PastBackFirstKeyDoor_To_SPB1Back))]
-        [MemberData(nameof(SPB1Back_To_SPB1BackFirstKeyDoor))]
-        [MemberData(nameof(SPB1PastBackFirstKeyDoor_To_SPB1BackFirstKeyDoor))]
-        [MemberData(nameof(SPB1Back_To_SPB1PastBackFirstKeyDoor))]
-        [MemberData(nameof(SPBossRoom_To_SPB1PastBackFirstKeyDoor))]
-        [MemberData(nameof(SPB1PastBackFirstKeyDoor_To_SPBossRoomKeyDoor))]
-        [MemberData(nameof(SPBossRoom_To_SPBossRoomKeyDoor))]
-        [MemberData(nameof(SPB1PastBackFirstKeyDoor_To_SPBossRoom))]
+        [MemberData(nameof(SPEntryToSP))]
+        [MemberData(nameof(SPToSPAfterRiver))]
+        [MemberData(nameof(SPAfterRiverToSPB1))]
+        [MemberData(nameof(SPB1PastFirstRightKeyDoorToSPB1))]
+        [MemberData(nameof(SPB1ToSPB1FirstRightKeyDoor))]
+        [MemberData(nameof(SPB1PastFirstRightKeyDoorToSPB1FirstRightKeyDoor))]
+        [MemberData(nameof(SPB1ToSPB1PastFirstRightKeyDoor))]
+        [MemberData(nameof(SPB1PastSecondRightKeyDoorToSPB1PastFirstRightKeyDoor))]
+        [MemberData(nameof(SPB1PastFirstRightKeyDoorToSPB1SecondRightKeyDoor))]
+        [MemberData(nameof(SPB1PastSecondRightKeyDoorToSPB1SecondRightKeyDoor))]
+        [MemberData(nameof(SPB1PastFirstRightKeyDoorToSPB1PastSecondRightKeyDoor))]
+        [MemberData(nameof(SPB1PastSecondRightKeyDoorToSPB1PastRightHammerBlocks))]
+        [MemberData(nameof(SPB1PastLeftKeyDoorToSPB1PastRightHammerBlocks))]
+        [MemberData(nameof(SPB1PastRightHammerBlocksToSPB1KeyLedge))]
+        [MemberData(nameof(SPB1PastRightHammerBlocksToSPB1LeftKeyDoor))]
+        [MemberData(nameof(SPB1PastLeftKeyDoorToSPB1LeftKeyDoor))]
+        [MemberData(nameof(SPB1PastRightHammerBlocksToSPB1PastLeftKeyDoor))]
+        [MemberData(nameof(SPB1PastRightHammerBlocksToSPBigChest))]
+        [MemberData(nameof(SPB1PastRightHammerBlocksToSPB1Back))]
+        [MemberData(nameof(SPB1PastBackFirstKeyDoorToSPB1Back))]
+        [MemberData(nameof(SPB1BackToSPB1BackFirstKeyDoor))]
+        [MemberData(nameof(SPB1PastBackFirstKeyDoorToSPB1BackFirstKeyDoor))]
+        [MemberData(nameof(SPB1BackToSPB1PastBackFirstKeyDoor))]
+        [MemberData(nameof(SPBossRoomToSPB1PastBackFirstKeyDoor))]
+        [MemberData(nameof(SPB1PastBackFirstKeyDoorToSPBossRoomKeyDoor))]
+        [MemberData(nameof(SPBossRoomToSPBossRoomKeyDoor))]
+        [MemberData(nameof(SPB1PastBackFirstKeyDoorToSPBossRoom))]
         public override void Tests(
             ModeSaveData modeData, RequirementNodeID[] accessibleEntryNodes,
             DungeonNodeID[] accessibleNodes, KeyDoorID[] unlockedDoors, (ItemType, int)[] items,
@@ -52,7 +52,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 sequenceBreaks, dungeonID, id, expected);
         }
         
-        public static IEnumerable<object[]> SPEntry_To_SP =>
+        public static IEnumerable<object[]> SPEntryToSP =>
             new List<object[]>
             {
                 new object[]
@@ -70,7 +70,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.SPEntry
                     },
@@ -84,14 +84,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> SP_To_SPAfterRiver =>
+        public static IEnumerable<object[]> SPToSPAfterRiver =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SP
                     },
@@ -109,7 +109,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SP
                     },
@@ -125,14 +125,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> SPAfterRiver_To_SPB1 =>
+        public static IEnumerable<object[]> SPAfterRiverToSPB1 =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SPAfterRiver
                     },
@@ -147,11 +147,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SPAfterRiver
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.SP1FKeyDoor
                     },
@@ -163,14 +163,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> SPB1PastFirstRightKeyDoor_To_SPB1 =>
+        public static IEnumerable<object[]> SPB1PastFirstRightKeyDoorToSPB1 =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SPB1PastFirstRightKeyDoor
                     },
@@ -185,11 +185,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SPB1PastFirstRightKeyDoor
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.SPB1FirstRightKeyDoor
                     },
@@ -201,7 +201,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> SPB1_To_SPB1FirstRightKeyDoor =>
+        public static IEnumerable<object[]> SPB1ToSPB1FirstRightKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -220,7 +220,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SPB1
                     },
@@ -233,7 +233,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> SPB1PastFirstRightKeyDoor_To_SPB1FirstRightKeyDoor =>
+        public static IEnumerable<object[]> SPB1PastFirstRightKeyDoorToSPB1FirstRightKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -252,7 +252,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SPB1PastFirstRightKeyDoor
                     },
@@ -265,14 +265,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> SPB1_To_SPB1PastFirstRightKeyDoor =>
+        public static IEnumerable<object[]> SPB1ToSPB1PastFirstRightKeyDoor =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SPB1
                     },
@@ -287,11 +287,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SPB1
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.SPB1FirstRightKeyDoor
                     },
@@ -303,14 +303,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> SPB1PastSecondRightKeyDoor_To_SPB1PastFirstRightKeyDoor =>
+        public static IEnumerable<object[]> SPB1PastSecondRightKeyDoorToSPB1PastFirstRightKeyDoor =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SPB1PastSecondRightKeyDoor
                     },
@@ -325,11 +325,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SPB1PastSecondRightKeyDoor
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.SPB1SecondRightKeyDoor
                     },
@@ -341,7 +341,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> SPB1PastFirstRightKeyDoor_To_SPB1SecondRightKeyDoor =>
+        public static IEnumerable<object[]> SPB1PastFirstRightKeyDoorToSPB1SecondRightKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -360,7 +360,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SPB1PastFirstRightKeyDoor
                     },
@@ -373,7 +373,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> SPB1PastSecondRightKeyDoor_To_SPB1SecondRightKeyDoor =>
+        public static IEnumerable<object[]> SPB1PastSecondRightKeyDoorToSPB1SecondRightKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -392,7 +392,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SPB1PastSecondRightKeyDoor
                     },
@@ -405,14 +405,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> SPB1PastFirstRightKeyDoor_To_SPB1PastSecondRightKeyDoor =>
+        public static IEnumerable<object[]> SPB1PastFirstRightKeyDoorToSPB1PastSecondRightKeyDoor =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SPB1PastFirstRightKeyDoor
                     },
@@ -427,11 +427,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SPB1PastFirstRightKeyDoor
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.SPB1SecondRightKeyDoor
                     },
@@ -443,14 +443,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> SPB1PastSecondRightKeyDoor_To_SPB1PastRightHammerBlocks =>
+        public static IEnumerable<object[]> SPB1PastSecondRightKeyDoorToSPB1PastRightHammerBlocks =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SPB1PastSecondRightKeyDoor
                     },
@@ -468,7 +468,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SPB1PastSecondRightKeyDoor
                     },
@@ -484,14 +484,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> SPB1PastLeftKeyDoor_To_SPB1PastRightHammerBlocks =>
+        public static IEnumerable<object[]> SPB1PastLeftKeyDoorToSPB1PastRightHammerBlocks =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SPB1PastLeftKeyDoor
                     },
@@ -506,11 +506,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SPB1PastLeftKeyDoor
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.SPB1LeftKeyDoor
                     },
@@ -522,14 +522,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> SPB1PastRightHammerBlocks_To_SPB1KeyLedge =>
+        public static IEnumerable<object[]> SPB1PastRightHammerBlocksToSPB1KeyLedge =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SPB1PastRightHammerBlocks
                     },
@@ -547,7 +547,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SPB1PastRightHammerBlocks
                     },
@@ -563,7 +563,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> SPB1PastRightHammerBlocks_To_SPB1LeftKeyDoor =>
+        public static IEnumerable<object[]> SPB1PastRightHammerBlocksToSPB1LeftKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -582,7 +582,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SPB1PastRightHammerBlocks
                     },
@@ -595,7 +595,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> SPB1PastLeftKeyDoor_To_SPB1LeftKeyDoor =>
+        public static IEnumerable<object[]> SPB1PastLeftKeyDoorToSPB1LeftKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -614,7 +614,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SPB1PastLeftKeyDoor
                     },
@@ -627,14 +627,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> SPB1PastRightHammerBlocks_To_SPB1PastLeftKeyDoor =>
+        public static IEnumerable<object[]> SPB1PastRightHammerBlocksToSPB1PastLeftKeyDoor =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SPB1PastRightHammerBlocks
                     },
@@ -649,11 +649,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SPB1PastRightHammerBlocks
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.SPB1LeftKeyDoor
                     },
@@ -665,14 +665,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> SPB1PastRightHammerBlocks_To_SPBigChest =>
+        public static IEnumerable<object[]> SPB1PastRightHammerBlocksToSPBigChest =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SPB1PastRightHammerBlocks
                     },
@@ -687,11 +687,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SPB1PastRightHammerBlocks
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.SPBigChest
                     },
@@ -703,14 +703,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> SPB1PastRightHammerBlocks_To_SPB1Back =>
+        public static IEnumerable<object[]> SPB1PastRightHammerBlocksToSPB1Back =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SPB1PastRightHammerBlocks
                     },
@@ -728,7 +728,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SPB1PastRightHammerBlocks
                     },
@@ -744,14 +744,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> SPB1PastBackFirstKeyDoor_To_SPB1Back =>
+        public static IEnumerable<object[]> SPB1PastBackFirstKeyDoorToSPB1Back =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SPB1PastBackFirstKeyDoor
                     },
@@ -766,11 +766,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SPB1PastBackFirstKeyDoor
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.SPB1BackFirstKeyDoor
                     },
@@ -782,7 +782,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> SPB1Back_To_SPB1BackFirstKeyDoor =>
+        public static IEnumerable<object[]> SPB1BackToSPB1BackFirstKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -801,7 +801,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SPB1Back
                     },
@@ -814,7 +814,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> SPB1PastBackFirstKeyDoor_To_SPB1BackFirstKeyDoor =>
+        public static IEnumerable<object[]> SPB1PastBackFirstKeyDoorToSPB1BackFirstKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -833,7 +833,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SPB1PastBackFirstKeyDoor
                     },
@@ -846,14 +846,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> SPB1Back_To_SPB1PastBackFirstKeyDoor =>
+        public static IEnumerable<object[]> SPB1BackToSPB1PastBackFirstKeyDoor =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SPB1Back
                     },
@@ -868,11 +868,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SPB1Back
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.SPB1BackFirstKeyDoor
                     },
@@ -884,14 +884,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> SPBossRoom_To_SPB1PastBackFirstKeyDoor =>
+        public static IEnumerable<object[]> SPBossRoomToSPB1PastBackFirstKeyDoor =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SPBossRoom
                     },
@@ -906,11 +906,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SPBossRoom
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.SPBossRoomKeyDoor
                     },
@@ -922,7 +922,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> SPB1PastBackFirstKeyDoor_To_SPBossRoomKeyDoor =>
+        public static IEnumerable<object[]> SPB1PastBackFirstKeyDoorToSPBossRoomKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -941,7 +941,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SPB1PastBackFirstKeyDoor
                     },
@@ -954,7 +954,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> SPBossRoom_To_SPBossRoomKeyDoor =>
+        public static IEnumerable<object[]> SPBossRoomToSPBossRoomKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -973,7 +973,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SPBossRoom
                     },
@@ -986,14 +986,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> SPB1PastBackFirstKeyDoor_To_SPBossRoom =>
+        public static IEnumerable<object[]> SPB1PastBackFirstKeyDoorToSPBossRoom =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SPB1PastBackFirstKeyDoor
                     },
@@ -1008,11 +1008,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.SPB1PastBackFirstKeyDoor
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.SPBossRoomKeyDoor
                     },

@@ -15,42 +15,42 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
     public class PoDTests : DungeonNodeTestBase
     {
         [Theory]
-        [MemberData(nameof(PoDEntry_To_PoD))]
-        [MemberData(nameof(PoDLobbyArena_To_PoD))]
-        [MemberData(nameof(PoD_To_PoDPastFirstRedGoriyaRoom))]
-        [MemberData(nameof(PoD_To_PoDFrontKeyDoor))]
-        [MemberData(nameof(PoDLobbyArena_To_PoDFrontKeyDoor))]
-        [MemberData(nameof(PoD_To_PoDLobbyArena))]
-        [MemberData(nameof(PoDPastFirstRedGoriyaRoom_To_PoDLobbyArena))]
-        [MemberData(nameof(PoDPastCollapsingWalkwayKeyDoor_To_PoDLobbyArena))]
-        [MemberData(nameof(PoDLobbyArena_To_PoDBigKeyChestArea))]
-        [MemberData(nameof(PoDLobbyArena_To_PoDCollapsingWalkwayKeyDoor))]
-        [MemberData(nameof(PoDPastCollapsingWalkwayKeyDoor_To_PoDCollapsingWalkwayKeyDoor))]
-        [MemberData(nameof(PoDLobbyArena_To_PoDPastCollapsingWalkwayKeyDoor))]
-        [MemberData(nameof(PoDPastDarkMazeKeyDoor_To_PoDPastCollapsingWalkwayKeyDoor))]
-        [MemberData(nameof(PoDHarmlessHellwayRoom_To_PoDPastCollapsingWalkwayKeyDoor))]
-        [MemberData(nameof(PoDPastCollapsingWalkwayKeyDoor_To_PoDDarkBasement))]
-        [MemberData(nameof(PoDPastCollapsingWalkwayKeyDoor_To_PoDHarmlessHellwayKeyDoor))]
-        [MemberData(nameof(PoDHarmlessHellwayRoom_To_PoDHarmlessHellwayKeyDoor))]
-        [MemberData(nameof(PoDPastCollapsingWalkwayKeyDoor_To_PoDHarmlessHellwayRoom))]
-        [MemberData(nameof(PoDPastCollapsingWalkwayKeyDoor_To_PoDDarkMazeKeyDoor))]
-        [MemberData(nameof(PoDPastDarkMazeKeyDoor_To_PoDDarkMazeKeyDoor))]
-        [MemberData(nameof(PoDPastCollapsingWalkwayKeyDoor_To_PoDPastDarkMazeKeyDoor))]
-        [MemberData(nameof(PoDDarkMaze_To_PoDPastDarkMazeKeyDoor))]
-        [MemberData(nameof(PoDPastDarkMazeKeyDoor_To_PoDDarkMaze))]
-        [MemberData(nameof(PoDBigChestLedge_To_PoDDarkMaze))]
-        [MemberData(nameof(PoDDarkMaze_To_PoDBigChestLedge))]
-        [MemberData(nameof(PoDPastCollapsingWalkwayKeyDoor_To_PoDBigChestLedge))]
-        [MemberData(nameof(PoDBigChestLedge_To_PoDBigChest))]
-        [MemberData(nameof(PoDLobbyArena_To_PoDPastSecondRedGoriyaRoom))]
-        [MemberData(nameof(PoDPastSecondRedGoriyaRoom_To_PoDPastBowStatue))]
-        [MemberData(nameof(PoDPastBowStatue_To_PoDBossAreaDarkRooms))]
-        [MemberData(nameof(PoDBossAreaDarkRooms_To_PoDPastHammerBlocks))]
-        [MemberData(nameof(PoDPastBossAreaKeyDoor_To_PoDPastHammerBlocks))]
-        [MemberData(nameof(PoDPastHammerBlocks_To_PoDBossAreaKeyDoor))]
-        [MemberData(nameof(PoDPastBossAreaKeyDoor_To_PoDBossAreaKeyDoor))]
-        [MemberData(nameof(PoDPastHammerBlocks_To_PoDPastBossAreaKeyDoor))]
-        [MemberData(nameof(PoDPastBossAreaKeyDoor_To_PoDBossRoom))]
+        [MemberData(nameof(PoDEntryToPoD))]
+        [MemberData(nameof(PoDLobbyArenaToPoD))]
+        [MemberData(nameof(PoDToPoDPastFirstRedGoriyaRoom))]
+        [MemberData(nameof(PoDToPoDFrontKeyDoor))]
+        [MemberData(nameof(PoDLobbyArenaToPoDFrontKeyDoor))]
+        [MemberData(nameof(PoDToPoDLobbyArena))]
+        [MemberData(nameof(PoDPastFirstRedGoriyaRoomToPoDLobbyArena))]
+        [MemberData(nameof(PoDPastCollapsingWalkwayKeyDoorToPoDLobbyArena))]
+        [MemberData(nameof(PoDLobbyArenaToPoDBigKeyChestArea))]
+        [MemberData(nameof(PoDLobbyArenaToPoDCollapsingWalkwayKeyDoor))]
+        [MemberData(nameof(PoDPastCollapsingWalkwayKeyDoorToPoDCollapsingWalkwayKeyDoor))]
+        [MemberData(nameof(PoDLobbyArenaToPoDPastCollapsingWalkwayKeyDoor))]
+        [MemberData(nameof(PoDPastDarkMazeKeyDoorToPoDPastCollapsingWalkwayKeyDoor))]
+        [MemberData(nameof(PoDHarmlessHellwayRoomToPoDPastCollapsingWalkwayKeyDoor))]
+        [MemberData(nameof(PoDPastCollapsingWalkwayKeyDoorToPoDDarkBasement))]
+        [MemberData(nameof(PoDPastCollapsingWalkwayKeyDoorToPoDHarmlessHellwayKeyDoor))]
+        [MemberData(nameof(PoDHarmlessHellwayRoomToPoDHarmlessHellwayKeyDoor))]
+        [MemberData(nameof(PoDPastCollapsingWalkwayKeyDoorToPoDHarmlessHellwayRoom))]
+        [MemberData(nameof(PoDPastCollapsingWalkwayKeyDoorToPoDDarkMazeKeyDoor))]
+        [MemberData(nameof(PoDPastDarkMazeKeyDoorToPoDDarkMazeKeyDoor))]
+        [MemberData(nameof(PoDPastCollapsingWalkwayKeyDoorToPoDPastDarkMazeKeyDoor))]
+        [MemberData(nameof(PoDDarkMazeToPoDPastDarkMazeKeyDoor))]
+        [MemberData(nameof(PoDPastDarkMazeKeyDoorToPoDDarkMaze))]
+        [MemberData(nameof(PoDBigChestLedgeToPoDDarkMaze))]
+        [MemberData(nameof(PoDDarkMazeToPoDBigChestLedge))]
+        [MemberData(nameof(PoDPastCollapsingWalkwayKeyDoorToPoDBigChestLedge))]
+        [MemberData(nameof(PoDBigChestLedgeToPoDBigChest))]
+        [MemberData(nameof(PoDLobbyArenaToPoDPastSecondRedGoriyaRoom))]
+        [MemberData(nameof(PoDPastSecondRedGoriyaRoomToPoDPastBowStatue))]
+        [MemberData(nameof(PoDPastBowStatueToPoDBossAreaDarkRooms))]
+        [MemberData(nameof(PoDBossAreaDarkRoomsToPoDPastHammerBlocks))]
+        [MemberData(nameof(PoDPastBossAreaKeyDoorToPoDPastHammerBlocks))]
+        [MemberData(nameof(PoDPastHammerBlocksToPoDBossAreaKeyDoor))]
+        [MemberData(nameof(PoDPastBossAreaKeyDoorToPoDBossAreaKeyDoor))]
+        [MemberData(nameof(PoDPastHammerBlocksToPoDPastBossAreaKeyDoor))]
+        [MemberData(nameof(PoDPastBossAreaKeyDoorToPoDBossRoom))]
         public override void Tests(
             ModeSaveData modeData, RequirementNodeID[] accessibleEntryNodes,
             DungeonNodeID[] accessibleNodes, KeyDoorID[] unlockedDoors, (ItemType, int)[] items,
@@ -62,7 +62,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 sequenceBreaks, dungeonID, id, expected);
         }
         
-        public static IEnumerable<object[]> PoDEntry_To_PoD =>
+        public static IEnumerable<object[]> PoDEntryToPoD =>
             new List<object[]>
             {
                 new object[]
@@ -80,7 +80,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.PoDEntry
                     },
@@ -94,14 +94,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> PoDLobbyArena_To_PoD =>
+        public static IEnumerable<object[]> PoDLobbyArenaToPoD =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDLobbyArena
                     },
@@ -116,11 +116,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDLobbyArena
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.PoDFrontKeyDoor
                     },
@@ -132,7 +132,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> PoD_To_PoDPastFirstRedGoriyaRoom =>
+        public static IEnumerable<object[]> PoDToPoDPastFirstRedGoriyaRoom =>
             new List<object[]>
             {
                 new object[]
@@ -142,17 +142,17 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                         EnemyShuffle = false
                     },
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoD
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.Bottle, 1)
                     },
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.CameraUnlock, false),
                         (SequenceBreakType.MimicClip, false)
@@ -168,17 +168,17 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                         EnemyShuffle = false
                     },
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoD
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.Bottle, 0)
                     },
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.CameraUnlock, false),
                         (SequenceBreakType.MimicClip, true)
@@ -194,17 +194,17 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                         EnemyShuffle = false
                     },
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoD
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.Bottle, 1)
                     },
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.CameraUnlock, true),
                         (SequenceBreakType.MimicClip, false)
@@ -220,17 +220,17 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                         EnemyShuffle = false
                     },
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoD
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 1),
                         (ItemType.Bottle, 0)
                     },
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.CameraUnlock, true),
                         (SequenceBreakType.MimicClip, true)
@@ -246,17 +246,17 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                         EnemyShuffle = true
                     },
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoD
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.Bottle, 0)
                     },
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.CameraUnlock, true),
                         (SequenceBreakType.MimicClip, true)
@@ -267,7 +267,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> PoD_To_PoDFrontKeyDoor =>
+        public static IEnumerable<object[]> PoDToPoDFrontKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -286,7 +286,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoD
                     },
@@ -299,7 +299,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> PoDLobbyArena_To_PoDFrontKeyDoor =>
+        public static IEnumerable<object[]> PoDLobbyArenaToPoDFrontKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -318,7 +318,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDLobbyArena
                     },
@@ -331,14 +331,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> PoD_To_PoDLobbyArena =>
+        public static IEnumerable<object[]> PoDToPoDLobbyArena =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoD
                     },
@@ -353,11 +353,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoD
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.PoDFrontKeyDoor
                     },
@@ -369,14 +369,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> PoDPastFirstRedGoriyaRoom_To_PoDLobbyArena =>
+        public static IEnumerable<object[]> PoDPastFirstRedGoriyaRoomToPoDLobbyArena =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDPastFirstRedGoriyaRoom
                     },
@@ -394,7 +394,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDPastFirstRedGoriyaRoom
                     },
@@ -410,14 +410,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> PoDPastCollapsingWalkwayKeyDoor_To_PoDLobbyArena =>
+        public static IEnumerable<object[]> PoDPastCollapsingWalkwayKeyDoorToPoDLobbyArena =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDPastCollapsingWalkwayKeyDoor
                     },
@@ -432,11 +432,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDPastCollapsingWalkwayKeyDoor
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.PoDCollapsingWalkwayKeyDoor
                     },
@@ -448,14 +448,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> PoDLobbyArena_To_PoDBigKeyChestArea =>
+        public static IEnumerable<object[]> PoDLobbyArenaToPoDBigKeyChestArea =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDLobbyArena
                     },
@@ -470,11 +470,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDLobbyArena
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.PoDBigKeyChestKeyDoor
                     },
@@ -486,7 +486,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> PoDLobbyArena_To_PoDCollapsingWalkwayKeyDoor =>
+        public static IEnumerable<object[]> PoDLobbyArenaToPoDCollapsingWalkwayKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -505,7 +505,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDLobbyArena
                     },
@@ -518,7 +518,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> PoDPastCollapsingWalkwayKeyDoor_To_PoDCollapsingWalkwayKeyDoor =>
+        public static IEnumerable<object[]> PoDPastCollapsingWalkwayKeyDoorToPoDCollapsingWalkwayKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -537,7 +537,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDPastCollapsingWalkwayKeyDoor
                     },
@@ -550,14 +550,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> PoDLobbyArena_To_PoDPastCollapsingWalkwayKeyDoor =>
+        public static IEnumerable<object[]> PoDLobbyArenaToPoDPastCollapsingWalkwayKeyDoor =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDLobbyArena
                     },
@@ -572,11 +572,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDLobbyArena
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.PoDCollapsingWalkwayKeyDoor
                     },
@@ -588,14 +588,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> PoDPastDarkMazeKeyDoor_To_PoDPastCollapsingWalkwayKeyDoor =>
+        public static IEnumerable<object[]> PoDPastDarkMazeKeyDoorToPoDPastCollapsingWalkwayKeyDoor =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDPastDarkMazeKeyDoor
                     },
@@ -610,11 +610,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDPastDarkMazeKeyDoor
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.PoDDarkMazeKeyDoor
                     },
@@ -626,14 +626,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> PoDHarmlessHellwayRoom_To_PoDPastCollapsingWalkwayKeyDoor =>
+        public static IEnumerable<object[]> PoDHarmlessHellwayRoomToPoDPastCollapsingWalkwayKeyDoor =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDHarmlessHellwayRoom
                     },
@@ -648,11 +648,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDHarmlessHellwayRoom
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.PoDHarmlessHellwayKeyDoor
                     },
@@ -664,7 +664,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> PoDPastCollapsingWalkwayKeyDoor_To_PoDDarkBasement =>
+        public static IEnumerable<object[]> PoDPastCollapsingWalkwayKeyDoorToPoDDarkBasement =>
             new List<object[]>
             {
                 new object[]
@@ -674,12 +674,12 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                         ItemPlacement = ItemPlacement.Advanced
                     },
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDPastCollapsingWalkwayKeyDoor
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 0),
                         (ItemType.FireRod, 0)
@@ -699,12 +699,12 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                         ItemPlacement = ItemPlacement.Basic
                     },
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDPastCollapsingWalkwayKeyDoor
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 0),
                         (ItemType.FireRod, 1)
@@ -724,12 +724,12 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                         ItemPlacement = ItemPlacement.Advanced
                     },
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDPastCollapsingWalkwayKeyDoor
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 0),
                         (ItemType.FireRod, 0)
@@ -749,12 +749,12 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                         ItemPlacement = ItemPlacement.Basic
                     },
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDPastCollapsingWalkwayKeyDoor
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 0),
                         (ItemType.FireRod, 1)
@@ -774,12 +774,12 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                         ItemPlacement = ItemPlacement.Advanced
                     },
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDPastCollapsingWalkwayKeyDoor
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 1),
                         (ItemType.FireRod, 0)
@@ -799,12 +799,12 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                         ItemPlacement = ItemPlacement.Advanced
                     },
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDPastCollapsingWalkwayKeyDoor
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 0),
                         (ItemType.FireRod, 1)
@@ -824,12 +824,12 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                         ItemPlacement = ItemPlacement.Basic
                     },
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDPastCollapsingWalkwayKeyDoor
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 1),
                         (ItemType.FireRod, 0)
@@ -844,7 +844,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> PoDPastCollapsingWalkwayKeyDoor_To_PoDHarmlessHellwayKeyDoor =>
+        public static IEnumerable<object[]> PoDPastCollapsingWalkwayKeyDoorToPoDHarmlessHellwayKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -863,7 +863,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDPastCollapsingWalkwayKeyDoor
                     },
@@ -876,7 +876,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> PoDHarmlessHellwayRoom_To_PoDHarmlessHellwayKeyDoor =>
+        public static IEnumerable<object[]> PoDHarmlessHellwayRoomToPoDHarmlessHellwayKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -895,7 +895,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDHarmlessHellwayRoom
                     },
@@ -908,14 +908,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> PoDPastCollapsingWalkwayKeyDoor_To_PoDHarmlessHellwayRoom =>
+        public static IEnumerable<object[]> PoDPastCollapsingWalkwayKeyDoorToPoDHarmlessHellwayRoom =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDPastCollapsingWalkwayKeyDoor
                     },
@@ -930,11 +930,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDPastCollapsingWalkwayKeyDoor
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.PoDHarmlessHellwayKeyDoor
                     },
@@ -946,7 +946,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> PoDPastCollapsingWalkwayKeyDoor_To_PoDDarkMazeKeyDoor =>
+        public static IEnumerable<object[]> PoDPastCollapsingWalkwayKeyDoorToPoDDarkMazeKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -965,7 +965,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDPastCollapsingWalkwayKeyDoor
                     },
@@ -978,7 +978,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> PoDPastDarkMazeKeyDoor_To_PoDDarkMazeKeyDoor =>
+        public static IEnumerable<object[]> PoDPastDarkMazeKeyDoorToPoDDarkMazeKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -997,7 +997,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDPastDarkMazeKeyDoor
                     },
@@ -1010,14 +1010,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> PoDPastCollapsingWalkwayKeyDoor_To_PoDPastDarkMazeKeyDoor =>
+        public static IEnumerable<object[]> PoDPastCollapsingWalkwayKeyDoorToPoDPastDarkMazeKeyDoor =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDPastCollapsingWalkwayKeyDoor
                     },
@@ -1035,11 +1035,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDPastCollapsingWalkwayKeyDoor
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.PoDDarkMazeKeyDoor
                     },
@@ -1054,7 +1054,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> PoDDarkMaze_To_PoDPastDarkMazeKeyDoor =>
+        public static IEnumerable<object[]> PoDDarkMazeToPoDPastDarkMazeKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -1073,7 +1073,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDDarkMaze
                     },
@@ -1086,14 +1086,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> PoDPastDarkMazeKeyDoor_To_PoDDarkMaze =>
+        public static IEnumerable<object[]> PoDPastDarkMazeKeyDoorToPoDDarkMaze =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDPastDarkMazeKeyDoor
                     },
@@ -1114,7 +1114,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDPastDarkMazeKeyDoor
                     },
@@ -1135,7 +1135,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDPastDarkMazeKeyDoor
                     },
@@ -1154,14 +1154,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> PoDBigChestLedge_To_PoDDarkMaze =>
+        public static IEnumerable<object[]> PoDBigChestLedgeToPoDDarkMaze =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDBigChestLedge
                     },
@@ -1182,7 +1182,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDBigChestLedge
                     },
@@ -1203,7 +1203,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDBigChestLedge
                     },
@@ -1222,7 +1222,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> PoDDarkMaze_To_PoDBigChestLedge =>
+        public static IEnumerable<object[]> PoDDarkMazeToPoDBigChestLedge =>
             new List<object[]>
             {
                 new object[]
@@ -1241,7 +1241,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDDarkMaze
                     },
@@ -1254,14 +1254,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> PoDPastCollapsingWalkwayKeyDoor_To_PoDBigChestLedge =>
+        public static IEnumerable<object[]> PoDPastCollapsingWalkwayKeyDoorToPoDBigChestLedge =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDPastCollapsingWalkwayKeyDoor
                     },
@@ -1279,7 +1279,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDPastCollapsingWalkwayKeyDoor
                     },
@@ -1295,14 +1295,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 },
             };
         
-        public static IEnumerable<object[]> PoDBigChestLedge_To_PoDBigChest =>
+        public static IEnumerable<object[]> PoDBigChestLedgeToPoDBigChest =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDBigChestLedge
                     },
@@ -1317,11 +1317,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDBigChestLedge
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.PoDBigChest
                     },
@@ -1333,7 +1333,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> PoDLobbyArena_To_PoDPastSecondRedGoriyaRoom =>
+        public static IEnumerable<object[]> PoDLobbyArenaToPoDPastSecondRedGoriyaRoom =>
             new List<object[]>
             {
                 new object[]
@@ -1343,7 +1343,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                         EnemyShuffle = false
                     },
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDLobbyArena
                     },
@@ -1367,7 +1367,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                         EnemyShuffle = false
                     },
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDLobbyArena
                     },
@@ -1391,7 +1391,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                         EnemyShuffle = false
                     },
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDLobbyArena
                     },
@@ -1415,7 +1415,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                         EnemyShuffle = true
                     },
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDLobbyArena
                     },
@@ -1434,14 +1434,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> PoDPastSecondRedGoriyaRoom_To_PoDPastBowStatue =>
+        public static IEnumerable<object[]> PoDPastSecondRedGoriyaRoomToPoDPastBowStatue =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDPastSecondRedGoriyaRoom
                     },
@@ -1459,7 +1459,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDPastSecondRedGoriyaRoom
                     },
@@ -1475,14 +1475,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> PoDPastBowStatue_To_PoDBossAreaDarkRooms =>
+        public static IEnumerable<object[]> PoDPastBowStatueToPoDBossAreaDarkRooms =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDPastBowStatue
                     },
@@ -1503,7 +1503,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDPastBowStatue
                     },
@@ -1524,7 +1524,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDPastBowStatue
                     },
@@ -1543,14 +1543,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> PoDBossAreaDarkRooms_To_PoDPastHammerBlocks =>
+        public static IEnumerable<object[]> PoDBossAreaDarkRoomsToPoDPastHammerBlocks =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDBossAreaDarkRooms
                     },
@@ -1568,7 +1568,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDBossAreaDarkRooms
                     },
@@ -1584,14 +1584,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> PoDPastBossAreaKeyDoor_To_PoDPastHammerBlocks =>
+        public static IEnumerable<object[]> PoDPastBossAreaKeyDoorToPoDPastHammerBlocks =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDPastBossAreaKeyDoor
                     },
@@ -1606,11 +1606,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDPastBossAreaKeyDoor
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.PoDBossAreaKeyDoor
                     },
@@ -1622,7 +1622,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> PoDPastHammerBlocks_To_PoDBossAreaKeyDoor =>
+        public static IEnumerable<object[]> PoDPastHammerBlocksToPoDBossAreaKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -1641,7 +1641,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDPastHammerBlocks
                     },
@@ -1654,7 +1654,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> PoDPastBossAreaKeyDoor_To_PoDBossAreaKeyDoor =>
+        public static IEnumerable<object[]> PoDPastBossAreaKeyDoorToPoDBossAreaKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -1673,7 +1673,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDPastBossAreaKeyDoor
                     },
@@ -1686,14 +1686,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> PoDPastHammerBlocks_To_PoDPastBossAreaKeyDoor =>
+        public static IEnumerable<object[]> PoDPastHammerBlocksToPoDPastBossAreaKeyDoor =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDPastHammerBlocks
                     },
@@ -1708,11 +1708,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDPastHammerBlocks
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.PoDBossAreaKeyDoor
                     },
@@ -1724,14 +1724,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> PoDPastBossAreaKeyDoor_To_PoDBossRoom =>
+        public static IEnumerable<object[]> PoDPastBossAreaKeyDoorToPoDBossRoom =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDPastBossAreaKeyDoor
                     },
@@ -1746,11 +1746,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.PoDPastBossAreaKeyDoor
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.PoDBigKeyDoor
                     },

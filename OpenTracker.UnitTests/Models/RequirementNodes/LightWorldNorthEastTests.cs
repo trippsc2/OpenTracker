@@ -13,33 +13,33 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
     public class LightWorldNorthEastTests : RequirementNodeTestBase
     {
         [Theory]
-        [MemberData(nameof(LightWorld_To_HyruleCastleTop))]
-        [MemberData(nameof(DarkWorldEast_To_HyruleCastleTop))]
-        [MemberData(nameof(HyruleCastleTop_To_HyruleCastleTopInverted))]
-        [MemberData(nameof(HyruleCastleTop_To_HyruleCastleTopStandardOpen))]
-        [MemberData(nameof(HyruleCastleTopInverted_To_AgahnimTowerEntrance))]
-        [MemberData(nameof(HyruleCastleTopStandardOpen_To_AgahnimTowerEntrance))]
-        [MemberData(nameof(HyruleCastleTopInverted_To_GanonHole))]
-        [MemberData(nameof(DarkWorldEastStandardOpen_To_GanonHole))]
-        [MemberData(nameof(LWLakeHyliaFlippers_To_ZoraArea))]
-        [MemberData(nameof(LWWitchAreaNotBunny_To_ZoraArea))]
-        [MemberData(nameof(CatfishArea_To_ZoraArea))]
-        [MemberData(nameof(LWLakeHyliaFakeFlippers_To_ZoraArea))]
-        [MemberData(nameof(LWLakeHyliaWaterWalk_To_ZoraArea))]
-        [MemberData(nameof(ZoraArea_To_ZoraLedge))]
-        [MemberData(nameof(LWLakeHyliaFlippers_To_WaterfallFairy))]
-        [MemberData(nameof(LWLakeHyliaFakeFlippers_To_WaterfallFairy))]
-        [MemberData(nameof(LWLakeHyliaWaterWalk_To_WaterfallFairy))]
-        [MemberData(nameof(WaterfallFairy_To_WaterfallFairyNotBunny))]
-        [MemberData(nameof(LightWorldNotBunny_To_LWWitchArea))]
-        [MemberData(nameof(ZoraArea_To_LWWitchArea))]
-        [MemberData(nameof(LWWitchArea_To_LWWitchAreaNotBunny))]
-        [MemberData(nameof(LWWitchArea_To_WitchsHut))]
-        [MemberData(nameof(LightWorld_To_Sahasrahla))]
-        [MemberData(nameof(LightWorldHammer_To_LWEastPortal))]
-        [MemberData(nameof(DWEastPortalInverted_To_LWEastPortal))]
-        [MemberData(nameof(LWEastPortal_To_LWEastPortalStandardOpen))]
-        [MemberData(nameof(LWEastPortal_To_LWEastPortalNotBunny))]
+        [MemberData(nameof(LightWorldToHyruleCastleTop))]
+        [MemberData(nameof(DarkWorldEastToHyruleCastleTop))]
+        [MemberData(nameof(HyruleCastleTopToHyruleCastleTopInverted))]
+        [MemberData(nameof(HyruleCastleTopToHyruleCastleTopStandardOpen))]
+        [MemberData(nameof(HyruleCastleTopInvertedToAgahnimTowerEntrance))]
+        [MemberData(nameof(HyruleCastleTopStandardOpenToAgahnimTowerEntrance))]
+        [MemberData(nameof(HyruleCastleTopInvertedToGanonHole))]
+        [MemberData(nameof(DarkWorldEastStandardOpenToGanonHole))]
+        [MemberData(nameof(LWLakeHyliaFlippersToZoraArea))]
+        [MemberData(nameof(LWWitchAreaNotBunnyToZoraArea))]
+        [MemberData(nameof(CatfishAreaToZoraArea))]
+        [MemberData(nameof(LWLakeHyliaFakeFlippersToZoraArea))]
+        [MemberData(nameof(LWLakeHyliaWaterWalkToZoraArea))]
+        [MemberData(nameof(ZoraAreaToZoraLedge))]
+        [MemberData(nameof(LWLakeHyliaFlippersToWaterfallFairy))]
+        [MemberData(nameof(LWLakeHyliaFakeFlippersToWaterfallFairy))]
+        [MemberData(nameof(LWLakeHyliaWaterWalkToWaterfallFairy))]
+        [MemberData(nameof(WaterfallFairyToWaterfallFairyNotBunny))]
+        [MemberData(nameof(LightWorldNotBunnyToLWWitchArea))]
+        [MemberData(nameof(ZoraAreaToLWWitchArea))]
+        [MemberData(nameof(LWWitchAreaToLWWitchAreaNotBunny))]
+        [MemberData(nameof(LWWitchAreaToWitchsHut))]
+        [MemberData(nameof(LightWorldToSahasrahla))]
+        [MemberData(nameof(LightWorldHammerToLWEastPortal))]
+        [MemberData(nameof(DWEastPortalInvertedToLWEastPortal))]
+        [MemberData(nameof(LWEastPortalToLWEastPortalStandardOpen))]
+        [MemberData(nameof(LWEastPortalToLWEastPortalNotBunny))]
         public override void Tests(
             ModeSaveData modeData, (ItemType, int)[] items, (PrizeType, int)[] prizes,
             (SequenceBreakType, bool)[] sequenceBreaks, RequirementNodeID[] accessibleNodes,
@@ -49,7 +49,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 modeData, items, prizes, sequenceBreaks, accessibleNodes, id, towerCrystalsKnown, expected);
         }
     
-        public static IEnumerable<object[]> LightWorld_To_HyruleCastleTop =>
+        public static IEnumerable<object[]> LightWorldToHyruleCastleTop =>
             new List<object[]>
             {
                 new object[]
@@ -61,7 +61,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.LightWorld
                     },
@@ -78,7 +78,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.LightWorld
                     },
@@ -95,7 +95,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.LightWorld
                     },
@@ -105,7 +105,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DarkWorldEast_To_HyruleCastleTop =>
+        public static IEnumerable<object[]> DarkWorldEastToHyruleCastleTop =>
             new List<object[]>
             {
                 new object[]
@@ -121,7 +121,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldEast
                     },
@@ -142,7 +142,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldEast
                     },
@@ -163,7 +163,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldEast
                     },
@@ -173,7 +173,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> HyruleCastleTop_To_HyruleCastleTopInverted =>
+        public static IEnumerable<object[]> HyruleCastleTopToHyruleCastleTopInverted =>
             new List<object[]>
             {
                 new object[]
@@ -185,7 +185,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.HyruleCastleTop
                     },
@@ -202,7 +202,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.HyruleCastleTop
                     },
@@ -212,7 +212,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> HyruleCastleTop_To_HyruleCastleTopStandardOpen =>
+        public static IEnumerable<object[]> HyruleCastleTopToHyruleCastleTopStandardOpen =>
             new List<object[]>
             {
                 new object[]
@@ -224,7 +224,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.HyruleCastleTop
                     },
@@ -241,7 +241,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.HyruleCastleTop
                     },
@@ -251,7 +251,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> HyruleCastleTopInverted_To_AgahnimTowerEntrance =>
+        public static IEnumerable<object[]> HyruleCastleTopInvertedToAgahnimTowerEntrance =>
             new List<object[]>
             {
                 new object[]
@@ -261,13 +261,13 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         (ItemType.TowerCrystals, 6)
                     },
-                    new (PrizeType, int)[]
+                    new[]
                     {
                         (PrizeType.RedCrystal, 0),
                         (PrizeType.Crystal, 0)
                     },
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.HyruleCastleTopInverted
                     },
@@ -282,13 +282,13 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         (ItemType.TowerCrystals, 0)
                     },
-                    new (PrizeType, int)[]
+                    new[]
                     {
                         (PrizeType.RedCrystal, 1),
                         (PrizeType.Crystal, 5)
                     },
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.HyruleCastleTopInverted
                     },
@@ -303,13 +303,13 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         (ItemType.TowerCrystals, 0)
                     },
-                    new (PrizeType, int)[]
+                    new[]
                     {
                         (PrizeType.RedCrystal, 2),
                         (PrizeType.Crystal, 4)
                     },
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.HyruleCastleTopInverted
                     },
@@ -324,13 +324,13 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         (ItemType.TowerCrystals, 7)
                     },
-                    new (PrizeType, int)[]
+                    new[]
                     {
                         (PrizeType.RedCrystal, 1),
                         (PrizeType.Crystal, 5)
                     },
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.HyruleCastleTopInverted
                     },
@@ -345,13 +345,13 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         (ItemType.TowerCrystals, 7)
                     },
-                    new (PrizeType, int)[]
+                    new[]
                     {
                         (PrizeType.RedCrystal, 2),
                         (PrizeType.Crystal, 4)
                     },
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.HyruleCastleTopInverted
                     },
@@ -366,13 +366,13 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         (ItemType.TowerCrystals, 7)
                     },
-                    new (PrizeType, int)[]
+                    new[]
                     {
                         (PrizeType.RedCrystal, 2),
                         (PrizeType.Crystal, 5)
                     },
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.HyruleCastleTopInverted
                     },
@@ -387,13 +387,13 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         (ItemType.TowerCrystals, 7)
                     },
-                    new (PrizeType, int)[]
+                    new[]
                     {
                         (PrizeType.RedCrystal, 0),
                         (PrizeType.Crystal, 0)
                     },
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.HyruleCastleTopInverted
                     },
@@ -403,13 +403,13 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> HyruleCastleTopStandardOpen_To_AgahnimTowerEntrance =>
+        public static IEnumerable<object[]> HyruleCastleTopStandardOpenToAgahnimTowerEntrance =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 2),
                         (ItemType.Hammer, 1),
@@ -417,7 +417,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.HyruleCastleTopStandardOpen
                     },
@@ -428,7 +428,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 0),
                         (ItemType.Hammer, 1),
@@ -436,7 +436,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.HyruleCastleTopStandardOpen
                     },
@@ -447,7 +447,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 3),
                         (ItemType.Hammer, 0),
@@ -455,7 +455,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.HyruleCastleTopStandardOpen
                     },
@@ -466,7 +466,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Sword, 1),
                         (ItemType.Hammer, 0),
@@ -474,7 +474,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.HyruleCastleTopStandardOpen
                     },
@@ -484,7 +484,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> HyruleCastleTopInverted_To_GanonHole =>
+        public static IEnumerable<object[]> HyruleCastleTopInvertedToGanonHole =>
             new List<object[]>
             {
                 new object[]
@@ -496,7 +496,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (PrizeType.Aga2, 0)
                     },
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.HyruleCastleTopInverted
                     },
@@ -513,7 +513,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (PrizeType.Aga2, 1)
                     },
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.HyruleCastleTopInverted
                     },
@@ -523,7 +523,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DarkWorldEastStandardOpen_To_GanonHole =>
+        public static IEnumerable<object[]> DarkWorldEastStandardOpenToGanonHole =>
             new List<object[]>
             {
                 new object[]
@@ -535,7 +535,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (PrizeType.Aga2, 0)
                     },
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldEastStandardOpen
                     },
@@ -552,7 +552,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (PrizeType.Aga2, 1)
                     },
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldEastStandardOpen
                     },
@@ -562,7 +562,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> LWLakeHyliaFlippers_To_ZoraArea =>
+        public static IEnumerable<object[]> LWLakeHyliaFlippersToZoraArea =>
             new List<object[]>
             {
                 new object[]
@@ -582,7 +582,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.LWLakeHyliaFlippers
                     },
@@ -592,7 +592,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> LWWitchAreaNotBunny_To_ZoraArea =>
+        public static IEnumerable<object[]> LWWitchAreaNotBunnyToZoraArea =>
             new List<object[]>
             {
                 new object[]
@@ -604,7 +604,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.LWWitchAreaNotBunny
                     },
@@ -621,7 +621,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.LWWitchAreaNotBunny
                     },
@@ -631,7 +631,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> CatfishArea_To_ZoraArea =>
+        public static IEnumerable<object[]> CatfishAreaToZoraArea =>
             new List<object[]>
             {
                 new object[]
@@ -646,7 +646,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.CatfishArea
                     },
@@ -666,7 +666,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.CatfishArea
                     },
@@ -686,7 +686,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.CatfishArea
                     },
@@ -696,7 +696,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> LWLakeHyliaFakeFlippers_To_ZoraArea =>
+        public static IEnumerable<object[]> LWLakeHyliaFakeFlippersToZoraArea =>
             new List<object[]>
             {
                 new object[]
@@ -716,7 +716,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.LWLakeHyliaFakeFlippers
                     },
@@ -726,7 +726,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> LWLakeHyliaWaterWalk_To_ZoraArea =>
+        public static IEnumerable<object[]> LWLakeHyliaWaterWalkToZoraArea =>
             new List<object[]>
             {
                 new object[]
@@ -746,7 +746,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.LWLakeHyliaWaterWalk
                     },
@@ -756,7 +756,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> ZoraArea_To_ZoraLedge =>
+        public static IEnumerable<object[]> ZoraAreaToZoraLedge =>
             new List<object[]>
             {
                 new object[]
@@ -765,7 +765,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         WorldState = WorldState.Inverted
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Flippers, 0),
                         (ItemType.Bow, 0),
@@ -775,7 +775,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Boots, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersSplashDeletion, true),
                         (SequenceBreakType.WaterWalk, true)
@@ -791,7 +791,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         WorldState = WorldState.StandardOpen
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Flippers, 0),
                         (ItemType.Bow, 0),
@@ -801,7 +801,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Boots, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersSplashDeletion, true),
                         (SequenceBreakType.WaterWalk, true)
@@ -817,7 +817,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         WorldState = WorldState.StandardOpen
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Flippers, 0),
                         (ItemType.Bow, 1),
@@ -827,12 +827,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Boots, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersSplashDeletion, false),
                         (SequenceBreakType.WaterWalk, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.ZoraArea
                     },
@@ -846,7 +846,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         WorldState = WorldState.StandardOpen
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Flippers, 0),
                         (ItemType.Bow, 0),
@@ -856,12 +856,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Boots, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersSplashDeletion, false),
                         (SequenceBreakType.WaterWalk, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.ZoraArea
                     },
@@ -875,7 +875,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         WorldState = WorldState.StandardOpen
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Flippers, 0),
                         (ItemType.Bow, 0),
@@ -885,12 +885,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Boots, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersSplashDeletion, false),
                         (SequenceBreakType.WaterWalk, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.ZoraArea
                     },
@@ -904,7 +904,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         WorldState = WorldState.StandardOpen
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Flippers, 0),
                         (ItemType.Bow, 0),
@@ -914,12 +914,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Boots, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersSplashDeletion, false),
                         (SequenceBreakType.WaterWalk, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.ZoraArea
                     },
@@ -933,7 +933,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         WorldState = WorldState.StandardOpen
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Flippers, 0),
                         (ItemType.Bow, 0),
@@ -943,12 +943,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Boots, 1)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersSplashDeletion, true),
                         (SequenceBreakType.WaterWalk, false)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.ZoraArea
                     },
@@ -962,7 +962,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         WorldState = WorldState.Inverted
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Flippers, 0),
                         (ItemType.Bow, 0),
@@ -972,12 +972,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Boots, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersSplashDeletion, true),
                         (SequenceBreakType.WaterWalk, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.ZoraArea
                     },
@@ -991,7 +991,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         WorldState = WorldState.Inverted
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Flippers, 0),
                         (ItemType.Bow, 1),
@@ -1001,12 +1001,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Boots, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersSplashDeletion, false),
                         (SequenceBreakType.WaterWalk, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.ZoraArea
                     },
@@ -1020,7 +1020,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         WorldState = WorldState.Inverted
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Flippers, 0),
                         (ItemType.Bow, 0),
@@ -1030,12 +1030,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Boots, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersSplashDeletion, false),
                         (SequenceBreakType.WaterWalk, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.ZoraArea
                     },
@@ -1049,7 +1049,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         WorldState = WorldState.Inverted
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Flippers, 0),
                         (ItemType.Bow, 0),
@@ -1059,12 +1059,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Boots, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersSplashDeletion, false),
                         (SequenceBreakType.WaterWalk, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.ZoraArea
                     },
@@ -1078,7 +1078,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         WorldState = WorldState.Inverted
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Flippers, 0),
                         (ItemType.Bow, 0),
@@ -1088,12 +1088,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Boots, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersSplashDeletion, false),
                         (SequenceBreakType.WaterWalk, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.ZoraArea
                     },
@@ -1107,7 +1107,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         WorldState = WorldState.Inverted
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Flippers, 0),
                         (ItemType.Bow, 0),
@@ -1117,12 +1117,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Boots, 1)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersSplashDeletion, true),
                         (SequenceBreakType.WaterWalk, false)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.ZoraArea
                     },
@@ -1136,7 +1136,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         WorldState = WorldState.StandardOpen
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Flippers, 0),
                         (ItemType.Bow, 1),
@@ -1146,12 +1146,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Boots, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersSplashDeletion, true),
                         (SequenceBreakType.WaterWalk, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.ZoraArea
                     },
@@ -1165,7 +1165,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         WorldState = WorldState.StandardOpen
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Flippers, 0),
                         (ItemType.Bow, 0),
@@ -1175,12 +1175,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Boots, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersSplashDeletion, true),
                         (SequenceBreakType.WaterWalk, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.ZoraArea
                     },
@@ -1194,7 +1194,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         WorldState = WorldState.StandardOpen
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Flippers, 0),
                         (ItemType.Bow, 0),
@@ -1204,12 +1204,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Boots, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersSplashDeletion, true),
                         (SequenceBreakType.WaterWalk, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.ZoraArea
                     },
@@ -1223,7 +1223,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         WorldState = WorldState.StandardOpen
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Flippers, 0),
                         (ItemType.Bow, 0),
@@ -1233,12 +1233,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Boots, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersSplashDeletion, true),
                         (SequenceBreakType.WaterWalk, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.ZoraArea
                     },
@@ -1252,7 +1252,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         WorldState = WorldState.StandardOpen
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Flippers, 0),
                         (ItemType.Bow, 0),
@@ -1262,12 +1262,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Boots, 1)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersSplashDeletion, true),
                         (SequenceBreakType.WaterWalk, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.ZoraArea
                     },
@@ -1281,7 +1281,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         WorldState = WorldState.Inverted
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Flippers, 0),
                         (ItemType.Bow, 1),
@@ -1291,12 +1291,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Boots, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersSplashDeletion, false),
                         (SequenceBreakType.WaterWalk, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.ZoraArea
                     },
@@ -1310,7 +1310,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         WorldState = WorldState.Inverted
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Flippers, 0),
                         (ItemType.Bow, 0),
@@ -1320,12 +1320,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Boots, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersSplashDeletion, false),
                         (SequenceBreakType.WaterWalk, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.ZoraArea
                     },
@@ -1339,7 +1339,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         WorldState = WorldState.Inverted
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Flippers, 0),
                         (ItemType.Bow, 0),
@@ -1349,12 +1349,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Boots, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersSplashDeletion, false),
                         (SequenceBreakType.WaterWalk, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.ZoraArea
                     },
@@ -1368,7 +1368,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         WorldState = WorldState.Inverted
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Flippers, 0),
                         (ItemType.Bow, 0),
@@ -1378,12 +1378,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Boots, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersSplashDeletion, true),
                         (SequenceBreakType.WaterWalk, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.ZoraArea
                     },
@@ -1397,7 +1397,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         WorldState = WorldState.Inverted
                     },
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Flippers, 0),
                         (ItemType.Bow, 0),
@@ -1407,12 +1407,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Boots, 1)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.FakeFlippersSplashDeletion, true),
                         (SequenceBreakType.WaterWalk, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.ZoraArea
                     },
@@ -1422,7 +1422,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 },
             };
     
-        public static IEnumerable<object[]> LWLakeHyliaFlippers_To_WaterfallFairy =>
+        public static IEnumerable<object[]> LWLakeHyliaFlippersToWaterfallFairy =>
             new List<object[]>
             {
                 new object[]
@@ -1442,7 +1442,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.LWLakeHyliaFlippers
                     },
@@ -1452,7 +1452,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> LWLakeHyliaFakeFlippers_To_WaterfallFairy =>
+        public static IEnumerable<object[]> LWLakeHyliaFakeFlippersToWaterfallFairy =>
             new List<object[]>
             {
                 new object[]
@@ -1464,7 +1464,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.LWLakeHyliaFakeFlippers
                     },
@@ -1481,7 +1481,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.LWLakeHyliaFakeFlippers
                     },
@@ -1491,7 +1491,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> LWLakeHyliaWaterWalk_To_WaterfallFairy =>
+        public static IEnumerable<object[]> LWLakeHyliaWaterWalkToWaterfallFairy =>
             new List<object[]>
             {
                 new object[]
@@ -1511,7 +1511,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.LWLakeHyliaWaterWalk
                     },
@@ -1521,7 +1521,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> WaterfallFairy_To_WaterfallFairyNotBunny =>
+        public static IEnumerable<object[]> WaterfallFairyToWaterfallFairyNotBunny =>
             new List<object[]>
             {
                 new object[]
@@ -1553,7 +1553,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.WaterfallFairy
                     },
@@ -1573,7 +1573,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.WaterfallFairy
                     },
@@ -1593,7 +1593,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.WaterfallFairy
                     },
@@ -1603,7 +1603,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> LightWorldNotBunny_To_LWWitchArea =>
+        public static IEnumerable<object[]> LightWorldNotBunnyToLWWitchArea =>
             new List<object[]>
             {
                 new object[]
@@ -1643,7 +1643,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.LightWorldNotBunny
                     },
@@ -1653,7 +1653,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> ZoraArea_To_LWWitchArea =>
+        public static IEnumerable<object[]> ZoraAreaToLWWitchArea =>
             new List<object[]>
             {
                 new object[]
@@ -1668,7 +1668,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.ZoraArea
                     },
@@ -1688,7 +1688,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.ZoraArea
                     },
@@ -1698,7 +1698,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> LWWitchArea_To_LWWitchAreaNotBunny =>
+        public static IEnumerable<object[]> LWWitchAreaToLWWitchAreaNotBunny =>
             new List<object[]>
             {
                 new object[]
@@ -1713,7 +1713,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.LWWitchArea
                     },
@@ -1750,7 +1750,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.LWWitchArea
                     },
@@ -1760,7 +1760,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> LWWitchArea_To_WitchsHut =>
+        public static IEnumerable<object[]> LWWitchAreaToWitchsHut =>
             new List<object[]>
             {
                 new object[]
@@ -1772,7 +1772,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.LWWitchArea
                     },
@@ -1789,7 +1789,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.LWWitchArea
                     },
@@ -1799,7 +1799,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> LightWorld_To_Sahasrahla =>
+        public static IEnumerable<object[]> LightWorldToSahasrahla =>
             new List<object[]>
             {
                 new object[]
@@ -1811,7 +1811,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (PrizeType.GreenPendant, 0)
                     },
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.LightWorld
                     },
@@ -1828,7 +1828,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (PrizeType.GreenPendant, 1)
                     },
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.LightWorld
                     },
@@ -1838,7 +1838,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> LightWorldHammer_To_LWEastPortal =>
+        public static IEnumerable<object[]> LightWorldHammerToLWEastPortal =>
             new List<object[]>
             {
                 new object[]
@@ -1858,7 +1858,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.LightWorldHammer
                     },
@@ -1868,7 +1868,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DWEastPortalInverted_To_LWEastPortal =>
+        public static IEnumerable<object[]> DWEastPortalInvertedToLWEastPortal =>
             new List<object[]>
             {
                 new object[]
@@ -1880,7 +1880,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DWEastPortalInverted
                     },
@@ -1897,7 +1897,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DWEastPortalInverted
                     },
@@ -1907,7 +1907,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> LWEastPortal_To_LWEastPortalStandardOpen =>
+        public static IEnumerable<object[]> LWEastPortalToLWEastPortalStandardOpen =>
             new List<object[]>
             {
                 new object[]
@@ -1919,7 +1919,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.LWEastPortal
                     },
@@ -1936,7 +1936,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.LWEastPortal
                     },
@@ -1946,7 +1946,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> LWEastPortal_To_LWEastPortalNotBunny =>
+        public static IEnumerable<object[]> LWEastPortalToLWEastPortalNotBunny =>
             new List<object[]>
             {
                 new object[]
@@ -1978,7 +1978,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.LWEastPortal
                     },
@@ -1998,7 +1998,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.LWEastPortal
                     },
@@ -2018,7 +2018,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.LWEastPortal
                     },

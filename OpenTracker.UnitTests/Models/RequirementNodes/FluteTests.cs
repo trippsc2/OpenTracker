@@ -13,12 +13,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
     public class FluteTests : RequirementNodeTestBase
     {
         [Theory]
-        [MemberData(nameof(Start_To_Flute))]
-        [MemberData(nameof(Flute_To_FluteActivated))]
-        [MemberData(nameof(LightWorldNotBunny_To_LightWorldFlute))]
-        [MemberData(nameof(LightWorldFlute_To_FluteActivated))]
-        [MemberData(nameof(FluteActivated_To_FluteInnverted))]
-        [MemberData(nameof(FluteActivated_To_FluteStandardOpen))]
+        [MemberData(nameof(StartToFlute))]
+        [MemberData(nameof(FluteToFluteActivated))]
+        [MemberData(nameof(LightWorldNotBunnyToLightWorldFlute))]
+        [MemberData(nameof(LightWorldFluteToFluteActivated))]
+        [MemberData(nameof(FluteActivatedToFluteInnverted))]
+        [MemberData(nameof(FluteActivatedToFluteStandardOpen))]
         public override void Tests(
             ModeSaveData modeData, (ItemType, int)[] items, (PrizeType, int)[] prizes,
             (SequenceBreakType, bool)[] sequenceBreaks, RequirementNodeID[] accessibleNodes,
@@ -28,7 +28,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 modeData, items, prizes, sequenceBreaks, accessibleNodes, id, towerCrystalsKnown, expected);
         }
     
-        public static IEnumerable<object[]> Start_To_Flute =>
+        public static IEnumerable<object[]> StartToFlute =>
             new List<object[]>
             {
                 new object[]
@@ -40,7 +40,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.Start
                     },
@@ -57,7 +57,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.Start
                     },
@@ -67,7 +67,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> Flute_To_FluteActivated =>
+        public static IEnumerable<object[]> FluteToFluteActivated =>
             new List<object[]>
             {
                 new object[]
@@ -79,7 +79,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.Flute
                     },
@@ -96,7 +96,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.Flute
                     },
@@ -106,7 +106,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> LightWorldNotBunny_To_LightWorldFlute =>
+        public static IEnumerable<object[]> LightWorldNotBunnyToLightWorldFlute =>
             new List<object[]>
             {
                 new object[]
@@ -118,7 +118,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.LightWorldNotBunny
                     },
@@ -135,7 +135,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.LightWorldNotBunny
                     },
@@ -145,7 +145,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> LightWorldFlute_To_FluteActivated =>
+        public static IEnumerable<object[]> LightWorldFluteToFluteActivated =>
             new List<object[]>
             {
                 new object[]
@@ -165,7 +165,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.LightWorldFlute
                     },
@@ -175,7 +175,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> FluteActivated_To_FluteInnverted =>
+        public static IEnumerable<object[]> FluteActivatedToFluteInnverted =>
             new List<object[]>
             {
                 new object[]
@@ -187,7 +187,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.FluteActivated
                     },
@@ -204,7 +204,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.FluteActivated
                     },
@@ -214,7 +214,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> FluteActivated_To_FluteStandardOpen =>
+        public static IEnumerable<object[]> FluteActivatedToFluteStandardOpen =>
             new List<object[]>
             {
                 new object[]
@@ -226,7 +226,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.FluteActivated
                     },
@@ -243,7 +243,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.FluteActivated
                     },

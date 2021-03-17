@@ -13,29 +13,29 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
     public class DWDeathMountainWestTests : RequirementNodeTestBase
     {
         [Theory]
-        [MemberData(nameof(FluteInverted_To_DarkDeathMountainWestBottom))]
-        [MemberData(nameof(DeathMountainWestBottom_To_DarkDeathMountainWestBottom))]
-        [MemberData(nameof(DarkDeathMountainTop_To_DarkDeathMountainWestBottom))]
-        [MemberData(nameof(DarkDeathMountainWestBottom_To_DarkDeathMountainWestBottomInverted))]
-        [MemberData(nameof(DarkDeathMountainWestBottom_To_DarkDeathMountainWestBottomNonEntrance))]
-        [MemberData(nameof(DarkDeathMountainWestBottom_To_DarkDeathMountainWestBottomMirror))]
-        [MemberData(nameof(DarkDeathMountainWestBottom_To_DarkDeathMountainWestBottomNotBunny))]
-        [MemberData(nameof(DarkDeathMountainWestBottomNotBunny_To_SpikeCavePastHammerBlocks))]
-        [MemberData(nameof(SpikeCavePastHammerBlocks_To_SpikeCavePastSpikes))]
-        [MemberData(nameof(SpikeCavePastSpikes_To_SpikeCaveChest))]
-        [MemberData(nameof(DeathMountainWestTop_To_DarkDeathMountainTop))]
-        [MemberData(nameof(DeathMountainEastTop_To_DarkDeathMountainTop))]
-        [MemberData(nameof(DarkDeathMountainWestBottomInverted_To_DarkDeathMountainTop))]
-        [MemberData(nameof(SuperBunnyCave_To_DarkDeathMountainTop))]
-        [MemberData(nameof(DWFloatingIsland_To_DarkDeathMountainTop))]
-        [MemberData(nameof(DWTurtleRockTop_To_DarkDeathMountainTop))]
-        [MemberData(nameof(DarkDeathMountainTop_To_DarkDeathMountainTopInverted))]
-        [MemberData(nameof(DarkDeathMountainTop_To_DarkDeathMountainTopStandardOpen))]
-        [MemberData(nameof(DarkDeathMountainTop_To_DarkDeathMountainTopMirror))]
-        [MemberData(nameof(DarkDeathMountainTop_To_DarkDeathMountainTopNotBunny))]
-        [MemberData(nameof(DarkDeathMountainTopInverted_To_GanonsTowerEntrance))]
-        [MemberData(nameof(DarkDeathMountainTopStandardOpen_To_GanonsTowerEntrance))]
-        [MemberData(nameof(GanonsTowerEntrance_To_GanonsTowerEntranceStandardOpen))]
+        [MemberData(nameof(FluteInvertedToDarkDeathMountainWestBottom))]
+        [MemberData(nameof(DeathMountainWestBottomToDarkDeathMountainWestBottom))]
+        [MemberData(nameof(DarkDeathMountainTopToDarkDeathMountainWestBottom))]
+        [MemberData(nameof(DarkDeathMountainWestBottomToDarkDeathMountainWestBottomInverted))]
+        [MemberData(nameof(DarkDeathMountainWestBottomToDarkDeathMountainWestBottomNonEntrance))]
+        [MemberData(nameof(DarkDeathMountainWestBottomToDarkDeathMountainWestBottomMirror))]
+        [MemberData(nameof(DarkDeathMountainWestBottomToDarkDeathMountainWestBottomNotBunny))]
+        [MemberData(nameof(DarkDeathMountainWestBottomNotBunnyToSpikeCavePastHammerBlocks))]
+        [MemberData(nameof(SpikeCavePastHammerBlocksToSpikeCavePastSpikes))]
+        [MemberData(nameof(SpikeCavePastSpikesToSpikeCaveChest))]
+        [MemberData(nameof(DeathMountainWestTopToDarkDeathMountainTop))]
+        [MemberData(nameof(DeathMountainEastTopToDarkDeathMountainTop))]
+        [MemberData(nameof(DarkDeathMountainWestBottomInvertedToDarkDeathMountainTop))]
+        [MemberData(nameof(SuperBunnyCaveToDarkDeathMountainTop))]
+        [MemberData(nameof(DWFloatingIslandToDarkDeathMountainTop))]
+        [MemberData(nameof(DWTurtleRockTopToDarkDeathMountainTop))]
+        [MemberData(nameof(DarkDeathMountainTopToDarkDeathMountainTopInverted))]
+        [MemberData(nameof(DarkDeathMountainTopToDarkDeathMountainTopStandardOpen))]
+        [MemberData(nameof(DarkDeathMountainTopToDarkDeathMountainTopMirror))]
+        [MemberData(nameof(DarkDeathMountainTopToDarkDeathMountainTopNotBunny))]
+        [MemberData(nameof(DarkDeathMountainTopInvertedToGanonsTowerEntrance))]
+        [MemberData(nameof(DarkDeathMountainTopStandardOpenToGanonsTowerEntrance))]
+        [MemberData(nameof(GanonsTowerEntranceToGanonsTowerEntranceStandardOpen))]
         public override void Tests(
             ModeSaveData modeData, (ItemType, int)[] items, (PrizeType, int)[] prizes,
             (SequenceBreakType, bool)[] sequenceBreaks, RequirementNodeID[] accessibleNodes,
@@ -45,7 +45,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 modeData, items, prizes, sequenceBreaks, accessibleNodes, id, towerCrystalsKnown, expected);
         }
     
-        public static IEnumerable<object[]> FluteInverted_To_DarkDeathMountainWestBottom =>
+        public static IEnumerable<object[]> FluteInvertedToDarkDeathMountainWestBottom =>
             new List<object[]>
             {
                 new object[]
@@ -65,7 +65,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.FluteInverted
                     },
@@ -75,7 +75,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DeathMountainWestBottom_To_DarkDeathMountainWestBottom =>
+        public static IEnumerable<object[]> DeathMountainWestBottomToDarkDeathMountainWestBottom =>
             new List<object[]>
             {
                 new object[]
@@ -90,7 +90,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DeathMountainWestBottom
                     },
@@ -110,7 +110,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DeathMountainWestBottom
                     },
@@ -130,7 +130,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DeathMountainWestBottom
                     },
@@ -140,7 +140,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DarkDeathMountainTop_To_DarkDeathMountainWestBottom =>
+        public static IEnumerable<object[]> DarkDeathMountainTopToDarkDeathMountainWestBottom =>
             new List<object[]>
             {
                 new object[]
@@ -160,7 +160,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkDeathMountainTop
                     },
@@ -170,7 +170,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DarkDeathMountainWestBottom_To_DarkDeathMountainWestBottomInverted =>
+        public static IEnumerable<object[]> DarkDeathMountainWestBottomToDarkDeathMountainWestBottomInverted =>
             new List<object[]>
             {
                 new object[]
@@ -182,7 +182,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkDeathMountainWestBottom
                     },
@@ -199,7 +199,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkDeathMountainWestBottom
                     },
@@ -209,7 +209,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DarkDeathMountainWestBottom_To_DarkDeathMountainWestBottomNonEntrance =>
+        public static IEnumerable<object[]> DarkDeathMountainWestBottomToDarkDeathMountainWestBottomNonEntrance =>
             new List<object[]>
             {
                 new object[]
@@ -221,7 +221,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkDeathMountainWestBottom
                     },
@@ -238,7 +238,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkDeathMountainWestBottom
                     },
@@ -255,7 +255,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkDeathMountainWestBottom
                     },
@@ -265,7 +265,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DarkDeathMountainWestBottom_To_DarkDeathMountainWestBottomMirror =>
+        public static IEnumerable<object[]> DarkDeathMountainWestBottomToDarkDeathMountainWestBottomMirror =>
             new List<object[]>
             {
                 new object[]
@@ -280,7 +280,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkDeathMountainWestBottom
                     },
@@ -300,7 +300,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkDeathMountainWestBottom
                     },
@@ -320,7 +320,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkDeathMountainWestBottom
                     },
@@ -330,7 +330,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DarkDeathMountainWestBottom_To_DarkDeathMountainWestBottomNotBunny =>
+        public static IEnumerable<object[]> DarkDeathMountainWestBottomToDarkDeathMountainWestBottomNotBunny =>
             new List<object[]>
             {
                 new object[]
@@ -345,7 +345,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkDeathMountainWestBottom
                     },
@@ -382,7 +382,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkDeathMountainWestBottom
                     },
@@ -402,7 +402,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkDeathMountainWestBottom
                     },
@@ -412,7 +412,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DarkDeathMountainWestBottomNotBunny_To_SpikeCavePastHammerBlocks =>
+        public static IEnumerable<object[]> DarkDeathMountainWestBottomNotBunnyToSpikeCavePastHammerBlocks =>
             new List<object[]>
             {
                 new object[]
@@ -424,7 +424,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkDeathMountainWestBottomNotBunny
                     },
@@ -441,7 +441,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkDeathMountainWestBottomNotBunny
                     },
@@ -451,13 +451,13 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> SpikeCavePastHammerBlocks_To_SpikeCavePastSpikes =>
+        public static IEnumerable<object[]> SpikeCavePastHammerBlocksToSpikeCavePastSpikes =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.CaneOfByrna, 1),
                         (ItemType.Cape, 1),
@@ -474,7 +474,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.CaneOfByrna, 0),
                         (ItemType.Cape, 1),
@@ -483,7 +483,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.SpikeCavePastHammerBlocks
                     },
@@ -494,7 +494,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.CaneOfByrna, 1),
                         (ItemType.Cape, 0),
@@ -503,7 +503,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.SpikeCavePastHammerBlocks
                     },
@@ -514,7 +514,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.CaneOfByrna, 0),
                         (ItemType.Cape, 1),
@@ -523,7 +523,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.SpikeCavePastHammerBlocks
                     },
@@ -534,7 +534,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.CaneOfByrna, 0),
                         (ItemType.Cape, 1),
@@ -543,7 +543,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.SpikeCavePastHammerBlocks
                     },
@@ -553,7 +553,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> SpikeCavePastSpikes_To_SpikeCaveChest =>
+        public static IEnumerable<object[]> SpikeCavePastSpikesToSpikeCaveChest =>
             new List<object[]>
             {
                 new object[]
@@ -565,7 +565,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.SpikeCavePastSpikes
                     },
@@ -582,7 +582,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.SpikeCavePastSpikes
                     },
@@ -592,7 +592,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DeathMountainWestTop_To_DarkDeathMountainTop =>
+        public static IEnumerable<object[]> DeathMountainWestTopToDarkDeathMountainTop =>
             new List<object[]>
             {
                 new object[]
@@ -607,7 +607,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DeathMountainWestTop
                     },
@@ -627,7 +627,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DeathMountainWestTop
                     },
@@ -647,7 +647,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DeathMountainWestTop
                     },
@@ -657,7 +657,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DeathMountainEastTop_To_DarkDeathMountainTop =>
+        public static IEnumerable<object[]> DeathMountainEastTopToDarkDeathMountainTop =>
             new List<object[]>
             {
                 new object[]
@@ -672,7 +672,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DeathMountainEastTop
                     },
@@ -692,7 +692,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DeathMountainEastTop
                     },
@@ -712,7 +712,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DeathMountainEastTop
                     },
@@ -722,7 +722,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DarkDeathMountainWestBottomInverted_To_DarkDeathMountainTop =>
+        public static IEnumerable<object[]> DarkDeathMountainWestBottomInvertedToDarkDeathMountainTop =>
             new List<object[]>
             {
                 new object[]
@@ -742,7 +742,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkDeathMountainWestBottomInverted
                     },
@@ -752,7 +752,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> SuperBunnyCave_To_DarkDeathMountainTop =>
+        public static IEnumerable<object[]> SuperBunnyCaveToDarkDeathMountainTop =>
             new List<object[]>
             {
                 new object[]
@@ -772,7 +772,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.SuperBunnyCave
                     },
@@ -782,7 +782,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DWFloatingIsland_To_DarkDeathMountainTop =>
+        public static IEnumerable<object[]> DWFloatingIslandToDarkDeathMountainTop =>
             new List<object[]>
             {
                 new object[]
@@ -802,7 +802,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DWFloatingIsland
                     },
@@ -812,7 +812,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DWTurtleRockTop_To_DarkDeathMountainTop =>
+        public static IEnumerable<object[]> DWTurtleRockTopToDarkDeathMountainTop =>
             new List<object[]>
             {
                 new object[]
@@ -832,7 +832,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DWTurtleRockTop
                     },
@@ -842,7 +842,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DarkDeathMountainTop_To_DarkDeathMountainTopInverted =>
+        public static IEnumerable<object[]> DarkDeathMountainTopToDarkDeathMountainTopInverted =>
             new List<object[]>
             {
                 new object[]
@@ -854,7 +854,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkDeathMountainTop
                     },
@@ -871,7 +871,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkDeathMountainTop
                     },
@@ -881,7 +881,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DarkDeathMountainTop_To_DarkDeathMountainTopStandardOpen =>
+        public static IEnumerable<object[]> DarkDeathMountainTopToDarkDeathMountainTopStandardOpen =>
             new List<object[]>
             {
                 new object[]
@@ -893,7 +893,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkDeathMountainTop
                     },
@@ -910,7 +910,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkDeathMountainTop
                     },
@@ -920,7 +920,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DarkDeathMountainTop_To_DarkDeathMountainTopMirror =>
+        public static IEnumerable<object[]> DarkDeathMountainTopToDarkDeathMountainTopMirror =>
             new List<object[]>
             {
                 new object[]
@@ -935,7 +935,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkDeathMountainTop
                     },
@@ -955,7 +955,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkDeathMountainTop
                     },
@@ -975,7 +975,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkDeathMountainTop
                     },
@@ -985,7 +985,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DarkDeathMountainTop_To_DarkDeathMountainTopNotBunny =>
+        public static IEnumerable<object[]> DarkDeathMountainTopToDarkDeathMountainTopNotBunny =>
             new List<object[]>
             {
                 new object[]
@@ -1000,7 +1000,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkDeathMountainTop
                     },
@@ -1037,7 +1037,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkDeathMountainTop
                     },
@@ -1057,7 +1057,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkDeathMountainTop
                     },
@@ -1067,7 +1067,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DarkDeathMountainTopInverted_To_GanonsTowerEntrance =>
+        public static IEnumerable<object[]> DarkDeathMountainTopInvertedToGanonsTowerEntrance =>
             new List<object[]>
             {
                 new object[]
@@ -1087,7 +1087,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkDeathMountainTopInverted
                     },
@@ -1097,7 +1097,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DarkDeathMountainTopStandardOpen_To_GanonsTowerEntrance =>
+        public static IEnumerable<object[]> DarkDeathMountainTopStandardOpenToGanonsTowerEntrance =>
             new List<object[]>
             {
                 new object[]
@@ -1107,13 +1107,13 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         (ItemType.TowerCrystals, 6)
                     },
-                    new (PrizeType, int)[]
+                    new[]
                     {
                         (PrizeType.RedCrystal, 0),
                         (PrizeType.Crystal, 0)
                     },
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkDeathMountainTopStandardOpen
                     },
@@ -1128,13 +1128,13 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         (ItemType.TowerCrystals, 0)
                     },
-                    new (PrizeType, int)[]
+                    new[]
                     {
                         (PrizeType.RedCrystal, 1),
                         (PrizeType.Crystal, 5)
                     },
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkDeathMountainTopStandardOpen
                     },
@@ -1149,13 +1149,13 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         (ItemType.TowerCrystals, 0)
                     },
-                    new (PrizeType, int)[]
+                    new[]
                     {
                         (PrizeType.RedCrystal, 2),
                         (PrizeType.Crystal, 4)
                     },
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkDeathMountainTopStandardOpen
                     },
@@ -1170,13 +1170,13 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         (ItemType.TowerCrystals, 7)
                     },
-                    new (PrizeType, int)[]
+                    new[]
                     {
                         (PrizeType.RedCrystal, 1),
                         (PrizeType.Crystal, 5)
                     },
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkDeathMountainTopStandardOpen
                     },
@@ -1191,13 +1191,13 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         (ItemType.TowerCrystals, 7)
                     },
-                    new (PrizeType, int)[]
+                    new[]
                     {
                         (PrizeType.RedCrystal, 2),
                         (PrizeType.Crystal, 4)
                     },
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkDeathMountainTopStandardOpen
                     },
@@ -1212,13 +1212,13 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         (ItemType.TowerCrystals, 7)
                     },
-                    new (PrizeType, int)[]
+                    new[]
                     {
                         (PrizeType.RedCrystal, 2),
                         (PrizeType.Crystal, 5)
                     },
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkDeathMountainTopStandardOpen
                     },
@@ -1233,13 +1233,13 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         (ItemType.TowerCrystals, 7)
                     },
-                    new (PrizeType, int)[]
+                    new[]
                     {
                         (PrizeType.RedCrystal, 0),
                         (PrizeType.Crystal, 0)
                     },
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkDeathMountainTopStandardOpen
                     },
@@ -1249,7 +1249,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> GanonsTowerEntrance_To_GanonsTowerEntranceStandardOpen =>
+        public static IEnumerable<object[]> GanonsTowerEntranceToGanonsTowerEntranceStandardOpen =>
             new List<object[]>
             {
                 new object[]
@@ -1261,7 +1261,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.GanonsTowerEntrance
                     },
@@ -1278,7 +1278,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.GanonsTowerEntrance
                     },

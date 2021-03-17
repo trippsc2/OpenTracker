@@ -15,20 +15,20 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
     public class EPTests : DungeonNodeTestBase
     {
         [Theory]
-        [MemberData(nameof(EPEntry_To_EP))]
-        [MemberData(nameof(EPPastBigKeyDoor_To_EP))]
-        [MemberData(nameof(EP_To_EPBigChest))]
-        [MemberData(nameof(EP_To_EPRightDarkRoom))]
-        [MemberData(nameof(EPPastRightKeyDoor_To_EPRightDarkRoom))]
-        [MemberData(nameof(EPRightDarkRoom_To_EPRightKeyDoor))]
-        [MemberData(nameof(EPPastRightKeyDoor_To_EPRightKeyDoor))]
-        [MemberData(nameof(EPRightDarkRoom_To_EPPastRightKeyDoor))]
-        [MemberData(nameof(EP_To_EPBigKeyDoor))]
-        [MemberData(nameof(EPPastBigKeyDoor_To_EPBigKeyDoor))]
-        [MemberData(nameof(EP_To_EPPastBigKeyDoor))]
-        [MemberData(nameof(EPPastBigKeyDoor_To_EPBackDarkRoom))]
-        [MemberData(nameof(EPBackDarkRoom_To_EPPastBigKeyDoor))]
-        [MemberData(nameof(EPPastBackKeyDoor_To_EPBossRoom))]
+        [MemberData(nameof(EPEntryToEP))]
+        [MemberData(nameof(EPPastBigKeyDoorToEP))]
+        [MemberData(nameof(EPToEPBigChest))]
+        [MemberData(nameof(EPToEPRightDarkRoom))]
+        [MemberData(nameof(EPPastRightKeyDoorToEPRightDarkRoom))]
+        [MemberData(nameof(EPRightDarkRoomToEPRightKeyDoor))]
+        [MemberData(nameof(EPPastRightKeyDoorToEPRightKeyDoor))]
+        [MemberData(nameof(EPRightDarkRoomToEPPastRightKeyDoor))]
+        [MemberData(nameof(EPToEPBigKeyDoor))]
+        [MemberData(nameof(EPPastBigKeyDoorToEPBigKeyDoor))]
+        [MemberData(nameof(EPToEPPastBigKeyDoor))]
+        [MemberData(nameof(EPPastBigKeyDoorToEPBackDarkRoom))]
+        [MemberData(nameof(EPBackDarkRoomToEPPastBigKeyDoor))]
+        [MemberData(nameof(EPPastBackKeyDoorToEPBossRoom))]
         public override void Tests(
             ModeSaveData modeData, RequirementNodeID[] accessibleEntryNodes,
             DungeonNodeID[] accessibleNodes, KeyDoorID[] unlockedDoors, (ItemType, int)[] items,
@@ -40,7 +40,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 sequenceBreaks, dungeonID, id, expected);
         }
         
-        public static IEnumerable<object[]> EPEntry_To_EP =>
+        public static IEnumerable<object[]> EPEntryToEP =>
             new List<object[]>
             {
                 new object[]
@@ -79,7 +79,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                     {
                         WorldState = WorldState.Inverted
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.EPEntry
                     },
@@ -93,7 +93,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> EPPastBigKeyDoor_To_EP =>
+        public static IEnumerable<object[]> EPPastBigKeyDoorToEP =>
             new List<object[]>
             {
                 new object[]
@@ -103,7 +103,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                         WorldState = WorldState.Inverted
                     },
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.EPPastBigKeyDoor
                     },
@@ -121,11 +121,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                         WorldState = WorldState.Inverted
                     },
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.EPPastBigKeyDoor
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.EPBigKeyDoor
                     },
@@ -137,14 +137,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> EP_To_EPBigChest =>
+        public static IEnumerable<object[]> EPToEPBigChest =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.EP
                     },
@@ -159,11 +159,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.EP
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.EPBigChest
                     },
@@ -175,14 +175,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> EP_To_EPRightDarkRoom =>
+        public static IEnumerable<object[]> EPToEPRightDarkRoom =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.EP
                     },
@@ -203,7 +203,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.EP
                     },
@@ -224,7 +224,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.EP
                     },
@@ -243,14 +243,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> EPPastRightKeyDoor_To_EPRightDarkRoom =>
+        public static IEnumerable<object[]> EPPastRightKeyDoorToEPRightDarkRoom =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.EPPastRightKeyDoor
                     },
@@ -268,11 +268,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.EPPastRightKeyDoor
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.EPRightKeyDoor
                     },
@@ -287,7 +287,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> EPRightDarkRoom_To_EPRightKeyDoor =>
+        public static IEnumerable<object[]> EPRightDarkRoomToEPRightKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -309,7 +309,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.EPRightDarkRoom
                     },
@@ -325,7 +325,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> EPPastRightKeyDoor_To_EPRightKeyDoor =>
+        public static IEnumerable<object[]> EPPastRightKeyDoorToEPRightKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -347,7 +347,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.EPPastRightKeyDoor
                     },
@@ -363,14 +363,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> EPRightDarkRoom_To_EPPastRightKeyDoor =>
+        public static IEnumerable<object[]> EPRightDarkRoomToEPPastRightKeyDoor =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.EPRightDarkRoom
                     },
@@ -388,11 +388,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.EPRightDarkRoom
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.EPRightKeyDoor
                     },
@@ -407,7 +407,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> EP_To_EPBigKeyDoor =>
+        public static IEnumerable<object[]> EPToEPBigKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -432,7 +432,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                         WorldState = WorldState.Inverted
                     },
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.EP
                     },
@@ -445,7 +445,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> EPPastBigKeyDoor_To_EPBigKeyDoor =>
+        public static IEnumerable<object[]> EPPastBigKeyDoorToEPBigKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -470,7 +470,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                         WorldState = WorldState.Inverted
                     },
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.EPPastBigKeyDoor
                     },
@@ -483,14 +483,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> EP_To_EPPastBigKeyDoor =>
+        public static IEnumerable<object[]> EPToEPPastBigKeyDoor =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.EP
                     },
@@ -505,11 +505,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.EP
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.EPBigKeyDoor
                     },
@@ -521,7 +521,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> EPPastBigKeyDoor_To_EPBackDarkRoom =>
+        public static IEnumerable<object[]> EPPastBigKeyDoorToEPBackDarkRoom =>
             new List<object[]>
             {
                 new object[]
@@ -531,12 +531,12 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                         ItemPlacement = ItemPlacement.Advanced
                     },
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.EPPastBigKeyDoor
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 0),
                         (ItemType.FireRod, 0)
@@ -556,12 +556,12 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                         ItemPlacement = ItemPlacement.Basic
                     },
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.EPPastBigKeyDoor
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 0),
                         (ItemType.FireRod, 0)
@@ -581,12 +581,12 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                         ItemPlacement = ItemPlacement.Advanced
                     },
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.EPPastBigKeyDoor
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 0),
                         (ItemType.FireRod, 0)
@@ -606,12 +606,12 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                         ItemPlacement = ItemPlacement.Basic
                     },
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.EPPastBigKeyDoor
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 0),
                         (ItemType.FireRod, 0)
@@ -631,12 +631,12 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                         ItemPlacement = ItemPlacement.Advanced
                     },
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.EPPastBigKeyDoor
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 1),
                         (ItemType.FireRod, 0)
@@ -656,12 +656,12 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                         ItemPlacement = ItemPlacement.Advanced
                     },
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.EPPastBigKeyDoor
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 0),
                         (ItemType.FireRod, 1)
@@ -681,12 +681,12 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                         ItemPlacement = ItemPlacement.Basic
                     },
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.EPPastBigKeyDoor
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 1),
                         (ItemType.FireRod, 0)
@@ -701,14 +701,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> EPBackDarkRoom_To_EPPastBigKeyDoor =>
+        public static IEnumerable<object[]> EPBackDarkRoomToEPPastBigKeyDoor =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.EPBackDarkRoom
                     },
@@ -723,11 +723,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.EPBackDarkRoom
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.EPBackKeyDoor
                     },
@@ -739,7 +739,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> EPPastBackKeyDoor_To_EPBossRoom =>
+        public static IEnumerable<object[]> EPPastBackKeyDoorToEPBossRoom =>
             new List<object[]>
             {
                 new object[]
@@ -749,7 +749,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                         EnemyShuffle = false
                     },
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.EPPastBackKeyDoor
                     },
@@ -770,7 +770,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                         EnemyShuffle = true
                     },
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.EPPastBackKeyDoor
                     },
@@ -791,7 +791,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                         EnemyShuffle = false
                     },
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.EPPastBackKeyDoor
                     },

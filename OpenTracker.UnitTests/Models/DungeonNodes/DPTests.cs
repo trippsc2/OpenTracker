@@ -14,26 +14,26 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
     public class DPTests : DungeonNodeTestBase
     {
         [Theory]
-        [MemberData(nameof(DPFrontEntry_To_DPFront))]
-        [MemberData(nameof(DPLeftEntry_To_DPFront))]
-        [MemberData(nameof(DPPastRightKeyDoor_To_DPFront))]
-        [MemberData(nameof(DPFront_To_DPTorch))]
-        [MemberData(nameof(DPFront_To_DPBigChest))]
-        [MemberData(nameof(DPFront_To_DPRightKeyDoor))]
-        [MemberData(nameof(DPPastRightKeyDoor_To_DPRightKeyDoor))]
-        [MemberData(nameof(DPFront_To_DPPastRightKeyDoor))]
-        [MemberData(nameof(DPBackEntry_To_DPBack))]
-        [MemberData(nameof(DPBack_To_DP2F))]
-        [MemberData(nameof(DP2FPastFirstKeyDoor_To_DP2F))]
-        [MemberData(nameof(DP2F_To_DP2FFirstKeyDoor))]
-        [MemberData(nameof(DP2FPastFirstKeyDoor_To_DP2FFirstKeyDoor))]
-        [MemberData(nameof(DP2F_To_DP2FPastFirstKeyDoor))]
-        [MemberData(nameof(DP2FPastSecondKeyDoor_To_DP2FPastFirstKeyDoor))]
-        [MemberData(nameof(DP2F_To_DP2FSecondKeyDoor))]
-        [MemberData(nameof(DP2FPastFirstKeyDoor_To_DP2FSecondKeyDoor))]
-        [MemberData(nameof(DP2FPastFirstKeyDoor_To_DP2FPastSecondKeyDoor))]
-        [MemberData(nameof(DP2FPastSecondKeyDoor_To_DPPastFourTorchWall))]
-        [MemberData(nameof(DPPastFourTorchWall_To_DPBossRoom))]
+        [MemberData(nameof(DPFrontEntryToDPFront))]
+        [MemberData(nameof(DPLeftEntryToDPFront))]
+        [MemberData(nameof(DPPastRightKeyDoorToDPFront))]
+        [MemberData(nameof(DPFrontToDPTorch))]
+        [MemberData(nameof(DPFrontToDPBigChest))]
+        [MemberData(nameof(DPFrontToDPRightKeyDoor))]
+        [MemberData(nameof(DPPastRightKeyDoorToDPRightKeyDoor))]
+        [MemberData(nameof(DPFrontToDPPastRightKeyDoor))]
+        [MemberData(nameof(DPBackEntryToDPBack))]
+        [MemberData(nameof(DPBackToDP2F))]
+        [MemberData(nameof(DP2FPastFirstKeyDoorToDP2F))]
+        [MemberData(nameof(DP2FToDP2FFirstKeyDoor))]
+        [MemberData(nameof(DP2FPastFirstKeyDoorToDP2FFirstKeyDoor))]
+        [MemberData(nameof(DP2FToDP2FPastFirstKeyDoor))]
+        [MemberData(nameof(DP2FPastSecondKeyDoorToDP2FPastFirstKeyDoor))]
+        [MemberData(nameof(DP2FToDP2FSecondKeyDoor))]
+        [MemberData(nameof(DP2FPastFirstKeyDoorToDP2FSecondKeyDoor))]
+        [MemberData(nameof(DP2FPastFirstKeyDoorToDP2FPastSecondKeyDoor))]
+        [MemberData(nameof(DP2FPastSecondKeyDoorToDPPastFourTorchWall))]
+        [MemberData(nameof(DPPastFourTorchWallToDPBossRoom))]
         public override void Tests(
             ModeSaveData modeData, RequirementNodeID[] accessibleEntryNodes,
             DungeonNodeID[] accessibleNodes, KeyDoorID[] unlockedDoors, (ItemType, int)[] items,
@@ -45,7 +45,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 sequenceBreaks, dungeonID, id, expected);
         }
         
-        public static IEnumerable<object[]> DPFrontEntry_To_DPFront =>
+        public static IEnumerable<object[]> DPFrontEntryToDPFront =>
             new List<object[]>
             {
                 new object[]
@@ -63,7 +63,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DPFrontEntry
                     },
@@ -77,7 +77,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> DPLeftEntry_To_DPFront =>
+        public static IEnumerable<object[]> DPLeftEntryToDPFront =>
             new List<object[]>
             {
                 new object[]
@@ -95,7 +95,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DPLeftEntry
                     },
@@ -109,14 +109,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> DPPastRightKeyDoor_To_DPFront =>
+        public static IEnumerable<object[]> DPPastRightKeyDoorToDPFront =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.DPPastRightKeyDoor
                     },
@@ -131,11 +131,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.DPPastRightKeyDoor
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.DPRightKeyDoor
                     },
@@ -147,7 +147,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> DPFront_To_DPTorch =>
+        public static IEnumerable<object[]> DPFrontToDPTorch =>
             new List<object[]>
             {
                 new object[]
@@ -169,7 +169,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.DPFront
                     },
@@ -187,7 +187,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.DPFront
                     },
@@ -203,14 +203,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> DPFront_To_DPBigChest =>
+        public static IEnumerable<object[]> DPFrontToDPBigChest =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.DPFront
                     },
@@ -225,11 +225,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.DPFront
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.DPBigChest
                     },
@@ -241,7 +241,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> DPFront_To_DPRightKeyDoor =>
+        public static IEnumerable<object[]> DPFrontToDPRightKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -260,7 +260,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.DPFront
                     },
@@ -273,7 +273,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> DPPastRightKeyDoor_To_DPRightKeyDoor =>
+        public static IEnumerable<object[]> DPPastRightKeyDoorToDPRightKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -292,7 +292,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.DPPastRightKeyDoor
                     },
@@ -305,14 +305,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> DPFront_To_DPPastRightKeyDoor =>
+        public static IEnumerable<object[]> DPFrontToDPPastRightKeyDoor =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.DPFront
                     },
@@ -327,11 +327,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.DPFront
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.DPRightKeyDoor
                     },
@@ -343,7 +343,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> DPBackEntry_To_DPBack =>
+        public static IEnumerable<object[]> DPBackEntryToDPBack =>
             new List<object[]>
             {
                 new object[]
@@ -361,7 +361,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DPBackEntry
                     },
@@ -375,14 +375,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> DPBack_To_DP2F =>
+        public static IEnumerable<object[]> DPBackToDP2F =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.DPBack
                     },
@@ -397,11 +397,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.DPBack
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.DP1FKeyDoor
                     },
@@ -413,14 +413,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> DP2FPastFirstKeyDoor_To_DP2F =>
+        public static IEnumerable<object[]> DP2FPastFirstKeyDoorToDP2F =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.DP2FPastFirstKeyDoor
                     },
@@ -435,11 +435,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.DP2FPastFirstKeyDoor
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.DP2FFirstKeyDoor
                     },
@@ -451,7 +451,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> DP2F_To_DP2FFirstKeyDoor =>
+        public static IEnumerable<object[]> DP2FToDP2FFirstKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -470,7 +470,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.DP2F
                     },
@@ -483,7 +483,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> DP2FPastFirstKeyDoor_To_DP2FFirstKeyDoor =>
+        public static IEnumerable<object[]> DP2FPastFirstKeyDoorToDP2FFirstKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -502,7 +502,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.DP2FPastFirstKeyDoor
                     },
@@ -515,14 +515,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> DP2F_To_DP2FPastFirstKeyDoor =>
+        public static IEnumerable<object[]> DP2FToDP2FPastFirstKeyDoor =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.DP2F
                     },
@@ -537,11 +537,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.DP2F
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.DP2FFirstKeyDoor
                     },
@@ -553,14 +553,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> DP2FPastSecondKeyDoor_To_DP2FPastFirstKeyDoor =>
+        public static IEnumerable<object[]> DP2FPastSecondKeyDoorToDP2FPastFirstKeyDoor =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.DP2FPastSecondKeyDoor
                     },
@@ -575,11 +575,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.DP2FPastSecondKeyDoor
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.DP2FSecondKeyDoor
                     },
@@ -591,7 +591,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> DP2F_To_DP2FSecondKeyDoor =>
+        public static IEnumerable<object[]> DP2FToDP2FSecondKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -610,7 +610,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.DP2FPastFirstKeyDoor
                     },
@@ -623,7 +623,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> DP2FPastFirstKeyDoor_To_DP2FSecondKeyDoor =>
+        public static IEnumerable<object[]> DP2FPastFirstKeyDoorToDP2FSecondKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -642,7 +642,7 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.DP2FPastSecondKeyDoor
                     },
@@ -655,14 +655,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> DP2FPastFirstKeyDoor_To_DP2FPastSecondKeyDoor =>
+        public static IEnumerable<object[]> DP2FPastFirstKeyDoorToDP2FPastSecondKeyDoor =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.DP2FPastFirstKeyDoor
                     },
@@ -677,11 +677,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.DP2FPastFirstKeyDoor
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.DP2FSecondKeyDoor
                     },
@@ -693,19 +693,19 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> DP2FPastSecondKeyDoor_To_DPPastFourTorchWall =>
+        public static IEnumerable<object[]> DP2FPastSecondKeyDoorToDPPastFourTorchWall =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.DP2FPastSecondKeyDoor
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 0),
                         (ItemType.FireRod, 0)
@@ -719,12 +719,12 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.DP2FPastSecondKeyDoor
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 1),
                         (ItemType.FireRod, 0)
@@ -738,12 +738,12 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.DP2FPastSecondKeyDoor
                     },
                     new KeyDoorID[0],
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Lamp, 0),
                         (ItemType.FireRod, 1)
@@ -755,14 +755,14 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 }
             };
         
-        public static IEnumerable<object[]> DPPastFourTorchWall_To_DPBossRoom =>
+        public static IEnumerable<object[]> DPPastFourTorchWallToDPBossRoom =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.DPPastFourTorchWall
                     },
@@ -777,11 +777,11 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
                 {
                     new ModeSaveData(),
                     new RequirementNodeID[0],
-                    new DungeonNodeID[]
+                    new[]
                     {
                         DungeonNodeID.DPPastFourTorchWall
                     },
-                    new KeyDoorID[]
+                    new[]
                     {
                         KeyDoorID.DPBigKeyDoor
                     },

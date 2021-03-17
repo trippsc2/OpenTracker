@@ -32,7 +32,7 @@ namespace OpenTracker.Models.Connections
             {
                 null => false,
                 IConnection connection => (Location1 == connection.Location1 || Location1 == connection.Location2) &&
-                                          (Location2 == connection.Location2 || Location2 == connection.Location1),
+                    (Location2 == connection.Location2 || Location2 == connection.Location1),
                 _ => false
             };
         }

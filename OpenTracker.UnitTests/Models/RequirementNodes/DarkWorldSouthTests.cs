@@ -13,32 +13,32 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
     public class DarkWorldSouthTests : RequirementNodeTestBase
     {
         [Theory]
-        [MemberData(nameof(NonEntranceInverted_To_DarkWorldSouth))]
-        [MemberData(nameof(LightWorldMirror_To_DarkWorldSouth))]
-        [MemberData(nameof(DWSouthPortalNotBunny_To_DarkWorldSouth))]
-        [MemberData(nameof(DarkWorldWest_To_DarkWorldSouth))]
-        [MemberData(nameof(DarkWorldEastHammer_To_DarkWorldSouth))]
-        [MemberData(nameof(DarkWorldSouth_To_DarkWorldSouthInverted))]
-        [MemberData(nameof(DarkWorldSouth_To_DarkWorldSouthStandardOpen))]
-        [MemberData(nameof(DarkWorldSouthStandardOpen_To_DarkWorldSouthStandardOpenNotBunny))]
-        [MemberData(nameof(DarkWorldSouth_To_DarkWorldSouthMirror))]
-        [MemberData(nameof(DarkWorldSouth_To_DarkWorldSouthNotBunny))]
-        [MemberData(nameof(DarkWorldSouthNotBunny_To_DarkWorldSouthDash))]
-        [MemberData(nameof(DarkWorldSouthNotBunny_To_DarkWorldSouthHammer))]
-        [MemberData(nameof(LightWorldInvertedNotBunny_To_BuyBigBomb))]
-        [MemberData(nameof(DarkWorldSouthStandardOpenNotBunny_To_BuyBigBomb))]
-        [MemberData(nameof(BuyBigBomb_To_BuyBigBombStandardOpen))]
-        [MemberData(nameof(BuyBigBomb_To_BigBombToLightWorld))]
-        [MemberData(nameof(BigBombToLightWorld_To_BigBombToLightWorldStandardOpen))]
-        [MemberData(nameof(BuyBigBombStandardOpen_To_BigBombToDWLakeHylia))]
-        [MemberData(nameof(BuyBigBombStandardOpen_To_BigBombToWall))]
-        [MemberData(nameof(BigBombToLightWorld_To_BigBombToWall))]
-        [MemberData(nameof(BigBombToLightWorldStandardOpen_To_BigBombToWall))]
-        [MemberData(nameof(BigBombToDWLakeHylia_To_BigBombToWall))]
-        [MemberData(nameof(LWSouthPortalStandardOpen_To_DWSouthPortal))]
-        [MemberData(nameof(DarkWorldSouthHammer_To_DWSouthPortal))]
-        [MemberData(nameof(DWSouthPortal_To_DWSouthPortalInverted))]
-        [MemberData(nameof(DWSouthPortal_To_DWSouthPortalNotBunny))]
+        [MemberData(nameof(NonEntranceInvertedToDarkWorldSouth))]
+        [MemberData(nameof(LightWorldMirrorToDarkWorldSouth))]
+        [MemberData(nameof(DWSouthPortalNotBunnyToDarkWorldSouth))]
+        [MemberData(nameof(DarkWorldWestToDarkWorldSouth))]
+        [MemberData(nameof(DarkWorldEastHammerToDarkWorldSouth))]
+        [MemberData(nameof(DarkWorldSouthToDarkWorldSouthInverted))]
+        [MemberData(nameof(DarkWorldSouthToDarkWorldSouthStandardOpen))]
+        [MemberData(nameof(DarkWorldSouthStandardOpenToDarkWorldSouthStandardOpenNotBunny))]
+        [MemberData(nameof(DarkWorldSouthToDarkWorldSouthMirror))]
+        [MemberData(nameof(DarkWorldSouthToDarkWorldSouthNotBunny))]
+        [MemberData(nameof(DarkWorldSouthNotBunnyToDarkWorldSouthDash))]
+        [MemberData(nameof(DarkWorldSouthNotBunnyToDarkWorldSouthHammer))]
+        [MemberData(nameof(LightWorldInvertedNotBunnyToBuyBigBomb))]
+        [MemberData(nameof(DarkWorldSouthStandardOpenNotBunnyToBuyBigBomb))]
+        [MemberData(nameof(BuyBigBombToBuyBigBombStandardOpen))]
+        [MemberData(nameof(BuyBigBombToBigBombToLightWorld))]
+        [MemberData(nameof(BigBombToLightWorldToBigBombToLightWorldStandardOpen))]
+        [MemberData(nameof(BuyBigBombStandardOpenToBigBombToDWLakeHylia))]
+        [MemberData(nameof(BuyBigBombStandardOpenToBigBombToWall))]
+        [MemberData(nameof(BigBombToLightWorldToBigBombToWall))]
+        [MemberData(nameof(BigBombToLightWorldStandardOpenToBigBombToWall))]
+        [MemberData(nameof(BigBombToDWLakeHyliaToBigBombToWall))]
+        [MemberData(nameof(LWSouthPortalStandardOpenToDWSouthPortal))]
+        [MemberData(nameof(DarkWorldSouthHammerToDWSouthPortal))]
+        [MemberData(nameof(DWSouthPortalToDWSouthPortalInverted))]
+        [MemberData(nameof(DWSouthPortalToDWSouthPortalNotBunny))]
         public override void Tests(
             ModeSaveData modeData, (ItemType, int)[] items, (PrizeType, int)[] prizes,
             (SequenceBreakType, bool)[] sequenceBreaks, RequirementNodeID[] accessibleNodes,
@@ -48,7 +48,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 modeData, items, prizes, sequenceBreaks, accessibleNodes, id, towerCrystalsKnown, expected);
         }
     
-        public static IEnumerable<object[]> NonEntranceInverted_To_DarkWorldSouth =>
+        public static IEnumerable<object[]> NonEntranceInvertedToDarkWorldSouth =>
             new List<object[]>
             {
                 new object[]
@@ -68,7 +68,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.EntranceNoneInverted
                     },
@@ -78,7 +78,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> LightWorldMirror_To_DarkWorldSouth =>
+        public static IEnumerable<object[]> LightWorldMirrorToDarkWorldSouth =>
             new List<object[]>
             {
                 new object[]
@@ -98,7 +98,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.LightWorldMirror
                     },
@@ -108,7 +108,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DWSouthPortalNotBunny_To_DarkWorldSouth =>
+        public static IEnumerable<object[]> DWSouthPortalNotBunnyToDarkWorldSouth =>
             new List<object[]>
             {
                 new object[]
@@ -120,7 +120,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DWSouthPortalNotBunny
                     },
@@ -137,7 +137,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DWSouthPortalNotBunny
                     },
@@ -147,7 +147,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DarkWorldWest_To_DarkWorldSouth =>
+        public static IEnumerable<object[]> DarkWorldWestToDarkWorldSouth =>
             new List<object[]>
             {
                 new object[]
@@ -167,7 +167,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldWest
                     },
@@ -177,7 +177,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DarkWorldEastHammer_To_DarkWorldSouth =>
+        public static IEnumerable<object[]> DarkWorldEastHammerToDarkWorldSouth =>
             new List<object[]>
             {
                 new object[]
@@ -197,7 +197,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldEastHammer
                     },
@@ -207,7 +207,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DarkWorldSouth_To_DarkWorldSouthInverted =>
+        public static IEnumerable<object[]> DarkWorldSouthToDarkWorldSouthInverted =>
             new List<object[]>
             {
                 new object[]
@@ -219,7 +219,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldSouth
                     },
@@ -236,7 +236,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldSouth
                     },
@@ -246,7 +246,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DarkWorldSouth_To_DarkWorldSouthStandardOpen =>
+        public static IEnumerable<object[]> DarkWorldSouthToDarkWorldSouthStandardOpen =>
             new List<object[]>
             {
                 new object[]
@@ -258,7 +258,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldSouth
                     },
@@ -275,7 +275,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldSouth
                     },
@@ -285,7 +285,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DarkWorldSouthStandardOpen_To_DarkWorldSouthStandardOpenNotBunny =>
+        public static IEnumerable<object[]> DarkWorldSouthStandardOpenToDarkWorldSouthStandardOpenNotBunny =>
             new List<object[]>
             {
                 new object[]
@@ -297,7 +297,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldSouthStandardOpen
                     },
@@ -314,7 +314,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldSouthStandardOpen
                     },
@@ -324,7 +324,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DarkWorldSouth_To_DarkWorldSouthMirror =>
+        public static IEnumerable<object[]> DarkWorldSouthToDarkWorldSouthMirror =>
             new List<object[]>
             {
                 new object[]
@@ -339,7 +339,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldSouth
                     },
@@ -359,7 +359,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldSouth
                     },
@@ -379,7 +379,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldSouth
                     },
@@ -389,7 +389,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DarkWorldSouth_To_DarkWorldSouthNotBunny =>
+        public static IEnumerable<object[]> DarkWorldSouthToDarkWorldSouthNotBunny =>
             new List<object[]>
             {
                 new object[]
@@ -404,7 +404,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldSouth
                     },
@@ -424,7 +424,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldSouth
                     },
@@ -451,7 +451,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DarkWorldSouthNotBunny_To_DarkWorldSouthDash =>
+        public static IEnumerable<object[]> DarkWorldSouthNotBunnyToDarkWorldSouthDash =>
             new List<object[]>
             {
                 new object[]
@@ -463,7 +463,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldSouthNotBunny
                     },
@@ -480,7 +480,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldSouthNotBunny
                     },
@@ -490,7 +490,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DarkWorldSouthNotBunny_To_DarkWorldSouthHammer =>
+        public static IEnumerable<object[]> DarkWorldSouthNotBunnyToDarkWorldSouthHammer =>
             new List<object[]>
             {
                 new object[]
@@ -502,7 +502,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldSouthNotBunny
                     },
@@ -519,7 +519,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldSouthNotBunny
                     },
@@ -529,7 +529,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> LightWorldInvertedNotBunny_To_BuyBigBomb =>
+        public static IEnumerable<object[]> LightWorldInvertedNotBunnyToBuyBigBomb =>
             new List<object[]>
             {
                 new object[]
@@ -541,7 +541,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (PrizeType.RedCrystal, 1)
                     },
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.LightWorldInvertedNotBunny
                     },
@@ -558,7 +558,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (PrizeType.RedCrystal, 2)
                     },
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.LightWorldInvertedNotBunny
                     },
@@ -568,7 +568,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DarkWorldSouthStandardOpenNotBunny_To_BuyBigBomb =>
+        public static IEnumerable<object[]> DarkWorldSouthStandardOpenNotBunnyToBuyBigBomb =>
             new List<object[]>
             {
                 new object[]
@@ -580,7 +580,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (PrizeType.RedCrystal, 1)
                     },
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldSouthStandardOpenNotBunny
                     },
@@ -597,7 +597,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (PrizeType.RedCrystal, 2)
                     },
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldSouthStandardOpenNotBunny
                     },
@@ -607,7 +607,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> BuyBigBomb_To_BuyBigBombStandardOpen =>
+        public static IEnumerable<object[]> BuyBigBombToBuyBigBombStandardOpen =>
             new List<object[]>
             {
                 new object[]
@@ -619,7 +619,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.BuyBigBomb
                     },
@@ -636,7 +636,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.BuyBigBomb
                     },
@@ -646,7 +646,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> BuyBigBomb_To_BigBombToLightWorld =>
+        public static IEnumerable<object[]> BuyBigBombToBigBombToLightWorld =>
             new List<object[]>
             {
                 new object[]
@@ -661,7 +661,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.BuyBigBomb
                     },
@@ -698,7 +698,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.BuyBigBomb
                     },
@@ -718,7 +718,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.BuyBigBomb
                     },
@@ -728,7 +728,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> BigBombToLightWorld_To_BigBombToLightWorldStandardOpen =>
+        public static IEnumerable<object[]> BigBombToLightWorldToBigBombToLightWorldStandardOpen =>
             new List<object[]>
             {
                 new object[]
@@ -740,7 +740,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.BigBombToLightWorld
                     },
@@ -757,7 +757,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.BigBombToLightWorld
                     },
@@ -767,13 +767,13 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> BuyBigBombStandardOpen_To_BigBombToDWLakeHylia =>
+        public static IEnumerable<object[]> BuyBigBombStandardOpenToBigBombToDWLakeHylia =>
             new List<object[]>
             {
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 1),
                         (ItemType.CaneOfSomaria, 1),
@@ -783,12 +783,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Mirror, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.BombDuplicationAncillaOverload, true),
                         (SequenceBreakType.BombDuplicationMirror, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.BuyBigBombStandardOpen
                     },
@@ -799,7 +799,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.CaneOfSomaria, 0),
@@ -809,12 +809,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Mirror, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.BombDuplicationAncillaOverload, true),
                         (SequenceBreakType.BombDuplicationMirror, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.BuyBigBombStandardOpen
                     },
@@ -825,7 +825,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.CaneOfSomaria, 0),
@@ -835,12 +835,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Mirror, 1)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.BombDuplicationAncillaOverload, true),
                         (SequenceBreakType.BombDuplicationMirror, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.BuyBigBombStandardOpen
                     },
@@ -851,7 +851,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 1),
                         (ItemType.CaneOfSomaria, 1),
@@ -861,12 +861,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Mirror, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.BombDuplicationAncillaOverload, false),
                         (SequenceBreakType.BombDuplicationMirror, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.BuyBigBombStandardOpen
                     },
@@ -877,7 +877,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 1),
                         (ItemType.CaneOfSomaria, 1),
@@ -887,12 +887,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Mirror, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.BombDuplicationAncillaOverload, false),
                         (SequenceBreakType.BombDuplicationMirror, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.BuyBigBombStandardOpen
                     },
@@ -903,7 +903,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.CaneOfSomaria, 0),
@@ -913,12 +913,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Mirror, 1)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.BombDuplicationAncillaOverload, true),
                         (SequenceBreakType.BombDuplicationMirror, false)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.BuyBigBombStandardOpen
                     },
@@ -929,7 +929,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 1),
                         (ItemType.CaneOfSomaria, 1),
@@ -939,12 +939,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Mirror, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.BombDuplicationAncillaOverload, true),
                         (SequenceBreakType.BombDuplicationMirror, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.BuyBigBombStandardOpen
                     },
@@ -955,7 +955,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 1),
                         (ItemType.CaneOfSomaria, 1),
@@ -965,12 +965,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Mirror, 0)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.BombDuplicationAncillaOverload, true),
                         (SequenceBreakType.BombDuplicationMirror, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.BuyBigBombStandardOpen
                     },
@@ -981,7 +981,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 new object[]
                 {
                     new ModeSaveData(),
-                    new (ItemType, int)[]
+                    new[]
                     {
                         (ItemType.Bow, 0),
                         (ItemType.CaneOfSomaria, 0),
@@ -991,12 +991,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (ItemType.Mirror, 1)
                     },
                     new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[]
+                    new[]
                     {
                         (SequenceBreakType.BombDuplicationAncillaOverload, true),
                         (SequenceBreakType.BombDuplicationMirror, true)
                     },
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.BuyBigBombStandardOpen
                     },
@@ -1006,7 +1006,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> BuyBigBombStandardOpen_To_BigBombToWall =>
+        public static IEnumerable<object[]> BuyBigBombStandardOpenToBigBombToWall =>
             new List<object[]>
             {
                 new object[]
@@ -1018,7 +1018,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.BuyBigBombStandardOpen
                     },
@@ -1035,7 +1035,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.BuyBigBombStandardOpen
                     },
@@ -1045,7 +1045,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> BigBombToLightWorld_To_BigBombToWall =>
+        public static IEnumerable<object[]> BigBombToLightWorldToBigBombToWall =>
             new List<object[]>
             {
                 new object[]
@@ -1060,7 +1060,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.BigBombToLightWorld
                     },
@@ -1080,7 +1080,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.BigBombToLightWorld
                     },
@@ -1100,7 +1100,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.BigBombToLightWorld
                     },
@@ -1110,7 +1110,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> BigBombToLightWorldStandardOpen_To_BigBombToWall =>
+        public static IEnumerable<object[]> BigBombToLightWorldStandardOpenToBigBombToWall =>
             new List<object[]>
             {
                 new object[]
@@ -1122,7 +1122,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (PrizeType.Aga1, 0)
                     },
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.BigBombToLightWorldStandardOpen
                     },
@@ -1139,7 +1139,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (PrizeType.Aga1, 1)
                     },
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.BigBombToLightWorldStandardOpen
                     },
@@ -1149,7 +1149,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> BigBombToDWLakeHylia_To_BigBombToWall =>
+        public static IEnumerable<object[]> BigBombToDWLakeHyliaToBigBombToWall =>
             new List<object[]>
             {
                 new object[]
@@ -1169,7 +1169,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.BigBombToDWLakeHylia
                     },
@@ -1179,7 +1179,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> LWSouthPortalStandardOpen_To_DWSouthPortal =>
+        public static IEnumerable<object[]> LWSouthPortalStandardOpenToDWSouthPortal =>
             new List<object[]>
             {
                 new object[]
@@ -1191,7 +1191,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.LWSouthPortalStandardOpen
                     },
@@ -1208,7 +1208,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.LWSouthPortalStandardOpen
                     },
@@ -1218,7 +1218,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DarkWorldSouthHammer_To_DWSouthPortal =>
+        public static IEnumerable<object[]> DarkWorldSouthHammerToDWSouthPortal =>
             new List<object[]>
             {
                 new object[]
@@ -1238,7 +1238,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DarkWorldSouthHammer
                     },
@@ -1248,7 +1248,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DWSouthPortal_To_DWSouthPortalInverted =>
+        public static IEnumerable<object[]> DWSouthPortalToDWSouthPortalInverted =>
             new List<object[]>
             {
                 new object[]
@@ -1260,7 +1260,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DWSouthPortal
                     },
@@ -1277,7 +1277,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DWSouthPortal
                     },
@@ -1287,7 +1287,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                 }
             };
     
-        public static IEnumerable<object[]> DWSouthPortal_To_DWSouthPortalNotBunny =>
+        public static IEnumerable<object[]> DWSouthPortalToDWSouthPortalNotBunny =>
             new List<object[]>
             {
                 new object[]
@@ -1302,7 +1302,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DWSouthPortal
                     },
@@ -1339,7 +1339,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DWSouthPortal
                     },
@@ -1359,7 +1359,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
+                    new[]
                     {
                         RequirementNodeID.DWSouthPortal
                     },
