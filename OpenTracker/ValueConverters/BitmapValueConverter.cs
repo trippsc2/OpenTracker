@@ -1,12 +1,12 @@
-﻿using Avalonia;
+﻿using System;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using Avalonia;
 using Avalonia.Data.Converters;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
-using System;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
 
 namespace OpenTracker.ValueConverters
 {

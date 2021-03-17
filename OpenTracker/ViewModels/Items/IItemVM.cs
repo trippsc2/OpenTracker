@@ -1,8 +1,8 @@
+using System.Reactive;
 using Avalonia.Input;
 using OpenTracker.Models.Requirements;
 using OpenTracker.ViewModels.Items.Adapters;
 using ReactiveUI;
-using System.Reactive;
 
 namespace OpenTracker.ViewModels.Items
 {

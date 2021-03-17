@@ -17,8 +17,6 @@ namespace OpenTracker.Models.SequenceBreaks
             set => this.RaiseAndSetIfChanged(ref _enabled, value);
         }
 
-        public delegate ISequenceBreak Factory(bool starting = true);
-
         /// <summary>
         /// Constructor
         /// </summary>

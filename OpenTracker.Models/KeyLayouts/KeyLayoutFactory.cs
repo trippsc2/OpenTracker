@@ -1,9 +1,9 @@
-﻿using OpenTracker.Models.DungeonItems;
+﻿using System;
+using System.Collections.Generic;
+using OpenTracker.Models.DungeonItems;
 using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Requirements;
-using System;
-using System.Collections.Generic;
 
 namespace OpenTracker.Models.KeyLayouts
 {

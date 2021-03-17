@@ -1,6 +1,6 @@
-﻿using OpenTracker.Models.Items;
+﻿using System.ComponentModel;
+using OpenTracker.Models.Items;
 using OpenTracker.Models.Modes;
-using System.ComponentModel;
 
 namespace OpenTracker.Models.Requirements
 {
@@ -31,8 +31,7 @@ namespace OpenTracker.Models.Requirements
         /// <param name="count">
         /// A 32-bit integer representing the number of the item required.
         /// </param>
-        public SmallKeyRequirement(
-            IMode mode, IItemDictionary items, IItem item, int count = 1)
+        public SmallKeyRequirement(IMode mode, IItemDictionary items, IItem item, int count = 1)
         {
             _mode = mode;
             _genericKey = items[ItemType.SmallKey];

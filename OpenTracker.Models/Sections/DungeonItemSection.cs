@@ -1,13 +1,13 @@
-﻿using OpenTracker.Models.AccessibilityLevels;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.AutoTracking.Values;
 using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using ReactiveUI;
 
 namespace OpenTracker.Models.Sections

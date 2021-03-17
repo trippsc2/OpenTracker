@@ -1,5 +1,5 @@
-﻿using OpenTracker.Models.NodeConnections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using OpenTracker.Models.NodeConnections;
 
 namespace OpenTracker.Models.RequirementNodes
 {

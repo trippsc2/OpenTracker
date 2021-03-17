@@ -1,5 +1,5 @@
-﻿using OpenTracker.Models.Requirements;
-using System.ComponentModel;
+﻿using System.ComponentModel;
+using OpenTracker.Models.Requirements;
 using ReactiveUI;
 
 namespace OpenTracker.Models.AutoTracking.Values

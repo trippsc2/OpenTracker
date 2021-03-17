@@ -1,4 +1,7 @@
-﻿using Avalonia.Media;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
+using System.Threading.Tasks;
+using Avalonia.Media;
 using Avalonia.Threading;
 using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.Requirements;
@@ -6,9 +9,6 @@ using OpenTracker.Models.Sections;
 using OpenTracker.Models.Settings;
 using OpenTracker.Utils;
 using ReactiveUI;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Threading.Tasks;
 
 namespace OpenTracker.ViewModels.PinnedLocations.Sections
 {

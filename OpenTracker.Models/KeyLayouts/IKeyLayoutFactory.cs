@@ -1,5 +1,5 @@
-﻿using OpenTracker.Models.Dungeons;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using OpenTracker.Models.Dungeons;
 
 namespace OpenTracker.Models.KeyLayouts
 {

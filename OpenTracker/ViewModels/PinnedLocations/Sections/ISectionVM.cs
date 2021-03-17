@@ -1,5 +1,5 @@
-﻿using OpenTracker.Models.Sections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using OpenTracker.Models.Sections;
 
 namespace OpenTracker.ViewModels.PinnedLocations.Sections
 {

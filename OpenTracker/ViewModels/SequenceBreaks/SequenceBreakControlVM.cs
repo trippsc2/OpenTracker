@@ -1,9 +1,9 @@
-﻿using OpenTracker.Models.SequenceBreaks;
-using OpenTracker.Utils;
-using ReactiveUI;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Reactive;
 using Avalonia.Threading;
+using OpenTracker.Models.SequenceBreaks;
+using OpenTracker.Utils;
+using ReactiveUI;
 
 namespace OpenTracker.ViewModels.SequenceBreaks
 {
@@ -14,16 +14,12 @@ namespace OpenTracker.ViewModels.SequenceBreaks
     {
         private readonly ISequenceBreak _sequenceBreak;
 
-        public bool Enabled =>
-            _sequenceBreak.Enabled;
+        public bool Enabled => _sequenceBreak.Enabled;
 
         public string Text { get; }
         public string ToolTipText { get; }
 
-        public ReactiveCommand<Unit, Unit> ToggleEnabledCommand { get; }
-
-        public delegate ISequenceBreakControlVM Factory(
-            ISequenceBreak sequenceBreak, string text, string toolTipText);
+        public ReactiveCommand<Unit, Unit> ToggleEnabled { get; }
 
         /// <summary>
         /// Constructor
@@ -37,15 +33,14 @@ namespace OpenTracker.ViewModels.SequenceBreaks
         /// <param name="toolTipText">
         /// A string representing the tooltip text of the sequence break.
         /// </param>
-        public SequenceBreakControlVM(
-            ISequenceBreak sequenceBreak, string text, string toolTipText)
+        public SequenceBreakControlVM(ISequenceBreak sequenceBreak, string text, string toolTipText)
         {
             _sequenceBreak = sequenceBreak;
             
             Text = text;
             ToolTipText = toolTipText;
 
-            ToggleEnabledCommand = ReactiveCommand.Create(ToggleEnabled);
+            ToggleEnabled = ReactiveCommand.Create(ToggleEnabledImpl);
 
             _sequenceBreak.PropertyChanged += OnSequenceBreakChanged;
         }
@@ -70,7 +65,7 @@ namespace OpenTracker.ViewModels.SequenceBreaks
         /// <summary>
         /// Toggles whether the sequence break is enabled.
         /// </summary>
-        private void ToggleEnabled()
+        private void ToggleEnabledImpl()
         {
             _sequenceBreak.Enabled = !_sequenceBreak.Enabled;
         }

@@ -1,12 +1,12 @@
-﻿using Avalonia.Layout;
+﻿using System.Collections.Specialized;
+using System.Reactive;
+using System.Threading.Tasks;
+using Avalonia.Layout;
 using Avalonia.Threading;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
 using ReactiveUI;
-using System.Collections.Specialized;
-using System.Reactive;
-using System.Threading.Tasks;
 
 namespace OpenTracker.ViewModels.PinnedLocations.Notes
 {

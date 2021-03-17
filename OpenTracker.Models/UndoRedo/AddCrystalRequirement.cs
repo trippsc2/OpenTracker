@@ -1,5 +1,4 @@
 ﻿using OpenTracker.Models.Items;
-using System;
 
 namespace OpenTracker.Models.UndoRedo
 {
@@ -20,7 +19,7 @@ namespace OpenTracker.Models.UndoRedo
         /// </param>
         public AddCrystalRequirement(ICrystalRequirementItem item)
         {
-            _item = item ?? throw new ArgumentNullException(nameof(item));
+            _item = item;
         }
 
         /// <summary>
@@ -42,11 +41,10 @@ namespace OpenTracker.Models.UndoRedo
             if (_item.Known)
             {
                 _item.Add();
+                return;
             }
-            else
-            {
-                _item.Known = true;
-            }
+
+            _item.Known = true;
         }
 
         /// <summary>
@@ -57,11 +55,10 @@ namespace OpenTracker.Models.UndoRedo
             if (_item.CanRemove())
             {
                 _item.Remove();
+                return;
             }
-            else
-            {
-                _item.Known = false;
-            }
+
+            _item.Known = false;
         }
     }
 }

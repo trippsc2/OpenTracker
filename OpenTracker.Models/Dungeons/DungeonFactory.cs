@@ -1,11 +1,11 @@
-﻿using OpenTracker.Models.DungeonItems;
+﻿using System;
+using System.Collections.Generic;
+using OpenTracker.Models.DungeonItems;
 using OpenTracker.Models.DungeonNodes;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.KeyDoors;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.RequirementNodes;
-using System;
-using System.Collections.Generic;
 
 namespace OpenTracker.Models.Dungeons
 {

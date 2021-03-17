@@ -1,9 +1,9 @@
+using System.ComponentModel;
 using Avalonia.Threading;
+using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Settings;
 using OpenTracker.Utils;
 using ReactiveUI;
-using System.ComponentModel;
-using OpenTracker.Models.Requirements;
 
 namespace OpenTracker.ViewModels.UIPanels
 {

@@ -21,8 +21,7 @@ namespace OpenTracker.Models.UndoRedo
         /// <param name="connection">
         /// A tuple of the two map locations that are being collected.
         /// </param>
-        public AddConnection(
-            IConnectionCollection connections, IConnection connection)
+        public AddConnection(IConnectionCollection connections, IConnection connection)
         {
             _connections = connections;
             _connection = connection;

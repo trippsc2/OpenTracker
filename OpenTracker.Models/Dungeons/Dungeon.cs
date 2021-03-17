@@ -257,7 +257,7 @@ namespace OpenTracker.Models.Dungeons
         /// </summary>
         private void SubscribeToConnectionRequirements()
         {
-            var requirmentSubscriptions = new List<IRequirement>();
+            var requirementSubscriptions = new List<IRequirement>();
             var dungeonData = GetDungeonData();
 
             foreach (var node in Nodes)
@@ -267,13 +267,13 @@ namespace OpenTracker.Models.Dungeons
                     var requirement = connection.Requirement;
 
                     if (requirement is KeyDoorRequirement ||
-                        requirmentSubscriptions.Contains(requirement))
+                        requirementSubscriptions.Contains(requirement))
                     {
                         continue;
                     }
                     
                     requirement.ChangePropagated += OnRequirementChangePropagated;
-                    requirmentSubscriptions.Add(requirement);
+                    requirementSubscriptions.Add(requirement);
                 }
             }
         }

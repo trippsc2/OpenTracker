@@ -1,9 +1,9 @@
+using System;
 using OpenTracker.Models.Requirements;
 using OpenTracker.ViewModels.Dropdowns;
+using OpenTracker.ViewModels.Dungeons;
 using OpenTracker.ViewModels.Items;
 using OpenTracker.ViewModels.PinnedLocations;
-using System;
-using OpenTracker.ViewModels.Dungeons;
 
 namespace OpenTracker.ViewModels.UIPanels
 {

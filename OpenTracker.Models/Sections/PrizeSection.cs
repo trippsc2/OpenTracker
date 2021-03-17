@@ -1,8 +1,8 @@
-﻿using OpenTracker.Models.AutoTracking.Values;
+﻿using System.ComponentModel;
+using OpenTracker.Models.AutoTracking.Values;
 using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.Requirements;
-using System.ComponentModel;
 
 namespace OpenTracker.Models.Sections
 {

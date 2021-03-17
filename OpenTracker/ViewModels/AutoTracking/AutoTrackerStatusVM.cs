@@ -1,10 +1,10 @@
-﻿using Avalonia.Threading;
+﻿using System.ComponentModel;
+using System.Text;
+using System.Threading.Tasks;
+using Avalonia.Threading;
 using OpenTracker.Models.AutoTracking;
 using OpenTracker.Utils;
 using ReactiveUI;
-using System.ComponentModel;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OpenTracker.ViewModels.AutoTracking
 {

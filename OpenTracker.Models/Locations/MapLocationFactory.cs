@@ -1,6 +1,6 @@
-﻿using OpenTracker.Models.Requirements;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using OpenTracker.Models.Requirements;
 
 namespace OpenTracker.Models.Locations
 {

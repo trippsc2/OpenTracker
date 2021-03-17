@@ -1,6 +1,6 @@
-﻿using OpenTracker.Models.SequenceBreaks;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using OpenTracker.Models.SequenceBreaks;
 
 namespace OpenTracker.ViewModels.SequenceBreaks
 {
@@ -19,7 +19,7 @@ namespace OpenTracker.ViewModels.SequenceBreaks
         /// The sequence break dictionary.
         /// </param>
         /// <param name="factory">
-        /// The Autofac factory for creating new sequnece break controls.
+        /// The Autofac factory for creating new sequence break controls.
         /// </param>
         public SequenceBreakControlFactory(
             ISequenceBreakDictionary sequenceBreakDictionary,
@@ -48,6 +48,7 @@ namespace OpenTracker.ViewModels.SequenceBreaks
                 SequenceBreakType.SpikeCave => "Spike Cave",
                 SequenceBreakType.TRLaserSkip => "TR Laser Bridge without safety",
                 SequenceBreakType.LanmolasBombs => "Lanmolas - Bombs only",
+                SequenceBreakType.HelmasaurKingBasic => "Helmasaur King",
                 SequenceBreakType.ArrghusBasic => "Arrghus",
                 SequenceBreakType.MothulaBasic => "Mothula",
                 SequenceBreakType.BlindBasic => "Blind",
@@ -67,8 +68,7 @@ namespace OpenTracker.ViewModels.SequenceBreaks
                 SequenceBreakType.DarkRoomAT => "Agahnim's Tower",
                 SequenceBreakType.DarkRoomEPRight => "Eastern Palace - Right",
                 SequenceBreakType.DarkRoomEPBack => "Eastern Palace - Back",
-                SequenceBreakType.DarkRoomPoDDarkBasement =>
-                    "Palace of Darkness - Dark Basement",
+                SequenceBreakType.DarkRoomPoDDarkBasement => "Palace of Darkness - Dark Basement",
                 SequenceBreakType.DarkRoomPoDDarkMaze => "Palace of Darkness - Dark Maze",
                 SequenceBreakType.DarkRoomPoDBossArea => "Palace of Darkness - Boss Area",
                 SequenceBreakType.DarkRoomMM => "Misery Mire",
@@ -78,8 +78,7 @@ namespace OpenTracker.ViewModels.SequenceBreaks
                 SequenceBreakType.FakeFlippersScreenTransition => "Screen Transition",
                 SequenceBreakType.FakeFlippersSplashDeletion => "Splash Deletion",
                 SequenceBreakType.WaterWalk => "Water Walk",
-                SequenceBreakType.WaterWalkFromWaterfallCave =>
-                    "Water Walk from Waterfall Cave",
+                SequenceBreakType.WaterWalkFromWaterfallCave => "Water Walk from Waterfall Cave",
                 SequenceBreakType.SuperBunnyMirror => "Mirror",
                 SequenceBreakType.SuperBunnyFallInHole => "Fall in Hole",
                 SequenceBreakType.CameraUnlock => "Camera Unlock",
@@ -121,8 +120,8 @@ namespace OpenTracker.ViewModels.SequenceBreaks
         /// </returns>
         private ISequenceBreakControlVM GetSequenceBreakControl(SequenceBreakType type)
         {
-            return _factory(_sequenceBreakDictionary[type], GetSequenceBreakName(type),
-                GetSequenceBreakToolTip(type));
+            return _factory(
+                _sequenceBreakDictionary[type], GetSequenceBreakName(type), GetSequenceBreakToolTip(type));
         }
 
         /// <summary>
@@ -136,7 +135,7 @@ namespace OpenTracker.ViewModels.SequenceBreaks
         {
             var bombDuplicationSequenceBreaks = new List<ISequenceBreakControlVM>();
 
-            for (int i = (int)SequenceBreakType.BombDuplicationAncillaOverload;
+            for (var i = (int)SequenceBreakType.BombDuplicationAncillaOverload;
                 i <= (int)SequenceBreakType.BombDuplicationMirror; i++)
             {
                 var type = (SequenceBreakType)i;
@@ -157,7 +156,7 @@ namespace OpenTracker.ViewModels.SequenceBreaks
         {
             var bombJumpsSequenceBreaks = new List<ISequenceBreakControlVM>();
 
-            for (int i = (int)SequenceBreakType.BombJumpPoDHammerJump;
+            for (var i = (int)SequenceBreakType.BombJumpPoDHammerJump;
                 i <= (int)SequenceBreakType.BombJumpIPFreezorRoomGap; i++)
             {
                 var type = (SequenceBreakType)i;
@@ -178,8 +177,7 @@ namespace OpenTracker.ViewModels.SequenceBreaks
         {
             var darkRoomsSequenceBreaks = new List<ISequenceBreakControlVM>();
 
-            for (int i = (int)SequenceBreakType.DarkRoomDeathMountainEntry;
-                i <= (int)SequenceBreakType.DarkRoomTR; i++)
+            for (var i = (int)SequenceBreakType.DarkRoomDeathMountainEntry; i <= (int)SequenceBreakType.DarkRoomTR; i++)
             {
                 var type = (SequenceBreakType)i;
                 darkRoomsSequenceBreaks.Add(GetSequenceBreakControl(type));
@@ -200,7 +198,7 @@ namespace OpenTracker.ViewModels.SequenceBreaks
         {
             var fakeFlippersWaterWalkSequenceBreaks = new List<ISequenceBreakControlVM>();
 
-            for (int i = (int)SequenceBreakType.FakeFlippersFairyRevival;
+            for (var i = (int)SequenceBreakType.FakeFlippersFairyRevival;
                 i <= (int)SequenceBreakType.WaterWalkFromWaterfallCave; i++)
             {
                 var type = (SequenceBreakType)i;
@@ -221,8 +219,7 @@ namespace OpenTracker.ViewModels.SequenceBreaks
         {
             var superBunnySequenceBreaks = new List<ISequenceBreakControlVM>();
 
-            for (int i = (int)SequenceBreakType.SuperBunnyMirror;
-                i <= (int)SequenceBreakType.SuperBunnyFallInHole; i++)
+            for (var i = (int)SequenceBreakType.SuperBunnyMirror; i <= (int)SequenceBreakType.SuperBunnyFallInHole; i++)
             {
                 var type = (SequenceBreakType)i;
                 superBunnySequenceBreaks.Add(GetSequenceBreakControl(type));
@@ -241,8 +238,7 @@ namespace OpenTracker.ViewModels.SequenceBreaks
         {
             var otherSequenceBreaks = new List<ISequenceBreakControlVM>();
 
-            for (int i = (int)SequenceBreakType.CameraUnlock;
-                i <= (int)SequenceBreakType.IPIceBreaker; i++)
+            for (var i = (int)SequenceBreakType.CameraUnlock; i <= (int)SequenceBreakType.IPIceBreaker; i++)
             {
                 var type = (SequenceBreakType)i;
                 otherSequenceBreaks.Add(GetSequenceBreakControl(type));

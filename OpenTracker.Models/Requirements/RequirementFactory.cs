@@ -1,12 +1,12 @@
-﻿using OpenTracker.Models.AccessibilityLevels;
+﻿using System;
+using System.Collections.Generic;
+using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Modes;
+using OpenTracker.Models.Prizes;
 using OpenTracker.Models.RequirementNodes;
 using OpenTracker.Models.SequenceBreaks;
-using System;
-using System.Collections.Generic;
-using OpenTracker.Models.Prizes;
 
 namespace OpenTracker.Models.Requirements
 {
@@ -664,7 +664,7 @@ namespace OpenTracker.Models.Requirements
         }
 
         /// <summary>
-        /// Returns a requrement node for the specified requirement.
+        /// Returns a requirement node for the specified requirement.
         /// </summary>
         /// <param name="type">
         /// The requirement type.

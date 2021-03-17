@@ -1,14 +1,14 @@
-﻿using Avalonia.Threading;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Reactive;
+using System.Threading.Tasks;
+using Avalonia.Threading;
 using OpenTracker.Models.AutoTracking;
 using OpenTracker.Models.AutoTracking.Logging;
 using OpenTracker.Utils.Dialog;
 using OpenTracker.ViewModels.AutoTracking;
 using ReactiveUI;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Reactive;
-using System.Threading.Tasks;
 
 namespace OpenTracker.ViewModels.Dialogs
 {

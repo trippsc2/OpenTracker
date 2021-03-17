@@ -1,14 +1,14 @@
+using System.ComponentModel;
+using System.Globalization;
+using System.Reactive;
 using Avalonia.Input;
 using Avalonia.Threading;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
-using ReactiveUI;
-using System.ComponentModel;
-using System.Globalization;
-using System.Reactive;
 using OpenTracker.ViewModels.BossSelect;
+using ReactiveUI;
 
 namespace OpenTracker.ViewModels.Items.Adapters
 {

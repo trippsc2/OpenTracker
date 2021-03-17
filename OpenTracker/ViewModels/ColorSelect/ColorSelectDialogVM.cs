@@ -1,6 +1,6 @@
-﻿using OpenTracker.Utils.Dialog;
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
+using OpenTracker.Utils.Dialog;
 
 namespace OpenTracker.ViewModels.ColorSelect
 {

@@ -1,10 +1,10 @@
-﻿using Avalonia.Threading;
+﻿using System;
+using System.ComponentModel;
+using System.Globalization;
+using Avalonia.Threading;
 using OpenTracker.Models.Items;
 using OpenTracker.Utils;
 using ReactiveUI;
-using System;
-using System.ComponentModel;
-using System.Globalization;
 
 namespace OpenTracker.ViewModels.Markings.Images
 {

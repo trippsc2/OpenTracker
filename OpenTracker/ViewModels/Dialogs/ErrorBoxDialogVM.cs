@@ -1,6 +1,6 @@
-﻿using OpenTracker.Utils.Dialog;
+﻿using System.Reactive;
+using OpenTracker.Utils.Dialog;
 using ReactiveUI;
-using System.Reactive;
 
 namespace OpenTracker.ViewModels.Dialogs
 {

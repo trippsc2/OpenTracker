@@ -1,6 +1,6 @@
-﻿using OpenTracker.Models.KeyDoors;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using OpenTracker.Models.KeyDoors;
 
 namespace OpenTracker.Models.Dungeons
 {

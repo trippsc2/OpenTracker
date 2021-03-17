@@ -1,10 +1,10 @@
-﻿using OpenTracker.Models.AccessibilityLevels;
+﻿using System;
+using System.ComponentModel;
+using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.Markings;
 using OpenTracker.Models.RequirementNodes;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
-using System;
-using System.ComponentModel;
 using ReactiveUI;
 
 namespace OpenTracker.Models.Sections

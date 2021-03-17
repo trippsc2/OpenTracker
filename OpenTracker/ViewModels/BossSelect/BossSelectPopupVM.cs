@@ -1,13 +1,13 @@
-﻿using OpenTracker.Models.BossPlacements;
-using OpenTracker.Models.Settings;
-using OpenTracker.Models.UndoRedo;
-using OpenTracker.Utils;
-using ReactiveUI;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reactive;
 using System.Threading.Tasks;
 using Avalonia.Threading;
+using OpenTracker.Models.BossPlacements;
+using OpenTracker.Models.Settings;
+using OpenTracker.Models.UndoRedo;
+using OpenTracker.Utils;
+using ReactiveUI;
 
 namespace OpenTracker.ViewModels.BossSelect
 {

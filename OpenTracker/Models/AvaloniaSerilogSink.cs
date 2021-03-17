@@ -1,8 +1,8 @@
-﻿using Avalonia.Controls;
+﻿using System;
+using System.Collections.Generic;
+using Avalonia.Controls;
 using Avalonia.Logging;
 using Serilog;
-using System;
-using System.Collections.Generic;
 
 namespace OpenTracker.Models
 {

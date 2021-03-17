@@ -1,8 +1,8 @@
-﻿using OpenTracker.Models.AccessibilityLevels;
+﻿using System.Collections.Generic;
+using System.Reflection;
+using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Utils;
-using System.Collections.Generic;
-using System.Reflection;
 
 namespace OpenTracker.Models.Settings
 {

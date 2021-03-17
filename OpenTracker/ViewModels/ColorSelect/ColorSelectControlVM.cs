@@ -1,3 +1,6 @@
+using System;
+using System.ComponentModel;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Media;
 using Avalonia.Threading;
@@ -5,9 +8,6 @@ using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.Settings;
 using OpenTracker.Utils;
 using ReactiveUI;
-using System;
-using System.ComponentModel;
-using System.Threading.Tasks;
 
 namespace OpenTracker.ViewModels.ColorSelect
 {

@@ -3,7 +3,7 @@
 namespace OpenTracker.Models.Items
 {
     /// <summary>
-    /// This interface contains creation logic for item autotrack values.
+    /// This interface contains creation logic for item auto-track values.
     /// </summary>
     public interface IItemAutoTrackValueFactory
     {

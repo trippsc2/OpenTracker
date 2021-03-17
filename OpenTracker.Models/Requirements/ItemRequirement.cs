@@ -1,5 +1,5 @@
-﻿using OpenTracker.Models.Items;
-using System.ComponentModel;
+﻿using System.ComponentModel;
+using OpenTracker.Models.Items;
 
 namespace OpenTracker.Models.Requirements
 {

@@ -1,9 +1,9 @@
-﻿using OpenTracker.Models.AccessibilityLevels;
-using OpenTracker.Models.RequirementNodes;
-using OpenTracker.Models.Requirements;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using OpenTracker.Models.AccessibilityLevels;
+using OpenTracker.Models.RequirementNodes;
+using OpenTracker.Models.Requirements;
 using ReactiveUI;
 
 namespace OpenTracker.Models.NodeConnections

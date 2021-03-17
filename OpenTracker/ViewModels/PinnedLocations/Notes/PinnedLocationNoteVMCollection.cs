@@ -16,8 +16,7 @@ namespace OpenTracker.ViewModels.PinnedLocations.Notes
         public delegate IPinnedLocationNoteVMCollection Factory(ILocation location);
 
         public PinnedLocationNoteVMCollection(
-            IMarkingSelectFactory markingSelectFactory, IPinnedLocationNoteVM.Factory factory,
-            ILocation location)
+            IMarkingSelectFactory markingSelectFactory, IPinnedLocationNoteVM.Factory factory, ILocation location)
             : base(location.Notes)
         {
             _markingSelectFactory = markingSelectFactory;

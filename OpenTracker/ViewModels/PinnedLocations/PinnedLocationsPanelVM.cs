@@ -1,9 +1,9 @@
-﻿using Avalonia.Layout;
+﻿using System.ComponentModel;
+using Avalonia.Layout;
 using Avalonia.Threading;
 using OpenTracker.Models.Settings;
 using OpenTracker.Utils;
 using ReactiveUI;
-using System.ComponentModel;
 
 namespace OpenTracker.ViewModels.PinnedLocations
 {

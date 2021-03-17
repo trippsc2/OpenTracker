@@ -1,6 +1,6 @@
-﻿using OpenTracker.Models.AccessibilityLevels;
+﻿using System.ComponentModel;
+using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.RequirementNodes;
-using System.ComponentModel;
 
 namespace OpenTracker.Models.Requirements
 {

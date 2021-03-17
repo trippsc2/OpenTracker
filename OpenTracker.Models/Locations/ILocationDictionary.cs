@@ -1,6 +1,6 @@
-﻿using OpenTracker.Models.SaveLoad;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using OpenTracker.Models.SaveLoad;
 
 namespace OpenTracker.Models.Locations
 {

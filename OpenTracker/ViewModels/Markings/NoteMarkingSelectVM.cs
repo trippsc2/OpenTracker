@@ -1,13 +1,13 @@
-﻿using Avalonia.Threading;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
+using System.Reactive;
+using Avalonia.Threading;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Markings;
 using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
 using ReactiveUI;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Reactive;
 
 namespace OpenTracker.ViewModels.Markings
 {

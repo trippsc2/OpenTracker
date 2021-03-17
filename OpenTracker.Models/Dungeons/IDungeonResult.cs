@@ -1,5 +1,5 @@
-﻿using OpenTracker.Models.AccessibilityLevels;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using OpenTracker.Models.AccessibilityLevels;
 
 namespace OpenTracker.Models.Dungeons
 {

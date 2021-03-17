@@ -1,5 +1,5 @@
-﻿using OpenTracker.Models.Modes;
-using System.ComponentModel;
+﻿using System.ComponentModel;
+using OpenTracker.Models.Modes;
 
 namespace OpenTracker.Models.Requirements
 {

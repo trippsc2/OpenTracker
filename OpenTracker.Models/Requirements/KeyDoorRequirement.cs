@@ -1,5 +1,5 @@
-﻿using OpenTracker.Models.KeyDoors;
-using System.ComponentModel;
+﻿using System.ComponentModel;
+using OpenTracker.Models.KeyDoors;
 
 namespace OpenTracker.Models.Requirements
 {

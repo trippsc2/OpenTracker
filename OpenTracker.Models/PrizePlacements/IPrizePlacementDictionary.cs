@@ -1,5 +1,5 @@
-﻿using OpenTracker.Models.SaveLoad;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using OpenTracker.Models.SaveLoad;
 
 namespace OpenTracker.Models.PrizePlacements
 {

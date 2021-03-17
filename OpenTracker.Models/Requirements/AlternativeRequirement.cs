@@ -1,6 +1,6 @@
-﻿using OpenTracker.Models.AccessibilityLevels;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
+using OpenTracker.Models.AccessibilityLevels;
 
 namespace OpenTracker.Models.Requirements
 {

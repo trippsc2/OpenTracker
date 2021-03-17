@@ -1,5 +1,5 @@
-﻿using OpenTracker.Models.Markings;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
+using OpenTracker.Models.Markings;
 
 namespace OpenTracker.Models.Locations
 {

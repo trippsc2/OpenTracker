@@ -1,4 +1,7 @@
-﻿using Avalonia.Input;
+﻿using System.ComponentModel;
+using System.Reactive;
+using System.Threading.Tasks;
+using Avalonia.Input;
 using Avalonia.Threading;
 using OpenTracker.Models.Markings;
 using OpenTracker.Models.Sections;
@@ -6,9 +9,6 @@ using OpenTracker.Utils;
 using OpenTracker.ViewModels.Markings;
 using OpenTracker.ViewModels.Markings.Images;
 using ReactiveUI;
-using System.ComponentModel;
-using System.Reactive;
-using System.Threading.Tasks;
 
 namespace OpenTracker.ViewModels.PinnedLocations.Sections
 {

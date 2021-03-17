@@ -1,5 +1,5 @@
-﻿using OpenTracker.Models.Markings;
-using System;
+﻿using System;
+using OpenTracker.Models.Markings;
 
 namespace OpenTracker.Models.UndoRedo
 {

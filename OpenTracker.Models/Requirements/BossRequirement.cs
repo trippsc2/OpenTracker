@@ -1,8 +1,8 @@
-﻿using OpenTracker.Models.AccessibilityLevels;
+﻿using System;
+using System.ComponentModel;
+using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.Modes;
-using System;
-using System.ComponentModel;
 
 namespace OpenTracker.Models.Requirements
 {

@@ -1,7 +1,7 @@
-﻿using OpenTracker.Models.SaveLoad;
-using OpenTracker.Utils;
-using System;
+﻿using System;
 using System.Collections.Specialized;
+using OpenTracker.Models.SaveLoad;
+using OpenTracker.Utils;
 using ReactiveUI;
 
 namespace OpenTracker.Models.UndoRedo

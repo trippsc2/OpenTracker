@@ -1,8 +1,8 @@
-﻿using OpenTracker.Models.Locations;
+﻿using System.Collections.Generic;
+using OpenTracker.Models.Locations;
 using OpenTracker.Utils;
 using OpenTracker.ViewModels.PinnedLocations.Notes;
 using OpenTracker.ViewModels.PinnedLocations.Sections;
-using System.Collections.Generic;
 
 namespace OpenTracker.ViewModels.PinnedLocations
 {

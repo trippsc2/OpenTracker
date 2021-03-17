@@ -1,11 +1,11 @@
-﻿using Avalonia.Controls;
+﻿using System.ComponentModel;
+using Avalonia.Controls;
 using Avalonia.Layout;
 using Avalonia.Threading;
 using OpenTracker.Models.Settings;
 using OpenTracker.Utils;
 using OpenTracker.ViewModels.UIPanels;
 using ReactiveUI;
-using System.ComponentModel;
 
 namespace OpenTracker.ViewModels.Areas
 {

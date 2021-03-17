@@ -1,16 +1,16 @@
-﻿using Avalonia.Input;
-using Avalonia.Threading;
-using OpenTracker.Models.PrizePlacements;
-using OpenTracker.Models.Sections;
-using OpenTracker.Models.UndoRedo;
-using OpenTracker.Utils;
-using ReactiveUI;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Linq;
 using System.Reactive;
 using System.Text;
 using System.Threading.Tasks;
+using Avalonia.Input;
+using Avalonia.Threading;
+using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.Prizes;
+using OpenTracker.Models.Sections;
+using OpenTracker.Models.UndoRedo;
+using OpenTracker.Utils;
+using ReactiveUI;
 
 namespace OpenTracker.ViewModels.PinnedLocations.Sections
 {

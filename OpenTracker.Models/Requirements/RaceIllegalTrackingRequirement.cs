@@ -1,5 +1,5 @@
-﻿using OpenTracker.Models.AutoTracking;
-using System.ComponentModel;
+﻿using System.ComponentModel;
+using OpenTracker.Models.AutoTracking;
 
 namespace OpenTracker.Models.Requirements
 {
@@ -17,7 +17,7 @@ namespace OpenTracker.Models.Requirements
         /// Constructor
         /// </summary>
         /// <param name="autoTracker">
-        /// The autotracker data.
+        /// The auto-tracker data.
         /// </param>
         /// <param name="expectedValue">
         /// A boolean expected race illegal tracking requirement value.

@@ -1,17 +1,17 @@
-﻿using Avalonia;
+﻿using System.ComponentModel;
+using System.Reactive;
+using System.Text;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
 using Avalonia.Threading;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.Settings;
 using OpenTracker.Utils;
-using OpenTracker.ViewModels.Areas;
-using ReactiveUI;
-using System.ComponentModel;
-using System.Reactive;
-using System.Text;
 using OpenTracker.Utils.Dialog;
+using OpenTracker.ViewModels.Areas;
 using OpenTracker.ViewModels.Menus;
+using ReactiveUI;
 
 namespace OpenTracker.ViewModels
 {

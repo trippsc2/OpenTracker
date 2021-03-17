@@ -1,7 +1,7 @@
-﻿using OpenTracker.Models.AutoTracking.Values;
-using OpenTracker.Models.SaveLoad;
-using System;
+﻿using System;
 using System.ComponentModel;
+using OpenTracker.Models.AutoTracking.Values;
+using OpenTracker.Models.SaveLoad;
 using ReactiveUI;
 
 namespace OpenTracker.Models.Items

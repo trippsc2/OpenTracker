@@ -1,6 +1,6 @@
-﻿using OpenTracker.Models.Markings;
+﻿using System.Collections.Generic;
+using OpenTracker.Models.Markings;
 using OpenTracker.Utils;
-using System.Collections.Generic;
 
 namespace OpenTracker.ViewModels.Markings.Images
 {

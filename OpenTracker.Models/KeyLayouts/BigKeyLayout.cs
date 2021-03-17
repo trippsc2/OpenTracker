@@ -1,10 +1,10 @@
-﻿using OpenTracker.Models.AccessibilityLevels;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.DungeonItems;
 using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.Requirements;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace OpenTracker.Models.KeyLayouts
 {

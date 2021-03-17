@@ -1,6 +1,6 @@
-﻿using Avalonia.Controls;
+﻿using System.ComponentModel;
+using Avalonia.Controls;
 using Avalonia.Layout;
-using System.ComponentModel;
 using ReactiveUI;
 
 namespace OpenTracker.Models.Settings

@@ -1,10 +1,10 @@
-﻿using OpenTracker.Models.BossPlacements;
+﻿using System;
+using System.Collections.Generic;
+using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.RequirementNodes;
 using OpenTracker.Models.Requirements;
-using System;
-using System.Collections.Generic;
 
 namespace OpenTracker.Models.Sections
 {

@@ -1,8 +1,4 @@
-﻿using Avalonia.Threading;
-using OpenTracker.Models.AutoTracking.Logging;
-using OpenTracker.Utils;
-using ReactiveUI;
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -10,8 +6,12 @@ using System.Globalization;
 using System.IO;
 using System.Reactive;
 using System.Threading.Tasks;
+using Avalonia.Threading;
+using OpenTracker.Models.AutoTracking.Logging;
+using OpenTracker.Utils;
 using OpenTracker.Utils.Dialog;
 using OpenTracker.ViewModels.Dialogs;
+using ReactiveUI;
 using LogLevel = OpenTracker.Models.AutoTracking.Logging.LogLevel;
 
 namespace OpenTracker.ViewModels.AutoTracking

@@ -1,6 +1,6 @@
-﻿using OpenTracker.Models.AccessibilityLevels;
+﻿using System.ComponentModel;
+using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.SequenceBreaks;
-using System.ComponentModel;
 
 namespace OpenTracker.Models.Requirements
 {
@@ -19,8 +19,7 @@ namespace OpenTracker.Models.Requirements
         /// <param name="sequenceBreak">
         /// The sequence break required.
         /// </param>
-        public SequenceBreakRequirement(ISequenceBreak sequenceBreak)
-            : base(AccessibilityLevel.SequenceBreak)
+        public SequenceBreakRequirement(ISequenceBreak sequenceBreak) : base(AccessibilityLevel.SequenceBreak)
         {
             _sequenceBreak = sequenceBreak;
 

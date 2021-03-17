@@ -1,8 +1,8 @@
-﻿using Avalonia.Controls;
+﻿using System;
+using System.Collections.Generic;
+using Avalonia.Controls;
 using Avalonia.Layout;
 using OpenTracker.Models.AccessibilityLevels;
-using System;
-using System.Collections.Generic;
 
 namespace OpenTracker.Models.SaveLoad
 {

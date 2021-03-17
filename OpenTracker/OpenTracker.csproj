@@ -150,7 +150,4 @@
     <UpToDateCheckInput Remove="Views\Maps\Locations\ShopMapLocation.axaml" />
     <UpToDateCheckInput Remove="Views\Maps\Locations\TakeAnyMapLocation.axaml" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\SaveLoad\Stream" />
-  </ItemGroup>
 </Project>

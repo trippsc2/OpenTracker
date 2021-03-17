@@ -1,7 +1,7 @@
-﻿using OpenTracker.Models.DungeonNodes;
+﻿using System;
+using OpenTracker.Models.DungeonNodes;
 using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.RequirementNodes;
-using System;
 
 namespace OpenTracker.Models.KeyDoors
 {

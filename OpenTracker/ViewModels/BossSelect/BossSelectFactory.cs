@@ -1,6 +1,6 @@
-﻿using OpenTracker.Models.BossPlacements;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using OpenTracker.Models.BossPlacements;
 
 namespace OpenTracker.ViewModels.BossSelect
 {

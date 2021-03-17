@@ -1,6 +1,6 @@
-﻿using OpenTracker.Models.SaveLoad;
+﻿using System.Collections.Generic;
+using OpenTracker.Models.SaveLoad;
 using OpenTracker.Utils;
-using System.Collections.Generic;
 
 namespace OpenTracker.Models.Connections
 {

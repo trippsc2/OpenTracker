@@ -1,10 +1,10 @@
-﻿using OpenTracker.Models.BossPlacements;
+﻿using System;
+using System.Collections.Generic;
+using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.Dropdowns;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.PrizePlacements;
-using System;
-using System.Collections.Generic;
 
 namespace OpenTracker.Models.SaveLoad
 {

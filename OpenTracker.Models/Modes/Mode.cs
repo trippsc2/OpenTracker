@@ -1,5 +1,5 @@
-﻿using OpenTracker.Models.SaveLoad;
-using System.ComponentModel;
+﻿using System.ComponentModel;
+using OpenTracker.Models.SaveLoad;
 using ReactiveUI;
 
 namespace OpenTracker.Models.Modes
