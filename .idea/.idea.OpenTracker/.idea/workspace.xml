@@ -4,7 +4,7 @@
     <projectFile>OpenTracker/OpenTracker.csproj</projectFile>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="df8d63c9-11c3-4952-b071-35611cbfafa5" name="Default Changelist" comment="Added back Rider files to the Git repo." />
+    <list default="true" id="df8d63c9-11c3-4952-b071-35611cbfafa5" name="Default Changelist" comment="Added back Rider files to Git repo." />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -91,7 +91,7 @@
     </changedPaths>
   </component>
   <component name="ProjectId" id="1pRcgyG1XcEK82fEAitoAD7OL1F" />
-  <component name="ProjectLevelVcsManager">
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <OptionsSetting value="false" id="Update" />
     <ConfirmationsSetting value="2" id="Add" />
   </component>
@@ -154,6 +154,7 @@
       <workItem from="1615748893799" duration="935000" />
       <workItem from="1615810735257" duration="8040000" />
       <workItem from="1616018916121" duration="212000" />
+      <workItem from="1616019186661" duration="43000" />
     </task>
     <task id="LOCAL-00001" summary="Fixed a dependency problem.  Incremented version to v1.8.1.">
       <created>1615150575459</created>
@@ -246,7 +247,14 @@
       <option name="project" value="LOCAL" />
       <updated>1616019116516</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="Added back Rider files to Git repo.">
+      <created>1616019216510</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1616019216510</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -289,7 +297,8 @@
     <MESSAGE value="Began work on capture view menus." />
     <MESSAGE value="Class cleanup and introducing ReactiveUI into the model classes to cleanup implementation of PropertyChanged events." />
     <MESSAGE value="Added back Rider files to the Git repo." />
-    <option name="LAST_COMMIT_MESSAGE" value="Added back Rider files to the Git repo." />
+    <MESSAGE value="Added back Rider files to Git repo." />
+    <option name="LAST_COMMIT_MESSAGE" value="Added back Rider files to Git repo." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
