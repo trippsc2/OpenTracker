@@ -1,0 +1,1263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ContentModelStore">
+    <e p="$USER_HOME$/.cache/JetBrains/Rider2020.3/extResources" t="IncludeRecursive" />
+    <e p="$USER_HOME$/.cache/JetBrains/Rider2020.3/resharper-host/local/Transient/Rider/v203/SolutionCaches/_OpenTracker.-1187156958.00" t="ExcludeRecursive" />
+    <e p="$USER_HOME$/.nuget/packages/microsoft.net.test.sdk/16.9.1/build/netcoreapp2.1" t="Include">
+      <e p="Microsoft.NET.Test.Sdk.Program.cs" t="Include" />
+    </e>
+    <e p="$USER_HOME$/.nuget/packages/microsoft.testplatform.testhost/16.9.1/build/netcoreapp2.1/Microsoft.TestPlatform.PlatformAbstractions.dll" t="Include" />
+    <e p="$USER_HOME$/.nuget/packages/xunit.runner.visualstudio/2.4.3/build/netcoreapp2.1/xunit.runner.reporters.netcoreapp10.dll" t="Include" />
+    <e p="$USER_HOME$/.nuget/packages/xunit.runner.visualstudio/2.4.3/build/netcoreapp2.1/xunit.runner.utility.netcoreapp10.dll" t="Include" />
+    <e p="$USER_HOME$/.nuget/packages/xunit.runner.visualstudio/2.4.3/build/netcoreapp2.1/xunit.runner.visualstudio.dotnetcore.testadapter.dll" t="Include" />
+    <e p="$PROJECT_DIR$" t="IncludeFlat">
+      <e p="Avalonia.ThemeManager" t="IncludeRecursive">
+        <e p="Avalonia.ThemeManager.csproj" t="IncludeRecursive" />
+        <e p="ITheme.cs" t="Include" />
+        <e p="IThemeSelector.cs" t="Include" />
+        <e p="ObjectEqualityMultiConverter.cs" t="Include" />
+        <e p="Theme.cs" t="Include" />
+        <e p="ThemeSelector.cs" t="Include" />
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="netcoreapp3.1" t="Include">
+              <e p="Avalonia" t="Include">
+                <e p="resources" t="Include" />
+              </e>
+              <e p="Avalonia.ThemeManager.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+      </e>
+      <e p="OpenTracker" t="IncludeRecursive">
+        <e p="App.axaml" t="Include" />
+        <e p="App.axaml.cs" t="Include" />
+        <e p="Assets" t="Include">
+          <e p="Fonts" t="Include">
+            <e p="OpenSans-Bold.ttf" t="Include" />
+            <e p="OpenSans-BoldItalic.ttf" t="Include" />
+            <e p="OpenSans-ExtraBold.ttf" t="Include" />
+            <e p="OpenSans-ExtraBoldItalic.ttf" t="Include" />
+            <e p="OpenSans-Italic.ttf" t="Include" />
+            <e p="OpenSans-Light.ttf" t="Include" />
+            <e p="OpenSans-LightItalic.ttf" t="Include" />
+            <e p="OpenSans-Regular.ttf" t="Include" />
+            <e p="OpenSans-SemiBold.ttf" t="Include" />
+            <e p="OpenSans-SemiBoldItalic.ttf" t="Include" />
+          </e>
+          <e p="Images" t="Include">
+            <e p="Bosses" t="Include">
+              <e p="armos0.png" t="Include" />
+              <e p="armos1.png" t="Include" />
+              <e p="arrghus0.png" t="Include" />
+              <e p="arrghus1.png" t="Include" />
+              <e p="blind0.png" t="Include" />
+              <e p="blind1.png" t="Include" />
+              <e p="helmasaurking0.png" t="Include" />
+              <e p="helmasaurking1.png" t="Include" />
+              <e p="kholdstare0.png" t="Include" />
+              <e p="kholdstare1.png" t="Include" />
+              <e p="lanmolas0.png" t="Include" />
+              <e p="lanmolas1.png" t="Include" />
+              <e p="moldorm0.png" t="Include" />
+              <e p="moldorm1.png" t="Include" />
+              <e p="mothula0.png" t="Include" />
+              <e p="mothula1.png" t="Include" />
+              <e p="trinexx0.png" t="Include" />
+              <e p="trinexx1.png" t="Include" />
+              <e p="vitreous0.png" t="Include" />
+              <e p="vitreous1.png" t="Include" />
+            </e>
+            <e p="Dropdowns" t="Include">
+              <e p="castlesecret0.png" t="Include" />
+              <e p="castlesecret1.png" t="Include" />
+              <e p="foresthideout0.png" t="Include" />
+              <e p="foresthideout1.png" t="Include" />
+              <e p="ganonhole0.png" t="Include" />
+              <e p="ganonhole1.png" t="Include" />
+              <e p="houlihanhole0.png" t="Include" />
+              <e p="houlihanhole1.png" t="Include" />
+              <e p="lumberjackcave0.png" t="Include" />
+              <e p="lumberjackcave1.png" t="Include" />
+              <e p="magicbat0.png" t="Include" />
+              <e p="magicbat1.png" t="Include" />
+              <e p="sanctuarygrave0.png" t="Include" />
+              <e p="sanctuarygrave1.png" t="Include" />
+              <e p="swnehole0.png" t="Include" />
+              <e p="swnehole1.png" t="Include" />
+              <e p="swnwhole0.png" t="Include" />
+              <e p="swnwhole1.png" t="Include" />
+              <e p="swsehole0.png" t="Include" />
+              <e p="swsehole1.png" t="Include" />
+              <e p="swswhole0.png" t="Include" />
+              <e p="swswhole1.png" t="Include" />
+              <e p="thewell0.png" t="Include" />
+              <e p="thewell1.png" t="Include" />
+            </e>
+            <e p="Items" t="Include">
+              <e p="aga10.png" t="Include" />
+              <e p="aga11.png" t="Include" />
+              <e p="aga20.png" t="Include" />
+              <e p="aga21.png" t="Include" />
+              <e p="bigkey0.png" t="Include" />
+              <e p="bigkey1.png" t="Include" />
+              <e p="bomb00.png" t="Include" />
+              <e p="bomb01.png" t="Include" />
+              <e p="bomb10.png" t="Include" />
+              <e p="bomb11.png" t="Include" />
+              <e p="bombos00.png" t="Include" />
+              <e p="bombos01.png" t="Include" />
+              <e p="bombos02.png" t="Include" />
+              <e p="bombos03.png" t="Include" />
+              <e p="bombos10.png" t="Include" />
+              <e p="bombos11.png" t="Include" />
+              <e p="bombos12.png" t="Include" />
+              <e p="bombos13.png" t="Include" />
+              <e p="book0.png" t="Include" />
+              <e p="book1.png" t="Include" />
+              <e p="boomerang00.png" t="Include" />
+              <e p="boomerang01.png" t="Include" />
+              <e p="boomerang10.png" t="Include" />
+              <e p="boomerang11.png" t="Include" />
+              <e p="boots0.png" t="Include" />
+              <e p="boots1.png" t="Include" />
+              <e p="bottle0.png" t="Include" />
+              <e p="bottle1.png" t="Include" />
+              <e p="bottle2.png" t="Include" />
+              <e p="bottle3.png" t="Include" />
+              <e p="bottle4.png" t="Include" />
+              <e p="bow00.png" t="Include" />
+              <e p="bow01.png" t="Include" />
+              <e p="bow02.png" t="Include" />
+              <e p="bow10.png" t="Include" />
+              <e p="bow11.png" t="Include" />
+              <e p="bow12.png" t="Include" />
+              <e p="caneofbyrna0.png" t="Include" />
+              <e p="caneofbyrna1.png" t="Include" />
+              <e p="caneofsomaria0.png" t="Include" />
+              <e p="caneofsomaria1.png" t="Include" />
+              <e p="cape0.png" t="Include" />
+              <e p="cape1.png" t="Include" />
+              <e p="compass0.png" t="Include" />
+              <e p="compass1.png" t="Include" />
+              <e p="crystal0.png" t="Include" />
+              <e p="crystal1.png" t="Include" />
+              <e p="ether00.png" t="Include" />
+              <e p="ether01.png" t="Include" />
+              <e p="ether02.png" t="Include" />
+              <e p="ether03.png" t="Include" />
+              <e p="ether10.png" t="Include" />
+              <e p="ether11.png" t="Include" />
+              <e p="ether12.png" t="Include" />
+              <e p="ether13.png" t="Include" />
+              <e p="firerod0.png" t="Include" />
+              <e p="firerod1.png" t="Include" />
+              <e p="flippers0.png" t="Include" />
+              <e p="flippers1.png" t="Include" />
+              <e p="flute00.png" t="Include" />
+              <e p="flute01.png" t="Include" />
+              <e p="flute10.png" t="Include" />
+              <e p="flute11.png" t="Include" />
+              <e p="ganoncrystals.png" t="Include" />
+              <e p="gloves0.png" t="Include" />
+              <e p="gloves1.png" t="Include" />
+              <e p="gloves2.png" t="Include" />
+              <e p="greenpendant0.png" t="Include" />
+              <e p="greenpendant1.png" t="Include" />
+              <e p="halfmagic0.png" t="Include" />
+              <e p="halfmagic1.png" t="Include" />
+              <e p="hammer0.png" t="Include" />
+              <e p="hammer1.png" t="Include" />
+              <e p="hookshot0.png" t="Include" />
+              <e p="hookshot1.png" t="Include" />
+              <e p="icerod0.png" t="Include" />
+              <e p="icerod1.png" t="Include" />
+              <e p="lamp0.png" t="Include" />
+              <e p="lamp1.png" t="Include" />
+              <e p="mail0.png" t="Include" />
+              <e p="mail1.png" t="Include" />
+              <e p="mail2.png" t="Include" />
+              <e p="map0.png" t="Include" />
+              <e p="map1.png" t="Include" />
+              <e p="mirror0.png" t="Include" />
+              <e p="mirror1.png" t="Include" />
+              <e p="moonpearl0.png" t="Include" />
+              <e p="moonpearl1.png" t="Include" />
+              <e p="mushroom0.png" t="Include" />
+              <e p="mushroom1.png" t="Include" />
+              <e p="mushroom2.png" t="Include" />
+              <e p="net0.png" t="Include" />
+              <e p="net1.png" t="Include" />
+              <e p="pendant0.png" t="Include" />
+              <e p="pendant1.png" t="Include" />
+              <e p="powder00.png" t="Include" />
+              <e p="powder01.png" t="Include" />
+              <e p="powder10.png" t="Include" />
+              <e p="powder11.png" t="Include" />
+              <e p="quake00.png" t="Include" />
+              <e p="quake01.png" t="Include" />
+              <e p="quake02.png" t="Include" />
+              <e p="quake03.png" t="Include" />
+              <e p="quake10.png" t="Include" />
+              <e p="quake11.png" t="Include" />
+              <e p="quake12.png" t="Include" />
+              <e p="quake13.png" t="Include" />
+              <e p="redcrystal0.png" t="Include" />
+              <e p="redcrystal1.png" t="Include" />
+              <e p="shield0.png" t="Include" />
+              <e p="shield1.png" t="Include" />
+              <e p="shield2.png" t="Include" />
+              <e p="shield3.png" t="Include" />
+              <e p="shovel0.png" t="Include" />
+              <e p="shovel1.png" t="Include" />
+              <e p="smallkey0.png" t="Include" />
+              <e p="smallkey1.png" t="Include" />
+              <e p="sword0.png" t="Include" />
+              <e p="sword1.png" t="Include" />
+              <e p="sword2.png" t="Include" />
+              <e p="sword3.png" t="Include" />
+              <e p="sword4.png" t="Include" />
+              <e p="sword5.png" t="Include" />
+              <e p="towercrystals.png" t="Include" />
+              <e p="unknown0.png" t="Include" />
+              <e p="unknown1.png" t="Include" />
+            </e>
+            <e p="Maps" t="Include">
+              <e p="inverted_darkworld.png" t="Include" />
+              <e p="inverted_lightworld.png" t="Include" />
+              <e p="standardopen_darkworld.png" t="Include" />
+              <e p="standardopen_lightworld.png" t="Include" />
+            </e>
+            <e p="Marks" t="Include">
+              <e p="aga.png" t="Include" />
+              <e p="bigbomb.png" t="Include" />
+              <e p="bigkey.png" t="Include" />
+              <e p="blacksmith.png" t="Include" />
+              <e p="bomb.png" t="Include" />
+              <e p="bombos.png" t="Include" />
+              <e p="book.png" t="Include" />
+              <e p="boomerang.png" t="Include" />
+              <e p="boots.png" t="Include" />
+              <e p="bottle0.png" t="Include" />
+              <e p="bottle1.png" t="Include" />
+              <e p="bottle2.png" t="Include" />
+              <e p="bottle3.png" t="Include" />
+              <e p="bottle4.png" t="Include" />
+              <e p="bow.png" t="Include" />
+              <e p="brothers.png" t="Include" />
+              <e p="bumpercave.png" t="Include" />
+              <e p="caneofbyrna.png" t="Include" />
+              <e p="caneofsomaria.png" t="Include" />
+              <e p="cape.png" t="Include" />
+              <e p="dam.png" t="Include" />
+              <e p="dpback.png" t="Include" />
+              <e p="dpfront.png" t="Include" />
+              <e p="dpleft.png" t="Include" />
+              <e p="dpright.png" t="Include" />
+              <e p="ep.png" t="Include" />
+              <e p="ether.png" t="Include" />
+              <e p="fairyascensionbottom.png" t="Include" />
+              <e p="fairyascensiontop.png" t="Include" />
+              <e p="firerod.png" t="Include" />
+              <e p="flippers.png" t="Include" />
+              <e p="flute.png" t="Include" />
+              <e p="ganon.png" t="Include" />
+              <e p="gloves0.png" t="Include" />
+              <e p="gloves1.png" t="Include" />
+              <e p="gloves2.png" t="Include" />
+              <e p="gt.png" t="Include" />
+              <e p="halfmagic.png" t="Include" />
+              <e p="hammer.png" t="Include" />
+              <e p="hcfront.png" t="Include" />
+              <e p="hcleft.png" t="Include" />
+              <e p="hcright.png" t="Include" />
+              <e p="hookshot.png" t="Include" />
+              <e p="icerod.png" t="Include" />
+              <e p="ip.png" t="Include" />
+              <e p="lamp.png" t="Include" />
+              <e p="library.png" t="Include" />
+              <e p="magicbat.png" t="Include" />
+              <e p="mail0.png" t="Include" />
+              <e p="mail1.png" t="Include" />
+              <e p="mail2.png" t="Include" />
+              <e p="mimiccave.png" t="Include" />
+              <e p="mirror.png" t="Include" />
+              <e p="mm.png" t="Include" />
+              <e p="moonpearl.png" t="Include" />
+              <e p="mountaincave.png" t="Include" />
+              <e p="mushroom.png" t="Include" />
+              <e p="net.png" t="Include" />
+              <e p="oldmanback.png" t="Include" />
+              <e p="oldmanfront.png" t="Include" />
+              <e p="oldwoman.png" t="Include" />
+              <e p="paradoxcavebottomleft.png" t="Include" />
+              <e p="paradoxcavebottomright.png" t="Include" />
+              <e p="paradoxcavetop.png" t="Include" />
+              <e p="pod.png" t="Include" />
+              <e p="potionshop.png" t="Include" />
+              <e p="powder.png" t="Include" />
+              <e p="quake.png" t="Include" />
+              <e p="redboomerang.png" t="Include" />
+              <e p="sahasrahla.png" t="Include" />
+              <e p="sanctuary.png" t="Include" />
+              <e p="shield0.png" t="Include" />
+              <e p="shield1.png" t="Include" />
+              <e p="shield2.png" t="Include" />
+              <e p="shield3.png" t="Include" />
+              <e p="shovel.png" t="Include" />
+              <e p="sickkid.png" t="Include" />
+              <e p="silverarrows.png" t="Include" />
+              <e p="smallkey.png" t="Include" />
+              <e p="sp.png" t="Include" />
+              <e p="spectaclerockbottomleft.png" t="Include" />
+              <e p="spectaclerockbottomright.png" t="Include" />
+              <e p="spectaclerocktop.png" t="Include" />
+              <e p="spikecave.png" t="Include" />
+              <e p="spiralcavebottom.png" t="Include" />
+              <e p="spiralcavetop.png" t="Include" />
+              <e p="superbunnycavebottom.png" t="Include" />
+              <e p="superbunnycavetop.png" t="Include" />
+              <e p="sw.png" t="Include" />
+              <e p="sword0.png" t="Include" />
+              <e p="sword1.png" t="Include" />
+              <e p="sword2.png" t="Include" />
+              <e p="sword3.png" t="Include" />
+              <e p="sword4.png" t="Include" />
+              <e p="sword5.png" t="Include" />
+              <e p="toh.png" t="Include" />
+              <e p="trback.png" t="Include" />
+              <e p="trfront.png" t="Include" />
+              <e p="triforcepiece.png" t="Include" />
+              <e p="trleft.png" t="Include" />
+              <e p="trright.png" t="Include" />
+              <e p="tt.png" t="Include" />
+              <e p="unknown.png" t="Include" />
+            </e>
+            <e p="Prizes" t="Include">
+              <e p="aga10.png" t="Include" />
+              <e p="aga11.png" t="Include" />
+              <e p="aga20.png" t="Include" />
+              <e p="aga21.png" t="Include" />
+              <e p="crystal0.png" t="Include" />
+              <e p="crystal1.png" t="Include" />
+              <e p="greenpendant0.png" t="Include" />
+              <e p="greenpendant1.png" t="Include" />
+              <e p="pendant0.png" t="Include" />
+              <e p="pendant1.png" t="Include" />
+              <e p="redcrystal0.png" t="Include" />
+              <e p="redcrystal1.png" t="Include" />
+              <e p="unknown0.png" t="Include" />
+              <e p="unknown1.png" t="Include" />
+            </e>
+            <e p="at.png" t="Include" />
+            <e p="chest0.png" t="Include" />
+            <e p="chest1.png" t="Include" />
+            <e p="chest2.png" t="Include" />
+            <e p="close.png" t="Include" />
+            <e p="door0.png" t="Include" />
+            <e p="door1.png" t="Include" />
+            <e p="dp.png" t="Include" />
+            <e p="ep.png" t="Include" />
+            <e p="gt.png" t="Include" />
+            <e p="hc.png" t="Include" />
+            <e p="ip.png" t="Include" />
+            <e p="mm.png" t="Include" />
+            <e p="pd.png" t="Include" />
+            <e p="plus.png" t="Include" />
+            <e p="settings.png" t="Include" />
+            <e p="sp.png" t="Include" />
+            <e p="sw.png" t="Include" />
+            <e p="th.png" t="Include" />
+            <e p="tr.png" t="Include" />
+            <e p="triforce.png" t="Include" />
+            <e p="tt.png" t="Include" />
+          </e>
+        </e>
+        <e p="ContainerConfig.cs" t="Include" />
+        <e p="Directory.Build.props" t="Include" />
+        <e p="Models" t="Include">
+          <e p="AvaloniaSerilogSink.cs" t="Include" />
+          <e p="Requirements" t="Include">
+            <e p="AlwaysDisplayDungeonItemsRequirement.cs" t="Include" />
+            <e p="DisplayMapsCompassesRequirement.cs" t="Include" />
+            <e p="ItemsPanelOrientationRequirement.cs" t="Include" />
+          </e>
+          <e p="Reset" t="Include">
+            <e p="IResetManager.cs" t="Include" />
+            <e p="ResetManager.cs" t="Include" />
+          </e>
+          <e p="SaveLoad" t="Include">
+            <e p="AppSettingsConversion.cs" t="Include" />
+            <e p="AppSettingsSaveData.cs" t="Include" />
+          </e>
+          <e p="Settings" t="Include">
+            <e p="AppSettings.cs" t="Include" />
+            <e p="BoundsSettings.cs" t="Include" />
+            <e p="ColorSettings.cs" t="Include" />
+            <e p="IAppSettings.cs" t="Include" />
+            <e p="IBoundsSettings.cs" t="Include" />
+            <e p="IColorSettings.cs" t="Include" />
+            <e p="ILayoutSettings.cs" t="Include" />
+            <e p="ITrackerSettings.cs" t="Include" />
+            <e p="LayoutSettings.cs" t="Include" />
+            <e p="TrackerSettings.cs" t="Include" />
+          </e>
+        </e>
+        <e p="OpenTracker.csproj" t="IncludeRecursive" />
+        <e p="Program.cs" t="Include" />
+        <e p="Themes" t="Include">
+          <e p="Dark.xaml" t="Include" />
+          <e p="Default.xaml" t="Include" />
+        </e>
+        <e p="ValueConverters" t="Include">
+          <e p="BitmapValueConverter.cs" t="Include" />
+        </e>
+        <e p="ViewModels" t="Include">
+          <e p="AboutDialogVM.cs" t="Include" />
+          <e p="AutoTracking" t="Include">
+            <e p="AutoTrackerDialogVM.cs" t="Include" />
+            <e p="AutoTrackerLogVM.cs" t="Include" />
+            <e p="AutoTrackerStatusVM.cs" t="Include" />
+            <e p="IAutoTrackerDialogVM.cs" t="Include" />
+            <e p="IAutoTrackerLogVM.cs" t="Include" />
+            <e p="IAutoTrackerStatusVM.cs" t="Include" />
+          </e>
+          <e p="BossSelect" t="Include">
+            <e p="BossSelectButtonVM.cs" t="Include" />
+            <e p="BossSelectFactory.cs" t="Include" />
+            <e p="BossSelectPopupVM.cs" t="Include" />
+            <e p="IBossSelectButtonVM.cs" t="Include" />
+            <e p="IBossSelectFactory.cs" t="Include" />
+            <e p="IBossSelectPopupVM.cs" t="Include" />
+          </e>
+          <e p="ColorSelect" t="Include">
+            <e p="ColorSelectControlVM.cs" t="Include" />
+            <e p="ColorSelectDialogVM.cs" t="Include" />
+            <e p="ColorType.cs" t="Include" />
+            <e p="IColorSelectControlVM.cs" t="Include" />
+            <e p="IColorSelectDialogVM.cs" t="Include" />
+          </e>
+          <e p="Dropdowns" t="Include">
+            <e p="DropdownPanelVM.cs" t="Include" />
+            <e p="DropdownVM.cs" t="Include" />
+            <e p="DropdownVMFactory.cs" t="Include" />
+            <e p="IDropdownPanelVM.cs" t="Include" />
+            <e p="IDropdownVM.cs" t="Include" />
+            <e p="IDropdownVMFactory.cs" t="Include" />
+          </e>
+          <e p="ErrorBoxDialogVM.cs" t="Include" />
+          <e p="IAboutDialogVM.cs" t="Include" />
+          <e p="IErrorBoxDialogVM.cs" t="Include" />
+          <e p="IMainWindowVM.cs" t="Include" />
+          <e p="IMessageBoxDIalogVM.cs" t="Include" />
+          <e p="IModeSettingsVM.cs" t="Include" />
+          <e p="IStatusBarVM.cs" t="Include" />
+          <e p="ITopMenuVM.cs" t="Include" />
+          <e p="IUIPanelVM.cs" t="Include" />
+          <e p="Items" t="Include">
+            <e p="IItemsPanelVM.cs" t="Include" />
+            <e p="ItemsPanelVM.cs" t="Include" />
+            <e p="Large" t="Include">
+              <e p="CrystalRequirementLargeItemVM.cs" t="Include" />
+              <e p="ILargeItemPanelVM.cs" t="Include" />
+              <e p="ILargeItemVMBase.cs" t="Include" />
+              <e p="ILargeItemVMFactory.cs" t="Include" />
+              <e p="LargeItemPanelVM.cs" t="Include" />
+              <e p="LargeItemType.cs" t="Include" />
+              <e p="LargeItemVM.cs" t="Include" />
+              <e p="LargeItemVMFactory.cs" t="Include" />
+              <e p="PairLargeItemVM.cs" t="Include" />
+              <e p="PrizeLargeItemVM.cs" t="Include" />
+              <e p="SmallKeyLargeItemVM.cs" t="Include" />
+            </e>
+            <e p="Small" t="Include">
+              <e p="BigKeySmallItemVM.cs" t="Include" />
+              <e p="BossSmallItemVM.cs" t="Include" />
+              <e p="DungeonItemSmallItemVM.cs" t="Include" />
+              <e p="HorizontalSmallItemPanelVM.cs" t="Include" />
+              <e p="IHorizontalSmallItemPanelVM.cs" t="Include" />
+              <e p="ISmallItemPanelVM.cs" t="Include" />
+              <e p="ISmallItemVMBase.cs" t="Include" />
+              <e p="ISmallItemVMFactory.cs" t="Include" />
+              <e p="IVerticalSmallItemPanelVM.cs" t="Include" />
+              <e p="PrizeSmallItemVM.cs" t="Include" />
+              <e p="SmallItemPanelVM.cs" t="Include" />
+              <e p="SmallItemVM.cs" t="Include" />
+              <e p="SmallItemVMFactory.cs" t="Include" />
+              <e p="SmallKeySmallItemVM.cs" t="Include" />
+              <e p="SpacerSmallItemVM.cs" t="Include" />
+              <e p="VerticalSmallItemPanelVM.cs" t="Include" />
+            </e>
+          </e>
+          <e p="MainWindowVM.cs" t="Include" />
+          <e p="Maps" t="Include">
+            <e p="Connections" t="Include">
+              <e p="IMapConnectionCollection.cs" t="Include" />
+              <e p="IMapConnectionVM.cs" t="Include" />
+              <e p="MapConnectionCollection.cs" t="Include" />
+              <e p="MapConnectionVM.cs" t="Include" />
+            </e>
+            <e p="IMapAreaVM.cs" t="Include" />
+            <e p="IMapAreaVMFactory.cs" t="Include" />
+            <e p="IMapVM.cs" t="Include" />
+            <e p="Locations" t="Include">
+              <e p="DungeonMapLocationVM.cs" t="Include" />
+              <e p="EntranceDropHandler.cs" t="Include" />
+              <e p="EntranceMapLocationVM.cs" t="Include" />
+              <e p="IEntranceMapLocationVM.cs" t="Include" />
+              <e p="IMapLocationVMBase.cs" t="Include" />
+              <e p="IMapLocationVMFactory.cs" t="Include" />
+              <e p="IMarkingMapLocationVM.cs" t="Include" />
+              <e p="MapLocationVM.cs" t="Include" />
+              <e p="MapLocationVMFactory.cs" t="Include" />
+              <e p="MarkableDungeonMapLocationVM.cs" t="Include" />
+              <e p="MarkableMapLocationVM.cs" t="Include" />
+              <e p="MarkingMapLocationVM.cs" t="Include" />
+              <e p="ShopMapLocationVM.cs" t="Include" />
+              <e p="TakeAnyMapLocationVM.cs" t="Include" />
+              <e p="Tooltip" t="Include">
+                <e p="IMapLocationToolTipMarkingVM.cs" t="Include" />
+                <e p="IMapLocationToolTipNotes.cs" t="Include" />
+                <e p="IMapLocationToolTipVM.cs" t="Include" />
+                <e p="MapLocationToolTipMarkingVM.cs" t="Include" />
+                <e p="MapLocationToolTipNotes.cs" t="Include" />
+                <e p="MapLocationToolTipVM.cs" t="Include" />
+              </e>
+            </e>
+            <e p="MapAreaVM.cs" t="Include" />
+            <e p="MapAreaVMFactory.cs" t="Include" />
+            <e p="MapVM.cs" t="Include" />
+          </e>
+          <e p="Markings" t="Include">
+            <e p="IMarkingSelectFactory.cs" t="Include" />
+            <e p="IMarkingSelectItemVMBase.cs" t="Include" />
+            <e p="IMarkingSelectVM.cs" t="Include" />
+            <e p="INoteMarkingSelectVM.cs" t="Include" />
+            <e p="Images" t="Include">
+              <e p="IMarkingImageDictionary.cs" t="Include" />
+              <e p="IMarkingImageFactory.cs" t="Include" />
+              <e p="IMarkingImageVMBase.cs" t="Include" />
+              <e p="ItemMarkingImageVM.cs" t="Include" />
+              <e p="MarkingImageDictionary.cs" t="Include" />
+              <e p="MarkingImageFactory.cs" t="Include" />
+              <e p="MarkingImageVM.cs" t="Include" />
+            </e>
+            <e p="MarkingSelectButtonVM.cs" t="Include" />
+            <e p="MarkingSelectFactory.cs" t="Include" />
+            <e p="MarkingSelectSpacerVM.cs" t="Include" />
+            <e p="MarkingSelectVM.cs" t="Include" />
+            <e p="NoteMarkingSelectVM.cs" t="Include" />
+          </e>
+          <e p="MessageBoxDialogVM.cs" t="Include" />
+          <e p="ModeSettingsVM.cs" t="Include" />
+          <e p="PinnedLocations" t="Include">
+            <e p="IPinnedLocationDictionary.cs" t="Include" />
+            <e p="IPinnedLocationVM.cs" t="Include" />
+            <e p="IPinnedLocationVMCollection.cs" t="Include" />
+            <e p="IPinnedLocationVMFactory.cs" t="Include" />
+            <e p="IPinnedLocationsPanelVM.cs" t="Include" />
+            <e p="Notes" t="Include">
+              <e p="IPinnedLocationNoteAreaVM.cs" t="Include" />
+              <e p="IPinnedLocationNoteVM.cs" t="Include" />
+              <e p="IPinnedLocationNoteVMCollection.cs" t="Include" />
+              <e p="PinnedLocationNoteAreaVM.cs" t="Include" />
+              <e p="PinnedLocationNoteVM.cs" t="Include" />
+              <e p="PinnedLocationNoteVMCollection.cs" t="Include" />
+            </e>
+            <e p="PinnedLocationDictionary.cs" t="Include" />
+            <e p="PinnedLocationVM.cs" t="Include" />
+            <e p="PinnedLocationVMCollection.cs" t="Include" />
+            <e p="PinnedLocationVMFactory.cs" t="Include" />
+            <e p="PinnedLocationsPanelVM.cs" t="Include" />
+            <e p="Sections" t="Include">
+              <e p="BossSectionIconVM.cs" t="Include" />
+              <e p="EntranceSectionIconVM.cs" t="Include" />
+              <e p="ISectionIconVMBase.cs" t="Include" />
+              <e p="ISectionVM.cs" t="Include" />
+              <e p="ISectionVMFactory.cs" t="Include" />
+              <e p="ItemSectionIconVM.cs" t="Include" />
+              <e p="MarkingSectionIconVM.cs" t="Include" />
+              <e p="PrizeSectionIconVM.cs" t="Include" />
+              <e p="SectionVM.cs" t="Include" />
+              <e p="SectionVMFactory.cs" t="Include" />
+              <e p="ShopSectionIconVM.cs" t="Include" />
+              <e p="TakeAnySectionIconVM.cs" t="Include" />
+            </e>
+          </e>
+          <e p="SequenceBreaks" t="Include">
+            <e p="ISequenceBreakControlFactory.cs" t="Include" />
+            <e p="ISequenceBreakControlVM.cs" t="Include" />
+            <e p="ISequenceBreakDialogVM.cs" t="Include" />
+            <e p="SequenceBreakControlFactory.cs" t="Include" />
+            <e p="SequenceBreakControlVM.cs" t="Include" />
+            <e p="SequenceBreakDialogVM.cs" t="Include" />
+          </e>
+          <e p="StatusBarVM.cs" t="Include" />
+          <e p="TopMenuVM.cs" t="Include" />
+          <e p="UIPanelVM.cs" t="Include" />
+        </e>
+        <e p="Views" t="Include">
+          <e p="AboutDialog.axaml" t="Include" />
+          <e p="AboutDialog.axaml.cs" t="Include" />
+          <e p="AutoTracking" t="Include">
+            <e p="AutoTrackerDialog.axaml" t="Include" />
+            <e p="AutoTrackerDialog.axaml.cs" t="Include" />
+            <e p="AutoTrackerLog.axaml" t="Include" />
+            <e p="AutoTrackerLog.axaml.cs" t="Include" />
+            <e p="AutoTrackerStatus.axaml" t="Include" />
+            <e p="AutoTrackerStatus.axaml.cs" t="Include" />
+          </e>
+          <e p="BossSelect" t="Include">
+            <e p="BossSelectButton.axaml" t="Include" />
+            <e p="BossSelectButton.axaml.cs" t="Include" />
+            <e p="BossSelectPopup.axaml" t="Include" />
+            <e p="BossSelectPopup.axaml.cs" t="Include" />
+          </e>
+          <e p="ColorSelect" t="Include">
+            <e p="ColorPickerControl.axaml" t="Include" />
+            <e p="ColorPickerControl.axaml.cs" t="Include" />
+            <e p="ColorSelectControl.axaml" t="Include" />
+            <e p="ColorSelectControl.axaml.cs" t="Include" />
+            <e p="ColorSelectDialog.axaml" t="Include" />
+            <e p="ColorSelectDialog.axaml.cs" t="Include" />
+          </e>
+          <e p="Dropdowns" t="Include">
+            <e p="Dropdown.axaml" t="Include" />
+            <e p="Dropdown.axaml.cs" t="Include" />
+            <e p="DropdownPanel.axaml" t="Include" />
+            <e p="DropdownPanel.axaml.cs" t="Include" />
+          </e>
+          <e p="ErrorBoxDialog.axaml" t="Include" />
+          <e p="ErrorBoxDialog.axaml.cs" t="Include" />
+          <e p="Items" t="Include">
+            <e p="ItemsPanel.axaml" t="Include" />
+            <e p="ItemsPanel.axaml.cs" t="Include" />
+            <e p="Large" t="Include">
+              <e p="CrystalRequirementLargeItem.axaml" t="Include" />
+              <e p="CrystalRequirementLargeItem.axaml.cs" t="Include" />
+              <e p="LargeItem.axaml" t="Include" />
+              <e p="LargeItem.axaml.cs" t="Include" />
+              <e p="LargeItemPanel.axaml" t="Include" />
+              <e p="LargeItemPanel.axaml.cs" t="Include" />
+              <e p="PairLargeItem.axaml" t="Include" />
+              <e p="PairLargeItem.axaml.cs" t="Include" />
+              <e p="PrizeLargeItem.axaml" t="Include" />
+              <e p="PrizeLargeItem.axaml.cs" t="Include" />
+              <e p="SmallKeyLargeItem.axaml" t="Include" />
+              <e p="SmallKeyLargeItem.axaml.cs" t="Include" />
+            </e>
+            <e p="Small" t="Include">
+              <e p="BigKeySmallItem.axaml" t="Include" />
+              <e p="BigKeySmallItem.axaml.cs" t="Include" />
+              <e p="BossSmallItem.axaml" t="Include" />
+              <e p="BossSmallItem.axaml.cs" t="Include" />
+              <e p="DungeonItemSmallItem.axaml" t="Include" />
+              <e p="DungeonItemSmallItem.axaml.cs" t="Include" />
+              <e p="HorizontalSmallItemPanel.axaml" t="Include" />
+              <e p="HorizontalSmallItemPanel.axaml.cs" t="Include" />
+              <e p="PrizeSmallItem.axaml" t="Include" />
+              <e p="PrizeSmallItem.axaml.cs" t="Include" />
+              <e p="SmallItem.axaml" t="Include" />
+              <e p="SmallItem.axaml.cs" t="Include" />
+              <e p="SmallKeySmallItem.axaml" t="Include" />
+              <e p="SmallKeySmallItem.axaml.cs" t="Include" />
+              <e p="SpacerSmallItem.axaml" t="Include" />
+              <e p="SpacerSmallItem.axaml.cs" t="Include" />
+              <e p="VerticalSmallItemPanel.axaml" t="Include" />
+              <e p="VerticalSmallItemPanel.axaml.cs" t="Include" />
+            </e>
+          </e>
+          <e p="MainWindow.axaml" t="Include" />
+          <e p="MainWindow.axaml.cs" t="Include" />
+          <e p="Maps" t="Include">
+            <e p="Connections" t="Include">
+              <e p="MapConnection.axaml" t="Include" />
+              <e p="MapConnection.axaml.cs" t="Include" />
+            </e>
+            <e p="Locations" t="Include">
+              <e p="DungeonMapLocation.axaml" t="Include" />
+              <e p="DungeonMapLocation.axaml.cs" t="Include" />
+              <e p="EntranceMapLocation.axaml" t="Include" />
+              <e p="EntranceMapLocation.axaml.cs" t="Include" />
+              <e p="MapLocation.axaml" t="Include" />
+              <e p="MapLocation.axaml.cs" t="Include" />
+              <e p="MarkableDungeonMapLocation.axaml" t="Include" />
+              <e p="MarkableDungeonMapLocation.axaml.cs" t="Include" />
+              <e p="MarkableMapLocation.axaml" t="Include" />
+              <e p="MarkableMapLocation.axaml.cs" t="Include" />
+              <e p="MarkingMapLocation.axaml" t="Include" />
+              <e p="MarkingMapLocation.axaml.cs" t="Include" />
+              <e p="ShopMapLocation.axaml" t="Include" />
+              <e p="ShopMapLocation.axaml.cs" t="Include" />
+              <e p="TakeAnyMapLocation.axaml" t="Include" />
+              <e p="TakeAnyMapLocation.axaml.cs" t="Include" />
+              <e p="Tooltip" t="Include">
+                <e p="MapLocationToolTip.axaml" t="Include" />
+                <e p="MapLocationToolTip.axaml.cs" t="Include" />
+                <e p="MapLocationToolTipMarking.axaml" t="Include" />
+                <e p="MapLocationToolTipMarking.axaml.cs" t="Include" />
+              </e>
+            </e>
+            <e p="Map.axaml" t="Include" />
+            <e p="Map.axaml.cs" t="Include" />
+            <e p="MapArea.axaml" t="Include" />
+            <e p="MapArea.axaml.cs" t="Include" />
+          </e>
+          <e p="Markings" t="Include">
+            <e p="Images" t="Include">
+              <e p="ItemMarkingImage.axaml" t="Include" />
+              <e p="ItemMarkingImage.axaml.cs" t="Include" />
+              <e p="MarkingImage.axaml" t="Include" />
+              <e p="MarkingImage.axaml.cs" t="Include" />
+            </e>
+            <e p="MarkingSelect.axaml" t="Include" />
+            <e p="MarkingSelect.axaml.cs" t="Include" />
+            <e p="MarkingSelectButton.axaml" t="Include" />
+            <e p="MarkingSelectButton.axaml.cs" t="Include" />
+            <e p="MarkingSelectSpacer.axaml" t="Include" />
+            <e p="MarkingSelectSpacer.axaml.cs" t="Include" />
+            <e p="NoteMarkingSelect.axaml" t="Include" />
+            <e p="NoteMarkingSelect.axaml.cs" t="Include" />
+          </e>
+          <e p="MessageBoxDialog.axaml" t="Include" />
+          <e p="MessageBoxDialog.axaml.cs" t="Include" />
+          <e p="ModeSettings.axaml" t="Include" />
+          <e p="ModeSettings.axaml.cs" t="Include" />
+          <e p="PinnedLocations" t="Include">
+            <e p="Notes" t="Include">
+              <e p="PinnedLocationNote.axaml" t="Include" />
+              <e p="PinnedLocationNote.axaml.cs" t="Include" />
+              <e p="PinnedLocationNoteArea.axaml" t="Include" />
+              <e p="PinnedLocationNoteArea.axaml.cs" t="Include" />
+            </e>
+            <e p="PinnedLocation.axaml" t="Include" />
+            <e p="PinnedLocation.axaml.cs" t="Include" />
+            <e p="PinnedLocationsPanel.axaml" t="Include" />
+            <e p="PinnedLocationsPanel.axaml.cs" t="Include" />
+            <e p="Sections" t="Include">
+              <e p="BossSectionIcon.axaml" t="Include" />
+              <e p="BossSectionIcon.axaml.cs" t="Include" />
+              <e p="EntranceSectionIcon.axaml" t="Include" />
+              <e p="EntranceSectionIcon.axaml.cs" t="Include" />
+              <e p="ItemSectionIcon.axaml" t="Include" />
+              <e p="ItemSectionIcon.axaml.cs" t="Include" />
+              <e p="MarkingSectionIcon.axaml" t="Include" />
+              <e p="MarkingSectionIcon.axaml.cs" t="Include" />
+              <e p="PrizeSectionIcon.axaml" t="Include" />
+              <e p="PrizeSectionIcon.axaml.cs" t="Include" />
+              <e p="Section.axaml" t="Include" />
+              <e p="Section.axaml.cs" t="Include" />
+              <e p="ShopSectionIcon.axaml" t="Include" />
+              <e p="ShopSectionIcon.axaml.cs" t="Include" />
+              <e p="TakeAnySectionIcon.axaml" t="Include" />
+              <e p="TakeAnySectionIcon.axaml.cs" t="Include" />
+            </e>
+          </e>
+          <e p="SequenceBreaks" t="Include">
+            <e p="SequenceBreakControl.axaml" t="Include" />
+            <e p="SequenceBreakControl.axaml.cs" t="Include" />
+            <e p="SequenceBreakDialog.axaml" t="Include" />
+            <e p="SequenceBreakDialog.axaml.cs" t="Include" />
+          </e>
+          <e p="StatusBar.axaml" t="Include" />
+          <e p="StatusBar.axaml.cs" t="Include" />
+          <e p="TopMenu.axaml" t="Include" />
+          <e p="TopMenu.axaml.cs" t="Include" />
+          <e p="UIPanel.axaml" t="Include" />
+          <e p="UIPanel.axaml.cs" t="Include" />
+        </e>
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="nuget.config" t="Include" />
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="netcoreapp3.1" t="Include">
+              <e p="Avalonia" t="Include">
+                <e p="resources" t="Include" />
+              </e>
+              <e p="OpenTracker.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="triforce.ico" t="Include" />
+      </e>
+      <e p="OpenTracker.Models" t="IncludeRecursive">
+        <e p="AccessibilityLevels" t="Include">
+          <e p="AccessibilityLevel.cs" t="Include" />
+          <e p="AccessibilityLevelMethods.cs" t="Include" />
+        </e>
+        <e p="AutoTracking" t="Include">
+          <e p="AddressTranslator.cs" t="Include" />
+          <e p="AutoTracker.cs" t="Include" />
+          <e p="ConnectionStatus.cs" t="Include" />
+          <e p="IAutoTracker.cs" t="Include" />
+          <e p="IMemoryAddress.cs" t="Include" />
+          <e p="IMemoryFlag.cs" t="Include" />
+          <e p="IRequestType.cs" t="Include" />
+          <e p="Logging" t="Include">
+            <e p="AutoTrackerLogService.cs" t="Include" />
+            <e p="IAutoTrackerLogService.cs" t="Include" />
+            <e p="ILogMessage.cs" t="Include" />
+            <e p="LogLevel.cs" t="Include" />
+            <e p="LogMessage.cs" t="Include" />
+          </e>
+          <e p="MemoryAddress.cs" t="Include" />
+          <e p="MemoryFlag.cs" t="Include" />
+          <e p="MemorySegmentType.cs" t="Include" />
+          <e p="OpcodeType.cs" t="Include" />
+          <e p="RequestType.cs" t="Include" />
+          <e p="SNESConnectors" t="Include">
+            <e p="ISNESConnector.cs" t="Include" />
+            <e p="SNESConnector.cs" t="Include" />
+          </e>
+          <e p="TranslationMode.cs" t="Include" />
+          <e p="Values" t="Include">
+            <e p="AutoTrackAddressBool.cs" t="Include" />
+            <e p="AutoTrackAddressValue.cs" t="Include" />
+            <e p="AutoTrackBitwiseIntegerValue.cs" t="Include" />
+            <e p="AutoTrackConditionalValue.cs" t="Include" />
+            <e p="AutoTrackFlagBool.cs" t="Include" />
+            <e p="AutoTrackItemValue.cs" t="Include" />
+            <e p="AutoTrackMultipleDifference.cs" t="Include" />
+            <e p="AutoTrackMultipleOverride.cs" t="Include" />
+            <e p="AutoTrackMultipleSum.cs" t="Include" />
+            <e p="AutoTrackStaticValue.cs" t="Include" />
+            <e p="AutoTrackValue.cs" t="Include" />
+            <e p="IAutoTrackValue.cs" t="Include" />
+          </e>
+        </e>
+        <e p="BossPlacements" t="Include">
+          <e p="BossPlacement.cs" t="Include" />
+          <e p="BossPlacementDictionary.cs" t="Include" />
+          <e p="BossPlacementFactory.cs" t="Include" />
+          <e p="BossPlacementID.cs" t="Include" />
+          <e p="BossType.cs" t="Include" />
+          <e p="IBossPlacement.cs" t="Include" />
+          <e p="IBossPlacementDictionary.cs" t="Include" />
+          <e p="IBossPlacementFactory.cs" t="Include" />
+        </e>
+        <e p="Connections" t="Include">
+          <e p="Connection.cs" t="Include" />
+          <e p="ConnectionCollection.cs" t="Include" />
+          <e p="IConnection.cs" t="Include" />
+          <e p="IConnectionCollection.cs" t="Include" />
+        </e>
+        <e p="Dropdowns" t="Include">
+          <e p="Dropdown.cs" t="Include" />
+          <e p="DropdownDictionary.cs" t="Include" />
+          <e p="DropdownFactory.cs" t="Include" />
+          <e p="DropdownID.cs" t="Include" />
+          <e p="IDropdown.cs" t="Include" />
+          <e p="IDropdownDictionary.cs" t="Include" />
+          <e p="IDropdownFactory.cs" t="Include" />
+        </e>
+        <e p="DungeonItems" t="Include">
+          <e p="DungeonItem.cs" t="Include" />
+          <e p="DungeonItemDictionary.cs" t="Include" />
+          <e p="DungeonItemFactory.cs" t="Include" />
+          <e p="DungeonItemID.cs" t="Include" />
+          <e p="IDungeonItem.cs" t="Include" />
+          <e p="IDungeonItemDictionary.cs" t="Include" />
+          <e p="IDungeonItemFactory.cs" t="Include" />
+        </e>
+        <e p="DungeonNodes" t="Include">
+          <e p="DungeonNode.cs" t="Include" />
+          <e p="DungeonNodeDictionary.cs" t="Include" />
+          <e p="DungeonNodeFactory.cs" t="Include" />
+          <e p="DungeonNodeID.cs" t="Include" />
+          <e p="IDungeonNode.cs" t="Include" />
+          <e p="IDungeonNodeDictionary.cs" t="Include" />
+          <e p="IDungeonNodeFactory.cs" t="Include" />
+        </e>
+        <e p="Dungeons" t="Include">
+          <e p="Dungeon.cs" t="Include" />
+          <e p="DungeonFactory.cs" t="Include" />
+          <e p="DungeonResult.cs" t="Include" />
+          <e p="DungeonState.cs" t="Include" />
+          <e p="IDungeon.cs" t="Include" />
+          <e p="IDungeonFactory.cs" t="Include" />
+          <e p="IDungeonResult.cs" t="Include" />
+          <e p="IDungeonState.cs" t="Include" />
+          <e p="IMutableDungeon.cs" t="Include" />
+          <e p="MutableDungeon.cs" t="Include" />
+        </e>
+        <e p="Items" t="Include">
+          <e p="CappedItem.cs" t="Include" />
+          <e p="CrystalRequirementItem.cs" t="Include" />
+          <e p="ICrystalRequirementItem.cs" t="Include" />
+          <e p="IItem.cs" t="Include" />
+          <e p="IItemAutoTrackValueFactory.cs" t="Include" />
+          <e p="IItemDictionary.cs" t="Include" />
+          <e p="IItemFactory.cs" t="Include" />
+          <e p="Item.cs" t="Include" />
+          <e p="ItemAutoTrackValueFactory.cs" t="Include" />
+          <e p="ItemDictionary.cs" t="Include" />
+          <e p="ItemFactory.cs" t="Include" />
+          <e p="ItemType.cs" t="Include" />
+          <e p="KeyItem.cs" t="Include" />
+        </e>
+        <e p="KeyDoors" t="Include">
+          <e p="IKeyDoor.cs" t="Include" />
+          <e p="IKeyDoorDictionary.cs" t="Include" />
+          <e p="IKeyDoorFactory.cs" t="Include" />
+          <e p="KeyDoor.cs" t="Include" />
+          <e p="KeyDoorDictionary.cs" t="Include" />
+          <e p="KeyDoorFactory.cs" t="Include" />
+          <e p="KeyDoorID.cs" t="Include" />
+        </e>
+        <e p="KeyLayouts" t="Include">
+          <e p="BigKeyLayout.cs" t="Include" />
+          <e p="EndKeyLayout.cs" t="Include" />
+          <e p="IKeyLayout.cs" t="Include" />
+          <e p="IKeyLayoutFactory.cs" t="Include" />
+          <e p="KeyLayoutFactory.cs" t="Include" />
+          <e p="SmallKeyLayout.cs" t="Include" />
+        </e>
+        <e p="Locations" t="Include">
+          <e p="ILocation.cs" t="Include" />
+          <e p="ILocationDictionary.cs" t="Include" />
+          <e p="ILocationFactory.cs" t="Include" />
+          <e p="ILocationNoteCollection.cs" t="Include" />
+          <e p="IMapLocation.cs" t="Include" />
+          <e p="IMapLocationFactory.cs" t="Include" />
+          <e p="IPinnedLocationCollection.cs" t="Include" />
+          <e p="Location.cs" t="Include" />
+          <e p="LocationDictionary.cs" t="Include" />
+          <e p="LocationFactory.cs" t="Include" />
+          <e p="LocationID.cs" t="Include" />
+          <e p="LocationNoteCollection.cs" t="Include" />
+          <e p="MapID.cs" t="Include" />
+          <e p="MapLocation.cs" t="Include" />
+          <e p="MapLocationFactory.cs" t="Include" />
+          <e p="PinnedLocationCollection.cs" t="Include" />
+        </e>
+        <e p="Markings" t="Include">
+          <e p="IMarking.cs" t="Include" />
+          <e p="MarkType.cs" t="Include" />
+          <e p="Marking.cs" t="Include" />
+        </e>
+        <e p="Modes" t="Include">
+          <e p="EntranceShuffle.cs" t="Include" />
+          <e p="IMode.cs" t="Include" />
+          <e p="ItemPlacement.cs" t="Include" />
+          <e p="Mode.cs" t="Include" />
+          <e p="WorldState.cs" t="Include" />
+        </e>
+        <e p="NodeConnections" t="Include">
+          <e p="EntryNodeConnection.cs" t="Include" />
+          <e p="INodeConnection.cs" t="Include" />
+          <e p="NodeConnection.cs" t="Include" />
+        </e>
+        <e p="OpenTracker.Models.csproj" t="IncludeRecursive" />
+        <e p="PrizePlacements" t="Include">
+          <e p="IPrizePlacement.cs" t="Include" />
+          <e p="IPrizePlacementDictionary.cs" t="Include" />
+          <e p="IPrizePlacementFactory.cs" t="Include" />
+          <e p="PrizePlacement.cs" t="Include" />
+          <e p="PrizePlacementDictionary.cs" t="Include" />
+          <e p="PrizePlacementFactory.cs" t="Include" />
+          <e p="PrizePlacementID.cs" t="Include" />
+        </e>
+        <e p="Prizes" t="Include">
+          <e p="IPrizeDictionary.cs" t="Include" />
+          <e p="PrizeDictionary.cs" t="Include" />
+          <e p="PrizeType.cs" t="Include" />
+        </e>
+        <e p="RequirementNodes" t="Include">
+          <e p="IRequirementNode.cs" t="Include" />
+          <e p="IRequirementNodeDictionary.cs" t="Include" />
+          <e p="IRequirementNodeFactory.cs" t="Include" />
+          <e p="RequirementNode.cs" t="Include" />
+          <e p="RequirementNodeDictionary.cs" t="Include" />
+          <e p="RequirementNodeFactory.cs" t="Include" />
+          <e p="RequirementNodeID.cs" t="Include" />
+        </e>
+        <e p="Requirements" t="Include">
+          <e p="AccessibilityRequirement.cs" t="Include" />
+          <e p="AggregateRequirement.cs" t="Include" />
+          <e p="AlternativeRequirement.cs" t="Include" />
+          <e p="BigKeyShuffleRequirement.cs" t="Include" />
+          <e p="BooleanRequirement.cs" t="Include" />
+          <e p="BossRequirement.cs" t="Include" />
+          <e p="BossShuffleRequirement.cs" t="Include" />
+          <e p="CompassShuffleRequirement.cs" t="Include" />
+          <e p="CrystalRequirement.cs" t="Include" />
+          <e p="EnemyShuffleRequirement.cs" t="Include" />
+          <e p="EntranceShuffleRequirement.cs" t="Include" />
+          <e p="GenericKeysRequirement.cs" t="Include" />
+          <e p="GuaranteedBossItemsRequirement.cs" t="Include" />
+          <e p="IRequirement.cs" t="Include" />
+          <e p="IRequirementDictionary.cs" t="Include" />
+          <e p="IRequirementFactory.cs" t="Include" />
+          <e p="ItemExactRequirement.cs" t="Include" />
+          <e p="ItemPlacementRequirement.cs" t="Include" />
+          <e p="ItemRequirement.cs" t="Include" />
+          <e p="KeyDoorRequirement.cs" t="Include" />
+          <e p="KeyDropShuffleRequirement.cs" t="Include" />
+          <e p="MapShuffleRequirement.cs" t="Include" />
+          <e p="RaceIllegalTrackingRequirement.cs" t="Include" />
+          <e p="RequirementDictionary.cs" t="Include" />
+          <e p="RequirementFactory.cs" t="Include" />
+          <e p="RequirementNodeRequirement.cs" t="Include" />
+          <e p="RequirementType.cs" t="Include" />
+          <e p="SequenceBreakRequirement.cs" t="Include" />
+          <e p="ShopShuffleRequirement.cs" t="Include" />
+          <e p="SmallKeyRequirement.cs" t="Include" />
+          <e p="SmallKeyShuffleRequirement.cs" t="Include" />
+          <e p="StaticRequirement.cs" t="Include" />
+          <e p="TakeAnyLocationsRequirement.cs" t="Include" />
+          <e p="WorldStateRequirement.cs" t="Include" />
+        </e>
+        <e p="SaveLoad" t="Include">
+          <e p="BossPlacementSaveData.cs" t="Include" />
+          <e p="ConnectionSaveData.cs" t="Include" />
+          <e p="Converters" t="Include">
+            <e p="MarkingConverter.cs" t="Include" />
+            <e p="SaveDataConverter.cs" t="Include" />
+          </e>
+          <e p="DropdownSaveData.cs" t="Include" />
+          <e p="ISaveLoadManager.cs" t="Include" />
+          <e p="ISaveable.cs" t="Include" />
+          <e p="ItemSaveData.cs" t="Include" />
+          <e p="LocationSaveData.cs" t="Include" />
+          <e p="ModeSaveData.cs" t="Include" />
+          <e p="PrizePlacementSaveData.cs" t="Include" />
+          <e p="SaveData.cs" t="Include" />
+          <e p="SaveLoadManager.cs" t="Include" />
+          <e p="SectionSaveData.cs" t="Include" />
+          <e p="SequenceBreakSaveData.cs" t="Include" />
+        </e>
+        <e p="Sections" t="Include">
+          <e p="BossSection.cs" t="Include" />
+          <e p="DropdownSection.cs" t="Include" />
+          <e p="DungeonEntranceSection.cs" t="Include" />
+          <e p="DungeonItemSection.cs" t="Include" />
+          <e p="EntranceSection.cs" t="Include" />
+          <e p="IBossSection.cs" t="Include" />
+          <e p="IDungeonItemSection.cs" t="Include" />
+          <e p="IEntranceSection.cs" t="Include" />
+          <e p="IItemSection.cs" t="Include" />
+          <e p="IMarkableSection.cs" t="Include" />
+          <e p="IPrizeSection.cs" t="Include" />
+          <e p="ISection.cs" t="Include" />
+          <e p="ISectionAutoTrackingFactory.cs" t="Include" />
+          <e p="ISectionFactory.cs" t="Include" />
+          <e p="IShopSection.cs" t="Include" />
+          <e p="ITakeAnySection.cs" t="Include" />
+          <e p="InsanityEntranceSection.cs" t="Include" />
+          <e p="ItemSection.cs" t="Include" />
+          <e p="MarkableDungeonItemSection.cs" t="Include" />
+          <e p="PrizeSection.cs" t="Include" />
+          <e p="SectionAutoTrackingFactory.cs" t="Include" />
+          <e p="SectionFactory.cs" t="Include" />
+          <e p="ShopSection.cs" t="Include" />
+          <e p="TakeAnySection.cs" t="Include" />
+          <e p="VisibleItemSection.cs" t="Include" />
+        </e>
+        <e p="SequenceBreaks" t="Include">
+          <e p="ISequenceBreak.cs" t="Include" />
+          <e p="ISequenceBreakDictionary.cs" t="Include" />
+          <e p="SequenceBreak.cs" t="Include" />
+          <e p="SequenceBreakDictionary.cs" t="Include" />
+          <e p="SequenceBreakType.cs" t="Include" />
+        </e>
+        <e p="UndoRedo" t="Include">
+          <e p="Actions" t="Include">
+            <e p="DoAction.cs" t="Include" />
+            <e p="IDoAction.cs" t="Include" />
+            <e p="IRedoAction.cs" t="Include" />
+            <e p="IUndoAction.cs" t="Include" />
+            <e p="IUndoableAction.cs" t="Include" />
+            <e p="RedoAction.cs" t="Include" />
+            <e p="UndoAction.cs" t="Include" />
+          </e>
+          <e p="AddConnection.cs" t="Include" />
+          <e p="AddCrystalRequirement.cs" t="Include" />
+          <e p="AddItem.cs" t="Include" />
+          <e p="AddNote.cs" t="Include" />
+          <e p="ChangeBigKeyShuffle.cs" t="Include" />
+          <e p="ChangeBoss.cs" t="Include" />
+          <e p="ChangeBossShuffle.cs" t="Include" />
+          <e p="ChangeCompassShuffle.cs" t="Include" />
+          <e p="ChangeEnemyShuffle.cs" t="Include" />
+          <e p="ChangeEntranceShuffle.cs" t="Include" />
+          <e p="ChangeGenericKeys.cs" t="Include" />
+          <e p="ChangeGuaranteedBossItem.cs" t="Include" />
+          <e p="ChangeItemPlacement.cs" t="Include" />
+          <e p="ChangeKeyDropShuffle.cs" t="Include" />
+          <e p="ChangeMapShuffle.cs" t="Include" />
+          <e p="ChangePrize.cs" t="Include" />
+          <e p="ChangeShopShuffle.cs" t="Include" />
+          <e p="ChangeSmallKeyShuffle.cs" t="Include" />
+          <e p="ChangeTakeAnyLocations.cs" t="Include" />
+          <e p="ChangeWorldState.cs" t="Include" />
+          <e p="CheckDropdown.cs" t="Include" />
+          <e p="ClearLocation.cs" t="Include" />
+          <e p="CollectSection.cs" t="Include" />
+          <e p="CycleItem.cs" t="Include" />
+          <e p="IUndoRedoManager.cs" t="Include" />
+          <e p="IUndoable.cs" t="Include" />
+          <e p="IUndoableFactory.cs" t="Include" />
+          <e p="PinLocation.cs" t="Include" />
+          <e p="RemoveConnection.cs" t="Include" />
+          <e p="RemoveCrystalRequirement.cs" t="Include" />
+          <e p="RemoveItem.cs" t="Include" />
+          <e p="RemoveNote.cs" t="Include" />
+          <e p="SetMarking.cs" t="Include" />
+          <e p="TogglePrize.cs" t="Include" />
+          <e p="UncheckDropdown.cs" t="Include" />
+          <e p="UncollectSection.cs" t="Include" />
+          <e p="UndoRedoManager.cs" t="Include" />
+          <e p="UndoableFactory.cs" t="Include" />
+          <e p="UnpinLocation.cs" t="Include" />
+        </e>
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="netcoreapp3.1" t="Include">
+              <e p="Avalonia" t="Include">
+                <e p="resources" t="Include" />
+              </e>
+              <e p="OpenTracker.Models.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+      </e>
+      <e p="OpenTracker.Setup" t="IncludeRecursive">
+        <e p="OpenTracker.Setup.vdproj" t="IncludeRecursive" />
+      </e>
+      <e p="OpenTracker.UnitTests" t="IncludeRecursive">
+        <e p="Models" t="Include">
+          <e p="AccessibilityLevels" t="Include">
+            <e p="AccessibilityLevelTests.cs" t="Include" />
+          </e>
+          <e p="BossPlacements" t="Include">
+            <e p="BossPlacementTests.cs" t="Include" />
+          </e>
+          <e p="Connections" t="Include">
+            <e p="ConnectionTests.cs" t="Include" />
+          </e>
+          <e p="Dropdowns" t="Include">
+            <e p="DropdownTests.cs" t="Include" />
+          </e>
+          <e p="DungeonNodes" t="Include">
+            <e p="ATTests.cs" t="Include" />
+            <e p="DPTests.cs" t="Include" />
+            <e p="DungeonNodeTestBase.cs" t="Include" />
+            <e p="EPTests.cs" t="Include" />
+            <e p="GTTests.cs" t="Include" />
+            <e p="HCTests.cs" t="Include" />
+            <e p="IPTests.cs" t="Include" />
+            <e p="MMTests.cs" t="Include" />
+            <e p="PoDTests.cs" t="Include" />
+            <e p="SPTests.cs" t="Include" />
+            <e p="SWTests.cs" t="Include" />
+            <e p="TRTests.cs" t="Include" />
+            <e p="TTTests.cs" t="Include" />
+            <e p="ToHTests.cs" t="Include" />
+          </e>
+          <e p="Items" t="Include">
+            <e p="CappedItemTests.cs" t="Include" />
+            <e p="ItemTests.cs" t="Include" />
+          </e>
+          <e p="RequirementNodes" t="Include">
+            <e p="DWDeathMountainEastTests.cs" t="Include" />
+            <e p="DWDeathMountainWestTests.cs" t="Include" />
+            <e p="DarkWorldNorthEastTests.cs" t="Include" />
+            <e p="DarkWorldNorthWestTests.cs" t="Include" />
+            <e p="DarkWorldSouthEastTests.cs" t="Include" />
+            <e p="DarkWorldSouthTests.cs" t="Include" />
+            <e p="DungeonEntryTests.cs" t="Include" />
+            <e p="FluteTests.cs" t="Include" />
+            <e p="LWDeathMountainEastTests.cs" t="Include" />
+            <e p="LWDeathMountainWestTests.cs" t="Include" />
+            <e p="LWLakeHyliaTests.cs" t="Include" />
+            <e p="LightWorldNorthEastTests.cs" t="Include" />
+            <e p="LightWorldNorthWestTests.cs" t="Include" />
+            <e p="LightWorldSouthTests.cs" t="Include" />
+            <e p="LightWorldTests.cs" t="Include" />
+            <e p="MireAreaTests.cs" t="Include" />
+            <e p="RequirementNodeTestBase.cs" t="Include" />
+            <e p="StartTests.cs" t="Include" />
+          </e>
+          <e p="Requirements" t="Include">
+            <e p="ATBarrierRequirementTests.cs" t="Include" />
+            <e p="BombDuplicationRequirementTests.cs" t="Include" />
+            <e p="BombJumpRequirementTests.cs" t="Include" />
+            <e p="BossSBRequirementTests.cs" t="Include" />
+            <e p="ComplexItemRequirementTestBase.cs" t="Include" />
+            <e p="ComplexItemRequirementTests.cs" t="Include" />
+            <e p="DWBossRequirementTests.cs" t="Include" />
+            <e p="DarkRoomRequirementTests.cs" t="Include" />
+            <e p="ExtendMagicRequirementTests.cs" t="Include" />
+            <e p="FakeFlippersRequirementTests.cs" t="Include" />
+            <e p="FireRequirementTests.cs" t="Include" />
+            <e p="GTCrystalRequirementTests.cs" t="Include" />
+            <e p="ItemRequirementTests.cs" t="Include" />
+            <e p="LWBossRequirementTests.cs" t="Include" />
+            <e p="LightWorldRequirementTests.cs" t="Include" />
+            <e p="MedallionRequirementTests.cs" t="Include" />
+            <e p="MirrorRequirementTests.cs" t="Include" />
+            <e p="ModeRequirementTests.cs" t="Include" />
+            <e p="NotBunnyRequirementTests.cs" t="Include" />
+            <e p="SequenceBreakRequirementTests.cs" t="Include" />
+            <e p="StaticRequirementTests.cs" t="Include" />
+            <e p="SuperBunnyRequirementTests.cs" t="Include" />
+            <e p="WaterWalkRequirementTests.cs" t="Include" />
+          </e>
+        </e>
+        <e p="OpenTracker.UnitTests.csproj" t="IncludeRecursive" />
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="netcoreapp3.1" t="Include">
+              <e p="Avalonia" t="Include">
+                <e p="resources" t="Include" />
+              </e>
+              <e p="OpenTracker.UnitTests.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+      </e>
+      <e p="OpenTracker.Utils" t="IncludeRecursive">
+        <e p="AppPath.cs" t="Include" />
+        <e p="ConstrainedTaskScheduler.cs" t="Include" />
+        <e p="Dialog" t="Include">
+          <e p="DialogResultEventArgs.cs" t="Include" />
+          <e p="DialogService.cs" t="Include" />
+          <e p="DialogViewModelBase.cs" t="Include" />
+          <e p="DialogWindowBase.cs" t="Include" />
+          <e p="FileDialogService.cs" t="Include" />
+          <e p="IDialogService.cs" t="Include" />
+          <e p="IFileDialogService.cs" t="Include" />
+        </e>
+        <e p="IMainWindowProvider.cs" t="Include" />
+        <e p="IModelWrapper.cs" t="Include" />
+        <e p="IObservableCollection.cs" t="Include" />
+        <e p="JsonConversion.cs" t="Include" />
+        <e p="LazyDictionary.cs" t="Include" />
+        <e p="MainWindowProvider.cs" t="Include" />
+        <e p="ObservableDictionary.cs" t="Include" />
+        <e p="ObservableStack.cs" t="Include" />
+        <e p="ObservableStringBuilder.cs" t="Include" />
+        <e p="OpenTracker.Utils.csproj" t="IncludeRecursive" />
+        <e p="ViewLocator.cs" t="Include" />
+        <e p="ViewModelBase.cs" t="Include" />
+        <e p="ViewModelCollection.cs" t="Include" />
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="netcoreapp3.1" t="Include">
+              <e p="Avalonia" t="Include">
+                <e p="resources" t="Include" />
+              </e>
+              <e p="OpenTracker.Utils.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+      </e>
+      <e p="OpenTracker.sln" t="IncludeFlat" />
+      <e p="packages" t="ExcludeRecursive" />
+    </e>
+  </component>
+</project>
