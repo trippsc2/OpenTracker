@@ -155,6 +155,7 @@
       <workItem from="1615810735257" duration="8040000" />
       <workItem from="1616018916121" duration="212000" />
       <workItem from="1616019186661" duration="43000" />
+      <workItem from="1616019275112" duration="259000" />
     </task>
     <task id="LOCAL-00001" summary="Fixed a dependency problem.  Incremented version to v1.8.1.">
       <created>1615150575459</created>
@@ -254,7 +255,14 @@
       <option name="project" value="LOCAL" />
       <updated>1616019216510</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="Added default .gitignore for Rider folder.">
+      <created>1616019517867</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1616019517867</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -298,7 +306,8 @@
     <MESSAGE value="Class cleanup and introducing ReactiveUI into the model classes to cleanup implementation of PropertyChanged events." />
     <MESSAGE value="Added back Rider files to the Git repo." />
     <MESSAGE value="Added back Rider files to Git repo." />
-    <option name="LAST_COMMIT_MESSAGE" value="Added back Rider files to Git repo." />
+    <MESSAGE value="Added default .gitignore for Rider folder." />
+    <option name="LAST_COMMIT_MESSAGE" value="Added default .gitignore for Rider folder." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

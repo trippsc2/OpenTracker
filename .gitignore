@@ -348,3 +348,13 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+
+# Default ignored files
+.idea/.idea.OpenTracker/.idea/shelf/
+.idea/.idea.OpenTracker/.idea/workspace.xml
+
+# Rider ignored files
+.idea/.idea.OpenTracker/.idea/contentModel.xml
+.idea/.idea.OpenTracker/.idea/modules.xml
+.idea/.idea.OpenTracker/.idea/projectSettingsUpdater.xml
+.idea/.idea.OpenTracker/.idea/.idea.OpenTracker.iml
