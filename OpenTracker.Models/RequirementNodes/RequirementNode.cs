@@ -15,18 +15,16 @@ namespace OpenTracker.Models.RequirementNodes
     {
         private readonly IMode _mode;
         private readonly IRequirementNodeFactory _factory;
-
-        private readonly bool _start;
-
+        
         private readonly List<INodeConnection> _connections = new List<INodeConnection>();
 
         public event EventHandler? ChangePropagated;
 
-        private bool _alwaysAccessible;
-        public bool AlwaysAccessible
+        private int _dungeonExitsAccessible;
+        public int DungeonExitsAccessible
         {
-            get => _alwaysAccessible;
-            set => this.RaiseAndSetIfChanged(ref _alwaysAccessible, value);
+            get => _dungeonExitsAccessible;
+            set => this.RaiseAndSetIfChanged(ref _dungeonExitsAccessible, value);
         }
 
         private int _exitsAccessible;
@@ -34,13 +32,6 @@ namespace OpenTracker.Models.RequirementNodes
         {
             get => _exitsAccessible;
             set => this.RaiseAndSetIfChanged(ref _exitsAccessible, value);
-        }
-
-        private int _dungeonExitsAccessible;
-        public int DungeonExitsAccessible
-        {
-            get => _dungeonExitsAccessible;
-            set => this.RaiseAndSetIfChanged(ref _dungeonExitsAccessible, value);
         }
 
         private int _insanityExitsAccessible;
@@ -78,17 +69,11 @@ namespace OpenTracker.Models.RequirementNodes
         /// <param name="factory">
         /// The requirement node factory.
         /// </param>
-        /// <param name="start">
-        /// A boolean representing whether the node is the start node.
-        /// </param>
         public RequirementNode(
-            IMode mode, IRequirementNodeDictionary requirementNodes, IRequirementNodeFactory factory, bool start)
+            IMode mode, IRequirementNodeDictionary requirementNodes, IRequirementNodeFactory factory)
         {
             _mode = mode;
             _factory = factory;
-
-            _start = start;
-            AlwaysAccessible = _start;
 
             PropertyChanged += OnPropertyChanged;
             requirementNodes.ItemCreated += OnNodeCreated;
@@ -110,7 +95,6 @@ namespace OpenTracker.Models.RequirementNodes
             {
                 case nameof(ExitsAccessible) when _mode.EntranceShuffle >= EntranceShuffle.All:
                 case nameof(DungeonExitsAccessible) when _mode.EntranceShuffle >= EntranceShuffle.Dungeon:
-                case nameof(AlwaysAccessible):
                 case nameof(InsanityExitsAccessible) when _mode.EntranceShuffle == EntranceShuffle.Insanity:
                     UpdateAccessibility();
                     break;
@@ -133,8 +117,7 @@ namespace OpenTracker.Models.RequirementNodes
                 return;
             }
             
-            var requirementNodes = ((IRequirementNodeDictionary)sender!);
-
+            var requirementNodes = (IRequirementNodeDictionary)sender!;
             requirementNodes.ItemCreated -= OnNodeCreated;
             _connections.AddRange(_factory.GetNodeConnections(e.Key, this));
 
@@ -204,11 +187,6 @@ namespace OpenTracker.Models.RequirementNodes
         /// </returns>
         public AccessibilityLevel GetNodeAccessibility(List<IRequirementNode> excludedNodes)
         {
-            if (AlwaysAccessible)
-            {
-                return AccessibilityLevel.Normal;
-            }
-
             if (ExitsAccessible > 0 && _mode.EntranceShuffle >= EntranceShuffle.All)
             {
                 return AccessibilityLevel.Normal;
@@ -238,14 +216,6 @@ namespace OpenTracker.Models.RequirementNodes
             }
 
             return finalAccessibility;
-        }
-
-        /// <summary>
-        /// Resets AlwaysAccessible property for testing purposes.
-        /// </summary>
-        public void Reset()
-        {
-            AlwaysAccessible = _start;
         }
     }
 }

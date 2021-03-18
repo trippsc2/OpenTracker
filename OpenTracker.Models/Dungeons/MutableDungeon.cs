@@ -490,11 +490,6 @@ namespace OpenTracker.Models.Dungeons
         /// </summary>
         public void Reset()
         {
-            foreach (var node in Nodes.Values)
-            {
-                node.Reset();
-            }
-
             foreach (var door in KeyDoors.Values)
             {
                 door.Unlocked = false;

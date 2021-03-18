@@ -11,7 +11,9 @@ namespace OpenTracker.Models.RequirementNodes
     {
         private readonly IRequirementDictionary _requirements;
         private readonly IRequirementNodeDictionary _requirementNodes;
+        
         private readonly IRequirementNode.Factory _factory;
+        private readonly IStartRequirementNode.Factory _startFactory;
         private readonly NodeConnection.Factory _connectionFactory;
 
         /// <summary>
@@ -26,17 +28,22 @@ namespace OpenTracker.Models.RequirementNodes
         /// <param name="factory">
         /// An Autofac factory for creating requirement nodes.
         /// </param>
+        /// <param name="startFactory">
+        /// An Autofac factory for creating the start requirement node.
+        /// </param>
         /// <param name="connectionFactory">
         /// An Autofac factory for creating node connections.
         /// </param>
         public RequirementNodeFactory(
             IRequirementDictionary requirements, IRequirementNodeDictionary requirementNodes,
-            IRequirementNode.Factory factory, NodeConnection.Factory connectionFactory)
+            IRequirementNode.Factory factory, IStartRequirementNode.Factory startFactory,
+            NodeConnection.Factory connectionFactory)
         {
             _requirements = requirements;
             _requirementNodes = requirementNodes;
             _factory = factory;
             _connectionFactory = connectionFactory;
+            _startFactory = startFactory;
         }
 
         /// <summary>
@@ -2578,7 +2585,7 @@ namespace OpenTracker.Models.RequirementNodes
         /// </returns>
         public IRequirementNode GetRequirementNode(RequirementNodeID id)
         {
-            return _factory(id, id == RequirementNodeID.Start);
+            return id == RequirementNodeID.Start ? _startFactory() : _factory();
         }
     }
 }

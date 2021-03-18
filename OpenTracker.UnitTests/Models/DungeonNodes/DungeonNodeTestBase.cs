@@ -36,15 +36,15 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
             dungeon.FinishMutableDungeonCreation(dungeonData);
             mode.Load(modeData);
             
-            foreach (var node in accessibleEntryNodes)
-            {
-                requirementNodes[node].AlwaysAccessible = true;
-            }
-        
-            foreach (var node in accessibleNodes)
-            {
-                dungeonData.Nodes[node].AlwaysAccessible = true;
-            }
+            // foreach (var node in accessibleEntryNodes)
+            // {
+            //     requirementNodes[node].AlwaysAccessible = true;
+            // }
+            //
+            // foreach (var node in accessibleNodes)
+            // {
+            //     dungeonData.Nodes[node].AlwaysAccessible = true;
+            // }
         
             foreach (var item in items)
             {

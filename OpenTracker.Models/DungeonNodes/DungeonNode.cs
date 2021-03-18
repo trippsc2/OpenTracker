@@ -101,9 +101,7 @@ namespace OpenTracker.Models.DungeonNodes
                 return;
             }
             
-            var nodes = sender as IDungeonNodeDictionary ??
-                throw new ArgumentNullException(nameof(sender));
-
+            var nodes = (IDungeonNodeDictionary)sender!;
             nodes.ItemCreated -= OnNodeCreated;
 
             _factory.PopulateNodeConnections(_dungeonData, e.Key, this, Connections);
@@ -172,14 +170,6 @@ namespace OpenTracker.Models.DungeonNodes
             }
 
             return finalAccessibility;
-        }
-
-        /// <summary>
-        /// Resets the dungeon node for testing purposes.
-        /// </summary>
-        public void Reset()
-        {
-            AlwaysAccessible = false;
         }
     }
 }

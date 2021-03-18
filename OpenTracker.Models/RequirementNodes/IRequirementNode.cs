@@ -11,16 +11,14 @@ namespace OpenTracker.Models.RequirementNodes
     public interface IRequirementNode : IReactiveObject
     {
         AccessibilityLevel Accessibility { get; }
-        bool AlwaysAccessible { get; set; }
         int ExitsAccessible { get; set; }
         int DungeonExitsAccessible { get; set; }
         int InsanityExitsAccessible { get; set; }
 
-        event EventHandler ChangePropagated;
+        event EventHandler? ChangePropagated;
 
-        delegate IRequirementNode Factory(RequirementNodeID id, bool start);
+        delegate IRequirementNode Factory();
 
         AccessibilityLevel GetNodeAccessibility(List<IRequirementNode> excludedNodes);
-        void Reset();
     }
 }

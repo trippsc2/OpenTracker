@@ -24,7 +24,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
     
             Assert.Equal(AccessibilityLevel.None, lightWorldRequirement.Accessibility);
     
-            requirementNodes[RequirementNodeID.LightWorld].AlwaysAccessible = true;
+            // requirementNodes[RequirementNodeID.LightWorld].AlwaysAccessible = true;
     
             Assert.Equal(AccessibilityLevel.Normal, lightWorldRequirement.Accessibility);
         }

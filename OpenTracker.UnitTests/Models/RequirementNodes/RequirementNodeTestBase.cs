@@ -43,10 +43,10 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     sequenceBreak.Item2;
             }
     
-            foreach (var node in accessibleNodes)
-            {
-                requirementNodes[node].AlwaysAccessible = true;
-            }
+            // foreach (var node in accessibleNodes)
+            // {
+            //     requirementNodes[node].AlwaysAccessible = true;
+            // }
 
             var towerCrystals = (ICrystalRequirementItem)itemDictionary[ItemType.TowerCrystals];
             towerCrystals.Known = towerCrystalsKnown;
