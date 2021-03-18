@@ -15,19 +15,21 @@ namespace OpenTracker.Models.AutoTracking
         private readonly IMemoryAddressProvider _memoryAddressProvider;
         private readonly ISNESConnector _snesConnector;
 
-        private byte? _inGameStatus;
+        private IMemoryAddress InGameStatus { get; }
 
         private bool CanReadMemory => Status == ConnectionStatus.Connected;
         private bool IsInGame
         {
             get
             {
-                if (_inGameStatus is null)
+                var inGameValue = InGameStatus.Value;
+                
+                if (inGameValue is null)
                 {
                     return false;
                 }
                 
-                return _inGameStatus > 0x05 && _inGameStatus != 0x14 && _inGameStatus < 0x20;
+                return inGameValue > 0x05 && inGameValue != 0x14 && inGameValue < 0x20;
             }
         }
 
@@ -55,16 +57,18 @@ namespace OpenTracker.Models.AutoTracking
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="snesConnector">
-        /// The SNES connector factory.
-        /// </param>
         /// <param name="memoryAddressProvider">
         /// The memory address provider.
+        /// </param>
+        /// <param name="snesConnector">
+        /// The SNES connector factory.
         /// </param>
         public AutoTracker(IMemoryAddressProvider memoryAddressProvider, ISNESConnector snesConnector)
         {
             _memoryAddressProvider = memoryAddressProvider;
             _snesConnector = snesConnector;
+
+            InGameStatus = _memoryAddressProvider.MemoryAddresses[0x7e0010];
 
             _snesConnector.StatusChanged += OnStatusChanged;
         }
@@ -122,17 +126,19 @@ namespace OpenTracker.Models.AutoTracking
         /// </summary>
         public async Task InGameCheck()
         {
-            if (CanReadMemory)
+            if (!CanReadMemory)
             {
-                var result = await _snesConnector.Read(0x7e0010);
-
-                if (result is null)
-                {
-                    return;
-                }
-
-                _inGameStatus = result[0];
+                return;
             }
+
+            var result = await _snesConnector.Read(0x7e0010);
+
+            if (result is null)
+            {
+                return;
+            }
+
+            InGameStatus.Value = result[0];
         }
 
         /// <summary>
@@ -140,13 +146,15 @@ namespace OpenTracker.Models.AutoTracking
         /// </summary>
         public async Task MemoryCheck()
         {
-            if (CanReadMemory && IsInGame)
+            if (!CanReadMemory || !IsInGame)
             {
-                // TODO - Convert to foreach in .NET 5
-                for (var i = 0; i < Enum.GetValues(typeof(MemorySegmentType)).Length; i++)
-                {
-                    await MemoryCheck((MemorySegmentType)i);
-                }
+                return;
+            }
+
+            // TODO - Convert to foreach in .NET 5
+            for (var i = 0; i < Enum.GetValues(typeof(MemorySegmentType)).Length; i++)
+            {
+                await MemoryCheck((MemorySegmentType) i);
             }
         }
 
@@ -209,7 +217,6 @@ namespace OpenTracker.Models.AutoTracking
         public async Task Disconnect()
         { 
             await _snesConnector.Disconnect();
-            _inGameStatus = null;
             _memoryAddressProvider.Reset();
         }
 

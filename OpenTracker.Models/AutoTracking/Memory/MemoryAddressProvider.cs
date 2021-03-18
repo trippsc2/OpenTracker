@@ -39,6 +39,8 @@ namespace OpenTracker.Models.AutoTracking.Memory
                     }
                 }
             }
+            
+            MemoryAddresses.Add(0x7e0010, _addressFactory());
         }
 
         /// <summary>

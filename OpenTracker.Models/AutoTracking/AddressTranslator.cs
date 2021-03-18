@@ -1,12 +1,60 @@
 ﻿namespace OpenTracker.Models.AutoTracking
 {
 	/// <summary>
-	/// This is the class that translates SNES memory addresses to be used by the USB2SNES
-	/// connector.
+	/// This class contains the logic to translate SNES memory addresses to be used by the USB2SNES connector.
 	/// </summary>
     public static class AddressTranslator
     {
 		/// <summary>
+		/// Translates an input address to the SD2SNES address space.
+		/// </summary>
+		/// <param name="address">
+		/// An unsigned 32-bit integer representing the untranslated address.
+		/// </param>
+		/// <param name="mode">
+		/// The translation mode.
+		/// </param>
+		/// <returns>
+		/// An unsigned 32-bit integer representing the translated address.
+		/// </returns>
+		public static uint TranslateAddress(uint address, TranslationMode mode)
+		{
+			if (mode == TranslationMode.Read && MapAddressInRange(
+				address, 8257536U, 8388607U, 16056320U,
+				out var mappedAddress))
+			{
+				return mappedAddress;
+			}
+
+			for (uint index = 0; index < 63U; ++index)
+			{
+				if (MapAddressInRange(
+					    address, (uint)((int)index * 65536 + 32768),
+					    (uint)((int)index * 65536 + ushort.MaxValue),
+					    index * 32768U, out mappedAddress) ||
+				    MapAddressInRange(
+					    address, (uint)((int)index * 65536 + 8421376),
+					    (uint)((int)index * 65536 + 8454143),
+					    index * 32768U, out mappedAddress))
+				{
+					return mappedAddress;
+				}
+			}
+
+			for (uint index = 0; index < 8U; ++index)
+			{
+				if (MapAddressInRange(address, (uint)(7340032 + (int)index * 65536),
+					(uint)(7372799 + (int)index * 65536),
+					(uint)(14680064 + (int)index * 32768), out mappedAddress))
+				{
+					return mappedAddress;
+				}
+			}
+
+			return address;
+		}
+
+	    /// <summary>
 		/// Translates a memory address from one range of addresses to another.
 		/// </summary>
 		/// <param name="address">
@@ -42,52 +90,6 @@
 
 			mappedAddress = 0U;
 			return false;
-		}
-
-		/// <summary>
-		/// Translates an input address to the SD2SNES address space.
-		/// </summary>
-		/// <param name="address">
-		/// An unsigned 32-bit integer representing the untranslated address.
-		/// </param>
-		/// <param name="mode">
-		/// The translation mode.
-		/// </param>
-		/// <returns>
-		/// An unsigned 32-bit integer representing the translated address.
-		/// </returns>
-		public static uint TranslateAddress(uint address, TranslationMode mode)
-		{
-			if (mode == TranslationMode.Read && MapAddressInRange(
-				address, 8257536U, 8388607U, 16056320U, out uint mappedAddress))
-			{
-				return mappedAddress;
-			}
-
-			for (uint index = 0; index < 63U; ++index)
-			{
-				if (MapAddressInRange(address, (uint)((int)index * 65536 + 32768),
-					(uint)((int)index * 65536 + ushort.MaxValue),
-					index * 32768U, out mappedAddress) ||
-					MapAddressInRange(address, (uint)((int)index * 65536 + 8421376),
-					(uint)((int)index * 65536 + 8454143),
-					index * 32768U, out mappedAddress))
-				{
-					return mappedAddress;
-				}
-			}
-
-			for (uint index = 0; index < 8U; ++index)
-			{
-				if (MapAddressInRange(address, (uint)(7340032 + (int)index * 65536),
-					(uint)(7372799 + (int)index * 65536),
-					(uint)(14680064 + (int)index * 32768), out mappedAddress))
-				{
-					return mappedAddress;
-				}
-			}
-
-			return address;
 		}
 	}
 }
