@@ -10,16 +10,22 @@ namespace OpenTracker.Models.Items
     /// <summary>
     /// This class contains small key item data.
     /// </summary>
-    public class KeyItem : Item
+    public class KeyItem : Item, IKeyItem
     {
         private readonly IMode _mode;
-        private readonly int _maximum;
-        private readonly int _keyDropMaximumDelta;
 
-        private int EffectiveMaximum => _mode.KeyDropShuffle ? _maximum + _keyDropMaximumDelta : _maximum;
+        private readonly IItem _genericKey;
+        private readonly int _nonKeyDropMaximum;
+        private readonly int _keyDropMaximum;
 
-        public delegate KeyItem Factory(
-            int maximum, int keyDropMaximumDelta, int starting, IAutoTrackValue? autoTrackValue);
+        public int Maximum => _mode.KeyDropShuffle ? _keyDropMaximum : _nonKeyDropMaximum;
+
+        private int _effectiveCurrent;
+        public int EffectiveCurrent
+        {
+            get => _effectiveCurrent;
+            private set => this.RaiseAndSetIfChanged(ref _effectiveCurrent, value);
+        }
 
         /// <summary>
         /// Constructor
@@ -30,32 +36,50 @@ namespace OpenTracker.Models.Items
         /// <param name="mode">
         /// The mode settings.
         /// </param>
-        /// <param name="maximum">
+        /// <param name="genericKey">
+        /// The generic key item.
+        /// </param>
+        /// <param name="nonKeyDropMaximum">
         /// A 32-bit signed integer representing the maximum value of the item.
         /// </param>
-        /// <param name="keyDropMaximumDelta">
+        /// <param name="keyDropMaximum">
         /// A 32-bit signed integer representing the delta maximum for key drop shuffle of the item.
-        /// </param>
-        /// <param name="starting">
-        /// A 32-bit signed integer representing the starting value of the item.
         /// </param>
         /// <param name="autoTrackValue">
         /// The auto track value.
         /// </param>
         public KeyItem(
-            ISaveLoadManager saveLoadManager, IMode mode, int maximum, int keyDropMaximumDelta, int starting,
-            IAutoTrackValue? autoTrackValue) : base(saveLoadManager, starting, autoTrackValue)
+            ISaveLoadManager saveLoadManager, IMode mode, IItem genericKey, int nonKeyDropMaximum, int keyDropMaximum,
+            IAutoTrackValue? autoTrackValue) : base(saveLoadManager, 0, autoTrackValue)
         {
-            if (starting > maximum)
-            {
-                throw new ArgumentOutOfRangeException(nameof(starting));
-            }
-
             _mode = mode;
-            _maximum = maximum;
-            _keyDropMaximumDelta = keyDropMaximumDelta;
 
+            _genericKey = genericKey;
+            _nonKeyDropMaximum = nonKeyDropMaximum;
+            _keyDropMaximum = keyDropMaximum;
+            
+            UpdateEffectiveCurrent();
+
+            PropertyChanged += OnPropertyChanged;
             _mode.PropertyChanged += OnModeChanged;
+            _genericKey.PropertyChanged += OnGenericKeyChanged;
+        }
+
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on this object.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
+        private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(IItem.Current))
+            {
+                UpdateEffectiveCurrent();
+            }
         }
 
         /// <summary>
@@ -69,15 +93,54 @@ namespace OpenTracker.Models.Items
         /// </param>
         private void OnModeChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(IMode.KeyDropShuffle))
+            switch (e.PropertyName)
             {
-                if (Current > EffectiveMaximum)
+                case nameof(IMode.KeyDropShuffle):
                 {
-                    Current = EffectiveMaximum;
-                }
+                    if (Current > Maximum)
+                    {
+                        Current = Maximum;
+                    }
 
-                this.RaisePropertyChanged(nameof(Current));
+                    this.RaisePropertyChanged(nameof(Current));
+                }
+                    break;
+                case nameof(IMode.GenericKeys):
+                    UpdateEffectiveCurrent();
+                    break;
             }
+        }
+
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the IItem interface.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
+        private void OnGenericKeyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(IItem.Current) && _mode.GenericKeys)
+            {
+                UpdateEffectiveCurrent();
+            }
+        }
+
+        /// <summary>
+        /// Updates the value of the EffectiveCurrent property.
+        /// </summary>
+        private void UpdateEffectiveCurrent()
+        {
+            var effectiveCurrent = Current;
+
+            if (_mode.GenericKeys)
+            {
+                effectiveCurrent += _genericKey.Current;
+            }
+            
+            EffectiveCurrent = Math.Min(Maximum, effectiveCurrent);
         }
 
         /// <summary>
@@ -88,7 +151,7 @@ namespace OpenTracker.Models.Items
         /// </returns>
         public override bool CanAdd()
         {
-            return Current < EffectiveMaximum;
+            return Current < Maximum;
         }
 
         /// <summary>
@@ -96,14 +159,13 @@ namespace OpenTracker.Models.Items
         /// </summary>
         public override void Add()
         {
-            if (Current < EffectiveMaximum)
+            if (Current < Maximum)
             {
                 base.Add();
+                return;
             }
-            else
-            {
-                Current = 0;
-            }
+
+            Current = 0;
         }
 
         /// <summary>
@@ -114,11 +176,10 @@ namespace OpenTracker.Models.Items
             if (Current > 0)
             {
                 base.Remove();
+                return;
             }
-            else
-            {
-                Current = EffectiveMaximum;
-            }
+
+            Current = Maximum;
         }
     }
 }

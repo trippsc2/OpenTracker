@@ -7,11 +7,9 @@ namespace OpenTracker.Models.Items
     /// <summary>
     /// This class contains item data with a maximum value.
     /// </summary>
-    public class CappedItem : Item
+    public class CappedItem : Item, ICappedItem
     {
-        private readonly int _maximum;
-
-        public delegate CappedItem Factory(int starting, int maximum, IAutoTrackValue? autoTrackValue);
+        public int Maximum { get; }
 
         /// <summary>
         /// Constructor
@@ -36,7 +34,7 @@ namespace OpenTracker.Models.Items
                 throw new ArgumentOutOfRangeException(nameof(starting));
             }
 
-            _maximum = maximum;
+            Maximum = maximum;
         }
 
         /// <summary>
@@ -47,7 +45,7 @@ namespace OpenTracker.Models.Items
         /// </returns>
         public override bool CanAdd()
         {
-            return Current < _maximum;
+            return Current < Maximum;
         }
 
         /// <summary>
@@ -55,7 +53,7 @@ namespace OpenTracker.Models.Items
         /// </summary>
         public override void Add()
         {
-            if (Current < _maximum)
+            if (Current < Maximum)
             {
                 base.Add();
             }
@@ -76,7 +74,7 @@ namespace OpenTracker.Models.Items
             }
             else
             {
-                Current = _maximum;
+                Current = Maximum;
             }
         }
     }

@@ -23,8 +23,6 @@ namespace OpenTracker.Models.Items
             set => this.RaiseAndSetIfChanged(ref _current, value);
         }
 
-        public delegate Item Factory(int starting, IAutoTrackValue? autoTrackValue);
-
         /// <summary>
         /// Constructor
         /// </summary>

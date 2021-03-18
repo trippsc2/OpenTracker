@@ -11,7 +11,7 @@
   </Design.DataContext>
   
   <Panel>
-    <Viewbox Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+    <Viewbox Classes="MapArea">
       <Panel>
 
         <ItemsControl Items="{Binding Maps}">
@@ -25,7 +25,7 @@
         <ItemsControl Items="{Binding Connectors}">
           <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
-              <Panel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+              <Panel Classes="MapArea" />
             </ItemsPanelTemplate>
           </ItemsControl.ItemsPanel>
         </ItemsControl>

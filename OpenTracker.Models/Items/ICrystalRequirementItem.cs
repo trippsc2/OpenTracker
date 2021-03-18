@@ -6,5 +6,7 @@
     public interface ICrystalRequirementItem : IItem
     {
         bool Known { get; set; }
+        
+        delegate ICrystalRequirementItem Factory();
     }
 }

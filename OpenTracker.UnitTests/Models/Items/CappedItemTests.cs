@@ -1,6 +1,7 @@
-﻿using Autofac;
-using Autofac.Core;
+﻿using System;
+using NSubstitute;
 using OpenTracker.Models.Items;
+using OpenTracker.Models.SaveLoad;
 using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Items
@@ -8,65 +9,71 @@ namespace OpenTracker.UnitTests.Models.Items
     public class CappedItemTests
     {
         [Theory]
+        [InlineData(0, 0)]
+        [InlineData(1, 1)]
+        [InlineData(2, 2)]
+        public void Ctor_MaximumShouldEqualParameter(int expected, int maximum)
+        {
+            var sut = new CappedItem(
+                Substitute.For<ISaveLoadManager>(), 0, maximum, null);
+            
+            Assert.Equal(expected, sut.Maximum);
+        }
+        
+        [Theory]
         [InlineData(2, 1)]
         [InlineData(3, 2)]
-        public void Ctor_ExceptionTests(int starting, int maximum)
+        public void Ctor_ShouldThrowExceptionIfStartingIsGreaterThanMaximum(int starting, int maximum)
         {
-            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-            var factory = scope.Resolve<CappedItem.Factory>();
-            
-            Assert.Throws<DependencyResolutionException>(() =>
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
             {
-                factory(starting, maximum, null);
+                _ = new CappedItem(
+                    Substitute.For<ISaveLoadManager>(), starting, maximum, null);
             });
         }
 
         [Theory]
-        [InlineData(0, 0, false)]
-        [InlineData(0, 1, true)]
-        [InlineData(1, 1, false)]
-        [InlineData(1, 2, true)]
-        public void CanAdd_Tests(int starting, int maximum, bool expected)
+        [InlineData(false, 0, 0)]
+        [InlineData(true, 0, 1)]
+        [InlineData(false, 1, 1)]
+        [InlineData(true, 1, 2)]
+        public void CanAdd_ShouldReturnTrueIfCurrentIsLessThanMaximum(bool expected, int starting, int maximum)
         {
-            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-            var factory = scope.Resolve<CappedItem.Factory>();
+            var sut = new CappedItem(
+                Substitute.For<ISaveLoadManager>(), starting, maximum, null);
 
-            var item = factory(starting, maximum, null);
-
-            Assert.Equal(expected, item.CanAdd());
+            Assert.Equal(expected, sut.CanAdd());
         }
 
         [Theory]
         [InlineData(0, 0, 0)]
+        [InlineData(1, 0, 1)]
         [InlineData(0, 1, 1)]
-        [InlineData(1, 1, 0)]
-        [InlineData(1, 2, 2)]
-        public void Add_Tests(int starting, int maximum, int expected)
+        [InlineData(2, 1, 2)]
+        public void Add_ShouldAddOneToCurrentIfLessThanMaximumOtherwiseSetToZero(
+            int expected, int starting, int maximum)
         {
-            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-            var factory = scope.Resolve<CappedItem.Factory>();
+            var sut = new CappedItem(
+                Substitute.For<ISaveLoadManager>(), starting, maximum, null);
+            sut.Add();
 
-            var item = factory(starting, maximum, null);
-            item.Add();
-
-            Assert.Equal(expected, item.Current);
+            Assert.Equal(expected, sut.Current);
         }
 
         [Theory]
         [InlineData(0, 0, 0)]
+        [InlineData(1, 0, 1)]
         [InlineData(0, 1, 1)]
-        [InlineData(1, 1, 0)]
-        [InlineData(0, 2, 2)]
-        [InlineData(1, 2, 0)]
-        public void Remove_Tests(int starting, int maximum, int expected)
+        [InlineData(2, 0, 2)]
+        [InlineData(0, 1, 2)]
+        public void Remove_ShouldSubtractOneFromCurrentIfGreaterThanZeroOtherwiseSetToMaximum(
+            int expected, int starting, int maximum)
         {
-            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-            var factory = scope.Resolve<CappedItem.Factory>();
+            var sut = new CappedItem(
+                Substitute.For<ISaveLoadManager>(), starting, maximum, null);
+            sut.Remove();
 
-            var item = factory(starting, maximum, null);
-            item.Remove();
-
-            Assert.Equal(expected, item.Current);
+            Assert.Equal(expected, sut.Current);
         }
     }
 }

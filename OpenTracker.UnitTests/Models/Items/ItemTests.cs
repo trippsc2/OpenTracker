@@ -1,6 +1,7 @@
 ﻿using System;
-using Autofac;
+using NSubstitute;
 using OpenTracker.Models.Items;
+using OpenTracker.Models.SaveLoad;
 using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Items
@@ -11,109 +12,85 @@ namespace OpenTracker.UnitTests.Models.Items
         [InlineData(0, 0)]
         [InlineData(1, 1)]
         [InlineData(2, 2)]
-        public void Ctor_CurrentTests(int starting, int expected)
+        public void Ctor_CurrentShouldMatchStarting(int expected, int starting)
         {
-            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-            var factory = scope.Resolve<Item.Factory>();
+            var sut = new Item(Substitute.For<ISaveLoadManager>(), starting, null);
 
-            var item = factory(starting, null);
-
-            Assert.Equal(expected, item.Current);
+            Assert.Equal(expected, sut.Current);
         }
 
         [Theory]
-        [InlineData(0, true)]
-        [InlineData(1, true)]
-        [InlineData(2, true)]
-        public void CanAdd_Tests(int starting, bool expected)
+        [InlineData(true, 0)]
+        [InlineData(true, 1)]
+        [InlineData(true, 2)]
+        public void CanAdd_ShouldAlwaysReturnTrue(bool expected, int starting)
         {
-            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-            var factory = scope.Resolve<Item.Factory>();
+            var sut = new Item(Substitute.For<ISaveLoadManager>(), starting, null);
 
-            var item = factory(starting, null);
-
-            Assert.Equal(expected, item.CanAdd());
-        }
-
-        [Theory]
-        [InlineData(0, 1)]
-        [InlineData(1, 2)]
-        [InlineData(2, 3)]
-        public void Add_Tests(int starting, int expected)
-        {
-            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-            var factory = scope.Resolve<Item.Factory>();
-
-            var item = factory(starting, null);
-            item.Add();
-
-            Assert.Equal(expected, item.Current);
-        }
-
-        [Theory]
-        [InlineData(0, false)]
-        [InlineData(1, true)]
-        [InlineData(2, true)]
-        public void CanRemove_Tests(int starting, bool expected)
-        {
-            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-            var factory = scope.Resolve<Item.Factory>();
-            
-            var item = factory(starting, null);
-
-            Assert.Equal(expected, item.CanRemove());
+            Assert.Equal(expected, sut.CanAdd());
         }
 
         [Theory]
         [InlineData(1, 0)]
         [InlineData(2, 1)]
         [InlineData(3, 2)]
-        public void Remove_Tests(int starting, int expected)
+        public void Add_ShouldAlwaysAddOneToCurrent(int expected, int starting)
         {
-            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-            var factory = scope.Resolve<Item.Factory>();
+            var sut = new Item(Substitute.For<ISaveLoadManager>(), starting, null);
+            sut.Add();
 
-            var item = factory(starting, null);
-            item.Remove();
+            Assert.Equal(expected, sut.Current);
+        }
 
-            Assert.Equal(expected, item.Current);
+        [Theory]
+        [InlineData(false, 0)]
+        [InlineData(true, 1)]
+        [InlineData(true, 2)]
+        public void CanRemove_ShouldReturnTrueIfCurrentGreaterThanZero(bool expected, int starting)
+        {
+            var sut = new Item(Substitute.For<ISaveLoadManager>(), starting, null);
+
+            Assert.Equal(expected, sut.CanRemove());
+        }
+
+        [Theory]
+        [InlineData(0, 1)]
+        [InlineData(1, 2)]
+        [InlineData(2, 3)]
+        public void Remove_ShouldAlwaysSubtractOneToCurrent(int expected, int starting)
+        {
+            var sut = new Item(Substitute.For<ISaveLoadManager>(), starting, null);
+            sut.Remove();
+
+            Assert.Equal(expected, sut.Current);
         }
 
         [Fact]
-        public void Remove_ExceptionTest()
+        public void Remove_ShouldThrowExceptionIfCurrentEqualsZero()
         {
-            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-            var factory = scope.Resolve<Item.Factory>();
-
-            var item = factory(0, null);
-            Assert.Throws<Exception>(() => { item.Remove(); });
+            var sut = new Item(Substitute.For<ISaveLoadManager>(), 0, null);
+            Assert.Throws<Exception>(() => { sut.Remove(); });
         }
 
         [Theory]
         [InlineData(0, 0)]
         [InlineData(1, 1)]
         [InlineData(2, 2)]
-        public void Reset_Tests(int starting, int expected)
+        public void Reset_ShouldSetCurrentToTheStartingValue(int expected, int starting)
         {
-            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-            var factory = scope.Resolve<Item.Factory>();
+            var sut = new Item(Substitute.For<ISaveLoadManager>(), starting, null);
+            sut.Add();
+            sut.Reset();
 
-            var item = factory(starting, null);
-            item.Add();
-            item.Reset();
-
-            Assert.Equal(expected, item.Current);
+            Assert.Equal(expected, sut.Current);
         }
 
         [Fact]
-        public void PropertyChanged_Tests()
+        public void Current_ShouldRaisePropertyChanged()
         {
-            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-            var factory = scope.Resolve<Item.Factory>();
+            var sut = new Item(Substitute.For<ISaveLoadManager>(), 0, null);
 
-            var item = factory(0, null);
-
-            Assert.PropertyChanged(item, nameof(IItem.Current), () => { item.Add(); });
+            Assert.PropertyChanged(sut, nameof(IItem.Current), () => { sut.Add(); });
         }
     }
 }

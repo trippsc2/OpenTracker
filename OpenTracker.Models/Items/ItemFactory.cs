@@ -7,18 +7,22 @@ namespace OpenTracker.Models.Items
     /// </summary>
     public class ItemFactory : IItemFactory
     {
+        private readonly Lazy<IItemDictionary> _items;
         private readonly Lazy<IItemAutoTrackValueFactory> _autoTrackValueFactory;
 
-        private readonly Item.Factory _itemFactory;
-        private readonly CappedItem.Factory _cappedItemFactory;
-        private readonly CrystalRequirementItem.Factory _crystalRequirementFactory;
-        private readonly KeyItem.Factory _keyFactory;
+        private readonly IItem.Factory _itemFactory;
+        private readonly ICappedItem.Factory _cappedItemFactory;
+        private readonly ICrystalRequirementItem.Factory _crystalRequirementFactory;
+        private readonly IKeyItem.Factory _keyFactory;
 
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="items">
+        /// An Autofac factory for creating the item dictionary.
+        /// </param>
         /// <param name="autoTrackValueFactory">
-        /// An Autofac factory for creating autotrack values.
+        /// An Autofac factory for creating auto-track values.
         /// </param>
         /// <param name="itemFactory">
         /// An Autofac factory for creating items.
@@ -33,12 +37,12 @@ namespace OpenTracker.Models.Items
         /// An Autofac factory for creating key items.
         /// </param>
         public ItemFactory(
-            IItemAutoTrackValueFactory.Factory autoTrackValueFactory, Item.Factory itemFactory,
-            CappedItem.Factory cappedItemFactory,
-            CrystalRequirementItem.Factory crystalRequirementFactory, KeyItem.Factory keyFactory)
+            IItemDictionary.Factory items, IItemAutoTrackValueFactory.Factory autoTrackValueFactory,
+            IItem.Factory itemFactory, ICappedItem.Factory cappedItemFactory,
+            ICrystalRequirementItem.Factory crystalRequirementFactory, IKeyItem.Factory keyFactory)
         {
-            _autoTrackValueFactory =
-                new Lazy<IItemAutoTrackValueFactory>(() => autoTrackValueFactory());
+            _items = new Lazy<IItemDictionary>(items());
+            _autoTrackValueFactory = new Lazy<IItemAutoTrackValueFactory>(autoTrackValueFactory());
 
             _itemFactory = itemFactory;
             _cappedItemFactory = cappedItemFactory;
@@ -74,27 +78,21 @@ namespace OpenTracker.Models.Items
             switch (type)
             {
                 case ItemType.Sword:
-                    {
-                        return 5;
-                    }
+                    return 5;
                 case ItemType.Shield:
                 case ItemType.BombosDungeons:
                 case ItemType.EtherDungeons:
                 case ItemType.QuakeDungeons:
                 case ItemType.SWSmallKey:
                 case ItemType.MMSmallKey:
-                    {
-                        return 3;
-                    }
+                    return 3;
                 case ItemType.Mail:
                 case ItemType.Arrows:
                 case ItemType.Mushroom:
                 case ItemType.Gloves:
                 case ItemType.ATSmallKey:
                 case ItemType.IPSmallKey:
-                    {
-                        return 2;
-                    }
+                    return 2;
                 case ItemType.Bow:
                 case ItemType.Boomerang:
                 case ItemType.RedBoomerang:
@@ -162,33 +160,18 @@ namespace OpenTracker.Models.Items
                 case ItemType.MMCompass:
                 case ItemType.TRCompass:
                 case ItemType.GTCompass:
-                    {
-                        return 1;
-                    }
-                case ItemType.TowerCrystals:
-                case ItemType.GanonCrystals:
-                    {
-                        return 7;
-                    }
+                    return 1;
                 case ItemType.SmallKey:
-                    {
-                        return 29;
-                    }
+                    return 29;
                 case ItemType.Bottle:
                 case ItemType.TRSmallKey:
                 case ItemType.GTSmallKey:
-                    {
-                        return 4;
-                    }
+                    return 4;
                 case ItemType.PoDSmallKey:
-                    {
-                        return 6;
-                    }
+                    return 6;
                 case ItemType.HCBigKey:
                 case ItemType.EPSmallKey:
-                    {
-                        return 0;
-                    }
+                    return 0;
             }
 
             return null;
@@ -208,32 +191,24 @@ namespace OpenTracker.Models.Items
             switch (type)
             {
                 case ItemType.HCSmallKey:
-                case ItemType.DPSmallKey:
-                case ItemType.MMSmallKey:
-                    {
-                        return 3;
-                    }
                 case ItemType.ATSmallKey:
+                case ItemType.DPSmallKey:
+                    return 4;
                 case ItemType.EPSmallKey:
-                case ItemType.SWSmallKey:
-                case ItemType.TTSmallKey:
-                case ItemType.TRSmallKey:
-                    {
-                        return 2;
-                    }
+                    return 3;
+                case ItemType.PoDSmallKey:
                 case ItemType.SPSmallKey:
-                    {
-                        return 5;
-                    }
+                case ItemType.TTSmallKey:
                 case ItemType.IPSmallKey:
+                case ItemType.MMSmallKey:
+                case ItemType.TRSmallKey:
+                    return 6;
+                case ItemType.SWSmallKey:
+                    return 5;
                 case ItemType.GTSmallKey:
-                    {
-                        return 4;
-                    }
+                    return 8;
                 case ItemType.HCBigKey:
-                    {
-                        return 1;
-                    }
+                    return 1;
             }
 
             return null;
@@ -257,24 +232,22 @@ namespace OpenTracker.Models.Items
 
             var maximum = GetItemMaximum(type);
 
-            if (maximum.HasValue)
+            if (maximum is null)
             {
-                var keyDropMaximum = GetItemKeyDropMaximum(type);
-
-                if (keyDropMaximum.HasValue)
-                {
-                    return _keyFactory(
-                        maximum.Value, keyDropMaximum.Value, GetItemStarting(type),
-                        _autoTrackValueFactory.Value.GetAutoTrackValue(type));
-                }
-
-                return _cappedItemFactory(
-                    GetItemStarting(type), maximum.Value,
-                    _autoTrackValueFactory.Value.GetAutoTrackValue(type));
+                return _itemFactory(GetItemStarting(type), _autoTrackValueFactory.Value.GetAutoTrackValue(type));
             }
+            
+            var keyDropMaximum = GetItemKeyDropMaximum(type);
 
-            return _itemFactory(
-                GetItemStarting(type), _autoTrackValueFactory.Value.GetAutoTrackValue(type));
+            if (keyDropMaximum is null)
+            {
+                return _cappedItemFactory(
+                    GetItemStarting(type), maximum.Value, _autoTrackValueFactory.Value.GetAutoTrackValue(type));
+            }
+            
+            return _keyFactory(
+                _items.Value[ItemType.SmallKey], maximum.Value, keyDropMaximum.Value,
+                _autoTrackValueFactory.Value.GetAutoTrackValue(type));
         }
     }
 }

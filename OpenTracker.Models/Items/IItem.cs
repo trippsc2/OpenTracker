@@ -1,4 +1,5 @@
-﻿using OpenTracker.Models.SaveLoad;
+﻿using OpenTracker.Models.AutoTracking.Values;
+using OpenTracker.Models.SaveLoad;
 using ReactiveUI;
 
 namespace OpenTracker.Models.Items
@@ -9,6 +10,8 @@ namespace OpenTracker.Models.Items
     public interface IItem : IReactiveObject, ISaveable<ItemSaveData>
     {
         int Current { get; set; }
+        
+        delegate IItem Factory(int starting, IAutoTrackValue? autoTrackValue);
 
         void Add();
         bool CanAdd();

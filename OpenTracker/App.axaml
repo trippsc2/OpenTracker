@@ -193,6 +193,22 @@
 		<Style Selector="MenuItem.InnerMenu">
 			<Setter Property="MinWidth" Value="190" />
 		</Style>
+
+		<Style Selector="Panel.DungeonItem">
+			<Setter Property="Height" Value="16" />
+			<Setter Property="Width" Value="16" />
+		</Style>
+
+		<Style Selector="Panel.ItemControl">
+			<Setter Property="Margin" Value="1 4" />
+			<Setter Property="Height" Value="32" />
+			<Setter Property="Width" Value="32" />
+		</Style>
+		
+		<Style Selector="Panel.MapArea">
+			<Setter Property="HorizontalAlignment" Value="Stretch" />
+			<Setter Property="VerticalAlignment" Value="Stretch" />
+		</Style>
 		
 		<Style Selector="RadioButton">
 			<Setter Property="FontFamily" Value="avares://OpenTracker/Assets/Fonts/#Open Sans" />
@@ -300,15 +316,10 @@
 			<Setter Property="FontWeight" Value="SemiBold" />
 		</Style>
 
-		<Style Selector="Panel.DungeonItem">
-			<Setter Property="Height" Value="16" />
-			<Setter Property="Width" Value="16" />
-		</Style>
-
-    <Style Selector="Panel.ItemControl">
-			<Setter Property="Margin" Value="1 4" />
-			<Setter Property="Height" Value="32" />
-			<Setter Property="Width" Value="32" />
+		<Style Selector="TextBox.AutoTrackerURI">
+			<Setter Property="FontSize" Value="12" />
+			<Setter Property="HorizontalAlignment" Value="Center" />
+			<Setter Property="Width" Value="150" />
 		</Style>
 		
 		<Style Selector="ToggleButton">
@@ -323,18 +334,18 @@
 			<Setter Property="HorizontalAlignment" Value="Center" />
 		</Style>
 
-		<Style Selector="TextBox.AutoTrackerURI">
-			<Setter Property="FontSize" Value="12" />
-			<Setter Property="HorizontalAlignment" Value="Center" />
-			<Setter Property="Width" Value="150" />
-		</Style>
-
     <Style Selector="ToggleButton.ColorSelect">
 			<Setter Property="Height" Value="20" />
 			<Setter Property="Width" Value="20" />
 			<Setter Property="HorizontalAlignment" Value="Left" />
 			<Setter Property="VerticalAlignment" Value="Center" />
 			<Setter Property="Margin" Value="3 0 0 0" />
+		</Style>
+		
+		<Style Selector="Viewbox.MapArea">
+			<Setter Property="Stretch" Value="Uniform" />
+			<Setter Property="HorizontalAlignment" Value="Stretch" />
+			<Setter Property="VerticalAlignment" Value="Stretch" />
 		</Style>
 		
 	</Application.Styles>
