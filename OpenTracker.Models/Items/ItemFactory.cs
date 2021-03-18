@@ -195,21 +195,22 @@ namespace OpenTracker.Models.Items
                 case ItemType.DPSmallKey:
                     return 4;
                 case ItemType.EPSmallKey:
-                    return 3;
+                    return 2;
+                case ItemType.ToHSmallKey:
+                case ItemType.HCBigKey:
+                    return 1;
                 case ItemType.PoDSmallKey:
                 case ItemType.SPSmallKey:
-                case ItemType.TTSmallKey:
                 case ItemType.IPSmallKey:
                 case ItemType.MMSmallKey:
                 case ItemType.TRSmallKey:
                     return 6;
                 case ItemType.SWSmallKey:
                     return 5;
+                case ItemType.TTSmallKey:
+                    return 3;
                 case ItemType.GTSmallKey:
                     return 8;
-                case ItemType.HCBigKey:
-                case ItemType.ToHSmallKey:
-                    return 1;
             }
 
             return null;

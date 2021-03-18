@@ -48,12 +48,10 @@ namespace OpenTracker.Models.RequirementNodes
         /// <param name="node">
         /// The node.
         /// </param>
-        /// <param name="connections">
-        /// The list of connections to be populated.
-        /// </param>
-        public void PopulateNodeConnections(
-            RequirementNodeID id, IRequirementNode node, List<INodeConnection> connections)
+        public IEnumerable<INodeConnection> GetNodeConnections(RequirementNodeID id, IRequirementNode node)
         {
+            var connections = new List<INodeConnection>();
+            
             switch (id)
             {
                 case RequirementNodeID.EntranceDungeonAllInsanity:
@@ -2565,6 +2563,8 @@ namespace OpenTracker.Models.RequirementNodes
                     }
                     break;
             }
+
+            return connections;
         }
 
         /// <summary>

@@ -1,5 +1,7 @@
 ﻿using System;
+using System.ComponentModel;
 using NSubstitute;
+using OpenTracker.Models.AutoTracking.Values;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.SaveLoad;
 using Xunit;
@@ -91,6 +93,24 @@ namespace OpenTracker.UnitTests.Models.Items
             var sut = new Item(Substitute.For<ISaveLoadManager>(), 0, null);
 
             Assert.PropertyChanged(sut, nameof(IItem.Current), () => { sut.Add(); });
+        }
+
+        [Theory]
+        [InlineData(3, null)]
+        [InlineData(0, 0)]
+        [InlineData(1, 1)]
+        [InlineData(2, 2)]
+        public void Current_ShouldBeEqualToAutoTrackValueAndUnchangedByNullAutoTrackValue(
+            int expected, int? autoTrackValue)
+        {
+            var autoTrack = Substitute.For<IAutoTrackValue>();
+            var sut = new Item(Substitute.For<ISaveLoadManager>(), 3, autoTrack);
+
+            autoTrack.CurrentValue.Returns(autoTrackValue);
+            autoTrack.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                autoTrack, new PropertyChangedEventArgs(nameof(IAutoTrackValue.CurrentValue)));
+            
+            Assert.Equal(expected, sut.Current);
         }
     }
 }

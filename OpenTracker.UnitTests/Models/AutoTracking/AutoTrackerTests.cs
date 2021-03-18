@@ -35,7 +35,7 @@ namespace OpenTracker.UnitTests.Models.AutoTracking
         }
 
         [Fact]
-        public async void Devices_NullShouldBeEmptyList()
+        public async void Devices_ShouldReturnEmptyList_WhenNullReceivedFromConnector()
         {
             _snesConnector.GetDevices().ReturnsNull();
 
@@ -45,7 +45,7 @@ namespace OpenTracker.UnitTests.Models.AutoTracking
         }
 
         [Fact]
-        public async void Devices_ShouldEqualReturnedNotNullList()
+        public async void Devices_ShouldReturnReceivedList()
         {
             _snesConnector.GetDevices().Returns(new[]
             {

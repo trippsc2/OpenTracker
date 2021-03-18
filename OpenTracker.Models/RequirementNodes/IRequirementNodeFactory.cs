@@ -11,6 +11,6 @@ namespace OpenTracker.Models.RequirementNodes
         delegate IRequirementNodeFactory Factory();
 
         IRequirementNode GetRequirementNode(RequirementNodeID id);
-        void PopulateNodeConnections(RequirementNodeID id, IRequirementNode node, List<INodeConnection> connections);
+        IEnumerable<INodeConnection> GetNodeConnections(RequirementNodeID id, IRequirementNode node);
     }
 }

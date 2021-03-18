@@ -69,12 +69,10 @@ namespace OpenTracker.Models.Items
         public ItemAutoTrackValueFactory(
             IMemoryAddressProvider memoryAddressProvider, IItemDictionary items, IRequirementDictionary requirements,
             AutoTrackAddressBool.Factory boolFactory, AutoTrackAddressValue.Factory valueFactory,
-            AutoTrackConditionalValue.Factory conditionalFactory,
-            AutoTrackFlagBool.Factory flagBoolFactory, AutoTrackItemValue.Factory itemValueFactory,
-            AutoTrackMultipleDifference.Factory differenceFactory,
-            AutoTrackMultipleOverride.Factory overrideFactory,
-            AutoTrackMultipleSum.Factory sumFactory, AutoTrackStaticValue.Factory staticFactory,
-            IMemoryFlag.Factory memoryFlagFactory)
+            AutoTrackConditionalValue.Factory conditionalFactory, AutoTrackFlagBool.Factory flagBoolFactory,
+            AutoTrackItemValue.Factory itemValueFactory, AutoTrackMultipleDifference.Factory differenceFactory,
+            AutoTrackMultipleOverride.Factory overrideFactory, AutoTrackMultipleSum.Factory sumFactory,
+            AutoTrackStaticValue.Factory staticFactory, IMemoryFlag.Factory memoryFlagFactory)
         {
             _memoryAddressProvider = memoryAddressProvider;
             _items = items;

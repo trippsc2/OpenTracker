@@ -52,8 +52,8 @@ namespace OpenTracker.Models.Connections
         {
             return new ConnectionSaveData()
             {
-                Location1 = Location1.Location!.ID,
-                Location2 = Location2.Location!.ID,
+                Location1 = Location1.Location.ID,
+                Location2 = Location2.Location.ID,
                 Index1 = Location1.Location.MapLocations.IndexOf(Location1),
                 Index2 = Location2.Location.MapLocations.IndexOf(Location2)
             };

@@ -66,8 +66,6 @@ namespace OpenTracker.Models.RequirementNodes
             }
         }
 
-        public delegate IRequirementNode Factory(RequirementNodeID id, bool start);
-
         /// <summary>
         /// Constructor
         /// </summary>
@@ -110,10 +108,10 @@ namespace OpenTracker.Models.RequirementNodes
         {
             switch (e.PropertyName)
             {
-                case nameof(ExitsAccessible):
-                case nameof(DungeonExitsAccessible):
+                case nameof(ExitsAccessible) when _mode.EntranceShuffle >= EntranceShuffle.All:
+                case nameof(DungeonExitsAccessible) when _mode.EntranceShuffle >= EntranceShuffle.Dungeon:
                 case nameof(AlwaysAccessible):
-                case nameof(InsanityExitsAccessible):
+                case nameof(InsanityExitsAccessible) when _mode.EntranceShuffle == EntranceShuffle.Insanity:
                     UpdateAccessibility();
                     break;
             }
@@ -138,7 +136,7 @@ namespace OpenTracker.Models.RequirementNodes
             var requirementNodes = ((IRequirementNodeDictionary)sender!);
 
             requirementNodes.ItemCreated -= OnNodeCreated;
-            _factory.PopulateNodeConnections(e.Key, this, _connections);
+            _connections.AddRange(_factory.GetNodeConnections(e.Key, this));
 
             UpdateAccessibility();
 
@@ -159,10 +157,15 @@ namespace OpenTracker.Models.RequirementNodes
         /// </param>
         private void OnModeChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(IMode.EntranceShuffle))
+            if (e.PropertyName != nameof(IMode.EntranceShuffle))
+            {
+                return;
+            }
+
+            if (ExitsAccessible > 0 || InsanityExitsAccessible > 0 || DungeonExitsAccessible > 0)
             {
                 UpdateAccessibility();
-            }    
+            }
         }
 
         /// <summary>
@@ -201,17 +204,27 @@ namespace OpenTracker.Models.RequirementNodes
         /// </returns>
         public AccessibilityLevel GetNodeAccessibility(List<IRequirementNode> excludedNodes)
         {
-            if (AlwaysAccessible ||
-                (InsanityExitsAccessible > 0 &&
-                _mode.EntranceShuffle >= EntranceShuffle.Insanity) ||
-                (ExitsAccessible > 0 && _mode.EntranceShuffle >= EntranceShuffle.All) ||
-                (DungeonExitsAccessible > 0 &&
-                _mode.EntranceShuffle >= EntranceShuffle.Dungeon))
+            if (AlwaysAccessible)
             {
                 return AccessibilityLevel.Normal;
             }
 
-            AccessibilityLevel finalAccessibility = AccessibilityLevel.None;
+            if (ExitsAccessible > 0 && _mode.EntranceShuffle >= EntranceShuffle.All)
+            {
+                return AccessibilityLevel.Normal;
+            }
+
+            if (DungeonExitsAccessible > 0 && _mode.EntranceShuffle >= EntranceShuffle.Dungeon)
+            {
+                return AccessibilityLevel.Normal;
+            }
+
+            if (InsanityExitsAccessible > 0 && _mode.EntranceShuffle >= EntranceShuffle.Insanity)
+            {
+                return AccessibilityLevel.Normal;
+            }
+
+            var finalAccessibility = AccessibilityLevel.None;
 
             foreach (var connection in _connections)
             {
