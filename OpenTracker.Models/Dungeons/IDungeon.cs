@@ -16,20 +16,20 @@ namespace OpenTracker.Models.Dungeons
     public interface IDungeon : ILocation
     {
         int BigKey { get; }
-        IItem? BigKeyItem { get; }
+        ICappedItem? BigKeyItem { get; }
         List<DungeonItemID> Bosses { get; }
         int Compass { get; }
         List<DungeonItemID> DungeonItems { get; }
         List<IKeyLayout> KeyLayouts { get; }
         int Map { get; }
-        IItem SmallKeyItem { get; }
+        IKeyItem SmallKeyItem { get; }
         int SmallKeys { get; }
         List<KeyDoorID> SmallKeyDoors { get; }
         List<KeyDoorID> BigKeyDoors { get; }
         ConcurrentQueue<IMutableDungeon> DungeonDataQueue { get; }
         List<DungeonNodeID> Nodes { get; }
-        IItem? MapItem { get; }
-        IItem? CompassItem { get; }
+        ICappedItem? MapItem { get; }
+        ICappedItem? CompassItem { get; }
         List<DungeonItemID> SmallKeyDrops { get; }
         List<DungeonItemID> BigKeyDrops { get; }
 

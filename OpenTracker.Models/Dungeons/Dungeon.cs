@@ -25,7 +25,6 @@ namespace OpenTracker.Models.Dungeons
     /// </summary>
     public class Dungeon : Location, IDungeon
     {
-        private readonly IItemDictionary _items;
         private readonly IMode _mode;
         private readonly IMutableDungeon.Factory _mutableDungeonFactory;
         private readonly IDungeonState.Factory _stateFactory;
@@ -40,10 +39,10 @@ namespace OpenTracker.Models.Dungeons
         public int SmallKeys { get; }
         public int BigKey { get; }
 
-        public IItem? MapItem { get; }
-        public IItem? CompassItem { get; }
-        public IItem SmallKeyItem { get; }
-        public IItem? BigKeyItem { get; }
+        public ICappedItem? MapItem { get; }
+        public ICappedItem? CompassItem { get; }
+        public IKeyItem SmallKeyItem { get; }
+        public ICappedItem? BigKeyItem { get; }
 
         public List<DungeonItemID> DungeonItems { get; }
         public List<DungeonItemID> Bosses { get; }
@@ -59,9 +58,6 @@ namespace OpenTracker.Models.Dungeons
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="items">
-        /// The item dictionary.
-        /// </param>
         /// <param name="mode">
         /// The mode data.
         /// </param>
@@ -96,13 +92,12 @@ namespace OpenTracker.Models.Dungeons
         /// The ID of the location.
         /// </param>
         public Dungeon(
-            IItemDictionary items, IMode mode, IMutableDungeon.Factory mutableDungeonFactory,
-            ILocationFactory locationFactory, IMapLocationFactory mapLocationFactory, ISectionFactory sectionFactory,
-            IMarking.Factory markingFactory, ILocationNoteCollection notes, IDungeonFactory dungeonFactory,
-            IKeyLayoutFactory keyLayoutFactory, IDungeonState.Factory stateFactory, LocationID id)
+            IMode mode, IMutableDungeon.Factory mutableDungeonFactory, ILocationFactory locationFactory,
+            IMapLocationFactory mapLocationFactory, ISectionFactory sectionFactory, IMarking.Factory markingFactory,
+            ILocationNoteCollection notes, IDungeonFactory dungeonFactory, IKeyLayoutFactory keyLayoutFactory,
+            IDungeonState.Factory stateFactory, LocationID id)
             : base(locationFactory, mapLocationFactory, sectionFactory, markingFactory, notes, id)
         {
-            _items = items;
             _mode = mode;
             _mutableDungeonFactory = mutableDungeonFactory;
             _stateFactory = stateFactory;
@@ -315,19 +310,16 @@ namespace OpenTracker.Models.Dungeons
         private IEnumerable<int> GetSmallKeyValues()
         {
             var smallKeyValues = new List<int>();
-            var maximumKeys = _mode.KeyDropShuffle ? SmallKeys + SmallKeyDrops.Count : SmallKeys;
 
             if (_mode.SmallKeyShuffle)
             { 
-                smallKeyValues.Add(Math.Min(maximumKeys, SmallKeyItem.Current +
-                    (_mode.GenericKeys ? _items[ItemType.SmallKey].Current : 0)));
+                smallKeyValues.Add(SmallKeyItem.EffectiveCurrent);
+                return smallKeyValues;
             }
-            else
+
+            for (var i = 0; i <= SmallKeyItem.Maximum; i++)
             {
-                for (var i = 0; i <= maximumKeys; i++)
-                {
-                    smallKeyValues.Add(i);
-                }
+                smallKeyValues.Add(i);
             }
 
             return smallKeyValues;
@@ -341,41 +333,27 @@ namespace OpenTracker.Models.Dungeons
         /// </returns>
         private List<bool> GetBigKeyValues()
         {
-            List<bool> bigKeyValues = new List<bool>();
+            if (BigKeyItem is null)
+            {
+                return new List<bool>
+                {
+                    false
+                };
+            }
+            
+            var bigKeyValues = new List<bool>();
 
             if (_mode.BigKeyShuffle)
             {
-                if (_mode.KeyDropShuffle)
-                {
-                    if (BigKeyItem != null)
-                    {
-                        bigKeyValues.Add(BigKeyItem.Current > 0);
-                    }
-                    else
-                    {
-                        bigKeyValues.Add(false);
-                    }
-                }
-                else
-                {
-                    if (BigKey > 0 && BigKeyItem != null)
-                    {
-                        bigKeyValues.Add(BigKeyItem.Current > 0);
-                    }
-                    else
-                    {
-                        bigKeyValues.Add(false);
-                    }
-                }
+                bigKeyValues.Add(BigKeyItem.Current > 0);
+                return bigKeyValues;
             }
-            else
-            {
-                bigKeyValues.Add(false);
+
+            bigKeyValues.Add(false);
                 
-                if (BigKey > 0 || (BigKeyDrops.Count > 0 && _mode.KeyDropShuffle))
-                {
-                    bigKeyValues.Add(true);
-                }
+            if (BigKeyItem.Maximum > 0)
+            {
+                bigKeyValues.Add(true);
             }
 
             return bigKeyValues;
@@ -520,7 +498,7 @@ namespace OpenTracker.Models.Dungeons
 
             for (int i = 0; i < keyDoorPermutationQueue.Count; i++)
             {
-                int currentIteration = i;
+                var currentIteration = i;
 
                 keyDoorTasks.Add(Task.Factory.StartNew(() =>
                 {

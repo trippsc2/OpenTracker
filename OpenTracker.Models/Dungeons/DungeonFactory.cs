@@ -26,8 +26,7 @@ namespace OpenTracker.Models.Dungeons
         /// <param name="requirementNodes">
         /// The requirement node dictionary.
         /// </param>
-        public DungeonFactory(
-            IItemDictionary items, IRequirementNodeDictionary requirementNodes)
+        public DungeonFactory(IItemDictionary items, IRequirementNodeDictionary requirementNodes)
         {
             _items = items;
             _requirementNodes = requirementNodes;
@@ -202,9 +201,9 @@ namespace OpenTracker.Models.Dungeons
         /// <returns>
         /// The map item.
         /// </returns>
-        public IItem? GetDungeonMapItem(LocationID id)
+        public ICappedItem? GetDungeonMapItem(LocationID id)
         {
-            return id switch
+            var item = id switch
             {
                 LocationID.HyruleCastle => _items[ItemType.HCMap],
                 LocationID.AgahnimTower => null,
@@ -221,6 +220,8 @@ namespace OpenTracker.Models.Dungeons
                 LocationID.GanonsTower => _items[ItemType.GTMap],
                 _ => throw new ArgumentOutOfRangeException(nameof(id))
             };
+
+            return item as ICappedItem;
         }
 
         /// <summary>
@@ -232,62 +233,27 @@ namespace OpenTracker.Models.Dungeons
         /// <returns>
         /// The compass item.
         /// </returns>
-        public IItem? GetDungeonCompassItem(LocationID id)
+        public ICappedItem? GetDungeonCompassItem(LocationID id)
         {
-            switch (id)
+            var item = id switch
             {
-                case LocationID.HyruleCastle:
-                case LocationID.AgahnimTower:
-                    {
-                        return null;
-                    }
-                case LocationID.EasternPalace:
-                    {
-                        return _items[ItemType.EPCompass];
-                    }
-                case LocationID.DesertPalace:
-                    {
-                        return _items[ItemType.DPCompass];
-                    }
-                case LocationID.TowerOfHera:
-                    {
-                        return _items[ItemType.ToHCompass];
-                    }
-                case LocationID.PalaceOfDarkness:
-                    {
-                        return _items[ItemType.PoDCompass];
-                    }
-                case LocationID.SwampPalace:
-                    {
-                        return _items[ItemType.SPCompass];
-                    }
-                case LocationID.SkullWoods:
-                    {
-                        return _items[ItemType.SWCompass];
-                    }
-                case LocationID.ThievesTown:
-                    {
-                        return _items[ItemType.TTCompass];
-                    }
-                case LocationID.IcePalace:
-                    {
-                        return _items[ItemType.IPCompass];
-                    }
-                case LocationID.MiseryMire:
-                    {
-                        return _items[ItemType.MMCompass];
-                    }
-                case LocationID.TurtleRock:
-                    {
-                        return _items[ItemType.TRCompass];
-                    }
-                case LocationID.GanonsTower:
-                    {
-                        return _items[ItemType.GTCompass];
-                    }
-            }
+                LocationID.HyruleCastle => null,
+                LocationID.AgahnimTower => null,
+                LocationID.EasternPalace => _items[ItemType.EPCompass],
+                LocationID.DesertPalace => _items[ItemType.DPCompass],
+                LocationID.TowerOfHera => _items[ItemType.ToHCompass],
+                LocationID.PalaceOfDarkness => _items[ItemType.PoDCompass],
+                LocationID.SwampPalace => _items[ItemType.SPCompass],
+                LocationID.SkullWoods => _items[ItemType.SWCompass],
+                LocationID.ThievesTown => _items[ItemType.TTCompass],
+                LocationID.IcePalace => _items[ItemType.IPCompass],
+                LocationID.MiseryMire => _items[ItemType.MMCompass],
+                LocationID.TurtleRock => _items[ItemType.TRCompass],
+                LocationID.GanonsTower => _items[ItemType.GTCompass],
+                _ => throw new ArgumentOutOfRangeException(nameof(id))
+            };
 
-            throw new ArgumentOutOfRangeException(nameof(id));
+            return item as ICappedItem;
         }
 
         /// <summary>
@@ -299,65 +265,27 @@ namespace OpenTracker.Models.Dungeons
         /// <returns>
         /// The small key item.
         /// </returns>
-        public IItem GetDungeonSmallKeyItem(LocationID id)
+        public IKeyItem GetDungeonSmallKeyItem(LocationID id)
         {
-            switch (id)
+            var item = id switch
             {
-                case LocationID.HyruleCastle:
-                    {
-                        return _items[ItemType.HCSmallKey];
-                    }
-                case LocationID.AgahnimTower:
-                    {
-                        return _items[ItemType.ATSmallKey];
-                    }
-                case LocationID.EasternPalace:
-                    {
-                        return _items[ItemType.EPSmallKey];
-                    }
-                case LocationID.DesertPalace:
-                    {
-                        return _items[ItemType.DPSmallKey];
-                    }
-                case LocationID.TowerOfHera:
-                    {
-                        return _items[ItemType.ToHSmallKey];
-                    }
-                case LocationID.PalaceOfDarkness:
-                    {
-                        return _items[ItemType.PoDSmallKey];
-                    }
-                case LocationID.SwampPalace:
-                    {
-                        return _items[ItemType.SPSmallKey];
-                    }
-                case LocationID.SkullWoods:
-                    {
-                        return _items[ItemType.SWSmallKey];
-                    }
-                case LocationID.ThievesTown:
-                    {
-                        return _items[ItemType.TTSmallKey];
-                    }
-                case LocationID.IcePalace:
-                    {
-                        return _items[ItemType.IPSmallKey];
-                    }
-                case LocationID.MiseryMire:
-                    {
-                        return _items[ItemType.MMSmallKey];
-                    }
-                case LocationID.TurtleRock:
-                    {
-                        return _items[ItemType.TRSmallKey];
-                    }
-                case LocationID.GanonsTower:
-                    {
-                        return _items[ItemType.GTSmallKey];
-                    }
-            }
+                LocationID.HyruleCastle => _items[ItemType.HCSmallKey],
+                LocationID.AgahnimTower => _items[ItemType.ATSmallKey],
+                LocationID.EasternPalace => _items[ItemType.EPSmallKey],
+                LocationID.DesertPalace => _items[ItemType.DPSmallKey],
+                LocationID.TowerOfHera => _items[ItemType.ToHSmallKey],
+                LocationID.PalaceOfDarkness => _items[ItemType.PoDSmallKey],
+                LocationID.SwampPalace => _items[ItemType.SPSmallKey],
+                LocationID.SkullWoods => _items[ItemType.SWSmallKey],
+                LocationID.ThievesTown => _items[ItemType.TTSmallKey],
+                LocationID.IcePalace => _items[ItemType.IPSmallKey],
+                LocationID.MiseryMire => _items[ItemType.MMSmallKey],
+                LocationID.TurtleRock => _items[ItemType.TRSmallKey],
+                LocationID.GanonsTower => _items[ItemType.GTSmallKey],
+                _ => throw new ArgumentOutOfRangeException(nameof(id))
+            };
 
-            throw new ArgumentOutOfRangeException(nameof(id));
+            return (IKeyItem)item;
         }
 
         /// <summary>
@@ -369,65 +297,27 @@ namespace OpenTracker.Models.Dungeons
         /// <returns>
         /// The big key item.
         /// </returns>
-        public IItem? GetDungeonBigKeyItem(LocationID id)
+        public ICappedItem? GetDungeonBigKeyItem(LocationID id)
         {
-            switch (id)
+            var item = id switch
             {
-                case LocationID.HyruleCastle:
-                    {
-                        return _items[ItemType.HCBigKey];
-                    }
-                case LocationID.AgahnimTower:
-                    {
-                        return null;
-                    }
-                case LocationID.EasternPalace:
-                    {
-                        return _items[ItemType.EPBigKey];
-                    }
-                case LocationID.DesertPalace:
-                    {
-                        return _items[ItemType.DPBigKey];
-                    }
-                case LocationID.TowerOfHera:
-                    {
-                        return _items[ItemType.ToHBigKey];
-                    }
-                case LocationID.PalaceOfDarkness:
-                    {
-                        return _items[ItemType.PoDBigKey];
-                    }
-                case LocationID.SwampPalace:
-                    {
-                        return _items[ItemType.SPBigKey];
-                    }
-                case LocationID.SkullWoods:
-                    {
-                        return _items[ItemType.SWBigKey];
-                    }
-                case LocationID.ThievesTown:
-                    {
-                        return _items[ItemType.TTBigKey];
-                    }
-                case LocationID.IcePalace:
-                    {
-                        return _items[ItemType.IPBigKey];
-                    }
-                case LocationID.MiseryMire:
-                    {
-                        return _items[ItemType.MMBigKey];
-                    }
-                case LocationID.TurtleRock:
-                    {
-                        return _items[ItemType.TRBigKey];
-                    }
-                case LocationID.GanonsTower:
-                    {
-                        return _items[ItemType.GTBigKey];
-                    }
-            }
+                LocationID.HyruleCastle => _items[ItemType.HCBigKey],
+                LocationID.AgahnimTower => null,
+                LocationID.EasternPalace => _items[ItemType.EPBigKey],
+                LocationID.DesertPalace => _items[ItemType.DPBigKey],
+                LocationID.TowerOfHera => _items[ItemType.ToHBigKey],
+                LocationID.PalaceOfDarkness => _items[ItemType.PoDBigKey],
+                LocationID.SwampPalace => _items[ItemType.SPBigKey],
+                LocationID.SkullWoods => _items[ItemType.SWBigKey],
+                LocationID.ThievesTown => _items[ItemType.TTBigKey],
+                LocationID.IcePalace => _items[ItemType.IPBigKey],
+                LocationID.MiseryMire => _items[ItemType.MMBigKey],
+                LocationID.TurtleRock => _items[ItemType.TRBigKey],
+                LocationID.GanonsTower => _items[ItemType.GTBigKey],
+                _ => throw new ArgumentOutOfRangeException(nameof(id))
+            };
 
-            throw new ArgumentOutOfRangeException(nameof(id));
+            return item as ICappedItem;
         }
 
         /// <summary>

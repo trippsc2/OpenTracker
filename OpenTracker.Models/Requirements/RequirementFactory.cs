@@ -1554,7 +1554,7 @@ namespace OpenTracker.Models.Requirements
                 case RequirementType.TRSmallKey2:
                 case RequirementType.TRSmallKey3:
                     {
-                        return _smallKeyFactory(GetItem(type), GetItemCount(type));
+                        return _smallKeyFactory((IKeyItem)GetItem(type), GetItemCount(type));
                     }
                 case RequirementType.SBBlindPedestal:
                 case RequirementType.SBBonkOverLedge:

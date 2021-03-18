@@ -208,6 +208,7 @@ namespace OpenTracker.Models.Items
                 case ItemType.GTSmallKey:
                     return 8;
                 case ItemType.HCBigKey:
+                case ItemType.ToHSmallKey:
                     return 1;
             }
 
