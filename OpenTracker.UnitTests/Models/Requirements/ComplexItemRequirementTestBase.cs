@@ -62,10 +62,10 @@ namespace OpenTracker.UnitTests.Models.Requirements
                      bigKey.Item2;
              }
 
-             foreach (var accessibleNode in accessibleNodes)
-             {
-                 requirementNodes[accessibleNode].AlwaysAccessible = true;
-             }
+             // foreach (var accessibleNode in accessibleNodes)
+             // {
+             //     requirementNodes[accessibleNode].AlwaysAccessible = true;
+             // }
 
              Assert.Equal(expected, requirements[type].Accessibility);
          }

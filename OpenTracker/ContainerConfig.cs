@@ -311,13 +311,7 @@ namespace OpenTracker
                 nameof(StatusBarVM)
             };
 
-        /// <summary>
-        /// Returns a newly configured Autofac container.
-        /// </summary>
-        /// <returns>
-        /// A new Autofac container.
-        /// </returns>
-        public static IContainer Configure()
+        public static ContainerBuilder GetContainerBuilder()
         {
             var builder = new ContainerBuilder();
 
@@ -330,6 +324,19 @@ namespace OpenTracker
             RegisterNamespace(
                 Assembly.Load(nameof(OpenTracker)), builder, GUISkipTypes, GUISelfTypes,
                 GUISingleInstanceTypes);
+
+            return builder;
+        }
+
+        /// <summary>
+        /// Returns a newly configured Autofac container.
+        /// </summary>
+        /// <returns>
+        /// A new Autofac container.
+        /// </returns>
+        public static IContainer Configure()
+        {
+            var builder = GetContainerBuilder();
             
             return builder.Build();
         }
