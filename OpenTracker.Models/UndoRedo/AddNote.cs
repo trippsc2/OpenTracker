@@ -9,7 +9,7 @@ namespace OpenTracker.Models.UndoRedo
     public class AddNote : IUndoable
     {
         private readonly IMarking.Factory _factory;
-        private readonly ILocation _location;
+        private readonly ILocationNoteCollection _notes;
         private IMarking? _note;
 
         public delegate AddNote Factory(ILocation location);
@@ -26,7 +26,7 @@ namespace OpenTracker.Models.UndoRedo
         public AddNote(IMarking.Factory factory, ILocation location)
         {
             _factory = factory;
-            _location = location;
+            _notes = location.Notes;
         }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace OpenTracker.Models.UndoRedo
         /// </returns>
         public bool CanExecute()
         {
-            return _location.Notes.Count < 4;
+            return _notes.Count < 4;
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace OpenTracker.Models.UndoRedo
         public void ExecuteDo()
         {
             _note = _factory();
-            _location.Notes.Add(_note);
+            _notes.Add(_note);
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void ExecuteUndo()
         {
-            _location.Notes.Remove(_note!);
+            _notes.Remove(_note!);
         }
     }
 }
