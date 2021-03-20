@@ -8,11 +8,11 @@ namespace OpenTracker.Models.UndoRedo
     public class ChangeCompassShuffle : IUndoable
     {
         private readonly IMode _mode;
-        private readonly bool _compassShuffle;
+        private readonly bool _newValue;
 
-        private bool _previousCompassShuffle;
+        private bool _previousValue;
 
-        public delegate ChangeCompassShuffle Factory(bool compassShuffle);
+        public delegate ChangeCompassShuffle Factory(bool newValue);
 
         /// <summary>
         /// Constructor
@@ -20,13 +20,13 @@ namespace OpenTracker.Models.UndoRedo
         /// <param name="mode">
         /// The mode settings.
         /// </param>
-        /// <param name="compassShuffle">
+        /// <param name="newValue">
         /// The new compass shuffle setting.
         /// </param>
-        public ChangeCompassShuffle(IMode mode, bool compassShuffle)
+        public ChangeCompassShuffle(IMode mode, bool newValue)
         {
             _mode = mode;
-            _compassShuffle = compassShuffle;
+            _newValue = newValue;
         }
 
         /// <summary>
@@ -45,8 +45,8 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void ExecuteDo()
         {
-            _previousCompassShuffle = _mode.CompassShuffle;
-            _mode.CompassShuffle = _compassShuffle;
+            _previousValue = _mode.CompassShuffle;
+            _mode.CompassShuffle = _newValue;
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void ExecuteUndo()
         {
-            _mode.CompassShuffle = _previousCompassShuffle;
+            _mode.CompassShuffle = _previousValue;
         }
     }
 }

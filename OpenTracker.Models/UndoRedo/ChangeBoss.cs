@@ -8,12 +8,11 @@ namespace OpenTracker.Models.UndoRedo
     public class ChangeBoss : IUndoable
     {
         private readonly IBossPlacement _bossPlacement;
-        private readonly BossType? _boss;
+        private readonly BossType? _newValue;
 
-        private BossType? _previousBoss;
+        private BossType? _previousValue;
 
-        public delegate ChangeBoss Factory(
-            IBossPlacement bossPlacement, BossType? boss);
+        public delegate ChangeBoss Factory(IBossPlacement bossPlacement, BossType? newValue);
 
         /// <summary>
         /// Constructor
@@ -21,13 +20,13 @@ namespace OpenTracker.Models.UndoRedo
         /// <param name="bossPlacement">
         /// The boss section to be changed.
         /// </param>
-        /// <param name="boss">
+        /// <param name="newValue">
         /// The boss to be assigned to the dungeon.
         /// </param>
-        public ChangeBoss(IBossPlacement bossPlacement, BossType? boss)
+        public ChangeBoss(IBossPlacement bossPlacement, BossType? newValue)
         {
             _bossPlacement = bossPlacement;
-            _boss = boss;
+            _newValue = newValue;
         }
 
         /// <summary>
@@ -46,8 +45,8 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void ExecuteDo()
         {
-            _previousBoss = _bossPlacement.Boss;
-            _bossPlacement.Boss = _boss;
+            _previousValue = _bossPlacement.Boss;
+            _bossPlacement.Boss = _newValue;
         }
 
         /// <summary>
@@ -55,7 +54,7 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void ExecuteUndo()
         {
-            _bossPlacement.Boss = _previousBoss;
+            _bossPlacement.Boss = _previousValue;
         }
     }
 }

@@ -9,11 +9,11 @@ namespace OpenTracker.Models.UndoRedo
     {
         private readonly IMode _mode;
 
-        private readonly bool _bossShuffle;
+        private readonly bool _newValue;
 
-        private bool _previousBossShuffle;
+        private bool _previousValue;
 
-        public delegate ChangeBossShuffle Factory(bool bossShuffle);
+        public delegate ChangeBossShuffle Factory(bool newValue);
 
         /// <summary>
         /// Constructor
@@ -21,13 +21,13 @@ namespace OpenTracker.Models.UndoRedo
         /// <param name="mode">
         /// The game mode data.
         /// </param>
-        /// <param name="bossShuffle">
+        /// <param name="newValue">
         /// A boolean representing the new boss shuffle setting.
         /// </param>
-        public ChangeBossShuffle(IMode mode, bool bossShuffle)
+        public ChangeBossShuffle(IMode mode, bool newValue)
         {
             _mode = mode;
-            _bossShuffle = bossShuffle;
+            _newValue = newValue;
         }
 
         /// <summary>
@@ -46,8 +46,8 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void ExecuteDo()
         {
-            _previousBossShuffle = _mode.BossShuffle;
-            _mode.BossShuffle = _bossShuffle;
+            _previousValue = _mode.BossShuffle;
+            _mode.BossShuffle = _newValue;
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void ExecuteUndo()
         {
-            _mode.BossShuffle = _previousBossShuffle;
+            _mode.BossShuffle = _previousValue;
         }
     }
 }

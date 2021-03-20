@@ -1,3 +1,4 @@
+using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Connections;
 using OpenTracker.Models.Locations;
@@ -49,6 +50,17 @@ namespace OpenTracker.UnitTests.Models.UndoRedo
             _sut.ExecuteUndo();
             
             Assert.DoesNotContain(_connection, _connections);
+        }
+
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+
+            var factory = scope.Resolve<AddConnection.Factory>();
+            var sut = factory(_connection);
+            
+            Assert.True(!(sut is null));
         }
     }
 }

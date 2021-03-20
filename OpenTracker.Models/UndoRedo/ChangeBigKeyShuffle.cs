@@ -9,11 +9,11 @@ namespace OpenTracker.Models.UndoRedo
     {
         private readonly IMode _mode;
 
-        private readonly bool _bigKeyShuffle;
+        private readonly bool _newValue;
 
-        private bool _previousBigKeyShuffle;
+        private bool _previousValue;
 
-        public delegate ChangeBigKeyShuffle Factory(bool bigKeyShuffle);
+        public delegate ChangeBigKeyShuffle Factory(bool newValue);
 
         /// <summary>
         /// Constructor
@@ -21,13 +21,13 @@ namespace OpenTracker.Models.UndoRedo
         /// <param name="mode">
         /// The mode settings.
         /// </param>
-        /// <param name="bigKeyShuffle">
+        /// <param name="newValue">
         /// The new big key shuffle setting.
         /// </param>
-        public ChangeBigKeyShuffle(IMode mode, bool bigKeyShuffle)
+        public ChangeBigKeyShuffle(IMode mode, bool newValue)
         {
             _mode = mode;
-            _bigKeyShuffle = bigKeyShuffle;
+            _newValue = newValue;
         }
 
         /// <summary>
@@ -46,8 +46,8 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void ExecuteDo()
         {
-            _previousBigKeyShuffle = _mode.BigKeyShuffle;
-            _mode.BigKeyShuffle = _bigKeyShuffle;
+            _previousValue = _mode.BigKeyShuffle;
+            _mode.BigKeyShuffle = _newValue;
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void ExecuteUndo()
         {
-            _mode.BigKeyShuffle = _previousBigKeyShuffle;
+            _mode.BigKeyShuffle = _previousValue;
         }
     }
 }

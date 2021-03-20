@@ -17,5 +17,13 @@ namespace OpenTracker.UnitTests.Models.Markings
         {
             Assert.PropertyChanged(_sut, nameof(IMarking.Mark), () => _sut.Mark = MarkType.HCLeft);
         }
+
+        [Fact]
+        public void Mark_ShouldReturnSetValue()
+        {
+            _sut.Mark = MarkType.HCLeft;
+            
+            Assert.Equal(MarkType.HCLeft, _sut.Mark);
+        }
     }
 }

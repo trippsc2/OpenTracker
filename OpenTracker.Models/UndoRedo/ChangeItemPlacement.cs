@@ -8,10 +8,10 @@ namespace OpenTracker.Models.UndoRedo
     public class ChangeItemPlacement : IUndoable
     {
         private readonly IMode _mode;
-        private readonly ItemPlacement _itemPlacement;
-        private ItemPlacement _previousItemPlacement;
+        private readonly ItemPlacement _newValue;
+        private ItemPlacement _previousValue;
 
-        public delegate ChangeItemPlacement Factory(ItemPlacement itemPlacement);
+        public delegate ChangeItemPlacement Factory(ItemPlacement newValue);
 
         /// <summary>
         /// Constructor
@@ -19,13 +19,13 @@ namespace OpenTracker.Models.UndoRedo
         /// <param name="mode">
         /// The mode settings.
         /// </param>
-        /// <param name="itemPlacement">
+        /// <param name="newValue">
         /// The new item placement setting.
         /// </param>
-        public ChangeItemPlacement(IMode mode, ItemPlacement itemPlacement)
+        public ChangeItemPlacement(IMode mode, ItemPlacement newValue)
         {
             _mode = mode;
-            _itemPlacement = itemPlacement;
+            _newValue = newValue;
         }
 
         /// <summary>
@@ -44,8 +44,8 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void ExecuteDo()
         {
-            _previousItemPlacement = _mode.ItemPlacement;
-            _mode.ItemPlacement = _itemPlacement;
+            _previousValue = _mode.ItemPlacement;
+            _mode.ItemPlacement = _newValue;
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void ExecuteUndo()
         {
-            _mode.ItemPlacement = _previousItemPlacement;
+            _mode.ItemPlacement = _previousValue;
         }
     }
 }

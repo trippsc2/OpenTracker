@@ -8,11 +8,11 @@ namespace OpenTracker.Models.UndoRedo
     public class ChangeWorldState : IUndoable
     {
         private readonly IMode _mode;
-        private readonly WorldState _worldState;
-        private WorldState _previousWorldState;
+        private readonly WorldState _newValue;
+        private WorldState _previousValue;
         private ItemPlacement _previousItemPlacement;
 
-        public delegate ChangeWorldState Factory(WorldState worldState);
+        public delegate ChangeWorldState Factory(WorldState newValue);
 
         /// <summary>
         /// Constructor
@@ -20,13 +20,13 @@ namespace OpenTracker.Models.UndoRedo
         /// <param name="mode">
         /// The mode settings data.
         /// </param>
-        /// <param name="worldState">
+        /// <param name="newValue">
         /// The new world state setting.
         /// </param>
-        public ChangeWorldState(IMode mode, WorldState worldState)
+        public ChangeWorldState(IMode mode, WorldState newValue)
         {
             _mode = mode;
-            _worldState = worldState;
+            _newValue = newValue;
         }
 
         /// <summary>
@@ -45,9 +45,9 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void ExecuteDo()
         {
-            _previousWorldState = _mode.WorldState;
+            _previousValue = _mode.WorldState;
             _previousItemPlacement = _mode.ItemPlacement;
-            _mode.WorldState = _worldState;
+            _mode.WorldState = _newValue;
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void ExecuteUndo()
         {
-            _mode.WorldState = _previousWorldState;
+            _mode.WorldState = _previousValue;
             _mode.ItemPlacement = _previousItemPlacement;
         }
     }

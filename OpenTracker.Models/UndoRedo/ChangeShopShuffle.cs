@@ -8,10 +8,10 @@ namespace OpenTracker.Models.UndoRedo
     public class ChangeShopShuffle : IUndoable
     {
         private readonly IMode _mode;
-        private readonly bool _shopShuffle;
-        private bool _previousShopShuffle;
+        private readonly bool _newValue;
+        private bool _previousValue;
 
-        public delegate ChangeShopShuffle Factory(bool shopShuffle);
+        public delegate ChangeShopShuffle Factory(bool newValue);
 
         /// <summary>
         /// Constructor
@@ -19,13 +19,13 @@ namespace OpenTracker.Models.UndoRedo
         /// <param name="mode">
         /// The mode settings.
         /// </param>
-        /// <param name="shopShuffle">
+        /// <param name="newValue">
         /// The new key drp shuffle setting.
         /// </param>
-        public ChangeShopShuffle(IMode mode, bool shopShuffle)
+        public ChangeShopShuffle(IMode mode, bool newValue)
         {
             _mode = mode;
-            _shopShuffle = shopShuffle;
+            _newValue = newValue;
         }
 
         /// <summary>
@@ -44,8 +44,8 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void ExecuteDo()
         {
-            _previousShopShuffle = _mode.ShopShuffle;
-            _mode.ShopShuffle = _shopShuffle;
+            _previousValue = _mode.ShopShuffle;
+            _mode.ShopShuffle = _newValue;
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void ExecuteUndo()
         {
-            _mode.ShopShuffle = _previousShopShuffle;
+            _mode.ShopShuffle = _previousValue;
         }
     }
 }

@@ -8,11 +8,11 @@ namespace OpenTracker.Models.UndoRedo
     public class ChangeGuaranteedBossItems : IUndoable
     {
         private readonly IMode _mode;
-        private readonly bool _guaranteedBossItems;
+        private readonly bool _newValue;
 
-        private bool _previousGuaranteedBossItems;
+        private bool _previousValue;
 
-        public delegate ChangeGuaranteedBossItems Factory(bool guaranteedBossItems);
+        public delegate ChangeGuaranteedBossItems Factory(bool newValue);
 
         /// <summary>
         /// Constructor
@@ -20,13 +20,13 @@ namespace OpenTracker.Models.UndoRedo
         /// <param name="mode">
         /// The mode settings.
         /// </param>
-        /// <param name="guaranteedBossItems">
+        /// <param name="newValue">
         /// The new guaranteed boss items setting.
         /// </param>
-        public ChangeGuaranteedBossItems(IMode mode, bool guaranteedBossItems)
+        public ChangeGuaranteedBossItems(IMode mode, bool newValue)
         {
             _mode = mode;
-            _guaranteedBossItems = guaranteedBossItems;
+            _newValue = newValue;
         }
 
         /// <summary>
@@ -45,8 +45,8 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void ExecuteDo()
         {
-            _previousGuaranteedBossItems = _mode.GuaranteedBossItems;
-            _mode.GuaranteedBossItems = _guaranteedBossItems;
+            _previousValue = _mode.GuaranteedBossItems;
+            _mode.GuaranteedBossItems = _newValue;
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void ExecuteUndo()
         {
-            _mode.GuaranteedBossItems = _previousGuaranteedBossItems;
+            _mode.GuaranteedBossItems = _previousValue;
         }
     }
 }
