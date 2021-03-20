@@ -9,7 +9,7 @@ namespace OpenTracker.Models.UndoRedo
     public class ChangePrize : IUndoable
     {
         private readonly IPrizePlacement _prizePlacement;
-        private IItem? _previousItem;
+        private IItem? _previousValue;
 
         public delegate ChangePrize Factory(IPrizePlacement prizePlacement);
 
@@ -40,7 +40,7 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void ExecuteDo()
         {
-            _previousItem = _prizePlacement.Prize;
+            _previousValue = _prizePlacement.Prize;
             _prizePlacement.Cycle();
         }
 
@@ -49,7 +49,7 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void ExecuteUndo()
         {
-            _prizePlacement.Prize = _previousItem;
+            _prizePlacement.Prize = _previousValue;
         }
     }
 }

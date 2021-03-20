@@ -21,6 +21,8 @@ namespace OpenTracker.ViewModels
     public class MainWindowVM : DialogViewModelBase, IMainWindowVM
     {
         private readonly IAppSettings _appSettings;
+        private readonly IBoundsSettings _boundsSettings;
+        private readonly ILayoutSettings _layoutSettings;
         private readonly ISaveLoadManager _saveLoadManager;
 
         public string Title
@@ -42,36 +44,35 @@ namespace OpenTracker.ViewModels
 
         public bool? Maximized
         {
-            get => _appSettings.Bounds.Maximized;
-            set => _appSettings.Bounds.Maximized = value;
+            get => _boundsSettings.Maximized;
+            set => _boundsSettings.Maximized = value;
         }
         public double? X
         {
-            get => _appSettings.Bounds.X;
-            set => _appSettings.Bounds.X = value;
+            get => _boundsSettings.X;
+            set => _boundsSettings.X = value;
         }
         public double? Y
         {
-            get => _appSettings.Bounds.Y;
-            set => _appSettings.Bounds.Y = value;
+            get => _boundsSettings.Y;
+            set => _boundsSettings.Y = value;
         }
         public double? Width
         {
-            get => _appSettings.Bounds.Width;
-            set => _appSettings.Bounds.Width = value;
+            get => _boundsSettings.Width;
+            set => _boundsSettings.Width = value;
         }
         public double? Height
         {
-            get => _appSettings.Bounds.Height;
-            set => _appSettings.Bounds.Height = value;
+            get => _boundsSettings.Height;
+            set => _boundsSettings.Height = value;
         }
 
-        public Dock UIDock =>
-            _appSettings.Layout.CurrentLayoutOrientation switch
-            {
-                Orientation.Horizontal => _appSettings.Layout.HorizontalUIPanelPlacement,
-                _ => _appSettings.Layout.VerticalUIPanelPlacement
-            };
+        public Dock UIDock => _layoutSettings.CurrentLayoutOrientation switch
+        {
+            Orientation.Horizontal => _layoutSettings.HorizontalUIPanelPlacement,
+            _ => _layoutSettings.VerticalUIPanelPlacement
+        };
 
         public ITopMenuVM TopMenu { get; }
         public IStatusBarVM StatusBar { get; }
@@ -92,6 +93,12 @@ namespace OpenTracker.ViewModels
         /// <param name="appSettings">
         /// The app settings data.
         /// </param>
+        /// <param name="boundsSettings">
+        /// The bounds settings data.
+        /// </param>
+        /// <param name="layoutSettings">
+        /// The layout settings data.
+        /// </param>
         /// <param name="saveLoadManager">
         /// The save/load manager.
         /// </param>
@@ -108,10 +115,13 @@ namespace OpenTracker.ViewModels
         /// The map area control.
         /// </param>
         public MainWindowVM(
-            IAppSettings appSettings, ISaveLoadManager saveLoadManager, ITopMenuVM.Factory topMenu, IStatusBarVM statusBar,
+            IAppSettings appSettings, IBoundsSettings boundsSettings, ILayoutSettings layoutSettings,
+            ISaveLoadManager saveLoadManager, ITopMenuVM.Factory topMenu, IStatusBarVM statusBar,
             IUIPanelAreaVM uiPanel, IMapAreaVM mapArea)
         {
             _appSettings = appSettings;
+            _boundsSettings = boundsSettings;
+            _layoutSettings = layoutSettings;
             _saveLoadManager = saveLoadManager;
 
             TopMenu = topMenu(() => Close());
@@ -127,26 +137,8 @@ namespace OpenTracker.ViewModels
             Redo = TopMenu.Redo;
             ToggleDisplayAllLocations = TopMenu.ToggleDisplayAllLocations;
 
+            _layoutSettings.PropertyChanged += OnLayoutChanged;
             _saveLoadManager.PropertyChanged += OnSaveLoadManagerChanged;
-            _appSettings.Layout.PropertyChanged += OnLayoutChanged;
-        }
-
-        /// <summary>
-        /// Subscribes to the PropertyChanged event on the ISaveLoadManager interface.
-        /// </summary>
-        /// <param name="sender">
-        /// The sending object of the event.
-        /// </param>
-        /// <param name="e">
-        /// The arguments of the PropertyChanged event.
-        /// </param>
-        private async void OnSaveLoadManagerChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(ISaveLoadManager.CurrentFilePath) ||
-                e.PropertyName == nameof(ISaveLoadManager.Unsaved))
-            {
-                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Title)));
-            }
         }
 
         /// <summary>
@@ -158,13 +150,31 @@ namespace OpenTracker.ViewModels
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private async void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnLayoutChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(LayoutSettings.CurrentLayoutOrientation) ||
                 e.PropertyName == nameof(LayoutSettings.HorizontalUIPanelPlacement) ||
                 e.PropertyName == nameof(LayoutSettings.VerticalUIPanelPlacement))
             {
                 await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(UIDock)));
+            }
+        }
+
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the ISaveLoadManager interface.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
+        private async void OnSaveLoadManagerChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ISaveLoadManager.CurrentFilePath) ||
+                e.PropertyName == nameof(ISaveLoadManager.Unsaved))
+            {
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Title)));
             }
         }
 
@@ -177,30 +187,7 @@ namespace OpenTracker.ViewModels
         /// </param>
         public void ChangeLayout(Orientation orientation)
         {
-            _appSettings.Layout.CurrentDynamicOrientation = orientation;
-        }
-
-        /// <summary>
-        /// Saves the app settings to a file.
-        /// </summary>
-        /// <param name="maximized">
-        /// A boolean representing whether the window is maximized.
-        /// </param>
-        /// <param name="bounds">
-        /// The boundaries of the window.
-        /// </param>
-        /// <param name="pixelPoint">
-        /// The pixel point representing the current window position.
-        /// </param>
-        private void SaveAppSettings(bool maximized, Rect bounds, PixelPoint pixelPoint)
-        {
-            _appSettings.Bounds.Maximized = maximized;
-            _appSettings.Bounds.X = pixelPoint.X;
-            _appSettings.Bounds.Y = pixelPoint.Y;
-            _appSettings.Bounds.Width = bounds.Width;
-            _appSettings.Bounds.Height = bounds.Height;
-
-            JsonConversion.Save(_appSettings.Save(), AppPath.AppSettingsFilePath);
+            _layoutSettings.CurrentDynamicOrientation = orientation;
         }
 
         /// <summary>
@@ -218,6 +205,29 @@ namespace OpenTracker.ViewModels
         public void OnClose(bool maximized, Rect bounds, PixelPoint pixelPoint)
         {
             SaveAppSettings(maximized, bounds, pixelPoint);
+        }
+
+        /// <summary>
+        /// Saves the app settings to a file.
+        /// </summary>
+        /// <param name="maximized">
+        /// A boolean representing whether the window is maximized.
+        /// </param>
+        /// <param name="bounds">
+        /// The boundaries of the window.
+        /// </param>
+        /// <param name="pixelPoint">
+        /// The pixel point representing the current window position.
+        /// </param>
+        private void SaveAppSettings(bool maximized, Rect bounds, PixelPoint pixelPoint)
+        {
+            _boundsSettings.Maximized = maximized;
+            _boundsSettings.X = pixelPoint.X;
+            _boundsSettings.Y = pixelPoint.Y;
+            _boundsSettings.Width = bounds.Width;
+            _boundsSettings.Height = bounds.Height;
+
+            JsonConversion.Save(_appSettings.Save(), AppPath.AppSettingsFilePath);
         }
     }
 }

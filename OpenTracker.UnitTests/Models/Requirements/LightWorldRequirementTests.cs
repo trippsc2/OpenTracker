@@ -1,4 +1,6 @@
-﻿using Autofac;
+﻿using System.ComponentModel;
+using Autofac;
+using NSubstitute;
 using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.RequirementNodes;
@@ -12,19 +14,25 @@ namespace OpenTracker.UnitTests.Models.Requirements
         [Fact]
         public void AccessibilityTests()
         {
-            var container = ContainerConfig.Configure();
+            var builder = ContainerConfig.GetContainerBuilder();
 
-            using var scope = container.BeginLifetimeScope();
+            builder.Register(context => Substitute.For<IRequirementNode>());
+            
+            using var scope = builder.Build().BeginLifetimeScope();
             var mode = scope.Resolve<IMode>();
             var requirements = scope.Resolve<IRequirementDictionary>();
             var requirementNodes = scope.Resolve<IRequirementNodeDictionary>();
             
             mode.WorldState = WorldState.Inverted;
+
+            var lightWorldNode = requirementNodes[RequirementNodeID.LightWorld];
             var lightWorldRequirement = requirements[RequirementType.LightWorld];
     
             Assert.Equal(AccessibilityLevel.None, lightWorldRequirement.Accessibility);
-    
-            // requirementNodes[RequirementNodeID.LightWorld].AlwaysAccessible = true;
+
+            lightWorldNode.Accessibility.Returns(AccessibilityLevel.Normal);
+            lightWorldNode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                lightWorldNode, new PropertyChangedEventArgs(nameof(IRequirementNode.Accessibility)));
     
             Assert.Equal(AccessibilityLevel.Normal, lightWorldRequirement.Accessibility);
         }

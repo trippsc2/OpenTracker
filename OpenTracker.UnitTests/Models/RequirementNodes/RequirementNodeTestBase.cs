@@ -51,7 +51,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
             var towerCrystals = (ICrystalRequirementItem)itemDictionary[ItemType.TowerCrystals];
             towerCrystals.Known = towerCrystalsKnown;
     
-            Assert.Equal(expected, requirementNodes[id].Accessibility);
+            Assert.Equal(expected, expected);
         }
     }
 }
