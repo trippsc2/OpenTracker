@@ -3,6 +3,7 @@ using OpenTracker.Models.AutoTracking.Values;
 using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.Requirements;
+using OpenTracker.Models.SaveLoad;
 
 namespace OpenTracker.Models.Sections
 {
@@ -11,6 +12,8 @@ namespace OpenTracker.Models.Sections
     /// </summary>
     public class PrizeSection : BossSection, IPrizeSection
     {
+        private readonly ISaveLoadManager _saveLoadManager;
+        
         private readonly bool _alwaysClearable;
         private readonly IAutoTrackValue? _autoTrackValue;
 
@@ -24,6 +27,9 @@ namespace OpenTracker.Models.Sections
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="saveLoadManager">
+        /// The save/load manager.
+        /// </param>
         /// <param name="name">
         /// A string representing the name of the section.
         /// </param>
@@ -43,9 +49,12 @@ namespace OpenTracker.Models.Sections
         /// A boolean representing whether the section is always clearable (used for GT final).
         /// </param>
         public PrizeSection(
-            string name, IBossPlacement bossPlacement, IPrizePlacement prizePlacement, IAutoTrackValue? autoTrackValue,
-            IRequirement requirement, bool alwaysClearable = false) : base(name, bossPlacement, requirement)
+            ISaveLoadManager saveLoadManager, string name, IBossPlacement bossPlacement, IPrizePlacement prizePlacement,
+            IAutoTrackValue? autoTrackValue, IRequirement requirement, bool alwaysClearable = false)
+            : base(name, bossPlacement, requirement)
         {
+            _saveLoadManager = saveLoadManager;
+            
             _alwaysClearable = alwaysClearable;
             _autoTrackValue = autoTrackValue;
             PrizePlacement = prizePlacement;
@@ -79,11 +88,10 @@ namespace OpenTracker.Models.Sections
             if (IsAvailable())
             {
                 PrizePlacement.Prize.Remove();
+                return;
             }
-            else
-            {
-                PrizePlacement.Prize.Add();
-            }
+
+            PrizePlacement.Prize.Add();
         }
 
         /// <summary>
@@ -141,25 +149,31 @@ namespace OpenTracker.Models.Sections
         /// </param>
         private void OnAutoTrackValueChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(IAutoTrackValue.CurrentValue))
+            if (e.PropertyName != nameof(IAutoTrackValue.CurrentValue))
             {
-                AutoTrackUpdate();
+                return;
             }
+            
+            AutoTrackUpdate();
         }
 
         /// <summary>
-        /// Updates the section value from the autotracked value.
+        /// Updates the section value from the auto-tracked value.
         /// </summary>
         private void AutoTrackUpdate()
         {
-            if (_autoTrackValue!.CurrentValue.HasValue)
+            if (!_autoTrackValue!.CurrentValue.HasValue)
             {
-                if (Available != 1 - _autoTrackValue.CurrentValue.Value)
-                {
-                    Available = 1 - _autoTrackValue.CurrentValue.Value;
-                    //SaveLoadManager.Instance.Unsaved = true;
-                }
+                return;
             }
+
+            if (Available == 1 - _autoTrackValue.CurrentValue.Value)
+            {
+                return;
+            }
+            
+            Available = 1 - _autoTrackValue.CurrentValue.Value;
+            _saveLoadManager.Unsaved = true;
         }
 
         /// <summary>

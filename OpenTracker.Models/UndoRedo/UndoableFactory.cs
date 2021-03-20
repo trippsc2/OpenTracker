@@ -7,9 +7,14 @@ using OpenTracker.Models.Markings;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.Sections;
+using OpenTracker.Models.UndoRedo.Boss;
 using OpenTracker.Models.UndoRedo.Connections;
+using OpenTracker.Models.UndoRedo.Dropdowns;
 using OpenTracker.Models.UndoRedo.Items;
+using OpenTracker.Models.UndoRedo.Mode;
 using OpenTracker.Models.UndoRedo.Notes;
+using OpenTracker.Models.UndoRedo.Prize;
+using OpenTracker.Models.UndoRedo.Sections;
 
 namespace OpenTracker.Models.UndoRedo
 {
@@ -48,7 +53,7 @@ namespace OpenTracker.Models.UndoRedo
         private readonly RemoveItem.Factory _removeItemFactory;
         private readonly RemoveNote.Factory _removeNoteFactory;
         private readonly SetMarking.Factory _setMarkingFactory;
-        private readonly TogglePrize.Factory _togglePrizeFactory;
+        private readonly TogglePrizeSection.Factory _togglePrizeFactory;
         private readonly UncheckDropdown.Factory _uncheckDropdownFactory;
         private readonly UncollectSection.Factory _uncollectSectionFactory;
         private readonly UnpinLocation.Factory _unpinLocationFactory;
@@ -185,7 +190,7 @@ namespace OpenTracker.Models.UndoRedo
             RemoveConnection.Factory removeConnectionFactory,
             RemoveCrystalRequirement.Factory removeCrystalRequirementFactory,
             RemoveItem.Factory removeItemFactory, RemoveNote.Factory removeNoteFactory,
-            SetMarking.Factory setMarkingFactory, TogglePrize.Factory togglePrizeFactory,
+            SetMarking.Factory setMarkingFactory, TogglePrizeSection.Factory togglePrizeFactory,
             UncheckDropdown.Factory uncheckDropdownFactory,
             UncollectSection.Factory uncollectSectionFactory,
             UnpinLocation.Factory unpinLocationFactory)

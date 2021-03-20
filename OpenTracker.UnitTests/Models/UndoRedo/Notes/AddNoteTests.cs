@@ -1,3 +1,4 @@
+using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Markings;
@@ -47,6 +48,16 @@ namespace OpenTracker.UnitTests.Models.UndoRedo.Notes
             _sut.ExecuteUndo();
             
             _notes.Received().Remove(Arg.Any<IMarking>());
+        }
+
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var factory = scope.Resolve<AddNote.Factory>();
+            var sut = factory(Substitute.For<ILocation>());
+            
+            Assert.NotNull(sut);
         }
     }
 }

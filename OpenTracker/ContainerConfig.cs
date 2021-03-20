@@ -29,9 +29,14 @@ using OpenTracker.Models.SequenceBreaks;
 using OpenTracker.Models.Settings;
 using OpenTracker.Models.Reset;
 using OpenTracker.Models.UndoRedo;
+using OpenTracker.Models.UndoRedo.Boss;
 using OpenTracker.Models.UndoRedo.Connections;
+using OpenTracker.Models.UndoRedo.Dropdowns;
 using OpenTracker.Models.UndoRedo.Items;
+using OpenTracker.Models.UndoRedo.Mode;
 using OpenTracker.Models.UndoRedo.Notes;
+using OpenTracker.Models.UndoRedo.Prize;
+using OpenTracker.Models.UndoRedo.Sections;
 using OpenTracker.Utils;
 using OpenTracker.Utils.Dialog;
 using OpenTracker.Utils.Themes;
@@ -173,7 +178,7 @@ namespace OpenTracker
                 nameof(RemoveItem),
                 nameof(RemoveNote),
                 nameof(SetMarking),
-                nameof(TogglePrize),
+                nameof(TogglePrizeSection),
                 nameof(UncheckDropdown),
                 nameof(UncollectSection),
                 nameof(UnpinLocation)
