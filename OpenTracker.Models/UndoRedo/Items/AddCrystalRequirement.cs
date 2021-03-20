@@ -1,23 +1,23 @@
 ﻿using OpenTracker.Models.Items;
 
-namespace OpenTracker.Models.UndoRedo
+namespace OpenTracker.Models.UndoRedo.Items
 {
     /// <summary>
-    /// This class contains undoable action data to cycle an item through valid counts.
+    /// This class contains undoable action data to "add" crystal requirement item.
     /// </summary>
-    public class CycleItem : IUndoable
+    public class AddCrystalRequirement : IUndoable
     {
-        private readonly IItem _item;
+        private readonly ICrystalRequirementItem _item;
 
-        public delegate CycleItem Factory(IItem item);
+        public delegate AddCrystalRequirement Factory(ICrystalRequirementItem item);
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="item">
-        /// The item data to be manipulated.
+        /// The crystal requirement to be added.
         /// </param>
-        public CycleItem(IItem item)
+        public AddCrystalRequirement(ICrystalRequirementItem item)
         {
             _item = item;
         }
@@ -30,7 +30,7 @@ namespace OpenTracker.Models.UndoRedo
         /// </returns>
         public bool CanExecute()
         {
-            return true;
+            return _item.CanAdd();
         }
 
         /// <summary>
@@ -38,7 +38,13 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void ExecuteDo()
         {
-            _item.Add();
+            if (_item.Known)
+            {
+                _item.Add();
+                return;
+            }
+
+            _item.Known = true;
         }
 
         /// <summary>
@@ -46,7 +52,13 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void ExecuteUndo()
         {
-            _item.Remove();
+            if (_item.CanRemove())
+            {
+                _item.Remove();
+                return;
+            }
+
+            _item.Known = false;
         }
     }
 }

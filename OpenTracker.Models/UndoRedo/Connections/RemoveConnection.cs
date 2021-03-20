@@ -1,6 +1,6 @@
 ﻿using OpenTracker.Models.Connections;
 
-namespace OpenTracker.Models.UndoRedo
+namespace OpenTracker.Models.UndoRedo.Connections
 {
     /// <summary>
     /// This class contains undoable action to remove a connection between two entrances.

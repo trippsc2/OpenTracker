@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
+using System.Linq;
 using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.Markings;
 using OpenTracker.Models.SaveLoad;
@@ -276,15 +277,7 @@ namespace OpenTracker.Models.Locations
         /// </returns>
         public bool CanBeCleared(bool force)
         {
-            foreach (var section in Sections)
-            {
-                if (section.CanBeCleared(force))
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return Sections.Any(section => section.CanBeCleared(force));
         }
 
         /// <summary>

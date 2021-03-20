@@ -1,15 +1,15 @@
 ﻿using OpenTracker.Models.Items;
 
-namespace OpenTracker.Models.UndoRedo
+namespace OpenTracker.Models.UndoRedo.Items
 {
     /// <summary>
-    /// This class contains undoable action to remove an item.
+    /// This class contains undoable action data to cycle an item through valid counts.
     /// </summary>
-    public class RemoveItem : IUndoable
+    public class CycleItem : IUndoable
     {
         private readonly IItem _item;
 
-        public delegate RemoveItem Factory(IItem item);
+        public delegate CycleItem Factory(IItem item);
 
         /// <summary>
         /// Constructor
@@ -17,7 +17,7 @@ namespace OpenTracker.Models.UndoRedo
         /// <param name="item">
         /// The item data to be manipulated.
         /// </param>
-        public RemoveItem(IItem item)
+        public CycleItem(IItem item)
         {
             _item = item;
         }
@@ -30,7 +30,7 @@ namespace OpenTracker.Models.UndoRedo
         /// </returns>
         public bool CanExecute()
         {
-            return _item.CanRemove();
+            return true;
         }
 
         /// <summary>
@@ -38,7 +38,7 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void ExecuteDo()
         {
-            _item.Remove();
+            _item.Add();
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void ExecuteUndo()
         {
-            _item.Add();
+            _item.Remove();
         }
     }
 }

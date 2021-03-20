@@ -1,9 +1,10 @@
+using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Items;
-using OpenTracker.Models.UndoRedo;
+using OpenTracker.Models.UndoRedo.Items;
 using Xunit;
 
-namespace OpenTracker.UnitTests.Models.UndoRedo
+namespace OpenTracker.UnitTests.Models.UndoRedo.Items
 {
     public class AddCrystalRequirementTests
     {
@@ -67,6 +68,16 @@ namespace OpenTracker.UnitTests.Models.UndoRedo
             _sut.ExecuteUndo();
             
             _item.Received().Remove();
+        }
+
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var factory = scope.Resolve<AddCrystalRequirement.Factory>();
+            var sut = factory(_item);
+            
+            Assert.NotNull(sut);
         }
     }
 }

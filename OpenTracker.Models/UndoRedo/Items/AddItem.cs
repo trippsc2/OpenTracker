@@ -1,6 +1,6 @@
 ﻿using OpenTracker.Models.Items;
 
-namespace OpenTracker.Models.UndoRedo
+namespace OpenTracker.Models.UndoRedo.Items
 {
     /// <summary>
     /// This class contains undoable action data to add an item.

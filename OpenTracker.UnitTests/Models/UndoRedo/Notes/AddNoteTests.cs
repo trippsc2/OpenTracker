@@ -1,10 +1,10 @@
 using NSubstitute;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Markings;
-using OpenTracker.Models.UndoRedo;
+using OpenTracker.Models.UndoRedo.Notes;
 using Xunit;
 
-namespace OpenTracker.UnitTests.Models.UndoRedo
+namespace OpenTracker.UnitTests.Models.UndoRedo.Notes
 {
     public class AddNoteTests
     {

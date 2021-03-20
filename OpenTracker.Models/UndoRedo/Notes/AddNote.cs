@@ -1,32 +1,32 @@
 ﻿using OpenTracker.Models.Locations;
 using OpenTracker.Models.Markings;
 
-namespace OpenTracker.Models.UndoRedo
+namespace OpenTracker.Models.UndoRedo.Notes
 {
     /// <summary>
-    /// This class contains undoable action to remove a note from a location.
+    /// This class contains undoable action data to add a note to a location.
     /// </summary>
-    public class RemoveNote : IUndoable
+    public class AddNote : IUndoable
     {
-        private readonly ILocation _location;
-        private readonly IMarking _note;
-        private int _index;
+        private readonly IMarking.Factory _factory;
+        private readonly ILocationNoteCollection _notes;
+        private IMarking? _note;
 
-        public delegate RemoveNote Factory(IMarking note, ILocation location);
+        public delegate AddNote Factory(ILocation location);
 
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="note">
-        /// The note to be removed.
+        /// <param name="factory">
+        /// An Autofac factory for creating markings.
         /// </param>
         /// <param name="location">
-        /// The location from which the note will be removed.
+        /// The location to which the note will be added.
         /// </param>
-        public RemoveNote(IMarking note, ILocation location)
+        public AddNote(IMarking.Factory factory, ILocation location)
         {
-            _note = note;
-            _location = location;
+            _factory = factory;
+            _notes = location.Notes;
         }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace OpenTracker.Models.UndoRedo
         /// </returns>
         public bool CanExecute()
         {
-            return true;
+            return _notes.Count < 4;
         }
 
         /// <summary>
@@ -45,8 +45,8 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void ExecuteDo()
         {
-            _index = _location.Notes.IndexOf(_note);
-            _location.Notes.Remove(_note);
+            _note = _factory();
+            _notes.Add(_note);
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void ExecuteUndo()
         {
-            _location.Notes.Insert(_index, _note);
+            _notes.Remove(_note!);
         }
     }
 }

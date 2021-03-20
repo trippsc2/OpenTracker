@@ -7,6 +7,9 @@ using OpenTracker.Models.Markings;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.Sections;
+using OpenTracker.Models.UndoRedo.Connections;
+using OpenTracker.Models.UndoRedo.Items;
+using OpenTracker.Models.UndoRedo.Notes;
 
 namespace OpenTracker.Models.UndoRedo
 {
