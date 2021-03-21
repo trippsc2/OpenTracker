@@ -54,10 +54,10 @@ namespace OpenTracker.UnitTests.Models.UndoRedo.Notes
         public void AutofacTest()
         {
             using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-            var factory = scope.Resolve<AddNote.Factory>();
+            var factory = scope.Resolve<IAddNote.Factory>();
             var sut = factory(Substitute.For<ILocation>());
             
-            Assert.NotNull(sut);
+            Assert.NotNull(sut as AddNote);
         }
     }
 }

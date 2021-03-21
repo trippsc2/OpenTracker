@@ -64,10 +64,10 @@ namespace OpenTracker.UnitTests.Models.UndoRedo.Boss
         public void AutofacTest()
         {
             using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-            var factory = scope.Resolve<ChangeBoss.Factory>();
+            var factory = scope.Resolve<IChangeBoss.Factory>();
             var sut = factory(_bossPlacement, null);
             
-            Assert.NotNull(sut);
+            Assert.NotNull(sut as ChangeBoss);
         }
     }
 }

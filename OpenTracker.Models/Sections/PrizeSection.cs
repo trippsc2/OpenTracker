@@ -4,6 +4,8 @@ using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
+using OpenTracker.Models.UndoRedo;
+using OpenTracker.Models.UndoRedo.Sections;
 
 namespace OpenTracker.Models.Sections
 {
@@ -30,6 +32,15 @@ namespace OpenTracker.Models.Sections
         /// <param name="saveLoadManager">
         /// The save/load manager.
         /// </param>
+        /// <param name="undoRedoManager">
+        /// The undo/redo manager.
+        /// </param>
+        /// <param name="collectSectionFactory">
+        /// An Autofac factory for creating collect section undoable actions.
+        /// </param>
+        /// <param name="uncollectSectionFactory">
+        /// An Autofac factory for creating uncollect section undoable actions.
+        /// </param>
         /// <param name="name">
         /// A string representing the name of the section.
         /// </param>
@@ -49,9 +60,11 @@ namespace OpenTracker.Models.Sections
         /// A boolean representing whether the section is always clearable (used for GT final).
         /// </param>
         public PrizeSection(
-            ISaveLoadManager saveLoadManager, string name, IBossPlacement bossPlacement, IPrizePlacement prizePlacement,
-            IAutoTrackValue? autoTrackValue, IRequirement requirement, bool alwaysClearable = false)
-            : base(name, bossPlacement, requirement)
+            ISaveLoadManager saveLoadManager, IUndoRedoManager undoRedoManager,
+            ICollectSection.Factory collectSectionFactory, IUncollectSection.Factory uncollectSectionFactory,
+            string name, IBossPlacement bossPlacement, IPrizePlacement prizePlacement, IAutoTrackValue? autoTrackValue,
+            IRequirement requirement, bool alwaysClearable = false)
+            : base(undoRedoManager, collectSectionFactory, uncollectSectionFactory, name, bossPlacement, requirement)
         {
             _saveLoadManager = saveLoadManager;
             

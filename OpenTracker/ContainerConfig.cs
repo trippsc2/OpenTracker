@@ -29,16 +29,6 @@ using OpenTracker.Models.SequenceBreaks;
 using OpenTracker.Models.Settings;
 using OpenTracker.Models.Reset;
 using OpenTracker.Models.UndoRedo;
-using OpenTracker.Models.UndoRedo.Boss;
-using OpenTracker.Models.UndoRedo.Connections;
-using OpenTracker.Models.UndoRedo.Dropdowns;
-using OpenTracker.Models.UndoRedo.Items;
-using OpenTracker.Models.UndoRedo.Locations;
-using OpenTracker.Models.UndoRedo.Markings;
-using OpenTracker.Models.UndoRedo.Mode;
-using OpenTracker.Models.UndoRedo.Notes;
-using OpenTracker.Models.UndoRedo.Prize;
-using OpenTracker.Models.UndoRedo.Sections;
 using OpenTracker.Utils;
 using OpenTracker.Utils.Dialog;
 using OpenTracker.Utils.Themes;
@@ -150,40 +140,6 @@ namespace OpenTracker
                 nameof(ShopSection),
                 nameof(TakeAnySection),
                 nameof(VisibleItemSection),
-                nameof(AddConnection),
-                nameof(AddCrystalRequirement),
-                nameof(AddItem),
-                nameof(AddNote),
-                nameof(ChangeBigKeyShuffle),
-                nameof(ChangeBoss),
-                nameof(ChangeBossShuffle),
-                nameof(ChangeCompassShuffle),
-                nameof(ChangeEnemyShuffle),
-                nameof(ChangeEntranceShuffle),
-                nameof(ChangeGenericKeys),
-                nameof(ChangeGuaranteedBossItems),
-                nameof(ChangeItemPlacement),
-                nameof(ChangeKeyDropShuffle),
-                nameof(ChangeMapShuffle),
-                nameof(ChangePrize),
-                nameof(ChangeShopShuffle),
-                nameof(ChangeSmallKeyShuffle),
-                nameof(ChangeTakeAnyLocations),
-                nameof(ChangeWorldState),
-                nameof(CheckDropdown),
-                nameof(ClearLocation),
-                nameof(CollectSection),
-                nameof(CycleItem),
-                nameof(PinLocation),
-                nameof(RemoveConnection),
-                nameof(RemoveCrystalRequirement),
-                nameof(RemoveItem),
-                nameof(RemoveNote),
-                nameof(SetMarking),
-                nameof(TogglePrizeSection),
-                nameof(UncheckDropdown),
-                nameof(UncollectSection),
-                nameof(UnpinLocation)
             };
 
         private static List<string> ModelsSingleInstanceTypes =>

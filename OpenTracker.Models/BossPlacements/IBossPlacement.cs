@@ -15,5 +15,13 @@ namespace OpenTracker.Models.BossPlacements
 
         BossType? GetCurrentBoss();
         void Reset();
+
+        /// <summary>
+        /// Changes the current boss.
+        /// </summary>
+        /// <param name="boss">
+        /// The new nullable boss type.
+        /// </param>
+        void ChangeBoss(BossType? boss);
     }
 }

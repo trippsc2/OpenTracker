@@ -5,11 +5,9 @@ namespace OpenTracker.Models.UndoRedo.Items
     /// <summary>
     /// This class contains undoable action data to "add" crystal requirement item.
     /// </summary>
-    public class AddCrystalRequirement : IUndoable
+    public class AddCrystalRequirement : IAddCrystalRequirement
     {
         private readonly ICrystalRequirementItem _item;
-
-        public delegate AddCrystalRequirement Factory(ICrystalRequirementItem item);
 
         /// <summary>
         /// Constructor

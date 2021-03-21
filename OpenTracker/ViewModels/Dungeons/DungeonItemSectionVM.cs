@@ -7,7 +7,6 @@ using Avalonia.Threading;
 using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.Sections;
 using OpenTracker.Models.Settings;
-using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
 using ReactiveUI;
 
@@ -19,8 +18,6 @@ namespace OpenTracker.ViewModels.Dungeons
     public class DungeonItemSectionVM : ViewModelBase, IDungeonItemSectionVM
     {
         private readonly IColorSettings _colorSettings;
-        private readonly IUndoRedoManager _undoRedoManager;
-        private readonly IUndoableFactory _undoableFactory;
 
         private readonly ISection _section;
 
@@ -45,22 +42,12 @@ namespace OpenTracker.ViewModels.Dungeons
         /// <param name="colorSettings">
         /// The color settings data.
         /// </param>
-        /// <param name="undoRedoManager">
-        /// The undo/redo manager.
-        /// </param>
-        /// <param name="undoableFactory">
-        /// A factory for creating undoable actions.
-        /// </param>
         /// <param name="section">
         /// The dungeon section to be represented.
         /// </param>
-        public DungeonItemSectionVM(
-            IColorSettings colorSettings, IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory,
-            ISection section)
+        public DungeonItemSectionVM(IColorSettings colorSettings, ISection section)
         {
             _colorSettings = colorSettings;
-            _undoRedoManager = undoRedoManager;
-            _undoableFactory = undoableFactory;
 
             _section = section;
             
@@ -96,17 +83,21 @@ namespace OpenTracker.ViewModels.Dungeons
         /// </param>
         private async void OnSectionChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(ISection.Accessibility))
+            switch (e.PropertyName)
             {
-                await UpdateTextColor();
-                await UpdateImage();
-            }
-
-            if (e.PropertyName == nameof(ISection.Available))
-            {
-                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(NumberString)));
-                await UpdateTextColor();
-                await UpdateImage();
+                case nameof(ISection.Accessibility):
+                {
+                    await UpdateTextColor();
+                    await UpdateImage();
+                }
+                    break;
+                case nameof(ISection.Available):
+                {
+                    await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(NumberString)));
+                    await UpdateTextColor();
+                    await UpdateImage();
+                }
+                    break;
             }
         }
 
@@ -134,7 +125,7 @@ namespace OpenTracker.ViewModels.Dungeons
         /// </param>
         private void CollectSection(bool force)
         {
-            _undoRedoManager.NewAction(_undoableFactory.GetCollectSection(_section, force));
+            _section.CollectSection(force);
         }
 
         /// <summary>
@@ -142,7 +133,7 @@ namespace OpenTracker.ViewModels.Dungeons
         /// </summary>
         private void UncollectSection()
         {
-            _undoRedoManager.NewAction(_undoableFactory.GetUncollectSection(_section));
+            _section.UncollectSection();
         }
 
         /// <summary>

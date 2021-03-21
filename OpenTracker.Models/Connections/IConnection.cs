@@ -16,5 +16,10 @@ namespace OpenTracker.Models.Connections
         bool Equals(object obj);
         int GetHashCode();
         ConnectionSaveData Save();
+
+        /// <summary>
+        /// Creates an undoable action to remove the connection and sends it to the undo/redo manager.
+        /// </summary>
+        void RemoveConnection();
     }
 }

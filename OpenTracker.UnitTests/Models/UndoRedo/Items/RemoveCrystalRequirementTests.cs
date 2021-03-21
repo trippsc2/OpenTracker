@@ -70,10 +70,10 @@ namespace OpenTracker.UnitTests.Models.UndoRedo.Items
         public void AutofacTest()
         {
             using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-            var factory = scope.Resolve<RemoveCrystalRequirement.Factory>();
+            var factory = scope.Resolve<IRemoveCrystalRequirement.Factory>();
             var sut = factory(_item);
             
-            Assert.NotNull(sut);
+            Assert.NotNull(sut as RemoveCrystalRequirement);
         }
     }
 }

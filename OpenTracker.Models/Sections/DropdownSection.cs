@@ -5,6 +5,8 @@ using OpenTracker.Models.Modes;
 using OpenTracker.Models.RequirementNodes;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
+using OpenTracker.Models.UndoRedo;
+using OpenTracker.Models.UndoRedo.Sections;
 using ReactiveUI;
 
 namespace OpenTracker.Models.Sections
@@ -15,6 +17,11 @@ namespace OpenTracker.Models.Sections
     public class DropdownSection : ReactiveObject, IEntranceSection
     {
         private readonly IMode _mode;
+        private readonly IUndoRedoManager _undoRedoManager;
+
+        private readonly ICollectSection.Factory _collectSectionFactory;
+        private readonly IUncollectSection.Factory _uncollectSectionFactory;
+
         private readonly IRequirementNode _exitNode;
         private readonly IRequirementNode _holeNode;
 
@@ -46,6 +53,15 @@ namespace OpenTracker.Models.Sections
         /// <param name="mode">
         /// The mode settings.
         /// </param>
+        /// <param name="undoRedoManager">
+        /// The undo/redo manager.
+        /// </param>
+        /// <param name="collectSectionFactory">
+        /// An Autofac factory for creating collect section undoable actions.
+        /// </param>
+        /// <param name="uncollectSectionFactory">
+        /// An Autofac factory for creating uncollect section undoable actions.
+        /// </param>
         /// <param name="marking">
         /// The section marking.
         /// </param>
@@ -62,10 +78,16 @@ namespace OpenTracker.Models.Sections
         /// The requirement for this section to be visible.
         /// </param>
         public DropdownSection(
-            IMode mode, IMarking marking, string name, IRequirementNode? exitNode, IRequirementNode holeNode,
-            IRequirement requirement)
+            IMode mode, IUndoRedoManager undoRedoManager, ICollectSection.Factory collectSectionFactory,
+            IUncollectSection.Factory uncollectSectionFactory, IMarking marking, string name,
+            IRequirementNode? exitNode, IRequirementNode holeNode, IRequirement requirement)
         {
             _mode = mode;
+            _undoRedoManager = undoRedoManager;
+
+            _collectSectionFactory = collectSectionFactory;
+            _uncollectSectionFactory = uncollectSectionFactory;
+            
             _exitNode = exitNode!;
             _holeNode = holeNode;
 
@@ -155,6 +177,25 @@ namespace OpenTracker.Models.Sections
         public bool IsAvailable()
         {
             return Available > 0;
+        }
+
+        /// <summary>
+        /// Creates an undoable action to collect the section and sends it to the undo/redo manager.
+        /// </summary>
+        /// <param name="force">
+        /// A boolean representing whether to override the logic while collecting the section.
+        /// </param>
+        public void CollectSection(bool force)
+        {
+            _undoRedoManager.NewAction(_collectSectionFactory(this, force));
+        }
+
+        /// <summary>
+        /// Creates an undoable action to uncollect the section and sends it to the undo/redo manager.
+        /// </summary>
+        public void UncollectSection()
+        {
+            _undoRedoManager.NewAction(_uncollectSectionFactory(this));
         }
 
         /// <summary>

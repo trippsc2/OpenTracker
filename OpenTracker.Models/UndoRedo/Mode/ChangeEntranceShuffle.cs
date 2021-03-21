@@ -5,14 +5,12 @@ namespace OpenTracker.Models.UndoRedo.Mode
     /// <summary>
     /// This class contains undoable action data to change the entrance shuffle setting.
     /// </summary>
-    public class ChangeEntranceShuffle : IUndoable
+    public class ChangeEntranceShuffle : IChangeEntranceShuffle
     {
         private readonly IMode _mode;
         private readonly EntranceShuffle _newValue;
 
         private EntranceShuffle _previousValue;
-
-        public delegate ChangeEntranceShuffle Factory(EntranceShuffle newValue);
 
         /// <summary>
         /// Constructor

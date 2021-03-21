@@ -8,15 +8,13 @@ namespace OpenTracker.Models.UndoRedo.Locations
     /// <summary>
     /// This class contains undoable action data to clear a location.
     /// </summary>
-    public class ClearLocation : IUndoable
+    public class ClearLocation : IClearLocation
     {
         private readonly ILocation _location;
         private readonly bool _force;
         private readonly List<int?> _previousLocationCounts = new List<int?>();
         private readonly List<MarkType?> _previousMarkings = new List<MarkType?>();
         private readonly List<bool?> _previousUserManipulated = new List<bool?>();
-
-        public delegate ClearLocation Factory(ILocation location, bool force = false);
 
         /// <summary>
         /// Constructor

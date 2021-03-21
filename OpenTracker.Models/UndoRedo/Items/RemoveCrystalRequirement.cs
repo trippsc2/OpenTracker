@@ -6,11 +6,9 @@ namespace OpenTracker.Models.UndoRedo.Items
     /// <summary>
     /// This class contains undoable action data to "remove" crystal requirement item.
     /// </summary>
-    public class RemoveCrystalRequirement : IUndoable
+    public class RemoveCrystalRequirement : IRemoveCrystalRequirement
     {
         private readonly ICrystalRequirementItem _item;
-
-        public delegate RemoveCrystalRequirement Factory(ICrystalRequirementItem item);
 
         /// <summary>
         /// Constructor

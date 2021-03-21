@@ -6,6 +6,8 @@ using OpenTracker.Models.Markings;
 using OpenTracker.Models.RequirementNodes;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
+using OpenTracker.Models.UndoRedo;
+using OpenTracker.Models.UndoRedo.Sections;
 using ReactiveUI;
 
 namespace OpenTracker.Models.Sections
@@ -16,6 +18,10 @@ namespace OpenTracker.Models.Sections
     public class VisibleItemSection : ReactiveObject, IMarkableSection, IItemSection
     {
         private readonly ISaveLoadManager _saveLoadManager;
+        private readonly IUndoRedoManager _undoRedoManager;
+
+        private readonly ICollectSection.Factory _collectSectionFactory;
+        private readonly IUncollectSection.Factory _uncollectSectionFactory;
         
         private readonly IRequirementNode? _visibleNode;
         private readonly IRequirementNode _node;
@@ -57,6 +63,15 @@ namespace OpenTracker.Models.Sections
         /// <param name="saveLoadManager">
         /// The save/load manager.
         /// </param>
+        /// <param name="undoRedoManager">
+        /// The undo/redo manager.
+        /// </param>
+        /// <param name="collectSectionFactory">
+        /// An Autofac factory for creating collect section undoable actions.
+        /// </param>
+        /// <param name="uncollectSectionFactory">
+        /// An Autofac factory for creating uncollect section undoable actions.
+        /// </param>
         /// <param name="marking">
         /// The section marking.
         /// </param>
@@ -79,8 +94,10 @@ namespace OpenTracker.Models.Sections
         /// The node that provides Inspect accessibility for this section.
         /// </param>
         public VisibleItemSection(
-            ISaveLoadManager saveLoadManager, IMarking marking, string name, int total, IRequirementNode node,
-            IAutoTrackValue? autoTrackValue, IRequirement requirement, IRequirementNode? visibleNode = null)
+            ISaveLoadManager saveLoadManager, IUndoRedoManager undoRedoManager,
+            ICollectSection.Factory collectSectionFactory, IUncollectSection.Factory uncollectSectionFactory,
+            IMarking marking, string name, int total, IRequirementNode node, IAutoTrackValue? autoTrackValue,
+            IRequirement requirement, IRequirementNode? visibleNode = null)
         {
             _saveLoadManager = saveLoadManager;
             
@@ -92,6 +109,9 @@ namespace OpenTracker.Models.Sections
             Name = name;
             Total = total;
             Requirement = requirement;
+            _undoRedoManager = undoRedoManager;
+            _collectSectionFactory = collectSectionFactory;
+            _uncollectSectionFactory = uncollectSectionFactory;
             Available = Total;
 
             PropertyChanged += OnPropertyChanged;
@@ -238,6 +258,25 @@ namespace OpenTracker.Models.Sections
         public bool IsAvailable()
         {
             return Available > 0;
+        }
+
+        /// <summary>
+        /// Creates an undoable action to collect the section and sends it to the undo/redo manager.
+        /// </summary>
+        /// <param name="force">
+        /// A boolean representing whether to override the logic while collecting the section.
+        /// </param>
+        public void CollectSection(bool force)
+        {
+            _undoRedoManager.NewAction(_collectSectionFactory(this, force));
+        }
+
+        /// <summary>
+        /// Creates an undoable action to uncollect the section and sends it to the undo/redo manager.
+        /// </summary>
+        public void UncollectSection()
+        {
+            _undoRedoManager.NewAction(_uncollectSectionFactory(this));
         }
 
         /// <summary>

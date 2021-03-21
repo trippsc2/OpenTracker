@@ -2,6 +2,8 @@
 using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
+using OpenTracker.Models.UndoRedo;
+using OpenTracker.Models.UndoRedo.Sections;
 using ReactiveUI;
 
 namespace OpenTracker.Models.Sections
@@ -11,6 +13,11 @@ namespace OpenTracker.Models.Sections
     /// </summary>
     public class BossSection : ReactiveObject, IBossSection
     {
+        private readonly IUndoRedoManager _undoRedoManager;
+
+        private readonly ICollectSection.Factory _collectSectionFactory;
+        private readonly IUncollectSection.Factory _uncollectSectionFactory;
+
         public string Name { get; }
         public IRequirement Requirement { get; }
         public bool UserManipulated { get; set; }
@@ -36,6 +43,15 @@ namespace OpenTracker.Models.Sections
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="undoRedoManager">
+        /// The undo/redo manager.
+        /// </param>
+        /// <param name="collectSectionFactory">
+        /// An Autofac factory for creating collect section undoable actions.
+        /// </param>
+        /// <param name="uncollectSectionFactory">
+        /// An Autofac factory for creating uncollect section undoable actions.
+        /// </param>
         /// <param name="name">
         /// A string representing the name of the section.
         /// </param>
@@ -45,8 +61,16 @@ namespace OpenTracker.Models.Sections
         /// <param name="requirement">
         /// The requirement for this section to be visible.
         /// </param>
-        public BossSection(string name, IBossPlacement bossPlacement, IRequirement requirement)
+        public BossSection(
+            IUndoRedoManager undoRedoManager, ICollectSection.Factory collectSectionFactory,
+            IUncollectSection.Factory uncollectSectionFactory, string name, IBossPlacement bossPlacement,
+            IRequirement requirement)
         {
+            _undoRedoManager = undoRedoManager;
+            
+            _collectSectionFactory = collectSectionFactory;
+            _uncollectSectionFactory = uncollectSectionFactory;
+            
             Name = name;
             BossPlacement = bossPlacement;
             Requirement = requirement;
@@ -95,6 +119,25 @@ namespace OpenTracker.Models.Sections
         public bool IsAvailable()
         {
             return Available > 0;
+        }
+
+        /// <summary>
+        /// Creates an undoable action to collect the section and sends it to the undo/redo manager.
+        /// </summary>
+        /// <param name="force">
+        /// A boolean representing whether to override the logic while collecting the section.
+        /// </param>
+        public void CollectSection(bool force)
+        {
+            _undoRedoManager.NewAction(_collectSectionFactory(this, force));
+        }
+
+        /// <summary>
+        /// Creates an undoable action to uncollect the section and sends it to the undo/redo manager.
+        /// </summary>
+        public void UncollectSection()
+        {
+            _undoRedoManager.NewAction(_uncollectSectionFactory(this));
         }
 
         /// <summary>

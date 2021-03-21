@@ -4,17 +4,14 @@ using OpenTracker.Models.Sections;
 namespace OpenTracker.Models.UndoRedo.Sections
 {
     /// <summary>
-    /// This class contains undoable action data to collect an item/entrance from a location
-    /// section.
+    /// This class contains undoable action data to collect an item/entrance from a location section.
     /// </summary>
-    public class CollectSection : IUndoable
+    public class CollectSection : ICollectSection
     {
         private readonly ISection _section;
         private readonly bool _force;
         private MarkType? _previousMarking;
         private bool _previousUserManipulated;
-
-        public delegate CollectSection Factory(ISection section, bool force);
 
         /// <summary>
         /// Constructor

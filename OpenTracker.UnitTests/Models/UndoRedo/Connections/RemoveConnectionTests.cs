@@ -1,7 +1,6 @@
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Connections;
-using OpenTracker.Models.Locations;
 using OpenTracker.Models.UndoRedo.Connections;
 using Xunit;
 
@@ -10,15 +9,13 @@ namespace OpenTracker.UnitTests.Models.UndoRedo.Connections
     public class RemoveConnectionTests
     {
         private readonly IConnection _connection = Substitute.For<IConnection>();
-        private readonly IConnectionCollection _connections = new ConnectionCollection(
-            Substitute.For<ILocationDictionary>(),
-            (location1, location2) => new Connection(location1, location2));
+        private readonly IConnectionCollection _connections = Substitute.For<IConnectionCollection>();
 
         private readonly RemoveConnection _sut;
 
         public RemoveConnectionTests()
         {
-            _sut = new RemoveConnection(_connections, _connection);
+            _sut = new RemoveConnection(() => _connections, _connection);
         }
         
         [Fact]
@@ -28,22 +25,20 @@ namespace OpenTracker.UnitTests.Models.UndoRedo.Connections
         }
 
         [Fact]
-        public void ExecuteDo_ShouldRemoveConnectionFromConnectionCollection()
+        public void ExecuteDo_ShouldCallRemoveOnConnectionCollection()
         {
-            _connections.Add(_connection);
             _sut.ExecuteDo();
 
-            Assert.DoesNotContain(_connection, _connections);
+            _connections.Received().Remove(_connection);
         }
 
         [Fact]
         public void ExecuteUndo_ShouldAddConnectionFromConnectionCollection()
         {
-            _connections.Add(_connection);
             _sut.ExecuteDo();
             _sut.ExecuteUndo();
             
-            Assert.Contains(_connection, _connections);
+            _connections.Received().Add(_connection);
         }
 
         [Fact]
@@ -51,10 +46,10 @@ namespace OpenTracker.UnitTests.Models.UndoRedo.Connections
         {
             using var scope = ContainerConfig.Configure().BeginLifetimeScope();
 
-            var factory = scope.Resolve<RemoveConnection.Factory>();
+            var factory = scope.Resolve<IRemoveConnection.Factory>();
             var sut = factory(_connection);
             
-            Assert.NotNull(sut);
+            Assert.NotNull(sut as RemoveConnection);
         }
     }
 }

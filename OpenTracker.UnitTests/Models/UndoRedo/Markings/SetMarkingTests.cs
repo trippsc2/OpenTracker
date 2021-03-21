@@ -46,10 +46,10 @@ namespace OpenTracker.UnitTests.Models.UndoRedo.Markings
         public void AutofacTest()
         {
             using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-            var factory = scope.Resolve<SetMarking.Factory>();
+            var factory = scope.Resolve<ISetMarking.Factory>();
             var sut = factory(_marking, NewMarking);
             
-            Assert.NotNull(sut);
+            Assert.NotNull(sut as SetMarking);
         }
     }
 }

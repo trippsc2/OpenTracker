@@ -5,13 +5,11 @@ namespace OpenTracker.Models.UndoRedo.Mode
     /// <summary>
     /// This class contains undoable action data for changing the key drop shuffle mode setting.
     /// </summary>
-    public class ChangeKeyDropShuffle : IUndoable
+    public class ChangeKeyDropShuffle : IChangeKeyDropShuffle
     {
         private readonly IMode _mode;
         private readonly bool _newValue;
         private bool _previousValue;
-
-        public delegate ChangeKeyDropShuffle Factory(bool newValue);
 
         /// <summary>
         /// Constructor

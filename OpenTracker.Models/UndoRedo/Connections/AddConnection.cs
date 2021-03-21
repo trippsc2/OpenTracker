@@ -1,16 +1,15 @@
-﻿using OpenTracker.Models.Connections;
+﻿using System;
+using OpenTracker.Models.Connections;
 
 namespace OpenTracker.Models.UndoRedo.Connections
 {
     /// <summary>
     /// This class contains undoable action data to create a connection between two entrances.
     /// </summary>
-    public class AddConnection : IUndoable
+    public class AddConnection : IAddConnection
     {
-        private readonly IConnectionCollection _connections;
+        private readonly Lazy<IConnectionCollection> _connections;
         private readonly IConnection _connection;
-
-        public delegate AddConnection Factory(IConnection connection);
 
         /// <summary>
         /// Constructor
@@ -21,9 +20,9 @@ namespace OpenTracker.Models.UndoRedo.Connections
         /// <param name="connection">
         /// A tuple of the two map locations that are being collected.
         /// </param>
-        public AddConnection(IConnectionCollection connections, IConnection connection)
+        public AddConnection(IConnectionCollection.Factory connections, IConnection connection)
         {
-            _connections = connections;
+            _connections = new Lazy<IConnectionCollection>(() => connections());
             _connection = connection;
         }
 
@@ -35,7 +34,7 @@ namespace OpenTracker.Models.UndoRedo.Connections
         /// </returns>
         public bool CanExecute()
         {
-            return !_connections.Contains(_connection);
+            return !_connections.Value.Contains(_connection);
         }
 
         /// <summary>
@@ -43,7 +42,7 @@ namespace OpenTracker.Models.UndoRedo.Connections
         /// </summary>
         public void ExecuteDo()
         {
-            _connections.Add(_connection);
+            _connections.Value.Add(_connection);
         }
 
         /// <summary>
@@ -51,7 +50,7 @@ namespace OpenTracker.Models.UndoRedo.Connections
         /// </summary>
         public void ExecuteUndo()
         {
-            _connections.Remove(_connection);
+            _connections.Value.Remove(_connection);
         }
     }
 }

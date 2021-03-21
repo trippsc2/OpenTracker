@@ -8,6 +8,8 @@ using OpenTracker.Models.Locations;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
+using OpenTracker.Models.UndoRedo;
+using OpenTracker.Models.UndoRedo.Sections;
 using ReactiveUI;
 
 namespace OpenTracker.Models.Sections
@@ -19,13 +21,16 @@ namespace OpenTracker.Models.Sections
     {
         private readonly IMode _mode;
         private readonly ISaveLoadManager _saveLoadManager;
+        private readonly IUndoRedoManager _undoRedoManager;
+
+        private readonly ICollectSection.Factory _collectSectionFactory;
+        private readonly IUncollectSection.Factory _uncollectSectionFactory;
         
         private readonly LocationID _locationID;
         private IDungeon? _dungeon;
         private readonly IAutoTrackValue? _autoTrackValue;
 
-        public string Name =>
-            "Dungeon";
+        public string Name => "Dungeon";
 
         public IRequirement Requirement { get; }
         public bool UserManipulated { get; set; }
@@ -73,6 +78,15 @@ namespace OpenTracker.Models.Sections
         /// <param name="saveLoadManager">
         /// The save/load manager.
         /// </param>
+        /// <param name="undoRedoManager">
+        /// The undo/redo manager.
+        /// </param>
+        /// <param name="collectSectionFactory">
+        /// An Autofac factory for creating collect section undoable actions.
+        /// </param>
+        /// <param name="uncollectSectionFactory">
+        /// An Autofac factory for creating uncollect section undoable actions.
+        /// </param>
         /// <param name="locationID">
         /// The ID of the dungeon to which this section belongs.
         /// </param>
@@ -83,11 +97,17 @@ namespace OpenTracker.Models.Sections
         /// The requirement for this section to be visible.
         /// </param>
         public DungeonItemSection(
-            ILocationDictionary locations, IMode mode, ISaveLoadManager saveLoadManager, LocationID locationID,
-            IAutoTrackValue? autoTrackValue, IRequirement requirement)
+            ILocationDictionary locations, IMode mode, ISaveLoadManager saveLoadManager,
+            IUndoRedoManager undoRedoManager, ICollectSection.Factory collectSectionFactory,
+            IUncollectSection.Factory uncollectSectionFactory, LocationID locationID, IAutoTrackValue? autoTrackValue,
+            IRequirement requirement)
         {
             _mode = mode;
             _saveLoadManager = saveLoadManager;
+            _undoRedoManager = undoRedoManager;
+
+            _collectSectionFactory = collectSectionFactory;
+            _uncollectSectionFactory = uncollectSectionFactory;
             
             _locationID = locationID;
             _autoTrackValue = autoTrackValue;
@@ -162,6 +182,113 @@ namespace OpenTracker.Models.Sections
         }
 
         /// <summary>
+        /// Returns whether the section can be cleared or collected.
+        /// </summary>
+        /// <returns>
+        /// A boolean representing whether the section can be cleared or collected.
+        /// </returns>
+        public bool CanBeCleared(bool force)
+        {
+            return IsAvailable() && (force || Accessibility > AccessibilityLevel.Inspect);
+        }
+
+        /// <summary>
+        /// Returns whether the section can be uncollected.
+        /// </summary>
+        /// <returns>
+        /// A boolean representing whether the section can be uncollected.
+        /// </returns>
+        public bool CanBeUncleared()
+        {
+            return Available < Total;
+        }
+
+        /// <summary>
+        /// Clears the section.
+        /// </summary>
+        /// <param name="force">
+        /// A boolean representing whether to override the location logic.
+        /// </param>
+        public void Clear(bool force)
+        {
+            if (force)
+            {
+                Available = 0;
+                return;
+            }
+
+            Available -= Accessible;
+        }
+
+        /// <summary>
+        /// Returns whether the location has not been fully collected.
+        /// </summary>
+        /// <returns>
+        /// A boolean representing whether the section has been fully collected.
+        /// </returns>
+        public bool IsAvailable()
+        {
+            return Available > 0;
+        }
+
+        /// <summary>
+        /// Creates an undoable action to collect the section and sends it to the undo/redo manager.
+        /// </summary>
+        /// <param name="force">
+        /// A boolean representing whether to override the logic while collecting the section.
+        /// </param>
+        public void CollectSection(bool force)
+        {
+            _undoRedoManager.NewAction(_collectSectionFactory(this, force));
+        }
+
+        /// <summary>
+        /// Creates an undoable action to uncollect the section and sends it to the undo/redo manager.
+        /// </summary>
+        public void UncollectSection()
+        {
+            _undoRedoManager.NewAction(_uncollectSectionFactory(this));
+        }
+
+        /// <summary>
+        /// Resets the section to its starting values.
+        /// </summary>
+        public void Reset()
+        {
+            Available = Total;
+            UserManipulated = false;
+        }
+
+        /// <summary>
+        /// Returns a new section save data instance for this section.
+        /// </summary>
+        /// <returns>
+        /// A new section save data instance.
+        /// </returns>
+        public SectionSaveData Save()
+        {
+            return new SectionSaveData()
+            {
+                Available = Available,
+                UserManipulated = UserManipulated
+            };
+        }
+
+        /// <summary>
+        /// Loads section save data.
+        /// </summary>
+        public void Load(SectionSaveData? saveData)
+        {
+            if (saveData == null)
+            {
+                return;
+            }
+
+            Available = saveData.Available;
+            UserManipulated = saveData.UserManipulated;
+        }
+
+        /// <summary>
         /// Updates the value of the section from auto-tracking.
         /// </summary>
         private void AutoTrackUpdate()
@@ -230,95 +357,6 @@ namespace OpenTracker.Models.Sections
 
             Total = newTotal;
             Available = Math.Max(0, Math.Min(Total, Available + delta));
-        }
-
-        /// <summary>
-        /// Returns whether the section can be cleared or collected.
-        /// </summary>
-        /// <returns>
-        /// A boolean representing whether the section can be cleared or collected.
-        /// </returns>
-        public bool CanBeCleared(bool force)
-        {
-            return IsAvailable() && (force || Accessibility > AccessibilityLevel.Inspect);
-        }
-
-        /// <summary>
-        /// Returns whether the section can be uncollected.
-        /// </summary>
-        /// <returns>
-        /// A boolean representing whether the section can be uncollected.
-        /// </returns>
-        public bool CanBeUncleared()
-        {
-            return Available < Total;
-        }
-
-        /// <summary>
-        /// Clears the section.
-        /// </summary>
-        /// <param name="force">
-        /// A boolean representing whether to override the location logic.
-        /// </param>
-        public void Clear(bool force)
-        {
-            if (force)
-            {
-                Available = 0;
-            }
-            else
-            {
-                Available -= Accessible;
-            }
-        }
-
-        /// <summary>
-        /// Returns whether the location has not been fully collected.
-        /// </summary>
-        /// <returns>
-        /// A boolean representing whether the section has been fully collected.
-        /// </returns>
-        public bool IsAvailable()
-        {
-            return Available > 0;
-        }
-
-        /// <summary>
-        /// Resets the section to its starting values.
-        /// </summary>
-        public void Reset()
-        {
-            Available = Total;
-            UserManipulated = false;
-        }
-
-        /// <summary>
-        /// Returns a new section save data instance for this section.
-        /// </summary>
-        /// <returns>
-        /// A new section save data instance.
-        /// </returns>
-        public SectionSaveData Save()
-        {
-            return new SectionSaveData()
-            {
-                Available = Available,
-                UserManipulated = UserManipulated
-            };
-        }
-
-        /// <summary>
-        /// Loads section save data.
-        /// </summary>
-        public void Load(SectionSaveData saveData)
-        {
-            if (saveData == null)
-            {
-                throw new ArgumentNullException(nameof(saveData));
-            }
-
-            Available = saveData.Available;
-            UserManipulated = saveData.UserManipulated;
         }
     }
 }

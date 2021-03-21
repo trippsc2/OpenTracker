@@ -6,15 +6,13 @@ namespace OpenTracker.Models.UndoRedo.Markings
     /// <summary>
     /// This class contains undoable action data to set a marking.
     /// </summary>
-    public class SetMarking : IUndoable
+    public class SetMarking : ISetMarking
     {
         private readonly IMarking _marking;
         private readonly MarkType _newMarking;
 
         private MarkType _previousMarking;
-
-        public delegate SetMarking Factory(IMarking marking, MarkType newMarking);
-
+        
         /// <summary>
         /// Constructor
         /// </summary>

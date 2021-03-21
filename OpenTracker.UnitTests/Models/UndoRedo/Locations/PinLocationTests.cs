@@ -1,6 +1,5 @@
 using Autofac;
 using NSubstitute;
-using NSubstitute.ReceivedExtensions;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.UndoRedo.Locations;
 using Xunit;
@@ -76,10 +75,10 @@ namespace OpenTracker.UnitTests.Models.UndoRedo.Locations
         public void AutofacTest()
         {
             using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-            var factory = scope.Resolve<PinLocation.Factory>();
+            var factory = scope.Resolve<IPinLocation.Factory>();
             var sut = factory(_location);
             
-            Assert.NotNull(sut);
+            Assert.NotNull(sut as PinLocation);
         }
     }
 }

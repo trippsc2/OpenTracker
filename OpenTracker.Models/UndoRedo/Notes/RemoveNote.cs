@@ -6,13 +6,11 @@ namespace OpenTracker.Models.UndoRedo.Notes
     /// <summary>
     /// This class contains undoable action to remove a note from a location.
     /// </summary>
-    public class RemoveNote : IUndoable
+    public class RemoveNote : IRemoveNote
     {
         private readonly ILocation _location;
         private readonly IMarking _note;
         private int _index;
-
-        public delegate RemoveNote Factory(IMarking note, ILocation location);
 
         /// <summary>
         /// Constructor

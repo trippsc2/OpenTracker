@@ -6,13 +6,11 @@ namespace OpenTracker.Models.UndoRedo.Notes
     /// <summary>
     /// This class contains undoable action data to add a note to a location.
     /// </summary>
-    public class AddNote : IUndoable
+    public class AddNote : IAddNote
     {
         private readonly IMarking.Factory _factory;
         private readonly ILocationNoteCollection _notes;
         private IMarking? _note;
-
-        public delegate AddNote Factory(ILocation location);
 
         /// <summary>
         /// Constructor

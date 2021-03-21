@@ -1,16 +1,15 @@
-﻿using OpenTracker.Models.Connections;
+﻿using System;
+using OpenTracker.Models.Connections;
 
 namespace OpenTracker.Models.UndoRedo.Connections
 {
     /// <summary>
     /// This class contains undoable action to remove a connection between two entrances.
     /// </summary>
-    public class RemoveConnection : IUndoable
+    public class RemoveConnection : IRemoveConnection
     {
-        private readonly IConnectionCollection _connections;
+        private readonly Lazy<IConnectionCollection> _connections;
         private readonly IConnection _connection;
-
-        public delegate RemoveConnection Factory(IConnection connection);
 
         /// <summary>
         /// Constructor
@@ -21,10 +20,9 @@ namespace OpenTracker.Models.UndoRedo.Connections
         /// <param name="connection">
         /// The connection to be removed.
         /// </param>
-        public RemoveConnection(
-            IConnectionCollection connections, IConnection connection)
+        public RemoveConnection(IConnectionCollection.Factory connections, IConnection connection)
         {
-            _connections = connections;
+            _connections = new Lazy<IConnectionCollection>(() => connections());
             _connection = connection;
         }
 
@@ -44,7 +42,7 @@ namespace OpenTracker.Models.UndoRedo.Connections
         /// </summary>
         public void ExecuteDo()
         {
-            _connections.Remove(_connection);
+            _connections.Value.Remove(_connection);
         }
 
         /// <summary>
@@ -52,7 +50,7 @@ namespace OpenTracker.Models.UndoRedo.Connections
         /// </summary>
         public void ExecuteUndo()
         {
-            _connections.Add(_connection);
+            _connections.Value.Add(_connection);
         }
     }
 }

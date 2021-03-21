@@ -1,5 +1,7 @@
 ﻿using OpenTracker.Models.Modes;
 using OpenTracker.Models.SaveLoad;
+using OpenTracker.Models.UndoRedo;
+using OpenTracker.Models.UndoRedo.Boss;
 using ReactiveUI;
 
 namespace OpenTracker.Models.BossPlacements
@@ -10,6 +12,9 @@ namespace OpenTracker.Models.BossPlacements
     public class BossPlacement : ReactiveObject, IBossPlacement
     {
         private readonly IMode _mode;
+        private readonly IUndoRedoManager _undoRedoManager;
+
+        private readonly IChangeBoss.Factory _changeBossFactory;
 
         public BossType DefaultBoss { get; }
 
@@ -26,14 +31,23 @@ namespace OpenTracker.Models.BossPlacements
         /// <param name="mode">
         /// The mode settings.
         /// </param>
+        /// <param name="undoRedoManager">
+        /// The undo/redo manager.
+        /// </param>
+        /// <param name="changeBossFactory">
+        /// An Autofac factory for creating change boss undoable actions.
+        /// </param>
         /// <param name="defaultBoss">
         /// The default boss type for the boss placement.
         /// </param>
-        public BossPlacement(IMode mode, BossType defaultBoss)
+        public BossPlacement(
+            IMode mode, IUndoRedoManager undoRedoManager, IChangeBoss.Factory changeBossFactory, BossType defaultBoss)
         {
             _mode = mode;
 
             DefaultBoss = defaultBoss;
+            _undoRedoManager = undoRedoManager;
+            _changeBossFactory = changeBossFactory;
 
             if (DefaultBoss == BossType.Aga)
             {
@@ -50,6 +64,17 @@ namespace OpenTracker.Models.BossPlacements
         public BossType? GetCurrentBoss()
         {
             return _mode.BossShuffle ? Boss : DefaultBoss;
+        }
+
+        /// <summary>
+        /// Creates an undoable action to change the current boss and sends it to the undo/redo manager.
+        /// </summary>
+        /// <param name="boss">
+        /// The new nullable boss type.
+        /// </param>
+        public void ChangeBoss(BossType? boss)
+        {
+            _undoRedoManager.NewAction(_changeBossFactory(this, boss));
         }
 
         /// <summary>

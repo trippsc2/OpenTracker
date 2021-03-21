@@ -18,9 +18,9 @@ namespace OpenTracker.ViewModels.MapLocations
     /// </summary>
     public class EntranceMapLocationVM : ViewModelBase, IEntranceMapLocationVM
     {
+        private readonly IConnectionCollection _connections;
         private readonly IUndoRedoManager _undoRedoManager;
         private readonly IUndoableFactory _undoableFactory;
-        private readonly IConnection.Factory _connectionFactory;
 
         private readonly IMapLocationColorProvider _colorProvider;
 
@@ -43,14 +43,14 @@ namespace OpenTracker.ViewModels.MapLocations
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="connections">
+        /// The connection collection.
+        /// </param>
         /// <param name="undoRedoManager">
         /// The undo/redo manager.
         /// </param>
         /// <param name="undoableFactory">
         /// A factory for creating undoable actions.
-        /// </param>
-        /// <param name="connectionFactory">
-        /// An Autofac factory for creating map connections.
         /// </param>
         /// <param name="colorProvider">
         /// The map location control color provider.
@@ -68,13 +68,12 @@ namespace OpenTracker.ViewModels.MapLocations
         /// The list of points for the polygon control.
         /// </param>
         public EntranceMapLocationVM(
-            IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory, IConnection.Factory connectionFactory,
+            IConnectionCollection connections, IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory,
             IMapLocationColorProvider.Factory colorProvider, IMapLocation mapLocation, double offsetX, double offsetY,
             List<Point> points)
         {
             _undoRedoManager = undoRedoManager;
             _undoableFactory = undoableFactory;
-            _connectionFactory = connectionFactory;
 
             _colorProvider = colorProvider(mapLocation);
 
@@ -82,7 +81,8 @@ namespace OpenTracker.ViewModels.MapLocations
             OffsetX = offsetX;
             OffsetY = offsetY;
             Points = points;
-            
+            _connections = connections;
+
             HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
             HandleDoubleClick = ReactiveCommand.Create<RoutedEventArgs>(HandleDoubleClickImpl);
             HandlePointerEnter = _colorProvider.HandlePointerEnter;
@@ -122,7 +122,7 @@ namespace OpenTracker.ViewModels.MapLocations
         /// </param>
         public void ConnectLocation(IMapLocation mapLocation)
         {
-            _undoRedoManager.NewAction(_undoableFactory.GetAddConnection(_connectionFactory(mapLocation, MapLocation)));
+            _connections.AddConnection(mapLocation, MapLocation);
         }
 
         /// <summary>

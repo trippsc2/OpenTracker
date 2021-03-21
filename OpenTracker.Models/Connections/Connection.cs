@@ -1,5 +1,7 @@
 ﻿using OpenTracker.Models.Locations;
 using OpenTracker.Models.SaveLoad;
+using OpenTracker.Models.UndoRedo;
+using OpenTracker.Models.UndoRedo.Connections;
 
 namespace OpenTracker.Models.Connections
 {
@@ -8,22 +10,36 @@ namespace OpenTracker.Models.Connections
     /// </summary>
     public class Connection : IConnection
     {
+        private readonly IUndoRedoManager _undoRedoManager;
+
+        private readonly IRemoveConnection.Factory _removeConnectionFactory;
+        
         public IMapLocation Location1 { get; }
         public IMapLocation Location2 { get; }
 
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="undoRedoManager">
+        /// The undo/redo manager.
+        /// </param>
+        /// <param name="removeConnectionFactory">
+        /// An Autofac factory for creating remove connection undoable actions.
+        /// </param>
         /// <param name="location1">
         /// The first location to connect.
         /// </param>
         /// <param name="location2">
         /// The second location to connect.
         /// </param>
-        public Connection(IMapLocation location1, IMapLocation location2)
+        public Connection(
+            IUndoRedoManager undoRedoManager, IRemoveConnection.Factory removeConnectionFactory, IMapLocation location1,
+            IMapLocation location2)
         {
             Location1 = location1;
             Location2 = location2;
+            _undoRedoManager = undoRedoManager;
+            _removeConnectionFactory = removeConnectionFactory;
         }
 
         public override bool Equals(object? obj)
@@ -40,6 +56,14 @@ namespace OpenTracker.Models.Connections
         public override int GetHashCode()
         {
             return Location1.GetHashCode() ^ Location2.GetHashCode();
+        }
+
+        /// <summary>
+        /// Creates an undoable action to remove the connection and sends it to the undo/redo manager.
+        /// </summary>
+        public void RemoveConnection()
+        {
+            _undoRedoManager.NewAction(_removeConnectionFactory(this));
         }
 
         /// <summary>

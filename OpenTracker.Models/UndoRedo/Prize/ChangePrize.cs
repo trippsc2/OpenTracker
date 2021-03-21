@@ -6,12 +6,10 @@ namespace OpenTracker.Models.UndoRedo.Prize
     /// <summary>
     /// This class contains undoable action data to change the dungeon prize.
     /// </summary>
-    public class ChangePrize : IUndoable
+    public class ChangePrize : IChangePrize
     {
         private readonly IPrizePlacement _prizePlacement;
         private IItem? _previousValue;
-
-        public delegate ChangePrize Factory(IPrizePlacement prizePlacement);
 
         /// <summary>
         /// Constructor

@@ -5,13 +5,11 @@ namespace OpenTracker.Models.UndoRedo.Mode
     /// <summary>
     /// This class contains undoable action data to change the small key shuffle setting.
     /// </summary>
-    public class ChangeSmallKeyShuffle : IUndoable
+    public class ChangeSmallKeyShuffle : IChangeSmallKeyShuffle
     {
         private readonly IMode _mode;
         private readonly bool _newValue;
         private bool _previousValue;
-
-        public delegate ChangeSmallKeyShuffle Factory(bool newValue);
 
         /// <summary>
         /// Constructor

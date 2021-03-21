@@ -5,14 +5,12 @@ namespace OpenTracker.Models.UndoRedo.Sections
     /// <summary>
     /// This class contains undoable action to toggle a dungeon prize.
     /// </summary>
-    public class TogglePrizeSection : IUndoable
+    public class TogglePrizeSection : ITogglePrizeSection
     {
         private readonly ISection _section;
         private readonly bool _force;
 
         private bool _previousUserManipulated;
-
-        public delegate TogglePrizeSection Factory(ISection section, bool force);
 
         /// <summary>
         /// Constructor

@@ -5,14 +5,12 @@ namespace OpenTracker.Models.UndoRedo.Boss
     /// <summary>
     /// This class contains undoable action to change the boss of a dungeon.
     /// </summary>
-    public class ChangeBoss : IUndoable
+    public class ChangeBoss : IChangeBoss
     {
         private readonly IBossPlacement _bossPlacement;
         private readonly BossType? _newValue;
 
         private BossType? _previousValue;
-
-        public delegate ChangeBoss Factory(IBossPlacement bossPlacement, BossType? newValue);
 
         /// <summary>
         /// Constructor

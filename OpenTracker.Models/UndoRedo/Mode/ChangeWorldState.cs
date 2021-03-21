@@ -5,14 +5,12 @@ namespace OpenTracker.Models.UndoRedo.Mode
     /// <summary>
     /// This class contains undoable action data to change the world state setting.
     /// </summary>
-    public class ChangeWorldState : IUndoable
+    public class ChangeWorldState : IChangeWorldState
     {
         private readonly IMode _mode;
         private readonly WorldState _newValue;
         private WorldState _previousValue;
         private ItemPlacement _previousItemPlacement;
-
-        public delegate ChangeWorldState Factory(WorldState newValue);
 
         /// <summary>
         /// Constructor

@@ -135,6 +135,25 @@ namespace OpenTracker.Models.Sections
         }
 
         /// <summary>
+        /// Creates an undoable action to collect the section and sends it to the undo/redo manager.
+        /// </summary>
+        /// <param name="force">
+        /// A boolean representing whether to override the logic while collecting the section.
+        /// </param>
+        public void CollectSection(bool force)
+        {
+            _section.CollectSection(force);
+        }
+
+        /// <summary>
+        /// Creates an undoable action to uncollect the section and sends it to the undo/redo manager.
+        /// </summary>
+        public void UncollectSection()
+        {
+            _section.UncollectSection();
+        }
+
+        /// <summary>
         /// Resets the section to its starting values.
         /// </summary>
         public void Reset()

@@ -1,10 +1,8 @@
-using Autofac;
 using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.DungeonNodes;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.KeyDoors;
 using OpenTracker.Models.Locations;
-using OpenTracker.Models.Modes;
 using OpenTracker.Models.RequirementNodes;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.SequenceBreaks;
@@ -14,13 +12,6 @@ namespace OpenTracker.UnitTests.Models.DungeonNodes
 {
     public class DungeonNodeTestBase
     {
-        private static IContainer ConfigureContainer()
-        {
-            var builder = ContainerConfig.GetContainerBuilder();
-
-            return builder.Build();
-        }
-        
         public virtual void Tests(
             ModeSaveData modeData, RequirementNodeID[] accessibleEntryNodes, DungeonNodeID[] accessibleNodes,
             KeyDoorID[] unlockedDoors, (ItemType, int)[] items, (SequenceBreakType, bool)[] sequenceBreaks,

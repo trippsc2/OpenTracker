@@ -49,10 +49,10 @@ namespace OpenTracker.UnitTests.Models.UndoRedo.Dropdowns
         public void AutofacTest()
         {
             using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-            var factory = scope.Resolve<CheckDropdown.Factory>();
+            var factory = scope.Resolve<ICheckDropdown.Factory>();
             var sut = factory(_dropdown);
             
-            Assert.NotNull(sut);
+            Assert.NotNull(sut as CheckDropdown);
         }
     }
 }

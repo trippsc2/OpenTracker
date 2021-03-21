@@ -5,14 +5,12 @@ namespace OpenTracker.Models.UndoRedo.Locations
     /// <summary>
     /// This class contains undoable action data to pin a location.
     /// </summary>
-    public class PinLocation : IUndoable
+    public class PinLocation : IPinLocation
     {
         private readonly IPinnedLocationCollection _pinnedLocations;
 
         private readonly ILocation _pinnedLocation;
         private int? _existingIndex;
-
-        public delegate PinLocation Factory(ILocation pinnedLocation);
 
         /// <summary>
         /// Constructor

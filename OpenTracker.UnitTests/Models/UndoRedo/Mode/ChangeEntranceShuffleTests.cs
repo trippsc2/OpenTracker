@@ -50,10 +50,10 @@ namespace OpenTracker.UnitTests.Models.UndoRedo.Mode
         public void AutofacTest()
         {
             using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-            var factory = scope.Resolve<ChangeEntranceShuffle.Factory>();
+            var factory = scope.Resolve<IChangeEntranceShuffle.Factory>();
             var sut = factory(EntranceShuffle.None);
             
-            Assert.NotNull(sut);
+            Assert.NotNull(sut as ChangeEntranceShuffle);
         }
     }
 }

@@ -3,7 +3,6 @@ using System.Reactive;
 using Avalonia.Input;
 using Avalonia.Threading;
 using OpenTracker.Models.Sections;
-using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
 using OpenTracker.ViewModels.BossSelect;
 using ReactiveUI;
@@ -15,9 +14,6 @@ namespace OpenTracker.ViewModels.Items.Adapters
     /// </summary>
     public class StaticPrizeAdapter : ViewModelBase, IItemAdapter
     {
-        private readonly IUndoRedoManager _undoRedoManager;
-        private readonly IUndoableFactory _undoableFactory;
-
         private readonly IPrizeSection _section;
         private readonly string _imageSourceBase;
 
@@ -34,25 +30,14 @@ namespace OpenTracker.ViewModels.Items.Adapters
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="undoRedoManager">
-        /// The undo/redo manager.
-        /// </param>
-        /// <param name="undoableFactory">
-        /// The factory for creating undoable actions.
-        /// </param>
         /// <param name="imageSourceBase">
         /// A string representing the base image source.
         /// </param>
         /// <param name="section">
         /// An item that is to be represented by this control.
         /// </param>
-        public StaticPrizeAdapter(
-            IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory, IPrizeSection section,
-            string imageSourceBase)
+        public StaticPrizeAdapter(IPrizeSection section, string imageSourceBase)
         {
-            _undoRedoManager = undoRedoManager;
-            _undoableFactory = undoableFactory;
-
             _section = section;
             _imageSourceBase = imageSourceBase;
             
@@ -84,7 +69,7 @@ namespace OpenTracker.ViewModels.Items.Adapters
         /// </summary>
         private void CollectSection()
         {
-            _undoRedoManager.NewAction(_undoableFactory.GetCollectSection(_section, true));
+            _section.CollectSection(true);
         }
 
         /// <summary>
@@ -92,7 +77,7 @@ namespace OpenTracker.ViewModels.Items.Adapters
         /// </summary>
         private void UncollectSection()
         {
-            _undoRedoManager.NewAction(_undoableFactory.GetUncollectSection(_section));
+            _section.UncollectSection();
         }
 
         /// <summary>

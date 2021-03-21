@@ -5,13 +5,11 @@ namespace OpenTracker.Models.UndoRedo.Sections
     /// <summary>
     /// This class contains undoable action to uncollect a section.
     /// </summary>
-    public class UncollectSection : IUndoable
+    public class UncollectSection : IUncollectSection
     {
         private readonly ISection _section;
 
         private bool _previousUserManipulated;
-
-        public delegate UncollectSection Factory(ISection section);
 
         /// <summary>
         /// Constructor

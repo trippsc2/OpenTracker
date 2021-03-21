@@ -60,10 +60,10 @@ namespace OpenTracker.UnitTests.Models.UndoRedo.Prize
         public void AutofacTest()
         {
             using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-            var factory = scope.Resolve<ChangePrize.Factory>();
+            var factory = scope.Resolve<IChangePrize.Factory>();
             var sut = factory(_prizePlacement);
             
-            Assert.NotNull(sut);
+            Assert.NotNull(sut as ChangePrize);
         }
     }
 }

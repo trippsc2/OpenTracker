@@ -20,32 +20,32 @@
 		public static uint TranslateAddress(uint address, TranslationMode mode)
 		{
 			if (mode == TranslationMode.Read && MapAddressInRange(
-				address, 8257536U, 8388607U, 16056320U,
+				address, 0x7E0000U, 0x7FFFFFU, 0xF50000U,
 				out var mappedAddress))
 			{
 				return mappedAddress;
 			}
 
-			for (uint index = 0; index < 63U; ++index)
+			for (uint index = 0x0; index < 0x3FU; ++index)
 			{
 				if (MapAddressInRange(
-					    address, (uint)((int)index * 65536 + 32768),
-					    (uint)((int)index * 65536 + ushort.MaxValue),
-					    index * 32768U, out mappedAddress) ||
+					    address, (uint)((int)index * 0x10000 + 0x8000),
+					    (uint)((int)index * 0x10000 + ushort.MaxValue),
+					    index * 0x8000U, out mappedAddress) ||
 				    MapAddressInRange(
-					    address, (uint)((int)index * 65536 + 8421376),
-					    (uint)((int)index * 65536 + 8454143),
-					    index * 32768U, out mappedAddress))
+					    address, (uint)((int)index * 0x10000 + 0x808000),
+					    (uint)((int)index * 0x10000 + 0x80FFFF),
+					    index * 0x8000U, out mappedAddress))
 				{
 					return mappedAddress;
 				}
 			}
 
-			for (uint index = 0; index < 8U; ++index)
+			for (uint index = 0x0; index < 0x8U; ++index)
 			{
-				if (MapAddressInRange(address, (uint)(7340032 + (int)index * 65536),
-					(uint)(7372799 + (int)index * 65536),
-					(uint)(14680064 + (int)index * 32768), out mappedAddress))
+				if (MapAddressInRange(address, (uint)(0x700000 + (int)index * 0x10000),
+					(uint)(0x707FFF + (int)index * 0x10000),
+					(uint)(0xE00000 + (int)index * 0x8000), out mappedAddress))
 				{
 					return mappedAddress;
 				}

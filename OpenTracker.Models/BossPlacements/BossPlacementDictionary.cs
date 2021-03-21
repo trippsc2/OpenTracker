@@ -49,8 +49,7 @@ namespace OpenTracker.Models.BossPlacements
         /// </returns>
         public Dictionary<BossPlacementID, BossPlacementSaveData> Save()
         {
-            Dictionary<BossPlacementID, BossPlacementSaveData> bossPlacements =
-                new Dictionary<BossPlacementID, BossPlacementSaveData>();
+            var bossPlacements = new Dictionary<BossPlacementID, BossPlacementSaveData>();
 
             foreach (var bossPlacement in Keys)
             {

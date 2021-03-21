@@ -5,13 +5,11 @@ namespace OpenTracker.Models.UndoRedo.Mode
     /// <summary>
     /// This class contains undoable action data to change the shop shuffle mode setting.
     /// </summary>
-    public class ChangeShopShuffle : IUndoable
+    public class ChangeShopShuffle : IChangeShopShuffle
     {
         private readonly IMode _mode;
         private readonly bool _newValue;
         private bool _previousValue;
-
-        public delegate ChangeShopShuffle Factory(bool newValue);
 
         /// <summary>
         /// Constructor

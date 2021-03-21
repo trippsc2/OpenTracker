@@ -5,11 +5,9 @@ namespace OpenTracker.Models.UndoRedo.Items
     /// <summary>
     /// This class contains undoable action data to cycle an item through valid counts.
     /// </summary>
-    public class CycleItem : IUndoable
+    public class CycleItem : ICycleItem
     {
         private readonly IItem _item;
-
-        public delegate CycleItem Factory(IItem item);
 
         /// <summary>
         /// Constructor

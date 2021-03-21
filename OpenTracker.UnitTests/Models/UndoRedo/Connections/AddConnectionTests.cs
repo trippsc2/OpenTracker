@@ -1,8 +1,6 @@
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Connections;
-using OpenTracker.Models.Locations;
-using OpenTracker.Models.UndoRedo;
 using OpenTracker.Models.UndoRedo.Connections;
 using Xunit;
 
@@ -11,37 +9,37 @@ namespace OpenTracker.UnitTests.Models.UndoRedo.Connections
     public class AddConnectionTests
     {
         private readonly IConnection _connection = Substitute.For<IConnection>();
-        private readonly IConnectionCollection _connections = new ConnectionCollection(
-            Substitute.For<ILocationDictionary>(),
-            (location1, location2) => new Connection(location1, location2));
+        private readonly IConnectionCollection _connections = Substitute.For<IConnectionCollection>();
 
         private readonly AddConnection _sut;
 
         public AddConnectionTests()
         {
-            _sut = new AddConnection(_connections, _connection);
+            _sut = new AddConnection(() => _connections, _connection);
         }
         
         [Fact]
-        public void CanExecute_ShouldReturnTrue_WhenConnectionCollectionDoesNotContainConnection()
+        public void CanExecute_ShouldReturnTrue_WhenConnectionCollectionContainsReturnsFalse()
         {
+            _connections.Contains(_connection).Returns(false);
+            
             Assert.True(_sut.CanExecute());
         }
 
         [Fact]
         public void CanExecute_ShouldReturnFalse_WhenConnectionCollectionContainsConnection()
         {
-            _connections.Add(_connection);
+            _connections.Contains(_connection).Returns(true);
             
             Assert.False(_sut.CanExecute());
         }
 
         [Fact]
-        public void ExecuteDo_ShouldAddConnectionToConnectionCollection()
+        public void ExecuteDo_ShouldCallAddOnConnectionCollection()
         {
             _sut.ExecuteDo();
 
-            Assert.Contains(_connection, _connections);
+            _connections.Received().Add(_connection);
         }
 
         [Fact]
@@ -49,8 +47,8 @@ namespace OpenTracker.UnitTests.Models.UndoRedo.Connections
         {
             _sut.ExecuteDo();
             _sut.ExecuteUndo();
-            
-            Assert.DoesNotContain(_connection, _connections);
+
+            _connections.Received().Remove(_connection);
         }
 
         [Fact]
@@ -58,10 +56,10 @@ namespace OpenTracker.UnitTests.Models.UndoRedo.Connections
         {
             using var scope = ContainerConfig.Configure().BeginLifetimeScope();
 
-            var factory = scope.Resolve<AddConnection.Factory>();
+            var factory = scope.Resolve<IAddConnection.Factory>();
             var sut = factory(_connection);
             
-            Assert.NotNull(sut);
+            Assert.NotNull(sut as AddConnection);
         }
     }
 }

@@ -5,15 +5,13 @@ namespace OpenTracker.Models.UndoRedo.Mode
     /// <summary>
     /// This class contains undoable action data to change the big key shuffle setting.
     /// </summary>
-    public class ChangeBigKeyShuffle : IUndoable
+    public class ChangeBigKeyShuffle : IChangeBigKeyShuffle
     {
         private readonly IMode _mode;
 
         private readonly bool _newValue;
 
         private bool _previousValue;
-
-        public delegate ChangeBigKeyShuffle Factory(bool newValue);
 
         /// <summary>
         /// Constructor

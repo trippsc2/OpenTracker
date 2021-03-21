@@ -52,10 +52,10 @@ namespace OpenTracker.UnitTests.Models.UndoRedo.Locations
         public void AutofacTest()
         {
             using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-            var factory = scope.Resolve<UnpinLocation.Factory>();
+            var factory = scope.Resolve<IUnpinLocation.Factory>();
             var sut = factory(_location);
             
-            Assert.NotNull(sut);
+            Assert.NotNull(sut as UnpinLocation);
         }
     }
 }

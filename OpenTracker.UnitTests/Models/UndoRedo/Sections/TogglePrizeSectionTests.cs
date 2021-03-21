@@ -102,10 +102,10 @@ namespace OpenTracker.UnitTests.Models.UndoRedo.Sections
         public void AutofacTest()
         {
             using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-            var factory = scope.Resolve<TogglePrizeSection.Factory>();
+            var factory = scope.Resolve<ITogglePrizeSection.Factory>();
             var sut = factory(_section, false);
             
-            Assert.NotNull(sut);
+            Assert.NotNull(sut as TogglePrizeSection);
         }
     }
 }

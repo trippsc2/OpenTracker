@@ -58,7 +58,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
 
              foreach (var bigKey in bigKeys)
              {
-                 ((IDungeon)locations[bigKey.Item1]).BigKeyItem.Current =
+                 ((IDungeon)locations[bigKey.Item1]).BigKeyItem!.Current =
                      bigKey.Item2;
              }
 

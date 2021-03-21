@@ -5,11 +5,9 @@ namespace OpenTracker.Models.UndoRedo.Dropdowns
     /// <summary>
     /// This class contains undoable action data to check a dropdown.
     /// </summary>
-    public class CheckDropdown : IUndoable
+    public class CheckDropdown : ICheckDropdown
     {
         private readonly IDropdown _dropdown;
-
-        public delegate CheckDropdown Factory(IDropdown dropdown);
 
         /// <summary>
         /// Constructor

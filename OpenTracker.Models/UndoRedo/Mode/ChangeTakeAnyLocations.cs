@@ -5,13 +5,11 @@ namespace OpenTracker.Models.UndoRedo.Mode
     /// <summary>
     /// This class contains undoable action data to change the take any locations mode setting.
     /// </summary>
-    public class ChangeTakeAnyLocations : IUndoable
+    public class ChangeTakeAnyLocations : IChangeTakeAnyLocations
     {
         private readonly IMode _mode;
         private readonly bool _newValue;
         private bool _previousValue;
-
-        public delegate ChangeTakeAnyLocations Factory(bool newValue);
 
         /// <summary>
         /// Constructor

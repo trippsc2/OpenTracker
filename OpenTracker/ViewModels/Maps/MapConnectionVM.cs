@@ -9,7 +9,6 @@ using OpenTracker.Models.Connections;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.Settings;
-using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
 using OpenTracker.ViewModels.Areas;
 using ReactiveUI;
@@ -23,8 +22,6 @@ namespace OpenTracker.ViewModels.Maps
     {
         private readonly IColorSettings _colorSettings;
         private readonly IMode _mode;
-        private readonly IUndoRedoManager _undoRedoManager;
-        private readonly IUndoableFactory _undoableFactory;
 
         private readonly IMapAreaVM _mapArea;
 
@@ -75,26 +72,16 @@ namespace OpenTracker.ViewModels.Maps
         /// <param name="mode">
         /// The mode settings.
         /// </param>
-        /// <param name="undoRedoManager">
-        /// The undo/redo manager.
-        /// </param>
-        /// <param name="undoableFactory">
-        /// A factory for creating undoable actions.
-        /// </param>
         /// <param name="connection">
         /// The connection data.
         /// </param>
         /// <param name="mapArea">
         /// The map area ViewModel parent class.
         /// </param>
-        public MapConnectionVM(
-            IColorSettings colorSettings, IMode mode, IUndoRedoManager undoRedoManager,
-            IUndoableFactory undoableFactory, IMapAreaVM mapArea, IConnection connection)
+        public MapConnectionVM(IColorSettings colorSettings, IMode mode, IMapAreaVM mapArea, IConnection connection)
         {
             _colorSettings = colorSettings;
             _mode = mode;
-            _undoRedoManager = undoRedoManager;
-            _undoableFactory = undoableFactory;
             _mapArea = mapArea;
 
             _connection = connection;
@@ -193,7 +180,7 @@ namespace OpenTracker.ViewModels.Maps
         /// </summary>
         private void RemoveConnection()
         {
-            _undoRedoManager.NewAction(_undoableFactory.GetRemoveConnection(_connection));
+            _connection.RemoveConnection();
         }
 
         /// <summary>

@@ -46,10 +46,10 @@ namespace OpenTracker.UnitTests.Models.UndoRedo.Items
         public void AutofacTest()
         {
             using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-            var factory = scope.Resolve<AddItem.Factory>();
+            var factory = scope.Resolve<IAddItem.Factory>();
             var sut = factory(_item);
             
-            Assert.NotNull(sut);
+            Assert.NotNull(sut as AddItem);
         }
     }
 }

@@ -25,40 +25,40 @@ namespace OpenTracker.Models.UndoRedo
     /// </summary>
     public class UndoableFactory : IUndoableFactory
     {
-        private readonly AddConnection.Factory _addConnectionFactory;
-        private readonly AddCrystalRequirement.Factory _addCrystalFactory;
-        private readonly AddItem.Factory _addItemFactory;
-        private readonly AddNote.Factory _addNoteFactory;
-        private readonly ChangeBigKeyShuffle.Factory _changeBigKeyShuffleFactory;
-        private readonly ChangeBoss.Factory _changeBossFactory;
-        private readonly ChangeBossShuffle.Factory _changeBossShuffleFactory;
-        private readonly ChangeCompassShuffle.Factory _changeCompassShuffleFactory;
-        private readonly ChangeEnemyShuffle.Factory _changeEnemyShuffleFactory;
-        private readonly ChangeEntranceShuffle.Factory _changeEntranceShuffleFactory;
-        private readonly ChangeGenericKeys.Factory _changeGenericKeysFactory;
-        private readonly ChangeGuaranteedBossItems.Factory _changeGuaranteedBossItemsFactory;
-        private readonly ChangeItemPlacement.Factory _changeItemPlacementFactory;
-        private readonly ChangeKeyDropShuffle.Factory _changeKeyDropShuffleFactory;
-        private readonly ChangeMapShuffle.Factory _changeMapShuffleFactory;
-        private readonly ChangePrize.Factory _changePrizeFactory;
-        private readonly ChangeShopShuffle.Factory _changeShopShuffleFactory;
-        private readonly ChangeSmallKeyShuffle.Factory _changeSmallKeyShuffleFactory;
-        private readonly ChangeTakeAnyLocations.Factory _changeTakeAnyLocationsFactory;
-        private readonly ChangeWorldState.Factory _changeWorldStateFactory;
-        private readonly CheckDropdown.Factory _checkDropdownFactory;
-        private readonly ClearLocation.Factory _clearLocationFactory;
-        private readonly CollectSection.Factory _collectSectionFactory;
-        private readonly CycleItem.Factory _cycleItemFactory;
-        private readonly PinLocation.Factory _pinLocationFactory;
-        private readonly RemoveConnection.Factory _removeConnectionFactory;
-        private readonly RemoveCrystalRequirement.Factory _removeCrystalRequirementFactory;
-        private readonly RemoveItem.Factory _removeItemFactory;
-        private readonly RemoveNote.Factory _removeNoteFactory;
-        private readonly SetMarking.Factory _setMarkingFactory;
-        private readonly TogglePrizeSection.Factory _togglePrizeFactory;
-        private readonly UncheckDropdown.Factory _uncheckDropdownFactory;
-        private readonly UncollectSection.Factory _uncollectSectionFactory;
-        private readonly UnpinLocation.Factory _unpinLocationFactory;
+        private readonly IAddConnection.Factory _addConnectionFactory;
+        private readonly IAddCrystalRequirement.Factory _addCrystalFactory;
+        private readonly IAddItem.Factory _addItemFactory;
+        private readonly IAddNote.Factory _addNoteFactory;
+        private readonly IChangeBigKeyShuffle.Factory _changeBigKeyShuffleFactory;
+        private readonly IChangeBoss.Factory _changeBossFactory;
+        private readonly IChangeBossShuffle.Factory _changeBossShuffleFactory;
+        private readonly IChangeCompassShuffle.Factory _changeCompassShuffleFactory;
+        private readonly IChangeEnemyShuffle.Factory _changeEnemyShuffleFactory;
+        private readonly IChangeEntranceShuffle.Factory _changeEntranceShuffleFactory;
+        private readonly IChangeGenericKeys.Factory _changeGenericKeysFactory;
+        private readonly IChangeGuaranteedBossItems.Factory _changeGuaranteedBossItemsFactory;
+        private readonly IChangeItemPlacement.Factory _changeItemPlacementFactory;
+        private readonly IChangeKeyDropShuffle.Factory _changeKeyDropShuffleFactory;
+        private readonly IChangeMapShuffle.Factory _changeMapShuffleFactory;
+        private readonly IChangePrize.Factory _changePrizeFactory;
+        private readonly IChangeShopShuffle.Factory _changeShopShuffleFactory;
+        private readonly IChangeSmallKeyShuffle.Factory _changeSmallKeyShuffleFactory;
+        private readonly IChangeTakeAnyLocations.Factory _changeTakeAnyLocationsFactory;
+        private readonly IChangeWorldState.Factory _changeWorldStateFactory;
+        private readonly ICheckDropdown.Factory _checkDropdownFactory;
+        private readonly IClearLocation.Factory _clearLocationFactory;
+        private readonly ICollectSection.Factory _collectSectionFactory;
+        private readonly ICycleItem.Factory _cycleItemFactory;
+        private readonly IPinLocation.Factory _pinLocationFactory;
+        private readonly IRemoveConnection.Factory _removeConnectionFactory;
+        private readonly IRemoveCrystalRequirement.Factory _removeCrystalRequirementFactory;
+        private readonly IRemoveItem.Factory _removeItemFactory;
+        private readonly IRemoveNote.Factory _removeNoteFactory;
+        private readonly ISetMarking.Factory _setMarkingFactory;
+        private readonly ITogglePrizeSection.Factory _togglePrizeFactory;
+        private readonly IUncheckDropdown.Factory _uncheckDropdownFactory;
+        private readonly IUncollectSection.Factory _uncollectSectionFactory;
+        private readonly IUnpinLocation.Factory _unpinLocationFactory;
 
         /// <summary>
         /// Constructor
@@ -166,36 +166,36 @@ namespace OpenTracker.Models.UndoRedo
         /// An Autofac factory for creating unpin location actions.
         /// </param>
         public UndoableFactory(
-            AddConnection.Factory addConnectionFactory,
-            AddCrystalRequirement.Factory addCrystalFactory, AddItem.Factory addItemFactory,
-            AddNote.Factory addNoteFactory,
-            ChangeBigKeyShuffle.Factory changeBigKeyShuffleFactory,
-            ChangeBoss.Factory changeBossFactory,
-            ChangeBossShuffle.Factory changeBossShuffleFactory,
-            ChangeCompassShuffle.Factory changeCompassShuffleFactory,
-            ChangeEnemyShuffle.Factory changeEnemyShuffleFactory,
-            ChangeEntranceShuffle.Factory changeEntranceShuffleFactory,
-            ChangeGenericKeys.Factory changeGenericKeysFactory,
-            ChangeGuaranteedBossItems.Factory changeGuaranteedBossItemsFactory,
-            ChangeItemPlacement.Factory changeItemPlacementFactory,
-            ChangeKeyDropShuffle.Factory changeKeyDropShuffleFactory,
-            ChangeMapShuffle.Factory changeMapShuffleFactory,
-            ChangePrize.Factory changePrizeFactory,
-            ChangeShopShuffle.Factory changeShopShuffleFactory,
-            ChangeSmallKeyShuffle.Factory changeSmallKeyShuffleFactory,
-            ChangeTakeAnyLocations.Factory changeTakeAnyLocationsFactory,
-            ChangeWorldState.Factory changeWorldStateFactory,
-            CheckDropdown.Factory checkDropdownFactory,
-            ClearLocation.Factory clearLocationFactory,
-            CollectSection.Factory collectSectionFactory, CycleItem.Factory cycleItemFactory,
-            PinLocation.Factory pinLocationFactory,
-            RemoveConnection.Factory removeConnectionFactory,
-            RemoveCrystalRequirement.Factory removeCrystalRequirementFactory,
-            RemoveItem.Factory removeItemFactory, RemoveNote.Factory removeNoteFactory,
-            SetMarking.Factory setMarkingFactory, TogglePrizeSection.Factory togglePrizeFactory,
-            UncheckDropdown.Factory uncheckDropdownFactory,
-            UncollectSection.Factory uncollectSectionFactory,
-            UnpinLocation.Factory unpinLocationFactory)
+            IAddConnection.Factory addConnectionFactory,
+            IAddCrystalRequirement.Factory addCrystalFactory, IAddItem.Factory addItemFactory,
+            IAddNote.Factory addNoteFactory,
+            IChangeBigKeyShuffle.Factory changeBigKeyShuffleFactory,
+            IChangeBoss.Factory changeBossFactory,
+            IChangeBossShuffle.Factory changeBossShuffleFactory,
+            IChangeCompassShuffle.Factory changeCompassShuffleFactory,
+            IChangeEnemyShuffle.Factory changeEnemyShuffleFactory,
+            IChangeEntranceShuffle.Factory changeEntranceShuffleFactory,
+            IChangeGenericKeys.Factory changeGenericKeysFactory,
+            IChangeGuaranteedBossItems.Factory changeGuaranteedBossItemsFactory,
+            IChangeItemPlacement.Factory changeItemPlacementFactory,
+            IChangeKeyDropShuffle.Factory changeKeyDropShuffleFactory,
+            IChangeMapShuffle.Factory changeMapShuffleFactory,
+            IChangePrize.Factory changePrizeFactory,
+            IChangeShopShuffle.Factory changeShopShuffleFactory,
+            IChangeSmallKeyShuffle.Factory changeSmallKeyShuffleFactory,
+            IChangeTakeAnyLocations.Factory changeTakeAnyLocationsFactory,
+            IChangeWorldState.Factory changeWorldStateFactory,
+            ICheckDropdown.Factory checkDropdownFactory,
+            IClearLocation.Factory clearLocationFactory,
+            ICollectSection.Factory collectSectionFactory, ICycleItem.Factory cycleItemFactory,
+            IPinLocation.Factory pinLocationFactory,
+            IRemoveConnection.Factory removeConnectionFactory,
+            IRemoveCrystalRequirement.Factory removeCrystalRequirementFactory,
+            IRemoveItem.Factory removeItemFactory, IRemoveNote.Factory removeNoteFactory,
+            ISetMarking.Factory setMarkingFactory, ITogglePrizeSection.Factory togglePrizeFactory,
+            IUncheckDropdown.Factory uncheckDropdownFactory,
+            IUncollectSection.Factory uncollectSectionFactory,
+            IUnpinLocation.Factory unpinLocationFactory)
         {
             _addConnectionFactory = addConnectionFactory;
             _addCrystalFactory = addCrystalFactory;
