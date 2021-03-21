@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using OpenTracker.Models.SaveLoad;
 using ReactiveUI;
 
@@ -42,22 +41,6 @@ namespace OpenTracker.Models.UndoRedo
         }
 
         /// <summary>
-        /// Updates the CanUndo property value.
-        /// </summary>
-        private void UpdateCanUndo()
-        {
-            CanUndo = _undoableActions.Count > 0;
-        }
-
-        /// <summary>
-        /// Updates the CanRedo property value. 
-        /// </summary>
-        private void UpdateCanRedo()
-        {
-            CanRedo = _redoableActions.Count > 0;
-        }
-
-        /// <summary>
         /// Executes a specified action and adds it to the stack of undoable actions.
         /// </summary>
         /// <param name="action">
@@ -65,11 +48,6 @@ namespace OpenTracker.Models.UndoRedo
         /// </param>
         public void NewAction(IUndoable action)
         {
-            if (action == null)
-            {
-                throw new ArgumentNullException(nameof(action));
-            }
-
             lock (_syncLock)
             {
                 if (!action.CanExecute())
@@ -150,6 +128,22 @@ namespace OpenTracker.Models.UndoRedo
                 _redoableActions.Clear();
                 UpdateCanRedo();
             }
+        }
+
+        /// <summary>
+        /// Updates the CanUndo property value.
+        /// </summary>
+        private void UpdateCanUndo()
+        {
+            CanUndo = _undoableActions.Count > 0;
+        }
+
+        /// <summary>
+        /// Updates the CanRedo property value. 
+        /// </summary>
+        private void UpdateCanRedo()
+        {
+            CanRedo = _redoableActions.Count > 0;
         }
     }
 }

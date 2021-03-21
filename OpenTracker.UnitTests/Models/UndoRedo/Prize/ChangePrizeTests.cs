@@ -1,3 +1,4 @@
+using Autofac;
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;
 using OpenTracker.Models.Items;
@@ -53,6 +54,16 @@ namespace OpenTracker.UnitTests.Models.UndoRedo.Prize
             _sut.ExecuteUndo();
             
             Assert.Equal(_previousValue, _prizePlacement.Prize);
+        }
+
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var factory = scope.Resolve<ChangePrize.Factory>();
+            var sut = factory(_prizePlacement);
+            
+            Assert.NotNull(sut);
         }
     }
 }

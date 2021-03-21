@@ -1,4 +1,6 @@
+using Autofac;
 using NSubstitute;
+using NSubstitute.ReceivedExtensions;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.UndoRedo.Locations;
 using Xunit;
@@ -7,14 +9,13 @@ namespace OpenTracker.UnitTests.Models.UndoRedo.Locations
 {
     public class PinLocationTests
     {
-        private readonly IPinnedLocationCollection _pinnedLocationCollection =
-            Substitute.For<IPinnedLocationCollection>();
+        private readonly IPinnedLocationCollection _pinnedLocations = Substitute.For<IPinnedLocationCollection>();
         private readonly ILocation _location = Substitute.For<ILocation>();
         private readonly PinLocation _sut;
 
         public PinLocationTests()
         {
-            _sut = new PinLocation(_pinnedLocationCollection, _location);
+            _sut = new PinLocation(_pinnedLocations, _location);
         }
 
         [Theory]
@@ -24,10 +25,61 @@ namespace OpenTracker.UnitTests.Models.UndoRedo.Locations
         public void CanExecute_ShouldReturnTrue_WhenIndexOfLocationIsNot0(
             bool expected, bool contains, int indexOf)
         {
-            _pinnedLocationCollection.Contains(_location).Returns(contains);
-            _pinnedLocationCollection.IndexOf(_location).Returns(indexOf);
+            _pinnedLocations.Contains(_location).Returns(contains);
+            _pinnedLocations.IndexOf(_location).Returns(indexOf);
             
             Assert.Equal(expected, _sut.CanExecute());
+        }
+
+        [Fact]
+        public void ExecuteDo_ShouldCallInsert()
+        {
+            _pinnedLocations.Contains(_location).Returns(false);
+            _sut.ExecuteDo();
+            
+            _pinnedLocations.Received().Insert(0, _location);
+        }
+
+        [Fact]
+        public void ExecuteDo_ShouldCallRemove_WhenContainsReturnsTrue()
+        {
+            _pinnedLocations.Contains(_location).Returns(true);
+            _pinnedLocations.IndexOf(_location).Returns(1);
+            _sut.ExecuteDo();
+            
+            _pinnedLocations.Received().Remove(_location);
+        }
+
+        [Fact]
+        public void ExecuteUndo_ShouldCallRemove()
+        {
+            _pinnedLocations.Contains(_location).Returns(false);
+            _pinnedLocations.IndexOf(_location).Returns(1);
+            _sut.ExecuteDo();
+            _sut.ExecuteUndo();
+            
+            _pinnedLocations.Received().Remove(_location);
+        }
+
+        [Fact]
+        public void ExecuteUndo_ShouldCallInsert_WhenContainsReturnsTrue()
+        {
+            _pinnedLocations.Contains(_location).Returns(true);
+            _pinnedLocations.IndexOf(_location).Returns(1);
+            _sut.ExecuteDo();
+            _sut.ExecuteUndo();
+            
+            _pinnedLocations.Received().Insert(1, _location);
+        }
+
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var factory = scope.Resolve<PinLocation.Factory>();
+            var sut = factory(_location);
+            
+            Assert.NotNull(sut);
         }
     }
 }

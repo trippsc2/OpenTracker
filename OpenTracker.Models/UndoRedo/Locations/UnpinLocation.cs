@@ -1,4 +1,5 @@
-﻿using OpenTracker.Models.Locations;
+﻿using System;
+using OpenTracker.Models.Locations;
 
 namespace OpenTracker.Models.UndoRedo.Locations
 {
@@ -55,10 +56,12 @@ namespace OpenTracker.Models.UndoRedo.Locations
         /// </summary>
         public void ExecuteUndo()
         {
-            if (_existingIndex.HasValue)
+            if (_existingIndex is null)
             {
-                _pinnedLocations.Insert(_existingIndex.Value, _pinnedLocation);
+                throw new NullReferenceException("_existingIndex is not defined.");
             }
+            
+            _pinnedLocations.Insert(_existingIndex.Value, _pinnedLocation);
         }
     }
 }

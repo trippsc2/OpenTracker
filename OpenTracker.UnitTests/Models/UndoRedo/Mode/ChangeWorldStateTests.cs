@@ -1,3 +1,4 @@
+using Autofac;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.UndoRedo.Mode;
 using Xunit;
@@ -39,6 +40,16 @@ namespace OpenTracker.UnitTests.Models.UndoRedo.Mode
             sut.ExecuteUndo();
             
             Assert.Equal(expected, _mode.WorldState);
+        }
+
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var factory = scope.Resolve<ChangeWorldState.Factory>();
+            var sut = factory(WorldState.StandardOpen);
+            
+            Assert.NotNull(sut);
         }
     }
 }

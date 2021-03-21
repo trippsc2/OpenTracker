@@ -1,7 +1,7 @@
 ﻿using System;
 using OpenTracker.Models.Markings;
 
-namespace OpenTracker.Models.UndoRedo
+namespace OpenTracker.Models.UndoRedo.Markings
 {
     /// <summary>
     /// This class contains undoable action data to set a marking.

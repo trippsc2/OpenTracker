@@ -1,3 +1,4 @@
+using Autofac;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.UndoRedo.Mode;
 using Xunit;
@@ -38,6 +39,16 @@ namespace OpenTracker.UnitTests.Models.UndoRedo.Mode
             sut.ExecuteUndo();
             
             Assert.Equal(expected, _mode.BossShuffle);
+        }
+
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var factory = scope.Resolve<ChangeBossShuffle.Factory>();
+            var sut = factory(false);
+            
+            Assert.NotNull(sut);
         }
     }
 }

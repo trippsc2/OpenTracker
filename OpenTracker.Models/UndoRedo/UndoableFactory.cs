@@ -12,6 +12,7 @@ using OpenTracker.Models.UndoRedo.Connections;
 using OpenTracker.Models.UndoRedo.Dropdowns;
 using OpenTracker.Models.UndoRedo.Items;
 using OpenTracker.Models.UndoRedo.Locations;
+using OpenTracker.Models.UndoRedo.Markings;
 using OpenTracker.Models.UndoRedo.Mode;
 using OpenTracker.Models.UndoRedo.Notes;
 using OpenTracker.Models.UndoRedo.Prize;

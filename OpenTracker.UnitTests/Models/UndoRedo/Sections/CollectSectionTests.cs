@@ -1,3 +1,4 @@
+using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Markings;
 using OpenTracker.Models.Sections;
@@ -99,6 +100,16 @@ namespace OpenTracker.UnitTests.Models.UndoRedo.Sections
             sut.ExecuteUndo();
             
             Assert.Equal(expected, _section.UserManipulated);
+        }
+
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var factory = scope.Resolve<CollectSection.Factory>();
+            var sut = factory(_section, false);
+            
+            Assert.NotNull(sut);
         }
     }
 }
