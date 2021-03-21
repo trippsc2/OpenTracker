@@ -3,7 +3,7 @@ using OpenTracker.Models.Locations;
 using OpenTracker.Models.Markings;
 using OpenTracker.Models.Sections;
 
-namespace OpenTracker.Models.UndoRedo
+namespace OpenTracker.Models.UndoRedo.Locations
 {
     /// <summary>
     /// This class contains undoable action data to clear a location.

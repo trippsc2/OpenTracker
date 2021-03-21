@@ -1,6 +1,6 @@
 ﻿using OpenTracker.Models.Locations;
 
-namespace OpenTracker.Models.UndoRedo
+namespace OpenTracker.Models.UndoRedo.Locations
 {
     /// <summary>
     /// This class contains undoable action data to unpin a location.

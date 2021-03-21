@@ -1,6 +1,6 @@
 ﻿using OpenTracker.Models.Locations;
 
-namespace OpenTracker.Models.UndoRedo
+namespace OpenTracker.Models.UndoRedo.Locations
 {
     /// <summary>
     /// This class contains undoable action data to pin a location.
@@ -42,12 +42,7 @@ namespace OpenTracker.Models.UndoRedo
                 return true;
             }
 
-            if (_pinnedLocations.IndexOf(_pinnedLocation) == 0)
-            {
-                return false;
-            }
-
-            return true;
+            return _pinnedLocations.IndexOf(_pinnedLocation) != 0;
         }
 
         /// <summary>
