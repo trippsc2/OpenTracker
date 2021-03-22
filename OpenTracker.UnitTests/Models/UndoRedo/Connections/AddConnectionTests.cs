@@ -15,7 +15,7 @@ namespace OpenTracker.UnitTests.Models.UndoRedo.Connections
 
         public AddConnectionTests()
         {
-            _sut = new AddConnection(() => _connections, _connection);
+            _sut = new AddConnection(_connections, _connection);
         }
         
         [Fact]

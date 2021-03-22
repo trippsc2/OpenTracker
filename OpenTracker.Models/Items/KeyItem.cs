@@ -3,6 +3,8 @@ using System.ComponentModel;
 using OpenTracker.Models.AutoTracking.Values;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.SaveLoad;
+using OpenTracker.Models.UndoRedo;
+using OpenTracker.Models.UndoRedo.Items;
 using ReactiveUI;
 
 namespace OpenTracker.Models.Items
@@ -30,11 +32,20 @@ namespace OpenTracker.Models.Items
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="mode">
+        /// The mode settings.
+        /// </param>
         /// <param name="saveLoadManager">
         /// The save/load manager.
         /// </param>
-        /// <param name="mode">
-        /// The mode settings.
+        /// <param name="undoRedoManager">
+        /// The undo/redo manager.
+        /// </param>
+        /// <param name="addItemFactory">
+        /// An Autofac factory for creating undoable actions to add items.
+        /// </param>
+        /// <param name="removeItemFactory">
+        /// An Autofac factory for creating undoable actions to remove items.
         /// </param>
         /// <param name="genericKey">
         /// The generic key item.
@@ -49,8 +60,10 @@ namespace OpenTracker.Models.Items
         /// The auto track value.
         /// </param>
         public KeyItem(
-            ISaveLoadManager saveLoadManager, IMode mode, IItem genericKey, int nonKeyDropMaximum, int keyDropMaximum,
-            IAutoTrackValue? autoTrackValue) : base(saveLoadManager, 0, autoTrackValue)
+            IMode mode, ISaveLoadManager saveLoadManager, IUndoRedoManager undoRedoManager,
+            IAddItem.Factory addItemFactory, IRemoveItem.Factory removeItemFactory, IItem genericKey,
+            int nonKeyDropMaximum, int keyDropMaximum, IAutoTrackValue? autoTrackValue)
+            : base(saveLoadManager, undoRedoManager, addItemFactory, removeItemFactory, 0, autoTrackValue)
         {
             _mode = mode;
 

@@ -10,7 +10,6 @@ namespace OpenTracker.Models.UndoRedo
 {
     public interface IUndoableFactory
     {
-        IUndoable GetAddCrystalRequirement(ICrystalRequirementItem item);
         IUndoable GetAddItem(IItem item);
         IUndoable GetAddNote(ILocation location);
         IUndoable GetChangeBigKeyShuffle(bool bigKeyShuffle);
@@ -32,7 +31,6 @@ namespace OpenTracker.Models.UndoRedo
         IUndoable GetClearLocation(ILocation location, bool force = false);
         IUndoable GetCycleItem(IItem item);
         IUndoable GetPinLocation(ILocation pinnedLocation);
-        IUndoable GetRemoveCrystalRequirement(ICrystalRequirementItem item);
         IUndoable GetRemoveItem(IItem item);
         IUndoable GetRemoveNote(IMarking marking, ILocation location);
         IUndoable GetSetMarking(IMarking marking, MarkType newMarking);

@@ -5,6 +5,8 @@ using NSubstitute.ReturnsExtensions;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.SaveLoad;
+using OpenTracker.Models.UndoRedo;
+using OpenTracker.Models.UndoRedo.Items;
 using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Items
@@ -25,14 +27,22 @@ namespace OpenTracker.UnitTests.Models.Items
             _sut = new ItemFactory(
                 () => Substitute.For<IItemDictionary>(), () => autoTrackValueFactory,
                 (starting, autoTrackValue) => new Item(
-                    Substitute.For<ISaveLoadManager>(), starting, autoTrackValue),
+                    Substitute.For<ISaveLoadManager>(),
+                    Substitute.For<IUndoRedoManager>(), item => Substitute.For<IAddItem>(),
+                    item => Substitute.For<IRemoveItem>(), starting, autoTrackValue),
                 (starting, maximum, autoTrackValue) => new CappedItem(
-                    Substitute.For<ISaveLoadManager>(), starting, maximum, autoTrackValue),
+                    Substitute.For<ISaveLoadManager>(),
+                    Substitute.For<IUndoRedoManager>(), item => Substitute.For<IAddItem>(),
+                    item => Substitute.For<IRemoveItem>(), starting, maximum, autoTrackValue),
                 () => new CrystalRequirementItem(
-                    Substitute.For<ISaveLoadManager>()),
+                    Substitute.For<ISaveLoadManager>(),
+                    Substitute.For<IUndoRedoManager>(), item => Substitute.For<IAddItem>(),
+                    item => Substitute.For<IRemoveItem>()),
                 (genericKey, nonKeyDropMaximum, keyDropMaximum, autoTrackValue) => new KeyItem(
-                    Substitute.For<ISaveLoadManager>(), _mode, genericKey, nonKeyDropMaximum,
-                    keyDropMaximum, autoTrackValue));
+                    _mode, Substitute.For<ISaveLoadManager>(),
+                    Substitute.For<IUndoRedoManager>(), item => Substitute.For<IAddItem>(),
+                    item => Substitute.For<IRemoveItem>(), genericKey, nonKeyDropMaximum, keyDropMaximum,
+                    autoTrackValue));
         }
 
         private static void PopulateExpectedValues()

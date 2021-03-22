@@ -26,7 +26,6 @@ namespace OpenTracker.Models.UndoRedo
     public class UndoableFactory : IUndoableFactory
     {
         private readonly IAddConnection.Factory _addConnectionFactory;
-        private readonly IAddCrystalRequirement.Factory _addCrystalFactory;
         private readonly IAddItem.Factory _addItemFactory;
         private readonly IAddNote.Factory _addNoteFactory;
         private readonly IChangeBigKeyShuffle.Factory _changeBigKeyShuffleFactory;
@@ -51,7 +50,6 @@ namespace OpenTracker.Models.UndoRedo
         private readonly ICycleItem.Factory _cycleItemFactory;
         private readonly IPinLocation.Factory _pinLocationFactory;
         private readonly IRemoveConnection.Factory _removeConnectionFactory;
-        private readonly IRemoveCrystalRequirement.Factory _removeCrystalRequirementFactory;
         private readonly IRemoveItem.Factory _removeItemFactory;
         private readonly IRemoveNote.Factory _removeNoteFactory;
         private readonly ISetMarking.Factory _setMarkingFactory;
@@ -65,9 +63,6 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         /// <param name="addConnectionFactory">
         /// An Autofac factory for creating add connection actions.
-        /// </param>
-        /// <param name="addCrystalFactory">
-        /// An Autofac factory for creating add crystal requirement actions.
         /// </param>
         /// <param name="addItemFactory">
         /// An Autofac factory for creating add item actions.
@@ -141,9 +136,6 @@ namespace OpenTracker.Models.UndoRedo
         /// <param name="removeConnectionFactory">
         /// An Autofac factory for creating remove connection actions.
         /// </param>
-        /// <param name="removeCrystalRequirementFactory">
-        /// An Autofac factory for creating remove crystal requirement actions.
-        /// </param>
         /// <param name="removeItemFactory">
         /// An Autofac factory for creating remove item actions.
         /// </param>
@@ -167,8 +159,7 @@ namespace OpenTracker.Models.UndoRedo
         /// </param>
         public UndoableFactory(
             IAddConnection.Factory addConnectionFactory,
-            IAddCrystalRequirement.Factory addCrystalFactory, IAddItem.Factory addItemFactory,
-            IAddNote.Factory addNoteFactory,
+            IAddItem.Factory addItemFactory, IAddNote.Factory addNoteFactory,
             IChangeBigKeyShuffle.Factory changeBigKeyShuffleFactory,
             IChangeBoss.Factory changeBossFactory,
             IChangeBossShuffle.Factory changeBossShuffleFactory,
@@ -190,7 +181,6 @@ namespace OpenTracker.Models.UndoRedo
             ICollectSection.Factory collectSectionFactory, ICycleItem.Factory cycleItemFactory,
             IPinLocation.Factory pinLocationFactory,
             IRemoveConnection.Factory removeConnectionFactory,
-            IRemoveCrystalRequirement.Factory removeCrystalRequirementFactory,
             IRemoveItem.Factory removeItemFactory, IRemoveNote.Factory removeNoteFactory,
             ISetMarking.Factory setMarkingFactory, ITogglePrizeSection.Factory togglePrizeFactory,
             IUncheckDropdown.Factory uncheckDropdownFactory,
@@ -198,7 +188,6 @@ namespace OpenTracker.Models.UndoRedo
             IUnpinLocation.Factory unpinLocationFactory)
         {
             _addConnectionFactory = addConnectionFactory;
-            _addCrystalFactory = addCrystalFactory;
             _addItemFactory = addItemFactory;
             _addNoteFactory = addNoteFactory;
             _changeBigKeyShuffleFactory = changeBigKeyShuffleFactory;
@@ -223,7 +212,6 @@ namespace OpenTracker.Models.UndoRedo
             _cycleItemFactory = cycleItemFactory;
             _pinLocationFactory = pinLocationFactory;
             _removeConnectionFactory = removeConnectionFactory;
-            _removeCrystalRequirementFactory = removeCrystalRequirementFactory;
             _removeItemFactory = removeItemFactory;
             _removeNoteFactory = removeNoteFactory;
             _setMarkingFactory = setMarkingFactory;
@@ -245,20 +233,6 @@ namespace OpenTracker.Models.UndoRedo
         public IUndoable GetAddConnection(IConnection connection)
         {
             return _addConnectionFactory(connection);
-        }
-
-        /// <summary>
-        /// Returns a new add crystal requirement action.
-        /// </summary>
-        /// <param name="item">
-        /// The crystal requirement item.
-        /// </param>
-        /// <returns>
-        /// A new add crystal requirement action.
-        /// </returns>
-        public IUndoable GetAddCrystalRequirement(ICrystalRequirementItem item)
-        {
-            return _addCrystalFactory(item);
         }
 
         /// <summary>
@@ -604,20 +578,6 @@ namespace OpenTracker.Models.UndoRedo
         public IUndoable GetRemoveConnection(IConnection connection)
         {
             return _removeConnectionFactory(connection);
-        }
-
-        /// <summary>
-        /// Returns a new remove crystal requirement action.
-        /// </summary>
-        /// <param name="item">
-        /// The crystal requirement to be removed.
-        /// </param>
-        /// <returns>
-        /// A new remove crystal requirement action.
-        /// </returns>
-        public IUndoable GetRemoveCrystalRequirement(ICrystalRequirementItem item)
-        {
-            return _removeCrystalRequirementFactory(item);
         }
 
         /// <summary>

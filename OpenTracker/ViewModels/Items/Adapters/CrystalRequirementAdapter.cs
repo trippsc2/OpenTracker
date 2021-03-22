@@ -7,7 +7,6 @@ using Avalonia.Threading;
 using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Settings;
-using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
 using OpenTracker.ViewModels.BossSelect;
 using ReactiveUI;
@@ -20,8 +19,6 @@ namespace OpenTracker.ViewModels.Items.Adapters
     public class CrystalRequirementAdapter : ViewModelBase, IItemAdapter
     {
         private readonly IColorSettings _colorSettings;
-        private readonly IUndoRedoManager _undoRedoManager;
-        private readonly IUndoableFactory _undoableFactory;
         private readonly ICrystalRequirementItem _item;
         
         public string ImageSource { get; }
@@ -36,32 +33,22 @@ namespace OpenTracker.ViewModels.Items.Adapters
         public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
 
         public delegate CrystalRequirementAdapter Factory(ICrystalRequirementItem item, string imageSource);
-        
+
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="colorSettings">
         /// The color settings data.
-        /// </param>
-        /// <param name="undoRedoManager">
-        /// The undo/redo manager.
-        /// </param>
-        /// <param name="undoableFactory">
-        /// A factory for creating undoable actions.
-        /// </param>
+        /// </param>A
         /// <param name="item">
         /// The crystal requirement item.
         /// </param>
         /// <param name="imageSource">
         /// The image source of the crystal requirement.
         /// </param>
-        public CrystalRequirementAdapter(
-            IColorSettings colorSettings, IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory,
-            ICrystalRequirementItem item, string imageSource)
+        public CrystalRequirementAdapter(IColorSettings colorSettings, ICrystalRequirementItem item, string imageSource)
         {
             _colorSettings = colorSettings;
-            _undoRedoManager = undoRedoManager;
-            _undoableFactory = undoableFactory;
 
             _item = item;
 
@@ -121,7 +108,7 @@ namespace OpenTracker.ViewModels.Items.Adapters
         /// </summary>
         private void AddItem()
         {
-            _undoRedoManager.NewAction(_undoableFactory.GetAddCrystalRequirement(_item));
+            _item.AddItem();
         }
 
         /// <summary>
@@ -129,7 +116,7 @@ namespace OpenTracker.ViewModels.Items.Adapters
         /// </summary>
         private void RemoveItem()
         {
-            _undoRedoManager.NewAction(_undoableFactory.GetRemoveCrystalRequirement(_item));
+            _item.AddItem();
         }
 
         /// <summary>

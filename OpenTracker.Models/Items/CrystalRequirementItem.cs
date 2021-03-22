@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel;
 using OpenTracker.Models.SaveLoad;
+using OpenTracker.Models.UndoRedo;
+using OpenTracker.Models.UndoRedo.Items;
 using ReactiveUI;
 
 namespace OpenTracker.Models.Items
@@ -22,8 +24,20 @@ namespace OpenTracker.Models.Items
         /// <param name="saveLoadManager">
         /// The save/load manager.
         /// </param>
-        public CrystalRequirementItem(ISaveLoadManager saveLoadManager)
-            : base(saveLoadManager, 0, 7, null)
+        /// <param name="undoRedoManager">
+        /// The undo/redo manager.
+        /// </param>
+        /// <param name="addItemFactory">
+        /// An Autofac factory for creating undoable actions to add items.
+        /// </param>
+        /// <param name="removeItemFactory">
+        /// An Autofac factory for creating undoable actions to remove items.
+        /// </param>
+        public CrystalRequirementItem(
+            ISaveLoadManager saveLoadManager, IUndoRedoManager undoRedoManager, IAddItem.Factory addItemFactory,
+            IRemoveItem.Factory removeItemFactory)
+            : base(saveLoadManager, undoRedoManager, addItemFactory, removeItemFactory, 0, 7,
+                null)
         {
             PropertyChanged += OnPropertyChanged;
         }
@@ -43,6 +57,54 @@ namespace OpenTracker.Models.Items
             {
                 this.RaisePropertyChanged(nameof(Current));
             }
+        }
+
+        public override bool CanAdd()
+        {
+            return Known && base.CanAdd();
+        }
+
+        public override void Add()
+        {
+            if (!Known)
+            {
+                Known = true;
+                return;
+            }
+
+            if (Current < Maximum)
+            {
+                Current++;
+                return;
+            }
+
+            Current = 0;
+            Known = false;
+        }
+        
+        public override bool CanRemove()
+        {
+            return Known || Current > 0;
+        }
+
+        public override void Remove()
+        {
+            if (Current > 0)
+            {
+                Current--;
+                return;
+            }
+            
+            if (Known)
+            {
+                Known = false;
+                return;
+            }
+
+            Known = true;
+            Current = Maximum;
+
+            Current--;
         }
 
         /// <summary>

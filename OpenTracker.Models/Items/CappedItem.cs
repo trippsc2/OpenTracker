@@ -1,6 +1,8 @@
 ﻿using System;
 using OpenTracker.Models.AutoTracking.Values;
 using OpenTracker.Models.SaveLoad;
+using OpenTracker.Models.UndoRedo;
+using OpenTracker.Models.UndoRedo.Items;
 
 namespace OpenTracker.Models.Items
 {
@@ -17,6 +19,15 @@ namespace OpenTracker.Models.Items
         /// <param name="saveLoadManager">
         /// The save/load manager.
         /// </param>
+        /// <param name="undoRedoManager">
+        /// The undo/redo manager.
+        /// </param>
+        /// <param name="addItemFactory">
+        /// An Autofac factory for creating undoable actions to add items.
+        /// </param>
+        /// <param name="removeItemFactory">
+        /// An Autofac factory for creating undoable actions to remove items.
+        /// </param>
         /// <param name="starting">
         /// A 32-bit signed integer representing the starting value of the item.
         /// </param>
@@ -26,8 +37,10 @@ namespace OpenTracker.Models.Items
         /// <param name="autoTrackValue">
         /// The auto track value.
         /// </param>
-        public CappedItem(ISaveLoadManager saveLoadManager, int starting, int maximum, IAutoTrackValue? autoTrackValue)
-            : base(saveLoadManager, starting, autoTrackValue)
+        public CappedItem(
+            ISaveLoadManager saveLoadManager, IUndoRedoManager undoRedoManager, IAddItem.Factory addItemFactory,
+            IRemoveItem.Factory removeItemFactory, int starting, int maximum, IAutoTrackValue? autoTrackValue)
+            : base(saveLoadManager, undoRedoManager, addItemFactory, removeItemFactory, starting, autoTrackValue)
         {
             if (starting > maximum)
             {
@@ -56,11 +69,10 @@ namespace OpenTracker.Models.Items
             if (Current < Maximum)
             {
                 base.Add();
+                return;
             }
-            else
-            {
-                Current = 0;
-            }
+
+            Current = 0;
         }
 
         /// <summary>
@@ -71,11 +83,10 @@ namespace OpenTracker.Models.Items
             if (Current > 0)
             {
                 base.Remove();
+                return;
             }
-            else
-            {
-                Current = Maximum;
-            }
+
+            Current = Maximum;
         }
     }
 }

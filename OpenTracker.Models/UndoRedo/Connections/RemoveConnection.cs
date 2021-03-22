@@ -1,5 +1,4 @@
-﻿using System;
-using OpenTracker.Models.Connections;
+﻿using OpenTracker.Models.Connections;
 
 namespace OpenTracker.Models.UndoRedo.Connections
 {
@@ -8,7 +7,7 @@ namespace OpenTracker.Models.UndoRedo.Connections
     /// </summary>
     public class RemoveConnection : IRemoveConnection
     {
-        private readonly Lazy<IConnectionCollection> _connections;
+        private readonly IConnectionCollection _connections;
         private readonly IConnection _connection;
 
         /// <summary>
@@ -20,9 +19,9 @@ namespace OpenTracker.Models.UndoRedo.Connections
         /// <param name="connection">
         /// The connection to be removed.
         /// </param>
-        public RemoveConnection(IConnectionCollection.Factory connections, IConnection connection)
+        public RemoveConnection(IConnectionCollection connections, IConnection connection)
         {
-            _connections = new Lazy<IConnectionCollection>(() => connections());
+            _connections = connections;
             _connection = connection;
         }
 
@@ -42,7 +41,7 @@ namespace OpenTracker.Models.UndoRedo.Connections
         /// </summary>
         public void ExecuteDo()
         {
-            _connections.Value.Remove(_connection);
+            _connections.Remove(_connection);
         }
 
         /// <summary>
@@ -50,7 +49,7 @@ namespace OpenTracker.Models.UndoRedo.Connections
         /// </summary>
         public void ExecuteUndo()
         {
-            _connections.Value.Add(_connection);
+            _connections.Add(_connection);
         }
     }
 }

@@ -2,12 +2,23 @@ using NSubstitute;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.SaveLoad;
+using OpenTracker.Models.UndoRedo;
+using OpenTracker.Models.UndoRedo.Items;
 using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Items
 {
     public class KeyItemTests
     {
+        private readonly IMode _mode = Substitute.For<IMode>();
+        private readonly ISaveLoadManager _saveLoadManager = Substitute.For<ISaveLoadManager>();
+        private readonly IUndoRedoManager _undoRedoManager = Substitute.For<IUndoRedoManager>();
+
+        private readonly IAddItem.Factory _addItemFactory = item => Substitute.For<IAddItem>();
+        private readonly IRemoveItem.Factory _removeItemFactory = item => Substitute.For<IRemoveItem>();
+
+        private readonly IItem _genericKey = Substitute.For<IItem>();
+        
         [Theory]
         [InlineData(0, 0, 0)]
         [InlineData(1, 1, 0)]
@@ -28,11 +39,10 @@ namespace OpenTracker.UnitTests.Models.Items
         public void Maximum_ShouldEqualNonKeyDropMaximumWhenKeyDropShuffleEqualsFalse(
             int expected, int nonKeyDropMaximum, int keyDropMaximum)
         {
-            var mode = new Mode();
+            _mode.KeyDropShuffle.Returns(false);
             var sut = new KeyItem(
-                Substitute.For<ISaveLoadManager>(), mode, Substitute.For<IItem>(),
+                _mode, _saveLoadManager, _undoRedoManager, _addItemFactory, _removeItemFactory, _genericKey,
                 nonKeyDropMaximum, keyDropMaximum, null);
-            mode.KeyDropShuffle = false;
             
             Assert.Equal(expected, sut.Maximum);
         }
@@ -57,11 +67,10 @@ namespace OpenTracker.UnitTests.Models.Items
         public void Maximum_ShouldEqualKeyDropMaximumWhenKeyDropShuffleEqualsTrue(
             int expected, int nonKeyDropMaximum, int keyDropMaximum)
         {
-            var mode = new Mode();
+            _mode.KeyDropShuffle.Returns(true);
             var sut = new KeyItem(
-                Substitute.For<ISaveLoadManager>(), mode, Substitute.For<IItem>(),
+                _mode, _saveLoadManager, _undoRedoManager, _addItemFactory, _removeItemFactory, _genericKey,
                 nonKeyDropMaximum, keyDropMaximum, null);
-            mode.KeyDropShuffle = true;
             
             Assert.Equal(expected, sut.Maximum);
         }
@@ -86,12 +95,11 @@ namespace OpenTracker.UnitTests.Models.Items
         public void EffectiveCurrent_ShouldEqualCurrentIfGenericKeysEqualsFalse(
             int expected, int current, int genericKeyCurrent)
         {
-            var mode = new Mode { GenericKeys = false };
-            var genericKey = Substitute.For<IItem>();
-            genericKey.Current.Returns(genericKeyCurrent);
+            _mode.GenericKeys.Returns(false);
+            _genericKey.Current.Returns(genericKeyCurrent);
             var sut = new KeyItem(
-                Substitute.For<ISaveLoadManager>(), mode, genericKey, 6,
-                6, null)
+                _mode, _saveLoadManager, _undoRedoManager, _addItemFactory, _removeItemFactory, _genericKey,
+                6, 6, null)
             {
                 Current = current
             };
@@ -120,12 +128,11 @@ namespace OpenTracker.UnitTests.Models.Items
         public void EffectiveCurrent_ShouldEqualCurrentPlusGenericKeyCurrentIfGenericKeysEqualsTrue(
             int expected, int current, int genericKeyCurrent)
         {
-            var mode = new Mode { GenericKeys = true };
-            var genericKey = Substitute.For<IItem>();
-            genericKey.Current.Returns(genericKeyCurrent);
+            _mode.GenericKeys.Returns(true);
+            _genericKey.Current.Returns(genericKeyCurrent);
             var sut = new KeyItem(
-                Substitute.For<ISaveLoadManager>(), mode, genericKey, 6,
-                6, null)
+                _mode, _saveLoadManager, _undoRedoManager, _addItemFactory, _removeItemFactory, _genericKey,
+                6, 6, null)
             {
                 Current = current
             };

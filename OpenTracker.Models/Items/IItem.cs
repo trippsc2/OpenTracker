@@ -18,5 +18,15 @@ namespace OpenTracker.Models.Items
         bool CanRemove();
         void Remove();
         void Reset();
+
+        /// <summary>
+        /// Creates a new undoable action to add an item and sends it to the undo/redo manager.
+        /// </summary>
+        void AddItem();
+
+        /// <summary>
+        /// Creates a new undoable action to remove an item and sends it to the undo/redo manager.
+        /// </summary>
+        void RemoveItem();
     }
 }

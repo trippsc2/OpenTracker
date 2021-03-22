@@ -15,7 +15,7 @@ namespace OpenTracker.UnitTests.Models.UndoRedo.Connections
 
         public RemoveConnectionTests()
         {
-            _sut = new RemoveConnection(() => _connections, _connection);
+            _sut = new RemoveConnection(_connections, _connection);
         }
         
         [Fact]
