@@ -8,7 +8,7 @@ namespace OpenTracker.UnitTests.Models.UndoRedo.Items
 {
     public class CycleItemTests
     {
-        private readonly IItem _item = Substitute.For<IItem>();
+        private readonly ICappedItem _item = Substitute.For<ICappedItem>();
         private readonly CycleItem _sut;
 
         public CycleItemTests()
@@ -23,11 +23,11 @@ namespace OpenTracker.UnitTests.Models.UndoRedo.Items
         }
 
         [Fact]
-        public void ExecuteDo_ShouldCallAdd()
+        public void ExecuteDo_ShouldCallCycle()
         {
             _sut.ExecuteDo();
             
-            _item.Received().Add();
+            _item.Received().Cycle();
         }
 
         [Fact]
@@ -35,7 +35,7 @@ namespace OpenTracker.UnitTests.Models.UndoRedo.Items
         {
             _sut.ExecuteUndo();
             
-            _item.Received().Remove();
+            _item.Received().Cycle(true);
         }
 
         [Fact]

@@ -19,7 +19,6 @@ namespace OpenTracker.ViewModels.Items.Adapters
     {
         private readonly IColorSettings _colorSettings;
         private readonly IUndoRedoManager _undoRedoManager;
-        private readonly IUndoableFactory _undoableFactory;
 
         private readonly IItem _item;
 
@@ -44,22 +43,16 @@ namespace OpenTracker.ViewModels.Items.Adapters
         /// <param name="undoRedoManager">
         /// The undo/redo manager.
         /// </param>
-        /// <param name="undoableFactory">
-        /// A factory for creating undoable actions.
-        /// </param>
         /// <param name="item">
         /// An item that is to be represented by this control.
         /// </param>
-        public DungeonSmallKeyAdapter(
-            IColorSettings colorSettings, IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory,
-            IItem item)
+        public DungeonSmallKeyAdapter(IColorSettings colorSettings, IUndoRedoManager undoRedoManager, IItem item)
         {
             _colorSettings = colorSettings;
-            _undoRedoManager = undoRedoManager;
-            _undoableFactory = undoableFactory;
 
             _item = item;
-            
+            _undoRedoManager = undoRedoManager;
+
             HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
 
             _item.PropertyChanged += OnItemChanged;
@@ -92,7 +85,7 @@ namespace OpenTracker.ViewModels.Items.Adapters
         /// </summary>
         private void AddItem()
         {
-            _undoRedoManager.NewAction(_undoableFactory.GetAddItem(_item));
+            _undoRedoManager.NewAction(_item.CreateAddItemAction());
         }
 
         /// <summary>
@@ -100,7 +93,7 @@ namespace OpenTracker.ViewModels.Items.Adapters
         /// </summary>
         private void RemoveItem()
         {
-            _undoRedoManager.NewAction(_undoableFactory.GetRemoveItem(_item));
+            _undoRedoManager.NewAction(_item.CreateRemoveItemAction());
         }
 
         /// <summary>

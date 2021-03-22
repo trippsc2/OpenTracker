@@ -10,8 +10,6 @@ namespace OpenTracker.Models.Connections
     /// </summary>
     public class Connection : IConnection
     {
-        private readonly IUndoRedoManager _undoRedoManager;
-
         private readonly IRemoveConnection.Factory _removeConnectionFactory;
         
         public IMapLocation Location1 { get; }
@@ -20,9 +18,6 @@ namespace OpenTracker.Models.Connections
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="undoRedoManager">
-        /// The undo/redo manager.
-        /// </param>
         /// <param name="removeConnectionFactory">
         /// An Autofac factory for creating remove connection undoable actions.
         /// </param>
@@ -33,12 +28,10 @@ namespace OpenTracker.Models.Connections
         /// The second location to connect.
         /// </param>
         public Connection(
-            IUndoRedoManager undoRedoManager, IRemoveConnection.Factory removeConnectionFactory, IMapLocation location1,
-            IMapLocation location2)
+            IRemoveConnection.Factory removeConnectionFactory, IMapLocation location1, IMapLocation location2)
         {
             Location1 = location1;
             Location2 = location2;
-            _undoRedoManager = undoRedoManager;
             _removeConnectionFactory = removeConnectionFactory;
         }
 
@@ -61,9 +54,9 @@ namespace OpenTracker.Models.Connections
         /// <summary>
         /// Creates an undoable action to remove the connection and sends it to the undo/redo manager.
         /// </summary>
-        public void RemoveConnection()
+        public IUndoable CreateRemoveConnectionAction()
         {
-            _undoRedoManager.NewAction(_removeConnectionFactory(this));
+            return _removeConnectionFactory(this);
         }
 
         /// <summary>

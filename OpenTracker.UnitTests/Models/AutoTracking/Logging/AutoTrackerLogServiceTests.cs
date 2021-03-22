@@ -22,6 +22,8 @@ namespace OpenTracker.UnitTests.Models.AutoTracking.Logging
             
             Assert.PropertyChanged(logCollection, "Count", () => _sut.Log(logLevel, message));
             Assert.Single(logCollection);
+            Assert.Equal(logLevel, logCollection[0].LogLevel);
+            Assert.Equal(message, logCollection[0].Message);
         }
     }
 }

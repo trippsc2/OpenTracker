@@ -3,6 +3,7 @@ using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.Markings;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
+using OpenTracker.Models.UndoRedo;
 using ReactiveUI;
 
 namespace OpenTracker.Models.Sections
@@ -138,19 +139,19 @@ namespace OpenTracker.Models.Sections
         /// Creates an undoable action to collect the section and sends it to the undo/redo manager.
         /// </summary>
         /// <param name="force">
-        /// A boolean representing whether to override the logic while collecting the section.
+        ///     A boolean representing whether to override the logic while collecting the section.
         /// </param>
-        public void CollectSection(bool force)
+        public IUndoable CreateCollectSectionAction(bool force)
         {
-            _section.CollectSection(force);
+            return _section.CreateCollectSectionAction(force);
         }
 
         /// <summary>
         /// Creates an undoable action to uncollect the section and sends it to the undo/redo manager.
         /// </summary>
-        public void UncollectSection()
+        public IUndoable CreateUncollectSectionAction()
         {
-            _section.UncollectSection();
+            return _section.CreateUncollectSectionAction();
         }
 
         /// <summary>

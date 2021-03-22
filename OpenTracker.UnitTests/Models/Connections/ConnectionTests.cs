@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using NSubstitute;
 using OpenTracker.Models.Connections;
 using OpenTracker.Models.Locations;
-using OpenTracker.Models.UndoRedo;
 using OpenTracker.Models.UndoRedo.Connections;
 using Xunit;
 
@@ -10,7 +9,6 @@ namespace OpenTracker.UnitTests.Models.Connections
 {
     public class ConnectionTests
     {
-        private readonly IUndoRedoManager _undoRedoManager = Substitute.For<IUndoRedoManager>();
         private readonly IRemoveConnection.Factory _removeConnectionFactory =
             connection => Substitute.For<IRemoveConnection>();
         
@@ -89,11 +87,9 @@ namespace OpenTracker.UnitTests.Models.Connections
             bool expected, int connection1Location1Index, int connection1Location2Index, int connection2Location1Index,
             int connection2Location2Index)
         {
-            var connection1 = new Connection(
-                _undoRedoManager, _removeConnectionFactory,
+            var connection1 = new Connection(_removeConnectionFactory,
                 _mapLocations[connection1Location1Index], _mapLocations[connection1Location2Index]);
-            var connection2 = new Connection(
-                _undoRedoManager, _removeConnectionFactory,
+            var connection2 = new Connection(_removeConnectionFactory,
                 _mapLocations[connection2Location1Index], _mapLocations[connection2Location2Index]);
             
             Assert.Equal(expected, connection1.Equals(connection2));
@@ -140,25 +136,22 @@ namespace OpenTracker.UnitTests.Models.Connections
             bool expected, int connection1Location1Index, int connection1Location2Index, int connection2Location1Index,
             int connection2Location2Index)
         {
-            var connection1 = new Connection(
-                _undoRedoManager, _removeConnectionFactory,
+            var connection1 = new Connection(_removeConnectionFactory,
                 _mapLocations[connection1Location1Index], _mapLocations[connection1Location2Index]);
-            var connection2 = new Connection(
-                _undoRedoManager, _removeConnectionFactory,
+            var connection2 = new Connection(_removeConnectionFactory,
                 _mapLocations[connection2Location1Index], _mapLocations[connection2Location2Index]);
             
             Assert.Equal(expected, connection1.GetHashCode() == connection2.GetHashCode());
         }
 
         [Fact]
-        public void RemoveConnection_ShouldCallNewActionOnUndoRedoManager()
+        public void RemoveConnection_ShouldReturnNewRemoveConnection()
         {
-            var sut = new Connection(
-                _undoRedoManager, _removeConnectionFactory, _mapLocations[0],
+            var sut = new Connection(_removeConnectionFactory, _mapLocations[0],
                 _mapLocations[1]);
-            sut.RemoveConnection();
+            var removeConnection = sut.CreateRemoveConnectionAction();
             
-            _undoRedoManager.Received().NewAction(Arg.Any<IUndoable>());
+            Assert.NotNull(removeConnection);
         }
 
         [Theory]
@@ -171,8 +164,7 @@ namespace OpenTracker.UnitTests.Models.Connections
         public void Save_ShouldReturnSaveDataLocation1EqualsIDOfLocation1Property(
             LocationID expected, int location1Index, int location2Index)
         {
-            var sut = new Connection(
-                _undoRedoManager, _removeConnectionFactory, _mapLocations[location1Index],
+            var sut = new Connection(_removeConnectionFactory, _mapLocations[location1Index],
                 _mapLocations[location2Index]);
             var saveData = sut.Save();
             
@@ -189,8 +181,7 @@ namespace OpenTracker.UnitTests.Models.Connections
         public void Save_ShouldReturnSaveDataLocation2EqualsIDOfLocation2Property(
             LocationID expected, int location1Index, int location2Index)
         {
-            var sut = new Connection(
-                _undoRedoManager, _removeConnectionFactory, _mapLocations[location1Index],
+            var sut = new Connection(_removeConnectionFactory, _mapLocations[location1Index],
                 _mapLocations[location2Index]);
             var saveData = sut.Save();
             
@@ -207,8 +198,7 @@ namespace OpenTracker.UnitTests.Models.Connections
         public void Save_ShouldReturnSaveDataIndex1EqualsIndexOfLocation1Property(
             int expected, int location1Index, int location2Index)
         {
-            var sut = new Connection(
-                _undoRedoManager, _removeConnectionFactory, _mapLocations[location1Index],
+            var sut = new Connection(_removeConnectionFactory, _mapLocations[location1Index],
                 _mapLocations[location2Index]);
             var saveData = sut.Save();
             
@@ -225,8 +215,7 @@ namespace OpenTracker.UnitTests.Models.Connections
         public void Save_ShouldReturnSaveDataIndex2EqualsIndexOfLocation2Property(
             int expected, int location1Index, int location2Index)
         {
-            var sut = new Connection(
-                _undoRedoManager, _removeConnectionFactory, _mapLocations[location1Index],
+            var sut = new Connection(_removeConnectionFactory, _mapLocations[location1Index],
                 _mapLocations[location2Index]);
             var saveData = sut.Save();
             
@@ -243,8 +232,7 @@ namespace OpenTracker.UnitTests.Models.Connections
         public void Save_SaveDataShouldAllowLookupOfLocation1(
             int expected, int location1Index, int location2Index)
         {
-            var sut = new Connection(
-                _undoRedoManager, _removeConnectionFactory, _mapLocations[location1Index],
+            var sut = new Connection(_removeConnectionFactory, _mapLocations[location1Index],
                 _mapLocations[location2Index]);
             var saveData = sut.Save();
             
@@ -262,7 +250,7 @@ namespace OpenTracker.UnitTests.Models.Connections
         public void Save_SaveDataShouldAllowLookupOfLocation2(
             int expected, int location1Index, int location2Index)
         {
-            var sut = new Connection(_undoRedoManager, _removeConnectionFactory, _mapLocations[location1Index],
+            var sut = new Connection(_removeConnectionFactory, _mapLocations[location1Index],
                 _mapLocations[location2Index]);
             var saveData = sut.Save();
             

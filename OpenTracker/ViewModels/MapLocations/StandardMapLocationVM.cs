@@ -24,7 +24,6 @@ namespace OpenTracker.ViewModels.MapLocations
         private readonly ITrackerSettings _trackerSettings;
         private readonly IMode _mode;
         private readonly IUndoRedoManager _undoRedoManager;
-        private readonly IUndoableFactory _undoableFactory;
 
         private readonly IMapLocationColorProvider _colorProvider;
         private readonly IMapLocation _mapLocation;
@@ -86,7 +85,7 @@ namespace OpenTracker.ViewModels.MapLocations
         public ReactiveCommand<PointerEventArgs, Unit> HandlePointerLeave { get; }
 
         public delegate StandardMapLocationVM Factory(IMapLocation mapLocation);
-        
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -99,9 +98,6 @@ namespace OpenTracker.ViewModels.MapLocations
         /// <param name="undoRedoManager">
         /// The undo/redo manager.
         /// </param>
-        /// <param name="undoableFactory">
-        /// A factory for creating undoable actions.
-        /// </param>
         /// <param name="colorProvider">
         /// The control color provider.
         /// </param>
@@ -110,13 +106,12 @@ namespace OpenTracker.ViewModels.MapLocations
         /// </param>
         public StandardMapLocationVM(
             ITrackerSettings trackerSettings, IMode mode, IUndoRedoManager undoRedoManager,
-            IUndoableFactory undoableFactory, IMapLocationColorProvider.Factory colorProvider, IMapLocation mapLocation)
+            IMapLocationColorProvider.Factory colorProvider, IMapLocation mapLocation)
         {
             _trackerSettings = trackerSettings;
             _mode = mode;
             _undoRedoManager = undoRedoManager;
-            _undoableFactory = undoableFactory;
-            
+
             _colorProvider = colorProvider(mapLocation);
             _mapLocation = mapLocation;
 
@@ -270,7 +265,7 @@ namespace OpenTracker.ViewModels.MapLocations
         /// </param>
         private void ClearLocation(bool force)
         {
-            _undoRedoManager.NewAction(_undoableFactory.GetClearLocation(_mapLocation.Location!, force));
+            _undoRedoManager.NewAction(_mapLocation.Location.CreateClearLocationAction(force));
         }
 
         /// <summary>
@@ -278,7 +273,7 @@ namespace OpenTracker.ViewModels.MapLocations
         /// </summary>
         private void PinLocation()
         {
-            _undoRedoManager.NewAction(_undoableFactory.GetPinLocation(_mapLocation.Location!));
+            _undoRedoManager.NewAction(_mapLocation.Location.CreatePinLocationAction());
         }
 
         /// <summary>

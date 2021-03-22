@@ -1,4 +1,5 @@
 using Autofac;
+using NSubstitute;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.UndoRedo.Mode;
 using Xunit;
@@ -7,7 +8,7 @@ namespace OpenTracker.UnitTests.Models.UndoRedo.Mode
 {
     public class ChangeGenericKeysTests
     {
-        private readonly IMode _mode = new OpenTracker.Models.Modes.Mode();
+        private readonly IMode _mode = Substitute.For<IMode>();
 
         [Fact]
         public void CanExecute_ShouldReturnTrueAlways()
@@ -33,7 +34,7 @@ namespace OpenTracker.UnitTests.Models.UndoRedo.Mode
         [InlineData(true, true)]
         public void ExecuteUndo_ShouldSetBigKeyShuffleToPreviousValue(bool expected, bool previousValue)
         {
-            _mode.GenericKeys = previousValue;
+            _mode.GenericKeys.Returns(previousValue);
             var sut = new ChangeGenericKeys(_mode, !previousValue);
             sut.ExecuteDo();
             sut.ExecuteUndo();

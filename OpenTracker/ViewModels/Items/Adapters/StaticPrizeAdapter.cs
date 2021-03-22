@@ -3,6 +3,7 @@ using System.Reactive;
 using Avalonia.Input;
 using Avalonia.Threading;
 using OpenTracker.Models.Sections;
+using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
 using OpenTracker.ViewModels.BossSelect;
 using ReactiveUI;
@@ -14,6 +15,8 @@ namespace OpenTracker.ViewModels.Items.Adapters
     /// </summary>
     public class StaticPrizeAdapter : ViewModelBase, IItemAdapter
     {
+        private readonly IUndoRedoManager _undoRedoManager;
+        
         private readonly IPrizeSection _section;
         private readonly string _imageSourceBase;
 
@@ -30,17 +33,22 @@ namespace OpenTracker.ViewModels.Items.Adapters
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="undoRedoManager">
+        /// The undo/redo manager.
+        /// </param>
         /// <param name="imageSourceBase">
         /// A string representing the base image source.
         /// </param>
         /// <param name="section">
         /// An item that is to be represented by this control.
         /// </param>
-        public StaticPrizeAdapter(IPrizeSection section, string imageSourceBase)
+        public StaticPrizeAdapter(IUndoRedoManager undoRedoManager, IPrizeSection section, string imageSourceBase)
         {
+            _undoRedoManager = undoRedoManager;
+
             _section = section;
             _imageSourceBase = imageSourceBase;
-            
+
             HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
 
             _section.PropertyChanged += OnSectionChanged;
@@ -69,7 +77,7 @@ namespace OpenTracker.ViewModels.Items.Adapters
         /// </summary>
         private void CollectSection()
         {
-            _section.CollectSection(true);
+            _undoRedoManager.NewAction(_section.CreateCollectSectionAction(true));
         }
 
         /// <summary>
@@ -77,7 +85,7 @@ namespace OpenTracker.ViewModels.Items.Adapters
         /// </summary>
         private void UncollectSection()
         {
-            _section.UncollectSection();
+            _undoRedoManager.NewAction(_section.CreateUncollectSectionAction());
         }
 
         /// <summary>

@@ -16,6 +16,8 @@ namespace OpenTracker.Models.Items
     {
         private readonly IMode _mode;
 
+        private readonly ICycleItem.Factory _cycleItemFactory;
+
         private readonly IItem _genericKey;
         private readonly int _nonKeyDropMaximum;
         private readonly int _keyDropMaximum;
@@ -38,14 +40,14 @@ namespace OpenTracker.Models.Items
         /// <param name="saveLoadManager">
         /// The save/load manager.
         /// </param>
-        /// <param name="undoRedoManager">
-        /// The undo/redo manager.
-        /// </param>
         /// <param name="addItemFactory">
         /// An Autofac factory for creating undoable actions to add items.
         /// </param>
         /// <param name="removeItemFactory">
         /// An Autofac factory for creating undoable actions to remove items.
+        /// </param>
+        /// <param name="cycleItemFactory">
+        /// An Autofac factory for creating undoable actions to cycle the item.
         /// </param>
         /// <param name="genericKey">
         /// The generic key item.
@@ -60,12 +62,14 @@ namespace OpenTracker.Models.Items
         /// The auto track value.
         /// </param>
         public KeyItem(
-            IMode mode, ISaveLoadManager saveLoadManager, IUndoRedoManager undoRedoManager,
-            IAddItem.Factory addItemFactory, IRemoveItem.Factory removeItemFactory, IItem genericKey,
+            IMode mode, ISaveLoadManager saveLoadManager, IAddItem.Factory addItemFactory,
+            IRemoveItem.Factory removeItemFactory, ICycleItem.Factory cycleItemFactory, IItem genericKey,
             int nonKeyDropMaximum, int keyDropMaximum, IAutoTrackValue? autoTrackValue)
-            : base(saveLoadManager, undoRedoManager, addItemFactory, removeItemFactory, 0, autoTrackValue)
+            : base(saveLoadManager, addItemFactory, removeItemFactory, 0, autoTrackValue)
         {
             _mode = mode;
+
+            _cycleItemFactory = cycleItemFactory;
 
             _genericKey = genericKey;
             _nonKeyDropMaximum = nonKeyDropMaximum;
@@ -115,7 +119,7 @@ namespace OpenTracker.Models.Items
                         Current = Maximum;
                     }
 
-                    this.RaisePropertyChanged(nameof(Current));
+                    this.RaisePropertyChanged(nameof(Maximum));
                 }
                     break;
                 case nameof(IMode.GenericKeys):
@@ -172,13 +176,12 @@ namespace OpenTracker.Models.Items
         /// </summary>
         public override void Add()
         {
-            if (Current < Maximum)
+            if (Current >= Maximum)
             {
-                base.Add();
-                return;
+                throw new Exception("Cannot add item, because it is already at maximum.");
             }
 
-            Current = 0;
+            base.Add();
         }
 
         /// <summary>
@@ -186,13 +189,40 @@ namespace OpenTracker.Models.Items
         /// </summary>
         public override void Remove()
         {
-            if (Current > 0)
+            if (Current <= 0)
             {
-                base.Remove();
+                throw new Exception("Cannot remove item, because it is already 0.");
+            }
+            
+            base.Remove();
+        }
+        
+        public void Cycle(bool reverse = false)
+        {
+            if (reverse)
+            {
+                if (CanRemove())
+                {
+                    Remove();
+                    return;
+                }
+
+                Current = Maximum;
                 return;
             }
 
-            Current = Maximum;
+            if (CanAdd())
+            {
+                Add();
+                return;
+            }
+
+            Current = 0;
+        }
+
+        public IUndoable CreateCycleItemAction()
+        {
+            return _cycleItemFactory(this);
         }
     }
 }

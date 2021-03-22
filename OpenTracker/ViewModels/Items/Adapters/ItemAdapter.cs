@@ -17,8 +17,7 @@ namespace OpenTracker.ViewModels.Items.Adapters
     public class ItemAdapter : ViewModelBase, IItemAdapter
     {
         private readonly IUndoRedoManager _undoRedoManager;
-        private readonly IUndoableFactory _undoableFactory;
-
+        
         private readonly IItem _item;
         private readonly string _imageSourceBase;
 
@@ -31,28 +30,23 @@ namespace OpenTracker.ViewModels.Items.Adapters
         public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
 
         public delegate ItemAdapter Factory(IItem item, string imageSourceBase);
-        
+
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="undoRedoManager">
         /// The undo/redo manager.
         /// </param>
-        /// <param name="undoableFactory">
-        /// A factory for creating undoable actions.
+        /// <param name="item">
+        /// An item that is to be represented by this control.
         /// </param>
         /// <param name="imageSourceBase">
         /// A string representing the base image source.
         /// </param>
-        /// <param name="item">
-        /// An item that is to be represented by this control.
-        /// </param>
-        public ItemAdapter(
-            IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory, IItem item, string imageSourceBase)
+        public ItemAdapter(IUndoRedoManager undoRedoManager, IItem item, string imageSourceBase)
         {
             _undoRedoManager = undoRedoManager;
-            _undoableFactory = undoableFactory;
-
+            
             _item = item;
             _imageSourceBase = imageSourceBase;
 
@@ -83,7 +77,7 @@ namespace OpenTracker.ViewModels.Items.Adapters
         /// </summary>
         private void AddItem()
         {
-            _undoRedoManager.NewAction(_undoableFactory.GetAddItem(_item));
+            _undoRedoManager.NewAction(_item.CreateAddItemAction());
         }
 
         /// <summary>
@@ -91,7 +85,7 @@ namespace OpenTracker.ViewModels.Items.Adapters
         /// </summary>
         private void RemoveItem()
         {
-            _undoRedoManager.NewAction(_undoableFactory.GetRemoveItem(_item));
+            _undoRedoManager.NewAction(_item.CreateRemoveItemAction());
         }
 
         /// <summary>

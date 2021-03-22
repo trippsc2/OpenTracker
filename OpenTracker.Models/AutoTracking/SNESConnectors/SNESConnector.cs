@@ -56,14 +56,14 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
                     return;
                 }
                 
-                if (_socket != null)
+                if (!(_socket is null))
                 {
                     _socket.OnMessage -= HandleMessage;
                 }
 
                 _socket = value;
 
-                if (_socket != null)
+                if (!(_socket is null))
                 {
                     _socket.OnMessage += HandleMessage;
                 }

@@ -72,9 +72,9 @@ namespace OpenTracker.Models.BossPlacements
         /// <param name="boss">
         /// The new nullable boss type.
         /// </param>
-        public void ChangeBoss(BossType? boss)
+        public IUndoable CreateChangeBossAction(BossType? boss)
         {
-            _undoRedoManager.NewAction(_changeBossFactory(this, boss));
+            return _changeBossFactory(this, boss);
         }
 
         /// <summary>

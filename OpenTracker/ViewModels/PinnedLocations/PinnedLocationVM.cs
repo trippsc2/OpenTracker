@@ -20,7 +20,6 @@ namespace OpenTracker.ViewModels.PinnedLocations
     {
         private readonly ILayoutSettings _layoutSettings;
         private readonly IUndoRedoManager _undoRedoManager;
-        private readonly IUndoableFactory _undoableFactory;
 
         private readonly ILocation _location;
 
@@ -42,9 +41,6 @@ namespace OpenTracker.ViewModels.PinnedLocations
         /// <param name="undoRedoManager">
         /// The undo/redo manager.
         /// </param>
-        /// <param name="undoableFactory">
-        /// A factory for creating undoable actions.
-        /// </param>
         /// <param name="location">
         /// The location to be represented.
         /// </param>
@@ -55,12 +51,11 @@ namespace OpenTracker.ViewModels.PinnedLocations
         /// The pinned location note area control.
         /// </param>
         public PinnedLocationVM(
-            ILayoutSettings layoutSettings, IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory,
-            ILocation location, List<ISectionVM> sections, IPinnedLocationNoteAreaVM notes)
+            ILayoutSettings layoutSettings, IUndoRedoManager undoRedoManager, ILocation location,
+            List<ISectionVM> sections, IPinnedLocationNoteAreaVM notes)
         {
             _layoutSettings = layoutSettings;
             _undoRedoManager = undoRedoManager;
-            _undoableFactory = undoableFactory;
 
             _location = location;
 
@@ -94,7 +89,7 @@ namespace OpenTracker.ViewModels.PinnedLocations
         /// </summary>
         private void UnpinLocation()
         {
-            _undoRedoManager.NewAction(_undoableFactory.GetUnpinLocation(_location));
+            _undoRedoManager.NewAction(_location.CreateUnpinLocationAction());
         }
 
         /// <summary>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Utils;
 
@@ -47,14 +48,7 @@ namespace OpenTracker.Models.Items
         /// </returns>
         public Dictionary<ItemType, ItemSaveData> Save()
         {
-            Dictionary<ItemType, ItemSaveData> items = new Dictionary<ItemType, ItemSaveData>();
-
-            foreach (var type in Keys)
-            {
-                items.Add(type, this[type].Save());
-            }
-
-            return items;
+            return Keys.ToDictionary(type => type, type => this[type].Save());
         }
 
         /// <summary>

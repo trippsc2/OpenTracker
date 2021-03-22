@@ -1,5 +1,6 @@
 ﻿using OpenTracker.Models.Items;
 using OpenTracker.Models.SaveLoad;
+using OpenTracker.Models.UndoRedo;
 using ReactiveUI;
 
 namespace OpenTracker.Models.PrizePlacements
@@ -16,5 +17,13 @@ namespace OpenTracker.Models.PrizePlacements
         bool CanCycle();
         void Cycle();
         void Reset();
+
+        /// <summary>
+        /// Creates a new undoable action to change the prize.
+        /// </summary>
+        /// <returns>
+        /// A new undoable action.
+        /// </returns>
+        IUndoable CreateChangePrizeAction();
     }
 }

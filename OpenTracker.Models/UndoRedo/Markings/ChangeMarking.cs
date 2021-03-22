@@ -1,12 +1,11 @@
-﻿using System;
-using OpenTracker.Models.Markings;
+﻿using OpenTracker.Models.Markings;
 
 namespace OpenTracker.Models.UndoRedo.Markings
 {
     /// <summary>
-    /// This class contains undoable action data to set a marking.
+    /// This class contains undoable action data to change a marking.
     /// </summary>
-    public class SetMarking : ISetMarking
+    public class ChangeMarking : IChangeMarking
     {
         private readonly IMarking _marking;
         private readonly MarkType _newMarking;
@@ -22,9 +21,9 @@ namespace OpenTracker.Models.UndoRedo.Markings
         /// <param name="newMarking">
         /// The marking to be applied to the section.
         /// </param>
-        public SetMarking(IMarking marking, MarkType newMarking)
+        public ChangeMarking(IMarking marking, MarkType newMarking)
         {
-            _marking = marking ?? throw new ArgumentNullException(nameof(marking));
+            _marking = marking;
             _newMarking = newMarking;
         }
 

@@ -2,6 +2,8 @@
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Prizes;
 using OpenTracker.Models.SaveLoad;
+using OpenTracker.Models.UndoRedo;
+using OpenTracker.Models.UndoRedo.Prize;
 using ReactiveUI;
 
 namespace OpenTracker.Models.PrizePlacements
@@ -12,6 +14,9 @@ namespace OpenTracker.Models.PrizePlacements
     public class PrizePlacement : ReactiveObject, IPrizePlacement
     {
         private readonly IPrizeDictionary _prizes;
+
+        private readonly IChangePrize.Factory _changePrizeFactory;
+        
         private readonly IItem? _startingPrize;
 
         private IItem? _prize;
@@ -27,12 +32,17 @@ namespace OpenTracker.Models.PrizePlacements
         /// <param name="prizes">
         /// The prize dictionary.
         /// </param>
+        /// <param name="changePrizeFactory">
+        /// An Autofac factory for creating undoable actions to change the prize.
+        /// </param>
         /// <param name="startingPrize">
         /// The starting prize item.
         /// </param>
-        public PrizePlacement(IPrizeDictionary prizes, IItem? startingPrize = null)
+        public PrizePlacement(
+            IPrizeDictionary prizes, IChangePrize.Factory changePrizeFactory, IItem? startingPrize = null)
         {
             _prizes = prizes;
+            _changePrizeFactory = changePrizeFactory;
             _startingPrize = startingPrize;
 
             Prize = startingPrize;
@@ -54,15 +64,25 @@ namespace OpenTracker.Models.PrizePlacements
         /// </summary>
         public void Cycle()
         {
-            if (Prize == null)
+            if (Prize is null)
             {
                 Prize = _prizes[PrizeType.Crystal];
+                return;
             }
-            else
-            {
-                var type = _prizes.FirstOrDefault(x => x.Value == Prize).Key;
-                Prize = type == PrizeType.GreenPendant ? null : _prizes[type + 1];
-            }
+
+            var type = _prizes.FirstOrDefault(x => x.Value == Prize).Key;
+            Prize = type == PrizeType.GreenPendant ? null : _prizes[type + 1];
+        }
+
+        /// <summary>
+        /// Creates a new undoable action to change the prize.
+        /// </summary>
+        /// <returns>
+        /// A new undoable action.
+        /// </returns>
+        public IUndoable CreateChangePrizeAction()
+        {
+            return _changePrizeFactory(this);
         }
 
         /// <summary>
@@ -81,16 +101,8 @@ namespace OpenTracker.Models.PrizePlacements
         /// </returns>
         public PrizePlacementSaveData Save()
         {
-            PrizeType? prize;
-
-            if (Prize == null)
-            {
-                prize = null;
-            }
-            else
-            {
-                prize = _prizes.FirstOrDefault(x => x.Value == Prize).Key;
-            }
+            var prize = Prize is null ? (PrizeType?) null :
+                _prizes.FirstOrDefault(x => x.Value == Prize).Key;
 
             return new PrizePlacementSaveData()
             {

@@ -1,4 +1,5 @@
 using Autofac;
+using NSubstitute;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.UndoRedo.Mode;
 using Xunit;
@@ -7,7 +8,7 @@ namespace OpenTracker.UnitTests.Models.UndoRedo.Mode
 {
     public class ChangeItemPlacementTests
     {
-        private readonly IMode _mode = new OpenTracker.Models.Modes.Mode();
+        private readonly IMode _mode = Substitute.For<IMode>();
 
         [Fact]
         public void CanExecute_ShouldAlwaysReturnTrue()
@@ -34,7 +35,7 @@ namespace OpenTracker.UnitTests.Models.UndoRedo.Mode
         public void ExecuteUndo_ShouldSetItemPlacementToPreviousValue(
             ItemPlacement expected, ItemPlacement previousValue)
         {
-            _mode.ItemPlacement = previousValue;
+            _mode.ItemPlacement.Returns(previousValue);
             var sut = new ChangeItemPlacement(_mode, ItemPlacement.Basic);
             sut.ExecuteDo();
             sut.ExecuteUndo();

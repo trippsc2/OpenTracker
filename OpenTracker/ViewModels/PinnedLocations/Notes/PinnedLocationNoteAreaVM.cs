@@ -15,10 +15,8 @@ namespace OpenTracker.ViewModels.PinnedLocations.Notes
     /// </summary>
     public class PinnedLocationNoteAreaVM : ViewModelBase, IPinnedLocationNoteAreaVM
     {
-        private readonly IUndoRedoManager _undoRedoManager;
-        private readonly IUndoableFactory _undoableFactory;
-
         private readonly ILocation _location;
+        private readonly IUndoRedoManager _undoRedoManager;
 
         public IPinnedLocationNoteVMCollection Notes { get; }
         public HorizontalAlignment Alignment =>
@@ -39,23 +37,17 @@ namespace OpenTracker.ViewModels.PinnedLocations.Notes
         /// <param name="undoRedoManager">
         /// The undo/redo manager.
         /// </param>
-        /// <param name="undoableFactory">
-        /// A factory for creating undoable actions.
+        /// <param name="location">
+        /// The location to be represented.
         /// </param>
         /// <param name="notesFactory">
         /// An Autofac factory for creating the notes collection.
         /// </param>
-        /// <param name="location">
-        /// The location to be represented.
-        /// </param>
         public PinnedLocationNoteAreaVM(
-            IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory,
-            IPinnedLocationNoteVMCollection.Factory notesFactory, ILocation location)
+            ILocation location, IUndoRedoManager undoRedoManager, IPinnedLocationNoteVMCollection.Factory notesFactory)
         {
-            _undoRedoManager = undoRedoManager;
-            _undoableFactory = undoableFactory;
-
             _location = location;
+            _undoRedoManager = undoRedoManager;
 
             Notes = notesFactory(location);
 
@@ -101,7 +93,7 @@ namespace OpenTracker.ViewModels.PinnedLocations.Notes
         /// </summary>
         private void AddImpl()
         {
-            _undoRedoManager.NewAction(_undoableFactory.GetAddNote(_location));
+            _undoRedoManager.NewAction(_location.CreateAddNoteAction());
         }
     }
 }

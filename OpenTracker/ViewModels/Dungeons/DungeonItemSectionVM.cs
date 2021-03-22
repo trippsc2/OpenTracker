@@ -7,6 +7,7 @@ using Avalonia.Threading;
 using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.Sections;
 using OpenTracker.Models.Settings;
+using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
 using ReactiveUI;
 
@@ -18,6 +19,7 @@ namespace OpenTracker.ViewModels.Dungeons
     public class DungeonItemSectionVM : ViewModelBase, IDungeonItemSectionVM
     {
         private readonly IColorSettings _colorSettings;
+        private readonly IUndoRedoManager _undoRedoManager;
 
         private readonly ISection _section;
 
@@ -35,22 +37,26 @@ namespace OpenTracker.ViewModels.Dungeons
         public string NumberString => _section.Available.ToString(CultureInfo.InvariantCulture);
         
         public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
-        
+
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="colorSettings">
         /// The color settings data.
         /// </param>
+        /// <param name="undoRedoManager">
+        /// The undo/redo manager.
+        /// </param>
         /// <param name="section">
         /// The dungeon section to be represented.
         /// </param>
-        public DungeonItemSectionVM(IColorSettings colorSettings, ISection section)
+        public DungeonItemSectionVM(IColorSettings colorSettings, IUndoRedoManager undoRedoManager, ISection section)
         {
             _colorSettings = colorSettings;
 
             _section = section;
-            
+            _undoRedoManager = undoRedoManager;
+
             HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
             
             _colorSettings.AccessibilityColors.PropertyChanged += OnColorChanged;
@@ -125,7 +131,7 @@ namespace OpenTracker.ViewModels.Dungeons
         /// </param>
         private void CollectSection(bool force)
         {
-            _section.CollectSection(force);
+            _undoRedoManager.NewAction(_section.CreateCollectSectionAction(force));
         }
 
         /// <summary>
@@ -133,7 +139,7 @@ namespace OpenTracker.ViewModels.Dungeons
         /// </summary>
         private void UncollectSection()
         {
-            _section.UncollectSection();
+            _undoRedoManager.NewAction(_section.CreateUncollectSectionAction());
         }
 
         /// <summary>

@@ -4,6 +4,7 @@ using System.Reactive;
 using Avalonia.Input;
 using Avalonia.Threading;
 using OpenTracker.Models.Sections;
+using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
 using ReactiveUI;
 
@@ -11,6 +12,8 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
 {
     public class SectionIconVM : ViewModelBase, ISectionIconVM
     {
+        private readonly IUndoRedoManager _undoRedoManager;
+        
         private readonly ISectionIconImageProvider _imageProvider;
         private readonly ISection _section;
 
@@ -24,6 +27,9 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="undoRedoManager">
+        /// The undo/redo manager.
+        /// </param>
         /// <param name="imageProvider">
         /// The section icon image control provider.
         /// </param>
@@ -33,12 +39,15 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
         /// <param name="labelVisible">
         /// A boolean representing whether the label is visible.
         /// </param>
-        public SectionIconVM(ISectionIconImageProvider imageProvider, ISection section, bool labelVisible)
+        public SectionIconVM(
+            IUndoRedoManager undoRedoManager, ISectionIconImageProvider imageProvider, ISection section,
+            bool labelVisible)
         {
             _imageProvider = imageProvider;
             _section = section;
 
             LabelVisible = labelVisible;
+            _undoRedoManager = undoRedoManager;
 
             HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
 
@@ -88,7 +97,7 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
         /// </param>
         private void CollectSection(bool force)
         {
-            _section.CollectSection(force);
+            _undoRedoManager.NewAction(_section.CreateCollectSectionAction(force));
         }
 
         /// <summary>
@@ -96,7 +105,7 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
         /// </summary>
         private void UncollectSection()
         {
-            _section.UncollectSection();
+            _undoRedoManager.NewAction(_section.CreateUncollectSectionAction());
         }
 
         /// <summary>

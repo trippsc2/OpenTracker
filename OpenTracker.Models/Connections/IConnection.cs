@@ -1,5 +1,6 @@
 ﻿using OpenTracker.Models.Locations;
 using OpenTracker.Models.SaveLoad;
+using OpenTracker.Models.UndoRedo;
 
 namespace OpenTracker.Models.Connections
 {
@@ -20,6 +21,6 @@ namespace OpenTracker.Models.Connections
         /// <summary>
         /// Creates an undoable action to remove the connection and sends it to the undo/redo manager.
         /// </summary>
-        void RemoveConnection();
+        IUndoable CreateRemoveConnectionAction();
     }
 }

@@ -1,4 +1,5 @@
 using Autofac;
+using NSubstitute;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.UndoRedo.Mode;
 using Xunit;
@@ -7,7 +8,7 @@ namespace OpenTracker.UnitTests.Models.UndoRedo.Mode
 {
     public class ChangeEnemyShuffleTests
     {
-        private readonly IMode _mode = new OpenTracker.Models.Modes.Mode();
+        private readonly IMode _mode = Substitute.For<IMode>();
 
         [Fact]
         public void CanExecute_ShouldReturnTrueAlways()
@@ -33,7 +34,7 @@ namespace OpenTracker.UnitTests.Models.UndoRedo.Mode
         [InlineData(true, true)]
         public void ExecuteUndo_ShouldSetEnemyShuffleToPreviousValue(bool expected, bool previousValue)
         {
-            _mode.EnemyShuffle = previousValue;
+            _mode.EnemyShuffle.Returns(previousValue);
             var sut = new ChangeEnemyShuffle(_mode, !previousValue);
             sut.ExecuteDo();
             sut.ExecuteUndo();

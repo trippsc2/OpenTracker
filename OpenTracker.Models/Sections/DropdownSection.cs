@@ -17,7 +17,6 @@ namespace OpenTracker.Models.Sections
     public class DropdownSection : ReactiveObject, IEntranceSection
     {
         private readonly IMode _mode;
-        private readonly IUndoRedoManager _undoRedoManager;
 
         private readonly ICollectSection.Factory _collectSectionFactory;
         private readonly IUncollectSection.Factory _uncollectSectionFactory;
@@ -53,9 +52,6 @@ namespace OpenTracker.Models.Sections
         /// <param name="mode">
         /// The mode settings.
         /// </param>
-        /// <param name="undoRedoManager">
-        /// The undo/redo manager.
-        /// </param>
         /// <param name="collectSectionFactory">
         /// An Autofac factory for creating collect section undoable actions.
         /// </param>
@@ -78,12 +74,11 @@ namespace OpenTracker.Models.Sections
         /// The requirement for this section to be visible.
         /// </param>
         public DropdownSection(
-            IMode mode, IUndoRedoManager undoRedoManager, ICollectSection.Factory collectSectionFactory,
+            IMode mode, ICollectSection.Factory collectSectionFactory,
             IUncollectSection.Factory uncollectSectionFactory, IMarking marking, string name,
             IRequirementNode? exitNode, IRequirementNode holeNode, IRequirement requirement)
         {
             _mode = mode;
-            _undoRedoManager = undoRedoManager;
 
             _collectSectionFactory = collectSectionFactory;
             _uncollectSectionFactory = uncollectSectionFactory;
@@ -183,19 +178,19 @@ namespace OpenTracker.Models.Sections
         /// Creates an undoable action to collect the section and sends it to the undo/redo manager.
         /// </summary>
         /// <param name="force">
-        /// A boolean representing whether to override the logic while collecting the section.
+        ///     A boolean representing whether to override the logic while collecting the section.
         /// </param>
-        public void CollectSection(bool force)
+        public IUndoable CreateCollectSectionAction(bool force)
         {
-            _undoRedoManager.NewAction(_collectSectionFactory(this, force));
+            return _collectSectionFactory(this, force);
         }
 
         /// <summary>
         /// Creates an undoable action to uncollect the section and sends it to the undo/redo manager.
         /// </summary>
-        public void UncollectSection()
+        public IUndoable CreateUncollectSectionAction()
         {
-            _undoRedoManager.NewAction(_uncollectSectionFactory(this));
+            return _uncollectSectionFactory(this);
         }
 
         /// <summary>

@@ -7,6 +7,6 @@ namespace OpenTracker.Models.UndoRedo.Items
     /// </summary>
     public interface ICycleItem : IUndoable
     {
-        delegate ICycleItem Factory(IItem item);
+        delegate ICycleItem Factory(ICappedItem item);
     }
 }

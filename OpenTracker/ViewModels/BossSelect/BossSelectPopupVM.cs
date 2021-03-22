@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Avalonia.Threading;
 using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.Settings;
+using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
 using ReactiveUI;
 
@@ -16,6 +17,7 @@ namespace OpenTracker.ViewModels.BossSelect
     public class BossSelectPopupVM : ViewModelBase, IBossSelectPopupVM
     {
         private readonly ILayoutSettings _layoutSettings;
+        private readonly IUndoRedoManager _undoRedoManager;
 
         private readonly IBossPlacement _bossPlacement;
 
@@ -42,6 +44,9 @@ namespace OpenTracker.ViewModels.BossSelect
         /// <param name="layoutSettings">
         /// The layout settings data.
         /// </param>
+        /// <param name="undoRedoManager">
+        /// The undo/redo manager.
+        /// </param>
         /// <param name="factory">
         /// A factory for creating boss select controls.
         /// </param>
@@ -49,11 +54,13 @@ namespace OpenTracker.ViewModels.BossSelect
         /// The boss placement to be manipulated.
         /// </param>
         public BossSelectPopupVM(
-            ILayoutSettings layoutSettings, IBossSelectFactory factory, IBossPlacement bossPlacement)
+            ILayoutSettings layoutSettings, IUndoRedoManager undoRedoManager, IBossSelectFactory factory,
+            IBossPlacement bossPlacement)
         {
             _layoutSettings = layoutSettings;
 
             _bossPlacement = bossPlacement;
+            _undoRedoManager = undoRedoManager;
 
             Buttons = factory.GetBossSelectButtonVMs(_bossPlacement);
 
@@ -92,7 +99,7 @@ namespace OpenTracker.ViewModels.BossSelect
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
                 PopupOpen = false;
-                _bossPlacement.ChangeBoss(boss);
+                _undoRedoManager.NewAction(_bossPlacement.CreateChangeBossAction(boss));
             });
         }
     }

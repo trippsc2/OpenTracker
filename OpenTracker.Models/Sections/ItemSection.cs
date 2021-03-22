@@ -16,7 +16,6 @@ namespace OpenTracker.Models.Sections
     public class ItemSection : ReactiveObject, IItemSection
     {
         private readonly ISaveLoadManager _saveLoadManager;
-        private readonly IUndoRedoManager _undoRedoManager;
 
         private readonly ICollectSection.Factory _collectSectionFactory;
         private readonly IUncollectSection.Factory _uncollectSectionFactory;
@@ -54,9 +53,6 @@ namespace OpenTracker.Models.Sections
         /// <param name="saveLoadManager">
         /// The save/load manager.
         /// </param>
-        /// <param name="undoRedoManager">
-        /// The undo/redo manager.
-        /// </param>
         /// <param name="collectSectionFactory">
         /// An Autofac factory for creating collect section undoable actions.
         /// </param>
@@ -79,13 +75,12 @@ namespace OpenTracker.Models.Sections
         /// The requirement for the section to be visible.
         /// </param>
         public ItemSection(
-            ISaveLoadManager saveLoadManager, IUndoRedoManager undoRedoManager,
-            ICollectSection.Factory collectSectionFactory, IUncollectSection.Factory uncollectSectionFactory,
-            string name, int total, IRequirementNode node, IAutoTrackValue? autoTrackValue, IRequirement requirement)
+            ISaveLoadManager saveLoadManager, ICollectSection.Factory collectSectionFactory,
+            IUncollectSection.Factory uncollectSectionFactory, string name, int total, IRequirementNode node,
+            IAutoTrackValue? autoTrackValue, IRequirement requirement)
         {
             _saveLoadManager = saveLoadManager;
-            _undoRedoManager = undoRedoManager;
-            
+
             _collectSectionFactory = collectSectionFactory;
             _uncollectSectionFactory = uncollectSectionFactory;
             
@@ -136,11 +131,13 @@ namespace OpenTracker.Models.Sections
         /// </param>
         private void OnNodeChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(IRequirementNode.Accessibility))
+            if (e.PropertyName != nameof(IRequirementNode.Accessibility))
             {
-                this.RaisePropertyChanged(nameof(Accessibility));
-                UpdateAccessible();
+                return;
             }
+            
+            this.RaisePropertyChanged(nameof(Accessibility));
+            UpdateAccessible();
         }
 
         /// <summary>
@@ -233,19 +230,19 @@ namespace OpenTracker.Models.Sections
         /// Creates an undoable action to collect the section and sends it to the undo/redo manager.
         /// </summary>
         /// <param name="force">
-        /// A boolean representing whether to override the logic while collecting the section.
+        ///     A boolean representing whether to override the logic while collecting the section.
         /// </param>
-        public void CollectSection(bool force)
+        public IUndoable CreateCollectSectionAction(bool force)
         {
-            _undoRedoManager.NewAction(_collectSectionFactory(this, force));
+            return _collectSectionFactory(this, force);
         }
 
         /// <summary>
         /// Creates an undoable action to uncollect the section and sends it to the undo/redo manager.
         /// </summary>
-        public void UncollectSection()
+        public IUndoable CreateUncollectSectionAction()
         {
-            _undoRedoManager.NewAction(_uncollectSectionFactory(this));
+            return _uncollectSectionFactory(this);
         }
 
         /// <summary>

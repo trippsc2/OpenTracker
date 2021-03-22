@@ -21,7 +21,6 @@ namespace OpenTracker.ViewModels.Items.Adapters
     {
         private readonly IPrizeDictionary _prizes;
         private readonly IUndoRedoManager _undoRedoManager;
-        private readonly IUndoableFactory _undoableFactory;
 
         private readonly IPrizeSection _section;
 
@@ -53,13 +52,10 @@ namespace OpenTracker.ViewModels.Items.Adapters
         
         public IBossSelectPopupVM? BossSelect { get; } = null;
 
-        public PrizeAdapter(
-            IPrizeDictionary prizes, IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory,
-            IPrizeSection section)
+        public PrizeAdapter(IPrizeDictionary prizes, IUndoRedoManager undoRedoManager, IPrizeSection section)
         {
             _prizes = prizes;
             _undoRedoManager = undoRedoManager;
-            _undoableFactory = undoableFactory;
 
             _section = section;
             
@@ -109,7 +105,7 @@ namespace OpenTracker.ViewModels.Items.Adapters
         /// </summary>
         private void TogglePrize()
         {
-            _undoRedoManager.NewAction(_undoableFactory.GetTogglePrize(_section, true));
+            _undoRedoManager.NewAction(_section.CreateTogglePrizeSectionAction(true));
         }
 
         /// <summary>
@@ -117,7 +113,7 @@ namespace OpenTracker.ViewModels.Items.Adapters
         /// </summary>
         private void ChangePrize()
         {
-            _undoRedoManager.NewAction(_undoableFactory.GetChangePrize(_section.PrizePlacement));
+            _undoRedoManager.NewAction(_section.PrizePlacement.CreateChangePrizeAction());
         }
 
         /// <summary>

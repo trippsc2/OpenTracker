@@ -1,4 +1,5 @@
 using Autofac;
+using NSubstitute;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.UndoRedo.Mode;
 using Xunit;
@@ -7,7 +8,7 @@ namespace OpenTracker.UnitTests.Models.UndoRedo.Mode
 {
     public class ChangeKeyDropShuffleTests
     {
-        private readonly IMode _mode = new OpenTracker.Models.Modes.Mode();
+        private readonly IMode _mode = Substitute.For<IMode>();
 
         [Fact]
         public void CanExecute_ShouldReturnTrueAlways()
@@ -33,7 +34,7 @@ namespace OpenTracker.UnitTests.Models.UndoRedo.Mode
         [InlineData(true, true)]
         public void ExecuteUndo_ShouldSetKeyDropShuffleToPreviousValue(bool expected, bool previousValue)
         {
-            _mode.KeyDropShuffle = previousValue;
+            _mode.KeyDropShuffle.Returns(previousValue);
             var sut = new ChangeKeyDropShuffle(_mode, !previousValue);
             sut.ExecuteDo();
             sut.ExecuteUndo();

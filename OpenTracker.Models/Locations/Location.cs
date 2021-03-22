@@ -7,6 +7,9 @@ using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.Markings;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.Sections;
+using OpenTracker.Models.UndoRedo;
+using OpenTracker.Models.UndoRedo.Locations;
+using OpenTracker.Models.UndoRedo.Notes;
 using ReactiveUI;
 
 namespace OpenTracker.Models.Locations
@@ -17,6 +20,11 @@ namespace OpenTracker.Models.Locations
     public class Location : ReactiveObject, ILocation
     {
         private readonly IMarking.Factory _markingFactory;
+        private readonly IClearLocation.Factory _clearLocationFactory;
+        private readonly IPinLocation.Factory _pinLocationFactory;
+        private readonly IUnpinLocation.Factory _unpinLocationFactory;
+        private readonly IAddNote.Factory _addNoteFactory;
+        private readonly IRemoveNote.Factory _removeNoteFactory;
 
         public LocationID ID { get; }
         public string Name { get; }
@@ -75,6 +83,21 @@ namespace OpenTracker.Models.Locations
         /// <param name="markingFactory">
         /// The marking factory.
         /// </param>
+        /// <param name="addNoteFactory">
+        /// An Autofac factory for creating undoable actions to add a note.
+        /// </param>
+        /// <param name="clearLocationFactory">
+        /// An Autofac factory for creating undoable actions to clear the location.
+        /// </param>
+        /// <param name="pinLocationFactory">
+        /// An Autofac factory for creating undoable actions to pin the location.
+        /// </param>
+        /// <param name="removeNoteFactory">
+        /// An Autofac factory for creating undoable actions to remove a note.
+        /// </param>
+        /// <param name="unpinLocationFactory">
+        /// An Autofac factory for creating undoable actions to unpin the location.
+        /// </param>
         /// <param name="notes">
         /// A new collection of location notes.
         /// </param>
@@ -83,9 +106,17 @@ namespace OpenTracker.Models.Locations
         /// </param>
         public Location(
             ILocationFactory factory, IMapLocationFactory mapLocationFactory, ISectionFactory sectionFactory,
-            IMarking.Factory markingFactory, ILocationNoteCollection notes, LocationID id)
+            IMarking.Factory markingFactory, IClearLocation.Factory clearLocationFactory,
+            IPinLocation.Factory pinLocationFactory, IUnpinLocation.Factory unpinLocationFactory,
+            IAddNote.Factory addNoteFactory, IRemoveNote.Factory removeNoteFactory, ILocationNoteCollection notes,
+            LocationID id)
         {
             _markingFactory = markingFactory;
+            _clearLocationFactory = clearLocationFactory;
+            _pinLocationFactory = pinLocationFactory;
+            _unpinLocationFactory = unpinLocationFactory;
+            _addNoteFactory = addNoteFactory;
+            _removeNoteFactory = removeNoteFactory;
 
             ID = id;
             Name = factory.GetLocationName(ID);
@@ -134,139 +165,22 @@ namespace OpenTracker.Models.Locations
         /// </param>
         private void OnSectionChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(ISection.Available))
+            switch (e.PropertyName)
             {
-                UpdateAccessibility();
-                UpdateAvailable();
+                case nameof(ISection.Available):
+                    UpdateAccessibility();
+                    UpdateAvailable();
+                    break;
+                case nameof(ISection.Accessibility):
+                    UpdateAccessibility();
+                    break;
+                case nameof(IItemSection.Accessible):
+                    UpdateAccessible();
+                    break;
+                case nameof(IItemSection.Total):
+                    UpdateTotal();
+                    break;
             }
-
-            if (e.PropertyName == nameof(ISection.Accessibility))
-                UpdateAccessibility();
-
-            if (e.PropertyName == nameof(ItemSection.Accessible) ||
-                e.PropertyName == nameof(DungeonItemSection.Accessible))
-                UpdateAccessible();
-
-            if (e.PropertyName == nameof(ItemSection.Total) ||
-                e.PropertyName == nameof(DungeonItemSection.Total))
-                UpdateTotal();
-        }
-
-        /// <summary>
-        /// Updates the accessibility of the location.
-        /// </summary>
-        private void UpdateAccessibility()
-        {
-            AccessibilityLevel leastAccessible = AccessibilityLevel.Normal;
-            AccessibilityLevel mostAccessible = AccessibilityLevel.None;
-
-            bool available = false;
-
-            foreach (ISection section in Sections)
-            {
-                if (section.IsAvailable() && section.Requirement.Met)
-                {
-                    available = true;
-                    AccessibilityLevel sectionAccessibility = section.Accessibility;
-
-                    if (leastAccessible > sectionAccessibility)
-                    {
-                        leastAccessible = sectionAccessibility;
-                    }
-
-                    if (mostAccessible < sectionAccessibility)
-                    {
-                        mostAccessible = sectionAccessibility;
-                    }
-                }
-            }
-
-            if (!available)
-            {
-                Accessibility = AccessibilityLevel.Cleared;
-            }
-            else
-            {
-                Accessibility = mostAccessible switch
-                {
-                    AccessibilityLevel.None => AccessibilityLevel.None,
-                    AccessibilityLevel.Inspect => AccessibilityLevel.Inspect,
-                    AccessibilityLevel.Partial => AccessibilityLevel.Partial,
-                    AccessibilityLevel.SequenceBreak when leastAccessible <= AccessibilityLevel.Partial => AccessibilityLevel.Partial,
-                    AccessibilityLevel.SequenceBreak => AccessibilityLevel.SequenceBreak,
-                    AccessibilityLevel.Normal when leastAccessible <= AccessibilityLevel.Partial => AccessibilityLevel.Partial,
-                    AccessibilityLevel.Normal when leastAccessible == AccessibilityLevel.SequenceBreak => AccessibilityLevel.SequenceBreak,
-                    AccessibilityLevel.Normal => AccessibilityLevel.Normal,
-                    _ => throw new Exception(string.Format(CultureInfo.InvariantCulture, "Unknown availability state for location {0}", ID.ToString())),
-                };
-            }
-        }
-
-        /// <summary>
-        /// Updates the available count of the location.
-        /// </summary>
-        private void UpdateAvailable()
-        {
-            int available = 0;
-
-            foreach (ISection section in Sections)
-            {
-                if (section is IItemSection itemSection)
-                {
-                    available += itemSection.Available;
-                }
-            }
-
-            Available = available;
-        }
-
-        /// <summary>
-        /// Updates the accessible count of the location.
-        /// </summary>
-        private void UpdateAccessible()
-        {
-            int accessible = 0;
-
-            foreach (ISection section in Sections)
-            {
-                if (section is IItemSection itemSection)
-                {
-                    accessible += itemSection.Accessible;
-                }
-            }
-
-            Accessible = accessible;
-        }
-
-        /// <summary>
-        /// Updates the total count of the location.
-        /// </summary>
-        private void UpdateTotal()
-        {
-            int total = 0;
-
-            foreach (ISection section in Sections)
-            {
-                if (section is IItemSection itemSection)
-                {
-                    total += itemSection.Total;
-                }
-            }
-
-            Total = total;
-        }
-
-        /// <summary>
-        /// Updates whether the location is currently visible.
-        /// </summary>
-        private void UpdateVisible()
-        {
-            Visible = Accessibility switch
-            {
-                AccessibilityLevel.None => Sections[0] is IEntranceSection,
-                AccessibilityLevel.Cleared => false,
-                _ => true
-            };
         }
 
         /// <summary>
@@ -278,6 +192,61 @@ namespace OpenTracker.Models.Locations
         public bool CanBeCleared(bool force)
         {
             return Sections.Any(section => section.CanBeCleared(force));
+        }
+
+        /// <summary>
+        /// Returns a new undoable action to add a note.
+        /// </summary>
+        public IUndoable CreateAddNoteAction()
+        {
+            return _addNoteFactory(this);
+        }
+
+        /// <summary>
+        /// Returns a new undoable action to remove a note.
+        /// </summary>
+        /// <param name="note">
+        ///     The note to be removed.
+        /// </param>
+        public IUndoable CreateRemoveNoteAction(IMarking note)
+        {
+            return _removeNoteFactory(note, this);
+        }
+
+        /// <summary>
+        /// Returns a new undoable action to clear the location.
+        /// </summary>
+        /// <param name="force">
+        /// A boolean representing whether to ignore the logic.
+        /// </param>
+        /// <returns>
+        /// A new undoable action to clear the location.
+        /// </returns>
+        public IUndoable CreateClearLocationAction(bool force = false)
+        {
+            return _clearLocationFactory(this, force);
+        }
+
+        /// <summary>
+        /// Returns a new undoable action to pin the location.
+        /// </summary>
+        /// <returns>
+        /// A new undoable action to pin the location.
+        /// </returns>
+        public IUndoable CreatePinLocationAction()
+        {
+            return _pinLocationFactory(this);
+        }
+
+        /// <summary>
+        /// Returns a new undoable action to unpin the location.
+        /// </summary>
+        /// <returns>
+        /// A new undoable action to unpin the location.
+        /// </returns>
+        public IUndoable CreateUnpinLocationAction()
+        {
+            return _unpinLocationFactory(this);
         }
 
         /// <summary>
@@ -344,6 +313,124 @@ namespace OpenTracker.Models.Locations
 
                 Notes.Add(newMarking);
             }
+        }
+
+        /// <summary>
+        /// Updates the accessibility of the location.
+        /// </summary>
+        private void UpdateAccessibility()
+        {
+            var leastAccessible = AccessibilityLevel.Normal;
+            var mostAccessible = AccessibilityLevel.None;
+
+            var available = false;
+
+            foreach (ISection section in Sections)
+            {
+                if (!section.IsAvailable() || !section.Requirement.Met)
+                {
+                    continue;
+                }
+                
+                available = true;
+                var sectionAccessibility = section.Accessibility;
+
+                if (leastAccessible > sectionAccessibility)
+                {
+                    leastAccessible = sectionAccessibility;
+                }
+
+                if (mostAccessible < sectionAccessibility)
+                {
+                    mostAccessible = sectionAccessibility;
+                }
+            }
+
+            if (!available)
+            {
+                Accessibility = AccessibilityLevel.Cleared;
+                return;
+            }
+
+            Accessibility = mostAccessible switch
+            {
+                AccessibilityLevel.None => AccessibilityLevel.None,
+                AccessibilityLevel.Inspect => AccessibilityLevel.Inspect,
+                AccessibilityLevel.Partial => AccessibilityLevel.Partial,
+                AccessibilityLevel.SequenceBreak when leastAccessible <= AccessibilityLevel.Partial => AccessibilityLevel.Partial,
+                AccessibilityLevel.SequenceBreak => AccessibilityLevel.SequenceBreak,
+                AccessibilityLevel.Normal when leastAccessible <= AccessibilityLevel.Partial => AccessibilityLevel.Partial,
+                AccessibilityLevel.Normal when leastAccessible == AccessibilityLevel.SequenceBreak => AccessibilityLevel.SequenceBreak,
+                AccessibilityLevel.Normal => AccessibilityLevel.Normal,
+                _ => throw new Exception(string.Format(CultureInfo.InvariantCulture, "Unknown availability state for location {0}", ID.ToString())),
+            };
+        }
+
+        /// <summary>
+        /// Updates the available count of the location.
+        /// </summary>
+        private void UpdateAvailable()
+        {
+            var available = 0;
+
+            foreach (ISection section in Sections)
+            {
+                if (section is IItemSection itemSection)
+                {
+                    available += itemSection.Available;
+                }
+            }
+
+            Available = available;
+        }
+
+        /// <summary>
+        /// Updates the accessible count of the location.
+        /// </summary>
+        private void UpdateAccessible()
+        {
+            var accessible = 0;
+
+            foreach (ISection section in Sections)
+            {
+                if (section is IItemSection itemSection)
+                {
+                    accessible += itemSection.Accessible;
+                }
+            }
+
+            Accessible = accessible;
+        }
+
+        /// <summary>
+        /// Updates the total count of the location.
+        /// </summary>
+        private void UpdateTotal()
+        {
+            var total = 0;
+
+            foreach (ISection section in Sections)
+            {
+                if (section is IItemSection itemSection)
+                {
+                    total += itemSection.Total;
+                }
+            }
+
+            Total = total;
+        }
+
+        /// <summary>
+        /// Updates whether the location is currently visible.
+        /// </summary>
+        private void UpdateVisible()
+        {
+            Visible = Accessibility switch
+            {
+                AccessibilityLevel.None => Sections[0] is IEntranceSection,
+                AccessibilityLevel.Cleared => false,
+                _ => true
+            };
         }
     }
 }

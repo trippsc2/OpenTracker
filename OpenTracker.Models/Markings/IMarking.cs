@@ -1,4 +1,5 @@
-﻿using ReactiveUI;
+﻿using OpenTracker.Models.UndoRedo;
+using ReactiveUI;
 
 namespace OpenTracker.Models.Markings
 {
@@ -10,5 +11,16 @@ namespace OpenTracker.Models.Markings
         MarkType Mark { get; set; }
 
         delegate IMarking Factory();
+
+        /// <summary>
+        /// Returns a new undoable action to change the marking.
+        /// </summary>
+        /// <param name="newMarking">
+        /// The new marking value.
+        /// </param>
+        /// <returns>
+        /// A new undoable action to change the marking.
+        /// </returns>
+        IUndoable CreateChangeMarkingAction(MarkType newMarking);
     }
 }

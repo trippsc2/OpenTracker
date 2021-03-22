@@ -3,19 +3,24 @@ using NSubstitute;
 using OpenTracker.Models.Dropdowns;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
+using OpenTracker.Models.UndoRedo.Dropdowns;
 using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Dropdowns
 {
     public class DropdownTests
     {
-        private readonly IRequirement _requirement;
+        private readonly IRequirement _requirement = Substitute.For<IRequirement>();
+
+        private readonly ICheckDropdown.Factory _checkDropdownFactory = dropdown => Substitute.For<ICheckDropdown>();
+        private readonly IUncheckDropdown.Factory _uncheckDropdownFactory =
+            dropdown => Substitute.For<IUncheckDropdown>();
+        
         private readonly Dropdown _sut;
 
         public DropdownTests()
         {
-            _requirement = Substitute.For<IRequirement>();
-            _sut = new Dropdown(_requirement);
+            _sut = new Dropdown(_checkDropdownFactory, _uncheckDropdownFactory, _requirement);
         }
         
         [Fact]

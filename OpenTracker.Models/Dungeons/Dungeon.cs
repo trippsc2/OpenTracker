@@ -16,6 +16,8 @@ using OpenTracker.Models.Modes;
 using OpenTracker.Models.RequirementNodes;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Sections;
+using OpenTracker.Models.UndoRedo.Locations;
+using OpenTracker.Models.UndoRedo.Notes;
 using OpenTracker.Utils;
 
 namespace OpenTracker.Models.Dungeons
@@ -76,6 +78,21 @@ namespace OpenTracker.Models.Dungeons
         /// <param name="markingFactory">
         /// The marking factory.
         /// </param>
+        /// <param name="clearLocationFactory">
+        /// An Autofac factory for creating undoable actions to clear the location.
+        /// </param>
+        /// <param name="pinLocationFactory">
+        /// An Autofac factory for creating undoable actions to pin the location.
+        /// </param>
+        /// <param name="unpinLocationFactory">
+        /// An Autofac factory for creating undoable actions to unpin the location.
+        /// </param>
+        /// <param name="addNoteFactory">
+        /// An Autofac factory for creating undoable actions to add a note.
+        /// </param>
+        /// <param name="removeNoteFactory">
+        /// An Autofac factory for creating undoable actions to remove a note.
+        /// </param>
         /// <param name="notes">
         /// A new collection of location notes.
         /// </param>
@@ -94,9 +111,12 @@ namespace OpenTracker.Models.Dungeons
         public Dungeon(
             IMode mode, IMutableDungeon.Factory mutableDungeonFactory, ILocationFactory locationFactory,
             IMapLocationFactory mapLocationFactory, ISectionFactory sectionFactory, IMarking.Factory markingFactory,
-            ILocationNoteCollection notes, IDungeonFactory dungeonFactory, IKeyLayoutFactory keyLayoutFactory,
-            IDungeonState.Factory stateFactory, LocationID id)
-            : base(locationFactory, mapLocationFactory, sectionFactory, markingFactory, notes, id)
+            IClearLocation.Factory clearLocationFactory, IPinLocation.Factory pinLocationFactory,
+            IUnpinLocation.Factory unpinLocationFactory, IAddNote.Factory addNoteFactory,
+            IRemoveNote.Factory removeNoteFactory, ILocationNoteCollection notes, IDungeonFactory dungeonFactory,
+            IKeyLayoutFactory keyLayoutFactory, IDungeonState.Factory stateFactory, LocationID id)
+            : base(locationFactory, mapLocationFactory, sectionFactory, markingFactory, clearLocationFactory,
+                pinLocationFactory, unpinLocationFactory, addNoteFactory, removeNoteFactory, notes, id)
         {
             _mode = mode;
             _mutableDungeonFactory = mutableDungeonFactory;

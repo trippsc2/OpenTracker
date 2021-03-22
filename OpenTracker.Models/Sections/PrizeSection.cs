@@ -15,6 +15,8 @@ namespace OpenTracker.Models.Sections
     public class PrizeSection : BossSection, IPrizeSection
     {
         private readonly ISaveLoadManager _saveLoadManager;
+
+        private readonly ITogglePrizeSection.Factory _togglePrizeSectionFactory;
         
         private readonly bool _alwaysClearable;
         private readonly IAutoTrackValue? _autoTrackValue;
@@ -22,9 +24,8 @@ namespace OpenTracker.Models.Sections
         public IPrizePlacement PrizePlacement { get; }
 
         public delegate PrizeSection Factory(
-            string name, IBossPlacement bossPlacement, IPrizePlacement prizePlacement,
-            IAutoTrackValue? autoTrackValue, IRequirement requirement,
-            bool alwaysClearable = false);
+            string name, IBossPlacement bossPlacement, IPrizePlacement prizePlacement, IAutoTrackValue? autoTrackValue,
+            IRequirement requirement, bool alwaysClearable = false);
 
         /// <summary>
         /// Constructor
@@ -32,14 +33,14 @@ namespace OpenTracker.Models.Sections
         /// <param name="saveLoadManager">
         /// The save/load manager.
         /// </param>
-        /// <param name="undoRedoManager">
-        /// The undo/redo manager.
-        /// </param>
         /// <param name="collectSectionFactory">
         /// An Autofac factory for creating collect section undoable actions.
         /// </param>
         /// <param name="uncollectSectionFactory">
         /// An Autofac factory for creating uncollect section undoable actions.
+        /// </param>
+        /// <param name="togglePrizeSectionFactory">
+        /// An Autofac factory for creating undoable actions to toggle the prize.
         /// </param>
         /// <param name="name">
         /// A string representing the name of the section.
@@ -60,26 +61,30 @@ namespace OpenTracker.Models.Sections
         /// A boolean representing whether the section is always clearable (used for GT final).
         /// </param>
         public PrizeSection(
-            ISaveLoadManager saveLoadManager, IUndoRedoManager undoRedoManager,
-            ICollectSection.Factory collectSectionFactory, IUncollectSection.Factory uncollectSectionFactory,
+            ISaveLoadManager saveLoadManager, ICollectSection.Factory collectSectionFactory,
+            IUncollectSection.Factory uncollectSectionFactory, ITogglePrizeSection.Factory togglePrizeSectionFactory,
             string name, IBossPlacement bossPlacement, IPrizePlacement prizePlacement, IAutoTrackValue? autoTrackValue,
             IRequirement requirement, bool alwaysClearable = false)
-            : base(undoRedoManager, collectSectionFactory, uncollectSectionFactory, name, bossPlacement, requirement)
+            : base(collectSectionFactory, uncollectSectionFactory, name, bossPlacement, requirement)
         {
             _saveLoadManager = saveLoadManager;
             
             _alwaysClearable = alwaysClearable;
             _autoTrackValue = autoTrackValue;
+            _togglePrizeSectionFactory = togglePrizeSectionFactory;
+            
             PrizePlacement = prizePlacement;
 
             PropertyChanged += OnPropertyChanged;
             PrizePlacement.PropertyChanging += OnPrizeChanging;
             PrizePlacement.PropertyChanged += OnPrizeChanged;
 
-            if (_autoTrackValue != null)
+            if (_autoTrackValue is null)
             {
-                _autoTrackValue.PropertyChanged += OnAutoTrackValueChanged;
+                return;
             }
+            
+            _autoTrackValue.PropertyChanged += OnAutoTrackValueChanged;
         }
 
         /// <summary>
@@ -203,6 +208,20 @@ namespace OpenTracker.Models.Sections
             }
 
             return base.CanBeCleared(force);
+        }
+
+        /// <summary>
+        /// Returns a new undoable action to toggle the prize.
+        /// </summary>
+        /// <param name="force">
+        /// A boolean representing whether to ignore the logic.
+        /// </param>
+        /// <returns>
+        /// An undoable action to toggle the prize.
+        /// </returns>
+        public IUndoable CreateTogglePrizeSectionAction(bool force)
+        {
+            return _togglePrizeSectionFactory(this, force);
         }
     }
 }

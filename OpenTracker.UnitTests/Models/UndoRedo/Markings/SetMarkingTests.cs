@@ -6,15 +6,15 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.UndoRedo.Markings
 {
-    public class SetMarkingTests
+    public class ChangeMarkingTests
     {
         private readonly IMarking _marking = Substitute.For<IMarking>();
         private const MarkType NewMarking = MarkType.HCLeft;
-        private readonly SetMarking _sut;
+        private readonly ChangeMarking _sut;
 
-        public SetMarkingTests()
+        public ChangeMarkingTests()
         {
-            _sut = new SetMarking(_marking, NewMarking);
+            _sut = new ChangeMarking(_marking, NewMarking);
         }
 
         [Fact]
@@ -46,10 +46,10 @@ namespace OpenTracker.UnitTests.Models.UndoRedo.Markings
         public void AutofacTest()
         {
             using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-            var factory = scope.Resolve<ISetMarking.Factory>();
+            var factory = scope.Resolve<IChangeMarking.Factory>();
             var sut = factory(_marking, NewMarking);
             
-            Assert.NotNull(sut as SetMarking);
+            Assert.NotNull(sut as ChangeMarking);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using OpenTracker.Models.SaveLoad;
+using OpenTracker.Models.UndoRedo;
 using ReactiveUI;
 
 namespace OpenTracker.Models.BossPlacements
@@ -22,6 +23,6 @@ namespace OpenTracker.Models.BossPlacements
         /// <param name="boss">
         /// The new nullable boss type.
         /// </param>
-        void ChangeBoss(BossType? boss);
+        IUndoable CreateChangeBossAction(BossType? boss);
     }
 }

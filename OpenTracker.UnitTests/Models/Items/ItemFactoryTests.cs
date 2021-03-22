@@ -5,7 +5,6 @@ using NSubstitute.ReturnsExtensions;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.SaveLoad;
-using OpenTracker.Models.UndoRedo;
 using OpenTracker.Models.UndoRedo.Items;
 using Xunit;
 
@@ -13,36 +12,37 @@ namespace OpenTracker.UnitTests.Models.Items
 {
     public class ItemFactoryTests
     {
-        private readonly IMode _mode;
+        private readonly IItemAutoTrackValueFactory _autoTrackValueFactory =
+            Substitute.For<IItemAutoTrackValueFactory>();
+        private readonly IItemDictionary _items = Substitute.For<IItemDictionary>();
+        private readonly IMode _mode = Substitute.For<IMode>();
+        private readonly ISaveLoadManager _saveLoadManager = Substitute.For<ISaveLoadManager>();
+
+        private readonly IAddItem.Factory _addItemFactory = item => Substitute.For<IAddItem>();
+        private readonly IRemoveItem.Factory _removeItemFactory = item => Substitute.For<IRemoveItem>();
+        private readonly ICycleItem.Factory _cycleItemFactory = item => Substitute.For<ICycleItem>();
+        
         private readonly ItemFactory _sut;
+        
         private static readonly Dictionary<
             ItemType, (Type type, int starting, int? maximum, int? keyDropMaximum)> ExpectedValues =
                 new Dictionary<ItemType, (Type type, int starting, int? maximum, int? keyDropMaximum)>();
 
         public ItemFactoryTests()
         {
-            _mode = new Mode();
-            var autoTrackValueFactory = Substitute.For<IItemAutoTrackValueFactory>();
-            autoTrackValueFactory.GetAutoTrackValue(ItemType.Arrows).ReturnsNullForAnyArgs();
+            _autoTrackValueFactory.GetAutoTrackValue(ItemType.Arrows).ReturnsNullForAnyArgs();
             _sut = new ItemFactory(
-                () => Substitute.For<IItemDictionary>(), () => autoTrackValueFactory,
+                () => _items, () => _autoTrackValueFactory,
                 (starting, autoTrackValue) => new Item(
-                    Substitute.For<ISaveLoadManager>(),
-                    Substitute.For<IUndoRedoManager>(), item => Substitute.For<IAddItem>(),
-                    item => Substitute.For<IRemoveItem>(), starting, autoTrackValue),
+                    _saveLoadManager, _addItemFactory, _removeItemFactory, starting, autoTrackValue),
                 (starting, maximum, autoTrackValue) => new CappedItem(
-                    Substitute.For<ISaveLoadManager>(),
-                    Substitute.For<IUndoRedoManager>(), item => Substitute.For<IAddItem>(),
-                    item => Substitute.For<IRemoveItem>(), starting, maximum, autoTrackValue),
+                    _saveLoadManager, _addItemFactory, _removeItemFactory, _cycleItemFactory, starting, maximum,
+                    autoTrackValue),
                 () => new CrystalRequirementItem(
-                    Substitute.For<ISaveLoadManager>(),
-                    Substitute.For<IUndoRedoManager>(), item => Substitute.For<IAddItem>(),
-                    item => Substitute.For<IRemoveItem>()),
+                    _saveLoadManager, _addItemFactory, _removeItemFactory, _cycleItemFactory),
                 (genericKey, nonKeyDropMaximum, keyDropMaximum, autoTrackValue) => new KeyItem(
-                    _mode, Substitute.For<ISaveLoadManager>(),
-                    Substitute.For<IUndoRedoManager>(), item => Substitute.For<IAddItem>(),
-                    item => Substitute.For<IRemoveItem>(), genericKey, nonKeyDropMaximum, keyDropMaximum,
-                    autoTrackValue));
+                    _mode, _saveLoadManager, _addItemFactory, _removeItemFactory, _cycleItemFactory, genericKey,
+                    nonKeyDropMaximum, keyDropMaximum, autoTrackValue));
         }
 
         private static void PopulateExpectedValues()
@@ -388,7 +388,7 @@ namespace OpenTracker.UnitTests.Models.Items
         [MemberData(nameof(GetItem_KeyDropMaximumShouldEqualExpectedData))]
         public void GetItem_KeyDropMaximumShouldEqualExpected(int expected, ItemType type)
         {
-            _mode.KeyDropShuffle = true;
+            _mode.KeyDropShuffle.Returns(true);
             var item = (ICappedItem)_sut.GetItem(type);
             
             Assert.Equal(expected, item.Maximum);

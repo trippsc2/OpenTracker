@@ -37,7 +37,7 @@ namespace OpenTracker.UnitTests.Models.BossPlacements
         [InlineData(BossType.Lanmolas, BossPlacementID.GTBoss2)]
         [InlineData(BossType.Moldorm, BossPlacementID.GTBoss3)]
         [InlineData(BossType.Aga, BossPlacementID.GTFinalBoss)]
-        public void GetBossPlacement_DefaultBossPropertyShouldMatchExpected(BossType expected, BossPlacementID id)
+        public void GetBossPlacement_ShouldSetDefaultBossToExpected(BossType expected, BossPlacementID id)
         {
             var bossPlacement = _sut.GetBossPlacement(id);
             

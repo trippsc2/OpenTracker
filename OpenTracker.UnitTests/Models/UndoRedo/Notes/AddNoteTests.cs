@@ -2,6 +2,7 @@ using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Markings;
+using OpenTracker.Models.UndoRedo.Markings;
 using OpenTracker.Models.UndoRedo.Notes;
 using Xunit;
 
@@ -9,16 +10,19 @@ namespace OpenTracker.UnitTests.Models.UndoRedo.Notes
 {
     public class AddNoteTests
     {
-        private readonly ILocationNoteCollection _notes;
+        private readonly ILocationNoteCollection _notes = Substitute.For<ILocationNoteCollection>();
         private readonly AddNote _sut;
 
         public AddNoteTests()
         {
-            _notes = Substitute.For<ILocationNoteCollection>();
             var location = Substitute.For<ILocation>();
+
+            static IChangeMarking ChangeMarkingFactory(IMarking marking, MarkType newMarking) =>
+                Substitute.For<IChangeMarking>();
+            
             location.Notes.Returns(_notes);
 
-            _sut = new AddNote(() => new Marking(), location);
+            _sut = new AddNote(() => new Marking(ChangeMarkingFactory), location);
         }
 
         [Theory]

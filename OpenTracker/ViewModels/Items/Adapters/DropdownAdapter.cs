@@ -13,7 +13,6 @@ namespace OpenTracker.ViewModels.Items.Adapters
     public class DropdownAdapter : ViewModelBase, IItemAdapter
     {
         private readonly IUndoRedoManager _undoRedoManager;
-        private readonly IUndoableFactory _undoableFactory;
 
         private readonly IDropdown _dropdown;
         private readonly string _imageSourceBase;
@@ -34,21 +33,15 @@ namespace OpenTracker.ViewModels.Items.Adapters
         /// <param name="undoRedoManager">
         /// The undo/redo manager.
         /// </param>
-        /// <param name="undoableFactory">
-        /// The factory for creating undoable actions.
-        /// </param>
         /// <param name="imageSourceBase">
         /// A string representing the base image source.
         /// </param>
         /// <param name="dropdown">
         /// An item that is to be represented by this control.
         /// </param>
-        public DropdownAdapter(
-            IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory, IDropdown dropdown,
-            string imageSourceBase)
+        public DropdownAdapter(IUndoRedoManager undoRedoManager, IDropdown dropdown, string imageSourceBase)
         {
             _undoRedoManager = undoRedoManager;
-            _undoableFactory = undoableFactory;
 
             _dropdown = dropdown;
             _imageSourceBase = imageSourceBase;
@@ -85,7 +78,7 @@ namespace OpenTracker.ViewModels.Items.Adapters
         /// </summary>
         private void CheckDropdown()
         {
-            _undoRedoManager.NewAction(_undoableFactory.GetCheckDropdown(_dropdown));
+            _undoRedoManager.NewAction(_dropdown.CreateCheckDropdownAction());
         }
 
         /// <summary>
@@ -93,7 +86,7 @@ namespace OpenTracker.ViewModels.Items.Adapters
         /// </summary>
         private void UncheckDropdown()
         {
-            _undoRedoManager.NewAction(_undoableFactory.GetUncheckDropdown(_dropdown));
+            _undoRedoManager.NewAction(_dropdown.CreateUncheckDropdownAction());
         }
 
         /// <summary>

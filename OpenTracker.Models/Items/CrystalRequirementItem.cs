@@ -1,6 +1,6 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using OpenTracker.Models.SaveLoad;
-using OpenTracker.Models.UndoRedo;
 using OpenTracker.Models.UndoRedo.Items;
 using ReactiveUI;
 
@@ -24,19 +24,19 @@ namespace OpenTracker.Models.Items
         /// <param name="saveLoadManager">
         /// The save/load manager.
         /// </param>
-        /// <param name="undoRedoManager">
-        /// The undo/redo manager.
-        /// </param>
         /// <param name="addItemFactory">
         /// An Autofac factory for creating undoable actions to add items.
         /// </param>
         /// <param name="removeItemFactory">
         /// An Autofac factory for creating undoable actions to remove items.
         /// </param>
+        /// <param name="cycleItemFactory">
+        /// An Autofac factory for creating undoable actions to cycle the item.
+        /// </param>
         public CrystalRequirementItem(
-            ISaveLoadManager saveLoadManager, IUndoRedoManager undoRedoManager, IAddItem.Factory addItemFactory,
-            IRemoveItem.Factory removeItemFactory)
-            : base(saveLoadManager, undoRedoManager, addItemFactory, removeItemFactory, 0, 7,
+            ISaveLoadManager saveLoadManager, IAddItem.Factory addItemFactory, IRemoveItem.Factory removeItemFactory,
+            ICycleItem.Factory cycleItemFactory)
+            : base(saveLoadManager, addItemFactory, removeItemFactory, cycleItemFactory, 0, 7,
                 null)
         {
             PropertyChanged += OnPropertyChanged;
@@ -59,11 +59,6 @@ namespace OpenTracker.Models.Items
             }
         }
 
-        public override bool CanAdd()
-        {
-            return Known && base.CanAdd();
-        }
-
         public override void Add()
         {
             if (!Known)
@@ -72,39 +67,46 @@ namespace OpenTracker.Models.Items
                 return;
             }
 
-            if (Current < Maximum)
-            {
-                Current++;
-                return;
-            }
-
-            Current = 0;
-            Known = false;
+            base.Add();
         }
         
         public override bool CanRemove()
         {
-            return Known || Current > 0;
+            return Known || base.CanRemove();
         }
 
         public override void Remove()
         {
             if (Current > 0)
             {
-                Current--;
+                base.Remove();
                 return;
+            }
+
+            if (!Known)
+            {
+                throw new Exception("The item cannot be removed, because it is already 0.");
             }
             
-            if (Known)
+            Known = false;
+        }
+
+        public override void Cycle(bool reverse = false)
+        {
+            switch (reverse)
             {
-                Known = false;
-                return;
+                case true when !CanRemove():
+                    Known = true;
+                    Current = Maximum;
+                    return;
+                case false when !CanAdd():
+                    Known = false;
+                    Current = 0;
+                    return;
+                default:
+                    base.Cycle(reverse);
+                    break;
             }
-
-            Known = true;
-            Current = Maximum;
-
-            Current--;
         }
 
         /// <summary>
@@ -114,6 +116,25 @@ namespace OpenTracker.Models.Items
         {
             Known = false;
             base.Reset();
+        }
+
+        public override ItemSaveData Save()
+        {
+            var saveData = base.Save();
+            saveData.Known = Known;
+            
+            return saveData;
+        }
+
+        public override void Load(ItemSaveData? saveData)
+        {
+            if (saveData is null)
+            {
+                return;
+            }
+            
+            base.Load(saveData);
+            Known = saveData!.Known;
         }
     }
 }

@@ -14,7 +14,6 @@ namespace OpenTracker.Models.Items
     public class Item : ReactiveObject, IItem
     {
         private readonly ISaveLoadManager _saveLoadManager;
-        private readonly IUndoRedoManager _undoRedoManager;
 
         private readonly IAddItem.Factory _addItemFactory;
         private readonly IRemoveItem.Factory _removeItemFactory;
@@ -35,9 +34,6 @@ namespace OpenTracker.Models.Items
         /// <param name="saveLoadManager">
         /// The save/load manager.
         /// </param>
-        /// <param name="undoRedoManager">
-        /// The undo/redo manager.
-        /// </param>
         /// <param name="addItemFactory">
         /// An Autofac factory for creating undoable actions to add items.
         /// </param>
@@ -51,14 +47,13 @@ namespace OpenTracker.Models.Items
         /// The auto-track value.
         /// </param>
         public Item(
-            ISaveLoadManager saveLoadManager, IUndoRedoManager undoRedoManager, IAddItem.Factory addItemFactory,
-            IRemoveItem.Factory removeItemFactory, int starting, IAutoTrackValue? autoTrackValue)
+            ISaveLoadManager saveLoadManager, IAddItem.Factory addItemFactory, IRemoveItem.Factory removeItemFactory,
+            int starting, IAutoTrackValue? autoTrackValue)
         {
             _saveLoadManager = saveLoadManager;
             
             _starting = starting;
             _autoTrackValue = autoTrackValue;
-            _undoRedoManager = undoRedoManager;
             _addItemFactory = addItemFactory;
             _removeItemFactory = removeItemFactory;
 
@@ -109,9 +104,9 @@ namespace OpenTracker.Models.Items
         /// <summary>
         /// Creates a new undoable action to add an item and sends it to the undo/redo manager.
         /// </summary>
-        public void AddItem()
+        public IUndoable CreateAddItemAction()
         {
-            _undoRedoManager.NewAction(_addItemFactory(this));
+            return _addItemFactory(this);
         }
 
         /// <summary>
@@ -136,9 +131,9 @@ namespace OpenTracker.Models.Items
         /// <summary>
         /// Creates a new undoable action to remove an item and sends it to the undo/redo manager.
         /// </summary>
-        public void RemoveItem()
+        public IUndoable CreateRemoveItemAction()
         {
-            _undoRedoManager.NewAction(_removeItemFactory(this));
+            return _removeItemFactory(this);
         }
 
         /// <summary>
@@ -157,9 +152,9 @@ namespace OpenTracker.Models.Items
         /// </summary>
         public virtual void Remove()
         {
-            if (Current == 0)
+            if (Current <= 0)
             {
-                throw new Exception("Cannot remove from item.");
+                throw new Exception("Item cannot be removed, because it is already 0.");
             }
 
             Current--;
@@ -179,7 +174,7 @@ namespace OpenTracker.Models.Items
         /// <returns>
         /// A new item save data instance.
         /// </returns>
-        public ItemSaveData Save()
+        public virtual ItemSaveData Save()
         {
             return new ItemSaveData()
             {
@@ -190,11 +185,11 @@ namespace OpenTracker.Models.Items
         /// <summary>
         /// Loads item save data.
         /// </summary>
-        public void Load(ItemSaveData saveData)
+        public virtual void Load(ItemSaveData? saveData)
         {
-            if (saveData == null)
+            if (saveData is null)
             {
-                throw new ArgumentNullException(nameof(saveData));
+                return;
             }
 
             Current = saveData.Current;

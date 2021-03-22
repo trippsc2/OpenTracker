@@ -16,8 +16,7 @@ namespace OpenTracker.ViewModels.MapLocations
     public class ShopMapLocationVM : ViewModelBase, IShapedMapLocationVMBase
     {
         private readonly IUndoRedoManager _undoRedoManager;
-        private readonly IUndoableFactory _undoableFactory;
-        
+
         private readonly IMapLocationColorProvider _colorProvider;
         private readonly IMapLocation _mapLocation;
 
@@ -39,9 +38,6 @@ namespace OpenTracker.ViewModels.MapLocations
         /// <param name="undoRedoManager">
         /// The undo/redo manager.
         /// </param>
-        /// <param name="undoableFactory">
-        /// A factory for creating undoable actions.
-        /// </param>
         /// <param name="colorProvider">
         /// The map location control color provider.
         /// </param>
@@ -49,12 +45,10 @@ namespace OpenTracker.ViewModels.MapLocations
         /// The map location data.
         /// </param>
         public ShopMapLocationVM(
-            IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory,
-            IMapLocationColorProvider.Factory colorProvider, IMapLocation mapLocation)
+            IUndoRedoManager undoRedoManager, IMapLocationColorProvider.Factory colorProvider, IMapLocation mapLocation)
         {
             _undoRedoManager = undoRedoManager;
-            _undoableFactory = undoableFactory;
-            
+
             _colorProvider = colorProvider(mapLocation);
             _mapLocation = mapLocation;
 
@@ -96,7 +90,7 @@ namespace OpenTracker.ViewModels.MapLocations
         /// </param>
         private void ClearLocation(bool force)
         {
-            _undoRedoManager.NewAction(_undoableFactory.GetClearLocation(_mapLocation.Location!, force));
+            _undoRedoManager.NewAction(_mapLocation.Location.CreateClearLocationAction(force));
         }
 
         /// <summary>
@@ -104,7 +98,7 @@ namespace OpenTracker.ViewModels.MapLocations
         /// </summary>
         private void PinLocation()
         {
-            _undoRedoManager.NewAction(_undoableFactory.GetPinLocation(_mapLocation.Location!));
+            _undoRedoManager.NewAction(_mapLocation.Location.CreatePinLocationAction());
         }
 
         /// <summary>

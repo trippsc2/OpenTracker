@@ -32,6 +32,8 @@ namespace OpenTracker.Models.AutoTracking.Memory
             _memoryAddress = memoryAddress;
             _flag = flag;
 
+            UpdateFlag();
+            
             _memoryAddress.PropertyChanged += OnMemoryChanged;
         }
 

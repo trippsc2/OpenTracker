@@ -5,8 +5,8 @@ namespace OpenTracker.Models.UndoRedo.Markings
     /// <summary>
     /// This interface contains undoable action data to set a marking.
     /// </summary>
-    public interface ISetMarking : IUndoable
+    public interface IChangeMarking : IUndoable
     {
-        delegate ISetMarking Factory(IMarking marking, MarkType newMarking);
+        delegate IChangeMarking Factory(IMarking marking, MarkType newMarking);
     }
 }

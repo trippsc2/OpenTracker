@@ -21,7 +21,6 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
     {
         private readonly IPrizeDictionary _prizes;
         private readonly IUndoRedoManager _undoRedoManager;
-        private readonly IUndoableFactory _undoableFactory;
 
         private readonly IPrizeSection _section;
 
@@ -63,19 +62,13 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
         /// <param name="undoRedoManager">
         /// The undo/redo manager.
         /// </param>
-        /// <param name="undoableFactory">
-        /// A factory for creating undoable actions.
-        /// </param>
         /// <param name="section">
         /// The prize section to be presented.
         /// </param>
-        public PrizeSectionIconVM(
-            IPrizeDictionary prizes, IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory,
-            IPrizeSection section)
+        public PrizeSectionIconVM(IPrizeDictionary prizes, IUndoRedoManager undoRedoManager, IPrizeSection section)
         {
             _prizes = prizes;
             _undoRedoManager = undoRedoManager;
-            _undoableFactory = undoableFactory;
 
             _section = section;
             
@@ -135,7 +128,7 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
         /// </param>
         private void TogglePrize(bool force = false)
         {
-            _undoRedoManager.NewAction(_undoableFactory.GetTogglePrize(_section, force));
+            _undoRedoManager.NewAction(_section.CreateTogglePrizeSectionAction(force));
         }
 
         /// <summary>
@@ -143,7 +136,7 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
         /// </summary>
         private void ChangePrize()
         {
-            _undoRedoManager.NewAction(_undoableFactory.GetChangePrize(_section.PrizePlacement));
+            _undoRedoManager.NewAction(_section.PrizePlacement.CreateChangePrizeAction());
         }
 
         /// <summary>

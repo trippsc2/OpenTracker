@@ -18,9 +18,8 @@ namespace OpenTracker.ViewModels.Items.Adapters
     public class PairItemAdapter : ViewModelBase, IItemAdapter
     {
         private readonly IUndoRedoManager _undoRedoManager;
-        private readonly IUndoableFactory _undoableFactory;
 
-        private readonly IItem[] _items;
+        private readonly ICappedItem[] _items;
         private readonly string _imageSourceBase;
 
         public string ImageSource =>
@@ -35,15 +34,12 @@ namespace OpenTracker.ViewModels.Items.Adapters
         public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
 
         public delegate PairItemAdapter Factory(IItem[] items, string imageSourceBase);
-        
+
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="undoRedoManager">
         /// The undo/redo manager.
-        /// </param>
-        /// <param name="undoableFactory">
-        /// A factory for creating undoable actions.
         /// </param>
         /// <param name="imageSourceBase">
         /// A string representing the image source base.
@@ -51,11 +47,9 @@ namespace OpenTracker.ViewModels.Items.Adapters
         /// <param name="items">
         /// An array of items that are to be represented by this control.
         /// </param>
-        public PairItemAdapter(
-            IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory, IItem[] items, string imageSourceBase)
+        public PairItemAdapter(IUndoRedoManager undoRedoManager, ICappedItem[] items, string imageSourceBase)
         {
             _undoRedoManager = undoRedoManager;
-            _undoableFactory = undoableFactory;
 
             _items = items;
             _imageSourceBase = imageSourceBase;
@@ -93,7 +87,7 @@ namespace OpenTracker.ViewModels.Items.Adapters
         /// </summary>
         private void AddFirstItem()
         {
-            _undoRedoManager.NewAction(_undoableFactory.GetCycleItem(_items[0]));
+            _undoRedoManager.NewAction(_items[0].CreateCycleItemAction());
         }
 
         /// <summary>
@@ -102,7 +96,7 @@ namespace OpenTracker.ViewModels.Items.Adapters
         /// </summary>
         private void AddSecondItem()
         {
-            _undoRedoManager.NewAction(_undoableFactory.GetCycleItem(_items[1]));
+            _undoRedoManager.NewAction(_items[1].CreateCycleItemAction());
         }
 
         /// <summary>

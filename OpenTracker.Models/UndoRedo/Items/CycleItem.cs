@@ -7,7 +7,7 @@ namespace OpenTracker.Models.UndoRedo.Items
     /// </summary>
     public class CycleItem : ICycleItem
     {
-        private readonly IItem _item;
+        private readonly ICappedItem _item;
 
         /// <summary>
         /// Constructor
@@ -15,7 +15,7 @@ namespace OpenTracker.Models.UndoRedo.Items
         /// <param name="item">
         /// The item data to be manipulated.
         /// </param>
-        public CycleItem(IItem item)
+        public CycleItem(ICappedItem item)
         {
             _item = item;
         }
@@ -36,7 +36,7 @@ namespace OpenTracker.Models.UndoRedo.Items
         /// </summary>
         public void ExecuteDo()
         {
-            _item.Add();
+            _item.Cycle(false);
         }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace OpenTracker.Models.UndoRedo.Items
         /// </summary>
         public void ExecuteUndo()
         {
-            _item.Remove();
+            _item.Cycle(true);
         }
     }
 }

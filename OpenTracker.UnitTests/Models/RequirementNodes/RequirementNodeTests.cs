@@ -12,7 +12,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
 {
     public class RequirementNodeTests
     {
-        private readonly IMode _mode = new Mode();
+        private readonly IMode _mode = Substitute.For<IMode>();
         private readonly List<INodeConnection> _nodeConnections = new List<INodeConnection>
         {
             Substitute.For<INodeConnection>(),
@@ -50,7 +50,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
         public void DungeonExitsAccessible_AccessibilityShouldReturnNormal_WhenExitsAccessible(
             AccessibilityLevel expected, EntranceShuffle entranceShuffle, int dungeonExitsAccessible)
         {
-            _mode.EntranceShuffle = entranceShuffle;
+            _mode.EntranceShuffle.Returns(entranceShuffle);
             _sut.DungeonExitsAccessible = dungeonExitsAccessible;
             
             Assert.Equal(expected, _sut.Accessibility);
@@ -72,7 +72,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
         public void ExitsAccessible_AccessibilityShouldReturnNormal_WhenExitsAccessible(
             AccessibilityLevel expected, EntranceShuffle entranceShuffle, int exitsAccessible)
         {
-            _mode.EntranceShuffle = entranceShuffle;
+            _mode.EntranceShuffle.Returns(entranceShuffle);
             _sut.ExitsAccessible = exitsAccessible;
             
             Assert.Equal(expected, _sut.Accessibility);
@@ -94,7 +94,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
         public void InsanityExitsAccessible_AccessibilityShouldReturnNormal_WhenExitsAccessible(
             AccessibilityLevel expected, EntranceShuffle entranceShuffle, int insanityExitsAccessible)
         {
-            _mode.EntranceShuffle = entranceShuffle;
+            _mode.EntranceShuffle.Returns(entranceShuffle);
             _sut.InsanityExitsAccessible = insanityExitsAccessible;
             
             Assert.Equal(expected, _sut.Accessibility);
@@ -130,7 +130,12 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
              _sut.ExitsAccessible = 1;
              
              Assert.PropertyChanged(_sut, nameof(IRequirementNode.Accessibility),
-                 () => _mode.EntranceShuffle = EntranceShuffle.All);
+                 () =>
+                 {
+                     _mode.EntranceShuffle.Returns(EntranceShuffle.All);
+                     _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                         _mode, new PropertyChangedEventArgs(nameof(IMode.EntranceShuffle)));
+                 });
          }
 
          [Fact]

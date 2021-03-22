@@ -178,8 +178,7 @@ namespace OpenTracker
                 nameof(SectionFactory),
                 nameof(SectionAutoTrackingFactory),
                 nameof(SequenceBreakDictionary),
-                nameof(UndoRedoManager),
-                nameof(UndoableFactory)
+                nameof(UndoRedoManager)
             };
 
         private static List<string> GUISkipTypes =>

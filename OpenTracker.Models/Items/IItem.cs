@@ -1,5 +1,6 @@
 ﻿using OpenTracker.Models.AutoTracking.Values;
 using OpenTracker.Models.SaveLoad;
+using OpenTracker.Models.UndoRedo;
 using ReactiveUI;
 
 namespace OpenTracker.Models.Items
@@ -22,11 +23,11 @@ namespace OpenTracker.Models.Items
         /// <summary>
         /// Creates a new undoable action to add an item and sends it to the undo/redo manager.
         /// </summary>
-        void AddItem();
+        IUndoable CreateAddItemAction();
 
         /// <summary>
         /// Creates a new undoable action to remove an item and sends it to the undo/redo manager.
         /// </summary>
-        void RemoveItem();
+        IUndoable CreateRemoveItemAction();
     }
 }

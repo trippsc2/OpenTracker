@@ -1,6 +1,8 @@
 ﻿using System.ComponentModel;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
+using OpenTracker.Models.UndoRedo;
+using OpenTracker.Models.UndoRedo.Dropdowns;
 using ReactiveUI;
 
 namespace OpenTracker.Models.Dropdowns
@@ -11,6 +13,9 @@ namespace OpenTracker.Models.Dropdowns
     public class Dropdown : ReactiveObject, IDropdown
     {
         private readonly IRequirement _requirement;
+
+        private readonly ICheckDropdown.Factory _checkDropdownFactory;
+        private readonly IUncheckDropdown.Factory _uncheckDropdownFactory;
 
         public bool RequirementMet => _requirement.Met;
 
@@ -24,12 +29,22 @@ namespace OpenTracker.Models.Dropdowns
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="checkDropdownFactory">
+        /// An Autofac factory for creating undoable actions to check the dropdown.
+        /// </param>
+        /// <param name="uncheckDropdownFactory">
+        /// An Autofac factory for creating undoable actions to uncheck the dropdown.
+        /// </param>
         /// <param name="requirement">
         /// The requirement for the dropdown to be relevant.
         /// </param>
-        public Dropdown(IRequirement requirement)
+        public Dropdown(
+            ICheckDropdown.Factory checkDropdownFactory, IUncheckDropdown.Factory uncheckDropdownFactory,
+            IRequirement requirement)
         {
             _requirement = requirement;
+            _checkDropdownFactory = checkDropdownFactory;
+            _uncheckDropdownFactory = uncheckDropdownFactory;
 
             _requirement.PropertyChanged += OnRequirementChanged;
         }
@@ -49,6 +64,28 @@ namespace OpenTracker.Models.Dropdowns
             {
                 this.RaisePropertyChanged(nameof(RequirementMet));
             }
+        }
+
+        /// <summary>
+        /// Returns a new undoable action to check the dropdown.
+        /// </summary>
+        /// <returns>
+        /// A new undoable action to check the dropdown.
+        /// </returns>
+        public IUndoable CreateCheckDropdownAction()
+        {
+            return _checkDropdownFactory(this);
+        }
+
+        /// <summary>
+        /// Returns a new undoable action to uncheck the dropdown.
+        /// </summary>
+        /// <returns>
+        /// A new undoable action to uncheck the dropdown.
+        /// </returns>
+        public IUndoable CreateUncheckDropdownAction()
+        {
+            return _uncheckDropdownFactory(this);
         }
 
         /// <summary>

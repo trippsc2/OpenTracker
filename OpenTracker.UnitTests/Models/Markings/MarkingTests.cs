@@ -1,15 +1,20 @@
+using NSubstitute;
 using OpenTracker.Models.Markings;
+using OpenTracker.Models.UndoRedo.Markings;
 using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Markings
 {
     public class MarkingTests
     {
+        private readonly IChangeMarking.Factory _changeMarkingFactory =
+            (marking, newMarking) => Substitute.For<IChangeMarking>();
+        
         private readonly Marking _sut;
 
         public MarkingTests()
         {
-            _sut = new Marking() { Mark = MarkType.Unknown };
+            _sut = new Marking(_changeMarkingFactory) { Mark = MarkType.Unknown };
         }
 
         [Fact]
