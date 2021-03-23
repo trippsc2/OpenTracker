@@ -13,9 +13,9 @@ namespace OpenTracker.UnitTests.Models.Items
     {
         private readonly ISaveLoadManager _saveLoadManager = Substitute.For<ISaveLoadManager>();
         
-        private readonly IAddItem.Factory _addItemFactory = item => Substitute.For<IAddItem>();
-        private readonly IRemoveItem.Factory _removeItemFactory = item => Substitute.For<IRemoveItem>();
-        private readonly ICycleItem.Factory _cycleItemFactory = item => Substitute.For<ICycleItem>();
+        private readonly IAddItem.Factory _addItemFactory = _ => Substitute.For<IAddItem>();
+        private readonly IRemoveItem.Factory _removeItemFactory = _ => Substitute.For<IRemoveItem>();
+        private readonly ICycleItem.Factory _cycleItemFactory = _ => Substitute.For<ICycleItem>();
 
         private readonly IAutoTrackValue _autoTrackValue = Substitute.For<IAutoTrackValue>();
         

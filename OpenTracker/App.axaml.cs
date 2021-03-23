@@ -79,7 +79,7 @@ namespace OpenTracker
                 
                 SetThemeToLastOrDefault(themeManager);
 
-                desktop.Exit += (sender, e) =>
+                desktop.Exit += (_, _) =>
                 {
                     saveLoadManager.SaveSequenceBreaks(AppPath.SequenceBreakPath);
                     themeManager.SaveSelectedTheme(AppPath.LastThemeFilePath);

@@ -31,7 +31,7 @@ namespace OpenTracker.Utils
 
         private void NotifyThreadPoolOfPendingWork()
         {
-            ThreadPool.UnsafeQueueUserWorkItem(state =>
+            ThreadPool.UnsafeQueueUserWorkItem(_ =>
             {
                 _currentThreadIsProcessingItems = true;
 

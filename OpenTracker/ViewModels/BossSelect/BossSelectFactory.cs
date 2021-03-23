@@ -38,11 +38,8 @@ namespace OpenTracker.ViewModels.BossSelect
                 _buttonFactory(bossPlacement, null)
             };
 
-            // TODO - Convert to foreach in .NET 5
-            for (var i = 0; i < Enum.GetValues(typeof(BossType)).Length; i++)
+            foreach (BossType boss in Enum.GetValues(typeof(BossType)))
             {
-                var boss = (BossType)i;
-                
                 if (boss != BossType.Aga && boss != BossType.Test)
                 {
                     buttons.Add(_buttonFactory(bossPlacement, boss));

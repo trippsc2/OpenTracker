@@ -16,7 +16,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
         {
             var builder = ContainerConfig.GetContainerBuilder();
 
-            builder.Register(context => Substitute.For<IRequirementNode>());
+            builder.Register(_ => Substitute.For<IRequirementNode>());
             
             using var scope = builder.Build().BeginLifetimeScope();
             var mode = scope.Resolve<IMode>();

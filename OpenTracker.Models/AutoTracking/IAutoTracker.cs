@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using OpenTracker.Models.AutoTracking.SNESConnectors;
 using ReactiveUI;
 
 namespace OpenTracker.Models.AutoTracking

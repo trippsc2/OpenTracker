@@ -59,7 +59,7 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private async void OnColorChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnColorChanged(object? sender, PropertyChangedEventArgs e)
         {
             await UpdateTextColor();
         }
@@ -73,7 +73,7 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private async void OnSectionChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnSectionChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ISection.Accessibility))
             {
@@ -90,7 +90,7 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private async void OnRequirementChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnRequirementChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IRequirement.Accessibility))
             {

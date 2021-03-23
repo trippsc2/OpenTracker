@@ -1,4 +1,4 @@
-﻿namespace OpenTracker.Models.AutoTracking
+﻿namespace OpenTracker.Models.AutoTracking.SNESConnectors
 {
 	/// <summary>
 	/// This class contains the logic to translate SNES memory addresses to be used by the USB2SNES connector.

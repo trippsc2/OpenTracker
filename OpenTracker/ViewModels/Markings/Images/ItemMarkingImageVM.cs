@@ -47,7 +47,7 @@ namespace OpenTracker.ViewModels.Markings.Images
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private async void OnItemChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnItemChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IItem.Current))
             {

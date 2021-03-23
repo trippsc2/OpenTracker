@@ -82,10 +82,9 @@ namespace OpenTracker.ViewModels.AutoTracking
 
             _errorBoxFactory = errorBoxFactory;
             
-            // TODO - Convert to foreach in .NET 5
-            for (var i = 0; i < Enum.GetValues(typeof(LogLevel)).Length; i++)
+            foreach (LogLevel logLevel in Enum.GetValues(typeof(LogLevel)))
             {
-                LogLevelOptions.Add(((LogLevel)i).ToString());                
+                LogLevelOptions.Add(logLevel.ToString());                
             }
 
             ResetLogCommand = ReactiveCommand.CreateFromTask(ResetLog);

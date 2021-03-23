@@ -76,7 +76,7 @@ namespace OpenTracker.ViewModels.Items.Adapters
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private async void OnItemChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnItemChanged(object? sender, PropertyChangedEventArgs e)
         {
             await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(ImageSource)));
         }

@@ -46,7 +46,7 @@ namespace OpenTracker.Models.AutoTracking.Memory
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnMemoryChanged(object sender, PropertyChangedEventArgs e)
+        private void OnMemoryChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IMemoryAddress.Value))
             {

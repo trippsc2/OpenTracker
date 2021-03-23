@@ -51,10 +51,9 @@ namespace OpenTracker.ViewModels.Areas
         {
             var mapLocations = new List<IMapLocationVM>();
 
-            // TODO - Convert to foreach in .NET 5
-            for (var i = 0; i < Enum.GetValues(typeof(LocationID)).Length; i++)
+            foreach (LocationID id in Enum.GetValues(typeof(LocationID)))
             {
-                foreach (var mapLocation in _locations[(LocationID)i].MapLocations)
+                foreach (var mapLocation in _locations[id].MapLocations)
                 {
                     mapLocations.Add(_locationFactory.GetMapLocation(mapLocation));
                 }

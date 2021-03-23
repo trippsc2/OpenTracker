@@ -54,10 +54,9 @@ namespace OpenTracker.ValueConverters
             }
         }
 
-        // Not implemented.  Bitmap bindings are always one-way.
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new NotImplementedException();
+            throw new Exception("All bindings should be one-way.");
         }
     }
 }

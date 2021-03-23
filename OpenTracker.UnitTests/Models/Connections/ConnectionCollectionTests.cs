@@ -12,9 +12,8 @@ namespace OpenTracker.UnitTests.Models.Connections
     {
         private readonly ILocationDictionary _locations = Substitute.For<ILocationDictionary>();
         
-        private readonly IConnection.Factory _connectionFactory =
-            (location1, location2) => Substitute.For<IConnection>();
-        private readonly IAddConnection.Factory _addConnectionFactory = connection => Substitute.For<IAddConnection>();
+        private readonly IConnection.Factory _connectionFactory = (_, _) => Substitute.For<IConnection>();
+        private readonly IAddConnection.Factory _addConnectionFactory = _ => Substitute.For<IAddConnection>();
 
         private readonly IConnection _connection = Substitute.For<IConnection>();
         private readonly ConnectionSaveData _connectionSaveData = new ConnectionSaveData();

@@ -117,11 +117,6 @@ namespace OpenTracker.Utils.Themes
                 
                 var name = File.ReadAllText(file);
 
-                if (name == null)
-                {
-                    return;
-                }
-                
                 var theme = Themes.FirstOrDefault(x => x.Name == name);
 
                 if (theme is null)

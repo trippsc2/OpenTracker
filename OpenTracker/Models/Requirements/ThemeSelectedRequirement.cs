@@ -41,7 +41,7 @@ namespace OpenTracker.Models.Requirements
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnThemeManagerChanged(object sender, PropertyChangedEventArgs e)
+        private void OnThemeManagerChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IThemeManager.SelectedTheme))
             {

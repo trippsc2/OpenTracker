@@ -54,7 +54,7 @@ namespace OpenTracker.ViewModels.Tooltips
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private async void OnMarkingChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnMarkingChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IMarking.Mark))
             {

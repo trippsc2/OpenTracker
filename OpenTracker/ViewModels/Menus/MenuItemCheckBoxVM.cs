@@ -21,7 +21,7 @@ namespace OpenTracker.ViewModels.Menus
             _requirement.PropertyChanged += OnRequirementChanged;
         }
 
-        private async void OnRequirementChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnRequirementChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IRequirement.Met))
             {

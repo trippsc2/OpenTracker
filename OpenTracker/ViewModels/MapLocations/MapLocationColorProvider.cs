@@ -67,7 +67,7 @@ namespace OpenTracker.ViewModels.MapLocations
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private async void OnColorChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnColorChanged(object? sender, PropertyChangedEventArgs e)
         {
             await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Color)));
         }
@@ -81,7 +81,7 @@ namespace OpenTracker.ViewModels.MapLocations
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private async void OnLocationChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnLocationChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ILocation.Accessibility))
             {

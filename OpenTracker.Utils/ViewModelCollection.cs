@@ -22,7 +22,7 @@ namespace OpenTracker.Utils
 
         public event NotifyCollectionChangedEventHandler? CollectionChanged;
 
-        public ViewModelCollection(IObservableCollection<TModel> model)
+        protected ViewModelCollection(IObservableCollection<TModel> model)
         {
             _model = model;
             _list = new List<TViewModel>(from m in _model select CreateViewModel(m));
@@ -41,39 +41,49 @@ namespace OpenTracker.Utils
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
+                {
+                    if (e.NewItems is null)
                     {
-                        foreach (var item in e.NewItems)
-                        {
-                            var vmItem = CreateViewModel((TModel)item!);
-
-                            if (e.NewStartingIndex != _list.Count)
-                            {
-                                _list.Insert(_model.IndexOf((TModel)item!), vmItem);
-                            }
-                            else
-                            {
-                                _list.Add(vmItem);
-                            }
-
-                            OnCollectionChanged(e.Action, vmItem, e.NewStartingIndex);
-                        }
+                        return;
                     }
+                    
+                    foreach (var item in e.NewItems)
+                    {
+                        var vmItem = CreateViewModel((TModel)item!);
+
+                        if (e.NewStartingIndex != _list.Count)
+                        {
+                            _list.Insert(_model.IndexOf((TModel)item!), vmItem);
+                        }
+                        else
+                        {
+                            _list.Add(vmItem);
+                        }
+
+                        OnCollectionChanged(e.Action, vmItem, e.NewStartingIndex);
+                    }
+                }
                     break;
                 case NotifyCollectionChangedAction.Remove:
+                {
+                    if (e.OldItems is null)
                     {
-                        foreach (var item in e.OldItems)
-                        {
-                            IEnumerable<TViewModel> query;
+                        return;
+                    }
+                    
+                    foreach (var item in e.OldItems)
+                    {
+                        IEnumerable<TViewModel> query;
 
-                            while ((query = from vm in _list where vm.Model == item select vm).Count() > 0)
-                            {
-                                var vmItem = query.First();
-                                int index = _list.IndexOf(vmItem);
-                                _list.Remove(vmItem);
-                                OnCollectionChanged(e.Action, vmItem, index);
-                            }
+                        while ((query = from vm in _list where vm.Model == item select vm).Any())
+                        {
+                            var vmItem = query.First();
+                            var index = _list.IndexOf(vmItem);
+                            _list.Remove(vmItem);
+                            OnCollectionChanged(e.Action, vmItem, index);
                         }
                     }
+                }
                     break;
                 case NotifyCollectionChangedAction.Reset:
                     {

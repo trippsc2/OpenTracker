@@ -60,7 +60,7 @@ namespace OpenTracker.ViewModels.Items.Adapters
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private async void OnBossChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnBossChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IBossPlacement.Boss))
             {

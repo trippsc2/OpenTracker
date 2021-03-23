@@ -113,7 +113,7 @@ namespace OpenTracker.ViewModels
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private async void OnModeChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnModeChanged(object? sender, PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {

@@ -25,7 +25,7 @@ namespace OpenTracker.ViewModels.Capture.Design
             _captureWindow.PropertyChanged += OnCaptureWindowChanged;
         }
 
-        private async void OnCaptureWindowChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnCaptureWindowChanged(object? sender, PropertyChangedEventArgs e)
         {
             await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(e.PropertyName));
         }

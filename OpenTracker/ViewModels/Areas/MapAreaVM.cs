@@ -46,7 +46,7 @@ namespace OpenTracker.ViewModels.Areas
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private async void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnLayoutChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ILayoutSettings.CurrentMapOrientation))
             {

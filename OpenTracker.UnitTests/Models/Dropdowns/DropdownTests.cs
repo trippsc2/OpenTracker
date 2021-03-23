@@ -12,9 +12,8 @@ namespace OpenTracker.UnitTests.Models.Dropdowns
     {
         private readonly IRequirement _requirement = Substitute.For<IRequirement>();
 
-        private readonly ICheckDropdown.Factory _checkDropdownFactory = dropdown => Substitute.For<ICheckDropdown>();
-        private readonly IUncheckDropdown.Factory _uncheckDropdownFactory =
-            dropdown => Substitute.For<IUncheckDropdown>();
+        private readonly ICheckDropdown.Factory _checkDropdownFactory = _ => Substitute.For<ICheckDropdown>();
+        private readonly IUncheckDropdown.Factory _uncheckDropdownFactory = _ => Substitute.For<IUncheckDropdown>();
         
         private readonly Dropdown _sut;
 

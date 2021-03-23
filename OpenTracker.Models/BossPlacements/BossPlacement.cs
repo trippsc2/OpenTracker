@@ -12,7 +12,6 @@ namespace OpenTracker.Models.BossPlacements
     public class BossPlacement : ReactiveObject, IBossPlacement
     {
         private readonly IMode _mode;
-        private readonly IUndoRedoManager _undoRedoManager;
 
         private readonly IChangeBoss.Factory _changeBossFactory;
 
@@ -31,22 +30,17 @@ namespace OpenTracker.Models.BossPlacements
         /// <param name="mode">
         /// The mode settings.
         /// </param>
-        /// <param name="undoRedoManager">
-        /// The undo/redo manager.
-        /// </param>
         /// <param name="changeBossFactory">
         /// An Autofac factory for creating change boss undoable actions.
         /// </param>
         /// <param name="defaultBoss">
         /// The default boss type for the boss placement.
         /// </param>
-        public BossPlacement(
-            IMode mode, IUndoRedoManager undoRedoManager, IChangeBoss.Factory changeBossFactory, BossType defaultBoss)
+        public BossPlacement(IMode mode, IChangeBoss.Factory changeBossFactory, BossType defaultBoss)
         {
             _mode = mode;
 
             DefaultBoss = defaultBoss;
-            _undoRedoManager = undoRedoManager;
             _changeBossFactory = changeBossFactory;
 
             if (DefaultBoss == BossType.Aga)

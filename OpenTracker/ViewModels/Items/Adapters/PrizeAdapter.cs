@@ -75,7 +75,7 @@ namespace OpenTracker.ViewModels.Items.Adapters
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private async void OnPrizeChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnPrizeChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IPrizePlacement.Prize))
             {
@@ -92,7 +92,7 @@ namespace OpenTracker.ViewModels.Items.Adapters
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private async void OnSectionChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnSectionChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ISection.Available))
             {

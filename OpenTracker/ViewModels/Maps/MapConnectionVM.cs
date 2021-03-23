@@ -113,7 +113,7 @@ namespace OpenTracker.ViewModels.Maps
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private async void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Highlighted))
             {
@@ -130,7 +130,7 @@ namespace OpenTracker.ViewModels.Maps
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private async void OnMapAreaChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnMapAreaChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(MapAreaVM.Orientation))
             {
@@ -150,7 +150,7 @@ namespace OpenTracker.ViewModels.Maps
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private async void OnModeChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnModeChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Mode.EntranceShuffle))
             {
@@ -167,7 +167,7 @@ namespace OpenTracker.ViewModels.Maps
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private async void OnColorsChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnColorsChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ColorSettings.ConnectorColor))
             {

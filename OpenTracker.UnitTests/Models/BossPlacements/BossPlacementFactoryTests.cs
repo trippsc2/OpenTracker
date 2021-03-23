@@ -2,7 +2,6 @@ using Autofac;
 using NSubstitute;
 using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.Modes;
-using OpenTracker.Models.UndoRedo;
 using OpenTracker.Models.UndoRedo.Boss;
 using Xunit;
 
@@ -11,14 +10,12 @@ namespace OpenTracker.UnitTests.Models.BossPlacements
     public class BossPlacementFactoryTests
     {
         private readonly IMode _mode = Substitute.For<IMode>();
-        private readonly IUndoRedoManager _undoRedoManager = Substitute.For<IUndoRedoManager>();
         private readonly IBossPlacementFactory _sut;
 
         public BossPlacementFactoryTests()
         {
             _sut = new BossPlacementFactory(boss => new BossPlacement(
-                _mode, _undoRedoManager, (bossPlacement, newValue) => Substitute.For<IChangeBoss>(),
-                boss));
+                _mode, (_, _) => Substitute.For<IChangeBoss>(), boss));
         }
         
         [Theory]

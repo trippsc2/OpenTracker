@@ -1,4 +1,4 @@
-﻿namespace OpenTracker.Models.AutoTracking
+﻿namespace OpenTracker.Models.AutoTracking.SNESConnectors
 {
     /// <summary>
     /// This enum type contains the address translation mode data.

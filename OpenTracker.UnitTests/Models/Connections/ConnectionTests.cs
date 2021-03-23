@@ -9,8 +9,7 @@ namespace OpenTracker.UnitTests.Models.Connections
 {
     public class ConnectionTests
     {
-        private readonly IRemoveConnection.Factory _removeConnectionFactory =
-            connection => Substitute.For<IRemoveConnection>();
+        private readonly IRemoveConnection.Factory _removeConnectionFactory = _ => Substitute.For<IRemoveConnection>();
         
         private readonly List<IMapLocation> _mapLocations;
 

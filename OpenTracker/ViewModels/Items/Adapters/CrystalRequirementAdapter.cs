@@ -80,7 +80,7 @@ namespace OpenTracker.ViewModels.Items.Adapters
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private async void OnItemChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnItemChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ICrystalRequirementItem.Current) ||
                 e.PropertyName == nameof(ICrystalRequirementItem.Known))
@@ -99,7 +99,7 @@ namespace OpenTracker.ViewModels.Items.Adapters
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private async void OnColorsChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnColorsChanged(object? sender, PropertyChangedEventArgs e)
         {
             await UpdateTextColor();
         }

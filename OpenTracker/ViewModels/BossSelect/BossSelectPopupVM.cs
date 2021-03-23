@@ -80,7 +80,7 @@ namespace OpenTracker.ViewModels.BossSelect
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private async void OnAppSettingsChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnAppSettingsChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ILayoutSettings.UIScale))
             {

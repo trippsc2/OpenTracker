@@ -73,7 +73,7 @@ namespace OpenTracker.ViewModels.Dungeons
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private async void OnColorChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnColorChanged(object? sender, PropertyChangedEventArgs e)
         {
             await UpdateTextColor();
         }
@@ -87,7 +87,7 @@ namespace OpenTracker.ViewModels.Dungeons
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private async void OnSectionChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnSectionChanged(object? sender, PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {

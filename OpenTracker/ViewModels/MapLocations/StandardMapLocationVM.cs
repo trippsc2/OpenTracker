@@ -169,7 +169,7 @@ namespace OpenTracker.ViewModels.MapLocations
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private async void OnColorProviderChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnColorProviderChanged(object? sender, PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
@@ -195,7 +195,7 @@ namespace OpenTracker.ViewModels.MapLocations
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private async void OnTrackerSettingsChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnTrackerSettingsChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ITrackerSettings.ShowItemCountsOnMap))
             {
@@ -212,7 +212,7 @@ namespace OpenTracker.ViewModels.MapLocations
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private async void OnModeChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnModeChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName != nameof(IMode.EntranceShuffle))
             {
@@ -231,7 +231,7 @@ namespace OpenTracker.ViewModels.MapLocations
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private async void OnLocationChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnLocationChanged(object? sender, PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {

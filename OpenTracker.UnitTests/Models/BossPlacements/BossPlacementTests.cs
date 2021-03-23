@@ -3,7 +3,6 @@ using NSubstitute;
 using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.SaveLoad;
-using OpenTracker.Models.UndoRedo;
 using OpenTracker.Models.UndoRedo.Boss;
 using Xunit;
 
@@ -12,14 +11,13 @@ namespace OpenTracker.UnitTests.Models.BossPlacements
     public class BossPlacementTests
     {
         private readonly IMode _mode = Substitute.For<IMode>();
-        private readonly IUndoRedoManager _undoRedoManager = Substitute.For<IUndoRedoManager>();
 
-        private readonly IChangeBoss.Factory _changeBossFactory = (placement, value) => Substitute.For<IChangeBoss>(); 
+        private readonly IChangeBoss.Factory _changeBossFactory = (_, _) => Substitute.For<IChangeBoss>(); 
 
         [Fact]
         public void Boss_ShouldRaisePropertyChanged()
         {
-            var sut = new BossPlacement(_mode, _undoRedoManager, _changeBossFactory, BossType.Test)
+            var sut = new BossPlacement(_mode, _changeBossFactory, BossType.Test)
             {
                 Boss = null
             };
@@ -34,7 +32,7 @@ namespace OpenTracker.UnitTests.Models.BossPlacements
         {
             const BossType bossType = BossType.Test;
             _mode.BossShuffle.Returns(false);
-            var sut = new BossPlacement(_mode, _undoRedoManager, _changeBossFactory, bossType)
+            var sut = new BossPlacement(_mode, _changeBossFactory, bossType)
             {
                 Boss = boss
             };
@@ -49,7 +47,7 @@ namespace OpenTracker.UnitTests.Models.BossPlacements
         public void GetCurrentBoss_ShouldReturnBossProperty_WhenBossShuffleTrue(BossType? expected, BossType? boss)
         {
             _mode.BossShuffle.Returns(true);
-            var sut = new BossPlacement(_mode, _undoRedoManager, _changeBossFactory, BossType.Test)
+            var sut = new BossPlacement(_mode, _changeBossFactory, BossType.Test)
             {
                 Boss = boss
             };
@@ -60,7 +58,7 @@ namespace OpenTracker.UnitTests.Models.BossPlacements
         [Fact]
         public void CreateChangeBossAction_ShouldReturnNewChangeBoss()
         {
-            var sut = new BossPlacement(_mode, _undoRedoManager, _changeBossFactory, BossType.Test);
+            var sut = new BossPlacement(_mode, _changeBossFactory, BossType.Test);
             var changeBoss = sut.CreateChangeBossAction(BossType.Test);
             
             Assert.NotNull(changeBoss);
@@ -69,7 +67,7 @@ namespace OpenTracker.UnitTests.Models.BossPlacements
         [Fact]
         public void Reset_BossPropertyShouldEqualNullAfterReset_WhenDefaultBossNotAga()
         {
-            var sut = new BossPlacement(_mode, _undoRedoManager, _changeBossFactory, BossType.Test)
+            var sut = new BossPlacement(_mode, _changeBossFactory, BossType.Test)
             {
                 Boss = BossType.Test
             };
@@ -82,7 +80,7 @@ namespace OpenTracker.UnitTests.Models.BossPlacements
         [Fact]
         public void Reset_BossPropertyShouldEqualAgaAfterReset_WhenDefaultBossAga()
         {
-            var sut = new BossPlacement(_mode, _undoRedoManager, _changeBossFactory, BossType.Aga)
+            var sut = new BossPlacement(_mode, _changeBossFactory, BossType.Aga)
             {
                 Boss = BossType.Test
             };
@@ -95,7 +93,7 @@ namespace OpenTracker.UnitTests.Models.BossPlacements
         [Fact]
         public void Load_BossPropertyShouldEqualSaveDataBossProperty()
         {
-            var sut = new BossPlacement(_mode, _undoRedoManager, _changeBossFactory, BossType.Test)
+            var sut = new BossPlacement(_mode, _changeBossFactory, BossType.Test)
             {
                 Boss = null
             };
@@ -113,7 +111,7 @@ namespace OpenTracker.UnitTests.Models.BossPlacements
         [Fact]
         public void Load_ShouldDoNothing_WhenSaveDataIsNull()
         {
-            var sut = new BossPlacement(_mode, _undoRedoManager, _changeBossFactory, BossType.Test)
+            var sut = new BossPlacement(_mode, _changeBossFactory, BossType.Test)
             {
                 Boss = BossType.Test
             };
@@ -126,7 +124,7 @@ namespace OpenTracker.UnitTests.Models.BossPlacements
         [Fact]
         public void Save_ShouldReturnSaveDataWithBossPropertyEqualToBossProperty()
         {
-            var sut = new BossPlacement(_mode, _undoRedoManager, _changeBossFactory, BossType.Test)
+            var sut = new BossPlacement(_mode, _changeBossFactory, BossType.Test)
             {
                 Boss = BossType.Test
             };
@@ -139,7 +137,7 @@ namespace OpenTracker.UnitTests.Models.BossPlacements
         [Fact]
         public void Save_ShouldReturnSaveDataWithNullBossProperty_WhenBossPropertyIsNull()
         {
-            var sut = new BossPlacement(_mode, _undoRedoManager, _changeBossFactory, BossType.Test)
+            var sut = new BossPlacement(_mode, _changeBossFactory, BossType.Test)
             {
                 Boss = null
             };

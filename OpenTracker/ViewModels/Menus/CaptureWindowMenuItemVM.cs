@@ -34,7 +34,7 @@ namespace OpenTracker.ViewModels.Menus
             _captureWindow.PropertyChanged += OnCaptureWindowChanged;
         }
 
-        private async void OnCaptureWindowChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnCaptureWindowChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ICaptureWindowVM.Name))
             {

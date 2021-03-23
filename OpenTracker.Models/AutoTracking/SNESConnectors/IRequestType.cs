@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace OpenTracker.Models.AutoTracking
+namespace OpenTracker.Models.AutoTracking.SNESConnectors
 {
     /// <summary>
     /// This interface contains auto-tracker request data.

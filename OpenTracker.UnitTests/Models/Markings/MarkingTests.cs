@@ -7,8 +7,7 @@ namespace OpenTracker.UnitTests.Models.Markings
 {
     public class MarkingTests
     {
-        private readonly IChangeMarking.Factory _changeMarkingFactory =
-            (marking, newMarking) => Substitute.For<IChangeMarking>();
+        private readonly IChangeMarking.Factory _changeMarkingFactory = (_, _) => Substitute.For<IChangeMarking>();
         
         private readonly Marking _sut;
 

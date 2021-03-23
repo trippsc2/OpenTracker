@@ -1,4 +1,4 @@
-﻿namespace OpenTracker.Models.AutoTracking
+﻿namespace OpenTracker.Models.AutoTracking.SNESConnectors
 {
     /// <summary>
     /// This enum type contains auto-tracking connector status data.

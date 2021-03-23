@@ -151,10 +151,9 @@ namespace OpenTracker.Models.AutoTracking
                 return;
             }
 
-            // TODO - Convert to foreach in .NET 5
-            for (var i = 0; i < Enum.GetValues(typeof(MemorySegmentType)).Length; i++)
+            foreach (MemorySegmentType type in Enum.GetValues(typeof(MemorySegmentType)))
             {
-                await MemoryCheck((MemorySegmentType) i);
+                await MemoryCheck(type);
             }
         }
 

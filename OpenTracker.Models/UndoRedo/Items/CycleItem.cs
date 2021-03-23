@@ -36,7 +36,7 @@ namespace OpenTracker.Models.UndoRedo.Items
         /// </summary>
         public void ExecuteDo()
         {
-            _item.Cycle(false);
+            _item.Cycle();
         }
 
         /// <summary>

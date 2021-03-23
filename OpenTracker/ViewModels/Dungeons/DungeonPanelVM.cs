@@ -54,7 +54,7 @@ namespace OpenTracker.ViewModels.Dungeons
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private async void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Orientation))
             {
@@ -71,7 +71,7 @@ namespace OpenTracker.ViewModels.Dungeons
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private async void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnLayoutChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ILayoutSettings.CurrentLayoutOrientation))
             {

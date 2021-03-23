@@ -60,7 +60,7 @@ namespace OpenTracker.ViewModels.Items.Adapters
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private async void OnDropdownChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnDropdownChanged(object? sender, PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {

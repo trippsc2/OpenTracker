@@ -40,7 +40,7 @@ namespace OpenTracker.Models.AutoTracking.Values
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnValueChanged(object sender, PropertyChangedEventArgs e)
+        private void OnValueChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IAutoTrackValue.CurrentValue))
             {

@@ -19,10 +19,8 @@ namespace OpenTracker.Models.AutoTracking.Memory
 
             var memorySegmentTypeCounts = new Dictionary<MemorySegmentType, int>();
 
-            // TODO - Convert to foreach in .NET 5
-            for (var i = 0; i < Enum.GetValues(typeof(MemorySegmentType)).Length; i++)
+            foreach (MemorySegmentType type in Enum.GetValues(typeof(MemorySegmentType)))
             {
-                var type = (MemorySegmentType)i;
                 MemorySegments.Add(type, new List<IMemoryAddress>());
                 memorySegmentTypeCounts.Add(type, GetMemorySegmentCount(type));
             }

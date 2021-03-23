@@ -91,7 +91,7 @@ namespace OpenTracker.Models.Items
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IItem.Current))
             {
@@ -137,7 +137,7 @@ namespace OpenTracker.Models.Items
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnGenericKeyChanged(object sender, PropertyChangedEventArgs e)
+        private void OnGenericKeyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IItem.Current) && _mode.GenericKeys)
             {

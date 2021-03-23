@@ -3,6 +3,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Avalonia.Threading;
 using OpenTracker.Models.AutoTracking;
+using OpenTracker.Models.AutoTracking.SNESConnectors;
 using OpenTracker.Utils;
 using ReactiveUI;
 
