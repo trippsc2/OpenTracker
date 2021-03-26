@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using OpenTracker.Models.AccessibilityLevels;
+using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Markings;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.Sections;

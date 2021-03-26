@@ -1,4 +1,4 @@
-﻿using OpenTracker.Models.AccessibilityLevels;
+﻿using OpenTracker.Models.Accessibility;
 
 namespace OpenTracker.Models.Sections
 {

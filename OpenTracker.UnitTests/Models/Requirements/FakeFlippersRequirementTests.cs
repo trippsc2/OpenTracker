@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using OpenTracker.Models.AccessibilityLevels;
+using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Prizes;

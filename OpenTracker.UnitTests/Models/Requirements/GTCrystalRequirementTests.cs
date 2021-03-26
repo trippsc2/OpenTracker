@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Autofac;
-using OpenTracker.Models.AccessibilityLevels;
+using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Prizes;
 using OpenTracker.Models.Requirements;

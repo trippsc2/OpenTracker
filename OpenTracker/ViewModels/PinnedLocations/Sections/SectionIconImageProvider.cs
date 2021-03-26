@@ -1,6 +1,6 @@
 using System.ComponentModel;
 using Avalonia.Threading;
-using OpenTracker.Models.AccessibilityLevels;
+using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Sections;
 using OpenTracker.Utils;
 using ReactiveUI;

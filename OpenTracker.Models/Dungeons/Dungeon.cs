@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
-using OpenTracker.Models.AccessibilityLevels;
+using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.DungeonItems;
 using OpenTracker.Models.DungeonNodes;
 using OpenTracker.Models.Items;
@@ -28,11 +28,11 @@ namespace OpenTracker.Models.Dungeons
     public class Dungeon : Location, IDungeon
     {
         private readonly IMode _mode;
+        
         private readonly IMutableDungeon.Factory _mutableDungeonFactory;
         private readonly IDungeonState.Factory _stateFactory;
 
-        private static readonly ConstrainedTaskScheduler TaskScheduler =
-            new ConstrainedTaskScheduler(Math.Max(1, Environment.ProcessorCount - 1));
+        private static readonly ConstrainedTaskScheduler TaskScheduler = new();
 
         public event EventHandler<IMutableDungeon>? DungeonDataCreated;
 
@@ -55,7 +55,7 @@ namespace OpenTracker.Models.Dungeons
         public List<IKeyLayout> KeyLayouts { get; }
         public List<DungeonNodeID> Nodes { get; }
         public List<IRequirementNode> EntryNodes { get; }
-        public ConcurrentQueue<IMutableDungeon> DungeonDataQueue { get; } = new ConcurrentQueue<IMutableDungeon>();
+        public ConcurrentQueue<IMutableDungeon> DungeonDataQueue { get; } = new();
 
         /// <summary>
         /// Constructor
@@ -227,14 +227,10 @@ namespace OpenTracker.Models.Dungeons
         /// </param>
         private void OnModeChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(IMode.WorldState) ||
-                e.PropertyName == nameof(IMode.MapShuffle) ||
-                e.PropertyName == nameof(IMode.CompassShuffle) ||
-                e.PropertyName == nameof(IMode.SmallKeyShuffle) ||
-                e.PropertyName == nameof(IMode.BigKeyShuffle) ||
-                e.PropertyName == nameof(IMode.GenericKeys) ||
-                e.PropertyName == nameof(IMode.GuaranteedBossItems) ||
-                e.PropertyName == nameof(IMode.KeyDropShuffle))
+            if (e.PropertyName == nameof(IMode.WorldState) || e.PropertyName == nameof(IMode.MapShuffle) ||
+                e.PropertyName == nameof(IMode.CompassShuffle) || e.PropertyName == nameof(IMode.SmallKeyShuffle) ||
+                e.PropertyName == nameof(IMode.BigKeyShuffle) || e.PropertyName == nameof(IMode.GenericKeys) ||
+                e.PropertyName == nameof(IMode.GuaranteedBossItems) || e.PropertyName == nameof(IMode.KeyDropShuffle))
             {
                 UpdateSectionAccessibility();
             }

@@ -1,4 +1,4 @@
-﻿using OpenTracker.Models.AccessibilityLevels;
+﻿using OpenTracker.Models.Accessibility;
 using OpenTracker.Utils;
 using ReactiveUI;
 

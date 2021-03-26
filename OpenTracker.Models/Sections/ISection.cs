@@ -1,4 +1,4 @@
-﻿using OpenTracker.Models.AccessibilityLevels;
+﻿using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.UndoRedo;

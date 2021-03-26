@@ -1,5 +1,4 @@
-﻿using OpenTracker.Models.AccessibilityLevels;
-using OpenTracker.Models.Items;
+﻿using OpenTracker.Models.Items;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.RequirementNodes;
@@ -7,6 +6,7 @@ using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.SequenceBreaks;
 using System.Collections.Generic;
+using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Prizes;
 using Xunit;
 

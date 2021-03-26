@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using OpenTracker.Models.AccessibilityLevels;
+using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Modes;

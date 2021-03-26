@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel;
-using OpenTracker.Models.AccessibilityLevels;
+using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.SequenceBreaks;
 
 namespace OpenTracker.Models.Requirements

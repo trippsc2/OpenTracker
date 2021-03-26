@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
-using OpenTracker.Models.AccessibilityLevels;
+using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.RequirementNodes;
 using OpenTracker.Models.Requirements;

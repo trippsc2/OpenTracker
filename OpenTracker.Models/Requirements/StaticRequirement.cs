@@ -1,5 +1,5 @@
 ﻿using System;
-using OpenTracker.Models.AccessibilityLevels;
+using OpenTracker.Models.Accessibility;
 using ReactiveUI;
 
 namespace OpenTracker.Models.Requirements

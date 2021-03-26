@@ -1,4 +1,4 @@
-﻿using OpenTracker.Models.AccessibilityLevels;
+﻿using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.BossPlacements;
 
 namespace OpenTracker.Models.Sections

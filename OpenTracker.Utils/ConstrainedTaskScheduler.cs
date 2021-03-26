@@ -13,13 +13,15 @@ namespace OpenTracker.Utils
         private int _pendingTaskCount;
 
         private readonly int _concurrentTasks;
-        private readonly LinkedList<Task> _tasks =
-            new LinkedList<Task>();
+        private readonly LinkedList<Task> _tasks = new();
 
-        public override int MaximumConcurrencyLevel =>
-            _concurrentTasks;
+        public override int MaximumConcurrencyLevel => _concurrentTasks;
 
-        public ConstrainedTaskScheduler(int concurrentTasks)
+        public ConstrainedTaskScheduler() : this(Math.Max(1, Environment.ProcessorCount - 1))
+        {
+        }
+        
+        private ConstrainedTaskScheduler(int concurrentTasks)
         {
             if (concurrentTasks < 1)
             {

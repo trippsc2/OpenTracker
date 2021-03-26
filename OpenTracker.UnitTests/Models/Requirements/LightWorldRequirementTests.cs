@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using Autofac;
 using NSubstitute;
-using OpenTracker.Models.AccessibilityLevels;
+using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.RequirementNodes;
 using OpenTracker.Models.Requirements;
