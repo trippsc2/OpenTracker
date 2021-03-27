@@ -21,26 +21,14 @@ namespace OpenTracker.Utils
 
         public TValue this[TKey key]
         {
-            get
-            {
-                if (ContainsKey(key))
-                {
-                    return _dictionary[key];
-                }
-
-                return CreateAndNotify(key);
-            }
+            get => ContainsKey(key) ? _dictionary[key] : CreateAndNotify(key);
             set => _dictionary[key] = value;
         }
 
-        public ICollection<TKey> Keys =>
-            _dictionary.Keys;
-        public ICollection<TValue> Values =>
-            _dictionary.Values;
-        public int Count =>
-            _dictionary.Count;
-        public bool IsReadOnly =>
-            _dictionary.IsReadOnly;
+        public ICollection<TKey> Keys => _dictionary.Keys;
+        public ICollection<TValue> Values => _dictionary.Values;
+        public int Count => _dictionary.Count;
+        public bool IsReadOnly => _dictionary.IsReadOnly;
 
         public event EventHandler<KeyValuePair<TKey, TValue>>? ItemCreated;
 
@@ -50,7 +38,7 @@ namespace OpenTracker.Utils
         /// <param name="dictionary">
         /// The dictionary to be wrapped.
         /// </param>
-        public LazyDictionary(IDictionary<TKey, TValue> dictionary)
+        protected LazyDictionary(IDictionary<TKey, TValue> dictionary)
         {
             _dictionary = dictionary;
         }
@@ -73,7 +61,7 @@ namespace OpenTracker.Utils
         /// <returns>
         /// The newly created value.
         /// </returns>
-        protected TValue CreateAndNotify(TKey key)
+        private TValue CreateAndNotify(TKey key)
         {
             var newValue = Create(key);
             Add(key, newValue);

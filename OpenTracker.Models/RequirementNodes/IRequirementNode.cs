@@ -15,7 +15,6 @@ namespace OpenTracker.Models.RequirementNodes
         int ExitsAccessible { get; set; }
         int DungeonExitsAccessible { get; set; }
         int InsanityExitsAccessible { get; set; }
-        List<INodeConnection> Connections { get; }
 
         event EventHandler? ChangePropagated;
 

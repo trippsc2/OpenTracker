@@ -15,8 +15,8 @@ namespace OpenTracker.Models.RequirementNodes
     {
         private readonly IMode _mode;
         private readonly IRequirementNodeFactory _factory;
-        
-        public List<INodeConnection> Connections { get; } = new();
+
+        private readonly List<INodeConnection> _connections = new();
 
         public event EventHandler? ChangePropagated;
 
@@ -119,11 +119,11 @@ namespace OpenTracker.Models.RequirementNodes
             
             var requirementNodes = (IRequirementNodeDictionary)sender!;
             requirementNodes.ItemCreated -= OnNodeCreated;
-            Connections.AddRange(_factory.GetNodeConnections(e.Key, this));
+            _connections.AddRange(_factory.GetNodeConnections(e.Key, this));
 
             UpdateAccessibility();
 
-            foreach (var connection in Connections)
+            foreach (var connection in _connections)
             {
                 connection.PropertyChanged += OnConnectionChanged;
             }
@@ -204,7 +204,7 @@ namespace OpenTracker.Models.RequirementNodes
 
             var finalAccessibility = AccessibilityLevel.None;
 
-            foreach (var connection in Connections)
+            foreach (var connection in _connections)
             {
                 finalAccessibility = AccessibilityLevelMethods.Max(
                     finalAccessibility, connection.GetConnectionAccessibility(excludedNodes));

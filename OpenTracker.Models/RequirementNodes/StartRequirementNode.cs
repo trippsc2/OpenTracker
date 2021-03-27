@@ -13,8 +13,6 @@ namespace OpenTracker.Models.RequirementNodes
         public int DungeonExitsAccessible { get; set; } = 0;
         public int ExitsAccessible { get; set; } = 0;
         public int InsanityExitsAccessible { get; set; } = 0;
-
-        public List<INodeConnection> Connections { get; } = new();
         
         public event EventHandler? ChangePropagated;
 
