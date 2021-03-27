@@ -16,7 +16,7 @@ namespace OpenTracker.UnitTests.Models.Connections
         private readonly IAddConnection.Factory _addConnectionFactory = _ => Substitute.For<IAddConnection>();
 
         private readonly IConnection _connection = Substitute.For<IConnection>();
-        private readonly ConnectionSaveData _connectionSaveData = new ConnectionSaveData();
+        private readonly ConnectionSaveData _connectionSaveData = new();
 
         private readonly ConnectionCollection _sut;
 

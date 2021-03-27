@@ -7,6 +7,7 @@ using OpenTracker.Models.DungeonNodes;
 using OpenTracker.Models.KeyDoors;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Modes;
+using OpenTracker.Models.Sections;
 
 namespace OpenTracker.Models.Dungeons.Mutable
 {
@@ -19,17 +20,14 @@ namespace OpenTracker.Models.Dungeons.Mutable
         private readonly IDungeon _dungeon;
         private readonly IDungeonResult.Factory _resultFactory;
 
-        private readonly Dictionary<KeyDoorID, IKeyDoor> _smallKeyDoors = new Dictionary<KeyDoorID, IKeyDoor>();
-        private readonly Dictionary<KeyDoorID, IKeyDoor> _bigKeyDoors = new Dictionary<KeyDoorID, IKeyDoor>();
-        private readonly Dictionary<DungeonItemID, IDungeonItem> _items = new Dictionary<DungeonItemID, IDungeonItem>();
-        private readonly Dictionary<DungeonItemID, IDungeonItem> _smallKeyDrops =
-            new Dictionary<DungeonItemID, IDungeonItem>();
-        private readonly Dictionary<DungeonItemID, IDungeonItem> _bigKeyDrops =
-            new Dictionary<DungeonItemID, IDungeonItem>();
-        private readonly List<IDungeonItem> _bosses = new List<IDungeonItem>();
+        private readonly Dictionary<KeyDoorID, IKeyDoor> _smallKeyDoors = new();
+        private readonly Dictionary<KeyDoorID, IKeyDoor> _bigKeyDoors = new();
+        private readonly Dictionary<DungeonItemID, IDungeonItem> _items = new();
+        private readonly Dictionary<DungeonItemID, IDungeonItem> _smallKeyDrops = new();
+        private readonly Dictionary<DungeonItemID, IDungeonItem> _bigKeyDrops = new();
+        private readonly List<IDungeonItem> _bosses = new();
 
-        public LocationID ID =>
-            _dungeon.ID;
+        public LocationID ID => _dungeon.ID;
         public IKeyDoorDictionary KeyDoors { get; }
         public IDungeonItemDictionary DungeonItems { get; }
         public IDungeonNodeDictionary Nodes { get; }
@@ -66,59 +64,96 @@ namespace OpenTracker.Models.Dungeons.Mutable
             KeyDoors = keyDoors(this);
             DungeonItems = dungeonItems(this);
             Nodes = nodes(this);
-
-            _dungeon.DungeonDataCreated += OnDungeonDataCreated;
         }
 
         /// <summary>
-        /// Subscribes to the DungeonDataCreated event on the IDungeon interface.
+        /// Initialize all data in this dungeon data instance.
         /// </summary>
-        /// <param name="sender">
-        /// The sending object of the event.
-        /// </param>
-        /// <param name="e">
-        /// The arguments of the DungeonDataCreated event.
-        /// </param>
-        private void OnDungeonDataCreated(object? sender, IMutableDungeon e)
+        public void InitializeData()
         {
-            if (e == this)
+            PopulateSmallKeyDoors();
+            PopulateBigKeyDoors();
+            PopulateDungeonItems();
+            PopulateBosses();
+            PopulateSmallKeyDrops();
+            PopulateBigKeyDrops();
+            PopulateNodes();
+        }
+
+        /// <summary>
+        /// Creates all small key doors and adds them to the list.
+        /// </summary>
+        private void PopulateSmallKeyDoors()
+        {
+            foreach (var smallKeyDoor in _dungeon.SmallKeyDoors)
             {
-                foreach (var smallKeyDoor in _dungeon.SmallKeyDoors)
-                {
-                    _smallKeyDoors.Add(smallKeyDoor, KeyDoors[smallKeyDoor]);
-                }
+                _smallKeyDoors.Add(smallKeyDoor, KeyDoors[smallKeyDoor]);
+            }
+        }
 
-                foreach (var bigKeyDoor in _dungeon.BigKeyDoors)
-                {
-                    _bigKeyDoors.Add(bigKeyDoor, KeyDoors[bigKeyDoor]);
-                }
+        /// <summary>
+        /// Creates all big key doors and adds them to the list.
+        /// </summary>
+        private void PopulateBigKeyDoors()
+        {
+            foreach (var bigKeyDoor in _dungeon.BigKeyDoors)
+            {
+                _bigKeyDoors.Add(bigKeyDoor, KeyDoors[bigKeyDoor]);
+            }
+        }
 
-                foreach (var item in _dungeon.DungeonItems)
-                {
-                    _items.Add(item, DungeonItems[item]);
-                }
+        /// <summary>
+        /// Creates all dungeon items and adds them to the list.
+        /// </summary>
+        private void PopulateDungeonItems()
+        {
+            foreach (var item in _dungeon.DungeonItems)
+            {
+                _items.Add(item, DungeonItems[item]);
+            }
+        }
 
-                foreach (var boss in _dungeon.Bosses)
-                {
-                    _bosses.Add(DungeonItems[boss]);
-                }
+        /// <summary>
+        /// Creates all dungeon bosses and adds them to the list.
+        /// </summary>
+        private void PopulateBosses()
+        {
+            foreach (var boss in _dungeon.Bosses)
+            {
+                _bosses.Add(DungeonItems[boss]);
+            }
+        }
 
-                foreach (var smallKeyDrop in _dungeon.SmallKeyDrops)
-                {
-                    _smallKeyDrops.Add(smallKeyDrop, DungeonItems[smallKeyDrop]);
-                }
+        /// <summary>
+        /// Creates all small key drops and adds them to the list.
+        /// </summary>
+        private void PopulateSmallKeyDrops()
+        {
+            foreach (var smallKeyDrop in _dungeon.SmallKeyDrops)
+            {
+                _smallKeyDrops.Add(smallKeyDrop, DungeonItems[smallKeyDrop]);
+            }
+        }
 
-                foreach (var bigKeyDrop in _dungeon.BigKeyDrops)
-                {
-                    _bigKeyDrops.Add(bigKeyDrop, DungeonItems[bigKeyDrop]);
-                }
+        /// <summary>
+        /// Creates all big key drops and adds them to the list.
+        /// </summary>
+        private void PopulateBigKeyDrops()
+        {
+            foreach (var bigKeyDrop in _dungeon.BigKeyDrops)
+            {
+                _bigKeyDrops.Add(bigKeyDrop, DungeonItems[bigKeyDrop]);
+            }
+        }
 
-                foreach (var node in _dungeon.Nodes)
-                {
-                    _ = Nodes[node];
-                }
-
-                _dungeon.DungeonDataCreated -= OnDungeonDataCreated;
+        /// <summary>
+        /// Creates all dungeon nodes.
+        /// </summary>
+        private void PopulateNodes()
+        {
+            foreach (var node in _dungeon.Nodes)
+            {
+                _ = Nodes[node];
             }
         }
 
@@ -286,7 +321,7 @@ namespace OpenTracker.Models.Dungeons.Mutable
         /// </returns>
         private List<AccessibilityLevel> GetBossAccessibility()
         {
-            List<AccessibilityLevel> bossAccessibility = new List<AccessibilityLevel>();
+            List<AccessibilityLevel> bossAccessibility = new();
 
             foreach (var bossItem in _bosses)
             {
@@ -318,23 +353,17 @@ namespace OpenTracker.Models.Dungeons.Mutable
                 switch (_items[item].Accessibility)
                 {
                     case AccessibilityLevel.None:
-                    {
+                    case AccessibilityLevel.SequenceBreak when !state.SequenceBreak:
                         if (_dungeon.Bosses.Contains(item))
                         {
                             inaccessibleBosses++;
                         }
 
                         inaccessibleItems++;
-                    }
                         break;
                     case AccessibilityLevel.Inspect:
-                    {
                         inaccessibleItems++;
                         visible = true;
-                    }
-                        break;
-                    case AccessibilityLevel.SequenceBreak when !state.SequenceBreak:
-                        inaccessibleItems++;
                         break;
                 }
             }
@@ -367,23 +396,12 @@ namespace OpenTracker.Models.Dungeons.Mutable
             var minimumInaccessible = _mode.GuaranteedBossItems ? inaccessibleBosses : 0;
             var bossAccessibility = GetBossAccessibility();
 
+            var section = (IDungeonItemSection)_dungeon.Sections[0];
+            
             if (inaccessibleItems <= minimumInaccessible)
             {
-                if (minimumInaccessible == 0)
-                {                    
-                    return _resultFactory(
-                        bossAccessibility, state.SequenceBreak ? AccessibilityLevel.SequenceBreak :
-                        AccessibilityLevel.Normal, _dungeon.Sections[0].Available);
-                }
-
-                if (minimumInaccessible >= _dungeon.Sections[0].Available)
-                {
-                    return _resultFactory(bossAccessibility, visible ? AccessibilityLevel.Inspect : AccessibilityLevel.None, 0);
-                }
-
-                return _resultFactory(
-                    bossAccessibility, AccessibilityLevel.Partial,
-                    _dungeon.Sections[0].Available - minimumInaccessible);
+                return minimumInaccessible == 0 ? _resultFactory(bossAccessibility, section.Total, false) :
+                    _resultFactory(bossAccessibility, section.Total - minimumInaccessible, visible);
             }
 
             if (!_mode.BigKeyShuffle && !state.BigKeyCollected)
@@ -394,61 +412,21 @@ namespace OpenTracker.Models.Dungeons.Mutable
 
             if (inaccessibleItems <= minimumInaccessible)
             {
-                if (minimumInaccessible == 0)
-                {
-                    return _resultFactory(
-                        bossAccessibility, state.SequenceBreak ? AccessibilityLevel.SequenceBreak :
-                        AccessibilityLevel.Normal, _dungeon.Sections[0].Available);
-                }
-
-                if (minimumInaccessible >= _dungeon.Sections[0].Available)
-                {
-                    if (visible)
-                    {
-                        return _resultFactory(bossAccessibility, AccessibilityLevel.Inspect, 0);
-                    }
-
-                    return _resultFactory(bossAccessibility, AccessibilityLevel.None, 0);
-                }
-                else
-                {
-                    return _resultFactory(
-                        bossAccessibility, AccessibilityLevel.Partial,
-                        _dungeon.Sections[0].Available - minimumInaccessible);
-                }
+                return minimumInaccessible == 0 ? _resultFactory(bossAccessibility, section.Total, false) :
+                    _resultFactory(bossAccessibility, section.Total - minimumInaccessible, visible);
             }
 
             if (!_mode.SmallKeyShuffle)
             {
-                int smallKeys = _mode.KeyDropShuffle ?
+                var smallKeys = _mode.KeyDropShuffle ?
                     _dungeon.SmallKeys + _dungeon.SmallKeyDrops.Count : _dungeon.SmallKeys;
                 inaccessibleItems -= smallKeys - state.KeysCollected;
             }
 
             if (inaccessibleItems <= minimumInaccessible)
             {
-                if (minimumInaccessible == 0)
-                {
-                    return _resultFactory(
-                        bossAccessibility, state.SequenceBreak ? AccessibilityLevel.SequenceBreak :
-                        AccessibilityLevel.Normal, _dungeon.Sections[0].Available);
-                }
-
-                if (minimumInaccessible >= _dungeon.Sections[0].Available)
-                {
-                    if (visible)
-                    {
-                        return _resultFactory(bossAccessibility, AccessibilityLevel.Inspect, 0);
-                    }
-
-                    return _resultFactory(bossAccessibility, AccessibilityLevel.None, 0);
-                }
-                else
-                {
-                    return _resultFactory(
-                        bossAccessibility, AccessibilityLevel.Partial,
-                        _dungeon.Sections[0].Available - minimumInaccessible);
-                }
+                return minimumInaccessible == 0 ? _resultFactory(bossAccessibility, section.Total, false) :
+                    _resultFactory(bossAccessibility, section.Total - minimumInaccessible, visible);
             }
 
             if (!_mode.MapShuffle)
@@ -463,26 +441,8 @@ namespace OpenTracker.Models.Dungeons.Mutable
             
             inaccessibleItems = Math.Max(inaccessibleItems, minimumInaccessible);
 
-            if (inaccessibleItems <= 0)
-            {
-                return _resultFactory(
-                    bossAccessibility, AccessibilityLevel.SequenceBreak,
-                    _dungeon.Sections[0].Available);
-            }
-
-            if (inaccessibleItems >= _dungeon.Sections[0].Available)
-            {
-                if (visible)
-                {
-                    return _resultFactory(bossAccessibility, AccessibilityLevel.Inspect, 0);
-                }
-
-                return _resultFactory(bossAccessibility, AccessibilityLevel.None, 0);
-            }
-            
-            return _resultFactory(
-                bossAccessibility, AccessibilityLevel.Partial,
-                _dungeon.Sections[0].Available - inaccessibleItems);
+            return inaccessibleItems <= 0 ? _resultFactory(bossAccessibility, section.Total, false) :
+                _resultFactory(bossAccessibility, section.Total - minimumInaccessible, visible);
         }
 
         /// <summary>

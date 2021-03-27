@@ -261,7 +261,7 @@ namespace OpenTracker.Models.Sections
         /// </returns>
         public SectionSaveData Save()
         {
-            return new SectionSaveData()
+            return new()
             {
                 Available = Available,
                 UserManipulated = UserManipulated

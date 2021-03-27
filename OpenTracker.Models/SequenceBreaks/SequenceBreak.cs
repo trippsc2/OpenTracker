@@ -44,7 +44,7 @@ namespace OpenTracker.Models.SequenceBreaks
         /// </returns>
         public SequenceBreakSaveData Save()
         {
-            return new SequenceBreakSaveData()
+            return new()
             {
                 Enabled = Enabled
             };

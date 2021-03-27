@@ -426,7 +426,7 @@ namespace OpenTracker.Models.Modes
         /// </returns>
         public ModeSaveData Save()
         {
-            return new ModeSaveData()
+            return new()
             {
                 ItemPlacement = ItemPlacement,
                 MapShuffle = MapShuffle,

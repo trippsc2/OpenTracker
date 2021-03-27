@@ -93,7 +93,7 @@ namespace OpenTracker.Models.BossPlacements
         /// </returns>
         public BossPlacementSaveData Save()
         {
-            return new BossPlacementSaveData()
+            return new()
             {
                 Boss = Boss
             };

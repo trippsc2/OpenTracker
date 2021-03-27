@@ -11,9 +11,9 @@ namespace OpenTracker.Models.UndoRedo
     {
         private readonly ISaveLoadManager _saveLoadManager;
 
-        private readonly object _syncLock = new object();
-        private readonly Stack<IUndoable> _undoableActions = new Stack<IUndoable>();
-        private readonly Stack<IUndoable> _redoableActions = new Stack<IUndoable>();
+        private readonly object _syncLock = new();
+        private readonly Stack<IUndoable> _undoableActions = new();
+        private readonly Stack<IUndoable> _redoableActions = new();
 
         private bool _canUndo;
         public bool CanUndo

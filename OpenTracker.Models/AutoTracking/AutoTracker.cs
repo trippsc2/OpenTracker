@@ -33,7 +33,7 @@ namespace OpenTracker.Models.AutoTracking
             }
         }
 
-        private List<string> _devices = new List<string>();
+        private List<string> _devices = new();
         public List<string> Devices
         {
             get => _devices;

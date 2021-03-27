@@ -78,7 +78,7 @@ namespace OpenTracker.Models.Locations
         public Dictionary<LocationID, LocationSaveData> Save()
         {
             Dictionary<LocationID, LocationSaveData> locations =
-                new Dictionary<LocationID, LocationSaveData>();
+                new();
 
             foreach (var id in Keys)
             {

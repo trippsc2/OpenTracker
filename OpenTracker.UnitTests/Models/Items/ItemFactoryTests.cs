@@ -26,7 +26,7 @@ namespace OpenTracker.UnitTests.Models.Items
         
         private static readonly Dictionary<
             ItemType, (Type type, int starting, int? maximum, int? keyDropMaximum)> ExpectedValues =
-                new Dictionary<ItemType, (Type type, int starting, int? maximum, int? keyDropMaximum)>();
+                new();
 
         public ItemFactoryTests()
         {

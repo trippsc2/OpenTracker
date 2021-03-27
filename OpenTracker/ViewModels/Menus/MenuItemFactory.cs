@@ -67,7 +67,7 @@ namespace OpenTracker.ViewModels.Menus
         private List<IMenuItemVM> GetFileMenuItems(
             ICommand open, ICommand save, ICommand saveAs, ICommand reset, ICommand close)
         {
-            return new List<IMenuItemVM>
+            return new()
             {
                 _itemFactory("Open...", hotkey: "Ctrl+O", command: open),
                 _itemFactory("Save...", hotkey: "Ctrl+S", command: save),
@@ -81,7 +81,7 @@ namespace OpenTracker.ViewModels.Menus
         private List<IMenuItemVM> GetTrackerMenuItems(
             ICommand undo, ICommand redo, ICommand autoTracker, ICommand sequenceBreaks)
         {
-            return new List<IMenuItemVM>
+            return new()
             {
                 _itemFactory("Undo", hotkey: "Ctrl+Z", command: undo),
                 _itemFactory("Redo", hotkey: "Ctrl+Y", command: redo),
@@ -95,7 +95,7 @@ namespace OpenTracker.ViewModels.Menus
         private List<IMenuItemVM> GetCaptureMenuItems(
             ICaptureWindowMenuCollection captureWindowMenuItems, ICommand captureDesign)
         {
-            return new List<IMenuItemVM>
+            return new()
             {
                 _itemFactory("Windows", items: captureWindowMenuItems),
                 _itemFactory("-"),
@@ -118,7 +118,7 @@ namespace OpenTracker.ViewModels.Menus
             ICommand changeVerticalItemsPlacement, ICommand changeMapOrientation, ICommand changeUIScale,
             ICommand about)
         {
-            return new List<IMenuItemVM>
+            return new()
             {
                 _itemFactory("Theme", items: GetThemeMenuItems(changeTheme)),
                 _itemFactory("-"),
@@ -229,7 +229,7 @@ namespace OpenTracker.ViewModels.Menus
             ICommand changeVerticalUIPanelPlacement, ICommand changeVerticalItemsPlacement,
             ICommand changeMapOrientation, ICommand changeUIScale, ICommand about)
         {
-            return new List<IMenuItemVM>
+            return new()
             {
                 _itemFactory("File", items: GetFileMenuItems(open, save, saveAs, reset, close)),
                 _itemFactory("Tracker", items: GetTrackerMenuItems(undo, redo, autoTracker, sequenceBreaks)),

@@ -57,7 +57,7 @@ namespace OpenTracker.Models.Settings
         /// </returns>
         public AppSettingsSaveData Save()
         {
-            return new AppSettingsSaveData()
+            return new()
             {
                 Version = Assembly.GetExecutingAssembly().GetName().Version!,
                 Maximized = Bounds.Maximized,

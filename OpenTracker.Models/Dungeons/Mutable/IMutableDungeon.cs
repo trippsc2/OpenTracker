@@ -24,5 +24,10 @@ namespace OpenTracker.Models.Dungeons.Mutable
         IDungeonResult GetDungeonResult(IDungeonState state);
         bool ValidateKeyLayout(IDungeonState state);
         void Reset();
+
+        /// <summary>
+        /// Initialize all data in this dungeon data instance.
+        /// </summary>
+        void InitializeData();
     }
 }

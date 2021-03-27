@@ -13,7 +13,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
     public class RequirementNodeTests
     {
         private readonly IMode _mode = Substitute.For<IMode>();
-        private readonly List<INodeConnection> _nodeConnections = new List<INodeConnection>
+        private readonly List<INodeConnection> _nodeConnections = new()
         {
             Substitute.For<INodeConnection>(),
             Substitute.For<INodeConnection>()

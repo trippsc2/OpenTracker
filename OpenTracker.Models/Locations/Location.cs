@@ -268,8 +268,8 @@ namespace OpenTracker.Models.Locations
         /// </returns>
         public LocationSaveData Save()
         {
-            List<SectionSaveData> sections = new List<SectionSaveData>();
-            List<MarkType?> markings = new List<MarkType?>();
+            List<SectionSaveData> sections = new();
+            List<MarkType?> markings = new();
 
             foreach (var section in Sections)
             {

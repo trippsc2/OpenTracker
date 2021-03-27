@@ -12,9 +12,9 @@ namespace OpenTracker.Models.UndoRedo.Locations
     {
         private readonly ILocation _location;
         private readonly bool _force;
-        private readonly List<int?> _previousLocationCounts = new List<int?>();
-        private readonly List<MarkType?> _previousMarkings = new List<MarkType?>();
-        private readonly List<bool?> _previousUserManipulated = new List<bool?>();
+        private readonly List<int?> _previousLocationCounts = new();
+        private readonly List<MarkType?> _previousMarkings = new();
+        private readonly List<bool?> _previousUserManipulated = new();
 
         /// <summary>
         /// Constructor

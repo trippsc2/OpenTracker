@@ -176,7 +176,7 @@ namespace OpenTracker.Models.Items
         /// </returns>
         public virtual ItemSaveData Save()
         {
-            return new ItemSaveData()
+            return new()
             {
                 Current = Current
             };

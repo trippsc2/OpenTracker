@@ -16,9 +16,9 @@ namespace OpenTracker.ViewModels.Markings
         private readonly INoteMarkingSelectVM.Factory _noteSelectFactory;
 
         private List<IMarkingSelectItemVMBase> NonEntranceMarkingSelect { get; } =
-            new List<IMarkingSelectItemVMBase>();
+            new();
         private List<IMarkingSelectItemVMBase> EntranceMarkingSelect { get; } =
-            new List<IMarkingSelectItemVMBase>();
+            new();
 
         public MarkingSelectFactory(
             MarkingSelectButtonVM.Factory buttonFactory, IMarkingSelectVM.Factory selectFactory,

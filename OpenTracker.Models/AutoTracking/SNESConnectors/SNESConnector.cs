@@ -281,7 +281,7 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
                     return null;
                 }
 
-                using ManualResetEvent readEvent = new ManualResetEvent(false);
+                using ManualResetEvent readEvent = new(false);
 
                 lock (_transmitLock)
                 {
@@ -380,7 +380,7 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
 
             lock (_transmitLock)
             {
-                using ManualResetEvent readEvent = new ManualResetEvent(false);
+                using ManualResetEvent readEvent = new(false);
 
                 _messageHandler = (e) =>
                 {

@@ -11,7 +11,7 @@ namespace OpenTracker.UnitTests.Models.UndoRedo.Locations
 {
     public class ClearLocationTests
     {
-        private readonly List<ISection> _sections = new List<ISection>
+        private readonly List<ISection> _sections = new()
         {
             Substitute.For<IMarkableSection>(),
             Substitute.For<ISection>(),

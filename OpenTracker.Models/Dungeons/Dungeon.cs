@@ -308,7 +308,7 @@ namespace OpenTracker.Models.Dungeons
         }
 
         /// <summary>
-        /// Re-registers a dungeon data instance to the queue.
+        /// Re-queues a dungeon data instance to the queue.
         /// </summary>
         /// <param name="dungeonData">
         /// The dungeon data instance to be registered to the queue.
@@ -506,7 +506,7 @@ namespace OpenTracker.Models.Dungeons
             var resultInLogicQueue = new BlockingCollection<IDungeonResult>();
             var resultOutOfLogicQueue = new BlockingCollection<IDungeonResult>();
 
-            for (int i = 0; i <= SmallKeyDoors.Count; i++)
+            for (var i = 0; i <= SmallKeyDoors.Count; i++)
             {
                 keyDoorPermutationQueue.Add(new BlockingCollection<IDungeonState>());
             }
@@ -567,8 +567,8 @@ namespace OpenTracker.Models.Dungeons
             resultInLogicQueue.CompleteAdding();
             resultOutOfLogicQueue.CompleteAdding();
 
-            List<AccessibilityLevel> lowestBossAccessibilities = new List<AccessibilityLevel>();
-            List<AccessibilityLevel> highestBossAccessibilities = new List<AccessibilityLevel>();
+            List<AccessibilityLevel> lowestBossAccessibilities = new();
+            List<AccessibilityLevel> highestBossAccessibilities = new();
 
             for (int i = 0; i < Bosses.Count; i++)
             {

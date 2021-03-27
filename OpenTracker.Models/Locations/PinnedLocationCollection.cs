@@ -26,7 +26,7 @@ namespace OpenTracker.Models.Locations
         /// </summary>
         public List<LocationID> Save()
         {
-            List<LocationID> pinnedLocations = new List<LocationID>();
+            List<LocationID> pinnedLocations = new();
 
             foreach (var pinnedLocation in this)
             {

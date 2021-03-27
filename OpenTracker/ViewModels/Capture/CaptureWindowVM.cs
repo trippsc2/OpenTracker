@@ -42,7 +42,7 @@ namespace OpenTracker.ViewModels.Capture
         }
 
         public ObservableCollection<ICaptureControlVM> Contents { get; } =
-            new ObservableCollection<ICaptureControlVM>();
+            new();
 
         public CaptureWindowVM(string name)
         {

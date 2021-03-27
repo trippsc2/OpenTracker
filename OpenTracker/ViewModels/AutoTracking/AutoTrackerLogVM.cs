@@ -29,9 +29,9 @@ namespace OpenTracker.ViewModels.AutoTracking
         private readonly IErrorBoxDialogVM.Factory _errorBoxFactory;
 
         public ObservableCollection<string> LogLevelOptions { get; } =
-            new ObservableCollection<string>();
+            new();
         public ObservableStringBuilder LogText { get; } =
-            new ObservableStringBuilder();
+            new();
 
         private LogLevel _logLevel = Models.AutoTracking.Logging.LogLevel.Info;
         public string LogLevel
@@ -238,7 +238,7 @@ namespace OpenTracker.ViewModels.AutoTracking
 
             try
             {
-                await using StreamWriter file = new StreamWriter(path);
+                await using StreamWriter file = new(path);
 
                 foreach (var message in _logService.LogCollection)
                 {

@@ -153,27 +153,27 @@ namespace OpenTracker.ViewModels.MapLocations
             {
                 Dock.Left => new List<Point>()
                 {
-                    new Point(0, 0),
-                    new Point(0, 56),
-                    new Point(28, 28)
+                    new(0, 0),
+                    new(0, 56),
+                    new(28, 28)
                 },
                 Dock.Bottom => new List<Point>()
                 {
-                    new Point(0, 28),
-                    new Point(56, 28),
-                    new Point(28, 0)
+                    new(0, 28),
+                    new(56, 28),
+                    new(28, 0)
                 },
                 Dock.Right => new List<Point>()
                 {
-                    new Point(28, 0),
-                    new Point(28, 56),
-                    new Point(0, 28)
+                    new(28, 0),
+                    new(28, 56),
+                    new(0, 28)
                 },
                 _ => new List<Point>()
                 {
-                    new Point(0, 0),
-                    new Point(56, 0),
-                    new Point(28, 28)
+                    new(0, 0),
+                    new(56, 0),
+                    new(28, 28)
                 }
             };
         }

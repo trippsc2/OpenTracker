@@ -25,7 +25,7 @@ namespace OpenTracker.Models.Settings
         }
 
         public ObservableDictionary<AccessibilityLevel, string> AccessibilityColors { get; } =
-            new ObservableDictionary<AccessibilityLevel, string>(
+            new(
                 new Dictionary<AccessibilityLevel, string>
                 {
                     { AccessibilityLevel.None, "#ffff3030" },

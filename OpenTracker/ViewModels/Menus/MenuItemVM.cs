@@ -8,7 +8,7 @@ namespace OpenTracker.ViewModels.Menus
     public class MenuItemVM : ViewModelBase, IMenuItemVM
     {
         // Allows for IModelWrapper to be implemented.
-        public object Model { get; } = new object();
+        public object Model { get; } = new();
         
         public IMenuItemIconVM? Icon { get; }
         public object Header { get; }

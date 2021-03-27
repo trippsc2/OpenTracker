@@ -6,7 +6,7 @@ namespace OpenTracker.UnitTests.Models.AutoTracking.Memory
 {
     public class MemoryAddressTests
     {
-        private readonly MemoryAddress _sut = new MemoryAddress();
+        private readonly MemoryAddress _sut = new();
 
         [Fact]
         public void Reset_ShouldSetValueToNull()

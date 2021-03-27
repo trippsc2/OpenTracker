@@ -50,7 +50,7 @@ namespace OpenTracker.Models.PrizePlacements
         public Dictionary<PrizePlacementID, PrizePlacementSaveData> Save()
         {
             Dictionary<PrizePlacementID, PrizePlacementSaveData> prizePlacements =
-                new Dictionary<PrizePlacementID, PrizePlacementSaveData>();
+                new();
 
             foreach (var prizePlacement in Keys)
             {

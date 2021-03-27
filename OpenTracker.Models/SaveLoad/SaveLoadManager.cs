@@ -119,7 +119,7 @@ namespace OpenTracker.Models.SaveLoad
         /// </returns>
         private SaveData GetSaveData()
         {
-            return new SaveData
+            return new()
             {
                 Version = Assembly.GetExecutingAssembly().GetName().Version,
                 Mode = _mode.Save(),

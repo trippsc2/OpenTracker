@@ -104,7 +104,7 @@ namespace OpenTracker.Models.Dropdowns
         /// </returns>
         public DropdownSaveData Save()
         {
-            return new DropdownSaveData()
+            return new()
             {
                 Checked = Checked
             };

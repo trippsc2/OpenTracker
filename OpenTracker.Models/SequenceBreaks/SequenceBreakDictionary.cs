@@ -38,7 +38,7 @@ namespace OpenTracker.Models.SequenceBreaks
         public Dictionary<SequenceBreakType, SequenceBreakSaveData> Save()
         {
             Dictionary<SequenceBreakType, SequenceBreakSaveData> sequenceBreaks =
-                new Dictionary<SequenceBreakType, SequenceBreakSaveData>();
+                new();
 
             foreach (var type in Keys)
             {

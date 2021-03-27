@@ -10,11 +10,11 @@ namespace OpenTracker.ViewModels.ColorSelect
     public class ColorSelectDialogVM : DialogViewModelBase, IColorSelectDialogVM
     {
         public ObservableCollection<IColorSelectControlVM> FontColors { get; } =
-            new ObservableCollection<IColorSelectControlVM>();
+            new();
         public ObservableCollection<IColorSelectControlVM> AccessibilityColors { get; } =
-            new ObservableCollection<IColorSelectControlVM>();
+            new();
         public ObservableCollection<IColorSelectControlVM> ConnectorColors { get; } =
-            new ObservableCollection<IColorSelectControlVM>();
+            new();
 
         /// <summary>
         /// Constructor

@@ -67,7 +67,7 @@ namespace OpenTracker.Models.Connections
         /// </returns>
         public ConnectionSaveData Save()
         {
-            return new ConnectionSaveData()
+            return new()
             {
                 Location1 = Location1.Location.ID,
                 Location2 = Location2.Location.ID,

@@ -9,8 +9,8 @@ namespace OpenTracker.Models.Dungeons
     public class DungeonResult : IDungeonResult
     {
         public List<AccessibilityLevel> BossAccessibility { get; }
-        public AccessibilityLevel Accessibility { get; }
         public int Accessible { get; }
+        public bool Visible { get; }
 
         /// <summary>
         /// Constructor
@@ -18,19 +18,18 @@ namespace OpenTracker.Models.Dungeons
         /// <param name="bossAccessibility">
         /// A list of accessibility of each boss.
         /// </param>
-        /// <param name="accessibility">
-        /// The accessibility level of the dungeon items.
-        /// </param>
         /// <param name="accessible">
         /// The number of accessible items.
         /// </param>
+        /// <param name="visible">
+        /// A boolean representing whether one inaccessible item is visible.
+        /// </param>
         public DungeonResult(
-            List<AccessibilityLevel> bossAccessibility, AccessibilityLevel accessibility,
-            int accessible)
+            List<AccessibilityLevel> bossAccessibility, int accessible, bool visible)
         {
             BossAccessibility = bossAccessibility;
-            Accessibility = accessibility;
             Accessible = accessible;
+            Visible = visible;
         }
     }
 }
