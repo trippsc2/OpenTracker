@@ -16,16 +16,16 @@
     <vc:BitmapValueConverter x:Key="BitmapValueConverter" />
   </UserControl.Resources>
 
-  <StackPanel Name="panel" Orientation="Horizontal">
+  <StackPanel Orientation="Horizontal">
     
     <i:Interaction.Behaviors>
-      <ia:EventTriggerBehavior EventName="PointerReleased"
-                               SourceObject="{Binding #panel}">
+      <ia:EventTriggerBehavior EventName="PointerReleased">
         <ia:InvokeCommandAction Command="{Binding HandleClick}" />
       </ia:EventTriggerBehavior>
     </i:Interaction.Behaviors>
     
-    <Image Height="16" Width="16" Source="{Binding Path=ImageSource, Converter={StaticResource BitmapValueConverter}}" />
+    <Image Height="16" Width="16"
+           Source="{Binding Path=ImageSource, Converter={StaticResource BitmapValueConverter}}" />
 
     <Border Classes="ItemLabel">
       <TextBlock Classes="ItemLabel"

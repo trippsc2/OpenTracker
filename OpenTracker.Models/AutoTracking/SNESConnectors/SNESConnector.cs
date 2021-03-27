@@ -19,13 +19,13 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         private readonly IRequestType.Factory _requestFactory;
 
         private const string AppName = "OpenTracker";
-        private readonly object _transmitLock = new object();
+        private readonly object _transmitLock = new();
 
         private Action<MessageEventArgs>? _messageHandler;
         private string? _uri;
         private string? _device;
 
-        private bool Connected => Socket != null && Socket.IsAlive;
+        private bool Connected => Socket is not null && Socket.IsAlive;
 
         public event EventHandler<ConnectionStatus>? StatusChanged;
 
@@ -106,6 +106,223 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         private void HandleMessage(object? sender, MessageEventArgs e)
         {
             _messageHandler?.Invoke(e);
+        }
+
+        /// <summary>
+        /// Sets the URI.
+        /// </summary>
+        /// <param name="uriString">
+        /// A string representing the URI.
+        /// </param>
+        public void SetUri(string uriString)
+        {
+            _uri = uriString;
+        }
+
+        /// <summary>
+        /// Connects to the USB2SNES web socket.
+        /// </summary>
+        /// <param name="timeOutInMs">
+        /// A 32-bit integer representing the timeout in milliseconds.
+        /// </param>
+        /// <returns>
+        /// A boolean representing whether the method is successful.
+        /// </returns>
+        public async Task<bool> Connect(int timeOutInMs = 4096)
+        {
+            return await Task<bool>.Factory.StartNew(() =>
+            {
+                Socket = new WebSocket(_uri);
+                _logService.Log(LogLevel.Info, "Attempting to connect to USB2SNES websocket at " +
+                    $"{Socket.Url.OriginalString}.");
+                Status = ConnectionStatus.Connecting;
+
+                using var openEvent = new ManualResetEvent(false);
+
+                void OnOpen(object? sender, EventArgs e)
+                {
+                    // ReSharper disable once AccessToDisposedClosure
+                    openEvent.Set();
+                }
+
+                Socket.OnOpen += OnOpen;
+                Socket.Connect();
+                var result = openEvent.WaitOne(timeOutInMs);
+                Socket.OnOpen -= OnOpen;
+
+                if (result)
+                {
+                    _logService.Log(LogLevel.Info, "Successfully connected to USB2SNES websocket at " +
+                        $"{Socket.Url.OriginalString}.");
+                    Status = ConnectionStatus.SelectDevice;
+                }
+                else
+                {
+                    _logService.Log(LogLevel.Error, "Failed to connect to USB2SNES websocket at " +
+                        $"{Socket.Url.OriginalString}.");
+                    Status = ConnectionStatus.Error;
+                }
+
+                return result;
+            });
+        }
+
+        /// <summary>
+        /// Disconnects from the web socket and unsets the web socket property.
+        /// </summary>
+        public async Task Disconnect()
+        {
+            await Task.Factory.StartNew(() =>
+            {
+                Socket?.Close();
+                Socket = null;
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                Status = ConnectionStatus.NotConnected;
+            });
+        }
+
+        /// <summary>
+        /// Returns the list of devices to which can be attached.
+        /// </summary>
+        /// <param name="timeOutInMs">
+        /// A 32-bit integer representing the timeout in milliseconds.
+        /// </param>
+        /// <returns>
+        /// An enumerator of the device list strings.
+        /// </returns>
+        public async Task<IEnumerable<string>?> GetDevices(int timeOutInMs = 4096)
+        {
+            return await Task<IEnumerable<string>?>.Factory.StartNew(() =>
+            {
+                if (!ConnectIfNeeded(timeOutInMs))
+                {
+                    return null;
+                }
+
+                return GetJsonResults(
+                    "get device list", _requestFactory(OpcodeType.DeviceList.ToString()), false,
+                    timeOutInMs);
+            });
+        }
+
+        /// <summary>
+        /// Sets the device to be connected to.
+        /// </summary>
+        /// <param name="device">
+        ///     A string representing the device.
+        /// </param>
+        public async Task SetDevice(string device)
+        {
+            _device = device;
+
+            await AttachDeviceIfNeeded();
+        }
+
+        /// <summary>
+        /// Attaches to the selected device, if not already attached.
+        /// </summary>
+        /// <param name="timeOutInMs">
+        /// A 32-bit integer representing the timeout in milliseconds.
+        /// </param>
+        /// <returns>
+        /// A boolean representing whether the method is successful.
+        /// </returns>
+        public async Task<bool> AttachDeviceIfNeeded(int timeOutInMs = 4096)
+        {
+            return await Task<bool>.Factory.StartNew(() =>
+            {
+                if (Status == ConnectionStatus.Connected)
+                {
+                    _logService.Log(
+                        LogLevel.Debug, "Already attached to device, skipping attachment attempt.");
+                    return true;
+                }
+
+                if (!ConnectIfNeeded(timeOutInMs))
+                {
+                    return false;
+                }
+
+                return AttachDevice(timeOutInMs);
+            });
+        }
+
+        /// <summary>
+        /// Returns the values of a contiguous set of bytes of SNES memory.
+        /// </summary>
+        /// <param name="address">
+        ///     A 64-bit unsigned integer representing the starting memory address to be read.
+        /// </param>
+        /// <param name="bytesToRead">
+        ///     A 32-bit signed integer representing the number of bytes to read.
+        /// </param>
+        /// <param name="timeOutInMs">
+        ///     A 32-bit signed integer representing the timeout in milliseconds.
+        /// </param>
+        /// <returns>
+        /// A boolean representing whether the method is successful.
+        /// </returns>
+        public async Task<byte[]?> Read(ulong address, int bytesToRead = 1, int timeOutInMs = 4096)
+        {
+            return await Task<byte[]?>.Factory.StartNew(() =>
+            {
+                var buffer = new byte[bytesToRead];
+                var attachTask = AttachDeviceIfNeeded(timeOutInMs);
+                attachTask.Wait();
+
+                if (!attachTask.Result)
+                {
+                    return null;
+                }
+
+                if (Status != ConnectionStatus.Connected)
+                {
+                    return null;
+                }
+
+                using ManualResetEvent readEvent = new ManualResetEvent(false);
+
+                lock (_transmitLock)
+                {
+                    _messageHandler = (e) =>
+                    {
+                        if (!e.IsBinary || e.RawData == null)
+                        {
+                            return;
+                        }
+
+                        for (var i = 0; i < buffer.Length; i++)
+                        {
+                            buffer[i] = e.RawData[Math.Min(i, e.RawData.Length - 1)];
+                        }
+
+                        // ReSharper disable once AccessToDisposedClosure
+                        readEvent.Set();
+                    };
+
+                    _logService.Log(LogLevel.Info, $"Reading {bytesToRead} byte(s) from {address:X}.");
+                    Send(_requestFactory(
+                        OpcodeType.GetAddress.ToString(),
+                        operands: new List<string>(2)
+                        {
+                        AddressTranslator.TranslateAddress((uint)address, TranslationMode.Read)
+                            .ToString("X", CultureInfo.InvariantCulture),
+                        bytesToRead.ToString("X", CultureInfo.InvariantCulture)
+                        }));
+
+                    if (!readEvent.WaitOne(timeOutInMs))
+                    {
+                        _logService.Log(
+                            LogLevel.Error, $"Failed to read {buffer.Length} byte(s) from {address:X}.");
+                        Status = ConnectionStatus.Error;
+                        return null;
+                    }
+                }
+
+                _logService.Log(LogLevel.Info, $"Read {buffer.Length} byte(s) from {address:X} successfully.");
+                return buffer;
+            });
         }
 
         /// <summary>
@@ -334,223 +551,6 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
             Status = ConnectionStatus.Connected;
 
             return true;
-        }
-
-        /// <summary>
-        /// Sets the URI.
-        /// </summary>
-        /// <param name="uriString">
-        /// A string representing the URI.
-        /// </param>
-        public void SetUri(string uriString)
-        {
-            _uri = uriString;
-        }
-
-        /// <summary>
-        /// Connects to the USB2SNES web socket.
-        /// </summary>
-        /// <param name="timeOutInMs">
-        /// A 32-bit integer representing the timeout in milliseconds.
-        /// </param>
-        /// <returns>
-        /// A boolean representing whether the method is successful.
-        /// </returns>
-        public async Task<bool> Connect(int timeOutInMs = 4096)
-        {
-            return await Task<bool>.Factory.StartNew(() =>
-            {
-                Socket = new WebSocket(_uri);
-                _logService.Log(LogLevel.Info, "Attempting to connect to USB2SNES websocket at " +
-                    $"{Socket.Url.OriginalString}.");
-                Status = ConnectionStatus.Connecting;
-
-                using var openEvent = new ManualResetEvent(false);
-
-                void OnOpen(object? sender, EventArgs e)
-                {
-                    // ReSharper disable once AccessToDisposedClosure
-                    openEvent.Set();
-                }
-
-                Socket.OnOpen += OnOpen;
-                Socket.Connect();
-                var result = openEvent.WaitOne(timeOutInMs);
-                Socket.OnOpen -= OnOpen;
-
-                if (result)
-                {
-                    _logService.Log(LogLevel.Info, "Successfully connected to USB2SNES websocket at " +
-                        $"{Socket.Url.OriginalString}.");
-                    Status = ConnectionStatus.SelectDevice;
-                }
-                else
-                {
-                    _logService.Log(LogLevel.Error, "Failed to connect to USB2SNES websocket at " +
-                        $"{Socket.Url.OriginalString}.");
-                    Status = ConnectionStatus.Error;
-                }
-
-                return result;
-            });
-        }
-
-        /// <summary>
-        /// Disconnects from the web socket and unsets the web socket property.
-        /// </summary>
-        public async Task Disconnect()
-        {
-            await Task.Factory.StartNew(() =>
-            {
-                Socket?.Close();
-                Socket = null;
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
-                Status = ConnectionStatus.NotConnected;
-            });
-        }
-
-        /// <summary>
-        /// Returns the list of devices to which can be attached.
-        /// </summary>
-        /// <param name="timeOutInMs">
-        /// A 32-bit integer representing the timeout in milliseconds.
-        /// </param>
-        /// <returns>
-        /// An enumerator of the device list strings.
-        /// </returns>
-        public async Task<IEnumerable<string>?> GetDevices(int timeOutInMs = 4096)
-        {
-            return await Task<IEnumerable<string>?>.Factory.StartNew(() =>
-            {
-                if (!ConnectIfNeeded(timeOutInMs))
-                {
-                    return null;
-                }
-
-                return GetJsonResults(
-                    "get device list", _requestFactory(OpcodeType.DeviceList.ToString()), false,
-                    timeOutInMs);
-            });
-        }
-
-        /// <summary>
-        /// Sets the device to be connected to.
-        /// </summary>
-        /// <param name="device">
-        ///     A string representing the device.
-        /// </param>
-        public async Task SetDevice(string device)
-        {
-            _device = device;
-
-            await AttachDeviceIfNeeded();
-        }
-
-        /// <summary>
-        /// Attaches to the selected device, if not already attached.
-        /// </summary>
-        /// <param name="timeOutInMs">
-        /// A 32-bit integer representing the timeout in milliseconds.
-        /// </param>
-        /// <returns>
-        /// A boolean representing whether the method is successful.
-        /// </returns>
-        public async Task<bool> AttachDeviceIfNeeded(int timeOutInMs = 4096)
-        {
-            return await Task<bool>.Factory.StartNew(() =>
-            {
-                if (Status == ConnectionStatus.Connected)
-                {
-                    _logService.Log(
-                        LogLevel.Debug, "Already attached to device, skipping attachment attempt.");
-                    return true;
-                }
-
-                if (!ConnectIfNeeded(timeOutInMs))
-                {
-                    return false;
-                }
-
-                return AttachDevice(timeOutInMs);
-            });
-        }
-
-        /// <summary>
-        /// Returns the values of a contiguous set of bytes of SNES memory.
-        /// </summary>
-        /// <param name="address">
-        ///     A 64-bit unsigned integer representing the starting memory address to be read.
-        /// </param>
-        /// <param name="bytesToRead">
-        ///     A 32-bit signed integer representing the number of bytes to read.
-        /// </param>
-        /// <param name="timeOutInMs">
-        ///     A 32-bit signed integer representing the timeout in milliseconds.
-        /// </param>
-        /// <returns>
-        /// A boolean representing whether the method is successful.
-        /// </returns>
-        public async Task<byte[]?> Read(ulong address, int bytesToRead = 1, int timeOutInMs = 4096)
-        {
-            return await Task<byte[]?>.Factory.StartNew(() =>
-            {
-                var buffer = new byte[bytesToRead];
-                var attachTask = AttachDeviceIfNeeded(timeOutInMs);
-                attachTask.Wait();
-
-                if (!attachTask.Result)
-                {
-                    return null;
-                }
-
-                if (Status != ConnectionStatus.Connected)
-                {
-                    return null;
-                }
-
-                using ManualResetEvent readEvent = new ManualResetEvent(false);
-
-                lock (_transmitLock)
-                {
-                    _messageHandler = (e) =>
-                    {
-                        if (!e.IsBinary || e.RawData == null)
-                        {
-                            return;
-                        }
-
-                        for (var i = 0; i < buffer.Length; i++)
-                        {
-                            buffer[i] = e.RawData[Math.Min(i, e.RawData.Length - 1)];
-                        }
-
-                        // ReSharper disable once AccessToDisposedClosure
-                        readEvent.Set();
-                    };
-
-                    _logService.Log(LogLevel.Info, $"Reading {bytesToRead} byte(s) from {address:X}.");
-                    Send(_requestFactory(
-                        OpcodeType.GetAddress.ToString(),
-                        operands: new List<string>(2)
-                        {
-                        AddressTranslator.TranslateAddress((uint)address, TranslationMode.Read)
-                            .ToString("X", CultureInfo.InvariantCulture),
-                        bytesToRead.ToString("X", CultureInfo.InvariantCulture)
-                        }));
-
-                    if (!readEvent.WaitOne(timeOutInMs))
-                    {
-                        _logService.Log(
-                            LogLevel.Error, $"Failed to read {buffer.Length} byte(s) from {address:X}.");
-                        Status = ConnectionStatus.Error;
-                        return null;
-                    }
-                }
-
-                _logService.Log(LogLevel.Info, $"Read {buffer.Length} byte(s) from {address:X} successfully.");
-                return buffer;
-            });
         }
     }
 }

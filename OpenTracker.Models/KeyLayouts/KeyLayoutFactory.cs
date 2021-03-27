@@ -4,6 +4,7 @@ using OpenTracker.Models.DungeonItems;
 using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Requirements;
+using OpenTracker.Models.Requirements.Multiple;
 
 namespace OpenTracker.Models.KeyLayouts
 {

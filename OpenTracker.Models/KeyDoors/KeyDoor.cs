@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using OpenTracker.Models.Accessibility;
-using OpenTracker.Models.Dungeons;
+using OpenTracker.Models.Dungeons.Mutable;
 using OpenTracker.Models.RequirementNodes;
 using OpenTracker.Models.Requirements;
+using OpenTracker.Models.Requirements.KeyDoor;
 using ReactiveUI;
 
 namespace OpenTracker.Models.KeyDoors

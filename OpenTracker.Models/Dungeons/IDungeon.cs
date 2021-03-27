@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using OpenTracker.Models.DungeonItems;
 using OpenTracker.Models.DungeonNodes;
+using OpenTracker.Models.Dungeons.Mutable;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.KeyDoors;
 using OpenTracker.Models.KeyLayouts;

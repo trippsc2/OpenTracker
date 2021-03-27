@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using OpenTracker.Models.Dungeons;
+using OpenTracker.Models.Dungeons.Mutable;
 using OpenTracker.Utils;
 
 namespace OpenTracker.Models.DungeonNodes

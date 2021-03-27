@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using OpenTracker.Models.Accessibility;
-using OpenTracker.Models.Dungeons;
+using OpenTracker.Models.Dungeons.Mutable;
 using OpenTracker.Models.NodeConnections;
 using OpenTracker.Models.RequirementNodes;
 using ReactiveUI;
@@ -21,7 +21,7 @@ namespace OpenTracker.Models.DungeonNodes
         public int DungeonExitsAccessible { get; set; }
         public int InsanityExitsAccessible { get; set; }
 
-        public List<INodeConnection> Connections { get; } = new List<INodeConnection>();
+        public List<INodeConnection> Connections { get; } = new();
 
         public event EventHandler? ChangePropagated;
 

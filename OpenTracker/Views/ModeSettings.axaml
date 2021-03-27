@@ -14,10 +14,9 @@
   
   <Panel HorizontalAlignment="Right" Height="16" Width="16">
     
-    <Image Name="image" Source="avares://OpenTracker/Assets/Images/settings.png" ToolTip.Tip="Mode Settings">
+    <Image Source="avares://OpenTracker/Assets/Images/settings.png" ToolTip.Tip="Mode Settings">
       <i:Interaction.Behaviors>
-        <ia:EventTriggerBehavior EventName="PointerReleased"
-                                 SourceObject="{Binding #image}">
+        <ia:EventTriggerBehavior EventName="PointerReleased">
           <ia:InvokeCommandAction Command="{Binding HandleClick}" />
         </ia:EventTriggerBehavior>
       </i:Interaction.Behaviors>

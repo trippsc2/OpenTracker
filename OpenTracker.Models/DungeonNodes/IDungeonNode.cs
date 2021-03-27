@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using OpenTracker.Models.Dungeons;
+using OpenTracker.Models.Dungeons.Mutable;
 using OpenTracker.Models.NodeConnections;
 using OpenTracker.Models.RequirementNodes;
 

@@ -12,7 +12,7 @@
     <vm:PinnedLocationNoteVM />
   </Design.DataContext>
   
-  <Panel Name="panel">
+  <Panel>
 
     <i:Interaction.Behaviors>
       <ia:EventTriggerBehavior EventName="PointerReleased">

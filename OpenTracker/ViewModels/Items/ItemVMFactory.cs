@@ -178,8 +178,8 @@ namespace OpenTracker.ViewModels.Items
             return _itemFactory(_pairFactory(
                     new[]
                     {
-                        _items[itemType],
-                        _items[itemType + 1]
+                        (ICappedItem) _items[itemType],
+                        (ICappedItem) _items[itemType + 1]
                     },
                     $"avares://OpenTracker/Assets/Images/Items/{type.ToString().ToLowerInvariant()}"),
                 _requirements[RequirementType.NoRequirement]);

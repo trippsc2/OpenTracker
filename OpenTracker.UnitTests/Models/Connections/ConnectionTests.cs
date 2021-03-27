@@ -82,7 +82,7 @@ namespace OpenTracker.UnitTests.Models.Connections
         [InlineData(false, 2, 1, 2, 0)]
         [InlineData(true, 2, 1, 1, 2)]
         [InlineData(true, 2, 1, 2, 1)]
-        public void Equals_ShouldReturnWhetherLocationPairIsTheSameInAnyOrder(
+        public void Equals_ShouldReturnTrue_WhenLocationPairIsTheSameInAnyOrder(
             bool expected, int connection1Location1Index, int connection1Location2Index, int connection2Location1Index,
             int connection2Location2Index)
         {
@@ -92,6 +92,24 @@ namespace OpenTracker.UnitTests.Models.Connections
                 _mapLocations[connection2Location1Index], _mapLocations[connection2Location2Index]);
             
             Assert.Equal(expected, connection1.Equals(connection2));
+        }
+
+        [Fact]
+        public void Equals_ShouldReturnFalse_WhenParameterIsNull()
+        {
+            var connection = new Connection(
+                _removeConnectionFactory, _mapLocations[0], _mapLocations[1]);
+            
+            Assert.False(connection.Equals(null));
+        }
+
+        [Fact]
+        public void Equals_ShouldReturnFalse_WhenParameterIsNotConnection()
+        {
+            var connection = new Connection(
+                _removeConnectionFactory, _mapLocations[0], _mapLocations[1]);
+            
+            Assert.False(connection.Equals(new object()));
         }
         
         [Theory]
@@ -131,7 +149,7 @@ namespace OpenTracker.UnitTests.Models.Connections
         [InlineData(false, 2, 1, 2, 0)]
         [InlineData(true, 2, 1, 1, 2)]
         [InlineData(true, 2, 1, 2, 1)]
-        public void GetHashCode_ShouldReturnSameValueForEqualLocations(
+        public void GetHashCode_ShouldReturnSameValue_WhenLocationPairIsTheSameInAnyOrder(
             bool expected, int connection1Location1Index, int connection1Location2Index, int connection2Location1Index,
             int connection2Location2Index)
         {

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.DungeonItems;
 using OpenTracker.Models.DungeonNodes;
+using OpenTracker.Models.Dungeons.Mutable;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.KeyDoors;
 using OpenTracker.Models.KeyLayouts;
@@ -15,6 +16,7 @@ using OpenTracker.Models.Markings;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.RequirementNodes;
 using OpenTracker.Models.Requirements;
+using OpenTracker.Models.Requirements.KeyDoor;
 using OpenTracker.Models.Sections;
 using OpenTracker.Models.UndoRedo.Locations;
 using OpenTracker.Models.UndoRedo.Notes;
@@ -277,8 +279,7 @@ namespace OpenTracker.Models.Dungeons
                 {
                     var requirement = connection.Requirement;
 
-                    if (requirement is KeyDoorRequirement ||
-                        requirementSubscriptions.Contains(requirement))
+                    if (requirement is KeyDoorRequirement || requirementSubscriptions.Contains(requirement))
                     {
                         continue;
                     }

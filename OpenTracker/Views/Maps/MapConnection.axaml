@@ -11,25 +11,22 @@
     <vm:MapConnectionVM />
   </Design.DataContext>
   
-  <Line Name="line" Classes="Connector" EndPoint="{Binding End}"
+  <Line Classes="Connector" EndPoint="{Binding End}"
         StartPoint="{Binding Start}"
         Stroke="{Binding Color}"
         IsVisible="{Binding Visible}">
     
     <i:Interaction.Behaviors>
       
-      <ia:EventTriggerBehavior EventName="PointerReleased"
-                               SourceObject="{Binding #line}">
+      <ia:EventTriggerBehavior EventName="PointerReleased">
         <ia:InvokeCommandAction Command="{Binding HandleClick}" />
       </ia:EventTriggerBehavior>
       
-      <ia:EventTriggerBehavior EventName="PointerEnter"
-                               SourceObject="{Binding #line}">
+      <ia:EventTriggerBehavior EventName="PointerEnter">
         <ia:InvokeCommandAction Command="{Binding HandlePointerEnter}" />
       </ia:EventTriggerBehavior>
 
-      <ia:EventTriggerBehavior EventName="PointerLeave"
-                               SourceObject="{Binding #line}">
+      <ia:EventTriggerBehavior EventName="PointerLeave">
         <ia:InvokeCommandAction Command="{Binding HandlePointerLeave}" />
       </ia:EventTriggerBehavior>
       

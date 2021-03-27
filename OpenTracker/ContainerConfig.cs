@@ -24,6 +24,13 @@ using OpenTracker.Models.Requirements;
 using OpenTracker.Models.RequirementNodes;
 using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.Prizes;
+using OpenTracker.Models.Requirements.Boss;
+using OpenTracker.Models.Requirements.Item;
+using OpenTracker.Models.Requirements.KeyDoor;
+using OpenTracker.Models.Requirements.Mode;
+using OpenTracker.Models.Requirements.Multiple;
+using OpenTracker.Models.Requirements.Node;
+using OpenTracker.Models.Requirements.SequenceBreak;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.Sections;
 using OpenTracker.Models.SequenceBreaks;
@@ -139,7 +146,7 @@ namespace OpenTracker
             nameof(PrizeSection),
             nameof(ShopSection),
             nameof(TakeAnySection),
-            nameof(VisibleItemSection),
+            nameof(VisibleItemSection)
         };
 
         private static List<string> ModelsSingleInstanceTypes => new()

@@ -6,6 +6,12 @@ using OpenTracker.Models.Items;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.Prizes;
 using OpenTracker.Models.RequirementNodes;
+using OpenTracker.Models.Requirements.Boss;
+using OpenTracker.Models.Requirements.Item;
+using OpenTracker.Models.Requirements.Mode;
+using OpenTracker.Models.Requirements.Multiple;
+using OpenTracker.Models.Requirements.Node;
+using OpenTracker.Models.Requirements.SequenceBreak;
 using OpenTracker.Models.SequenceBreaks;
 
 namespace OpenTracker.Models.Requirements

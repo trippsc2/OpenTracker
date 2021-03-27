@@ -33,7 +33,7 @@ namespace OpenTracker.ViewModels.Items.Adapters
         
         public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
 
-        public delegate PairItemAdapter Factory(IItem[] items, string imageSourceBase);
+        public delegate PairItemAdapter Factory(ICappedItem[] items, string imageSourceBase);
 
         /// <summary>
         /// Constructor

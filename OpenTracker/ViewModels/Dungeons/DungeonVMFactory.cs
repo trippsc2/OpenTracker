@@ -4,6 +4,7 @@ using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Requirements;
+using OpenTracker.Models.Requirements.Multiple;
 using OpenTracker.Models.Sections;
 using OpenTracker.ViewModels.Items;
 using OpenTracker.ViewModels.Items.Adapters;

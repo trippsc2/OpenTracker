@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using OpenTracker.Models.Accessibility;
+using OpenTracker.Models.NodeConnections;
 using ReactiveUI;
 
 namespace OpenTracker.Models.RequirementNodes
@@ -9,12 +10,13 @@ namespace OpenTracker.Models.RequirementNodes
     {
         public AccessibilityLevel Accessibility { get; } = AccessibilityLevel.Normal;
 
-        public event EventHandler? ChangePropagated;
-
-        public bool AlwaysAccessible { get; set; } = false;
         public int DungeonExitsAccessible { get; set; } = 0;
         public int ExitsAccessible { get; set; } = 0;
         public int InsanityExitsAccessible { get; set; } = 0;
+
+        public List<INodeConnection> Connections { get; } = new();
+        
+        public event EventHandler? ChangePropagated;
 
         public AccessibilityLevel GetNodeAccessibility(List<IRequirementNode> excludedNodes)
         {
