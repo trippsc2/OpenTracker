@@ -590,17 +590,15 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
             foreach (var result in resultInLogicQueue.GetConsumingEnumerable())
             {
                 ProcessBossAccessibilityResult(result, lowestBossAccessibilities, highestBossAccessibilities);
-                ProcessItemAccessibilityResult(result, ref lowestAccessible, ref highestAccessible,
-                    ref sequenceBreak, ref visible);
+                ProcessItemAccessibilityResult(
+                    result, ref lowestAccessible, ref highestAccessible, ref sequenceBreak, ref visible);
             }
 
             foreach (var result in resultOutOfLogicQueue.GetConsumingEnumerable())
             {
-                ProcessBossAccessibilityResult(
-                    result, lowestBossAccessibilities, highestBossAccessibilities, true);
+                ProcessBossAccessibilityResult(result, lowestBossAccessibilities, highestBossAccessibilities);
                 ProcessItemAccessibilityResult(
-                    result, ref lowestAccessible, ref highestAccessible, ref _sequenceBreak,
-                    ref visible, true);
+                    result, ref lowestAccessible, ref highestAccessible, ref _sequenceBreak, ref visible);
             }
 
             resultInLogicQueue.Dispose();
@@ -622,19 +620,16 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         /// <param name="highestBossAccessibilities">
         /// A list of the highest accessibilities for each boss so far.
         /// </param>
-        /// <param name="fromSequenceBreakQueue">
-        /// A boolean that represents whether the result is from the sequence break queue.
-        /// </param>
         private static void ProcessBossAccessibilityResult(
             IDungeonResult result, IList<AccessibilityLevel> lowestBossAccessibilities,
-            IList<AccessibilityLevel> highestBossAccessibilities, bool fromSequenceBreakQueue = false)
+            IList<AccessibilityLevel> highestBossAccessibilities)
         {
             for (var i = 0; i < result.BossAccessibility.Count; i++)
             {
                 highestBossAccessibilities[i] = AccessibilityLevelMethods.Max(
                     highestBossAccessibilities[i], result.BossAccessibility[i]);
 
-                if (fromSequenceBreakQueue)
+                if (result.SequenceBreak)
                 {
                     continue;
                 }
@@ -662,14 +657,11 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         /// <param name="visible">
         /// A boolean representing whether the last inaccessible item is visible.
         /// </param>
-        /// <param name="fromSequenceBreakQueue">
-        /// A boolean representing whether the result is from the sequence break queue.
-        /// </param>
         private static void ProcessItemAccessibilityResult(
             IDungeonResult result, ref int lowestAccessible, ref int highestAccessible, ref bool sequenceBreak,
-            ref bool visible, bool fromSequenceBreakQueue = false)
+            ref bool visible)
         {
-            if (fromSequenceBreakQueue && highestAccessible < result.Accessible)
+            if (result.SequenceBreak && highestAccessible < result.Accessible)
             {
                 sequenceBreak = true;
             }
@@ -677,7 +669,7 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
             highestAccessible = Math.Max(highestAccessible, result.Accessible);
             visible = result.Visible;
 
-            if (fromSequenceBreakQueue)
+            if (result.SequenceBreak)
             {
                 return;
             }

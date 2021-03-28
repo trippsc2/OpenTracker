@@ -6,9 +6,9 @@ using Avalonia;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
-using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Modes;
+using OpenTracker.Models.Sections;
 using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
@@ -115,7 +115,7 @@ namespace OpenTracker.ViewModels.MapLocations
             _colorProvider = colorProvider(mapLocation);
             _mapLocation = mapLocation;
 
-            _dungeon = _mapLocation.Location is IDungeon;
+            _dungeon = _mapLocation.Location.Sections[0] is IDungeonItemSection;
             
             HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
             HandleDoubleClick = ReactiveCommand.Create<RoutedEventArgs>(HandleDoubleClickImpl);
