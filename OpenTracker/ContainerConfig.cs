@@ -17,6 +17,7 @@ using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.KeyDoors;
 using OpenTracker.Models.KeyLayouts;
+using OpenTracker.Models.KeyLayouts.Factories;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.NodeConnections;
@@ -162,6 +163,7 @@ namespace OpenTracker
             nameof(DropdownFactory),
             nameof(DungeonItemFactory),
             nameof(DungeonNodeFactory),
+            nameof(DungeonDictionary),
             nameof(DungeonFactory),
             nameof(ItemDictionary),
             nameof(ItemFactory),

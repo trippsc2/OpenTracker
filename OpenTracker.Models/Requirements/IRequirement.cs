@@ -11,7 +11,6 @@ namespace OpenTracker.Models.Requirements
     {
         bool Met { get; }
         AccessibilityLevel Accessibility { get; }
-        bool Testing { get; set; }
 
         event EventHandler? ChangePropagated;
     }

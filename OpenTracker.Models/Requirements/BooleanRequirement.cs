@@ -18,14 +18,16 @@ namespace OpenTracker.Models.Requirements
         public bool Met
         {
             get => _met;
-            private set => this.RaiseAndSetIfChanged(ref _met, value);
-        }
-
-        private bool _testing;
-        public bool Testing
-        {
-            get => _testing;
-            set => this.RaiseAndSetIfChanged(ref _testing, value);
+            private set
+            {
+                if (_met == value)
+                {
+                    return;
+                }
+                
+                this.RaiseAndSetIfChanged(ref _met, value);
+                ChangePropagated?.Invoke(this, EventArgs.Empty);
+            }
         }
 
         public AccessibilityLevel Accessibility => Met ? _metAccessibility : AccessibilityLevel.None;
@@ -48,17 +50,9 @@ namespace OpenTracker.Models.Requirements
         /// </summary>
         private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
-            switch (e.PropertyName)
+            if (e.PropertyName == nameof(Met))
             {
-                case nameof(Met):
-                    this.RaisePropertyChanged(nameof(Accessibility));
-                    break;
-                case nameof(Accessibility):
-                    ChangePropagated?.Invoke(this, EventArgs.Empty);
-                    break;
-                case nameof(Testing):
-                    UpdateValue();
-                    break;
+                this.RaisePropertyChanged(nameof(Accessibility));
             }
         }
 
@@ -75,7 +69,7 @@ namespace OpenTracker.Models.Requirements
         /// </summary>
         protected void UpdateValue()
         {
-            Met = Testing || ConditionMet();
+            Met = ConditionMet();
         }
     }
 }

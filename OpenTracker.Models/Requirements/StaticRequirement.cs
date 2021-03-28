@@ -10,9 +10,7 @@ namespace OpenTracker.Models.Requirements
     public class StaticRequirement : ReactiveObject, IRequirement
     {
         public bool Met => true;
-
-        public bool Testing { get; set; }
-
+        
         public AccessibilityLevel Accessibility { get; }
 
         public event EventHandler? ChangePropagated;

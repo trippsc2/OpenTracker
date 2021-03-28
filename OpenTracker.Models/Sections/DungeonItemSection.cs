@@ -113,6 +113,9 @@ namespace OpenTracker.Models.Sections
             }
             
             _autoTrackValue.PropertyChanged += OnAutoTrackValueChanged;
+            
+            UpdateTotal();
+            UpdateAccessibility();
         }
 
         private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -329,15 +332,16 @@ namespace OpenTracker.Models.Sections
                 return;
             }
 
+            if (Accessible > 0)
+            {
+                Accessibility = AccessibilityLevel.Partial;
+                return;
+            }
+            
             if (unavailable == _accessibilityProvider.Accessible && _accessibilityProvider.Visible)
             {
                 Accessibility = AccessibilityLevel.Inspect;
                 return;
-            }
-
-            if (Accessible > 0)
-            {
-                Accessibility = AccessibilityLevel.Partial;
             }
 
             Accessibility = AccessibilityLevel.None;

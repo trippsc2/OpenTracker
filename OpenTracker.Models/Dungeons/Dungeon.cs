@@ -5,6 +5,7 @@ using OpenTracker.Models.DungeonNodes;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.KeyDoors;
 using OpenTracker.Models.KeyLayouts;
+using OpenTracker.Models.KeyLayouts.Factories;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.RequirementNodes;
 using ReactiveUI;
@@ -97,6 +98,8 @@ namespace OpenTracker.Models.Dungeons
             List<KeyDoorID> bigKeyDoors, List<DungeonNodeID> nodes, List<IRequirementNode> entryNodes)
         {
             _mode = mode;
+
+            ID = id;
             
             Map = map;
             Compass = compass;
@@ -116,9 +119,10 @@ namespace OpenTracker.Models.Dungeons
 
             Nodes = nodes;
             EntryNodes = entryNodes;
-            ID = id;
 
             _mode.PropertyChanged += OnModeChanged;
+            
+            UpdateTotal();
         }
         
         /// <summary>

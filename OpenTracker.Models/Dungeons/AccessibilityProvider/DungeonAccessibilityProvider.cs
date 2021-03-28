@@ -560,6 +560,15 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
             inLogicQueue.Add(result);
         }
 
+        /// <summary>
+        /// Processes the result queues.
+        /// </summary>
+        /// <param name="resultInLogicQueue">
+        /// A blocking collection queue for results in-logic.
+        /// </param>
+        /// <param name="resultOutOfLogicQueue">
+        /// A blocking collection queue for results out-of-logic.
+        /// </param>
         private void ProcessResults(
             BlockingCollection<IDungeonResult> resultInLogicQueue,
             BlockingCollection<IDungeonResult> resultOutOfLogicQueue)
@@ -596,17 +605,9 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
 
             resultInLogicQueue.Dispose();
             resultOutOfLogicQueue.Dispose();
-
-            var accessible = highestAccessible;
-
-            if (lowestAccessible < highestAccessible)
-            {
-                sequenceBreak = true;
-            }
-
-            Accessible = accessible;
-            SequenceBreak = sequenceBreak;
-            Visible = visible;
+            
+            SetBossAccessibilities(highestBossAccessibilities, lowestBossAccessibilities);
+            SetAccessibilityValues(highestAccessible, lowestAccessible, sequenceBreak, visible);
         }
 
         /// <summary>
@@ -643,6 +644,27 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
             }
         }
 
+        /// <summary>
+        /// Processes a result's item accessibility values.
+        /// </summary>
+        /// <param name="result">
+        /// The result to be processed.
+        /// </param>
+        /// <param name="highestAccessible">
+        /// A 32-bit signed integer representing the most accessible checks.
+        /// </param>
+        /// <param name="lowestAccessible">
+        /// A 32-bit signed integer representing the least accessible checks.
+        /// </param>
+        /// <param name="sequenceBreak">
+        /// A boolean representing whether the result required a sequence break.
+        /// </param>
+        /// <param name="visible">
+        /// A boolean representing whether the last inaccessible item is visible.
+        /// </param>
+        /// <param name="fromSequenceBreakQueue">
+        /// A boolean representing whether the result is from the sequence break queue.
+        /// </param>
         private static void ProcessItemAccessibilityResult(
             IDungeonResult result, ref int lowestAccessible, ref int highestAccessible, ref bool sequenceBreak,
             ref bool visible, bool fromSequenceBreakQueue = false)
@@ -662,5 +684,65 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
 
             lowestAccessible = Math.Min(lowestAccessible, result.Accessible);
         }
+        
+        /// <summary>
+        /// Sets the property values for boss accessibility.
+        /// </summary>
+        /// <param name="highestBossAccessibilities">
+        /// A list of accessibility values for the most accessible.
+        /// </param>
+        /// <param name="lowestBossAccessibilities">
+        /// A list of accessibility values for the least accessible.
+        /// </param>
+        private void SetBossAccessibilities(
+            List<AccessibilityLevel> highestBossAccessibilities, List<AccessibilityLevel> lowestBossAccessibilities)
+        {
+            for (var i = 0; i < highestBossAccessibilities.Count; i++)
+            {
+                var highestAccessibility = highestBossAccessibilities[i];
+                var lowestAccessibility = lowestBossAccessibilities[i];
+
+                BossAccessibilityProviders[i].Accessibility = highestAccessibility switch
+                {
+                    AccessibilityLevel.None => AccessibilityLevel.None,
+                    AccessibilityLevel.SequenceBreak => AccessibilityLevel.SequenceBreak,
+                    AccessibilityLevel.Normal when lowestAccessibility < AccessibilityLevel.Normal =>
+                        AccessibilityLevel.SequenceBreak,
+                    AccessibilityLevel.Normal => AccessibilityLevel.Normal,
+                    _ => throw new Exception("Boss accessibility in unexpected state.")
+                };
+            }
+        }
+
+        /// <summary>
+        /// Sets the property values for accessibility.
+        /// </summary>
+        /// <param name="highestAccessible">
+        /// A 32-bit signed integer representing the most accessible checks.
+        /// </param>
+        /// <param name="lowestAccessible">
+        /// A 32-bit signed integer representing the least accessible checks.
+        /// </param>
+        /// <param name="sequenceBreak">
+        /// A boolean representing whether the result required a sequence break.
+        /// </param>
+        /// <param name="visible">
+        /// A boolean representing whether the last inaccessible item is visible.
+        /// </param>
+        private void SetAccessibilityValues(
+            int highestAccessible, int lowestAccessible, bool sequenceBreak, bool visible)
+        {
+            var accessible = highestAccessible;
+
+            if (lowestAccessible < highestAccessible)
+            {
+                sequenceBreak = true;
+            }
+
+            Accessible = accessible;
+            SequenceBreak = sequenceBreak;
+            Visible = visible;
+        }
+
     }
 }

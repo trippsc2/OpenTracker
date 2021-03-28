@@ -395,7 +395,7 @@ namespace OpenTracker.Models.Dungeons.Mutable
             return inaccessibleItems <= 0 ?
                 _resultFactory(bossAccessibility, _dungeon.Total, true, false) :
                 _resultFactory(
-                    bossAccessibility, _dungeon.Total - minimumInaccessible, state.SequenceBreak, visible);
+                    bossAccessibility, _dungeon.Total - inaccessibleItems, state.SequenceBreak, visible);
         }
 
         /// <summary>
