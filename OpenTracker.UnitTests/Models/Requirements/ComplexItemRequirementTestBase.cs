@@ -52,13 +52,13 @@ namespace OpenTracker.UnitTests.Models.Requirements
 
              foreach (var smallKey in smallKeys)
              {
-                 ((IDungeon)locations[smallKey.Item1]).SmallKeyItem.Current =
+                 ((IDungeon)locations[smallKey.Item1]).SmallKey.Current =
                      smallKey.Item2;
              }
 
              foreach (var bigKey in bigKeys)
              {
-                 ((IDungeon)locations[bigKey.Item1]).BigKeyItem!.Current =
+                 ((IDungeon)locations[bigKey.Item1]).BigKey!.Current =
                      bigKey.Item2;
              }
 

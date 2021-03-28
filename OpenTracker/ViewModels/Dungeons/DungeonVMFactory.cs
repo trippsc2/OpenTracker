@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Avalonia.Layout;
 using OpenTracker.Models.BossPlacements;
@@ -13,6 +14,7 @@ namespace OpenTracker.ViewModels.Dungeons
 {
     public class DungeonVMFactory : IDungeonVMFactory
     {
+        private readonly IDungeonDictionary _dungeons;
         private readonly ILocationDictionary _locations;
         private readonly IRequirementDictionary _requirements;
 
@@ -32,7 +34,7 @@ namespace OpenTracker.ViewModels.Dungeons
         private readonly BossAdapter.Factory _bossFactory;
 
         public DungeonVMFactory(
-            ILocationDictionary locations, IRequirementDictionary requirements,
+            IDungeonDictionary dungeons, ILocationDictionary locations, IRequirementDictionary requirements,
             AggregateRequirement.Factory aggregateFactory, AlternativeRequirement.Factory alternativeFactory,
             AlwaysDisplayDungeonItemsRequirement.Factory alwaysDisplayFactory,
             DisplayMapsCompassesRequirement.Factory displayMapsCompassesFactory,
@@ -58,6 +60,7 @@ namespace OpenTracker.ViewModels.Dungeons
             _dungeonItemFactory = dungeonItemFactory;
             _prizeFactory = prizeFactory;
             _bossFactory = bossFactory;
+            _dungeons = dungeons;
         }
 
         /// <summary>
@@ -71,7 +74,7 @@ namespace OpenTracker.ViewModels.Dungeons
         /// </returns>
         private IDungeonItemVM GetCompassItemVM(IDungeon dungeon)
         {
-            var compassItem = dungeon.CompassItem;
+            var compassItem = dungeon.Compass;
 
             var requirement = compassItem is null ?
                 (IRequirement) _aggregateFactory(new List<IRequirement>
@@ -112,7 +115,7 @@ namespace OpenTracker.ViewModels.Dungeons
         /// </returns>
         private IDungeonItemVM GetMapItemVM(IDungeon dungeon)
         {
-            var mapItem = dungeon.MapItem;
+            var mapItem = dungeon.Map;
 
             var requirement = mapItem is null ?
                 (IRequirement) _aggregateFactory(new List<IRequirement>
@@ -153,7 +156,7 @@ namespace OpenTracker.ViewModels.Dungeons
         /// </returns>
         private IDungeonItemVM GetSmallKeyItemVM(IDungeon dungeon)
         {
-            var requirement = dungeon.ID == LocationID.EasternPalace ?
+            var requirement = dungeon.ID == DungeonID.EasternPalace ?
                 _requirements[RequirementType.KeyDropShuffleOn] :
                 _requirements[RequirementType.NoRequirement];
             
@@ -163,7 +166,7 @@ namespace OpenTracker.ViewModels.Dungeons
                 _requirements[RequirementType.SmallKeyShuffleOn]
             });
 
-            var item = _itemFactory(_smallKeyFactory(dungeon.SmallKeyItem), requirement);
+            var item = _itemFactory(_smallKeyFactory(dungeon.SmallKey), requirement);
 
             return _factory(spacerRequirement, item);
         }
@@ -179,9 +182,9 @@ namespace OpenTracker.ViewModels.Dungeons
         /// </returns>
         private IDungeonItemVM GetBigKeyItemVM(IDungeon dungeon)
         {
-            var bigKeyItem = dungeon.BigKeyItem;
+            var bigKeyItem = dungeon.BigKey;
 
-            var requirement = dungeon.ID == LocationID.HyruleCastle ?
+            var requirement = dungeon.ID == DungeonID.HyruleCastle ?
                 (IRequirement) _aggregateFactory(new List<IRequirement>
                 {
                     _requirements[RequirementType.KeyDropShuffleOn],
@@ -206,7 +209,7 @@ namespace OpenTracker.ViewModels.Dungeons
                         _requirements[RequirementType.BigKeyShuffleOn]
                         
                     })
-                }) : dungeon.ID == LocationID.HyruleCastle ?
+                }) : dungeon.ID == DungeonID.HyruleCastle ?
                 (IRequirement) _alternativeFactory(new List<IRequirement>
                 {
                     _aggregateFactory(new List<IRequirement>
@@ -242,7 +245,9 @@ namespace OpenTracker.ViewModels.Dungeons
 
         public List<IDungeonItemVM> GetDungeonItemVMs(LocationID id)
         {
-            var dungeon = (IDungeon)_locations[id];
+            var location = _locations[id];
+            var dungeonID = Enum.Parse<DungeonID>(id.ToString());
+            var dungeon = _dungeons[dungeonID];
 
             var dungeonItems = new List<IDungeonItemVM>
             {
@@ -252,7 +257,7 @@ namespace OpenTracker.ViewModels.Dungeons
                 GetBigKeyItemVM(dungeon)
             };
 
-            foreach (var section in dungeon.Sections)
+            foreach (var section in location.Sections)
             {
                 switch (section)
                 {

@@ -5,9 +5,7 @@ using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.DungeonItems;
 using OpenTracker.Models.DungeonNodes;
 using OpenTracker.Models.KeyDoors;
-using OpenTracker.Models.Locations;
 using OpenTracker.Models.Modes;
-using OpenTracker.Models.Sections;
 
 namespace OpenTracker.Models.Dungeons.Mutable
 {
@@ -27,7 +25,6 @@ namespace OpenTracker.Models.Dungeons.Mutable
         private readonly Dictionary<DungeonItemID, IDungeonItem> _bigKeyDrops = new();
         private readonly List<IDungeonItem> _bosses = new();
 
-        public LocationID ID => _dungeon.ID;
         public IKeyDoorDictionary KeyDoors { get; }
         public IDungeonItemDictionary DungeonItems { get; }
         public IDungeonNodeDictionary Nodes { get; }
@@ -165,11 +162,6 @@ namespace OpenTracker.Models.Dungeons.Mutable
         /// </param>
         private void SetSmallKeyDoorState(List<KeyDoorID> unlockedDoors)
         {
-            if (unlockedDoors == null)
-            {
-                throw new ArgumentNullException(nameof(unlockedDoors));
-            }
-
             foreach (var smallKeyDoor in _smallKeyDoors.Keys)
             {
                 _smallKeyDoors[smallKeyDoor].Unlocked = unlockedDoors.Contains(smallKeyDoor);
@@ -207,17 +199,16 @@ namespace OpenTracker.Models.Dungeons.Mutable
                 return 0;
             }
 
-            int bigKeys = 0;
+            var bigKeys = 0;
 
             foreach (var bigKeyDrop in _bigKeyDrops.Values)
             {
-                if (bigKeyDrop.Accessibility == AccessibilityLevel.Normal)
+                switch (bigKeyDrop.Accessibility)
                 {
-                    bigKeys++;
-                }
-                else if (sequenceBreak && bigKeyDrop.Accessibility == AccessibilityLevel.SequenceBreak)
-                {
-                    bigKeys++;
+                    case AccessibilityLevel.Normal:
+                    case AccessibilityLevel.SequenceBreak when sequenceBreak:
+                        bigKeys++;
+                        break;
                 }
             }
 
@@ -228,7 +219,7 @@ namespace OpenTracker.Models.Dungeons.Mutable
         {
             SetSmallKeyDoorState(state.UnlockedDoors);
 
-            bool bigKeyCollected = state.BigKeyCollected || GetAvailableBigKeys() > 0;
+            var bigKeyCollected = state.BigKeyCollected || GetAvailableBigKeys() > 0;
 
             SetBigKeyDoorState(bigKeyCollected);
         }
@@ -250,17 +241,16 @@ namespace OpenTracker.Models.Dungeons.Mutable
                 return 0;
             }
 
-            int smallKeys = 0;
+            var smallKeys = 0;
 
             foreach (var smallKeyDrop in _smallKeyDrops.Values)
             {
-                if (smallKeyDrop.Accessibility == AccessibilityLevel.Normal)
+                switch (smallKeyDrop.Accessibility)
                 {
-                    smallKeys++;
-                }
-                else if (sequenceBreak && smallKeyDrop.Accessibility == AccessibilityLevel.SequenceBreak)
-                {
-                    smallKeys++;
+                    case AccessibilityLevel.Normal:
+                    case AccessibilityLevel.SequenceBreak when sequenceBreak:
+                        smallKeys++;
+                        continue;
                 }
             }
 
@@ -348,6 +338,84 @@ namespace OpenTracker.Models.Dungeons.Mutable
             var inaccessibleItems = 0;
             var visible = false;
 
+            CheckItemAccessibility(state, ref inaccessibleBosses, ref inaccessibleItems, ref visible);
+            CheckKeyDropAccessibility(state, ref inaccessibleItems);
+
+            var minimumInaccessible = _mode.GuaranteedBossItems ? inaccessibleBosses : 0;
+            var bossAccessibility = GetBossAccessibility();
+
+            if (inaccessibleItems <= minimumInaccessible)
+            {
+                return minimumInaccessible == 0 ?
+                    _resultFactory(bossAccessibility, _dungeon.Total, state.SequenceBreak, false) :
+                    _resultFactory(
+                        bossAccessibility, _dungeon.Total - minimumInaccessible, state.SequenceBreak, visible);
+            }
+
+            if (!_mode.BigKeyShuffle && !state.BigKeyCollected && _dungeon.BigKey is not null)
+            {
+                var bigKey = _dungeon.BigKey.Maximum;
+                inaccessibleItems -= bigKey;
+            }
+
+            if (inaccessibleItems <= minimumInaccessible)
+            {
+                return minimumInaccessible == 0 ?
+                    _resultFactory(bossAccessibility, _dungeon.Total, state.SequenceBreak, false) :
+                    _resultFactory(
+                        bossAccessibility, _dungeon.Total - minimumInaccessible, state.SequenceBreak, visible);
+            }
+
+            if (!_mode.SmallKeyShuffle)
+            {
+                var smallKeys = _dungeon.SmallKey.Maximum;
+                inaccessibleItems -= smallKeys - state.KeysCollected;
+            }
+
+            if (inaccessibleItems <= minimumInaccessible)
+            {
+                return minimumInaccessible == 0 ?
+                    _resultFactory(bossAccessibility, _dungeon.Total, state.SequenceBreak, false) :
+                    _resultFactory(
+                        bossAccessibility, _dungeon.Total - minimumInaccessible, state.SequenceBreak, visible);
+            }
+
+            if (!_mode.MapShuffle && _dungeon.Map is not null)
+            {
+                inaccessibleItems -= _dungeon.Map.Maximum;
+            }
+            
+            if (!_mode.CompassShuffle && _dungeon.Compass is not null)
+            {
+                inaccessibleItems -= _dungeon.Compass.Maximum;
+            }
+            
+            inaccessibleItems = Math.Max(inaccessibleItems, minimumInaccessible);
+
+            return inaccessibleItems <= 0 ?
+                _resultFactory(bossAccessibility, _dungeon.Total, true, false) :
+                _resultFactory(
+                    bossAccessibility, _dungeon.Total - minimumInaccessible, state.SequenceBreak, visible);
+        }
+
+        /// <summary>
+        /// Check the accessibility of all items/bosses.
+        /// </summary>
+        /// <param name="state">
+        /// The dungeon state to be checked.
+        /// </param>
+        /// <param name="inaccessibleBosses">
+        /// A 32-bit signed integer representing the number of inaccessible bosses.
+        /// </param>
+        /// <param name="inaccessibleItems">
+        /// A 32-bit signed integer representing the number of inaccessible items.
+        /// </param>
+        /// <param name="visible">
+        /// A boolean representing whether the last inaccessible item is visible.
+        /// </param>
+        private void CheckItemAccessibility(
+            IDungeonState state, ref int inaccessibleBosses, ref int inaccessibleItems, ref bool visible)
+        {
             foreach (var item in _items.Keys)
             {
                 switch (_items[item].Accessibility)
@@ -367,82 +435,45 @@ namespace OpenTracker.Models.Dungeons.Mutable
                         break;
                 }
             }
+        }
 
-            if (_mode.KeyDropShuffle)
+        /// <summary>
+        /// Check the accessibility of all key drops.
+        /// </summary>
+        /// <param name="state">
+        /// The dungeon state to be checked.
+        /// </param>
+        /// <param name="inaccessibleItems">
+        /// A 32-bit integer representing the number of inaccessible items.
+        /// </param>
+        private void CheckKeyDropAccessibility(IDungeonState state, ref int inaccessibleItems)
+        {
+            if (!_mode.KeyDropShuffle)
             {
-                foreach (var item in _smallKeyDrops.Values)
+                return;
+            }
+            
+            foreach (var item in _smallKeyDrops.Values)
+            {
+                switch (item.Accessibility)
                 {
-                    switch (item.Accessibility)
-                    {
-                        case AccessibilityLevel.None:
-                        case AccessibilityLevel.SequenceBreak when !state.SequenceBreak:
-                            inaccessibleItems++;
-                            break;
-                    }
+                    case AccessibilityLevel.None:
+                    case AccessibilityLevel.SequenceBreak when !state.SequenceBreak:
+                        inaccessibleItems++;
+                        break;
                 }
+            }
 
-                foreach (var item in _bigKeyDrops.Values)
+            foreach (var item in _bigKeyDrops.Values)
+            {
+                switch (item.Accessibility)
                 {
-                    switch (item.Accessibility)
-                    {
-                        case AccessibilityLevel.None:
-                        case AccessibilityLevel.SequenceBreak when !state.SequenceBreak:
-                            inaccessibleItems++;
-                            break;
-                    }
+                    case AccessibilityLevel.None:
+                    case AccessibilityLevel.SequenceBreak when !state.SequenceBreak:
+                        inaccessibleItems++;
+                        break;
                 }
             }
-
-            var minimumInaccessible = _mode.GuaranteedBossItems ? inaccessibleBosses : 0;
-            var bossAccessibility = GetBossAccessibility();
-
-            var section = (IDungeonItemSection)_dungeon.Sections[0];
-            
-            if (inaccessibleItems <= minimumInaccessible)
-            {
-                return minimumInaccessible == 0 ? _resultFactory(bossAccessibility, section.Total, false) :
-                    _resultFactory(bossAccessibility, section.Total - minimumInaccessible, visible);
-            }
-
-            if (!_mode.BigKeyShuffle && !state.BigKeyCollected)
-            {
-                var bigKey = _mode.KeyDropShuffle ? _dungeon.BigKey + _dungeon.BigKeyDrops.Count : _dungeon.BigKey;
-                inaccessibleItems -= bigKey;
-            }
-
-            if (inaccessibleItems <= minimumInaccessible)
-            {
-                return minimumInaccessible == 0 ? _resultFactory(bossAccessibility, section.Total, false) :
-                    _resultFactory(bossAccessibility, section.Total - minimumInaccessible, visible);
-            }
-
-            if (!_mode.SmallKeyShuffle)
-            {
-                var smallKeys = _mode.KeyDropShuffle ?
-                    _dungeon.SmallKeys + _dungeon.SmallKeyDrops.Count : _dungeon.SmallKeys;
-                inaccessibleItems -= smallKeys - state.KeysCollected;
-            }
-
-            if (inaccessibleItems <= minimumInaccessible)
-            {
-                return minimumInaccessible == 0 ? _resultFactory(bossAccessibility, section.Total, false) :
-                    _resultFactory(bossAccessibility, section.Total - minimumInaccessible, visible);
-            }
-
-            if (!_mode.MapShuffle)
-            {
-                inaccessibleItems -= _dungeon.Map;
-            }
-            
-            if (!_mode.CompassShuffle)
-            {
-                inaccessibleItems -= _dungeon.Compass;
-            }
-            
-            inaccessibleItems = Math.Max(inaccessibleItems, minimumInaccessible);
-
-            return inaccessibleItems <= 0 ? _resultFactory(bossAccessibility, section.Total, false) :
-                _resultFactory(bossAccessibility, section.Total - minimumInaccessible, visible);
         }
 
         /// <summary>

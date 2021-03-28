@@ -14,22 +14,16 @@ namespace OpenTracker.Models.Dungeons
     public interface IDungeonFactory
     {
         delegate IDungeonFactory Factory();
-
-        int GetDungeonBigKeyCount(LocationID id);
-        List<KeyDoorID> GetDungeonBigKeyDoors(LocationID id);
-        List<DungeonItemID> GetDungeonBigKeyDrops(LocationID id);
-        ICappedItem? GetDungeonBigKeyItem(LocationID id);
-        List<DungeonItemID> GetDungeonBosses(LocationID id);
-        int GetDungeonCompassCount(LocationID id);
-        ICappedItem? GetDungeonCompassItem(LocationID id);
-        List<IRequirementNode> GetDungeonEntryNodes(LocationID id);
-        List<DungeonItemID> GetDungeonItems(LocationID id);
-        int GetDungeonMapCount(LocationID id);
-        ICappedItem? GetDungeonMapItem(LocationID id);
-        List<DungeonNodeID> GetDungeonNodes(LocationID id);
-        int GetDungeonSmallKeyCount(LocationID id);
-        List<KeyDoorID> GetDungeonSmallKeyDoors(LocationID id);
-        List<DungeonItemID> GetDungeonSmallKeyDrops(LocationID id);
-        IKeyItem GetDungeonSmallKeyItem(LocationID id);
+        
+        /// <summary>
+        /// Returns a new dungeon for the specified ID.
+        /// </summary>
+        /// <param name="id">
+        /// The dungeon ID.
+        /// </param>
+        /// <returns>
+        /// A new dungeon.
+        /// </returns>
+        IDungeon GetDungeon(DungeonID id);
     }
 }

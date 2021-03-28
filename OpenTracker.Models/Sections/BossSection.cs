@@ -1,5 +1,7 @@
-﻿using OpenTracker.Models.Accessibility;
+﻿using System.ComponentModel;
+using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.BossPlacements;
+using OpenTracker.Models.Dungeons.AccessibilityProvider;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.UndoRedo;
@@ -15,6 +17,8 @@ namespace OpenTracker.Models.Sections
     {
         private readonly ICollectSection.Factory _collectSectionFactory;
         private readonly IUncollectSection.Factory _uncollectSectionFactory;
+
+        private readonly IBossAccessibilityProvider _accessibilityProvider;
 
         public string Name { get; }
         public IRequirement Requirement { get; }
@@ -36,7 +40,9 @@ namespace OpenTracker.Models.Sections
             set => this.RaiseAndSetIfChanged(ref _available, value);
         }
 
-        public delegate BossSection Factory(string name, IBossPlacement bossPlacement, IRequirement requirement);
+        public delegate BossSection Factory(
+            string name, IBossPlacement bossPlacement, IRequirement requirement,
+            IBossAccessibilityProvider accessibilityProvider);
 
         /// <summary>
         /// Constructor
@@ -56,17 +62,42 @@ namespace OpenTracker.Models.Sections
         /// <param name="requirement">
         /// The requirement for this section to be visible.
         /// </param>
+        /// <param name="accessibilityProvider">
+        /// The accessibility provider.
+        /// </param>
         public BossSection(
             ICollectSection.Factory collectSectionFactory, IUncollectSection.Factory uncollectSectionFactory,
-            string name, IBossPlacement bossPlacement, IRequirement requirement)
+            string name, IBossPlacement bossPlacement, IRequirement requirement,
+            IBossAccessibilityProvider accessibilityProvider)
         {
             _collectSectionFactory = collectSectionFactory;
             _uncollectSectionFactory = uncollectSectionFactory;
             
+            _accessibilityProvider = accessibilityProvider;
+
             Name = name;
             BossPlacement = bossPlacement;
             Requirement = requirement;
             Available = 1;
+
+            _accessibilityProvider.PropertyChanged += OnAccessibilityProviderChanged;
+        }
+
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the IBossAccessibilityProvider interface.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
+        private void OnAccessibilityProviderChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(IBossAccessibilityProvider.Accessibility))
+            {
+                Accessibility = _accessibilityProvider.Accessibility;
+            }
         }
 
         /// <summary>

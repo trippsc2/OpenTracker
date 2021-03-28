@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using OpenTracker.Models.AutoTracking.Values;
 using OpenTracker.Models.BossPlacements;
+using OpenTracker.Models.Dungeons.AccessibilityProvider;
 using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
@@ -24,8 +25,9 @@ namespace OpenTracker.Models.Sections
         public IPrizePlacement PrizePlacement { get; }
 
         public delegate PrizeSection Factory(
-            string name, IBossPlacement bossPlacement, IPrizePlacement prizePlacement, IAutoTrackValue? autoTrackValue,
-            IRequirement requirement, bool alwaysClearable = false);
+            string name, IBossPlacement bossPlacement, IPrizePlacement prizePlacement,
+            IBossAccessibilityProvider accessibilityProvider, IAutoTrackValue? autoTrackValue, IRequirement requirement,
+            bool alwaysClearable = false);
 
         /// <summary>
         /// Constructor
@@ -51,6 +53,9 @@ namespace OpenTracker.Models.Sections
         /// <param name="prizePlacement">
         /// The prize placement of this section.
         /// </param>
+        /// <param name="accessibilityProvider">
+        /// The dungeon accessibility provider.
+        /// </param>
         /// <param name="autoTrackValue">
         /// The section auto-track value.
         /// </param>
@@ -63,9 +68,11 @@ namespace OpenTracker.Models.Sections
         public PrizeSection(
             ISaveLoadManager saveLoadManager, ICollectSection.Factory collectSectionFactory,
             IUncollectSection.Factory uncollectSectionFactory, ITogglePrizeSection.Factory togglePrizeSectionFactory,
-            string name, IBossPlacement bossPlacement, IPrizePlacement prizePlacement, IAutoTrackValue? autoTrackValue,
-            IRequirement requirement, bool alwaysClearable = false)
-            : base(collectSectionFactory, uncollectSectionFactory, name, bossPlacement, requirement)
+            string name, IBossPlacement bossPlacement, IPrizePlacement prizePlacement,
+            IBossAccessibilityProvider accessibilityProvider, IAutoTrackValue? autoTrackValue, IRequirement requirement,
+            bool alwaysClearable = false)
+            : base(collectSectionFactory, uncollectSectionFactory, name, bossPlacement, requirement,
+                accessibilityProvider)
         {
             _saveLoadManager = saveLoadManager;
             

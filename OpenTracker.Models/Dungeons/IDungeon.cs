@@ -1,43 +1,41 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using OpenTracker.Models.DungeonItems;
 using OpenTracker.Models.DungeonNodes;
-using OpenTracker.Models.Dungeons.Mutable;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.KeyDoors;
 using OpenTracker.Models.KeyLayouts;
 using OpenTracker.Models.Locations;
+using OpenTracker.Models.RequirementNodes;
+using ReactiveUI;
 
 namespace OpenTracker.Models.Dungeons
 {
     /// <summary>
     /// This interface contains the dungeon data.
     /// </summary>
-    public interface IDungeon : ILocation
+    public interface IDungeon : IReactiveObject
     {
-        int BigKey { get; }
-        ICappedItem? BigKeyItem { get; }
-        List<DungeonItemID> Bosses { get; }
-        int Compass { get; }
+        ICappedItem? Map { get; }
+        ICappedItem? Compass { get; }
+        IKeyItem SmallKey { get; }
+        ICappedItem? BigKey { get; }
+        
         List<DungeonItemID> DungeonItems { get; }
-        List<IKeyLayout> KeyLayouts { get; }
-        int Map { get; }
-        IKeyItem SmallKeyItem { get; }
-        int SmallKeys { get; }
-        List<KeyDoorID> SmallKeyDoors { get; }
-        List<KeyDoorID> BigKeyDoors { get; }
-        ConcurrentQueue<IMutableDungeon> DungeonDataQueue { get; }
-        List<DungeonNodeID> Nodes { get; }
-        ICappedItem? MapItem { get; }
-        ICappedItem? CompassItem { get; }
+        List<DungeonItemID> Bosses { get; }
         List<DungeonItemID> SmallKeyDrops { get; }
         List<DungeonItemID> BigKeyDrops { get; }
+        List<KeyDoorID> SmallKeyDoors { get; }
+        List<KeyDoorID> BigKeyDoors { get; }
+        List<IKeyLayout> KeyLayouts { get; }
+        List<DungeonNodeID> Nodes { get; }
+        int Total { get; }
+        DungeonID ID { get; }
+        List<IRequirementNode> EntryNodes { get; }
 
-        event EventHandler<IMutableDungeon>? DungeonDataCreated;
-
-        delegate IDungeon Factory(LocationID id);
-
-        void FinishMutableDungeonCreation(IMutableDungeon dungeonData);
+        delegate IDungeon Factory(
+            DungeonID id, ICappedItem? map, ICappedItem? compass, IKeyItem smallKey, ICappedItem? bigKey,
+            List<DungeonItemID> dungeonItems, List<DungeonItemID> bosses, List<DungeonItemID> smallKeyDrops,
+            List<DungeonItemID> bigKeyDrops, List<KeyDoorID> smallKeyDoors, List<KeyDoorID> bigKeyDoors,
+            List<DungeonNodeID> nodes, List<IRequirementNode> entryNodes);
     }
 }

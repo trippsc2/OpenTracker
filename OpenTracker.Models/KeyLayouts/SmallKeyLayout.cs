@@ -5,7 +5,6 @@ using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.DungeonItems;
 using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.Dungeons.Mutable;
-using OpenTracker.Models.Modes;
 using OpenTracker.Models.Requirements;
 
 namespace OpenTracker.Models.KeyLayouts
@@ -15,7 +14,6 @@ namespace OpenTracker.Models.KeyLayouts
     /// </summary>
     public class SmallKeyLayout : IKeyLayout
     {
-        private readonly IMode _mode;
         private readonly int _count;
         private readonly List<DungeonItemID> _smallKeyLocations;
         private readonly bool _bigKeyInLocations;
@@ -30,9 +28,6 @@ namespace OpenTracker.Models.KeyLayouts
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="mode">
-        /// The mode data settings.
-        /// </param>
         /// <param name="count">
         /// A 32-bit signed integer representing the number of keys that must be contained in the
         /// list of locations.
@@ -53,10 +48,9 @@ namespace OpenTracker.Models.KeyLayouts
         /// The requirement for this key layout to be valid.
         /// </param>
         public SmallKeyLayout(
-            IMode mode, int count, List<DungeonItemID> smallKeyLocations, bool bigKeyInLocations,
-            List<IKeyLayout> children, IDungeon dungeon, IRequirement requirement)
+            int count, List<DungeonItemID> smallKeyLocations, bool bigKeyInLocations, List<IKeyLayout> children,
+            IDungeon dungeon, IRequirement requirement)
         {
-            _mode = mode;
             _count = count;
             _smallKeyLocations = smallKeyLocations;
             _bigKeyInLocations = bigKeyInLocations;
@@ -147,8 +141,7 @@ namespace OpenTracker.Models.KeyLayouts
                 inaccessible--;
             }
 
-            var dungeonSmallKeys = _mode.KeyDropShuffle ? _dungeon.SmallKeys + _dungeon.SmallKeyDrops.Count :
-                _dungeon.SmallKeys;
+            var dungeonSmallKeys = _dungeon.SmallKey.Maximum;
 
             return ValidateMinimumKeyCount(state.KeysCollected, inaccessible) &&
                    ValidateMaximumKeyCount(dungeonSmallKeys, state.KeysCollected, inaccessible) &&

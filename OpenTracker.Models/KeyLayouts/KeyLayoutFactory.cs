@@ -62,7 +62,7 @@ namespace OpenTracker.Models.KeyLayouts
         {
             switch (dungeon.ID)
             {
-                case LocationID.HyruleCastle:
+                case DungeonID.HyruleCastle:
                     {
                         return new List<IKeyLayout>
                         {
@@ -289,7 +289,7 @@ namespace OpenTracker.Models.KeyLayouts
                                 _requirements[RequirementType.KeyDropShuffleOnNoKeyShuffle])
                         };
                     }
-                case LocationID.AgahnimTower:
+                case DungeonID.AgahnimTower:
                     {
                         return new List<IKeyLayout>
                         {
@@ -323,7 +323,7 @@ namespace OpenTracker.Models.KeyLayouts
                                 _requirements[RequirementType.KeyDropShuffleOnSmallKeyShuffleOff])
                         };
                     }
-                case LocationID.EasternPalace:
+                case DungeonID.EasternPalace:
                     {
                         return new List<IKeyLayout>
                         {
@@ -466,7 +466,7 @@ namespace OpenTracker.Models.KeyLayouts
                                 _requirements[RequirementType.KeyDropShuffleOnBigKeyShuffleOff])
                         };
                     }
-                case LocationID.DesertPalace:
+                case DungeonID.DesertPalace:
                     {
                         return new List<IKeyLayout>
                         {
@@ -741,7 +741,7 @@ namespace OpenTracker.Models.KeyLayouts
                                 _requirements[RequirementType.KeyDropShuffleOnBigKeyShuffleOff])
                         };
                     }
-                case LocationID.TowerOfHera:
+                case DungeonID.TowerOfHera:
                     {
                         return new List<IKeyLayout>
                         {
@@ -846,7 +846,7 @@ namespace OpenTracker.Models.KeyLayouts
                                 _requirements[RequirementType.BigKeyShuffleOff])
                         };
                     }
-                case LocationID.PalaceOfDarkness:
+                case DungeonID.PalaceOfDarkness:
                     {
                         return new List<IKeyLayout>
                         {
@@ -1036,7 +1036,7 @@ namespace OpenTracker.Models.KeyLayouts
                                 _requirements[RequirementType.BigKeyShuffleOff])
                         };
                     }
-                case LocationID.SwampPalace:
+                case DungeonID.SwampPalace:
                     {
                         return new List<IKeyLayout>
                         {
@@ -1683,7 +1683,7 @@ namespace OpenTracker.Models.KeyLayouts
                                 _requirements[RequirementType.KeyDropShuffleOnGuaranteedBossItemsOffBigKeyShuffleOff])
                         };
                     }
-                case LocationID.SkullWoods:
+                case DungeonID.SkullWoods:
                     {
                         return new List<IKeyLayout>
                         {
@@ -2249,7 +2249,7 @@ namespace OpenTracker.Models.KeyLayouts
                                 _requirements[RequirementType.KeyDropShuffleOnGuaranteedBossItemsOffBigKeyShuffleOff])
                         };
                     }
-                case LocationID.ThievesTown:
+                case DungeonID.ThievesTown:
                     {
                         return new List<IKeyLayout>
                         {
@@ -2379,7 +2379,7 @@ namespace OpenTracker.Models.KeyLayouts
                                 _requirements[RequirementType.KeyDropShuffleOnBigKeyShuffleOff])
                         };
                     }
-                case LocationID.IcePalace:
+                case DungeonID.IcePalace:
                     {
                         return new List<IKeyLayout>
                         {
@@ -2767,7 +2767,7 @@ namespace OpenTracker.Models.KeyLayouts
                                 _requirements[RequirementType.KeyDropShuffleOnBigKeyShuffleOff])
                         };
                     }
-                case LocationID.MiseryMire:
+                case DungeonID.MiseryMire:
                     {
                         return new List<IKeyLayout>
                         {
@@ -3252,7 +3252,7 @@ namespace OpenTracker.Models.KeyLayouts
                                 _requirements[RequirementType.KeyDropShuffleOnBigKeyShuffleOff])
                         };
                     }
-                case LocationID.TurtleRock:
+                case DungeonID.TurtleRock:
                     {
                         return new List<IKeyLayout>
                         {
@@ -3868,7 +3868,7 @@ namespace OpenTracker.Models.KeyLayouts
                                 _requirements[RequirementType.KeyDropShuffleOnWorldStateInvertedOrEntranceShuffleDungeonAllInsanityBigKeyShuffleOff]),
                         };
                     }
-                case LocationID.GanonsTower:
+                case DungeonID.GanonsTower:
                     {
                         return new List<IKeyLayout>
                         {

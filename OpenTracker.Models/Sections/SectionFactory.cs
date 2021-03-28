@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using OpenTracker.Models.BossPlacements;
+using OpenTracker.Models.Dungeons;
+using OpenTracker.Models.Dungeons.AccessibilityProvider;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.RequirementNodes;
@@ -14,10 +16,13 @@ namespace OpenTracker.Models.Sections
     public class SectionFactory : ISectionFactory
     {
         private readonly IBossPlacementDictionary _bossPlacements;
+        private readonly IDungeonDictionary _dungeons;
         private readonly IPrizePlacementDictionary _prizePlacements;
         private readonly IRequirementNodeDictionary _requirementNodes;
         private readonly IRequirementDictionary _requirements;
         private readonly ISectionAutoTrackingFactory _autoTrackingFactory;
+
+        private readonly IDungeonAccessibilityProvider.Factory _accessibilityProvider;
         private readonly BossSection.Factory _bossFactory;
         private readonly DropdownSection.Factory _dropdownFactory;
         private readonly DungeonEntranceSection.Factory _dungeonEntranceFactory;
@@ -37,6 +42,9 @@ namespace OpenTracker.Models.Sections
         /// <param name="bossPlacements">
         /// The boss placement dictionary.
         /// </param>
+        /// <param name="dungeons">
+        /// The dungeon dictionary.
+        /// </param>
         /// <param name="prizePlacements">
         /// The prize placement dictionary.
         /// </param>
@@ -47,7 +55,10 @@ namespace OpenTracker.Models.Sections
         /// The requirement dictionary.
         /// </param>
         /// <param name="autoTrackingFactory">
-        /// The item autotracking factory.
+        /// The item auto-tracking factory.
+        /// </param>
+        /// <param name="accessibilityProvider">
+        /// An Autofac factory for creating the dungeon accessibility provider.
         /// </param>
         /// <param name="bossFactory">
         /// An Autofac factory for creating boss sections.
@@ -86,17 +97,16 @@ namespace OpenTracker.Models.Sections
         /// An Autofac factory for creating visible item sections.
         /// </param>
         public SectionFactory(
-            IBossPlacementDictionary bossPlacements, IPrizePlacementDictionary prizePlacements,
-            IRequirementNodeDictionary requirementNodes, IRequirementDictionary requirements,
-            ISectionAutoTrackingFactory autoTrackingFactory, BossSection.Factory bossFactory,
-            DropdownSection.Factory dropdownFactory,
-            DungeonEntranceSection.Factory dungeonEntranceFactory,
+            IBossPlacementDictionary bossPlacements, IDungeonDictionary dungeons,
+            IPrizePlacementDictionary prizePlacements, IRequirementNodeDictionary requirementNodes,
+            IRequirementDictionary requirements, ISectionAutoTrackingFactory autoTrackingFactory,
+            IDungeonAccessibilityProvider.Factory accessibilityProvider, BossSection.Factory bossFactory,
+            DropdownSection.Factory dropdownFactory, DungeonEntranceSection.Factory dungeonEntranceFactory,
             DungeonItemSection.Factory dungeonItemFactory, EntranceSection.Factory entranceFactory,
-            InsanityEntranceSection.Factory insanityEntranceFactory,
-            ItemSection.Factory itemFactory,
-            MarkableDungeonItemSection.Factory markableDungeonItemFactory,
-            PrizeSection.Factory prizeFactory, ShopSection.Factory shopFactory,
-            TakeAnySection.Factory takeAnyFactory, VisibleItemSection.Factory visibleItemFactory)
+            InsanityEntranceSection.Factory insanityEntranceFactory, ItemSection.Factory itemFactory,
+            MarkableDungeonItemSection.Factory markableDungeonItemFactory, PrizeSection.Factory prizeFactory,
+            ShopSection.Factory shopFactory, TakeAnySection.Factory takeAnyFactory,
+            VisibleItemSection.Factory visibleItemFactory)
         {
             _bossPlacements = bossPlacements;
             _prizePlacements = prizePlacements;
@@ -115,6 +125,8 @@ namespace OpenTracker.Models.Sections
             _shopFactory = shopFactory;
             _takeAnyFactory = takeAnyFactory;
             _visibleItemFactory = visibleItemFactory;
+            _accessibilityProvider = accessibilityProvider;
+            _dungeons = dungeons;
         }
 
         /// <summary>
@@ -1339,16 +1351,23 @@ namespace OpenTracker.Models.Sections
         /// <param name="id">
         /// The location ID.
         /// </param>
+        /// <param name="dungeon">
+        /// The dungeon to which the section is associated.
+        /// </param>
+        /// <param name="accessibilityProvider">
+        /// The dungeon accessibility provider.
+        /// </param>
         /// <param name="index">
         /// The section index.
         /// </param>
         /// <returns>
         /// A new dungeon item section.
         /// </returns>
-        private IDungeonItemSection GetDungeonItemSection(LocationID id, int index = 0)
+        private IDungeonItemSection GetDungeonItemSection(
+            LocationID id, IDungeon dungeon, IDungeonAccessibilityProvider accessibilityProvider, int index = 0)
         {
             return _dungeonItemFactory(
-                id, _autoTrackingFactory.GetAutoTrackValue(id, index),
+                _autoTrackingFactory.GetAutoTrackValue(id, index), dungeon, accessibilityProvider,
                 GetSectionRequirement(id, index));
         }
 
@@ -1358,16 +1377,22 @@ namespace OpenTracker.Models.Sections
         /// <param name="id">
         /// The location ID.
         /// </param>
+        /// <param name="dungeon">
+        /// The dungeon to which the section is associated.
+        /// </param>
+        /// <param name="accessibilityProvider">
+        /// The dungeon accessibility provider.
+        /// </param>
         /// <param name="index">
         /// The section index.
         /// </param>
         /// <returns>
         /// A new markable dungeon item section.
         /// </returns>
-        private ISection GetMarkableDungeonItemSection(LocationID id, int index = 0)
+        private ISection GetMarkableDungeonItemSection(
+            LocationID id, IDungeon dungeon, IDungeonAccessibilityProvider accessibilityProvider, int index = 0)
         {
-            return _markableDungeonItemFactory(
-                GetDungeonItemSection(id, index));
+            return _markableDungeonItemFactory(GetDungeonItemSection(id, dungeon, accessibilityProvider, index));
         }
 
         /// <summary>
@@ -1530,14 +1555,18 @@ namespace OpenTracker.Models.Sections
         /// <param name="index">
         /// The section index.
         /// </param>
+        /// <param name="accessibilityProvider">
+        /// The dungeon accessibility provider.
+        /// </param>
         /// <returns>
         /// A new boss section instance.
         /// </returns>
-        private ISection GetBossSection(LocationID id, int index = 0)
+        private ISection GetBossSection(
+            LocationID id, IDungeonAccessibilityProvider accessibilityProvider, int index = 0)
         {
             return _bossFactory(
                 GetSectionName(id, index), GetSectionBossPlacement(id, index),
-                GetSectionRequirement(id, index));
+                GetSectionRequirement(id, index), accessibilityProvider.BossAccessibilityProviders[index - 1]);
         }
 
         /// <summary>
@@ -1563,17 +1592,21 @@ namespace OpenTracker.Models.Sections
         /// <param name="id">
         /// The location ID.
         /// </param>
+        /// <param name="accessibilityProvider">
+        /// The dungeon accessibility provider.
+        /// </param>
         /// <param name="index">
         /// The section index.
         /// </param>
         /// <returns>
         /// A new prize section instance.
         /// </returns>
-        private ISection GetPrizeSection(LocationID id, int index = 0)
+        private ISection GetPrizeSection(LocationID id, IDungeonAccessibilityProvider accessibilityProvider,
+            int index = 0)
         {
             return _prizeFactory(
                 GetSectionName(id, index), GetSectionBossPlacement(id, index),
-                GetSectionPrizePlacement(id),
+                GetSectionPrizePlacement(id), accessibilityProvider.BossAccessibilityProviders[index - 1],
                 _autoTrackingFactory.GetAutoTrackValue(id, index),
                 GetSectionRequirement(id, index), GetPrizeSectionAlwaysClearable(id, index));
         }
@@ -2005,12 +2038,10 @@ namespace OpenTracker.Models.Sections
                 case LocationID.SpiralCave:
                 case LocationID.SuperBunnyCave:
                 case LocationID.MimicCave:
+                    return new List<ISection>
                     {
-                        return new List<ISection>
-                        {
-                            GetItemSection(id)
-                        };
-                    }
+                        GetItemSection(id)
+                    };
                 case LocationID.Pedestal:
                 case LocationID.LumberjackCave:
                 case LocationID.RaceGame:
@@ -2023,12 +2054,10 @@ namespace OpenTracker.Models.Sections
                 case LocationID.LakeHyliaIsland:
                 case LocationID.EtherTablet:
                 case LocationID.FloatingIsland:
+                    return new List<ISection>
                     {
-                        return new List<ISection>
-                        {
-                            GetVisibleItemSection(id)
-                        };
-                    }
+                        GetVisibleItemSection(id)
+                    };
                 case LocationID.BlindsHouse:
                 case LocationID.TheWell:
                 case LocationID.CastleSecret:
@@ -2036,29 +2065,28 @@ namespace OpenTracker.Models.Sections
                 case LocationID.Dam:
                 case LocationID.ParadoxCave:
                 case LocationID.HookshotCave:
+                    return new List<ISection>
                     {
-                        return new List<ISection>
-                        {
-                            GetItemSection(id),
-                            GetItemSection(id, 1)
-                        };
-                    }
+                        GetItemSection(id),
+                        GetItemSection(id, 1)
+                    };
                 case LocationID.ZoraArea:
                 case LocationID.SpectacleRock:
+                    return new List<ISection>
                     {
-                        return new List<ISection>
-                        {
-                            GetVisibleItemSection(id),
-                            GetItemSection(id, 1)
-                        };
-                    }
+                        GetVisibleItemSection(id),
+                        GetItemSection(id, 1)
+                    };
                 case LocationID.HyruleCastle:
+                {
+                    var dungeonID = Enum.Parse<DungeonID>(id.ToString());
+                    var dungeon = _dungeons[dungeonID];
+                    var accessibilityProvider = _accessibilityProvider(dungeon);
+                    return new List<ISection>
                     {
-                        return new List<ISection>
-                        {
-                            GetDungeonItemSection(id)
-                        };
-                    }
+                        GetDungeonItemSection(id, dungeon, accessibilityProvider)
+                    };
+                }
                 case LocationID.AgahnimTower:
                 case LocationID.EasternPalace:
                 case LocationID.TowerOfHera:
@@ -2069,32 +2097,41 @@ namespace OpenTracker.Models.Sections
                 case LocationID.IcePalace:
                 case LocationID.MiseryMire:
                 case LocationID.TurtleRock:
+                {
+                    var dungeonID = Enum.Parse<DungeonID>(id.ToString());
+                    var dungeon = _dungeons[dungeonID];
+                    var accessibilityProvider = _accessibilityProvider(dungeon);
+                    return new List<ISection>
                     {
-                        return new List<ISection>
-                        {
-                            GetDungeonItemSection(id),
-                            GetPrizeSection(id, 1)
-                        };
-                    }
+                        GetDungeonItemSection(id, dungeon, accessibilityProvider),
+                        GetPrizeSection(id, accessibilityProvider, 1)
+                    };
+                }
                 case LocationID.DesertPalace:
+                {
+                    var dungeonID = Enum.Parse<DungeonID>(id.ToString());
+                    var dungeon = _dungeons[dungeonID];
+                    var accessibilityProvider = _accessibilityProvider(dungeon);
+                    return new List<ISection>
                     {
-                        return new List<ISection>
-                        {
-                            GetMarkableDungeonItemSection(id),
-                            GetPrizeSection(id, 1)
-                        };
-                    }
+                        GetMarkableDungeonItemSection(id, dungeon, accessibilityProvider),
+                        GetPrizeSection(id, accessibilityProvider, 1)
+                    };
+                }
                 case LocationID.GanonsTower:
+                {
+                    var dungeonID = Enum.Parse<DungeonID>(id.ToString());
+                    var dungeon = _dungeons[dungeonID];
+                    var accessibilityProvider = _accessibilityProvider(dungeon);
+                    return new List<ISection>
                     {
-                        return new List<ISection>
-                        {
-                            GetMarkableDungeonItemSection(id),
-                            GetBossSection(id, 1),
-                            GetBossSection(id, 2),
-                            GetBossSection(id, 3),
-                            GetPrizeSection(id, 4)
-                        };
-                    }
+                        GetMarkableDungeonItemSection(id, dungeon, accessibilityProvider),
+                        GetBossSection(id, accessibilityProvider, 1),
+                        GetBossSection(id, accessibilityProvider, 2),
+                        GetBossSection(id, accessibilityProvider, 3),
+                        GetPrizeSection(id, accessibilityProvider, 4)
+                    };
+                }
                 case LocationID.LumberjackHouseEntrance:
                 case LocationID.DeathMountainEntryCave:
                 case LocationID.DeathMountainExitCave:

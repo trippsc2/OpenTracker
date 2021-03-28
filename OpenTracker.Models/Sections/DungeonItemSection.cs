@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.AutoTracking.Values;
 using OpenTracker.Models.Dungeons;
-using OpenTracker.Models.Locations;
-using OpenTracker.Models.Modes;
+using OpenTracker.Models.Dungeons.AccessibilityProvider;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.UndoRedo;
@@ -19,15 +17,14 @@ namespace OpenTracker.Models.Sections
     /// </summary>
     public class DungeonItemSection : ReactiveObject, IDungeonItemSection
     {
-        private readonly IMode _mode;
         private readonly ISaveLoadManager _saveLoadManager;
 
         private readonly ICollectSection.Factory _collectSectionFactory;
         private readonly IUncollectSection.Factory _uncollectSectionFactory;
-        
-        private readonly LocationID _locationID;
-        private IDungeon? _dungeon;
+
         private readonly IAutoTrackValue? _autoTrackValue;
+        private readonly IDungeon _dungeon;
+        private readonly IDungeonAccessibilityProvider _accessibilityProvider;
 
         public string Name => "Dungeon";
 
@@ -63,17 +60,12 @@ namespace OpenTracker.Models.Sections
         }
 
         public delegate DungeonItemSection Factory(
-            LocationID locationID, IAutoTrackValue? autoTrackValue, IRequirement requirement);
+            IAutoTrackValue? autoTrackValue, IDungeon dungeon, IDungeonAccessibilityProvider accessibilityProvider, 
+            IRequirement requirement);
 
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="locations">
-        /// The location dictionary.
-        /// </param>
-        /// <param name="mode">
-        /// The mode settings.
-        /// </param>
         /// <param name="saveLoadManager">
         /// The save/load manager.
         /// </param>
@@ -83,8 +75,11 @@ namespace OpenTracker.Models.Sections
         /// <param name="uncollectSectionFactory">
         /// An Autofac factory for creating uncollect section undoable actions.
         /// </param>
-        /// <param name="locationID">
-        /// The ID of the dungeon to which this section belongs.
+        /// <param name="dungeon">
+        /// The dungeon data.
+        /// </param>
+        /// <param name="accessibilityProvider">
+        /// The dungeon accessibility provider.
         /// </param>
         /// <param name="autoTrackValue">
         /// The section auto track value.
@@ -93,54 +88,43 @@ namespace OpenTracker.Models.Sections
         /// The requirement for this section to be visible.
         /// </param>
         public DungeonItemSection(
-            ILocationDictionary locations, IMode mode, ISaveLoadManager saveLoadManager,
-            ICollectSection.Factory collectSectionFactory, IUncollectSection.Factory uncollectSectionFactory,
-            LocationID locationID, IAutoTrackValue? autoTrackValue, IRequirement requirement)
+            ISaveLoadManager saveLoadManager, ICollectSection.Factory collectSectionFactory,
+            IUncollectSection.Factory uncollectSectionFactory, IAutoTrackValue? autoTrackValue, IDungeon dungeon,
+            IDungeonAccessibilityProvider accessibilityProvider, IRequirement requirement)
         {
-            _mode = mode;
             _saveLoadManager = saveLoadManager;
 
             _collectSectionFactory = collectSectionFactory;
             _uncollectSectionFactory = uncollectSectionFactory;
             
-            _locationID = locationID;
             _autoTrackValue = autoTrackValue;
+            _accessibilityProvider = accessibilityProvider;
+            _dungeon = dungeon;
+            
             Requirement = requirement;
 
-            _mode.PropertyChanged += OnModeChanged;
-            locations.ItemCreated += OnLocationCreated;
+            PropertyChanged += OnPropertyChanged;
+            _accessibilityProvider.PropertyChanged += OnAccessibilityProviderChanged;
+            _dungeon.PropertyChanged += OnDungeonChanged;
 
-            if (_autoTrackValue != null)
-            {
-                _autoTrackValue.PropertyChanged += OnAutoTrackValueChanged;
-            }
-        }
-        
-        /// <summary>
-        /// Subscribes to the ItemCreated event on the ILocationDictionary interface.
-        /// </summary>
-        /// <param name="sender">
-        /// The sending object of the event.
-        /// </param>
-        /// <param name="e">
-        /// The arguments of the ItemCreated event.
-        /// </param>
-        private void OnLocationCreated(object? sender, KeyValuePair<LocationID, ILocation> e)
-        {
-            if (e.Key != _locationID)
+            if (_autoTrackValue is null)
             {
                 return;
             }
             
-            ((ILocationDictionary)sender!).ItemCreated -= OnLocationCreated;
-
-            _dungeon = (IDungeon)e.Value;
-
-            SetTotal();
+            _autoTrackValue.PropertyChanged += OnAutoTrackValueChanged;
         }
 
+        private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Available))
+            {
+                UpdateAccessibility();
+            }
+        }
+        
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the IMode interface.
+        /// Subscribes to the PropertyChanged event on the IDungeonAccessibilityProvider interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -148,16 +132,35 @@ namespace OpenTracker.Models.Sections
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnModeChanged(object? sender, PropertyChangedEventArgs e)
+        private void OnAccessibilityProviderChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(IMode.WorldState) || e.PropertyName == nameof(IMode.MapShuffle) ||
-                e.PropertyName == nameof(IMode.CompassShuffle) || e.PropertyName == nameof(IMode.SmallKeyShuffle) ||
-                e.PropertyName == nameof(IMode.BigKeyShuffle) || e.PropertyName == nameof(IMode.KeyDropShuffle))
+            switch (e.PropertyName)
             {
-                SetTotal();
+                case nameof(IDungeonAccessibilityProvider.Accessible):
+                case nameof(IDungeonAccessibilityProvider.SequenceBreak):
+                case nameof(IDungeonAccessibilityProvider.Visible):
+                    UpdateAccessibility();
+                    break;
             }
         }
-
+        
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the IDungeon interface.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
+        private void OnDungeonChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(IDungeon.Total))
+            {
+                UpdateTotal();
+            }
+        }
+        
         /// <summary>
         /// Subscribes to the PropertyChanged event on the IAutoTrackValue interface.
         /// </summary>
@@ -298,59 +301,46 @@ namespace OpenTracker.Models.Sections
         }
 
         /// <summary>
-        /// Sets the total based on whether dungeon items are shuffled.
+        /// Updates the Total property.
         /// </summary>
-        private void SetTotal()
+        private void UpdateTotal()
         {
-            if (_dungeon == null)
-            {
-                return;
-            }
-
-            int baseTotal = _dungeon.DungeonItems.Count;
-
-            if (_mode.KeyDropShuffle)
-            {
-                baseTotal += _dungeon.SmallKeyDrops.Count + _dungeon.BigKeyDrops.Count;
-            }
-
-            int dungeonItems = 0;
-
-            if (!_mode.MapShuffle)
-            {
-                dungeonItems += _dungeon.Map;
-            }
-
-            if (!_mode.CompassShuffle)
-            {
-                dungeonItems += _dungeon.Compass;
-            }
-
-            if (!_mode.SmallKeyShuffle)
-            {
-                dungeonItems += _dungeon.SmallKeys;
-                
-                if (_mode.KeyDropShuffle)
-                {
-                    dungeonItems += _dungeon.SmallKeyDrops.Count;
-                }
-            }
-
-            if (!_mode.BigKeyShuffle)
-            {
-                dungeonItems += _dungeon.BigKey;
-
-                if (_mode.KeyDropShuffle)
-                {
-                    dungeonItems += _dungeon.BigKeyDrops.Count;
-                }
-            }
-
-            int newTotal = baseTotal - dungeonItems;
-            int delta = newTotal - Total;
+            var newTotal = _dungeon.Total;
+            var delta = newTotal - Total;
 
             Total = newTotal;
             Available = Math.Max(0, Math.Min(Total, Available + delta));
+        }
+
+        /// <summary>
+        /// Updates the Accessible and Accessibility properties.
+        /// </summary>
+        private void UpdateAccessibility()
+        {
+            var unavailable = Total - Available;
+            
+            Accessible = _accessibilityProvider.Accessible - unavailable;
+
+            if (Accessible >= Available)
+            {
+                Accessibility = _accessibilityProvider.SequenceBreak
+                    ? AccessibilityLevel.SequenceBreak
+                    : AccessibilityLevel.Normal;
+                return;
+            }
+
+            if (unavailable == _accessibilityProvider.Accessible && _accessibilityProvider.Visible)
+            {
+                Accessibility = AccessibilityLevel.Inspect;
+                return;
+            }
+
+            if (Accessible > 0)
+            {
+                Accessibility = AccessibilityLevel.Partial;
+            }
+
+            Accessibility = AccessibilityLevel.None;
         }
     }
 }

@@ -1,16 +1,19 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
-using JetBrains.Annotations;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.DungeonItems;
+using OpenTracker.Models.DungeonNodes;
 using OpenTracker.Models.Dungeons.Mutable;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.KeyDoors;
 using OpenTracker.Models.Modes;
-using OpenTracker.Models.Sections;
+using OpenTracker.Models.RequirementNodes;
+using OpenTracker.Models.Requirements;
+using OpenTracker.Models.Requirements.KeyDoor;
 using OpenTracker.Utils;
 using ReactiveUI;
 
@@ -19,7 +22,7 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
     /// <summary>
     /// This class contains the logic for updating the dungeon accessibility.
     /// </summary>
-    public class DungeonAccessibilityProvider : ReactiveObject
+    public class DungeonAccessibilityProvider : ReactiveObject, IDungeonAccessibilityProvider
     {
         private readonly ConstrainedTaskScheduler _taskScheduler;
         private readonly IMode _mode;
@@ -52,10 +55,12 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
 
         public List<IBossAccessibilityProvider> BossAccessibilityProviders { get; } = new();
 
+        private IKeyItem SmallKey => _dungeon.SmallKey;
+        private ICappedItem? BigKey => _dungeon.BigKey;
+        private IEnumerable<DungeonItemID> Bosses => _dungeon.Bosses;
         private List<KeyDoorID> SmallKeyDoors => _dungeon.SmallKeyDoors;
-        private ICappedItem? BigKey => _dungeon.BigKeyItem;
-        private IKeyItem SmallKey => _dungeon.SmallKeyItem;
-        private List<DungeonItemID> Bosses => _dungeon.Bosses;
+        private IEnumerable<DungeonNodeID> Nodes => _dungeon.Nodes;
+        private IEnumerable<IRequirementNode> EntryNodes => _dungeon.EntryNodes; 
 
         /// <summary>
         /// Constructor
@@ -69,6 +74,9 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         /// <param name="stateFactory">
         /// An Autofac factory for creating dungeon states.
         /// </param>
+        /// <param name="bossProviderFactory">
+        /// An Autofac factory for creating boss accessibility providers.
+        /// </param>
         /// <param name="mutableDungeonQueue">
         /// An Autofac factory for creating the mutable dungeon queue.
         /// </param>
@@ -76,8 +84,9 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         /// The dungeon data.
         /// </param>
         public DungeonAccessibilityProvider(
-            ConstrainedTaskScheduler taskScheduler, IMode mode, IDungeonState.Factory stateFactory, IBossAccessibilityProvider.Factory bossProviderFactory,
-            IMutableDungeonQueue.Factory mutableDungeonQueue, IDungeon dungeon)
+            ConstrainedTaskScheduler taskScheduler, IMode mode, IDungeonState.Factory stateFactory,
+            IBossAccessibilityProvider.Factory bossProviderFactory, IMutableDungeonQueue.Factory mutableDungeonQueue,
+            IDungeon dungeon)
         {
             _taskScheduler = taskScheduler;
 
@@ -90,6 +99,135 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
             {
                 BossAccessibilityProviders.Add(bossProviderFactory());
             }
+
+            _mode.PropertyChanged += OnModeChanged;
+
+            if (BigKey is not null)
+            {
+                BigKey.PropertyChanged += OnBigKeyChanged;
+            }
+
+            SmallKey.PropertyChanged += OnSmallKeyChanged;
+
+            foreach (var node in EntryNodes)
+            {
+                node.PropertyChanged += OnNodeChanged;
+            }
+            
+            SubscribeToConnectionRequirements();
+            UpdateValues();
+        }
+
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the IMode interface.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
+        private void OnModeChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(IMode.MapShuffle) || e.PropertyName == nameof(IMode.CompassShuffle) ||
+                e.PropertyName == nameof(IMode.SmallKeyShuffle) || e.PropertyName == nameof(IMode.BigKeyShuffle) ||
+                e.PropertyName == nameof(IMode.GenericKeys) || e.PropertyName == nameof(IMode.GuaranteedBossItems) ||
+                e.PropertyName == nameof(IMode.KeyDropShuffle))
+            {
+                UpdateValues();
+            }
+        }
+
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the IItem interface.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
+        private void OnBigKeyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(IItem.Current))
+            {
+                UpdateValues();
+            }
+        }
+
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the IKeyItem interface.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
+        private void OnSmallKeyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(IKeyItem.EffectiveCurrent))
+            {
+                UpdateValues();
+            }
+        }
+
+        /// <summary>
+        /// Subscribes to the ChangePropagated event on the IRequirement interface.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the ChangePropagated event.
+        /// </param>
+        private void OnRequirementChangePropagated(object? sender, EventArgs e)
+        {
+            UpdateValues();
+        }
+
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the IRequirementNode interface.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
+        private void OnNodeChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(IRequirementNode.Accessibility))
+            {
+                UpdateValues();
+            }
+        }
+
+        /// <summary>
+        /// Subscribes to PropertyChanged event on each requirement.
+        /// </summary>
+        private void SubscribeToConnectionRequirements()
+        {
+            var requirementSubscriptions = new List<IRequirement>();
+            var dungeonData = _mutableDungeonQueue.GetNext();
+
+            foreach (var node in Nodes)
+            {
+                foreach (var connection in dungeonData.Nodes[node].Connections)
+                {
+                    var requirement = connection.Requirement;
+
+                    if (requirement is KeyDoorRequirement || requirementSubscriptions.Contains(requirement))
+                    {
+                        continue;
+                    }
+                    
+                    requirement.ChangePropagated += OnRequirementChangePropagated;
+                    requirementSubscriptions.Add(requirement);
+                }
+            }
+            
+            _mutableDungeonQueue.Requeue(dungeonData);
         }
 
         /// <summary>
@@ -444,7 +582,7 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
             {
                 ProcessBossAccessibilityResult(result, lowestBossAccessibilities, highestBossAccessibilities);
                 ProcessItemAccessibilityResult(result, ref lowestAccessible, ref highestAccessible,
-                    ref _sequenceBreak, ref visible);
+                    ref sequenceBreak, ref visible);
             }
 
             foreach (var result in resultOutOfLogicQueue.GetConsumingEnumerable())
@@ -461,53 +599,14 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
 
             var accessible = highestAccessible;
 
-            if (accessible == AccessibilityLevel.Normal &&
-                lowestAccessible < AccessibilityLevel.Normal)
+            if (lowestAccessible < highestAccessible)
             {
-                accessible = AccessibilityLevel.SequenceBreak;
+                sequenceBreak = true;
             }
 
-            var firstSection = (Sections[0] as IDungeonItemSection) ??
-                               throw new Exception("The first section is not a dungeon item section.");
-
-            switch (accessible)
-            {
-                case AccessibilityLevel.None:
-                case AccessibilityLevel.Inspect:
-                {
-                    firstSection.Accessibility = accessible;
-                    firstSection.Accessible = 0;
-                }
-                    break;
-                case AccessibilityLevel.Partial:
-                {
-                    firstSection.Accessibility = accessible;
-                    firstSection.Accessible = highestAccessible;
-                }
-                    break;
-                case AccessibilityLevel.SequenceBreak:
-                case AccessibilityLevel.Normal:
-                case AccessibilityLevel.Cleared:
-                {
-                    firstSection.Accessibility = accessible;
-                    firstSection.Accessible = firstSection.Available;
-                }
-                    break;
-            }
-
-            for (int i = 0; i < Bosses.Count; i++)
-            {
-                if (highestBossAccessibilities[i] == AccessibilityLevel.Normal &&
-                    lowestBossAccessibilities[i] != AccessibilityLevel.Normal)
-                {
-                    highestBossAccessibilities[i] = AccessibilityLevel.SequenceBreak;
-                }
-
-                var bossSection = (Sections[i + 1] as IBossSection) ??
-                                  throw new Exception($"Section {i + 1} is not a boss section.");
-
-                bossSection.Accessibility = highestBossAccessibilities[i];
-            }
+            Accessible = accessible;
+            SequenceBreak = sequenceBreak;
+            Visible = visible;
         }
 
         /// <summary>
@@ -522,8 +621,11 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         /// <param name="highestBossAccessibilities">
         /// A list of the highest accessibilities for each boss so far.
         /// </param>
+        /// <param name="fromSequenceBreakQueue">
+        /// A boolean that represents whether the result is from the sequence break queue.
+        /// </param>
         private static void ProcessBossAccessibilityResult(
-            IDungeonResult result, List<AccessibilityLevel> lowestBossAccessibilities,
+            IDungeonResult result, IList<AccessibilityLevel> lowestBossAccessibilities,
             IList<AccessibilityLevel> highestBossAccessibilities, bool fromSequenceBreakQueue = false)
         {
             for (var i = 0; i < result.BossAccessibility.Count; i++)
@@ -533,7 +635,7 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
 
                 if (fromSequenceBreakQueue)
                 {
-                    return;
+                    continue;
                 }
 
                 lowestBossAccessibilities[i] = AccessibilityLevelMethods.Min(
@@ -542,13 +644,18 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         }
 
         private static void ProcessItemAccessibilityResult(
-            IDungeonResult result, ref int lowestAccessible, ref int highestAccessible, ref bool visible,
-            bool sequenceBreak = false)
+            IDungeonResult result, ref int lowestAccessible, ref int highestAccessible, ref bool sequenceBreak,
+            ref bool visible, bool fromSequenceBreakQueue = false)
         {
+            if (fromSequenceBreakQueue && highestAccessible < result.Accessible)
+            {
+                sequenceBreak = true;
+            }
+            
             highestAccessible = Math.Max(highestAccessible, result.Accessible);
             visible = result.Visible;
 
-            if (sequenceBreak)
+            if (fromSequenceBreakQueue)
             {
                 return;
             }

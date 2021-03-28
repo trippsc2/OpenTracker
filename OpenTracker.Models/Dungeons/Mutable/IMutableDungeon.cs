@@ -11,7 +11,6 @@ namespace OpenTracker.Models.Dungeons.Mutable
     /// </summary>
     public interface IMutableDungeon
     {
-        LocationID ID { get; }
         IDungeonNodeDictionary Nodes { get; }
         IDungeonItemDictionary DungeonItems { get; }
         IKeyDoorDictionary KeyDoors { get; }
