@@ -7,7 +7,7 @@ using ReactiveUI;
 namespace OpenTracker.Models.BossPlacements
 {
     /// <summary>
-    /// This class contains boss placement data.
+    ///     This class contains boss placement data.
     /// </summary>
     public class BossPlacement : ReactiveObject, IBossPlacement
     {
@@ -25,16 +25,16 @@ namespace OpenTracker.Models.BossPlacements
         }
 
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="mode">
-        /// The mode settings.
+        ///     The mode settings.
         /// </param>
         /// <param name="changeBossFactory">
-        /// An Autofac factory for creating change boss undoable actions.
+        ///     An Autofac factory for creating change boss undoable actions.
         /// </param>
         /// <param name="defaultBoss">
-        /// The default boss type for the boss placement.
+        ///     The default boss type for the boss placement.
         /// </param>
         public BossPlacement(IMode mode, IChangeBoss.Factory changeBossFactory, BossType defaultBoss)
         {
@@ -49,31 +49,16 @@ namespace OpenTracker.Models.BossPlacements
             }
         }
 
-        /// <summary>
-        /// Returns the current boss type.
-        /// </summary>
-        /// <returns>
-        /// The current boss type for this boss placement.
-        /// </returns>
         public BossType? GetCurrentBoss()
         {
             return _mode.BossShuffle ? Boss : DefaultBoss;
         }
 
-        /// <summary>
-        /// Creates an undoable action to change the current boss and sends it to the undo/redo manager.
-        /// </summary>
-        /// <param name="boss">
-        /// The new nullable boss type.
-        /// </param>
         public IUndoable CreateChangeBossAction(BossType? boss)
         {
             return _changeBossFactory(this, boss);
         }
 
-        /// <summary>
-        /// Resets the boss placement to its starting values.
-        /// </summary>
         public void Reset()
         {
             if (DefaultBoss == BossType.Aga)
@@ -86,10 +71,10 @@ namespace OpenTracker.Models.BossPlacements
         }
 
         /// <summary>
-        /// Returns a new boss placement save data instance for this boss placement.
+        ///     Returns a new boss placement save data instance for this boss placement.
         /// </summary>
         /// <returns>
-        /// A new boss placement save data instance.
+        ///     A new boss placement save data instance.
         /// </returns>
         public BossPlacementSaveData Save()
         {
@@ -100,7 +85,7 @@ namespace OpenTracker.Models.BossPlacements
         }
 
         /// <summary>
-        /// Loads boss placement save data.
+        ///     Loads boss placement save data.
         /// </summary>
         public void Load(BossPlacementSaveData? saveData)
         {

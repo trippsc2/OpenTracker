@@ -143,7 +143,7 @@ namespace OpenTracker.ViewModels.AutoTracking
                 {
                     case null:
                         continue;
-                    case ILogMessage message when message.LogLevel >= _logLevel:
+                    case ILogMessage message when message.Level >= _logLevel:
                         await AddLog(message);
                         break;
                 }
@@ -161,7 +161,7 @@ namespace OpenTracker.ViewModels.AutoTracking
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
                 LogText.AppendLine(
-                    $"{message.LogLevel.ToString().ToUpper(CultureInfo.CurrentCulture)}:" +
+                    $"{message.Level.ToString().ToUpper(CultureInfo.CurrentCulture)}:" +
                     message.Message);
             });
         }
@@ -178,7 +178,7 @@ namespace OpenTracker.ViewModels.AutoTracking
 
             foreach (var message in _logService.LogCollection)
             {
-                if (message.LogLevel >= _logLevel)
+                if (message.Level >= _logLevel)
                 {
                     await AddLog(message);
                 }
@@ -243,7 +243,7 @@ namespace OpenTracker.ViewModels.AutoTracking
                 foreach (var message in _logService.LogCollection)
                 {
                     await file.WriteLineAsync(
-                        $"{message.LogLevel.ToString().ToUpper(CultureInfo.CurrentCulture)}: " +
+                        $"{message.Level.ToString().ToUpper(CultureInfo.CurrentCulture)}: " +
                         message.Message);
                 }
             }

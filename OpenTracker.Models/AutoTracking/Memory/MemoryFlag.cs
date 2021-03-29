@@ -4,7 +4,7 @@ using ReactiveUI;
 namespace OpenTracker.Models.AutoTracking.Memory
 {
     /// <summary>
-    /// This class contains SNES memory flag data.
+    ///     This class contains SNES memory flag data.
     /// </summary>
     public class MemoryFlag : ReactiveObject, IMemoryFlag
     {
@@ -19,13 +19,13 @@ namespace OpenTracker.Models.AutoTracking.Memory
         }
 
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="memoryAddress">
-        /// The memory address.
+        ///     The memory address containing the flag.
         /// </param>
         /// <param name="flag">
-        /// An 8-bit unsigned integer representing the bitwise flag.
+        ///     An 8-bit unsigned integer representing the bitwise flag.
         /// </param>
         public MemoryFlag(IMemoryAddress memoryAddress, byte flag)
         {
@@ -38,13 +38,13 @@ namespace OpenTracker.Models.AutoTracking.Memory
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the IMemoryAddress interface.
+        ///     Subscribes to the PropertyChanged event on the IMemoryAddress interface.
         /// </summary>
         /// <param name="sender">
-        /// The sending object of the event.
+        ///     The sending object of the event.
         /// </param>
         /// <param name="e">
-        /// The arguments of the PropertyChanged event.
+        ///     The arguments of the PropertyChanged event.
         /// </param>
         private void OnMemoryChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -55,7 +55,7 @@ namespace OpenTracker.Models.AutoTracking.Memory
         }
 
         /// <summary>
-        /// Updates the flag status.
+        ///     Updates the flag status.
         /// </summary>
         private void UpdateFlag()
         {

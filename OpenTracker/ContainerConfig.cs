@@ -95,16 +95,6 @@ namespace OpenTracker
 
         private static List<string> ModelsSelfTypes => new()
         {
-            nameof(AutoTrackAddressBool),
-            nameof(AutoTrackAddressValue),
-            nameof(AutoTrackBitwiseIntegerValue),
-            nameof(AutoTrackConditionalValue),
-            nameof(AutoTrackFlagBool),
-            nameof(AutoTrackItemValue),
-            nameof(AutoTrackMultipleDifference),
-            nameof(AutoTrackMultipleOverride),
-            nameof(AutoTrackMultipleSum),
-            nameof(AutoTrackStaticValue),
             nameof(BigKeyLayout),
             nameof(EndKeyLayout),
             nameof(SmallKeyLayout),

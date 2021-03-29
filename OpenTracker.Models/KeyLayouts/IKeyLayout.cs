@@ -1,5 +1,6 @@
 ﻿using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.Dungeons.Mutable;
+using OpenTracker.Models.Dungeons.State;
 
 namespace OpenTracker.Models.KeyLayouts
 {

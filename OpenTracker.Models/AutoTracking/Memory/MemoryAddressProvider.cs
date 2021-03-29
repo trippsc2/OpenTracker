@@ -4,15 +4,22 @@ using System.Linq;
 
 namespace OpenTracker.Models.AutoTracking.Memory
 {
+    /// <summary>
+    ///     This class provides the memory address data.
+    /// </summary>
     public class MemoryAddressProvider : IMemoryAddressProvider
     {
         private readonly IMemoryAddress.Factory _addressFactory;
         
-        public Dictionary<MemorySegmentType, List<IMemoryAddress>> MemorySegments { get; } =
-            new();
-        public Dictionary<ulong, IMemoryAddress> MemoryAddresses { get; } =
-            new();
+        public Dictionary<MemorySegmentType, List<IMemoryAddress>> MemorySegments { get; } = new();
+        public Dictionary<ulong, IMemoryAddress> MemoryAddresses { get; } = new();
 
+        /// <summary>
+        ///     Constructor
+        /// </summary>
+        /// <param name="addressFactory">
+        ///     An Autofac factory for creating memory addresses.
+        /// </param>
         public MemoryAddressProvider(IMemoryAddress.Factory addressFactory)
         {
             _addressFactory = addressFactory;
@@ -41,63 +48,6 @@ namespace OpenTracker.Models.AutoTracking.Memory
             MemoryAddresses.Add(0x7e0010, _addressFactory());
         }
 
-        /// <summary>
-        /// Creates a memory address for the specified memory segment and offset.
-        /// </summary>
-        /// <param name="type">
-        /// The memory segment type.
-        /// </param>
-        /// <param name="offset">
-        /// The offset of the address.
-        /// </param>
-        private void CreateMemoryAddress(MemorySegmentType type, ulong offset)
-        {
-            var memoryAddress = _addressFactory();
-            var memorySegment = MemorySegments[type];
-            memorySegment.Add(memoryAddress);
-            var address = GetMemorySegmentStart(type);
-            address += offset;
-            MemoryAddresses.Add(address, memoryAddress);
-        }
-
-        /// <summary>
-        /// Returns the number of memory addresses within the specified memory segment.
-        /// </summary>
-        /// <param name="type">
-        /// The memory segment type.
-        /// </param>
-        /// <returns>
-        /// A 32-bit signed integer representing the number of memory addresses.
-        /// </returns>
-        private static int GetMemorySegmentCount(MemorySegmentType type)
-        {
-            return type switch
-            {
-                MemorySegmentType.FirstRoom => 128,
-                MemorySegmentType.SecondRoom => 128,
-                MemorySegmentType.ThirdRoom => 128,
-                MemorySegmentType.FourthRoom => 128,
-                MemorySegmentType.FifthRoom => 80,
-                MemorySegmentType.FirstOverworldEvent => 128,
-                MemorySegmentType.SecondOverworldEvent => 2,
-                MemorySegmentType.FirstItem => 128,
-                MemorySegmentType.SecondItem => 16,
-                MemorySegmentType.NPCItem => 2,
-                MemorySegmentType.DungeonItem => 6,
-                MemorySegmentType.Dungeon => 48,
-                _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
-            };
-        }
-
-        /// <summary>
-        /// Returns the starting address of the specified memory segment.
-        /// </summary>
-        /// <param name="type">
-        /// The memory segment type.
-        /// </param>
-        /// <returns>
-        /// A 64-bit unsigned integer representing the starting memory address of the segment.
-        /// </returns>
         public ulong GetMemorySegmentStart(MemorySegmentType type)
         {
             return type switch
@@ -118,15 +68,60 @@ namespace OpenTracker.Models.AutoTracking.Memory
             };
         }
 
-        /// <summary>
-        /// Resets all memory addresses to their initial values.
-        /// </summary>
         public void Reset()
         {
             foreach (var memoryAddress in MemoryAddresses.Values)
             {
                 memoryAddress.Reset();
             }
+        }
+
+        /// <summary>
+        ///     Creates a memory address for the specified memory segment and offset.
+        /// </summary>
+        /// <param name="type">
+        ///     The memory segment type.
+        /// </param>
+        /// <param name="offset">
+        ///     The offset of the address.
+        /// </param>
+        private void CreateMemoryAddress(MemorySegmentType type, ulong offset)
+        {
+            var memoryAddress = _addressFactory();
+            var memorySegment = MemorySegments[type];
+            memorySegment.Add(memoryAddress);
+            var address = GetMemorySegmentStart(type);
+            address += offset;
+            MemoryAddresses.Add(address, memoryAddress);
+        }
+
+        /// <summary>
+        ///     Returns the number of memory addresses within the specified memory segment.
+        /// </summary>
+        /// <param name="type">
+        ///     The memory segment type.
+        /// </param>
+        /// <returns>
+        ///     A 32-bit signed integer representing the number of memory addresses.
+        /// </returns>
+        private static int GetMemorySegmentCount(MemorySegmentType type)
+        {
+            return type switch
+            {
+                MemorySegmentType.FirstRoom => 128,
+                MemorySegmentType.SecondRoom => 128,
+                MemorySegmentType.ThirdRoom => 128,
+                MemorySegmentType.FourthRoom => 128,
+                MemorySegmentType.FifthRoom => 80,
+                MemorySegmentType.FirstOverworldEvent => 128,
+                MemorySegmentType.SecondOverworldEvent => 2,
+                MemorySegmentType.FirstItem => 128,
+                MemorySegmentType.SecondItem => 16,
+                MemorySegmentType.NPCItem => 2,
+                MemorySegmentType.DungeonItem => 6,
+                MemorySegmentType.Dungeon => 48,
+                _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
+            };
         }
     }
 }

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using OpenTracker.Models.Accessibility;
-using OpenTracker.Models.NodeConnections;
 using ReactiveUI;
 
 namespace OpenTracker.Models.RequirementNodes

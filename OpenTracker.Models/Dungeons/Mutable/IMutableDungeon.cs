@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using OpenTracker.Models.DungeonItems;
 using OpenTracker.Models.DungeonNodes;
+using OpenTracker.Models.Dungeons.Result;
+using OpenTracker.Models.Dungeons.State;
 using OpenTracker.Models.KeyDoors;
-using OpenTracker.Models.Locations;
 
 namespace OpenTracker.Models.Dungeons.Mutable
 {

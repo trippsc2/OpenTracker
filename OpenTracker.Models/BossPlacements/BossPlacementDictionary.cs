@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Utils;
 
 namespace OpenTracker.Models.BossPlacements
 {
     /// <summary>
-    /// This class contains the dictionary container for boss placements.
+    ///     This class contains the dictionary container for boss placements.
     /// </summary>
     public class BossPlacementDictionary : LazyDictionary<BossPlacementID, IBossPlacement>,
         IBossPlacementDictionary
@@ -14,10 +15,10 @@ namespace OpenTracker.Models.BossPlacements
         private readonly Lazy<IBossPlacementFactory> _factory;
 
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="factory">
-        /// A factory for creating boss placements.
+        ///     A factory for creating boss placements.
         /// </param>
         public BossPlacementDictionary(IBossPlacementFactory.Factory factory)
             : base(new Dictionary<BossPlacementID, IBossPlacement>())
@@ -25,14 +26,6 @@ namespace OpenTracker.Models.BossPlacements
             _factory = new Lazy<IBossPlacementFactory>(() => factory());
         }
 
-        protected override IBossPlacement Create(BossPlacementID key)
-        {
-            return _factory.Value.GetBossPlacement(key);
-        }
-
-        /// <summary>
-        /// Resets the contained boss placements to their starting values.
-        /// </summary>
         public void Reset()
         {
             foreach (var placement in Values)
@@ -42,25 +35,19 @@ namespace OpenTracker.Models.BossPlacements
         }
 
         /// <summary>
-        /// Returns a dictionary of boss placement save data.
+        ///     Returns a dictionary of boss placement save data.
         /// </summary>
         /// <returns>
-        /// A dictionary of boss placement save data.
+        ///     A dictionary of boss placement save data.
         /// </returns>
         public Dictionary<BossPlacementID, BossPlacementSaveData> Save()
         {
-            var bossPlacements = new Dictionary<BossPlacementID, BossPlacementSaveData>();
-
-            foreach (var bossPlacement in Keys)
-            {
-                bossPlacements.Add(bossPlacement, this[bossPlacement].Save());
-            }
-
-            return bossPlacements;
+            return Keys.ToDictionary(
+                bossPlacement => bossPlacement, bossPlacement => this[bossPlacement].Save());
         }
 
         /// <summary>
-        /// Loads a dictionary of boss placement save data.
+        ///     Loads a dictionary of boss placement save data.
         /// </summary>
         public void Load(Dictionary<BossPlacementID, BossPlacementSaveData>? saveData)
         {
@@ -73,6 +60,11 @@ namespace OpenTracker.Models.BossPlacements
             {
                 this[bossPlacement].Load(saveData[bossPlacement]);
             }
+        }
+
+        protected override IBossPlacement Create(BossPlacementID key)
+        {
+            return _factory.Value.GetBossPlacement(key);
         }
     }
 }

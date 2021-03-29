@@ -3,87 +3,44 @@
 namespace OpenTracker.Models.BossPlacements
 {
     /// <summary>
-    /// This class contains the creation logic for boss placements.
+    ///     This class contains the creation logic for boss placements.
     /// </summary>
     public class BossPlacementFactory : IBossPlacementFactory
     {
         private readonly IBossPlacement.Factory _factory;
 
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="factory">
-        /// An Autofac factory for creating boss placements.
+        ///     An Autofac factory for creating boss placements.
         /// </param>
         public BossPlacementFactory(IBossPlacement.Factory factory)
         {
             _factory = factory;
         }
 
-        /// <summary>
-        /// Returns a newly created boss placement.
-        /// </summary>
-        /// <param name="id">
-        /// The boss placement ID.
-        /// </param>
-        /// <returns>
-        /// A newly created boss placement.
-        /// </returns>
         public IBossPlacement GetBossPlacement(BossPlacementID id)
         {
-            switch (id)
+            return id switch
             {
-                case BossPlacementID.ATBoss:
-                case BossPlacementID.GTFinalBoss:
-                    {
-                        return _factory(BossType.Aga);
-                    }
-                case BossPlacementID.EPBoss:
-                case BossPlacementID.GTBoss1:
-                    {
-                        return _factory(BossType.Armos);
-                    }
-                case BossPlacementID.DPBoss:
-                case BossPlacementID.GTBoss2:
-                    {
-                        return _factory(BossType.Lanmolas);
-                    }
-                case BossPlacementID.ToHBoss:
-                case BossPlacementID.GTBoss3:
-                    {
-                        return _factory(BossType.Moldorm);
-                    }
-                case BossPlacementID.PoDBoss:
-                    {
-                        return _factory(BossType.HelmasaurKing);
-                    }
-                case BossPlacementID.SPBoss:
-                    {
-                        return _factory(BossType.Arrghus);
-                    }
-                case BossPlacementID.SWBoss:
-                    {
-                        return _factory(BossType.Mothula);
-                    }
-                case BossPlacementID.TTBoss:
-                    {
-                        return _factory(BossType.Blind);
-                    }
-                case BossPlacementID.IPBoss:
-                    {
-                        return _factory(BossType.Kholdstare);
-                    }
-                case BossPlacementID.MMBoss:
-                    {
-                        return _factory(BossType.Vitreous);
-                    }
-                case BossPlacementID.TRBoss:
-                    {
-                        return _factory(BossType.Trinexx);
-                    }
-            }
-
-            throw new ArgumentOutOfRangeException(nameof(id));
+                BossPlacementID.ATBoss => _factory(BossType.Aga),
+                BossPlacementID.GTFinalBoss => _factory(BossType.Aga),
+                BossPlacementID.EPBoss => _factory(BossType.Armos),
+                BossPlacementID.GTBoss1 => _factory(BossType.Armos),
+                BossPlacementID.DPBoss => _factory(BossType.Lanmolas),
+                BossPlacementID.GTBoss2 => _factory(BossType.Lanmolas),
+                BossPlacementID.ToHBoss => _factory(BossType.Moldorm),
+                BossPlacementID.GTBoss3 => _factory(BossType.Moldorm),
+                BossPlacementID.PoDBoss => _factory(BossType.HelmasaurKing),
+                BossPlacementID.SPBoss => _factory(BossType.Arrghus),
+                BossPlacementID.SWBoss => _factory(BossType.Mothula),
+                BossPlacementID.TTBoss => _factory(BossType.Blind),
+                BossPlacementID.IPBoss => _factory(BossType.Kholdstare),
+                BossPlacementID.MMBoss => _factory(BossType.Vitreous),
+                BossPlacementID.TRBoss => _factory(BossType.Trinexx),
+                _ => throw new ArgumentOutOfRangeException(nameof(id))
+            };
         }
     }
 }

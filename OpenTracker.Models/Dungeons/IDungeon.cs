@@ -4,7 +4,6 @@ using OpenTracker.Models.DungeonNodes;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.KeyDoors;
 using OpenTracker.Models.KeyLayouts;
-using OpenTracker.Models.Locations;
 using OpenTracker.Models.RequirementNodes;
 using ReactiveUI;
 

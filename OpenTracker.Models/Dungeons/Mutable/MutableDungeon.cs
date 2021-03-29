@@ -4,6 +4,8 @@ using System.Linq;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.DungeonItems;
 using OpenTracker.Models.DungeonNodes;
+using OpenTracker.Models.Dungeons.Result;
+using OpenTracker.Models.Dungeons.State;
 using OpenTracker.Models.KeyDoors;
 using OpenTracker.Models.Modes;
 

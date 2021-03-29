@@ -5,6 +5,7 @@ using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.DungeonItems;
 using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.Dungeons.Mutable;
+using OpenTracker.Models.Dungeons.State;
 using OpenTracker.Models.Requirements;
 
 namespace OpenTracker.Models.KeyLayouts

@@ -9,6 +9,12 @@ namespace OpenTracker.UnitTests.Models.AutoTracking.Memory
         private readonly MemoryAddress _sut = new();
 
         [Fact]
+        public void Value_ShouldRaisePropertyChanged()
+        {
+            Assert.PropertyChanged(_sut, nameof(IMemoryAddress.Value), () => _sut.Value = 1);
+        }
+
+        [Fact]
         public void Reset_ShouldSetValueToNull()
         {
             _sut.Value = 1;

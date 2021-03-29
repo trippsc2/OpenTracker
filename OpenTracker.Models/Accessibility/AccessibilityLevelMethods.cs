@@ -3,21 +3,21 @@
 namespace OpenTracker.Models.Accessibility
 {
     /// <summary>
-    /// This class contains methods for getting the maximum or minimum AccessibilityLevel.
+    ///     This class contains methods for getting the maximum or minimum AccessibilityLevel.
     /// </summary>
     public static class AccessibilityLevelMethods
     {
         /// <summary>
-        /// Returns the highest of AccessibilityLevel value provided.
+        ///     Returns the highest of AccessibilityLevel value provided.
         /// </summary>
         /// <param name="a1">
-        /// An AccessibilityLevel value to be compared.
+        ///     An AccessibilityLevel value to be compared.
         /// </param>
         /// <param name="a2">
-        /// An AccessibilityLevel value to be compared.
+        ///     An AccessibilityLevel value to be compared.
         /// </param>
         /// <returns>
-        /// Returns the highest of AccessibilityLevel value provided.
+        ///     Returns the highest of AccessibilityLevel value provided.
         /// </returns>
         public static AccessibilityLevel Max(AccessibilityLevel a1, AccessibilityLevel a2)
         {
@@ -25,19 +25,19 @@ namespace OpenTracker.Models.Accessibility
         }
 
         /// <summary>
-        /// Returns the highest of AccessibilityLevel value provided.
+        ///     Returns the highest of AccessibilityLevel value provided.
         /// </summary>
         /// <param name="a1">
-        /// An AccessibilityLevel value to be compared.
+        ///     An AccessibilityLevel value to be compared.
         /// </param>
         /// <param name="a2">
-        /// An AccessibilityLevel value to be compared.
+        ///     An AccessibilityLevel value to be compared.
         /// </param>
         /// <param name="a3">
-        /// An AccessibilityLevel value to be compared.
+        ///     An AccessibilityLevel value to be compared.
         /// </param>
         /// <returns>
-        /// Returns the highest of AccessibilityLevel value provided.
+        ///     Returns the highest of AccessibilityLevel value provided.
         /// </returns>
         public static AccessibilityLevel Max(AccessibilityLevel a1, AccessibilityLevel a2, AccessibilityLevel a3)
         {
@@ -45,16 +45,16 @@ namespace OpenTracker.Models.Accessibility
         }
 
         /// <summary>
-        /// Returns the lowest of AccessibilityLevel value provided.
+        ///     Returns the lowest of AccessibilityLevel value provided.
         /// </summary>
         /// <param name="a1">
-        /// An AccessibilityLevel value to be compared.
+        ///     An AccessibilityLevel value to be compared.
         /// </param>
         /// <param name="a2">
-        /// An AccessibilityLevel value to be compared.
+        ///     An AccessibilityLevel value to be compared.
         /// </param>
         /// <returns>
-        /// Returns the lowest of AccessibilityLevel value provided.
+        ///     Returns the lowest of AccessibilityLevel value provided.
         /// </returns>
         public static AccessibilityLevel Min(AccessibilityLevel a1, AccessibilityLevel a2)
         {
@@ -62,19 +62,19 @@ namespace OpenTracker.Models.Accessibility
         }
 
         /// <summary>
-        /// Returns the lowest of AccessibilityLevel value provided.
+        ///     Returns the lowest of AccessibilityLevel value provided.
         /// </summary>
         /// <param name="a1">
-        /// An AccessibilityLevel value to be compared.
+        ///     An AccessibilityLevel value to be compared.
         /// </param>
         /// <param name="a2">
-        /// An AccessibilityLevel value to be compared.
+        ///     An AccessibilityLevel value to be compared.
         /// </param>
         /// <param name="a3">
-        /// An AccessibilityLevel value to be compared.
+        ///     An AccessibilityLevel value to be compared.
         /// </param>
         /// <returns>
-        /// Returns the lowest of AccessibilityLevel value provided.
+        ///     Returns the lowest of AccessibilityLevel value provided.
         /// </returns>
         public static AccessibilityLevel Min(AccessibilityLevel a1, AccessibilityLevel a2, AccessibilityLevel a3)
         {

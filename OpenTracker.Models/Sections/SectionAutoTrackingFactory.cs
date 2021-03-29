@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
 using OpenTracker.Models.AutoTracking.Memory;
 using OpenTracker.Models.AutoTracking.Values;
+using OpenTracker.Models.AutoTracking.Values.Multiple;
+using OpenTracker.Models.AutoTracking.Values.Single;
+using OpenTracker.Models.AutoTracking.Values.Static;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Requirements;
@@ -15,16 +18,17 @@ namespace OpenTracker.Models.Sections
         private readonly IMemoryAddressProvider _memoryAddressProvider;
         private readonly IItemDictionary _items;
         private readonly IRequirementDictionary _requirements;
-        private readonly AutoTrackAddressBool.Factory _boolFactory;
-        private readonly AutoTrackAddressValue.Factory _valueFactory;
-        private readonly AutoTrackBitwiseIntegerValue.Factory _bitwiseIntegerFactory;
-        private readonly AutoTrackConditionalValue.Factory _conditionalFactory;
-        private readonly AutoTrackFlagBool.Factory _flagBoolFactory;
-        private readonly AutoTrackItemValue.Factory _itemValueFactory;
-        private readonly AutoTrackMultipleDifference.Factory _differenceFactory;
-        private readonly AutoTrackMultipleOverride.Factory _overrideFactory;
-        private readonly AutoTrackMultipleSum.Factory _sumFactory;
-        private readonly AutoTrackStaticValue.Factory _staticValueFactory;
+        
+        private readonly IAutoTrackAddressBool.Factory _boolFactory;
+        private readonly IAutoTrackAddressValue.Factory _valueFactory;
+        private readonly IAutoTrackBitwiseIntegerValue.Factory _bitwiseIntegerFactory;
+        private readonly IAutoTrackConditionalValue.Factory _conditionalFactory;
+        private readonly IAutoTrackFlagBool.Factory _flagBoolFactory;
+        private readonly IAutoTrackItemValue.Factory _itemValueFactory;
+        private readonly IAutoTrackMultipleDifference.Factory _differenceFactory;
+        private readonly IAutoTrackMultipleOverride.Factory _overrideFactory;
+        private readonly IAutoTrackMultipleSum.Factory _sumFactory;
+        private readonly IAutoTrackStaticValue.Factory _staticValueFactory;
         private readonly IMemoryFlag.Factory _memoryFlagFactory;
 
         /// <summary>
@@ -74,18 +78,19 @@ namespace OpenTracker.Models.Sections
         /// </param>
         public SectionAutoTrackingFactory(
             IMemoryAddressProvider memoryAddressProvider, IItemDictionary items, IRequirementDictionary requirements,
-            AutoTrackAddressBool.Factory boolFactory, AutoTrackAddressValue.Factory valueFactory,
-            AutoTrackBitwiseIntegerValue.Factory bitwiseIntegerFactory,
-            AutoTrackConditionalValue.Factory conditionalFactory,
-            AutoTrackFlagBool.Factory flagBoolFactory, AutoTrackItemValue.Factory itemValueFactory,
-            AutoTrackMultipleDifference.Factory differenceFactory,
-            AutoTrackMultipleOverride.Factory overrideFactory,
-            AutoTrackMultipleSum.Factory sumFactory, AutoTrackStaticValue.Factory staticValueFactory,
+            IAutoTrackAddressBool.Factory boolFactory, IAutoTrackAddressValue.Factory valueFactory,
+            IAutoTrackBitwiseIntegerValue.Factory bitwiseIntegerFactory,
+            IAutoTrackConditionalValue.Factory conditionalFactory,
+            IAutoTrackFlagBool.Factory flagBoolFactory, IAutoTrackItemValue.Factory itemValueFactory,
+            IAutoTrackMultipleDifference.Factory differenceFactory,
+            IAutoTrackMultipleOverride.Factory overrideFactory,
+            IAutoTrackMultipleSum.Factory sumFactory, IAutoTrackStaticValue.Factory staticValueFactory,
             IMemoryFlag.Factory memoryFlagFactory)
         {
             _memoryAddressProvider = memoryAddressProvider;
             _items = items;
             _requirements = requirements;
+            
             _boolFactory = boolFactory;
             _valueFactory = valueFactory;
             _bitwiseIntegerFactory = bitwiseIntegerFactory;

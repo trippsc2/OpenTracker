@@ -3,7 +3,7 @@
 namespace OpenTracker.Models.AutoTracking.Values
 {
     /// <summary>
-    /// This base class contains the auto-tracking result value data.
+    ///     This base class contains the auto-tracking result value data.
     /// </summary>
     public abstract class AutoTrackValue : ReactiveObject, IAutoTrackValue
     {
@@ -15,15 +15,15 @@ namespace OpenTracker.Models.AutoTracking.Values
         }
 
         /// <summary>
-        /// Returns the new value for the CurrentValue property.
+        ///     Returns the new value for the CurrentValue property.
         /// </summary>
         /// <returns>
-        /// A nullable 32-bit signed integer representing the new auto-tracking result value.
+        ///     A nullable 32-bit signed integer representing the new auto-tracking result value.
         /// </returns>
         protected abstract int? GetNewValue();
 
         /// <summary>
-        /// Updates the CurrentValue property.
+        ///     Updates the CurrentValue property.
         /// </summary>
         protected void UpdateValue()
         {

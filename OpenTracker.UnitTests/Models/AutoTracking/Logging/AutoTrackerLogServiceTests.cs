@@ -1,3 +1,4 @@
+using Autofac;
 using OpenTracker.Models.AutoTracking.Logging;
 using Xunit;
 
@@ -5,7 +6,10 @@ namespace OpenTracker.UnitTests.Models.AutoTracking.Logging
 {
     public class AutoTrackerLogServiceTests
     {
-        private readonly IAutoTrackerLogService _sut;
+        private const LogLevel Level = LogLevel.Trace;
+        private const string Message = "Test log message.";
+        
+        private readonly AutoTrackerLogService _sut;
         
         public AutoTrackerLogServiceTests()
         {
@@ -15,15 +19,30 @@ namespace OpenTracker.UnitTests.Models.AutoTracking.Logging
         [Fact]
         public void Log_ShouldAddLogToLogCollection()
         {
-            const LogLevel logLevel = LogLevel.Trace;
-            const string message = "Test log message.";
+            var logCollection = _sut.LogCollection;
+            logCollection.Clear();
+            _sut.Log(Level, Message);
+
+            Assert.Single(logCollection);
+        }
+
+        [Fact]
+        public void LogCollection_ShouldRaisePropertyChanged()
+        {
             var logCollection = _sut.LogCollection;
             logCollection.Clear();
             
-            Assert.PropertyChanged(logCollection, "Count", () => _sut.Log(logLevel, message));
-            Assert.Single(logCollection);
-            Assert.Equal(logLevel, logCollection[0].LogLevel);
-            Assert.Equal(message, logCollection[0].Message);
+            Assert.PropertyChanged(
+                logCollection, "Count", () => _sut.Log(Level, Message));
+        }
+
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var sut = scope.Resolve<IAutoTrackerLogService>();
+            
+            Assert.NotNull(sut as AutoTrackerLogService);
         }
     }
 }

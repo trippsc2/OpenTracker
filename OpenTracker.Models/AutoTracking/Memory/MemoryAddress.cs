@@ -3,7 +3,7 @@
 namespace OpenTracker.Models.AutoTracking.Memory
 {
     /// <summary>
-    /// This class contains SNES memory address data.
+    ///     This class contains SNES memory address data.
     /// </summary>
     public class MemoryAddress : ReactiveObject, IMemoryAddress
     {
@@ -14,9 +14,6 @@ namespace OpenTracker.Models.AutoTracking.Memory
             set => this.RaiseAndSetIfChanged(ref _value, value);
         }
 
-        /// <summary>
-        /// Resets the memory address to its starting value.
-        /// </summary>
         public void Reset()
         {
             _value = null;

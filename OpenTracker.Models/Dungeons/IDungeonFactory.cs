@@ -1,12 +1,4 @@
-﻿using System.Collections.Generic;
-using OpenTracker.Models.DungeonItems;
-using OpenTracker.Models.DungeonNodes;
-using OpenTracker.Models.Items;
-using OpenTracker.Models.KeyDoors;
-using OpenTracker.Models.Locations;
-using OpenTracker.Models.RequirementNodes;
-
-namespace OpenTracker.Models.Dungeons
+﻿namespace OpenTracker.Models.Dungeons
 {
     /// <summary>
     /// This interface contains the creation logic for dungeons.
