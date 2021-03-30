@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Dropdowns;
 using OpenTracker.Models.SaveLoad;
@@ -56,6 +57,15 @@ namespace OpenTracker.UnitTests.Models.Dropdowns
             _sut.Load(saveData);
             
             _dropdown.Received().Load(_dropdownSaveData);
+        }
+
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var sut = scope.Resolve<IDropdownDictionary>();
+            
+            Assert.NotNull(sut as DropdownDictionary);
         }
     }
 }

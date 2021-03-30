@@ -1,3 +1,4 @@
+using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Dropdowns;
 using OpenTracker.Models.Requirements;
@@ -46,6 +47,16 @@ namespace OpenTracker.UnitTests.Models.Dropdowns
             _ = _sut.GetDropdown(id);
             
             Assert.Equal(_requirements[expected], _requirement);
+        }
+
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var factory = scope.Resolve<IDropdownFactory.Factory>();
+            var sut = factory();
+            
+            Assert.NotNull(sut as DropdownFactory);
         }
     }
 }

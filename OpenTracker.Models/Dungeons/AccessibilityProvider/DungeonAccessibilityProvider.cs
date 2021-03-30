@@ -5,9 +5,9 @@ using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 using OpenTracker.Models.Accessibility;
-using OpenTracker.Models.DungeonItems;
-using OpenTracker.Models.DungeonNodes;
+using OpenTracker.Models.Dungeons.Items;
 using OpenTracker.Models.Dungeons.Mutable;
+using OpenTracker.Models.Dungeons.Nodes;
 using OpenTracker.Models.Dungeons.Result;
 using OpenTracker.Models.Dungeons.State;
 using OpenTracker.Models.Items;
@@ -22,7 +22,7 @@ using ReactiveUI;
 namespace OpenTracker.Models.Dungeons.AccessibilityProvider
 {
     /// <summary>
-    /// This class contains the logic for updating the dungeon accessibility.
+    ///     This class contains the logic for updating the dungeon accessibility.
     /// </summary>
     public class DungeonAccessibilityProvider : ReactiveObject, IDungeonAccessibilityProvider
     {
@@ -65,25 +65,25 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         private IEnumerable<IRequirementNode> EntryNodes => _dungeon.EntryNodes; 
 
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="taskScheduler">
-        /// The task scheduler for all accessibility tasks.
+        ///     The task scheduler for all accessibility tasks.
         /// </param>
         /// <param name="mode">
-        /// The mode settings data.
+        ///     The mode settings data.
         /// </param>
         /// <param name="stateFactory">
-        /// An Autofac factory for creating dungeon states.
+        ///     An Autofac factory for creating dungeon states.
         /// </param>
         /// <param name="bossProviderFactory">
-        /// An Autofac factory for creating boss accessibility providers.
+        ///     An Autofac factory for creating boss accessibility providers.
         /// </param>
         /// <param name="mutableDungeonQueue">
-        /// An Autofac factory for creating the mutable dungeon queue.
+        ///     An Autofac factory for creating the mutable dungeon queue.
         /// </param>
         /// <param name="dungeon">
-        /// The dungeon data.
+        ///     The dungeon data.
         /// </param>
         public DungeonAccessibilityProvider(
             ConstrainedTaskScheduler taskScheduler, IMode mode, IDungeonState.Factory stateFactory,
@@ -121,13 +121,13 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the IMode interface.
+        ///     Subscribes to the PropertyChanged event on the IMode interface.
         /// </summary>
         /// <param name="sender">
-        /// The sending object of the event.
+        ///     The sending object of the event.
         /// </param>
         /// <param name="e">
-        /// The arguments of the PropertyChanged event.
+        ///     The arguments of the PropertyChanged event.
         /// </param>
         private void OnModeChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -141,13 +141,13 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the IItem interface.
+        ///     Subscribes to the PropertyChanged event on the IItem interface.
         /// </summary>
         /// <param name="sender">
-        /// The sending object of the event.
+        ///     The sending object of the event.
         /// </param>
         /// <param name="e">
-        /// The arguments of the PropertyChanged event.
+        ///     The arguments of the PropertyChanged event.
         /// </param>
         private void OnBigKeyChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -158,13 +158,13 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the IKeyItem interface.
+        ///     Subscribes to the PropertyChanged event on the IKeyItem interface.
         /// </summary>
         /// <param name="sender">
-        /// The sending object of the event.
+        ///     The sending object of the event.
         /// </param>
         /// <param name="e">
-        /// The arguments of the PropertyChanged event.
+        ///     The arguments of the PropertyChanged event.
         /// </param>
         private void OnSmallKeyChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -175,13 +175,13 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         }
 
         /// <summary>
-        /// Subscribes to the ChangePropagated event on the IRequirement interface.
+        ///     Subscribes to the ChangePropagated event on the IRequirement interface.
         /// </summary>
         /// <param name="sender">
-        /// The sending object of the event.
+        ///     The sending object of the event.
         /// </param>
         /// <param name="e">
-        /// The arguments of the ChangePropagated event.
+        ///     The arguments of the ChangePropagated event.
         /// </param>
         private void OnRequirementChangePropagated(object? sender, EventArgs e)
         {
@@ -189,13 +189,13 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the IRequirementNode interface.
+        ///     Subscribes to the PropertyChanged event on the IRequirementNode interface.
         /// </summary>
         /// <param name="sender">
-        /// The sending object of the event.
+        ///     The sending object of the event.
         /// </param>
         /// <param name="e">
-        /// The arguments of the PropertyChanged event.
+        ///     The arguments of the PropertyChanged event.
         /// </param>
         private void OnNodeChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -206,7 +206,7 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         }
 
         /// <summary>
-        /// Subscribes to PropertyChanged event on each requirement.
+        ///     Subscribes to PropertyChanged event on each requirement.
         /// </summary>
         private void SubscribeToConnectionRequirements()
         {
@@ -233,7 +233,7 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         }
 
         /// <summary>
-        /// Updates all values in the accessibility provider.
+        ///     Updates all values in the accessibility provider.
         /// </summary>
         private void UpdateValues()
         {
@@ -245,13 +245,13 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         }
 
         /// <summary>
-        /// Processes all key door permutations and places results in the proper result queue.
+        ///     Processes all key door permutations and places results in the proper result queue.
         /// </summary>
         /// <param name="resultInLogicQueue">
-        /// The blocking collection queue of in-logic results.
+        ///     The blocking collection queue of in-logic results.
         /// </param>
         /// <param name="resultOutOfLogicQueue">
-        /// The blocking collection queue of out-of-logic results.
+        ///     The blocking collection queue of out-of-logic results.
         /// </param>
         private void ProcessKeyDoorPermutations(BlockingCollection<IDungeonResult> resultInLogicQueue, BlockingCollection<IDungeonResult> resultOutOfLogicQueue)
         {
@@ -285,10 +285,10 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         }
 
         /// <summary>
-        /// Creates the list of blocking collection queues for processing dungeon key door permutations.
+        ///     Creates the list of blocking collection queues for processing dungeon key door permutations.
         /// </summary>
         /// <returns>
-        /// A list of blocking collection queues.
+        ///     A list of blocking collection queues.
         /// </returns>
         private List<BlockingCollection<IDungeonState>> CreateKeyDoorPermutationQueues()
         {
@@ -303,10 +303,10 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         }
 
         /// <summary>
-        /// Populates the initial key permutations for the initial simulations.
+        ///     Populates the initial key permutations for the initial simulations.
         /// </summary>
         /// <param name="collection">
-        /// The collection to be populated.
+        ///     The collection to be populated.
         /// </param>
         private void PopulateInitialDungeonStates(BlockingCollection<IDungeonState> collection)
         {
@@ -328,10 +328,10 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         }
 
         /// <summary>
-        /// Returns a list of numbers of small keys that could be collected.
+        ///     Returns a list of numbers of small keys that could be collected.
         /// </summary>
         /// <returns>
-        /// A list of 32-bit signed integers.
+        ///     A list of 32-bit signed integers.
         /// </returns>
         private IEnumerable<int> GetSmallKeyValues()
         {
@@ -352,10 +352,10 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         }
 
         /// <summary>
-        /// Returns a list of possible states for big key collection.
+        ///     Returns a list of possible states for big key collection.
         /// </summary>
         /// <returns>
-        /// A list of boolean values.
+        ///     A list of boolean values.
         /// </returns>
         private List<bool> GetBigKeyValues()
         {
@@ -383,13 +383,13 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         }
 
         /// <summary>
-        /// Processes a specified permutation queue.
+        ///     Processes a specified permutation queue.
         /// </summary>
         /// <param name="currentQueue">
-        /// The blocking collection queue to be processed.
+        ///     The blocking collection queue to be processed.
         /// </param>
         /// <param name="nextQueue">
-        /// A nullable blocking collection queue to place generated permutations.
+        ///     A nullable blocking collection queue to place generated permutations.
         /// </param>
         /// <param name="finalQueue"></param>
         private void ProcessPermutationQueue(
@@ -409,19 +409,19 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         }
 
         /// <summary>
-        /// Process the dungeon state permutation.
+        ///     Process the dungeon state permutation.
         /// </summary>
         /// <param name="dungeonData">
-        /// The mutable dungeon data.
+        ///     The mutable dungeon data.
         /// </param>
         /// <param name="state">
-        /// The permutation to be processed.
+        ///     The permutation to be processed.
         /// </param>
         /// <param name="finalQueue">
-        /// The final queue.
+        ///     The final queue.
         /// </param>
         /// <param name="nextQueue">
-        /// The next queue to which this permutation will be added.
+        ///     The next queue to which this permutation will be added.
         /// </param>
         private void ProcessDungeonState(
             IMutableDungeon dungeonData, IDungeonState state, BlockingCollection<IDungeonState> finalQueue,
@@ -454,16 +454,16 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         }
 
         /// <summary>
-        /// Returns the number of keys that are available in the current dungeon state.
+        ///     Returns the number of keys that are available in the current dungeon state.
         /// </summary>
         /// <param name="dungeonData">
-        /// The mutable dungeon data.
+        ///     The mutable dungeon data.
         /// </param>
         /// <param name="state">
-        /// The current dungeon state.
+        ///     The current dungeon state.
         /// </param>
         /// <returns>
-        /// A 32-bit signed integer representing the number of keys available.
+        ///     A 32-bit signed integer representing the number of keys available.
         /// </returns>
         private static int GetAvailableSmallKeys(IMutableDungeon dungeonData, IDungeonState state)
         {
@@ -472,16 +472,16 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         }
 
         /// <summary>
-        /// Queues the next set of state permutations.
+        ///     Queues the next set of state permutations.
         /// </summary>
         /// <param name="state">
-        /// The current dungeon state.
+        ///     The current dungeon state.
         /// </param>
         /// <param name="nextQueue">
-        /// The next permutation queue.
+        ///     The next permutation queue.
         /// </param>
         /// <param name="accessibleKeyDoors">
-        /// The enumerable of accessible locked key doors.
+        ///     The enumerable of accessible locked key doors.
         /// </param>
         private void QueueNextStatePermutations(
             IDungeonState state, BlockingCollection<IDungeonState> nextQueue, IEnumerable<KeyDoorID> accessibleKeyDoors)
@@ -497,16 +497,16 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         }
 
         /// <summary>
-        /// Processes the final permutation queue.
+        ///     Processes the final permutation queue.
         /// </summary>
         /// <param name="finalQueue">
-        /// The blocking collection queue to be processed.
+        ///     The blocking collection queue to be processed.
         /// </param>
         /// <param name="resultInLogicQueue">
-        /// The blocking collection queue of in-logic results.
+        ///     The blocking collection queue of in-logic results.
         /// </param>
         /// <param name="resultOutOfLogicQueue">
-        /// The blocking collection queue of out-of-logic results.
+        ///     The blocking collection queue of out-of-logic results.
         /// </param>
         private void ProcessFinalKeyDoorPermutationQueue(
             BlockingCollection<IDungeonState> finalQueue, BlockingCollection<IDungeonResult> resultInLogicQueue,
@@ -526,19 +526,19 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         }
 
         /// <summary>
-        /// Process the final dungeon state permutation.
+        ///     Process the final dungeon state permutation.
         /// </summary>
         /// <param name="dungeonData">
-        /// The mutable dungeon data.
+        ///     The mutable dungeon data.
         /// </param>
         /// <param name="state">
-        /// The permutation to be processed.
+        ///     The permutation to be processed.
         /// </param>
         /// <param name="inLogicQueue">
-        /// The queue of results that were achieved without sequence breaks.
+        ///     The queue of results that were achieved without sequence breaks.
         /// </param>
         /// <param name="outOfLogicQueue">
-        /// The queue of results that were achieved with sequence breaks.
+        ///     The queue of results that were achieved with sequence breaks.
         /// </param>
         private static void ProcessFinalDungeonState(
             IMutableDungeon dungeonData, IDungeonState state, BlockingCollection<IDungeonResult> inLogicQueue,
@@ -563,13 +563,13 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         }
 
         /// <summary>
-        /// Processes the result queues.
+        ///     Processes the result queues.
         /// </summary>
         /// <param name="resultInLogicQueue">
-        /// A blocking collection queue for results in-logic.
+        ///     A blocking collection queue for results in-logic.
         /// </param>
         /// <param name="resultOutOfLogicQueue">
-        /// A blocking collection queue for results out-of-logic.
+        ///     A blocking collection queue for results out-of-logic.
         /// </param>
         private void ProcessResults(
             BlockingCollection<IDungeonResult> resultInLogicQueue,
@@ -611,16 +611,16 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         }
 
         /// <summary>
-        /// Processes a result's boss accessibility values.
+        ///     Processes a result's boss accessibility values.
         /// </summary>
         /// <param name="result">
-        /// The result to be processed.
+        ///     The result to be processed.
         /// </param>
         /// <param name="lowestBossAccessibilities">
-        /// A list of the lowest accessibilities for each boss so far.
+        ///     A list of the lowest accessibilities for each boss so far.
         /// </param>
         /// <param name="highestBossAccessibilities">
-        /// A list of the highest accessibilities for each boss so far.
+        ///     A list of the highest accessibilities for each boss so far.
         /// </param>
         private static void ProcessBossAccessibilityResult(
             IDungeonResult result, IList<AccessibilityLevel> lowestBossAccessibilities,
@@ -642,22 +642,22 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         }
 
         /// <summary>
-        /// Processes a result's item accessibility values.
+        ///     Processes a result's item accessibility values.
         /// </summary>
         /// <param name="result">
-        /// The result to be processed.
+        ///     The result to be processed.
         /// </param>
         /// <param name="highestAccessible">
-        /// A 32-bit signed integer representing the most accessible checks.
+        ///     A 32-bit signed integer representing the most accessible checks.
         /// </param>
         /// <param name="lowestAccessible">
-        /// A 32-bit signed integer representing the least accessible checks.
+        ///     A 32-bit signed integer representing the least accessible checks.
         /// </param>
         /// <param name="sequenceBreak">
-        /// A boolean representing whether the result required a sequence break.
+        ///     A boolean representing whether the result required a sequence break.
         /// </param>
         /// <param name="visible">
-        /// A boolean representing whether the last inaccessible item is visible.
+        ///     A boolean representing whether the last inaccessible item is visible.
         /// </param>
         private static void ProcessItemAccessibilityResult(
             IDungeonResult result, ref int lowestAccessible, ref int highestAccessible, ref bool sequenceBreak,
@@ -669,7 +669,7 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
             }
             
             highestAccessible = Math.Max(highestAccessible, result.Accessible);
-            visible = result.Visible;
+            visible |= result.Visible;
 
             if (result.SequenceBreak)
             {
@@ -680,13 +680,13 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         }
         
         /// <summary>
-        /// Sets the property values for boss accessibility.
+        ///     Sets the property values for boss accessibility.
         /// </summary>
         /// <param name="highestBossAccessibilities">
-        /// A list of accessibility values for the most accessible.
+        ///     A list of accessibility values for the most accessible.
         /// </param>
         /// <param name="lowestBossAccessibilities">
-        /// A list of accessibility values for the least accessible.
+        ///     A list of accessibility values for the least accessible.
         /// </param>
         private void SetBossAccessibilities(
             List<AccessibilityLevel> highestBossAccessibilities, List<AccessibilityLevel> lowestBossAccessibilities)
@@ -709,19 +709,19 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         }
 
         /// <summary>
-        /// Sets the property values for accessibility.
+        ///     Sets the property values for accessibility.
         /// </summary>
         /// <param name="highestAccessible">
-        /// A 32-bit signed integer representing the most accessible checks.
+        ///     A 32-bit signed integer representing the most accessible checks.
         /// </param>
         /// <param name="lowestAccessible">
-        /// A 32-bit signed integer representing the least accessible checks.
+        ///     A 32-bit signed integer representing the least accessible checks.
         /// </param>
         /// <param name="sequenceBreak">
-        /// A boolean representing whether the result required a sequence break.
+        ///     A boolean representing whether the result required a sequence break.
         /// </param>
         /// <param name="visible">
-        /// A boolean representing whether the last inaccessible item is visible.
+        ///     A boolean representing whether the last inaccessible item is visible.
         /// </param>
         private void SetAccessibilityValues(
             int highestAccessible, int lowestAccessible, bool sequenceBreak, bool visible)
@@ -737,6 +737,5 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
             SequenceBreak = sequenceBreak;
             Visible = visible;
         }
-
     }
 }

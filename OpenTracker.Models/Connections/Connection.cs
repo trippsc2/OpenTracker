@@ -6,7 +6,7 @@ using OpenTracker.Models.UndoRedo.Connections;
 namespace OpenTracker.Models.Connections
 {
     /// <summary>
-    /// This class contains the map location connection data.
+    ///     This class contains the map location connection data.
     /// </summary>
     public class Connection : IConnection
     {
@@ -16,16 +16,16 @@ namespace OpenTracker.Models.Connections
         public IMapLocation Location2 { get; }
 
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="removeConnectionFactory">
-        /// An Autofac factory for creating remove connection undoable actions.
+        ///     An Autofac factory for creating remove connection undoable actions.
         /// </param>
         /// <param name="location1">
-        /// The first location to connect.
+        ///     The first location to connect.
         /// </param>
         /// <param name="location2">
-        /// The second location to connect.
+        ///     The second location to connect.
         /// </param>
         public Connection(
             IRemoveConnection.Factory removeConnectionFactory, IMapLocation location1, IMapLocation location2)
@@ -51,20 +51,11 @@ namespace OpenTracker.Models.Connections
             return Location1.GetHashCode() ^ Location2.GetHashCode();
         }
 
-        /// <summary>
-        /// Creates an undoable action to remove the connection and sends it to the undo/redo manager.
-        /// </summary>
         public IUndoable CreateRemoveConnectionAction()
         {
             return _removeConnectionFactory(this);
         }
 
-        /// <summary>
-        /// Returns a new connection save data instance for this connection.
-        /// </summary>
-        /// <returns>
-        /// A new connection save data instance.
-        /// </returns>
         public ConnectionSaveData Save()
         {
             return new()

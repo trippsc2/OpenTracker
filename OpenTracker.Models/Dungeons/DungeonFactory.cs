@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using OpenTracker.Models.DungeonItems;
-using OpenTracker.Models.DungeonNodes;
+using OpenTracker.Models.Dungeons.Items;
+using OpenTracker.Models.Dungeons.Nodes;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.KeyDoors;
 using OpenTracker.Models.RequirementNodes;

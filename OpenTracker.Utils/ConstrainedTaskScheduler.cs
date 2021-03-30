@@ -21,7 +21,7 @@ namespace OpenTracker.Utils
         {
         }
         
-        private ConstrainedTaskScheduler(int concurrentTasks)
+        public ConstrainedTaskScheduler(int concurrentTasks)
         {
             if (concurrentTasks < 1)
             {

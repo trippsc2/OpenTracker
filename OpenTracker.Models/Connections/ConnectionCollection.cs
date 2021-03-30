@@ -9,7 +9,7 @@ using OpenTracker.Models.UndoRedo.Connections;
 namespace OpenTracker.Models.Connections
 {
     /// <summary>
-    /// This class contains the collection container for map connections.
+    ///     This class contains the collection container for map connections.
     /// </summary>
     public class ConnectionCollection : ObservableCollection<IConnection>, IConnectionCollection
     {
@@ -19,16 +19,16 @@ namespace OpenTracker.Models.Connections
         private readonly IAddConnection.Factory _addConnectionFactory;
 
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="locations">
-        /// The location dictionary.
+        ///     The location dictionary.
         /// </param>
         /// <param name="connectionFactory">
-        /// An Autofac factory for creating new connections.
+        ///     An Autofac factory for creating new connections.
         /// </param>
         /// <param name="addConnectionFactory">
-        /// An Autofac factory for creating new add connection undoable actions.
+        ///     An Autofac factory for creating new add connection undoable actions.
         /// </param>
         public ConnectionCollection(
             ILocationDictionary locations, IConnection.Factory connectionFactory,
@@ -39,25 +39,16 @@ namespace OpenTracker.Models.Connections
             _addConnectionFactory = addConnectionFactory;
         }
 
-        /// <summary>
-        /// Creates an undoable action to add a connection and sends it to the undo/redo manager.
-        /// </summary>
-        /// <param name="location1">
-        ///     The first map location of the connection.
-        /// </param>
-        /// <param name="location2">
-        ///     The second map location of the connection.
-        /// </param>
         public IUndoable AddConnection(IMapLocation location1, IMapLocation location2)
         {
             return _addConnectionFactory(_connectionFactory(location1, location2));
         }
 
         /// <summary>
-        /// Returns a list of connection save data.
+        ///     Returns a list of connection save data.
         /// </summary>
         /// <returns>
-        /// A list of connection save data.
+        ///     A list of connection save data.
         /// </returns>
         public List<ConnectionSaveData> Save()
         {
@@ -65,10 +56,10 @@ namespace OpenTracker.Models.Connections
         }
 
         /// <summary>
-        /// Loads a list of connection save data.
+        ///     Loads a list of connection save data.
         /// </summary>
         /// <param name="saveData">
-        /// A list of connection save data.
+        ///     A list of connection save data.
         /// </param>
         public void Load(List<ConnectionSaveData>? saveData)
         {

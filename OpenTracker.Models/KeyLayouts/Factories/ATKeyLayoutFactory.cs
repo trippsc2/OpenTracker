@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using OpenTracker.Models.DungeonItems;
 using OpenTracker.Models.Dungeons;
+using OpenTracker.Models.Dungeons.Items;
 using OpenTracker.Models.Requirements;
 
 namespace OpenTracker.Models.KeyLayouts.Factories

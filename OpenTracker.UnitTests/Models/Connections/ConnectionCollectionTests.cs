@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Connections;
 using OpenTracker.Models.Locations;
@@ -84,6 +85,16 @@ namespace OpenTracker.UnitTests.Models.Connections
             _sut.Load(saveData);
             
             Assert.DoesNotContain(_connection, _sut);
+        }
+
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var factory = scope.Resolve<IConnectionCollection.Factory>();
+            var sut = factory();
+            
+            Assert.NotNull(sut as ConnectionCollection);
         }
     }
 }

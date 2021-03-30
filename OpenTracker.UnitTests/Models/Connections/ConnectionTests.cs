@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Connections;
 using OpenTracker.Models.Locations;
@@ -246,8 +247,7 @@ namespace OpenTracker.UnitTests.Models.Connections
         [InlineData(1, 1, 2)]
         [InlineData(2, 2, 0)]
         [InlineData(2, 2, 1)]
-        public void Save_SaveDataShouldAllowLookupOfLocation1(
-            int expected, int location1Index, int location2Index)
+        public void Save_SaveDataShouldAllowLookupOfLocation1(int expected, int location1Index, int location2Index)
         {
             var sut = new Connection(_removeConnectionFactory, _mapLocations[location1Index],
                 _mapLocations[location2Index]);
@@ -264,8 +264,7 @@ namespace OpenTracker.UnitTests.Models.Connections
         [InlineData(2, 1, 2)]
         [InlineData(0, 2, 0)]
         [InlineData(1, 2, 1)]
-        public void Save_SaveDataShouldAllowLookupOfLocation2(
-            int expected, int location1Index, int location2Index)
+        public void Save_SaveDataShouldAllowLookupOfLocation2(int expected, int location1Index, int location2Index)
         {
             var sut = new Connection(_removeConnectionFactory, _mapLocations[location1Index],
                 _mapLocations[location2Index]);
@@ -273,6 +272,16 @@ namespace OpenTracker.UnitTests.Models.Connections
             
             Assert.Equal(
                 _mapLocations[expected], _mapLocations[expected].Location.MapLocations[saveData.Index2]);
+        }
+
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var factory = scope.Resolve<IConnection.Factory>();
+            var sut = factory(_mapLocations[0], _mapLocations[1]);
+            
+            Assert.NotNull(sut as Connection);
         }
     }
 }

@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using Autofac;
 using NSubstitute;
-using OpenTracker.Models.DungeonItems;
-using OpenTracker.Models.DungeonNodes;
 using OpenTracker.Models.Dungeons;
+using OpenTracker.Models.Dungeons.Items;
 using OpenTracker.Models.Dungeons.Mutable;
+using OpenTracker.Models.Dungeons.Nodes;
 using OpenTracker.Models.KeyDoors;
 using Xunit;
 

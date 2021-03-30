@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using OpenTracker.Models.Accessibility;
-using OpenTracker.Models.DungeonItems;
-using OpenTracker.Models.DungeonNodes;
+using OpenTracker.Models.Dungeons.Items;
+using OpenTracker.Models.Dungeons.Nodes;
 using OpenTracker.Models.Dungeons.Result;
 using OpenTracker.Models.Dungeons.State;
 using OpenTracker.Models.KeyDoors;

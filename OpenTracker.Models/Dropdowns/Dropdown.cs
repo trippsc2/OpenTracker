@@ -8,7 +8,7 @@ using ReactiveUI;
 namespace OpenTracker.Models.Dropdowns
 {
     /// <summary>
-    /// This class contains dropdown data.
+    ///     This class contains dropdown data.
     /// </summary>
     public class Dropdown : ReactiveObject, IDropdown
     {
@@ -27,16 +27,16 @@ namespace OpenTracker.Models.Dropdowns
         }
 
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="checkDropdownFactory">
-        /// An Autofac factory for creating undoable actions to check the dropdown.
+        ///     An Autofac factory for creating undoable actions to check the dropdown.
         /// </param>
         /// <param name="uncheckDropdownFactory">
-        /// An Autofac factory for creating undoable actions to uncheck the dropdown.
+        ///     An Autofac factory for creating undoable actions to uncheck the dropdown.
         /// </param>
         /// <param name="requirement">
-        /// The requirement for the dropdown to be relevant.
+        ///     The requirement for the dropdown to be relevant.
         /// </param>
         public Dropdown(
             ICheckDropdown.Factory checkDropdownFactory, IUncheckDropdown.Factory uncheckDropdownFactory,
@@ -49,58 +49,26 @@ namespace OpenTracker.Models.Dropdowns
             _requirement.PropertyChanged += OnRequirementChanged;
         }
 
-        /// <summary>
-        /// Subscribes to the PropertyChanged event on the IRequirement interface.
-        /// </summary>
-        /// <param name="sender">
-        /// The sending object of the event.
-        /// </param>
-        /// <param name="e">
-        /// The arguments of the PropertyChanged event.
-        /// </param>
-        private void OnRequirementChanged(object? sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(IRequirement.Met))
-            {
-                this.RaisePropertyChanged(nameof(RequirementMet));
-            }
-        }
-
-        /// <summary>
-        /// Returns a new undoable action to check the dropdown.
-        /// </summary>
-        /// <returns>
-        /// A new undoable action to check the dropdown.
-        /// </returns>
         public IUndoable CreateCheckDropdownAction()
         {
             return _checkDropdownFactory(this);
         }
 
-        /// <summary>
-        /// Returns a new undoable action to uncheck the dropdown.
-        /// </summary>
-        /// <returns>
-        /// A new undoable action to uncheck the dropdown.
-        /// </returns>
         public IUndoable CreateUncheckDropdownAction()
         {
             return _uncheckDropdownFactory(this);
         }
 
-        /// <summary>
-        /// Resets the dropdown.
-        /// </summary>
         public void Reset()
         {
             Checked = false;
         }
 
         /// <summary>
-        /// Returns a new dropdown save data instance for this dropdown.
+        ///     Returns a new dropdown save data instance for this dropdown.
         /// </summary>
         /// <returns>
-        /// A new dropdown save data instance.
+        ///     A new dropdown save data instance.
         /// </returns>
         public DropdownSaveData Save()
         {
@@ -111,10 +79,10 @@ namespace OpenTracker.Models.Dropdowns
         }
 
         /// <summary>
-        /// Loads dropdown save data.
+        ///     Loads dropdown save data.
         /// </summary>
         /// <param name="saveData">
-        /// The dropdown save data to load.
+        ///     The dropdown save data to load.
         /// </param>
         public void Load(DropdownSaveData? saveData)
         {
@@ -124,6 +92,23 @@ namespace OpenTracker.Models.Dropdowns
             }
 
             Checked = saveData.Checked;
+        }
+
+        /// <summary>
+        ///     Subscribes to the PropertyChanged event on the IRequirement interface.
+        /// </summary>
+        /// <param name="sender">
+        ///     The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        ///     The arguments of the PropertyChanged event.
+        /// </param>
+        private void OnRequirementChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(IRequirement.Met))
+            {
+                this.RaisePropertyChanged(nameof(RequirementMet));
+            }
         }
     }
 }
