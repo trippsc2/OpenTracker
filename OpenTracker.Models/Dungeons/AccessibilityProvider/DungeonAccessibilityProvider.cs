@@ -11,6 +11,7 @@ using OpenTracker.Models.Dungeons.Nodes;
 using OpenTracker.Models.Dungeons.Result;
 using OpenTracker.Models.Dungeons.State;
 using OpenTracker.Models.Items;
+using OpenTracker.Models.Items.Keys;
 using OpenTracker.Models.KeyDoors;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.RequirementNodes;
@@ -57,8 +58,8 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
 
         public List<IBossAccessibilityProvider> BossAccessibilityProviders { get; } = new();
 
-        private IKeyItem SmallKey => _dungeon.SmallKey;
-        private ICappedItem? BigKey => _dungeon.BigKey;
+        private ISmallKeyItem SmallKey => _dungeon.SmallKey;
+        private IBigKeyItem? BigKey => _dungeon.BigKey;
         private IEnumerable<DungeonItemID> Bosses => _dungeon.Bosses;
         private List<KeyDoorID> SmallKeyDoors => _dungeon.SmallKeyDoors;
         private IEnumerable<DungeonNodeID> Nodes => _dungeon.Nodes;
@@ -168,7 +169,7 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         /// </param>
         private void OnSmallKeyChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(IKeyItem.EffectiveCurrent))
+            if (e.PropertyName == nameof(ISmallKeyItem.EffectiveCurrent))
             {
                 UpdateValues();
             }

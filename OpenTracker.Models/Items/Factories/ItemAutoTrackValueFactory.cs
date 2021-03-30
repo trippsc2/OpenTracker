@@ -6,7 +6,7 @@ using OpenTracker.Models.AutoTracking.Values.Single;
 using OpenTracker.Models.AutoTracking.Values.Static;
 using OpenTracker.Models.Requirements;
 
-namespace OpenTracker.Models.Items
+namespace OpenTracker.Models.Items.Factories
 {
     /// <summary>
     /// This class contains creation logic for item auto-track values.

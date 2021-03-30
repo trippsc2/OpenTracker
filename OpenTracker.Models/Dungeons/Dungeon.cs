@@ -3,6 +3,7 @@ using System.ComponentModel;
 using OpenTracker.Models.Dungeons.Items;
 using OpenTracker.Models.Dungeons.Nodes;
 using OpenTracker.Models.Items;
+using OpenTracker.Models.Items.Keys;
 using OpenTracker.Models.KeyDoors;
 using OpenTracker.Models.KeyLayouts;
 using OpenTracker.Models.KeyLayouts.Factories;
@@ -23,8 +24,8 @@ namespace OpenTracker.Models.Dungeons
         
         public ICappedItem? Map { get; }
         public ICappedItem? Compass { get; }
-        public IKeyItem SmallKey { get; }
-        public ICappedItem? BigKey { get; }
+        public ISmallKeyItem SmallKey { get; }
+        public IBigKeyItem? BigKey { get; }
 
         public List<DungeonItemID> DungeonItems { get; }
         public List<DungeonItemID> Bosses { get; }
@@ -93,7 +94,7 @@ namespace OpenTracker.Models.Dungeons
         /// </param>
         public Dungeon(
             IMode mode, IKeyLayoutFactory keyLayoutFactory, DungeonID id, ICappedItem? map, ICappedItem? compass,
-            IKeyItem smallKey, ICappedItem? bigKey, List<DungeonItemID> dungeonItems, List<DungeonItemID> bosses,
+            ISmallKeyItem smallKey, IBigKeyItem? bigKey, List<DungeonItemID> dungeonItems, List<DungeonItemID> bosses,
             List<DungeonItemID> smallKeyDrops, List<DungeonItemID> bigKeyDrops, List<KeyDoorID> smallKeyDoors,
             List<KeyDoorID> bigKeyDoors, List<DungeonNodeID> nodes, List<IRequirementNode> entryNodes)
         {

@@ -1,23 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenTracker.Models.Items.Factories;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Utils;
 
 namespace OpenTracker.Models.Items
 {
     /// <summary>
-    /// This class contains the dictionary container for item data.
+    ///     This class contains the dictionary container for item data.
     /// </summary>
     public class ItemDictionary : LazyDictionary<ItemType, IItem>, IItemDictionary
     {
         private readonly Lazy<IItemFactory> _factory;
 
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="factory">
-        /// Factory for creating items.
+        ///     A factory for creating items.
         /// </param>
         public ItemDictionary(IItemFactory.Factory factory) : base(new Dictionary<ItemType, IItem>())
         {
@@ -29,9 +30,6 @@ namespace OpenTracker.Models.Items
             return _factory.Value.GetItem(key);
         }
 
-        /// <summary>
-        /// Resets all contained items to their starting values.
-        /// </summary>
         public void Reset()
         {
             foreach (var item in Values)
@@ -41,10 +39,10 @@ namespace OpenTracker.Models.Items
         }
 
         /// <summary>
-        /// Returns a dictionary of item save data.
+        ///     Returns a dictionary of item save data.
         /// </summary>
         /// <returns>
-        /// A dictionary of item save data.
+        ///     A dictionary of item save data.
         /// </returns>
         public Dictionary<ItemType, ItemSaveData> Save()
         {
@@ -52,7 +50,7 @@ namespace OpenTracker.Models.Items
         }
 
         /// <summary>
-        /// Loads a dictionary of item save data.
+        ///     Loads a dictionary of item save data.
         /// </summary>
         public void Load(Dictionary<ItemType, ItemSaveData>? saveData)
         {

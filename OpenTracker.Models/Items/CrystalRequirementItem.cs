@@ -7,7 +7,7 @@ using ReactiveUI;
 namespace OpenTracker.Models.Items
 {
     /// <summary>
-    /// This class contains crystal requirement data.
+    ///     This class contains crystal requirement data.
     /// </summary>
     public class CrystalRequirementItem : CappedItem, ICrystalRequirementItem
     {
@@ -19,19 +19,19 @@ namespace OpenTracker.Models.Items
         }
 
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="saveLoadManager">
-        /// The save/load manager.
+        ///     The save/load manager.
         /// </param>
         /// <param name="addItemFactory">
-        /// An Autofac factory for creating undoable actions to add items.
+        ///     An Autofac factory for creating undoable actions to add items.
         /// </param>
         /// <param name="removeItemFactory">
-        /// An Autofac factory for creating undoable actions to remove items.
+        ///     An Autofac factory for creating undoable actions to remove items.
         /// </param>
         /// <param name="cycleItemFactory">
-        /// An Autofac factory for creating undoable actions to cycle the item.
+        ///     An Autofac factory for creating undoable actions to cycle the item.
         /// </param>
         public CrystalRequirementItem(
             ISaveLoadManager saveLoadManager, IAddItem.Factory addItemFactory, IRemoveItem.Factory removeItemFactory,
@@ -40,23 +40,6 @@ namespace OpenTracker.Models.Items
                 null)
         {
             PropertyChanged += OnPropertyChanged;
-        }
-        
-        /// <summary>
-        /// Subscribes to the PropertyChanged event on this object.
-        /// </summary>
-        /// <param name="sender">
-        /// The sending object of the event.
-        /// </param>
-        /// <param name="e">
-        /// The arguments of the PropertyChanged event.
-        /// </param>
-        private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(Known))
-            {
-                this.RaisePropertyChanged(nameof(Current));
-            }
         }
 
         public override void Add()
@@ -109,9 +92,6 @@ namespace OpenTracker.Models.Items
             }
         }
 
-        /// <summary>
-        /// Resets the item to its starting value.
-        /// </summary>
         public override void Reset()
         {
             Known = false;
@@ -135,6 +115,23 @@ namespace OpenTracker.Models.Items
             
             base.Load(saveData);
             Known = saveData!.Known;
+        }
+        
+        /// <summary>
+        ///     Subscribes to the PropertyChanged event on this object.
+        /// </summary>
+        /// <param name="sender">
+        ///     The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        ///     The arguments of the PropertyChanged event.
+        /// </param>
+        private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Known))
+            {
+                this.RaisePropertyChanged(nameof(Current));
+            }
         }
     }
 }

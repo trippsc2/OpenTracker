@@ -7,7 +7,7 @@ using OpenTracker.Models.UndoRedo.Items;
 namespace OpenTracker.Models.Items
 {
     /// <summary>
-    /// This class contains item data with a maximum value.
+    ///     This class contains item data with a maximum value.
     /// </summary>
     public class CappedItem : Item, ICappedItem
     {
@@ -16,28 +16,28 @@ namespace OpenTracker.Models.Items
         public int Maximum { get; }
 
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="saveLoadManager">
-        /// The save/load manager.
+        ///     The save/load manager.
         /// </param>
         /// <param name="addItemFactory">
-        /// An Autofac factory for creating undoable actions to add items.
+        ///     An Autofac factory for creating undoable actions to add items.
         /// </param>
         /// <param name="removeItemFactory">
-        /// An Autofac factory for creating undoable actions to remove items.
+        ///     An Autofac factory for creating undoable actions to remove items.
         /// </param>
         /// <param name="cycleItemFactory">
-        /// An Autofac factory for creating undoable actions to cycle the item.
+        ///     An Autofac factory for creating undoable actions to cycle the item.
         /// </param>
         /// <param name="starting">
-        /// A 32-bit signed integer representing the starting value of the item.
+        ///     A 32-bit signed integer representing the starting value of the item.
         /// </param>
         /// <param name="maximum">
-        /// A 32-bit signed integer representing the maximum value of the item.
+        ///     A 32-bit signed integer representing the maximum value of the item.
         /// </param>
         /// <param name="autoTrackValue">
-        /// The auto track value.
+        ///     The auto-track value.
         /// </param>
         public CappedItem(
             ISaveLoadManager saveLoadManager, IAddItem.Factory addItemFactory, IRemoveItem.Factory removeItemFactory,
@@ -54,12 +54,6 @@ namespace OpenTracker.Models.Items
             Maximum = maximum;
         }
 
-        /// <summary>
-        /// Returns whether an item can be added.
-        /// </summary>
-        /// <returns>
-        /// A boolean representing whether an item can be added.
-        /// </returns>
         public override bool CanAdd()
         {
             return Current < Maximum;
@@ -75,23 +69,11 @@ namespace OpenTracker.Models.Items
             base.Add();
         }
 
-        /// <summary>
-        /// Returns a new undoable action to cycle the item.
-        /// </summary>
-        /// <returns>
-        /// A new undoable action to cycle the item.
-        /// </returns>
         public IUndoable CreateCycleItemAction()
         {
             return _cycleItemFactory(this);
         }
 
-        /// <summary>
-        /// Cycles the item.
-        /// </summary>
-        /// <param name="reverse">
-        /// A boolean representing whether to cycle in reverse.
-        /// </param>
         public virtual void Cycle(bool reverse = false)
         {
             if (reverse)

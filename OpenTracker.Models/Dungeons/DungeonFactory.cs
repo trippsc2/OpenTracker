@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using OpenTracker.Models.Dungeons.Items;
 using OpenTracker.Models.Dungeons.Nodes;
 using OpenTracker.Models.Items;
+using OpenTracker.Models.Items.Keys;
 using OpenTracker.Models.KeyDoors;
 using OpenTracker.Models.RequirementNodes;
 
@@ -131,7 +132,7 @@ namespace OpenTracker.Models.Dungeons
         /// <returns>
         /// The small key item.
         /// </returns>
-        private IKeyItem GetDungeonSmallKeyItem(DungeonID id)
+        private ISmallKeyItem GetDungeonSmallKeyItem(DungeonID id)
         {
             var item = id switch
             {
@@ -151,7 +152,7 @@ namespace OpenTracker.Models.Dungeons
                 _ => throw new ArgumentOutOfRangeException(nameof(id))
             };
 
-            return (IKeyItem)item;
+            return (ISmallKeyItem)item;
         }
 
         /// <summary>
@@ -163,7 +164,7 @@ namespace OpenTracker.Models.Dungeons
         /// <returns>
         /// The big key item.
         /// </returns>
-        private ICappedItem? GetDungeonBigKeyItem(DungeonID id)
+        private IBigKeyItem? GetDungeonBigKeyItem(DungeonID id)
         {
             var item = id switch
             {
@@ -183,7 +184,7 @@ namespace OpenTracker.Models.Dungeons
                 _ => throw new ArgumentOutOfRangeException(nameof(id))
             };
 
-            return item as ICappedItem;
+            return item as IBigKeyItem;
         }
 
         /// <summary>

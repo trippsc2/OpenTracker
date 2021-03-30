@@ -2,6 +2,7 @@
 using OpenTracker.Models.Dungeons.Items;
 using OpenTracker.Models.Dungeons.Nodes;
 using OpenTracker.Models.Items;
+using OpenTracker.Models.Items.Keys;
 using OpenTracker.Models.KeyDoors;
 using OpenTracker.Models.KeyLayouts;
 using OpenTracker.Models.RequirementNodes;
@@ -16,8 +17,8 @@ namespace OpenTracker.Models.Dungeons
     {
         ICappedItem? Map { get; }
         ICappedItem? Compass { get; }
-        IKeyItem SmallKey { get; }
-        ICappedItem? BigKey { get; }
+        ISmallKeyItem SmallKey { get; }
+        IBigKeyItem? BigKey { get; }
         
         List<DungeonItemID> DungeonItems { get; }
         List<DungeonItemID> Bosses { get; }
@@ -32,7 +33,7 @@ namespace OpenTracker.Models.Dungeons
         List<IRequirementNode> EntryNodes { get; }
 
         delegate IDungeon Factory(
-            DungeonID id, ICappedItem? map, ICappedItem? compass, IKeyItem smallKey, ICappedItem? bigKey,
+            DungeonID id, ICappedItem? map, ICappedItem? compass, ISmallKeyItem smallKey, IBigKeyItem? bigKey,
             List<DungeonItemID> dungeonItems, List<DungeonItemID> bosses, List<DungeonItemID> smallKeyDrops,
             List<DungeonItemID> bigKeyDrops, List<KeyDoorID> smallKeyDoors, List<KeyDoorID> bigKeyDoors,
             List<DungeonNodeID> nodes, List<IRequirementNode> entryNodes);

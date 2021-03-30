@@ -3,6 +3,7 @@ using System.ComponentModel;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Items;
+using OpenTracker.Models.Items.Keys;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.UndoRedo.Items;

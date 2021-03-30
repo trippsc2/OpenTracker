@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.Items;
+using OpenTracker.Models.Items.Keys;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.Prizes;
 using OpenTracker.Models.RequirementNodes;
@@ -1560,7 +1561,7 @@ namespace OpenTracker.Models.Requirements
                 case RequirementType.TRSmallKey2:
                 case RequirementType.TRSmallKey3:
                     {
-                        return _smallKeyFactory((IKeyItem)GetItem(type), GetItemCount(type));
+                        return _smallKeyFactory((ISmallKeyItem)GetItem(type), GetItemCount(type));
                     }
                 case RequirementType.SBBlindPedestal:
                 case RequirementType.SBBonkOverLedge:

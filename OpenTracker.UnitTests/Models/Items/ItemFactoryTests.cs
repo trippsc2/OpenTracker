@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;
 using OpenTracker.Models.Items;
+using OpenTracker.Models.Items.Factories;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.UndoRedo.Items;
@@ -31,8 +32,7 @@ namespace OpenTracker.UnitTests.Models.Items
         public ItemFactoryTests()
         {
             _autoTrackValueFactory.GetAutoTrackValue(ItemType.Arrows).ReturnsNullForAnyArgs();
-            _sut = new ItemFactory(
-                () => _items, () => _autoTrackValueFactory,
+            _sut = new ItemFactory(() => _autoTrackValueFactory,
                 (starting, autoTrackValue) => new Item(
                     _saveLoadManager, _addItemFactory, _removeItemFactory, starting, autoTrackValue),
                 (starting, maximum, autoTrackValue) => new CappedItem(

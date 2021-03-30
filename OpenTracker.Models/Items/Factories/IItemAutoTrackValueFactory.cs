@@ -1,6 +1,6 @@
 ﻿using OpenTracker.Models.AutoTracking.Values;
 
-namespace OpenTracker.Models.Items
+namespace OpenTracker.Models.Items.Factories
 {
     /// <summary>
     /// This interface contains creation logic for item auto-track values.

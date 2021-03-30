@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.Dungeons.AccessibilityProvider;
@@ -8,6 +9,7 @@ using OpenTracker.Models.Dungeons.Mutable;
 using OpenTracker.Models.Dungeons.Nodes;
 using OpenTracker.Models.Dungeons.State;
 using OpenTracker.Models.KeyDoors;
+using OpenTracker.Models.KeyLayouts;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.RequirementNodes;
 using OpenTracker.Utils;
@@ -30,17 +32,37 @@ namespace OpenTracker.UnitTests.Models.Dungeons.AccessibilityProviders
         private readonly List<DungeonItemID> _bosses = new();
         private readonly List<IRequirementNode> _entryNodes = new();
         private readonly List<DungeonNodeID> _nodes = new();
-        private readonly List<KeyDoorID> _smallKeyDoors = new(); 
+        private readonly List<KeyDoorID> _smallKeyDoors = new();
+        private readonly List<KeyDoorID> _bigKeyDoors = new();
+        private readonly List<DungeonItemID> _dungeonItems = new();
+        private readonly List<DungeonItemID> _smallKeyDrops = new();
+        private readonly List<DungeonItemID> _bigKeyDrops = new();
+        private readonly List<IKeyLayout> _keyLayouts = new();
+        
+        private readonly IMutableDungeon _mutableDungeon = Substitute.For<IMutableDungeon>();
+        private readonly IDungeonState _state = Substitute.For<IDungeonState>();
 
         public DungeonAccessibilityProviderTests()
         {
+            _stateFactory(Arg.Any<List<KeyDoorID>>(), Arg.Any<int>(), Arg.Any<bool>(), Arg.Any<bool>()).Returns(_state);
+            
             _dungeon.Bosses.Returns(_bosses);
             _dungeon.EntryNodes.Returns(_entryNodes);
             _dungeon.Nodes.Returns(_nodes);
             _dungeon.SmallKeyDoors.Returns(_smallKeyDoors);
+            _dungeon.BigKeyDoors.Returns(_bigKeyDoors);
+            _dungeon.DungeonItems.Returns(_dungeonItems);
+            _dungeon.SmallKeyDrops.Returns(_smallKeyDrops);
+            _dungeon.BigKeyDrops.Returns(_bigKeyDrops);
+            _dungeon.KeyLayouts.Returns(_keyLayouts);
+            
+            _mutableDungeonQueue.GetNext().Returns(_mutableDungeon);
+            _mutableDungeon.GetAvailableSmallKeys(Arg.Any<bool>()).Returns(0);
+            _mutableDungeon.GetAccessibleKeyDoors(Arg.Any<bool>()).Returns(new List<KeyDoorID>());
+
+            _state.UnlockedDoors.Returns(new List<KeyDoorID>());
         }
-
-
+        
         [Fact]
         public void Ctor_Test()
         {
@@ -52,6 +74,16 @@ namespace OpenTracker.UnitTests.Models.Dungeons.AccessibilityProviders
                 _dungeon);
             
             Assert.NotNull(sut);
+        }
+
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var factory = scope.Resolve<IDungeonAccessibilityProvider.Factory>();
+            var sut = factory(_dungeon);
+            
+            Assert.NotNull(sut as DungeonAccessibilityProvider);
         }
     }
 }

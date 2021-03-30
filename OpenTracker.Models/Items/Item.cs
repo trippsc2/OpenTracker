@@ -9,7 +9,7 @@ using ReactiveUI;
 namespace OpenTracker.Models.Items
 {
     /// <summary>
-    /// This class contains item data.
+    ///     This class contains item data.
     /// </summary>
     public class Item : ReactiveObject, IItem
     {
@@ -29,22 +29,22 @@ namespace OpenTracker.Models.Items
         }
 
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="saveLoadManager">
-        /// The save/load manager.
+        ///     The save/load manager.
         /// </param>
         /// <param name="addItemFactory">
-        /// An Autofac factory for creating undoable actions to add items.
+        ///     An Autofac factory for creating undoable actions to add items.
         /// </param>
         /// <param name="removeItemFactory">
-        /// An Autofac factory for creating undoable actions to remove items.
+        ///     An Autofac factory for creating undoable actions to remove items.
         /// </param>
         /// <param name="starting">
-        /// A 32-bit signed integer representing the starting value of the item.
+        ///     A 32-bit signed integer representing the starting value of the item.
         /// </param>
         /// <param name="autoTrackValue">
-        /// The auto-track value.
+        ///     The auto-track value.
         /// </param>
         public Item(
             ISaveLoadManager saveLoadManager, IAddItem.Factory addItemFactory, IRemoveItem.Factory removeItemFactory,
@@ -64,15 +64,82 @@ namespace OpenTracker.Models.Items
                 _autoTrackValue.PropertyChanged += OnAutoTrackChanged;
             }
         }
+
+        public IUndoable CreateAddItemAction()
+        {
+            return _addItemFactory(this);
+        }
+
+        public virtual bool CanAdd()
+        {
+            return true;
+        }
+
+        public virtual void Add()
+        {
+            Current++;
+        }
+
+        public IUndoable CreateRemoveItemAction()
+        {
+            return _removeItemFactory(this);
+        }
+
+        public virtual bool CanRemove()
+        {
+            return Current > 0;
+        }
+
+        public virtual void Remove()
+        {
+            if (Current <= 0)
+            {
+                throw new Exception("Item cannot be removed, because it is already 0.");
+            }
+
+            Current--;
+        }
+
+        public virtual void Reset()
+        {
+            Current = _starting;
+        }
+
+        /// <summary>
+        ///     Returns a new item save data instance for this item.
+        /// </summary>
+        /// <returns>
+        ///     A new item save data instance.
+        /// </returns>
+        public virtual ItemSaveData Save()
+        {
+            return new()
+            {
+                Current = Current
+            };
+        }
+
+        /// <summary>
+        ///     Loads item save data.
+        /// </summary>
+        public virtual void Load(ItemSaveData? saveData)
+        {
+            if (saveData is null)
+            {
+                return;
+            }
+
+            Current = saveData.Current;
+        }
         
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the IAutoTrackValue interface.
+        ///     Subscribes to the PropertyChanged event on the IAutoTrackValue interface.
         /// </summary>
         /// <param name="sender">
-        /// The sending object of the event.
+        ///     The sending object of the event.
         /// </param>
         /// <param name="e">
-        /// The arguments of the PropertyChanged event.
+        ///     The arguments of the PropertyChanged event.
         /// </param>
         private void OnAutoTrackChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -83,7 +150,7 @@ namespace OpenTracker.Models.Items
         }
 
         /// <summary>
-        /// Update the Current property to match the auto-tracking value.
+        ///     Update the Current property to match the auto-tracking value.
         /// </summary>
         private void AutoTrackUpdate()
         {
@@ -99,100 +166,6 @@ namespace OpenTracker.Models.Items
             
             Current = _autoTrackValue.CurrentValue.Value;
             _saveLoadManager.Unsaved = true;
-        }
-
-        /// <summary>
-        /// Creates a new undoable action to add an item and sends it to the undo/redo manager.
-        /// </summary>
-        public IUndoable CreateAddItemAction()
-        {
-            return _addItemFactory(this);
-        }
-
-        /// <summary>
-        /// Returns whether an item can be added.
-        /// </summary>
-        /// <returns>
-        /// A boolean representing whether an item can be added.
-        /// </returns>
-        public virtual bool CanAdd()
-        {
-            return true;
-        }
-
-        /// <summary>
-        /// Adds an item.
-        /// </summary>
-        public virtual void Add()
-        {
-            Current++;
-        }
-
-        /// <summary>
-        /// Creates a new undoable action to remove an item and sends it to the undo/redo manager.
-        /// </summary>
-        public IUndoable CreateRemoveItemAction()
-        {
-            return _removeItemFactory(this);
-        }
-
-        /// <summary>
-        /// Returns whether an item can be removed.
-        /// </summary>
-        /// <returns>
-        /// A boolean representing whether an item can be removed.
-        /// </returns>
-        public virtual bool CanRemove()
-        {
-            return Current > 0;
-        }
-
-        /// <summary>
-        /// Removes an item.
-        /// </summary>
-        public virtual void Remove()
-        {
-            if (Current <= 0)
-            {
-                throw new Exception("Item cannot be removed, because it is already 0.");
-            }
-
-            Current--;
-        }
-
-        /// <summary>
-        /// Resets the item to its starting values.
-        /// </summary>
-        public virtual void Reset()
-        {
-            Current = _starting;
-        }
-
-        /// <summary>
-        /// Returns a new item save data instance for this item.
-        /// </summary>
-        /// <returns>
-        /// A new item save data instance.
-        /// </returns>
-        public virtual ItemSaveData Save()
-        {
-            return new()
-            {
-                Current = Current
-            };
-        }
-
-        /// <summary>
-        /// Loads item save data.
-        /// </summary>
-        public virtual void Load(ItemSaveData? saveData)
-        {
-            if (saveData is null)
-            {
-                return;
-            }
-
-            Current = saveData.Current;
         }
     }
 }

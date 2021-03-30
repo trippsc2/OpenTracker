@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using NSubstitute;
 using OpenTracker.Models.Items;
+using OpenTracker.Models.Items.Factories;
 using OpenTracker.Models.SaveLoad;
 using Xunit;
 

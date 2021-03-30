@@ -1,7 +1,7 @@
 ﻿namespace OpenTracker.Models.Items
 {
     /// <summary>
-    /// This is the enum type for all item types.
+    ///     This enum type contains all item types.
     /// </summary>
     public enum ItemType
     {

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using OpenTracker.Models.Items;
+using OpenTracker.Models.Items.Keys;
 
 namespace OpenTracker.Models.Requirements.Item
 {
@@ -8,10 +9,10 @@ namespace OpenTracker.Models.Requirements.Item
     /// </summary>
     public class SmallKeyRequirement : BooleanRequirement, ISmallKeyRequirement
     {
-        private readonly IKeyItem _item;
+        private readonly ISmallKeyItem _item;
         private readonly int _count;
 
-        public delegate SmallKeyRequirement Factory(IKeyItem item, int count = 1);
+        public delegate SmallKeyRequirement Factory(ISmallKeyItem item, int count = 1);
 
         /// <summary>
         /// Constructor
@@ -22,7 +23,7 @@ namespace OpenTracker.Models.Requirements.Item
         /// <param name="count">
         /// A 32-bit integer representing the number of the item required.
         /// </param>
-        public SmallKeyRequirement(IKeyItem item, int count = 1)
+        public SmallKeyRequirement(ISmallKeyItem item, int count = 1)
         {
             _item = item;
             _count = count;
@@ -43,7 +44,7 @@ namespace OpenTracker.Models.Requirements.Item
         /// </param>
         private void OnItemChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(IKeyItem.EffectiveCurrent))
+            if (e.PropertyName == nameof(ISmallKeyItem.EffectiveCurrent))
             {
                 UpdateValue();
             }
