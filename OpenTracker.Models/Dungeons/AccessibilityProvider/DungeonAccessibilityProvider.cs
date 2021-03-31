@@ -79,8 +79,8 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         /// </param>
         public DungeonAccessibilityProvider(
             IMode mode, IBossAccessibilityProvider.Factory bossProviderFactory,
-            IMutableDungeonQueue.Factory mutableDungeonQueue, IDungeon dungeon, IKeyDoorIterator.Factory keyDoorIterator,
-            IResultAggregator.Factory resultAggregator)
+            IMutableDungeonQueue.Factory mutableDungeonQueue, IDungeon dungeon,
+            IKeyDoorIterator.Factory keyDoorIterator, IResultAggregator.Factory resultAggregator)
         {
             _dungeon = dungeon;
             _mutableDungeonQueue = mutableDungeonQueue(_dungeon);
@@ -231,16 +231,16 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
             var finalQueue = new BlockingCollection<IDungeonState>();
 
             _keyDoorIterator.ProcessKeyDoorPermutations(finalQueue);
-            var results = _resultAggregator.AggregateResults(finalQueue);
+            var result = _resultAggregator.AggregateResults(finalQueue);
 
-            for (var i = 0; i < results.bossAccessibility.Count; i++)
+            for (var i = 0; i < result.BossAccessibility.Count; i++)
             {
-                BossAccessibilityProviders[i].Accessibility = results.bossAccessibility[i];
+                BossAccessibilityProviders[i].Accessibility = result.BossAccessibility[i];
             }
 
-            Visible = results.visible;
-            SequenceBreak = results.sequenceBreak;
-            Accessible = results.accessible;
+            Visible = result.Visible;
+            SequenceBreak = result.SequenceBreak;
+            Accessible = result.Accessible;
         }
     }
 }

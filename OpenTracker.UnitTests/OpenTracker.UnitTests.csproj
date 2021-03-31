@@ -28,8 +28,4 @@
     <ProjectReference Include="..\OpenTracker\OpenTracker.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Models\Dungeons\AccessibilityProviders" />
-  </ItemGroup>
-
 </Project>

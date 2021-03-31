@@ -1,7 +1,6 @@
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Dungeons.Mutable;
+using OpenTracker.Models.Dungeons.Result;
 using OpenTracker.Models.Dungeons.State;
 
 namespace OpenTracker.Models.Dungeons.AccessibilityProvider
@@ -26,15 +25,14 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         delegate IResultAggregator Factory(IDungeon dungeon, IMutableDungeonQueue mutableDungeonQueue);
         
         /// <summary>
-        ///     Returns a tuple containing final boss and item accessibility values.
+        ///     Returns the final result.
         /// </summary>
         /// <param name="finalQueue">
         ///     The blocking collection queue for final key door permutations.
         /// </param>
         /// <returns>
-        ///     A tuple containing final boss and item accessibility values.
+        ///     The final result.
         /// </returns>
-        (List<AccessibilityLevel> bossAccessibility, bool visible, bool sequenceBreak, int accessible) AggregateResults(
-            BlockingCollection<IDungeonState> finalQueue);
+        IDungeonResult AggregateResults(BlockingCollection<IDungeonState> finalQueue);
     }
 }

@@ -345,13 +345,24 @@ namespace OpenTracker.Models.Dungeons.Mutable
 
             var minimumInaccessible = _mode.GuaranteedBossItems ? inaccessibleBosses : 0;
             var bossAccessibility = GetBossAccessibility();
+            var total = _dungeon.Total;
+
+            if (!_mode.MapShuffle && _dungeon.Map is not null)
+            {
+                total += _dungeon.Map.Maximum;
+            }
+
+            if (!_mode.CompassShuffle && _dungeon.Compass is not null)
+            {
+                total += _dungeon.Compass.Maximum;
+            }
 
             if (inaccessibleItems <= minimumInaccessible)
             {
-                return minimumInaccessible == 0 ?
-                    _resultFactory(bossAccessibility, _dungeon.Total, state.SequenceBreak, false) :
-                    _resultFactory(
-                        bossAccessibility, _dungeon.Total - minimumInaccessible, state.SequenceBreak, visible);
+                return minimumInaccessible == 0
+                    ? _resultFactory(bossAccessibility, total, state.SequenceBreak, false)
+                    : _resultFactory(
+                        bossAccessibility, total - minimumInaccessible, state.SequenceBreak, visible);
             }
 
             if (!_mode.BigKeyShuffle && !state.BigKeyCollected && _dungeon.BigKey is not null)
@@ -362,10 +373,10 @@ namespace OpenTracker.Models.Dungeons.Mutable
 
             if (inaccessibleItems <= minimumInaccessible)
             {
-                return minimumInaccessible == 0 ?
-                    _resultFactory(bossAccessibility, _dungeon.Total, state.SequenceBreak, false) :
-                    _resultFactory(
-                        bossAccessibility, _dungeon.Total - minimumInaccessible, state.SequenceBreak, visible);
+                return minimumInaccessible == 0
+                    ? _resultFactory(bossAccessibility, total, state.SequenceBreak, false)
+                    : _resultFactory(
+                        bossAccessibility, total - minimumInaccessible, state.SequenceBreak, visible);
             }
 
             if (!_mode.SmallKeyShuffle)
@@ -376,28 +387,18 @@ namespace OpenTracker.Models.Dungeons.Mutable
 
             if (inaccessibleItems <= minimumInaccessible)
             {
-                return minimumInaccessible == 0 ?
-                    _resultFactory(bossAccessibility, _dungeon.Total, state.SequenceBreak, false) :
-                    _resultFactory(
-                        bossAccessibility, _dungeon.Total - minimumInaccessible, state.SequenceBreak, visible);
+                return minimumInaccessible == 0
+                    ? _resultFactory(bossAccessibility, total, state.SequenceBreak, false)
+                    : _resultFactory(
+                        bossAccessibility, total - minimumInaccessible, state.SequenceBreak, visible);
             }
 
-            if (!_mode.MapShuffle && _dungeon.Map is not null)
-            {
-                inaccessibleItems -= _dungeon.Map.Maximum;
-            }
-            
-            if (!_mode.CompassShuffle && _dungeon.Compass is not null)
-            {
-                inaccessibleItems -= _dungeon.Compass.Maximum;
-            }
-            
             inaccessibleItems = Math.Max(inaccessibleItems, minimumInaccessible);
 
-            return inaccessibleItems <= 0 ?
-                _resultFactory(bossAccessibility, _dungeon.Total, true, false) :
-                _resultFactory(
-                    bossAccessibility, _dungeon.Total - inaccessibleItems, state.SequenceBreak, visible);
+            return inaccessibleItems <= 0
+                ? _resultFactory(bossAccessibility, total, state.SequenceBreak, false)
+                : _resultFactory(
+                    bossAccessibility, total - inaccessibleItems, state.SequenceBreak, visible);
         }
 
         /// <summary>

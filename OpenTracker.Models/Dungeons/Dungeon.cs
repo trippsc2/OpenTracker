@@ -14,7 +14,7 @@ using ReactiveUI;
 namespace OpenTracker.Models.Dungeons
 {
     /// <summary>
-    /// This is the class containing dungeon data.
+    ///     This is the class containing dungeon data.
     /// </summary>
     public class Dungeon : ReactiveObject, IDungeon
     {
@@ -45,52 +45,52 @@ namespace OpenTracker.Models.Dungeons
         }
 
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="mode">
-        /// The mode settings data.
+        ///     The mode settings data.
         /// </param>
         /// <param name="id">
-        /// The dungeon ID.
+        ///     The dungeon ID.
         /// </param>
         /// <param name="keyLayoutFactory">
-        /// A factory for creating key layouts.
+        ///     A factory for creating key layouts.
         /// </param>
         /// <param name="map">
-        /// The map item for the dungeon.
+        ///     The map item for the dungeon.
         /// </param>
         /// <param name="compass">
-        /// The compass item for the dungeon.
+        ///     The compass item for the dungeon.
         /// </param>
         /// <param name="smallKey">
-        /// The small key item for the dungeon.
+        ///     The small key item for the dungeon.
         /// </param>
         /// <param name="bigKey">
-        /// The big key item for the dungeon.
+        ///     The big key item for the dungeon.
         /// </param>
         /// <param name="dungeonItems">
-        /// A list of dungeon item IDs in this dungeon.
+        ///     A list of dungeon item IDs in this dungeon.
         /// </param>
         /// <param name="bosses">
-        /// A list of dungeon item IDs for bosses in this dungeon.
+        ///     A list of dungeon item IDs for bosses in this dungeon.
         /// </param>
         /// <param name="smallKeyDrops">
-        /// A list of dungeon item IDs for small key drops in this dungeon.
+        ///     A list of dungeon item IDs for small key drops in this dungeon.
         /// </param>
         /// <param name="bigKeyDrops">
-        /// A list of dungeon item IDs for big key drops in this dungeon.
+        ///     A list of dungeon item IDs for big key drops in this dungeon.
         /// </param>
         /// <param name="smallKeyDoors">
-        /// A list of small key door IDs in this dungeon.
+        ///     A list of small key door IDs in this dungeon.
         /// </param>
         /// <param name="bigKeyDoors">
-        /// A list of big key door IDs in this dungeon.
+        ///     A list of big key door IDs in this dungeon.
         /// </param>
         /// <param name="nodes">
-        /// A list of dungeon nodes in this dungeon.
+        ///     A list of dungeon nodes in this dungeon.
         /// </param>
         /// <param name="entryNodes">
-        /// A list of entry nodes for this dungeon.
+        ///     A list of entry nodes for this dungeon.
         /// </param>
         public Dungeon(
             IMode mode, IKeyLayoutFactory keyLayoutFactory, DungeonID id, ICappedItem? map, ICappedItem? compass,

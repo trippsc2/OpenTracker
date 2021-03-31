@@ -4,7 +4,7 @@ using OpenTracker.Models.Accessibility;
 namespace OpenTracker.Models.Dungeons.Result
 {
     /// <summary>
-    /// This interface contains dungeon accessibility result data.
+    ///     This interface contains dungeon accessibility result data.
     /// </summary>
     public interface IDungeonResult
     {
