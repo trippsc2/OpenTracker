@@ -140,7 +140,7 @@ namespace OpenTracker.Models.Items.Keys
         public List<int> GetKeyValues()
         {
             return _mode.SmallKeyShuffle ? new List<int> {EffectiveCurrent}
-                : Enumerable.Range(0, Maximum).ToList();
+                : Enumerable.Range(0, Maximum + 1).ToList();
         }
         
         /// <summary>

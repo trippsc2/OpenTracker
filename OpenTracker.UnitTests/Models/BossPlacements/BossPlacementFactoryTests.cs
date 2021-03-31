@@ -1,3 +1,4 @@
+using System;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.BossPlacements;
@@ -39,6 +40,13 @@ namespace OpenTracker.UnitTests.Models.BossPlacements
             var bossPlacement = _sut.GetBossPlacement(id);
             
             Assert.Equal(expected, bossPlacement.DefaultBoss);
+        }
+
+        [Fact]
+        public void GetBossPlacement_ShouldThrowException_WhenIDIsOutsideExpected()
+        {
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+                _ = _sut.GetBossPlacement((BossPlacementID)int.MaxValue));
         }
 
         [Fact]

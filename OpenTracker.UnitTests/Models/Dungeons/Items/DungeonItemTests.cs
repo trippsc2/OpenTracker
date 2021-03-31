@@ -13,19 +13,17 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Items
 {
     public class DungeonItemTests
     {
-        private readonly IRequirementNode _node;
+        private readonly IDungeonItemDictionary _dungeonItems = Substitute.For<IDungeonItemDictionary>();
+        private readonly IRequirementNode _node = Substitute.For<IRequirementNode>();
+        
         private readonly DungeonItem _sut;
 
         public DungeonItemTests()
         {
             var dungeonData = Substitute.For<IMutableDungeon>();
-            _node = Substitute.For<IRequirementNode>();
-            _node.Accessibility.Returns(AccessibilityLevel.None);
+            dungeonData.DungeonItems.Returns(_dungeonItems);
+            
             _sut = new DungeonItem(dungeonData, _node);
-            dungeonData.DungeonItems.ItemCreated +=
-                Raise.Event<EventHandler<KeyValuePair<DungeonItemID, IDungeonItem>>>(
-                    dungeonData.DungeonItems,
-                    new KeyValuePair<DungeonItemID, IDungeonItem>(DungeonItemID.HCSanctuary, _sut));
         }
 
         [Fact]
@@ -36,6 +34,40 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Items
             Assert.PropertyChanged(_sut, nameof(IDungeonItem.Accessibility),
                 () => _node.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
                     _node, new PropertyChangedEventArgs(nameof(IDungeonNode.Accessibility))));
+        }
+
+        [Fact]
+        public void ItemCreated_ShouldUpdateAccessibility()
+        {
+            const AccessibilityLevel accessibility = AccessibilityLevel.Normal;
+            _node.Accessibility.Returns(accessibility);
+            _dungeonItems.ItemCreated += Raise.Event<EventHandler<KeyValuePair<DungeonItemID, IDungeonItem>>>(
+                _dungeonItems, new KeyValuePair<DungeonItemID, IDungeonItem>(
+                    DungeonItemID.HCSanctuary, _sut));
+            
+            Assert.Equal(accessibility, _sut.Accessibility);
+        }
+
+        [Fact]
+        public void ItemCreated_ShouldNotUpdateAccessibility_WhenThisNotCreated()
+        {
+            _node.Accessibility.Returns(AccessibilityLevel.Normal);
+            _dungeonItems.ItemCreated += Raise.Event<EventHandler<KeyValuePair<DungeonItemID, IDungeonItem>>>(
+                _dungeonItems, new KeyValuePair<DungeonItemID, IDungeonItem>(
+                    DungeonItemID.HCSanctuary, Substitute.For<IDungeonItem>()));
+            
+            Assert.Equal(AccessibilityLevel.None, _sut.Accessibility);
+        }
+
+        [Fact]
+        public void NodeChanged_ShouldUpdateAccessibility()
+        {
+            const AccessibilityLevel accessibility = AccessibilityLevel.Normal;
+            _node.Accessibility.Returns(accessibility);
+            _node.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                _node, new PropertyChangedEventArgs(nameof(IDungeonNode.Accessibility)));
+            
+            Assert.Equal(accessibility, _sut.Accessibility);
         }
     }
 }

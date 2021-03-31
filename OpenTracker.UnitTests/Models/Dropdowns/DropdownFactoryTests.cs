@@ -1,3 +1,4 @@
+using System;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Dropdowns;
@@ -47,6 +48,13 @@ namespace OpenTracker.UnitTests.Models.Dropdowns
             _ = _sut.GetDropdown(id);
             
             Assert.Equal(_requirements[expected], _requirement);
+        }
+
+        [Fact]
+        public void GetDropdown_ShouldThrowException_WhenIDIsOutsideExpected()
+        {
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+                _sut.GetDropdown((DropdownID)int.MaxValue));
         }
 
         [Fact]

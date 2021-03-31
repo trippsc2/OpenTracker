@@ -31,11 +31,11 @@ namespace OpenTracker.Models.Items.Factories
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="memoryAddressProvider">
-        /// The memory address provider.
-        /// </param>
         /// <param name="items">
         /// The item dictionary.
+        /// </param>
+        /// <param name="memoryAddressProvider">
+        /// The memory address provider.
         /// </param>
         /// <param name="requirements">
         /// The requirement dictionary.
@@ -71,7 +71,7 @@ namespace OpenTracker.Models.Items.Factories
         /// An Autofac factory for creating memory flags.
         /// </param>
         public ItemAutoTrackValueFactory(
-            IMemoryAddressProvider memoryAddressProvider, IItemDictionary items, IRequirementDictionary requirements,
+            IItemDictionary items, IMemoryAddressProvider memoryAddressProvider, IRequirementDictionary requirements,
             IAutoTrackAddressBool.Factory boolFactory, IAutoTrackAddressValue.Factory valueFactory,
             IAutoTrackConditionalValue.Factory conditionalFactory, IAutoTrackFlagBool.Factory flagBoolFactory,
             IAutoTrackItemValue.Factory itemValueFactory, IAutoTrackMultipleDifference.Factory differenceFactory,
@@ -107,19 +107,21 @@ namespace OpenTracker.Models.Items.Factories
         {
             return type switch
             {
-                ItemType.Sword => _valueFactory(_memoryAddressProvider.MemoryAddresses[0x7ef359], 5, 1),
-                ItemType.Shield => _valueFactory(_memoryAddressProvider.MemoryAddresses[0x7ef35a], 3, 0),
-                ItemType.Mail => _valueFactory(_memoryAddressProvider.MemoryAddresses[0x7ef35b], 3, 0),
+                ItemType.Sword => _valueFactory(
+                    _memoryAddressProvider.MemoryAddresses[0x7ef359], 5, 1),
+                ItemType.Shield => _valueFactory(
+                    _memoryAddressProvider.MemoryAddresses[0x7ef35a], 3, 0),
+                ItemType.Mail => _valueFactory(
+                    _memoryAddressProvider.MemoryAddresses[0x7ef35b], 3, 0),
                 ItemType.Bow => _boolFactory(
                     _memoryAddressProvider.MemoryAddresses[0x7ef340], 0, 1),
-                ItemType.Arrows => _overrideFactory(
-                    new List<IAutoTrackValue>
-                    {
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef38e], 0x40), 2),
-                        _boolFactory(
-                            _memoryAddressProvider.MemoryAddresses[0x7ef377], 0, 1)
-                    }),
+                ItemType.Arrows => _overrideFactory(new List<IAutoTrackValue>
+                {
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef38e], 0x40), 2),
+                    _boolFactory(
+                        _memoryAddressProvider.MemoryAddresses[0x7ef377], 0, 1)
+                }),
                 ItemType.Boomerang => _flagBoolFactory(
                     _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef38c], 0x80), 1),
                 ItemType.RedBoomerang => _flagBoolFactory(
@@ -128,26 +130,24 @@ namespace OpenTracker.Models.Items.Factories
                     _memoryAddressProvider.MemoryAddresses[0x7ef342], 0, 1),
                 ItemType.Bomb => _boolFactory(
                     _memoryAddressProvider.MemoryAddresses[0x7ef343], 0, 1),
-                ItemType.BigBomb => _overrideFactory(
-                    new List<IAutoTrackValue>
-                    {
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef22c], 0x10), 1),
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef22c], 0x20), 1)
-                    }),
+                ItemType.BigBomb => _overrideFactory(new List<IAutoTrackValue>
+                {
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef22c], 0x10), 1),
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef22c], 0x20), 1)
+                }),
                 ItemType.Powder => _flagBoolFactory(
                     _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef38c], 0x10), 1),
                 ItemType.MagicBat => _flagBoolFactory(
                     _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef411], 0x80), 1),
-                ItemType.Mushroom => _overrideFactory(
-                    new List<IAutoTrackValue>
-                    {
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef411], 0x20), 2),
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef38c], 0x20), 1)
-                    }),
+                ItemType.Mushroom => _overrideFactory(new List<IAutoTrackValue>
+                {
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef411], 0x20), 2),
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef38c], 0x20), 1)
+                }),
                 ItemType.Boots => _boolFactory(
                     _memoryAddressProvider.MemoryAddresses[0x7ef355], 0, 1),
                 ItemType.FireRod => _boolFactory(
@@ -168,14 +168,13 @@ namespace OpenTracker.Models.Items.Factories
                     _memoryAddressProvider.MemoryAddresses[0x7ef34a], 0, 1),
                 ItemType.Hammer => _boolFactory(
                     _memoryAddressProvider.MemoryAddresses[0x7ef34b], 0, 1),
-                ItemType.Flute => _overrideFactory(
-                    new List<IAutoTrackValue>
-                    {
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef38c], 0x01), 1),
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef38c], 0x02), 1)
-                    }),
+                ItemType.Flute => _overrideFactory(new List<IAutoTrackValue>
+                {
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef38c], 0x01), 1),
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef38c], 0x02), 1)
+                }),
                 ItemType.FluteActivated => _flagBoolFactory(
                     _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef38c], 0x01), 1),
                 ItemType.Net => _boolFactory(
@@ -186,18 +185,17 @@ namespace OpenTracker.Models.Items.Factories
                     _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef38c], 0x04), 1),
                 ItemType.Flippers => _boolFactory(
                     _memoryAddressProvider.MemoryAddresses[0x7ef356], 0, 1),
-                ItemType.Bottle => _sumFactory(
-                    new List<IAutoTrackValue>
-                    {
-                        _boolFactory(
-                            _memoryAddressProvider.MemoryAddresses[0x7ef35c], 0, 1),
-                        _boolFactory(
-                            _memoryAddressProvider.MemoryAddresses[0x7ef35d], 0, 1),
-                        _boolFactory(
-                            _memoryAddressProvider.MemoryAddresses[0x7ef35e], 0, 1),
-                        _boolFactory(
-                            _memoryAddressProvider.MemoryAddresses[0x7ef35f], 0, 1)
-                    }),
+                ItemType.Bottle => _sumFactory(new List<IAutoTrackValue>
+                {
+                    _boolFactory(
+                        _memoryAddressProvider.MemoryAddresses[0x7ef35c], 0, 1),
+                    _boolFactory(
+                        _memoryAddressProvider.MemoryAddresses[0x7ef35d], 0, 1),
+                    _boolFactory(
+                        _memoryAddressProvider.MemoryAddresses[0x7ef35e], 0, 1),
+                    _boolFactory(
+                        _memoryAddressProvider.MemoryAddresses[0x7ef35f], 0, 1)
+                }),
                 ItemType.CaneOfSomaria => _boolFactory(
                     _memoryAddressProvider.MemoryAddresses[0x7ef350], 0, 1),
                 ItemType.CaneOfByrna => _boolFactory(
@@ -220,14 +218,13 @@ namespace OpenTracker.Models.Items.Factories
                                 _requirements[RequirementType.KeyDropShuffleOff],
                                 _itemValueFactory(_items[ItemType.HCFreeKey]),
                                 _staticFactory(0))), null),
-                    _overrideFactory(
-                        new List<IAutoTrackValue>
-                        {
-                            _valueFactory(
-                                _memoryAddressProvider.MemoryAddresses[0x7ef4e0], 4, 0),
-                            _valueFactory(
-                                _memoryAddressProvider.MemoryAddresses[0x7ef4e1], 4, 0)
-                        })),
+                    _overrideFactory(new List<IAutoTrackValue>
+                    {
+                        _valueFactory(
+                            _memoryAddressProvider.MemoryAddresses[0x7ef4e0], 4, 0),
+                        _valueFactory(
+                            _memoryAddressProvider.MemoryAddresses[0x7ef4e1], 4, 0)
+                    })),
                 ItemType.EPSmallKey => _conditionalFactory(
                     _requirements[RequirementType.GenericKeys],
                     _conditionalFactory(
@@ -362,14 +359,13 @@ namespace OpenTracker.Models.Items.Factories
                                 _staticFactory(0))), null),
                     _valueFactory(
                         _memoryAddressProvider.MemoryAddresses[0x7ef4ed], 8, 0)),
-                ItemType.HCBigKey => _overrideFactory(
-                    new List<IAutoTrackValue>
-                    {
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef367], 0x80), 1),
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef367], 0x40), 1)
-                    }),
+                ItemType.HCBigKey => _overrideFactory(new List<IAutoTrackValue>
+                {
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef367], 0x80), 1),
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef367], 0x40), 1)
+                }),
                 ItemType.EPBigKey => _flagBoolFactory(
                     _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef367], 0x20), 1),
                 ItemType.DPBigKey => _flagBoolFactory(
@@ -392,14 +388,13 @@ namespace OpenTracker.Models.Items.Factories
                     _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef366], 0x08), 1),
                 ItemType.GTBigKey => _flagBoolFactory(
                     _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef366], 0x04), 1),
-                ItemType.HCMap => _overrideFactory(
-                    new List<IAutoTrackValue>
-                    {
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef369], 0x80), 1),
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef369], 0x40), 1)
-                    }),
+                ItemType.HCMap => _overrideFactory(new List<IAutoTrackValue>
+                {
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef369], 0x80), 1),
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef369], 0x40), 1)
+                }),
                 ItemType.EPMap => _flagBoolFactory(
                     _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef369], 0x20), 1),
                 ItemType.DPMap => _flagBoolFactory(
@@ -444,424 +439,377 @@ namespace OpenTracker.Models.Items.Factories
                     _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef364], 0x08), 1),
                 ItemType.GTCompass => _flagBoolFactory(
                     _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef364], 0x04), 1),
-                ItemType.HCFreeKey => _sumFactory(
-                    new List<IAutoTrackValue>
+                ItemType.HCFreeKey => _sumFactory(new List<IAutoTrackValue>
+                {
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef0e5], 0x04), 1),
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef0e3], 0x04), 1),
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef043], 0x04), 1)
+                }),
+                ItemType.ATFreeKey => _sumFactory(new List<IAutoTrackValue>
+                {
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef181], 0x04), 1),
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef161], 0x04), 1)
+                }),
+                ItemType.EPFreeKey => _sumFactory(new List<IAutoTrackValue>
+                {
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef175], 0x04), 1),
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef133], 0x04), 1)
+                }),
+                ItemType.DPFreeKey => _sumFactory(new List<IAutoTrackValue>
+                {
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef0c7], 0x04), 1),
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef0a7], 0x04), 1),
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef087], 0x04), 1)
+                }),
+                ItemType.SPFreeKey => _sumFactory(new List<IAutoTrackValue>
+                {
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef071], 0x04), 1),
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef06f], 0x04), 1),
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef06d], 0x04), 1),
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef06b], 0x04), 1),
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef02d], 0x04), 1)
+                }),
+                ItemType.SWFreeKey => _sumFactory(new List<IAutoTrackValue>
+                {
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef0ad], 0x04), 1),
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef073], 0x04), 1)
+                }),
+                ItemType.TTFreeKey => _sumFactory(new List<IAutoTrackValue>
+                {
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef179], 0x04), 1),
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef157], 0x04), 1)
+                }),
+                ItemType.IPFreeKey => _sumFactory(new List<IAutoTrackValue>
+                {
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef01d], 0x04), 1),
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef07d], 0x04), 1),
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef07f], 0x04), 1),
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef13f], 0x04), 1)
+                }),
+                ItemType.MMFreeKey => _sumFactory(new List<IAutoTrackValue>
+                {
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef167], 0x04), 1),
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef183], 0x04), 1)
+                }),
+                ItemType.TRFreeKey => _sumFactory(new List<IAutoTrackValue>
+                {
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef16d], 0x04), 1),
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef027], 0x04), 1)
+                }),
+                ItemType.GTFreeKey => _sumFactory(new List<IAutoTrackValue>
+                {
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef117], 0x04), 1),
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef137], 0x04), 1),
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef0f7], 0x04), 1),
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef07b], 0x04), 1)
+                }),
+                ItemType.HCUnlockedDoor => _sumFactory(new List<IAutoTrackValue>
+                {
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef0e5], 0x80), 1),
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef0e3], 0x80), 1),
+                    _overrideFactory(new List<IAutoTrackValue>
                     {
                         _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef0e5], 0x04), 1),
+                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef065], 0x80), 1),
                         _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef0e3], 0x04), 1),
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef043], 0x04), 1)
-                        }),
-                ItemType.ATFreeKey => _sumFactory(
-                    new List<IAutoTrackValue>
-                    {
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef181], 0x04), 1),
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef161], 0x04), 1)
+                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef045], 0x80), 1)
                     }),
-                ItemType.EPFreeKey => _sumFactory(
-                    new List<IAutoTrackValue>
+                    _overrideFactory(new List<IAutoTrackValue>
                     {
                         _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef175], 0x04), 1),
+                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef043], 0x80), 1),
                         _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef133], 0x04), 1)
-                    }),
-                ItemType.DPFreeKey => _sumFactory(
-                    new List<IAutoTrackValue>
+                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef023], 0x20), 1)
+                    })
+                }),
+                ItemType.ATUnlockedDoor => _sumFactory(new List<IAutoTrackValue>
+                {
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef1c1], 0x20), 1),
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef1a1], 0x80), 1),
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef181], 0x20), 1),
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef161], 0x20), 1)
+                }),
+                ItemType.EPUnlockedDoor => _sumFactory(new List<IAutoTrackValue>
+                {
+                    _overrideFactory(new List<IAutoTrackValue>
                     {
                         _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef0c7], 0x04), 1),
+                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef175], 0x80), 1),
                         _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef0a7], 0x04), 1),
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef087], 0x04), 1)
+                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef173], 0x80), 1)
                     }),
-                ItemType.SPFreeKey => _sumFactory(
-                    new List<IAutoTrackValue>
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef133], 0x80), 1)
+                }),
+                ItemType.DPUnlockedDoor => _sumFactory(new List<IAutoTrackValue>
+                {
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef10b], 0x40), 1),
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef0c7], 0x80), 1),
+                    _overrideFactory(new List<IAutoTrackValue>
                     {
                         _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef071], 0x04), 1),
+                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef0a7], 0x20), 1),
                         _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef06f], 0x04), 1),
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef06d], 0x04), 1),
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef06b], 0x04), 1),
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef02d], 0x04), 1)
+                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef087], 0x20), 1)
                     }),
-                ItemType.SWFreeKey => _sumFactory(
-                    new List<IAutoTrackValue>
-                    {
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef0ad], 0x04), 1),
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef073], 0x04), 1)
-                    }),
-                ItemType.TTFreeKey => _sumFactory(
-                    new List<IAutoTrackValue>
-                    {
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef179], 0x04), 1),
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef157], 0x04), 1)
-                    }),
-                ItemType.IPFreeKey => _sumFactory(
-                    new List<IAutoTrackValue>
-                    {
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef01d], 0x04), 1),
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef07d], 0x04), 1),
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef07f], 0x04), 1),
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef13f], 0x04), 1)
-                    }),
-                ItemType.MMFreeKey => _sumFactory(
-                    new List<IAutoTrackValue>
-                    {
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef167], 0x04), 1),
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef183], 0x04), 1)
-                    }),
-                ItemType.TRFreeKey => _sumFactory(
-                    new List<IAutoTrackValue>
-                    {
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef16d], 0x04), 1),
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef027], 0x04), 1)
-                    }),
-                ItemType.GTFreeKey => _sumFactory(
-                    new List<IAutoTrackValue>
-                    {
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef117], 0x04), 1),
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef137], 0x04), 1),
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef0f7], 0x04), 1),
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef07b], 0x04), 1)
-                    }),
-                ItemType.HCUnlockedDoor => _sumFactory(
-                    new List<IAutoTrackValue>
-                    {
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef0e5], 0x80), 1),
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef0e3], 0x80), 1),
-                        _overrideFactory(
-                            new List<IAutoTrackValue>
-                            {
-                                _flagBoolFactory(
-                                    _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef065], 0x80), 1),
-                                _flagBoolFactory(
-                                    _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef045], 0x80), 1)
-                            }),
-                        _overrideFactory(
-                            new List<IAutoTrackValue>
-                            {
-                                _flagBoolFactory(
-                                    _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef043], 0x80), 1),
-                                _flagBoolFactory(
-                                    _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef023], 0x20), 1)
-                            })
-                    }),
-                ItemType.ATUnlockedDoor => _sumFactory(
-                    new List<IAutoTrackValue>
-                    {
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef1c1], 0x20), 1),
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef1a1], 0x80), 1),
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef181], 0x20), 1),
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef161], 0x20), 1)
-                    }),
-                ItemType.EPUnlockedDoor => _sumFactory(
-                    new List<IAutoTrackValue>
-                    {
-                        _overrideFactory(
-                            new List<IAutoTrackValue>
-                            {
-                                _flagBoolFactory(
-                                    _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef175], 0x80), 1),
-                                _flagBoolFactory(
-                                    _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef173], 0x80), 1)
-                            }),
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef133], 0x80), 1)
-                    }),
-                ItemType.DPUnlockedDoor => _sumFactory(
-                    new List<IAutoTrackValue>
-                    {
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef10b], 0x40), 1),
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef0c7], 0x80), 1),
-                        _overrideFactory(
-                            new List<IAutoTrackValue>
-                            {
-                                _flagBoolFactory(
-                                    _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef0a7], 0x20), 1),
-                                _flagBoolFactory(
-                                    _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef087], 0x20), 1)
-                            }),
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef087], 0x40), 1)
-                    }),
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef087], 0x40), 1)
+                }),
                 ItemType.ToHUnlockedDoor => _flagBoolFactory(
                     _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef0ef], 0x80), 1),
-                ItemType.PoDUnlockedDoor => _sumFactory(
-                    new List<IAutoTrackValue>
-                    {
-                        _overrideFactory(
-                            new List<IAutoTrackValue>
-                            {
-                                _flagBoolFactory(
-                                    _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef095], 0x20), 1),
-                                _flagBoolFactory(
-                                    _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef075], 0x80), 1)
-                            }),
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef015], 0x80), 1),
-                        _overrideFactory(
-                            new List<IAutoTrackValue>
-                            {
-                                _flagBoolFactory(
-                                    _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef055], 0x40), 1),
-                                _flagBoolFactory(
-                                    _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef035], 0x10), 1)
-                            }),
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef035], 0x80), 1),
-                        _overrideFactory(
-                            new List<IAutoTrackValue>
-                            {
-                                _flagBoolFactory(
-                                    _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef035], 0x40), 1),
-                                _flagBoolFactory(
-                                    _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef033], 0x40), 1)
-                            }),
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef017], 0x20), 1)
-                    }),
-                ItemType.SPUnlockedDoor => _sumFactory(
-                    new List<IAutoTrackValue>
+                ItemType.PoDUnlockedDoor => _sumFactory(new List<IAutoTrackValue>
+                {
+                    _overrideFactory(new List<IAutoTrackValue>
                     {
                         _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef051], 0x80), 1),
-                        _overrideFactory(
-                            new List<IAutoTrackValue>
-                            {
-                                _flagBoolFactory(
-                                    _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef071], 0x40), 1),
-                                _flagBoolFactory(
-                                    _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef06f], 0x10), 1)
-                            }),
+                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef095], 0x20), 1),
                         _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef06f], 0x20), 1),
-                        _overrideFactory(
-                            new List<IAutoTrackValue>
-                            {
-                                _flagBoolFactory(
-                                    _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef06d], 0x20), 1),
-                                _flagBoolFactory(
-                                    _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef06b], 0x80), 1)
-                            }),
-                        _overrideFactory(
-                            new List<IAutoTrackValue>
-                            {
-                                _flagBoolFactory(
-                                    _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef06d], 0x40), 1),
-                                _flagBoolFactory(
-                                    _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef04d], 0x80), 1)
-                            }),
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef02d], 0x40), 1)
+                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef075], 0x80), 1)
                     }),
-                ItemType.SWUnlockedDoor => _sumFactory(
-                    new List<IAutoTrackValue>
-                    {
-                        _overrideFactory(
-                            new List<IAutoTrackValue>
-                            {
-                                _flagBoolFactory(
-                                    _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef0b1], 0x40), 1),
-                                _flagBoolFactory(
-                                    _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef0af], 0x20), 1)
-                            }),
-                        _overrideFactory(
-                            new List<IAutoTrackValue>
-                            {
-                                _flagBoolFactory(
-                                    _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef0d1], 0x40), 1),
-                                _flagBoolFactory(
-                                    _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef0b1], 0x20), 1)
-                            }),
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef0ad], 0x80), 1),
-                        _overrideFactory(
-                            new List<IAutoTrackValue>
-                            {
-                                _flagBoolFactory(
-                                    _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef0b3], 0x80), 1),
-                                _flagBoolFactory(
-                                    _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef093], 0x20), 1)
-                            }),
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef073], 0x40), 1)
-                    }),
-                ItemType.TTUnlockedDoor => _sumFactory(
-                    new List<IAutoTrackValue>
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef015], 0x80), 1),
+                    _overrideFactory(new List<IAutoTrackValue>
                     {
                         _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef179], 0x80), 1),
+                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef055], 0x40), 1),
                         _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef157], 0x80), 1),
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef089], 0x40), 1)
+                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef035], 0x10), 1)
                     }),
-                ItemType.IPUnlockedDoor => _sumFactory(
-                    new List<IAutoTrackValue>
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef035], 0x80), 1),
+                    _overrideFactory(new List<IAutoTrackValue>
                     {
                         _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef01d], 0x80), 1),
-                        _overrideFactory(
-                            new List<IAutoTrackValue>
-                            {
-                                _flagBoolFactory(
-                                    _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef07d], 0x40), 1),
-                                _flagBoolFactory(
-                                    _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef09d], 0x40), 1)
-                            }),
-                        _overrideFactory(
-                            new List<IAutoTrackValue>
-                            {
-                                _flagBoolFactory(
-                                    _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef0bd], 0x80), 1),
-                                _flagBoolFactory(
-                                    _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef0bf], 0x80), 1)
-                            }),
-                        _overrideFactory(
-                            new List<IAutoTrackValue>
-                            {
-                                _flagBoolFactory(
-                                    _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef11d], 0x80), 1),
-                                _flagBoolFactory(
-                                    _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef0fd], 0x80), 1)
-                            }),
+                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef035], 0x40), 1),
                         _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef13d], 0x80), 1),
-                        _overrideFactory(
-                            new List<IAutoTrackValue>
-                            {
-                                _flagBoolFactory(
-                                    _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef17d], 0x40), 1),
-                                _flagBoolFactory(
-                                    _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef17f], 0x80), 1)
-                            })
+                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef033], 0x40), 1)
                     }),
-                ItemType.MMUnlockedDoor => _sumFactory(
-                    new List<IAutoTrackValue>
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef017], 0x20), 1)
+                }),
+                ItemType.SPUnlockedDoor => _sumFactory(new List<IAutoTrackValue>
+                {
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef051], 0x80), 1),
+                    _overrideFactory(new List<IAutoTrackValue>
                     {
                         _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef167], 0x80), 1),
-                        _overrideFactory(
-                            new List<IAutoTrackValue>
-                            {
-                                _flagBoolFactory(
-                                    _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef185], 0x40), 1),
-                                _flagBoolFactory(
-                                    _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef183], 0x40), 1)
-                            }),
+                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef071], 0x40), 1),
                         _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef183], 0x80), 1),
-                        _overrideFactory(
-                            new List<IAutoTrackValue>
-                            {
-                                _flagBoolFactory(
-                                    _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef185], 0x80), 1),
-                                _flagBoolFactory(
-                                    _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef187], 0x80), 1)
-                            }),
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef127], 0x40), 1)
+                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef06f], 0x10), 1)
                     }),
-                ItemType.TRUnlockedDoor => _sumFactory(
-                    new List<IAutoTrackValue>
-                    {
-                        _overrideFactory(
-                            new List<IAutoTrackValue>
-                            {
-                                _flagBoolFactory(
-                                    _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef18d], 0x80), 1),
-                                _flagBoolFactory(
-                                    _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef16d], 0x20), 1)
-                            }),
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef16d], 0x10), 1),
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef16d], 0x80), 1),
-                        _overrideFactory(
-                            new List<IAutoTrackValue>
-                            {
-                                _flagBoolFactory(
-                                    _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef027], 0x80), 1),
-                                _flagBoolFactory(
-                                    _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef029], 0x40), 1)
-                            }),
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef009], 0x80), 1),
-                        _overrideFactory(
-                            new List<IAutoTrackValue>
-                            {
-                                _flagBoolFactory(
-                                    _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef18d], 0x80), 1),
-                                _flagBoolFactory(
-                                    _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef189], 0x80), 1)
-                            })
-                    }),
-                ItemType.GTUnlockedDoor => _sumFactory(
-                    new List<IAutoTrackValue>
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef06f], 0x20), 1),
+                    _overrideFactory(new List<IAutoTrackValue>
                     {
                         _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef119], 0x20), 1),
+                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef06d], 0x20), 1),
                         _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef117], 0x40), 1),
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef137], 0x80), 1),
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef0fb], 0x20), 1),
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef11b], 0x40), 1),
-                        _overrideFactory(
-                            new List<IAutoTrackValue>
-                            {
-                                _flagBoolFactory(
-                                    _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef0f7], 0x40), 1),
-                                _flagBoolFactory(
-                                    _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef0f9], 0x20), 1)
-                            }),
-                        _flagBoolFactory(
-                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef07b], 0x40), 1),
-                        _overrideFactory(
-                            new List<IAutoTrackValue>
-                            {
-                                _flagBoolFactory(
-                                    _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef07b], 0x20), 1),
-                                _flagBoolFactory(
-                                    _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef09b], 0x80), 1)
-                            })
+                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef06b], 0x80), 1)
                     }),
+                    _overrideFactory(new List<IAutoTrackValue>
+                    {
+                        _flagBoolFactory(
+                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef06d], 0x40), 1),
+                        _flagBoolFactory(
+                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef04d], 0x80), 1)
+                    }),
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef02d], 0x40), 1)
+                }),
+                ItemType.SWUnlockedDoor => _sumFactory(new List<IAutoTrackValue>
+                {
+                    _overrideFactory(new List<IAutoTrackValue>
+                    {
+                        _flagBoolFactory(
+                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef0b1], 0x40), 1),
+                        _flagBoolFactory(
+                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef0af], 0x20), 1)
+                    }),
+                    _overrideFactory(new List<IAutoTrackValue>
+                    {
+                        _flagBoolFactory(
+                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef0d1], 0x40), 1),
+                        _flagBoolFactory(
+                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef0b1], 0x20), 1)
+                    }),
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef0ad], 0x80), 1),
+                    _overrideFactory(new List<IAutoTrackValue>
+                    {
+                        _flagBoolFactory(
+                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef0b3], 0x80), 1),
+                        _flagBoolFactory(
+                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef093], 0x20), 1)
+                    }),
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef073], 0x40), 1)
+                }),
+                ItemType.TTUnlockedDoor => _sumFactory(new List<IAutoTrackValue>
+                {
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef179], 0x80), 1),
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef157], 0x80), 1),
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef089], 0x40), 1)
+                }),
+                ItemType.IPUnlockedDoor => _sumFactory(new List<IAutoTrackValue>
+                {
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef01d], 0x80), 1),
+                    _overrideFactory(new List<IAutoTrackValue>
+                    {
+                        _flagBoolFactory(
+                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef07d], 0x40), 1),
+                        _flagBoolFactory(
+                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef09d], 0x40), 1)
+                    }),
+                    _overrideFactory(new List<IAutoTrackValue>
+                    {
+                        _flagBoolFactory(
+                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef0bd], 0x80), 1),
+                        _flagBoolFactory(
+                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef0bf], 0x80), 1)
+                    }),
+                    _overrideFactory(new List<IAutoTrackValue>
+                    {
+                        _flagBoolFactory(
+                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef11d], 0x80), 1),
+                        _flagBoolFactory(
+                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef0fd], 0x80), 1)
+                    }),
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef13d], 0x80), 1),
+                    _overrideFactory(new List<IAutoTrackValue>
+                    {
+                        _flagBoolFactory(
+                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef17d], 0x40), 1),
+                        _flagBoolFactory(
+                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef17f], 0x80), 1)
+                    })
+                }),
+                ItemType.MMUnlockedDoor => _sumFactory(new List<IAutoTrackValue>
+                {
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef167], 0x80), 1),
+                    _overrideFactory(new List<IAutoTrackValue>
+                    {
+                        _flagBoolFactory(
+                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef185], 0x40), 1),
+                        _flagBoolFactory(
+                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef183], 0x40), 1)
+                    }),
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef183], 0x80), 1),
+                    _overrideFactory(new List<IAutoTrackValue>
+                    {
+                        _flagBoolFactory(
+                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef185], 0x80), 1),
+                        _flagBoolFactory(
+                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef187], 0x80), 1)
+                    }),
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef127], 0x40), 1)
+                }),
+                ItemType.TRUnlockedDoor => _sumFactory(new List<IAutoTrackValue>
+                {
+                    _overrideFactory(new List<IAutoTrackValue>
+                    {
+                        _flagBoolFactory(
+                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef18d], 0x80), 1),
+                        _flagBoolFactory(
+                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef16d], 0x20), 1)
+                    }),
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef16d], 0x10), 1),
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef16d], 0x80), 1),
+                    _overrideFactory(new List<IAutoTrackValue>
+                    {
+                        _flagBoolFactory(
+                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef027], 0x80), 1),
+                        _flagBoolFactory(
+                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef029], 0x40), 1)
+                    }),
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef009], 0x80), 1),
+                    _overrideFactory(new List<IAutoTrackValue>
+                    {
+                        _flagBoolFactory(
+                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef18d], 0x80), 1),
+                        _flagBoolFactory(
+                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef189], 0x80), 1)
+                    })
+                }),
+                ItemType.GTUnlockedDoor => _sumFactory(new List<IAutoTrackValue>
+                {
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef119], 0x20), 1),
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef117], 0x40), 1),
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef137], 0x80), 1),
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef0fb], 0x20), 1),
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef11b], 0x40), 1),
+                    _overrideFactory(new List<IAutoTrackValue>
+                    {
+                        _flagBoolFactory(
+                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef0f7], 0x40), 1),
+                        _flagBoolFactory(
+                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef0f9], 0x20), 1)
+                    }),
+                    _flagBoolFactory(
+                        _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef07b], 0x40), 1),
+                    _overrideFactory(new List<IAutoTrackValue>
+                    {
+                        _flagBoolFactory(
+                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef07b], 0x20), 1),
+                        _flagBoolFactory(
+                            _memoryFlagFactory(_memoryAddressProvider.MemoryAddresses[0x7ef09b], 0x80), 1)
+                    })
+                }),
                 _ => null
             };
         }

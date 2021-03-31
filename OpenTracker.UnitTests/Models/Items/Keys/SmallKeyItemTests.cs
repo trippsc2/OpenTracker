@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using Autofac;
 using NSubstitute;
+using OpenTracker.Models.AutoTracking.Values;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Items.Keys;
 using OpenTracker.Models.Modes;
@@ -9,18 +10,19 @@ using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.UndoRedo.Items;
 using Xunit;
 
-namespace OpenTracker.UnitTests.Models.Items
+namespace OpenTracker.UnitTests.Models.Items.Keys
 {
-    public class KeyItemTests
+    public class SmallKeyItemTests
     {
         private readonly IMode _mode = Substitute.For<IMode>();
         private readonly ISaveLoadManager _saveLoadManager = Substitute.For<ISaveLoadManager>();
-
+        
         private readonly IAddItem.Factory _addItemFactory = _ => Substitute.For<IAddItem>();
         private readonly IRemoveItem.Factory _removeItemFactory = _ => Substitute.For<IRemoveItem>();
         private readonly ICycleItem.Factory _cycleItemFactory = _ => Substitute.For<ICycleItem>();
-
+        
         private readonly IItem _genericKey = Substitute.For<IItem>();
+        private readonly IAutoTrackValue _autoTrackValue = Substitute.For<IAutoTrackValue>();
         
         [Theory]
         [InlineData(0, 0, 0)]
@@ -43,9 +45,9 @@ namespace OpenTracker.UnitTests.Models.Items
             int expected, int nonKeyDropMaximum, int keyDropMaximum)
         {
             _mode.KeyDropShuffle.Returns(false);
-            var sut = new KeyItem(
+            var sut = new SmallKeyItem(
                 _mode, _saveLoadManager, _addItemFactory, _removeItemFactory, _cycleItemFactory, _genericKey,
-                nonKeyDropMaximum, keyDropMaximum, null);
+                nonKeyDropMaximum, keyDropMaximum, _autoTrackValue);
             
             Assert.Equal(expected, sut.Maximum);
         }
@@ -71,13 +73,13 @@ namespace OpenTracker.UnitTests.Models.Items
             int expected, int nonKeyDropMaximum, int keyDropMaximum)
         {
             _mode.KeyDropShuffle.Returns(true);
-            var sut = new KeyItem(
+            var sut = new SmallKeyItem(
                 _mode, _saveLoadManager, _addItemFactory, _removeItemFactory, _cycleItemFactory, _genericKey,
-                nonKeyDropMaximum, keyDropMaximum, null);
+                nonKeyDropMaximum, keyDropMaximum, _autoTrackValue);
             
             Assert.Equal(expected, sut.Maximum);
         }
-
+        
         [Theory]
         [InlineData(0, 0, 0)]
         [InlineData(1, 1, 0)]
@@ -100,16 +102,16 @@ namespace OpenTracker.UnitTests.Models.Items
         {
             _mode.GenericKeys.Returns(false);
             _genericKey.Current.Returns(genericKeyCurrent);
-            var sut = new KeyItem(
+            var sut = new SmallKeyItem(
                 _mode, _saveLoadManager, _addItemFactory, _removeItemFactory, _cycleItemFactory, _genericKey,
-                6, 6, null)
+                6, 6, _autoTrackValue)
             {
                 Current = current
             };
-
+        
             Assert.Equal(expected, sut.EffectiveCurrent);
         }
-
+        
         [Theory]
         [InlineData(0, 0, 0)]
         [InlineData(1, 1, 0)]
@@ -133,75 +135,75 @@ namespace OpenTracker.UnitTests.Models.Items
         {
             _mode.GenericKeys.Returns(true);
             _genericKey.Current.Returns(genericKeyCurrent);
-            var sut = new KeyItem(
+            var sut = new SmallKeyItem(
                 _mode, _saveLoadManager, _addItemFactory, _removeItemFactory, _cycleItemFactory, _genericKey,
-                6, 6, null)
+                6, 6, _autoTrackValue)
             {
                 Current = current
             };
-
+        
             Assert.Equal(expected, sut.EffectiveCurrent);
         }
-
+        
         [Fact]
         public void EffectiveCurrent_ShouldUpdate_WhenGenericKeysChanges()
         {
-            var sut = new KeyItem(
+            var sut = new SmallKeyItem(
                 _mode, _saveLoadManager, _addItemFactory, _removeItemFactory, _cycleItemFactory, _genericKey,
-                3, 3, null);
+                3, 3, _autoTrackValue);
             _genericKey.Current.Returns(1);
             _mode.GenericKeys.Returns(true);
             
-            Assert.PropertyChanged(sut, nameof(IKeyItem.EffectiveCurrent), () =>
+            Assert.PropertyChanged(sut, nameof(ISmallKeyItem.EffectiveCurrent), () =>
                 _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
                     _mode, new PropertyChangedEventArgs(nameof(IMode.GenericKeys))));
         }
-
+        
         [Fact]
         public void EffectiveCurrent_ShouldUpdate_WhenGenericKeyCurrentChanged()
         {
-            var sut = new KeyItem(
+            var sut = new SmallKeyItem(
                 _mode, _saveLoadManager, _addItemFactory, _removeItemFactory, _cycleItemFactory, _genericKey,
-                3, 3, null);
+                3, 3, _autoTrackValue);
             _genericKey.Current.Returns(1);
             _mode.GenericKeys.Returns(true);
             
-            Assert.PropertyChanged(sut, nameof(IKeyItem.EffectiveCurrent), () =>
+            Assert.PropertyChanged(sut, nameof(ISmallKeyItem.EffectiveCurrent), () =>
                 _genericKey.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
                     _genericKey, new PropertyChangedEventArgs(nameof(IItem.Current))));
         }
-
+        
         [Fact]
         public void Current_ShouldSetCurrentToMaximum_WhenCurrentIsGreaterThanMaximum()
         {
-            var sut = new KeyItem(
+            var sut = new SmallKeyItem(
                 _mode, _saveLoadManager, _addItemFactory, _removeItemFactory, _cycleItemFactory, _genericKey,
-                3, 2, null);
-
+                3, 2, _autoTrackValue);
+        
             for (var i = 0; i < 3; i++)
             {
                 sut.Add();
             }
-
+        
             _mode.KeyDropShuffle.Returns(true);
             _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
                 _mode, new PropertyChangedEventArgs(nameof(IMode.KeyDropShuffle)));
             
             Assert.Equal(2, sut.Current);
         }
-
+        
         [Fact]
         public void PropertyChanged_ShouldRaise_WhenKeyDropShuffleChanges()
         {
-            var sut = new KeyItem(
+            var sut = new SmallKeyItem(
                 _mode, _saveLoadManager, _addItemFactory, _removeItemFactory, _cycleItemFactory, _genericKey,
-                3, 3, null);
+                3, 3, _autoTrackValue);
             
             Assert.PropertyChanged(sut, nameof(ICappedItem.Maximum), () =>
                 _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
                     _mode, new PropertyChangedEventArgs(nameof(IMode.KeyDropShuffle))));
         }
-
+        
         [Theory]
         [InlineData(false, 0, 0, 0, false)]
         [InlineData(false, 0, 0, 1, false)]
@@ -243,10 +245,10 @@ namespace OpenTracker.UnitTests.Models.Items
             bool expected, int current, int nonKeyDropMaximum, int keyDropMaximum, bool keyDropShuffle)
         {
             _mode.KeyDropShuffle.Returns(keyDropShuffle);
-            var sut = new KeyItem(
+            var sut = new SmallKeyItem(
                 _mode, _saveLoadManager, _addItemFactory, _removeItemFactory, _cycleItemFactory, _genericKey,
-                nonKeyDropMaximum, keyDropMaximum, null);
-
+                nonKeyDropMaximum, keyDropMaximum, _autoTrackValue);
+        
             for (var i = 0; i < current; i++)
             {
                 sut.Add();
@@ -254,55 +256,55 @@ namespace OpenTracker.UnitTests.Models.Items
             
             Assert.Equal(expected, sut.CanAdd());
         }
-
+        
         [Fact]
         public void Add_ShouldThrowException_WhenCurrentIsEqualToMaximum()
         {
-            var sut = new KeyItem(
+            var sut = new SmallKeyItem(
                 _mode, _saveLoadManager, _addItemFactory, _removeItemFactory, _cycleItemFactory, _genericKey,
-                0, 0, null);
-
+                0, 0, _autoTrackValue);
+        
             Assert.Throws<Exception>(() => sut.Add());
         }
-
+        
         [Theory]
         [InlineData(1, 0)]
         [InlineData(2, 1)]
         [InlineData(3, 2)]
         public void Add_ShouldAdd1ToCurrent_WhenCurrentIsLessThanMaximum(int expected, int starting)
         {
-            var sut = new KeyItem(
+            var sut = new SmallKeyItem(
                 _mode, _saveLoadManager, _addItemFactory, _removeItemFactory, _cycleItemFactory, _genericKey,
-                3, 3, null);
-
+                3, 3, _autoTrackValue);
+        
             for (var i = 0; i <= starting; i++)
             {
                 sut.Add();
             }
-
+        
             Assert.Equal(expected, sut.Current);
         }
-
+        
         [Fact]
         public void Remove_ShouldThrowException_WhenCurrentEquals0()
         {
-            var sut = new KeyItem(
+            var sut = new SmallKeyItem(
                 _mode, _saveLoadManager, _addItemFactory, _removeItemFactory, _cycleItemFactory, _genericKey,
-                1, 1, null);
-
+                1, 1, _autoTrackValue);
+        
             Assert.Throws<Exception>(() => sut.Remove());
         }
-
+        
         [Theory]
         [InlineData(0, 1)]
         [InlineData(1, 2)]
         [InlineData(2, 3)]
         public void Remove_ShouldSubtract1FromCurrent_WhenCurrentIsGreaterThan0(int expected, int starting)
         {
-            var sut = new KeyItem(
+            var sut = new SmallKeyItem(
                 _mode, _saveLoadManager, _addItemFactory, _removeItemFactory, _cycleItemFactory, _genericKey,
-                3, 3, null);
-
+                3, 3, _autoTrackValue);
+        
             for (var i = 0; i < starting; i++)
             {
                 sut.Add();
@@ -312,18 +314,18 @@ namespace OpenTracker.UnitTests.Models.Items
             
             Assert.Equal(expected, sut.Current);
         }
-
+        
         [Fact]
         public void CreateCycleItemAction_ShouldReturnNewCycleItemAction()
         {
-            var sut = new KeyItem(
+            var sut = new SmallKeyItem(
                 _mode, _saveLoadManager, _addItemFactory, _removeItemFactory, _cycleItemFactory, _genericKey,
-                0, 0, null);
+                0, 0, _autoTrackValue);
             var cycleItem = sut.CreateCycleItemAction();
             
             Assert.NotNull(cycleItem);
         }
-
+        
         [Theory]
         [InlineData(0, 0, 0, false)]
         [InlineData(1, 0, 1, false)]
@@ -347,10 +349,10 @@ namespace OpenTracker.UnitTests.Models.Items
         [InlineData(2, 3, 3, true)]
         public void Cycle_ShouldSetCurrent(int expected, int current, int maximum, bool reverse)
         {
-            var sut = new KeyItem(
+            var sut = new SmallKeyItem(
                 _mode, _saveLoadManager, _addItemFactory, _removeItemFactory, _cycleItemFactory, _genericKey,
-                maximum, maximum, null);
-
+                maximum, maximum, _autoTrackValue);
+        
             for (var i = 0; i < current; i++)
             {
                 sut.Add();
@@ -361,14 +363,87 @@ namespace OpenTracker.UnitTests.Models.Items
             Assert.Equal(expected, sut.Current);
         }
 
+        [Theory]
+        [InlineData(0, false, 0, 0, 0)]
+        [InlineData(0, true, 0, 0, 0)]
+        [InlineData(0, false, 1, 0, 0)]
+        [InlineData(0, true, 1, 0, 0)]
+        [InlineData(0, false, 0, 0, 1)]
+        [InlineData(0, true, 0, 0, 1)]
+        [InlineData(0, false, 1, 0, 1)]
+        [InlineData(1, true, 1, 0, 1)]
+        [InlineData(0, false, 2, 0, 1)]
+        [InlineData(1, true, 2, 0, 1)]
+        [InlineData(0, false, 0, 0, 2)]
+        [InlineData(0, true, 0, 0, 2)]
+        [InlineData(0, false, 1, 0, 2)]
+        [InlineData(1, true, 1, 0, 2)]
+        [InlineData(0, false, 2, 0, 2)]
+        [InlineData(2, true, 2, 0, 2)]
+        [InlineData(1, false, 0, 1, 2)]
+        [InlineData(1, true, 0, 1, 2)]
+        [InlineData(1, false, 1, 1, 2)]
+        [InlineData(2, true, 1, 1, 2)]
+        [InlineData(1, false, 2, 1, 2)]
+        [InlineData(2, true, 2, 1, 2)]
+        [InlineData(2, false, 0, 2, 2)]
+        [InlineData(2, true, 0, 2, 2)]
+        [InlineData(2, false, 1, 2, 2)]
+        [InlineData(2, true, 1, 2, 2)]
+        public void GetKeyValues_ShouldReturnOnlyEffectiveCurrent_WhenSmallKeyShuffleIsTrue(
+            int expected, bool genericKeys, int genericKeyCurrent, int current, int maximum)
+        {
+            _mode.GenericKeys.Returns(genericKeys);
+            _mode.SmallKeyShuffle.Returns(true);
+            _genericKey.Current.Returns(genericKeyCurrent);
+            var sut = new SmallKeyItem(
+                _mode, _saveLoadManager, _addItemFactory, _removeItemFactory, _cycleItemFactory, _genericKey,
+                maximum, maximum, _autoTrackValue);
+
+            for (var i = 0; i < current; i++)
+            {
+                sut.Add();
+            }
+
+            var keyValues = sut.GetKeyValues();
+
+            Assert.Single(keyValues);
+            Assert.Contains(expected, keyValues);
+        }
+
+        [Theory]
+        [InlineData(1, 0, 0)]
+        [InlineData(2, 0, 1)]
+        [InlineData(2, 1, 1)]
+        [InlineData(3, 0, 2)]
+        [InlineData(3, 1, 2)]
+        [InlineData(3, 2, 2)]
+        public void GetKeyValues_ShouldReturnListOfAllPossibleValues_WhenSmallKeyShuffleIsFalse(
+            int expected, int current, int maximum)
+        {
+            _mode.SmallKeyShuffle.Returns(false);
+            var sut = new SmallKeyItem(
+                _mode, _saveLoadManager, _addItemFactory, _removeItemFactory, _cycleItemFactory, _genericKey,
+                maximum, maximum, _autoTrackValue);
+
+            for (var i = 0; i < current; i++)
+            {
+                sut.Add();
+            }
+
+            var keyValues = sut.GetKeyValues();
+            
+            Assert.Equal(expected, keyValues.Count);
+        }
+        
         [Fact]
         public void AutofacTest()
         {
             using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-            var factory = scope.Resolve<IKeyItem.Factory>();
-            var sut = factory(_genericKey, 0, 0, null);
+            var factory = scope.Resolve<ISmallKeyItem.Factory>();
+            var sut = factory(_genericKey, 0, 0, _autoTrackValue);
             
-            Assert.NotNull(sut as KeyItem);
+            Assert.NotNull(sut as SmallKeyItem);
         }
     }
 }

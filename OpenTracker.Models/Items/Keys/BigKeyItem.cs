@@ -122,7 +122,13 @@ namespace OpenTracker.Models.Items.Keys
 
         public List<bool> GetKeyValues()
         {
-            return _mode.BigKeyShuffle ? new List<bool> {Current > 0} : new List<bool> {false, true};
+            if (Maximum == 0)
+            {
+                return new List<bool> {false};
+            }
+            
+            return _mode.BigKeyShuffle ? new List<bool> {Current > 0} 
+                : new List<bool> {false, true};
         }
 
         /// <summary>

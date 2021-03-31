@@ -22,6 +22,7 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Mutable
         [InlineData(2, 2)]
         public void Ctor_ShouldCreateExpectedNumberOfInstances(int expected, int count)
         {
+            // ReSharper disable once CollectionNeverUpdated.Local
             var sut = new MutableDungeonQueue(_ => _dungeonData, _dungeon, count);
             
             Assert.Equal(expected, sut.Count);
@@ -31,6 +32,7 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Mutable
         public void Ctor_ShouldCreateProcessorCountMinusOne()
         {
             var expected = Math.Max(1, Environment.ProcessorCount - 1);
+            // ReSharper disable once CollectionNeverUpdated.Local
             var sut = new MutableDungeonQueue(_ => _dungeonData, _dungeon);
             
             Assert.Equal(expected, sut.Count);

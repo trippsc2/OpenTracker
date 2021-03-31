@@ -37,6 +37,7 @@ namespace OpenTracker.Models.Dungeons.Items
             _dungeonData = dungeonData;
             _node = node;
 
+            _node.PropertyChanged += OnNodeChanged;
             _dungeonData.DungeonItems.ItemCreated += OnDungeonItemCreated;
         }
 
@@ -57,7 +58,6 @@ namespace OpenTracker.Models.Dungeons.Items
             }
             
             _dungeonData.DungeonItems.ItemCreated -= OnDungeonItemCreated;
-            _node.PropertyChanged += OnNodeChanged;
             UpdateAccessibility();
         }
 

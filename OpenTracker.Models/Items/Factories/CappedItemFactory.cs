@@ -60,15 +60,11 @@ namespace OpenTracker.Models.Items.Factories
                 case ItemType.BombosDungeons:
                 case ItemType.EtherDungeons:
                 case ItemType.QuakeDungeons:
-                case ItemType.SWSmallKey:
-                case ItemType.MMSmallKey:
                     return 3;
                 case ItemType.Mail:
                 case ItemType.Arrows:
                 case ItemType.Mushroom:
                 case ItemType.Gloves:
-                case ItemType.ATSmallKey:
-                case ItemType.IPSmallKey:
                     return 2;
                 case ItemType.Bow:
                 case ItemType.Boomerang:
@@ -98,22 +94,6 @@ namespace OpenTracker.Models.Items.Factories
                 case ItemType.Mirror:
                 case ItemType.HalfMagic:
                 case ItemType.MoonPearl:
-                case ItemType.HCSmallKey:
-                case ItemType.DPSmallKey:
-                case ItemType.ToHSmallKey:
-                case ItemType.SPSmallKey:
-                case ItemType.TTSmallKey:
-                case ItemType.EPBigKey:
-                case ItemType.DPBigKey:
-                case ItemType.ToHBigKey:
-                case ItemType.PoDBigKey:
-                case ItemType.SPBigKey:
-                case ItemType.SWBigKey:
-                case ItemType.TTBigKey:
-                case ItemType.IPBigKey:
-                case ItemType.MMBigKey:
-                case ItemType.TRBigKey:
-                case ItemType.GTBigKey:
                 case ItemType.HCMap:
                 case ItemType.EPMap:
                 case ItemType.DPMap:
@@ -141,14 +121,7 @@ namespace OpenTracker.Models.Items.Factories
                 case ItemType.SmallKey:
                     return 29;
                 case ItemType.Bottle:
-                case ItemType.TRSmallKey:
-                case ItemType.GTSmallKey:
                     return 4;
-                case ItemType.PoDSmallKey:
-                    return 6;
-                case ItemType.HCBigKey:
-                case ItemType.EPSmallKey:
-                    return 0;
             }
 
             throw new ArgumentOutOfRangeException(nameof(type));

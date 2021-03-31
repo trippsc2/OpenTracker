@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel;
-using OpenTracker.Models.Items;
 using OpenTracker.Models.Items.Keys;
 
 namespace OpenTracker.Models.Requirements.Item
