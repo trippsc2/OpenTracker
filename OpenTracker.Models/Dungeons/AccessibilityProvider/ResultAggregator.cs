@@ -6,8 +6,6 @@ using OpenTracker.Models.Dungeons.Items;
 using OpenTracker.Models.Dungeons.Mutable;
 using OpenTracker.Models.Dungeons.Result;
 using OpenTracker.Models.Dungeons.State;
-using OpenTracker.Models.Items;
-using OpenTracker.Models.Modes;
 
 namespace OpenTracker.Models.Dungeons.AccessibilityProvider
 {
@@ -16,24 +14,18 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
     /// </summary>
     public class ResultAggregator : IResultAggregator
     {
-        private readonly IDungeon _dungeon;
-        private readonly IMode _mode;
-        private readonly IMutableDungeonQueue _mutableDungeonQueue;
-
         private readonly IDungeonResult.Factory _resultFactory;
 
-        private ICappedItem? Map => _dungeon.Map;
-        private ICappedItem? Compass => _dungeon.Compass;
+        private readonly IDungeon _dungeon;
+        private readonly IMutableDungeonQueue _mutableDungeonQueue;
+
         private List<DungeonItemID> Bosses => _dungeon.Bosses;
-        
+
         /// <summary>
         ///     Constructor
         /// </summary>
         /// <param name="dungeon">
         ///     The dungeon data.
-        /// </param>
-        /// <param name="mode">
-        ///     The mode settings data.
         /// </param>
         /// <param name="mutableDungeonQueue">
         ///     The mutable dungeon data instance queue.
@@ -42,13 +34,11 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         ///     An Autofac factory for creating dungeon results.
         /// </param>
         public ResultAggregator(
-            IDungeon dungeon, IMode mode, IMutableDungeonQueue mutableDungeonQueue,
-            IDungeonResult.Factory resultFactory)
+            IDungeonResult.Factory resultFactory, IDungeon dungeon, IMutableDungeonQueue mutableDungeonQueue)
         {
             _dungeon = dungeon;
             _mutableDungeonQueue = mutableDungeonQueue;
             _resultFactory = resultFactory;
-            _mode = mode;
         }
 
         public IDungeonResult AggregateResults(BlockingCollection<IDungeonState> finalQueue)
@@ -183,17 +173,7 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
                 sequenceBreak = true;
             }
 
-            var total = _dungeon.Total;
-
-            if (!_mode.MapShuffle && Map is not null)
-            {
-                total += Map.Maximum;
-            }
-
-            if (!_mode.CompassShuffle && Compass is not null)
-            {
-                total += Compass.Maximum;
-            }
+            var total = _dungeon.TotalWithMapAndCompass;
 
             if (highestAccessible < total)
             {

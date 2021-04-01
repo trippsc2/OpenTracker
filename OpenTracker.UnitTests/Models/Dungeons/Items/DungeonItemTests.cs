@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Dungeons.Items;
@@ -14,16 +15,16 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Items
     public class DungeonItemTests
     {
         private readonly IDungeonItemDictionary _dungeonItems = Substitute.For<IDungeonItemDictionary>();
+        private readonly IMutableDungeon _dungeonData = Substitute.For<IMutableDungeon>();
         private readonly IRequirementNode _node = Substitute.For<IRequirementNode>();
         
         private readonly DungeonItem _sut;
 
         public DungeonItemTests()
         {
-            var dungeonData = Substitute.For<IMutableDungeon>();
-            dungeonData.DungeonItems.Returns(_dungeonItems);
+            _dungeonData.DungeonItems.Returns(_dungeonItems);
             
-            _sut = new DungeonItem(dungeonData, _node);
+            _sut = new DungeonItem(_dungeonData, _node);
         }
 
         [Fact]
@@ -68,6 +69,16 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Items
                 _node, new PropertyChangedEventArgs(nameof(IDungeonNode.Accessibility)));
             
             Assert.Equal(accessibility, _sut.Accessibility);
+        }
+
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var factory = scope.Resolve<IDungeonItem.Factory>();
+            var sut = factory(_dungeonData, _node);
+            
+            Assert.NotNull(sut as DungeonItem);
         }
     }
 }

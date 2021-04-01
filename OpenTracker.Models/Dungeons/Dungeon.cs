@@ -37,6 +37,8 @@ namespace OpenTracker.Models.Dungeons
         public List<DungeonNodeID> Nodes { get; }
         public List<IRequirementNode> EntryNodes { get; }
 
+        public int TotalWithMapAndCompass { get; private set; }
+
         private int _total;
         public int Total
         {
@@ -157,6 +159,18 @@ namespace OpenTracker.Models.Dungeons
             {
                 total += SmallKeyDrops.Count + BigKeyDrops.Count;
             }
+            
+            if (!_mode.SmallKeyShuffle)
+            {
+                total -= SmallKey.Maximum;
+            }
+
+            if (!_mode.BigKeyShuffle && BigKey is not null)
+            {
+                total -= BigKey.Maximum;
+            }
+
+            TotalWithMapAndCompass = total;
 
             if (!_mode.MapShuffle && Map is not null)
             {
@@ -166,16 +180,6 @@ namespace OpenTracker.Models.Dungeons
             if (!_mode.CompassShuffle && Compass is not null)
             {
                 total -= Compass.Maximum;
-            }
-
-            if (!_mode.SmallKeyShuffle)
-            {
-                total -= SmallKey.Maximum;
-            }
-
-            if (!_mode.BigKeyShuffle && BigKey is not null)
-            {
-                total -= BigKey.Maximum;
             }
 
             Total = total;

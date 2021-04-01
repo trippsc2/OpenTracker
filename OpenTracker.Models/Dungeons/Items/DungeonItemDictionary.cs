@@ -6,7 +6,7 @@ using OpenTracker.Utils;
 namespace OpenTracker.Models.Dungeons.Items
 {
     /// <summary>
-    /// This class contains the dictionary container of dungeon items.
+    ///     This class contains the dictionary container of dungeon items.
     /// </summary>
     public class DungeonItemDictionary : LazyDictionary<DungeonItemID, IDungeonItem>, IDungeonItemDictionary
     {
@@ -14,13 +14,13 @@ namespace OpenTracker.Models.Dungeons.Items
         private readonly Lazy<IDungeonItemFactory> _factory;
 
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="factory">
-        /// A factory for creating dungeon items.
+        ///     A factory for creating dungeon items.
         /// </param>
         /// <param name="dungeonData">
-        /// The mutable dungeon data parent class.
+        ///     The mutable dungeon data parent class.
         /// </param>
         public DungeonItemDictionary(IDungeonItemFactory.Factory factory, IMutableDungeon dungeonData)
             : base(new Dictionary<DungeonItemID, IDungeonItem>())

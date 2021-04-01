@@ -1,7 +1,7 @@
 ﻿using OpenTracker.Models.Accessibility;
 using Xunit;
 
-namespace OpenTracker.UnitTests.Models.AccessibilityLevels
+namespace OpenTracker.UnitTests.Models.Accessibility
 {
     public class AccessibilityLevelTests
     {

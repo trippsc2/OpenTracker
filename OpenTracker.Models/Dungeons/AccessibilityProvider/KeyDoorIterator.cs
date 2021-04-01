@@ -22,6 +22,10 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         private readonly IDungeon _dungeon;
         private readonly IMutableDungeonQueue _mutableDungeonQueue;
 
+        private ISmallKeyItem SmallKey => _dungeon.SmallKey;
+        private IBigKeyItem? BigKey => _dungeon.BigKey;
+        private List<KeyDoorID> SmallKeyDoors => _dungeon.SmallKeyDoors;
+
         /// <summary>
         ///     Constructor
         /// </summary>
@@ -46,10 +50,6 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
             _dungeon = dungeon;
             _mutableDungeonQueue = mutableDungeonQueue;
         }
-
-        private ISmallKeyItem SmallKey => _dungeon.SmallKey;
-        private IBigKeyItem? BigKey => _dungeon.BigKey;
-        private List<KeyDoorID> SmallKeyDoors => _dungeon.SmallKeyDoors;
         
         public void ProcessKeyDoorPermutations(BlockingCollection<IDungeonState> finalQueue)
         {

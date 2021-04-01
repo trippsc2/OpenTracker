@@ -9,7 +9,7 @@ using ReactiveUI;
 namespace OpenTracker.Models.Dungeons.Items
 {
     /// <summary>
-    /// This class contains mutable dungeon item data.
+    ///     This class contains mutable dungeon item data.
     /// </summary>
     public class DungeonItem : ReactiveObject, IDungeonItem
     {
@@ -24,13 +24,13 @@ namespace OpenTracker.Models.Dungeons.Items
         }
 
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="dungeonData">
-        /// The mutable dungeon data parent class.
+        ///     The mutable dungeon data parent class.
         /// </param>
         /// <param name="node">
-        /// The dungeon node to which this item belongs.
+        ///     The dungeon node to which this item belongs.
         /// </param>
         public DungeonItem(IMutableDungeon dungeonData, IRequirementNode node)
         {
@@ -42,13 +42,13 @@ namespace OpenTracker.Models.Dungeons.Items
         }
 
         /// <summary>
-        /// Subscribes to the DungeonItemCreated event on the IDungeonItemDictionary interface.
+        ///     Subscribes to the DungeonItemCreated event on the IDungeonItemDictionary interface.
         /// </summary>
         /// <param name="sender">
-        /// The sending object of the event.
+        ///     The sending object of the event.
         /// </param>
         /// <param name="e">
-        /// The arguments of the DungeonItemCreated event.
+        ///     The arguments of the DungeonItemCreated event.
         /// </param>
         private void OnDungeonItemCreated(object? sender, KeyValuePair<DungeonItemID, IDungeonItem> e)
         {
@@ -62,13 +62,13 @@ namespace OpenTracker.Models.Dungeons.Items
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the IDungeonNode interface.
+        ///     Subscribes to the PropertyChanged event on the IDungeonNode interface.
         /// </summary>
         /// <param name="sender">
-        /// The sending object of the event.
+        ///     The sending object of the event.
         /// </param>
         /// <param name="e">
-        /// The arguments of the PropertyChanged event.
+        ///     The arguments of the PropertyChanged event.
         /// </param>
         private void OnNodeChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -79,7 +79,7 @@ namespace OpenTracker.Models.Dungeons.Items
         }
 
         /// <summary>
-        /// Updates the accessibility of the item.
+        ///     Updates the accessibility of the item.
         /// </summary>
         private void UpdateAccessibility()
         {

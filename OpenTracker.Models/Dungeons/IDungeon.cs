@@ -31,6 +31,7 @@ namespace OpenTracker.Models.Dungeons
         int Total { get; }
         DungeonID ID { get; }
         List<IRequirementNode> EntryNodes { get; }
+        int TotalWithMapAndCompass { get; }
 
         delegate IDungeon Factory(
             DungeonID id, ICappedItem? map, ICappedItem? compass, ISmallKeyItem smallKey, IBigKeyItem? bigKey,
