@@ -48,9 +48,9 @@ namespace OpenTracker.Models.KeyLayouts.Factories
             _alternativeFactory = alternativeFactory;
         }
         
-        public List<IKeyLayout> GetDungeonKeyLayouts(IDungeon dungeon)
+        public IList<IKeyLayout> GetDungeonKeyLayouts(IDungeon dungeon)
         {
-            return new()
+            return new List<IKeyLayout>
             {
                 _endFactory(
                     _alternativeFactory(new List<IRequirement>

@@ -9,7 +9,7 @@ namespace OpenTracker.Models.AutoTracking.Values.Multiple
     /// </summary>
     public class AutoTrackMultipleOverride : AutoTrackValue, IAutoTrackMultipleOverride
     {
-        private readonly List<IAutoTrackValue> _values;
+        private readonly IList<IAutoTrackValue> _values;
         
         /// <summary>
         ///     Constructor
@@ -17,7 +17,7 @@ namespace OpenTracker.Models.AutoTracking.Values.Multiple
         /// <param name="values">
         ///     The list of auto-tracking result values.
         /// </param>
-        public AutoTrackMultipleOverride(List<IAutoTrackValue> values)
+        public AutoTrackMultipleOverride(IList<IAutoTrackValue> values)
         {
             _values = values;
 
@@ -48,7 +48,7 @@ namespace OpenTracker.Models.AutoTracking.Values.Multiple
 
         protected override int? GetNewValue()
         {
-            var valuesNotNull = _values.FindAll(x => x.CurrentValue.HasValue);
+            var valuesNotNull = _values.Where(x => x.CurrentValue.HasValue).ToList();
 
             if (valuesNotNull.Count == 0)
             {

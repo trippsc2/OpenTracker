@@ -27,15 +27,15 @@ namespace OpenTracker.Models.Dungeons
         public ISmallKeyItem SmallKey { get; }
         public IBigKeyItem? BigKey { get; }
 
-        public List<DungeonItemID> DungeonItems { get; }
-        public List<DungeonItemID> Bosses { get; }
-        public List<DungeonItemID> SmallKeyDrops { get; }
-        public List<DungeonItemID> BigKeyDrops { get; }
-        public List<KeyDoorID> SmallKeyDoors { get; }
-        public List<KeyDoorID> BigKeyDoors { get; }
-        public List<IKeyLayout> KeyLayouts { get; }
-        public List<DungeonNodeID> Nodes { get; }
-        public List<IRequirementNode> EntryNodes { get; }
+        public IList<DungeonItemID> DungeonItems { get; }
+        public IList<DungeonItemID> Bosses { get; }
+        public IList<DungeonItemID> SmallKeyDrops { get; }
+        public IList<DungeonItemID> BigKeyDrops { get; }
+        public IList<KeyDoorID> SmallKeyDoors { get; }
+        public IList<KeyDoorID> BigKeyDoors { get; }
+        public IList<IKeyLayout> KeyLayouts { get; }
+        public IList<DungeonNodeID> Nodes { get; }
+        public IList<IRequirementNode> EntryNodes { get; }
 
         public int TotalWithMapAndCompass { get; private set; }
 
@@ -96,9 +96,9 @@ namespace OpenTracker.Models.Dungeons
         /// </param>
         public Dungeon(
             IMode mode, IKeyLayoutFactory keyLayoutFactory, DungeonID id, ICappedItem? map, ICappedItem? compass,
-            ISmallKeyItem smallKey, IBigKeyItem? bigKey, List<DungeonItemID> dungeonItems, List<DungeonItemID> bosses,
-            List<DungeonItemID> smallKeyDrops, List<DungeonItemID> bigKeyDrops, List<KeyDoorID> smallKeyDoors,
-            List<KeyDoorID> bigKeyDoors, List<DungeonNodeID> nodes, List<IRequirementNode> entryNodes)
+            ISmallKeyItem smallKey, IBigKeyItem? bigKey, IList<DungeonItemID> dungeonItems, IList<DungeonItemID> bosses,
+            IList<DungeonItemID> smallKeyDrops, IList<DungeonItemID> bigKeyDrops, IList<KeyDoorID> smallKeyDoors,
+            IList<KeyDoorID> bigKeyDoors, IList<DungeonNodeID> nodes, IList<IRequirementNode> entryNodes)
         {
             _mode = mode;
 
@@ -129,13 +129,13 @@ namespace OpenTracker.Models.Dungeons
         }
         
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the IMode interface.
+        ///     Subscribes to the PropertyChanged event on the IMode interface.
         /// </summary>
         /// <param name="sender">
-        /// The sending object of the event.
+        ///     The sending object of the event.
         /// </param>
         /// <param name="e">
-        /// The arguments of the PropertyChanged event.
+        ///     The arguments of the PropertyChanged event.
         /// </param>
         private void OnModeChanged(object? sender, PropertyChangedEventArgs e)
         {

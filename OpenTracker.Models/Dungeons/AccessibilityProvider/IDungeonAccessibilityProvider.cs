@@ -26,7 +26,7 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         /// <summary>
         ///     A list of boss accessibility providers.
         /// </summary>
-        List<IBossAccessibilityProvider> BossAccessibilityProviders { get; }
+        IList<IBossAccessibilityProvider> BossAccessibilityProviders { get; }
 
         /// <summary>
         ///     A factory for creating dungeon accessibility providers.

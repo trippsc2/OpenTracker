@@ -42,9 +42,9 @@ namespace OpenTracker.Models.KeyLayouts.Factories
             _smallKeyFactory = smallKeyFactory;
         }
         
-        public List<IKeyLayout> GetDungeonKeyLayouts(IDungeon dungeon)
+        public IList<IKeyLayout> GetDungeonKeyLayouts(IDungeon dungeon)
         {
-            return new()
+            return new List<IKeyLayout>
             {
                     _endFactory(_requirements[RequirementType.AllKeyShuffle]),
                     _smallKeyFactory(2,

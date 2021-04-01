@@ -61,7 +61,7 @@ namespace OpenTracker.Models.Dungeons.Nodes
         /// </param>
 		public void PopulateNodeConnections(
 			IMutableDungeon dungeonData, DungeonNodeID id, IRequirementNode node,
-            List<INodeConnection> connections)
+            IList<INodeConnection> connections)
         {
             switch (id)
             {

@@ -196,7 +196,7 @@ namespace OpenTracker.Models.Dungeons
         /// <returns>
         /// A list of dungeon node IDs.
         /// </returns>
-        private static List<DungeonNodeID> GetDungeonNodes(DungeonID id)
+        private static IList<DungeonNodeID> GetDungeonNodes(DungeonID id)
         {
             return id switch
             {
@@ -463,7 +463,7 @@ namespace OpenTracker.Models.Dungeons
         /// <returns>
         /// A list of dungeon item IDs.
         /// </returns>
-        private static List<DungeonItemID> GetDungeonItems(DungeonID id)
+        private static IList<DungeonItemID> GetDungeonItems(DungeonID id)
         {
             switch (id)
             {
@@ -682,7 +682,7 @@ namespace OpenTracker.Models.Dungeons
         /// <returns>
         /// A list of dungeon boss item IDs.
         /// </returns>
-        private static List<DungeonItemID> GetDungeonBosses(DungeonID id)
+        private static IList<DungeonItemID> GetDungeonBosses(DungeonID id)
         {
             switch (id)
             {
@@ -791,7 +791,7 @@ namespace OpenTracker.Models.Dungeons
         /// <returns>
         /// A list of dungeon small key drop item IDs.
         /// </returns>
-        private static List<DungeonItemID> GetDungeonSmallKeyDrops(DungeonID id)
+        private static IList<DungeonItemID> GetDungeonSmallKeyDrops(DungeonID id)
         {
             switch (id)
             {
@@ -912,7 +912,7 @@ namespace OpenTracker.Models.Dungeons
         /// <returns>
         /// A list of dungeon small key drop item IDs.
         /// </returns>
-        private static List<DungeonItemID> GetDungeonBigKeyDrops(DungeonID id)
+        private static IList<DungeonItemID> GetDungeonBigKeyDrops(DungeonID id)
         {
             switch (id)
             {
@@ -952,7 +952,7 @@ namespace OpenTracker.Models.Dungeons
         /// <returns>
         /// A list of small key door IDs.
         /// </returns>
-        private static List<KeyDoorID> GetDungeonSmallKeyDoors(DungeonID id)
+        private static IList<KeyDoorID> GetDungeonSmallKeyDoors(DungeonID id)
         {
             switch (id)
             {
@@ -1109,7 +1109,7 @@ namespace OpenTracker.Models.Dungeons
         /// <returns>
         /// A list of big key door IDs.
         /// </returns>
-        private static List<KeyDoorID> GetDungeonBigKeyDoors(DungeonID id)
+        private static IList<KeyDoorID> GetDungeonBigKeyDoors(DungeonID id)
         {
             switch (id)
             {
@@ -1228,7 +1228,7 @@ namespace OpenTracker.Models.Dungeons
         /// <returns>
         /// A list of dungeon entry nodes.
         /// </returns>
-        private List<IRequirementNode> GetDungeonEntryNodes(DungeonID id)
+        private IList<IRequirementNode> GetDungeonEntryNodes(DungeonID id)
         {
             return id switch
             {

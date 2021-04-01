@@ -11,6 +11,6 @@ namespace OpenTracker.Models.Dungeons.Nodes
     public interface IDungeonNodeFactory
     {
         void PopulateNodeConnections(
-            IMutableDungeon dungeonData, DungeonNodeID id, IRequirementNode node, List<INodeConnection> connections);
+            IMutableDungeon dungeonData, DungeonNodeID id, IRequirementNode node, IList<INodeConnection> connections);
     }
 }

@@ -44,7 +44,7 @@ namespace OpenTracker.Models.Dropdowns
         /// <returns>
         ///     A dictionary of dropdown save data.
         /// </returns>
-        public Dictionary<DropdownID, DropdownSaveData> Save()
+        public IDictionary<DropdownID, DropdownSaveData> Save()
         {
             return Keys.ToDictionary(
                 type => type, type => this[type].Save());
@@ -56,8 +56,13 @@ namespace OpenTracker.Models.Dropdowns
         /// <param name="saveData">
         ///     The save data to be loaded.
         /// </param>
-        public void Load(Dictionary<DropdownID, DropdownSaveData> saveData)
+        public void Load(IDictionary<DropdownID, DropdownSaveData>? saveData)
         {
+            if (saveData is null)
+            {
+                return;
+            }
+            
             foreach (var item in saveData.Keys)
             {
                 this[item].Load(saveData[item]);

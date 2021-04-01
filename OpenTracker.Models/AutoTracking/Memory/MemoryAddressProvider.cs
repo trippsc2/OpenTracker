@@ -11,8 +11,9 @@ namespace OpenTracker.Models.AutoTracking.Memory
     {
         private readonly IMemoryAddress.Factory _addressFactory;
         
-        public Dictionary<MemorySegmentType, List<IMemoryAddress>> MemorySegments { get; } = new();
-        public Dictionary<ulong, IMemoryAddress> MemoryAddresses { get; } = new();
+        public IDictionary<MemorySegmentType, IList<IMemoryAddress>> MemorySegments { get; } = 
+            new Dictionary<MemorySegmentType, IList<IMemoryAddress>>();
+        public IDictionary<ulong, IMemoryAddress> MemoryAddresses { get; } = new Dictionary<ulong, IMemoryAddress>();
 
         /// <summary>
         ///     Constructor

@@ -57,7 +57,7 @@ namespace OpenTracker.Models.KeyLayouts.Factories
         /// <returns>
         /// The list of key layouts.
         /// </returns>
-        public List<IKeyLayout> GetDungeonKeyLayouts(IDungeon dungeon)
+        public IList<IKeyLayout> GetDungeonKeyLayouts(IDungeon dungeon)
         {
             return dungeon.ID switch
             {

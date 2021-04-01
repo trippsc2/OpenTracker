@@ -48,7 +48,8 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
             private set => this.RaiseAndSetIfChanged(ref _accessible, value);
         }
 
-        public List<IBossAccessibilityProvider> BossAccessibilityProviders { get; } = new();
+        public IList<IBossAccessibilityProvider> BossAccessibilityProviders { get; } =
+            new List<IBossAccessibilityProvider>();
 
         private ISmallKeyItem SmallKey => _dungeon.SmallKey;
         private IBigKeyItem? BigKey => _dungeon.BigKey;

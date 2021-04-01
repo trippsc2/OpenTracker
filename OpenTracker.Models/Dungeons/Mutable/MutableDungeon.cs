@@ -162,7 +162,7 @@ namespace OpenTracker.Models.Dungeons.Mutable
         /// <param name="unlockedDoors">
         /// A list of unlocked doors.
         /// </param>
-        private void SetSmallKeyDoorState(List<KeyDoorID> unlockedDoors)
+        private void SetSmallKeyDoorState(IList<KeyDoorID> unlockedDoors)
         {
             foreach (var smallKeyDoor in _smallKeyDoors.Keys)
             {
@@ -265,7 +265,7 @@ namespace OpenTracker.Models.Dungeons.Mutable
         /// <returns>
         /// A list of locked key doors that are accessible and whether they are a sequence break.
         /// </returns>
-        public List<KeyDoorID> GetAccessibleKeyDoors(bool sequenceBreak = false)
+        public IList<KeyDoorID> GetAccessibleKeyDoors(bool sequenceBreak = false)
         {
             var accessibleKeyDoors = new List<KeyDoorID>();
 

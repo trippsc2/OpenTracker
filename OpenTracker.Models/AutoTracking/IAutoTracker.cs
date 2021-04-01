@@ -13,7 +13,7 @@ namespace OpenTracker.Models.AutoTracking
         /// <summary>
         ///     The list of devices most recently returned by the SNES connector.
         /// </summary>
-        List<string> Devices { get; }
+        IList<string> Devices { get; }
         
         /// <summary>
         ///     A boolean representing whether to allow race illegal auto-tracking features.

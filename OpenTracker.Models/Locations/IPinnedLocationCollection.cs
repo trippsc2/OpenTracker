@@ -8,7 +8,7 @@ namespace OpenTracker.Models.Locations
     /// This interface contains the collection container for pinned location data.
     /// </summary>
     public interface IPinnedLocationCollection : IObservableCollection<ILocation>,
-        ISaveable<List<LocationID>>
+        ISaveable<IList<LocationID>>
     {
     }
 }

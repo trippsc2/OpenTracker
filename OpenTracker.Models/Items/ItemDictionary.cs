@@ -44,7 +44,7 @@ namespace OpenTracker.Models.Items
         /// <returns>
         ///     A dictionary of item save data.
         /// </returns>
-        public Dictionary<ItemType, ItemSaveData> Save()
+        public IDictionary<ItemType, ItemSaveData> Save()
         {
             return Keys.ToDictionary(type => type, type => this[type].Save());
         }
@@ -52,7 +52,7 @@ namespace OpenTracker.Models.Items
         /// <summary>
         ///     Loads a dictionary of item save data.
         /// </summary>
-        public void Load(Dictionary<ItemType, ItemSaveData>? saveData)
+        public void Load(IDictionary<ItemType, ItemSaveData>? saveData)
         {
             if (saveData == null)
             {

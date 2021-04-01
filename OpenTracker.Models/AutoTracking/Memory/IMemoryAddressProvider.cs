@@ -10,12 +10,12 @@ namespace OpenTracker.Models.AutoTracking.Memory
         /// <summary>
         ///     A dictionary containing the memory segments to be sent to the SNES connector for updating data.
         /// </summary>
-        Dictionary<MemorySegmentType, List<IMemoryAddress>> MemorySegments { get; }
+        IDictionary<MemorySegmentType, IList<IMemoryAddress>> MemorySegments { get; }
         
         /// <summary>
         ///     A dictionary containing the memory addresses indexed by address.
         /// </summary>
-        Dictionary<ulong, IMemoryAddress> MemoryAddresses { get; }
+        IDictionary<ulong, IMemoryAddress> MemoryAddresses { get; }
 
         /// <summary>
         ///     Returns the starting address of the specified memory segment.

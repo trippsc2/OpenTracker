@@ -19,7 +19,7 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         private readonly IDungeon _dungeon;
         private readonly IMutableDungeonQueue _mutableDungeonQueue;
 
-        private List<DungeonItemID> Bosses => _dungeon.Bosses;
+        private IEnumerable<DungeonItemID> Bosses => _dungeon.Bosses;
 
         /// <summary>
         ///     Constructor
@@ -198,8 +198,8 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         ///     A list of the highest accessibilities for each boss so far.
         /// </param>
         private static void ProcessBossAccessibilityResult(
-            IDungeonResult result, IList<AccessibilityLevel> lowestBossAccessibilities,
-            IList<AccessibilityLevel> highestBossAccessibilities)
+            IDungeonResult result, List<AccessibilityLevel> lowestBossAccessibilities,
+            List<AccessibilityLevel> highestBossAccessibilities)
         {
             for (var i = 0; i < result.BossAccessibility.Count; i++)
             {
@@ -266,7 +266,7 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         /// <returns>
         ///     A list of boss accessibility values.
         /// </returns>
-        private static List<AccessibilityLevel> GetFinalBossAccessibility(
+        private static IList<AccessibilityLevel> GetFinalBossAccessibility(
             List<AccessibilityLevel> highestBossAccessibilities, List<AccessibilityLevel> lowestBossAccessibilities)
         {
             var bossAccessibility = new List<AccessibilityLevel>();

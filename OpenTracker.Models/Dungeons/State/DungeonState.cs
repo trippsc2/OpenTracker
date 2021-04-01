@@ -9,7 +9,7 @@ namespace OpenTracker.Models.Dungeons.State
     /// </summary>
     public class DungeonState : IDungeonState
     {
-        public List<KeyDoorID> UnlockedDoors { get; }
+        public IList<KeyDoorID> UnlockedDoors { get; }
         public int KeysCollected { get; }
         public bool BigKeyCollected { get; }
         public bool SequenceBreak { get; }
@@ -31,7 +31,7 @@ namespace OpenTracker.Models.Dungeons.State
         /// A boolean representing whether sequence breaks are allowed.
         /// </param>
         public DungeonState(
-            List<KeyDoorID> unlockedDoors, int keysCollected, bool bigKeyCollected,
+            IList<KeyDoorID> unlockedDoors, int keysCollected, bool bigKeyCollected,
             bool sequenceBreak)
         {
             UnlockedDoors = unlockedDoors ?? throw new ArgumentNullException(nameof(unlockedDoors));

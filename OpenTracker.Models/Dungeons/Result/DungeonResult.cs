@@ -8,7 +8,7 @@ namespace OpenTracker.Models.Dungeons.Result
     /// </summary>
     public class DungeonResult : IDungeonResult
     {
-        public List<AccessibilityLevel> BossAccessibility { get; }
+        public IList<AccessibilityLevel> BossAccessibility { get; }
         public int Accessible { get; }
         public bool SequenceBreak { get; }
         public bool Visible { get; }
@@ -29,7 +29,7 @@ namespace OpenTracker.Models.Dungeons.Result
         /// A boolean representing whether one inaccessible item is visible.
         /// </param>
         public DungeonResult(
-            List<AccessibilityLevel> bossAccessibility, int accessible, bool sequenceBreak, bool visible)
+            IList<AccessibilityLevel> bossAccessibility, int accessible, bool sequenceBreak, bool visible)
         {
             BossAccessibility = bossAccessibility;
             Accessible = accessible;

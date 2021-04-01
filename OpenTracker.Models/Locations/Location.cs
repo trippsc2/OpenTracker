@@ -29,8 +29,8 @@ namespace OpenTracker.Models.Locations
         public LocationID ID { get; }
         public string Name { get; }
 
-        public List<IMapLocation> MapLocations { get; }
-        public List<ISection> Sections { get; }
+        public IList<IMapLocation> MapLocations { get; }
+        public IList<ISection> Sections { get; }
         public ILocationNoteCollection Notes { get; }
 
         private AccessibilityLevel _accessibility;
@@ -268,8 +268,8 @@ namespace OpenTracker.Models.Locations
         /// </returns>
         public LocationSaveData Save()
         {
-            List<SectionSaveData> sections = new();
-            List<MarkType?> markings = new();
+            IList<SectionSaveData> sections = new List<SectionSaveData>();
+            IList<MarkType?> markings = new List<MarkType?>();
 
             foreach (var section in Sections)
             {

@@ -21,8 +21,7 @@ namespace OpenTracker.Models.Locations
         /// <param name="factory">
         /// An Autofac factory for creating map locations.
         /// </param>
-        public MapLocationFactory(
-            IRequirementDictionary requirements, IMapLocation.Factory factory)
+        public MapLocationFactory(IRequirementDictionary requirements, IMapLocation.Factory factory)
         {
             _requirements = requirements;
             _factory = factory;
@@ -37,7 +36,7 @@ namespace OpenTracker.Models.Locations
         /// <returns>
         /// The list of map locations.
         /// </returns>
-        public List<IMapLocation> GetMapLocations(ILocation location)
+        public IList<IMapLocation> GetMapLocations(ILocation location)
         {
             return location.ID switch
             {

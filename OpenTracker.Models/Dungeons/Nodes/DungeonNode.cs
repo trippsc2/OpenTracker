@@ -10,7 +10,7 @@ using ReactiveUI;
 namespace OpenTracker.Models.Dungeons.Nodes
 {
     /// <summary>
-    /// This class contains the dungeon requirement node data.
+    ///     This class contains the dungeon requirement node data.
     /// </summary>
     public class DungeonNode : ReactiveObject, IDungeonNode
     {
@@ -21,7 +21,7 @@ namespace OpenTracker.Models.Dungeons.Nodes
         public int DungeonExitsAccessible { get; set; }
         public int InsanityExitsAccessible { get; set; }
 
-        public List<INodeConnection> Connections { get; } = new();
+        public IList<INodeConnection> Connections { get; } = new List<INodeConnection>();
 
         public event EventHandler? ChangePropagated;
 
@@ -144,12 +144,12 @@ namespace OpenTracker.Models.Dungeons.Nodes
         /// Returns the node accessibility.
         /// </summary>
         /// <param name="excludedNodes">
-        /// The list of node IDs from which to not check accessibility.
+        ///     The list of node IDs from which to not check accessibility.
         /// </param>
         /// <returns>
         /// The accessibility of the node.
         /// </returns>
-        public AccessibilityLevel GetNodeAccessibility(List<IRequirementNode> excludedNodes)
+        public AccessibilityLevel GetNodeAccessibility(IList<IRequirementNode> excludedNodes)
         {
             if (AlwaysAccessible)
             {

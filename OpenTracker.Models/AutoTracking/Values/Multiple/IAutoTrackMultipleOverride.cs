@@ -16,6 +16,6 @@ namespace OpenTracker.Models.AutoTracking.Values.Multiple
         /// <returns>
         ///     A new auto-tracking result value of an ordered priority list of results.
         /// </returns>
-        delegate IAutoTrackMultipleOverride Factory(List<IAutoTrackValue> values);
+        delegate IAutoTrackMultipleOverride Factory(IList<IAutoTrackValue> values);
     }
 }

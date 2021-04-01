@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Dungeons.Items;
 using OpenTracker.Models.Dungeons.Mutable;
@@ -16,7 +17,7 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Items
 
         private readonly DungeonItemFactory _sut;
 
-        private static Dictionary<DungeonItemID, DungeonNodeID> _expectedValues = new();
+        private static readonly Dictionary<DungeonItemID, DungeonNodeID> ExpectedValues = new();
 
         public DungeonItemFactoryTests()
         {
@@ -25,7 +26,7 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Items
 
         private static void PopulateExpectedValues()
         {
-            _expectedValues.Clear();
+            ExpectedValues.Clear();
 
             foreach (DungeonItemID id in Enum.GetValues(typeof(DungeonItemID)))
             {
@@ -428,7 +429,7 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Items
                         continue;
                 }
                 
-                _expectedValues.Add(id, nodeID);
+                ExpectedValues.Add(id, nodeID);
             }
         }
 
@@ -460,7 +461,17 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Items
         {
             PopulateExpectedValues();
 
-            return _expectedValues.Select(keyValuePair => new object[] {keyValuePair.Key, keyValuePair.Value}).ToList();
+            return ExpectedValues.Select(keyValuePair => new object[] {keyValuePair.Value, keyValuePair.Key}).ToList();
+        }
+
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var factory = scope.Resolve<IDungeonItemFactory.Factory>();
+            var sut = factory();
+            
+            Assert.NotNull(sut as DungeonItemFactory);
         }
     }
 }

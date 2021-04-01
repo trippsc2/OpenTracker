@@ -20,23 +20,23 @@ namespace OpenTracker.Models.Dungeons
         ISmallKeyItem SmallKey { get; }
         IBigKeyItem? BigKey { get; }
         
-        List<DungeonItemID> DungeonItems { get; }
-        List<DungeonItemID> Bosses { get; }
-        List<DungeonItemID> SmallKeyDrops { get; }
-        List<DungeonItemID> BigKeyDrops { get; }
-        List<KeyDoorID> SmallKeyDoors { get; }
-        List<KeyDoorID> BigKeyDoors { get; }
-        List<IKeyLayout> KeyLayouts { get; }
-        List<DungeonNodeID> Nodes { get; }
+        IList<DungeonItemID> DungeonItems { get; }
+        IList<DungeonItemID> Bosses { get; }
+        IList<DungeonItemID> SmallKeyDrops { get; }
+        IList<DungeonItemID> BigKeyDrops { get; }
+        IList<KeyDoorID> SmallKeyDoors { get; }
+        IList<KeyDoorID> BigKeyDoors { get; }
+        IList<IKeyLayout> KeyLayouts { get; }
+        IList<DungeonNodeID> Nodes { get; }
         int Total { get; }
         DungeonID ID { get; }
-        List<IRequirementNode> EntryNodes { get; }
+        IList<IRequirementNode> EntryNodes { get; }
         int TotalWithMapAndCompass { get; }
 
         delegate IDungeon Factory(
             DungeonID id, ICappedItem? map, ICappedItem? compass, ISmallKeyItem smallKey, IBigKeyItem? bigKey,
-            List<DungeonItemID> dungeonItems, List<DungeonItemID> bosses, List<DungeonItemID> smallKeyDrops,
-            List<DungeonItemID> bigKeyDrops, List<KeyDoorID> smallKeyDoors, List<KeyDoorID> bigKeyDoors,
-            List<DungeonNodeID> nodes, List<IRequirementNode> entryNodes);
+            IList<DungeonItemID> dungeonItems, IList<DungeonItemID> bosses, IList<DungeonItemID> smallKeyDrops,
+            IList<DungeonItemID> bigKeyDrops, IList<KeyDoorID> smallKeyDoors, IList<KeyDoorID> bigKeyDoors,
+            IList<DungeonNodeID> nodes, IList<IRequirementNode> entryNodes);
     }
 }

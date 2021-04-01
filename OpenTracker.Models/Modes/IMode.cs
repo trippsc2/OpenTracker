@@ -7,7 +7,7 @@ namespace OpenTracker.Models.Modes
     /// <summary>
     /// This interface contains game mode settings data.
     /// </summary>
-    public interface IMode : IReactiveObject
+    public interface IMode : IReactiveObject, ISaveable<ModeSaveData>
     {
         bool BigKeyShuffle { get; set; }
         bool BossShuffle { get; set; }
@@ -23,10 +23,7 @@ namespace OpenTracker.Models.Modes
         bool SmallKeyShuffle { get; set; }
         bool TakeAnyLocations { get; set; }
         WorldState WorldState { get; set; }
-
-        void Load(ModeSaveData? saveData);
-        ModeSaveData Save();
-
+        
         /// <summary>
         /// Returns a new undoable action changing the item placement setting.
         /// </summary>

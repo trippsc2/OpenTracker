@@ -33,8 +33,8 @@ namespace OpenTracker.Models.AutoTracking
             }
         }
 
-        private List<string> _devices = new();
-        public List<string> Devices
+        private IList<string> _devices = new List<string>();
+        public IList<string> Devices
         {
             get => _devices;
             private set => this.RaiseAndSetIfChanged(ref _devices, value);
@@ -165,7 +165,7 @@ namespace OpenTracker.Models.AutoTracking
         /// <returns>
         ///     A list of strings representing the devices.
         /// </returns>
-        private async Task<List<string>> GetDevicesFromConnector()
+        private async Task<IList<string>> GetDevicesFromConnector()
         {
             var devices = await _snesConnector.GetDevices();
 

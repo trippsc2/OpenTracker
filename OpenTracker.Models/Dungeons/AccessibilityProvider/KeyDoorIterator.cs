@@ -24,7 +24,7 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
 
         private ISmallKeyItem SmallKey => _dungeon.SmallKey;
         private IBigKeyItem? BigKey => _dungeon.BigKey;
-        private List<KeyDoorID> SmallKeyDoors => _dungeon.SmallKeyDoors;
+        private IList<KeyDoorID> SmallKeyDoors => _dungeon.SmallKeyDoors;
 
         /// <summary>
         ///     Constructor
@@ -60,7 +60,7 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
             var permutationProcessingTasks = CreatePermutationQueueProcessingTasks(
                 keyDoorPermutationQueue, finalQueue);
 
-            Task.WaitAll(permutationProcessingTasks.ToArray());
+            Task.WaitAll(permutationProcessingTasks);
             finalQueue.CompleteAdding();
         }
         
@@ -70,7 +70,7 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         /// <returns>
         ///     A list of blocking collection queues.
         /// </returns>
-        private List<BlockingCollection<IDungeonState>> CreateKeyDoorPermutationQueues()
+        private IList<BlockingCollection<IDungeonState>> CreateKeyDoorPermutationQueues()
         {
             var keyDoorPermutationQueue = new List<BlockingCollection<IDungeonState>>();
 
@@ -119,8 +119,8 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         /// <returns>
         ///     A list of permutation processing tasks.
         /// </returns>
-        private List<Task> CreatePermutationQueueProcessingTasks(
-            List<BlockingCollection<IDungeonState>> keyDoorPermutationQueue,
+        private Task[] CreatePermutationQueueProcessingTasks(
+            IList<BlockingCollection<IDungeonState>> keyDoorPermutationQueue,
             BlockingCollection<IDungeonState> finalQueue)
         {
             var keyDoorTasks = new List<Task>();
@@ -136,7 +136,7 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
                     CancellationToken.None, TaskCreationOptions.None, _taskScheduler));
             }
 
-            return keyDoorTasks;
+            return keyDoorTasks.ToArray();
         }
         
         /// <summary>
@@ -245,8 +245,7 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         {
             foreach (var keyDoor in accessibleKeyDoors)
             {
-                var newPermutation = state.UnlockedDoors.GetRange(0, state.UnlockedDoors.Count);
-                newPermutation.Add(keyDoor);
+                var newPermutation = new List<KeyDoorID>(state.UnlockedDoors) {keyDoor};
 
                 nextQueue.Add(_stateFactory(
                     newPermutation, state.KeysCollected, state.BigKeyCollected, state.SequenceBreak));

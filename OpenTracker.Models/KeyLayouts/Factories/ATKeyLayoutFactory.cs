@@ -37,24 +37,31 @@ namespace OpenTracker.Models.KeyLayouts.Factories
             _smallKeyFactory = smallKeyFactory;
         }
         
-        public List<IKeyLayout> GetDungeonKeyLayouts(IDungeon dungeon)
+        public IList<IKeyLayout> GetDungeonKeyLayouts(IDungeon dungeon)
         {
-            return new()
+            return new List<IKeyLayout>
             {
                 _endFactory(_requirements[RequirementType.SmallKeyShuffleOn]),
-                _smallKeyFactory(2, new List<DungeonItemID> {DungeonItemID.ATRoom03, DungeonItemID.ATDarkMaze},
-                    false, new List<IKeyLayout> {_endFactory(_requirements[RequirementType.NoRequirement])},
+                _smallKeyFactory(2, new List<DungeonItemID>
+                    {
+                        DungeonItemID.ATRoom03, DungeonItemID.ATDarkMaze
+                    },
+                    false, new List<IKeyLayout>
+                    {
+                        _endFactory(_requirements[RequirementType.NoRequirement])
+                    },
                     dungeon, _requirements[RequirementType.KeyDropShuffleOffSmallKeyShuffleOff]),
-                _smallKeyFactory(4,
-                    new List<DungeonItemID>
+                _smallKeyFactory(4, new List<DungeonItemID>
                     {
                         DungeonItemID.ATRoom03,
                         DungeonItemID.ATDarkMaze,
                         DungeonItemID.ATDarkArcherDrop,
                         DungeonItemID.ATCircleOfPotsDrop
                     }, false,
-                    new List<IKeyLayout> {_endFactory(_requirements[RequirementType.NoRequirement])}, dungeon,
-                    _requirements[RequirementType.KeyDropShuffleOnSmallKeyShuffleOff])
+                    new List<IKeyLayout>
+                    {
+                        _endFactory(_requirements[RequirementType.NoRequirement])
+                    }, dungeon, _requirements[RequirementType.KeyDropShuffleOnSmallKeyShuffleOff])
             };
         }
     }

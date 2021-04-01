@@ -50,7 +50,7 @@ namespace OpenTracker.Models.Connections
         /// <returns>
         ///     A list of connection save data.
         /// </returns>
-        public List<ConnectionSaveData> Save()
+        public IList<ConnectionSaveData> Save()
         {
             return this.Select(connection => connection.Save()).ToList();
         }
@@ -61,7 +61,7 @@ namespace OpenTracker.Models.Connections
         /// <param name="saveData">
         ///     A list of connection save data.
         /// </param>
-        public void Load(List<ConnectionSaveData>? saveData)
+        public void Load(IList<ConnectionSaveData>? saveData)
         {
             if (saveData == null)
             {

@@ -47,7 +47,7 @@ namespace OpenTracker.Models.PrizePlacements
         /// <returns>
         /// A dictionary of prize placement save data.
         /// </returns>
-        public Dictionary<PrizePlacementID, PrizePlacementSaveData> Save()
+        public IDictionary<PrizePlacementID, PrizePlacementSaveData> Save()
         {
             Dictionary<PrizePlacementID, PrizePlacementSaveData> prizePlacements =
                 new();
@@ -63,7 +63,7 @@ namespace OpenTracker.Models.PrizePlacements
         /// <summary>
         /// Loads a dictionary of prize placement save data.
         /// </summary>
-        public void Load(Dictionary<PrizePlacementID, PrizePlacementSaveData>? saveData)
+        public void Load(IDictionary<PrizePlacementID, PrizePlacementSaveData>? saveData)
         {
             if (saveData == null)
             {

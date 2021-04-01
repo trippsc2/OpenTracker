@@ -19,6 +19,6 @@ namespace OpenTracker.Models.RequirementNodes
 
         delegate IRequirementNode Factory();
 
-        AccessibilityLevel GetNodeAccessibility(List<IRequirementNode> excludedNodes);
+        AccessibilityLevel GetNodeAccessibility(IList<IRequirementNode> excludedNodes);
     }
 }

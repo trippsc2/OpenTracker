@@ -10,7 +10,7 @@ namespace OpenTracker.Models.Dungeons.Nodes
     /// </summary>
     public interface IDungeonNode : IRequirementNode
     {
-        List<INodeConnection> Connections { get; }
+        IList<INodeConnection> Connections { get; }
 
         delegate IDungeonNode Factory(IMutableDungeon dungeonData, DungeonNodeID id);
     }

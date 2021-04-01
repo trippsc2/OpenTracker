@@ -104,7 +104,7 @@ namespace OpenTracker.Models.NodeConnections
         /// <returns>
         /// The availability of the connection.
         /// </returns>
-        public AccessibilityLevel GetConnectionAccessibility(List<IRequirementNode> excludedNodes)
+        public AccessibilityLevel GetConnectionAccessibility(IList<IRequirementNode> excludedNodes)
         {
             if (excludedNodes == null)
             {
@@ -117,7 +117,7 @@ namespace OpenTracker.Models.NodeConnections
                 return AccessibilityLevel.None;
             }
 
-            List<IRequirementNode> newExcludedNodes = excludedNodes.GetRange(0, excludedNodes.Count);
+            IList<IRequirementNode> newExcludedNodes = new List<IRequirementNode>(excludedNodes);
             newExcludedNodes.Add(_toNode);
 
             return AccessibilityLevelMethods.Min(Requirement.Accessibility,

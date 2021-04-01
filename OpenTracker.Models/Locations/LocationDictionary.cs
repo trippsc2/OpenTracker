@@ -7,8 +7,7 @@ namespace OpenTracker.Models.Locations
     /// <summary>
     /// This class contains the dictionary container for location data.
     /// </summary>
-    public class LocationDictionary : LazyDictionary<LocationID, ILocation>,
-        ILocationDictionary
+    public class LocationDictionary : LazyDictionary<LocationID, ILocation>, ILocationDictionary
     {
         private readonly ILocation.Factory _locationFactory;
 
@@ -45,7 +44,7 @@ namespace OpenTracker.Models.Locations
         /// <returns>
         /// A dictionary of location save data.
         /// </returns>
-        public Dictionary<LocationID, LocationSaveData> Save()
+        public IDictionary<LocationID, LocationSaveData> Save()
         {
             Dictionary<LocationID, LocationSaveData> locations = new();
 
@@ -60,7 +59,7 @@ namespace OpenTracker.Models.Locations
         /// <summary>
         /// Loads a dictionary of location save data.
         /// </summary>
-        public void Load(Dictionary<LocationID, LocationSaveData>? saveData)
+        public void Load(IDictionary<LocationID, LocationSaveData>? saveData)
         {
             if (saveData == null)
             {

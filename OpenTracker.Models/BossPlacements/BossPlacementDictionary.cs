@@ -40,7 +40,7 @@ namespace OpenTracker.Models.BossPlacements
         /// <returns>
         ///     A dictionary of boss placement save data.
         /// </returns>
-        public Dictionary<BossPlacementID, BossPlacementSaveData> Save()
+        public IDictionary<BossPlacementID, BossPlacementSaveData> Save()
         {
             return Keys.ToDictionary(
                 bossPlacement => bossPlacement, bossPlacement => this[bossPlacement].Save());
@@ -49,7 +49,7 @@ namespace OpenTracker.Models.BossPlacements
         /// <summary>
         ///     Loads a dictionary of boss placement save data.
         /// </summary>
-        public void Load(Dictionary<BossPlacementID, BossPlacementSaveData>? saveData)
+        public void Load(IDictionary<BossPlacementID, BossPlacementSaveData>? saveData)
         {
             if (saveData == null)
             {

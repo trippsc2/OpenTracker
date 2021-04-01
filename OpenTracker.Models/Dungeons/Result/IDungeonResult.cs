@@ -9,9 +9,9 @@ namespace OpenTracker.Models.Dungeons.Result
     public interface IDungeonResult
     {
         delegate IDungeonResult Factory(
-            List<AccessibilityLevel> bossAccessibility, int accessible, bool sequenceBreak, bool visible);
+            IList<AccessibilityLevel> bossAccessibility, int accessible, bool sequenceBreak, bool visible);
 
-        List<AccessibilityLevel> BossAccessibility { get; }
+        IList<AccessibilityLevel> BossAccessibility { get; }
         int Accessible { get; }
         bool Visible { get; }
         bool SequenceBreak { get; }

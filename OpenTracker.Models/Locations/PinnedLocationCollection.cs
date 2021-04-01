@@ -24,7 +24,7 @@ namespace OpenTracker.Models.Locations
         /// <summary>
         /// Returns a list of location IDs to save.
         /// </summary>
-        public List<LocationID> Save()
+        public IList<LocationID> Save()
         {
             List<LocationID> pinnedLocations = new();
 
@@ -42,7 +42,7 @@ namespace OpenTracker.Models.Locations
         /// <param name="saveData">
         /// A list of location IDs to pin.
         /// </param>
-        public void Load(List<LocationID>? saveData)
+        public void Load(IList<LocationID>? saveData)
         {
             if (saveData == null)
             {

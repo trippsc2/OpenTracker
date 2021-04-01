@@ -9,8 +9,8 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
     {
         public string Opcode { get; }
         public string Space { get; }
-        public List<string> Flags { get; }
-        public List<string> Operands { get; }
+        public IList<string> Flags { get; }
+        public IList<string> Operands { get; }
 
         /// <summary>
         ///     Constructor
@@ -28,7 +28,7 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         ///     A list of strings representing the operands of the request. This defaults to an empty list.
         /// </param>
         public RequestType(
-            string opcode, string space = "SNES", List<string>? flags = null, List<string>? operands = null)
+            string opcode, string space = "SNES", IList<string>? flags = null, IList<string>? operands = null)
         {
             Opcode = opcode;
             Space = space;

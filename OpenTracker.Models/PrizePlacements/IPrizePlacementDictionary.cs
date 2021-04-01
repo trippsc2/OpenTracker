@@ -7,7 +7,7 @@ namespace OpenTracker.Models.PrizePlacements
     /// This interface contains the dictionary container for prize placement data.
     /// </summary>
     public interface IPrizePlacementDictionary : IDictionary<PrizePlacementID, IPrizePlacement>,
-        ISaveable<Dictionary<PrizePlacementID, PrizePlacementSaveData>>
+        ISaveable<IDictionary<PrizePlacementID, PrizePlacementSaveData>>
     {
         void Reset();
     }

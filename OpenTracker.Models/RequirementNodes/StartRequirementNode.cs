@@ -15,7 +15,7 @@ namespace OpenTracker.Models.RequirementNodes
         
         public event EventHandler? ChangePropagated;
 
-        public AccessibilityLevel GetNodeAccessibility(List<IRequirementNode> excludedNodes)
+        public AccessibilityLevel GetNodeAccessibility(IList<IRequirementNode> excludedNodes)
         {
             return AccessibilityLevel.Normal;
         }

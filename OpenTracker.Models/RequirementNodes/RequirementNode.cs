@@ -180,12 +180,12 @@ namespace OpenTracker.Models.RequirementNodes
         /// Returns the node accessibility.
         /// </summary>
         /// <param name="excludedNodes">
-        /// The list of node IDs from which to not check accessibility.
+        ///     The list of node IDs from which to not check accessibility.
         /// </param>
         /// <returns>
         /// The accessibility of the node.
         /// </returns>
-        public AccessibilityLevel GetNodeAccessibility(List<IRequirementNode> excludedNodes)
+        public AccessibilityLevel GetNodeAccessibility(IList<IRequirementNode> excludedNodes)
         {
             if (ExitsAccessible > 0 && _mode.EntranceShuffle >= EntranceShuffle.All)
             {

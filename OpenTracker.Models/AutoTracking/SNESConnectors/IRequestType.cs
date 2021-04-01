@@ -20,12 +20,12 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         /// <summary>
         ///     A list of strings representing the flags to be added to the request. This defaults to an empty list.
         /// </summary>
-        List<string> Flags { get; }
+        IList<string> Flags { get; }
 
         /// <summary>
         ///     A list of strings representing the operands of the request. This defaults to an empty list.
         /// </summary>
-        List<string> Operands { get; }
+        IList<string> Operands { get; }
 
         /// <summary>
         ///     A factory for creating requests.
@@ -43,6 +43,6 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         ///     A list of strings representing the operands of the request. This defaults to an empty list.
         /// </param>
         delegate IRequestType Factory(
-            string opcode, string space = "SNES", List<string>? flags = null, List<string>? operands = null);
+            string opcode, string space = "SNES", IList<string>? flags = null, IList<string>? operands = null);
     }
 }

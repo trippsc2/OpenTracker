@@ -34,7 +34,7 @@ namespace OpenTracker.ViewModels.Dialogs
 
         public bool DevicesComboBoxEnabled => _autoTracker.CanStart() && Devices.Count > 0;
 
-        public List<string> Devices => _autoTracker.Devices;
+        public IList<string> Devices => _autoTracker.Devices;
 
         private string? _device;
         public string? Device

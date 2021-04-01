@@ -7,7 +7,7 @@ namespace OpenTracker.Models.Dropdowns
     ///     This interface contains the dictionary container of dropdowns.
     /// </summary>
     public interface IDropdownDictionary : IDictionary<DropdownID, IDropdown>,
-        ISaveable<Dictionary<DropdownID, DropdownSaveData>>
+        ISaveable<IDictionary<DropdownID, DropdownSaveData>>
     {
         /// <summary>
         ///     Resets all dropdowns.

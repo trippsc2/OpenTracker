@@ -8,6 +8,6 @@ namespace OpenTracker.Models.KeyLayouts.Factories
     /// </summary>
     public interface IKeyLayoutFactory
     {
-        List<IKeyLayout> GetDungeonKeyLayouts(IDungeon dungeon);
+        IList<IKeyLayout> GetDungeonKeyLayouts(IDungeon dungeon);
     }
 }

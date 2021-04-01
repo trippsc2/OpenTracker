@@ -15,12 +15,12 @@ namespace OpenTracker.Models.SaveLoad
     {
         public Version? Version { get; set; }
         public ModeSaveData? Mode { get; set; }
-        public Dictionary<ItemType, ItemSaveData>? Items { get; set; }
-        public Dictionary<LocationID, LocationSaveData>? Locations { get; set; }
-        public Dictionary<BossPlacementID, BossPlacementSaveData>? BossPlacements { get; set; }
-        public Dictionary<PrizePlacementID, PrizePlacementSaveData>? PrizePlacements { get; set; }
-        public List<ConnectionSaveData>? Connections { get; set; }
-        public Dictionary<DropdownID, DropdownSaveData>? Dropdowns { get; set; }
-        public List<LocationID>? PinnedLocations { get; set; }
+        public IDictionary<ItemType, ItemSaveData>? Items { get; set; }
+        public IDictionary<LocationID, LocationSaveData>? Locations { get; set; }
+        public IDictionary<BossPlacementID, BossPlacementSaveData>? BossPlacements { get; set; }
+        public IDictionary<PrizePlacementID, PrizePlacementSaveData>? PrizePlacements { get; set; }
+        public IList<ConnectionSaveData>? Connections { get; set; }
+        public IDictionary<DropdownID, DropdownSaveData>? Dropdowns { get; set; }
+        public IList<LocationID>? PinnedLocations { get; set; }
     }
 }

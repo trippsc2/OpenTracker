@@ -17,9 +17,9 @@ namespace OpenTracker.Models.Locations
         int Accessible { get; }
         int Available { get; }
         LocationID ID { get; }
-        List<IMapLocation> MapLocations { get; }
+        IList<IMapLocation> MapLocations { get; }
         string Name { get; }
-        List<ISection> Sections { get; }
+        IList<ISection> Sections { get; }
         int Total { get; }
         ILocationNoteCollection Notes { get; }
         bool Visible { get; }

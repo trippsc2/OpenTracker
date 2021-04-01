@@ -14,6 +14,6 @@ namespace OpenTracker.Models.NodeConnections
         AccessibilityLevel Accessibility { get; }
         IRequirement Requirement { get; }
 
-        AccessibilityLevel GetConnectionAccessibility(List<IRequirementNode> excludedNodes);
+        AccessibilityLevel GetConnectionAccessibility(IList<IRequirementNode> excludedNodes);
     }
 }

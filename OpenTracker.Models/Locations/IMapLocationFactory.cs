@@ -7,6 +7,6 @@ namespace OpenTracker.Models.Locations
     /// </summary>
     public interface IMapLocationFactory
     {
-        List<IMapLocation> GetMapLocations(ILocation location);
+        IList<IMapLocation> GetMapLocations(ILocation location);
     }
 }

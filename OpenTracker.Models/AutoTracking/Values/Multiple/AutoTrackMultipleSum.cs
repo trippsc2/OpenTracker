@@ -9,7 +9,7 @@ namespace OpenTracker.Models.AutoTracking.Values.Multiple
     /// </summary>
     public class AutoTrackMultipleSum : AutoTrackValue, IAutoTrackMultipleSum
     {
-        private readonly List<IAutoTrackValue> _values;
+        private readonly IList<IAutoTrackValue> _values;
         
         /// <summary>
         ///     Constructor
@@ -17,7 +17,7 @@ namespace OpenTracker.Models.AutoTracking.Values.Multiple
         /// <param name="values">
         ///     The list of auto-tracking result values.
         /// </param>
-        public AutoTrackMultipleSum(List<IAutoTrackValue> values)
+        public AutoTrackMultipleSum(IList<IAutoTrackValue> values)
         {
             _values = values;
             
@@ -51,13 +51,12 @@ namespace OpenTracker.Models.AutoTracking.Values.Multiple
         /// </summary>
         protected override int? GetNewValue()
         {
-            if (!_values.Exists(x => x.CurrentValue.HasValue))
+            if (!_values.Any(x => x.CurrentValue.HasValue))
             {
                 return null;
             }
             
-            var newValue = _values.Where(value => value.CurrentValue.HasValue).Sum(
-                value => value.CurrentValue ?? 0);
+            var newValue = _values.Sum(value => value.CurrentValue ?? 0);
 
             return newValue;
         }

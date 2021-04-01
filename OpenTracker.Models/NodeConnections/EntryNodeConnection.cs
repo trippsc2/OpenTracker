@@ -30,8 +30,7 @@ namespace OpenTracker.Models.NodeConnections
         /// <param name="fromNode">
         /// The node from which the connection originates.
         /// </param>
-        public EntryNodeConnection(
-            IRequirementDictionary requirements, IRequirementNode fromNode)
+        public EntryNodeConnection(IRequirementDictionary requirements, IRequirementNode fromNode)
         {
             _fromNode = fromNode;
 
@@ -66,7 +65,7 @@ namespace OpenTracker.Models.NodeConnections
         /// <returns>
         /// The availability of the connection.
         /// </returns>
-        public AccessibilityLevel GetConnectionAccessibility(List<IRequirementNode> excludedNodes)
+        public AccessibilityLevel GetConnectionAccessibility(IList<IRequirementNode> excludedNodes)
         {
             if (excludedNodes == null)
             {

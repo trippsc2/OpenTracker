@@ -16,6 +16,6 @@ namespace OpenTracker.Models.AutoTracking.Values.Multiple
         /// <returns>
         ///     A new auto-tracking result value of a list of results to be summed.
         /// </returns>
-        delegate IAutoTrackMultipleSum Factory(List<IAutoTrackValue> values);
+        delegate IAutoTrackMultipleSum Factory(IList<IAutoTrackValue> values);
     }
 }

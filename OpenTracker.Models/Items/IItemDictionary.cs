@@ -6,7 +6,7 @@ namespace OpenTracker.Models.Items
     /// <summary>
     ///     This interface contains the dictionary container for item data.
     /// </summary>
-    public interface IItemDictionary : IDictionary<ItemType, IItem>, ISaveable<Dictionary<ItemType, ItemSaveData>>
+    public interface IItemDictionary : IDictionary<ItemType, IItem>, ISaveable<IDictionary<ItemType, ItemSaveData>>
     {
         /// <summary>
         ///     A factory for creating the item dictionary.

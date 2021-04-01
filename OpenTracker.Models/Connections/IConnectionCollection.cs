@@ -10,7 +10,7 @@ namespace OpenTracker.Models.Connections
     ///     This interface contains the collection container for map connections.
     /// </summary>
     public interface IConnectionCollection : IObservableCollection<IConnection>,
-        ISaveable<List<ConnectionSaveData>>
+        ISaveable<IList<ConnectionSaveData>>
     {
         /// <summary>
         ///     A factory for creating the connection collection.
