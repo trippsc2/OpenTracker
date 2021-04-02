@@ -12,6 +12,7 @@ namespace OpenTracker.Models.Dungeons.Result
         public int Accessible { get; }
         public bool SequenceBreak { get; }
         public bool Visible { get; }
+        public int MinimumInaccessible { get; }
 
         /// <summary>
         /// Constructor
@@ -28,12 +29,17 @@ namespace OpenTracker.Models.Dungeons.Result
         /// <param name="visible">
         /// A boolean representing whether one inaccessible item is visible.
         /// </param>
+        /// <param name="minimumInaccessible">
+        /// A 32-bit signed integer representing the minimum number of checks that are inaccessible.
+        /// </param>
         public DungeonResult(
-            IList<AccessibilityLevel> bossAccessibility, int accessible, bool sequenceBreak, bool visible)
+            IList<AccessibilityLevel> bossAccessibility, int accessible, bool sequenceBreak, bool visible,
+            int minimumInaccessible = 0)
         {
             BossAccessibility = bossAccessibility;
             Accessible = accessible;
             Visible = visible;
+            MinimumInaccessible = minimumInaccessible;
             SequenceBreak = sequenceBreak;
         }
     }

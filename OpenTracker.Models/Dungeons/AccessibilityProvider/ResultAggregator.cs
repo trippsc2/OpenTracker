@@ -19,36 +19,36 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         private readonly IDungeon _dungeon;
         private readonly IMutableDungeonQueue _mutableDungeonQueue;
 
-        private IEnumerable<DungeonItemID> Bosses => _dungeon.Bosses;
+        private IList<DungeonItemID> Bosses => _dungeon.Bosses;
 
         /// <summary>
         ///     Constructor
         /// </summary>
+        /// <param name="resultFactory">
+        ///     An Autofac factory for creating dungeon results.
+        /// </param>
         /// <param name="dungeon">
         ///     The dungeon data.
         /// </param>
         /// <param name="mutableDungeonQueue">
         ///     The mutable dungeon data instance queue.
         /// </param>
-        /// <param name="resultFactory">
-        ///     An Autofac factory for creating dungeon results.
-        /// </param>
         public ResultAggregator(
             IDungeonResult.Factory resultFactory, IDungeon dungeon, IMutableDungeonQueue mutableDungeonQueue)
         {
+            _resultFactory = resultFactory;
+
             _dungeon = dungeon;
             _mutableDungeonQueue = mutableDungeonQueue;
-            _resultFactory = resultFactory;
         }
 
         public IDungeonResult AggregateResults(BlockingCollection<IDungeonState> finalQueue)
         {
-            var inLogicResultQueue = new BlockingCollection<IDungeonResult>();
-            var outOfLogicResultQueue = new BlockingCollection<IDungeonResult>();
+            var resultQueue = new BlockingCollection<IDungeonResult>();
             
-            ProcessFinalKeyDoorPermutationQueue(finalQueue, inLogicResultQueue, outOfLogicResultQueue);
+            ProcessFinalKeyDoorPermutationQueue(finalQueue, resultQueue);
 
-            return ProcessResults(inLogicResultQueue, outOfLogicResultQueue);
+            return ProcessResults(resultQueue);
         }
 
         /// <summary>
@@ -57,26 +57,21 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         /// <param name="finalQueue">
         ///     The blocking collection queue to be processed.
         /// </param>
-        /// <param name="inLogicResultQueue">
-        ///     The blocking collection queue of in-logic results.
-        /// </param>
-        /// <param name="outOfLogicResultQueue">
-        ///     The blocking collection queue of out-of-logic results.
+        /// <param name="resultQueue">
+        ///     The blocking collection queue of results.
         /// </param>
         private void ProcessFinalKeyDoorPermutationQueue(
-            BlockingCollection<IDungeonState> finalQueue, BlockingCollection<IDungeonResult> inLogicResultQueue,
-            BlockingCollection<IDungeonResult> outOfLogicResultQueue)
+            BlockingCollection<IDungeonState> finalQueue, BlockingCollection<IDungeonResult> resultQueue)
         {
             var dungeonData = _mutableDungeonQueue.GetNext();
 
             foreach (var item in finalQueue.GetConsumingEnumerable())
             {
-                ProcessFinalDungeonState(dungeonData, item, inLogicResultQueue, outOfLogicResultQueue);
+                ProcessFinalDungeonState(dungeonData, item, resultQueue);
             }
 
             finalQueue.Dispose();
-            inLogicResultQueue.CompleteAdding();
-            outOfLogicResultQueue.CompleteAdding();
+            resultQueue.CompleteAdding();
             _mutableDungeonQueue.Requeue(dungeonData);
         }
 
@@ -89,15 +84,11 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         /// <param name="state">
         ///     The permutation to be processed.
         /// </param>
-        /// <param name="inLogicQueue">
-        ///     The queue of results that were achieved without sequence breaks.
-        /// </param>
-        /// <param name="outOfLogicQueue">
-        ///     The queue of results that were achieved with sequence breaks.
+        /// <param name="resultQueue">
+        ///     The blocking collection queue of results.
         /// </param>
         private static void ProcessFinalDungeonState(
-            IMutableDungeon dungeonData, IDungeonState state, BlockingCollection<IDungeonResult> inLogicQueue,
-            BlockingCollection<IDungeonResult> outOfLogicQueue)
+            IMutableDungeon dungeonData, IDungeonState state, BlockingCollection<IDungeonResult> resultQueue)
         {
             dungeonData.ApplyState(state);
 
@@ -108,81 +99,90 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
 
             var result = dungeonData.GetDungeonResult(state);
 
-            if (state.SequenceBreak)
-            {
-                outOfLogicQueue.Add(result);
-                return;
-            }
-
-            inLogicQueue.Add(result);
+            resultQueue.Add(result);
         }
-
-
+        
         /// <summary>
         ///     Returns the final results.
         /// </summary>
-        /// <param name="inLogicResultQueue">
+        /// <param name="resultQueue">
         ///     A blocking collection queue for results in-logic.
-        /// </param>
-        /// <param name="outOfLogicResultQueue">
-        ///     A blocking collection queue for results out-of-logic.
         /// </param>
         /// <returns>
         ///     The final results.
         /// </returns>
-        private IDungeonResult ProcessResults(
-            BlockingCollection<IDungeonResult> inLogicResultQueue,
-            BlockingCollection<IDungeonResult> outOfLogicResultQueue)
+        private IDungeonResult ProcessResults(BlockingCollection<IDungeonResult> resultQueue)
         {
-            List<AccessibilityLevel> lowestBossAccessibilities = new();
-            List<AccessibilityLevel> highestBossAccessibilities = new();
+            List<AccessibilityLevel> lowestBossAccessibility = new();
+            List<AccessibilityLevel> highestBossAccessibility = new();
 
             foreach (var _ in Bosses)
             {
-                lowestBossAccessibilities.Add(AccessibilityLevel.Normal);
-                highestBossAccessibilities.Add(AccessibilityLevel.None);
+                lowestBossAccessibility.Add(AccessibilityLevel.Normal);
+                highestBossAccessibility.Add(AccessibilityLevel.None);
             }
 
-            var lowestAccessible = int.MaxValue;
-            var highestAccessible = 0;
-            var sequenceBreak = false;
-            var visible = false;
+            IDungeonResult? lowestAccessible = null;
+            IDungeonResult? highestAccessible = null;
 
-            foreach (var result in inLogicResultQueue.GetConsumingEnumerable())
-            {
-                ProcessBossAccessibilityResult(result, lowestBossAccessibilities, highestBossAccessibilities);
-                ProcessItemAccessibilityResult(
-                    result, ref lowestAccessible, ref highestAccessible, ref sequenceBreak, ref visible);
-            }
+            ProcessResultQueue(
+                resultQueue, lowestBossAccessibility, highestBossAccessibility, ref lowestAccessible,
+                ref highestAccessible);
 
-            foreach (var result in outOfLogicResultQueue.GetConsumingEnumerable())
-            {
-                ProcessBossAccessibilityResult(result, lowestBossAccessibilities, highestBossAccessibilities);
-                ProcessItemAccessibilityResult(
-                    result, ref lowestAccessible, ref highestAccessible, ref sequenceBreak, ref visible);
-            }
-
-            inLogicResultQueue.Dispose();
-            outOfLogicResultQueue.Dispose();
+            resultQueue.Dispose();
 
             var bossAccessibility = GetFinalBossAccessibility(
-                highestBossAccessibilities, lowestBossAccessibilities);
-
-            if (highestAccessible > lowestAccessible)
+                highestBossAccessibility, lowestBossAccessibility);
+            
+            if (highestAccessible is null)
             {
-                sequenceBreak = true;
+                return _resultFactory(bossAccessibility, 0, true, false);
+            }
+
+            var accessible = AdjustResultForMapCompassAndBosses(highestAccessible);
+
+            if (lowestAccessible is null)
+            {
+                return _resultFactory(
+                    bossAccessibility, accessible, highestAccessible.SequenceBreak, highestAccessible.Visible);
             }
 
             var total = _dungeon.TotalWithMapAndCompass;
 
-            if (highestAccessible < total)
-            {
-                sequenceBreak = true;
-            }
-            
-            var accessible = Math.Min(highestAccessible, _dungeon.Total);
+            var sequenceBreak = highestAccessible.SequenceBreak ||
+                highestAccessible.Accessible > lowestAccessible.Accessible || highestAccessible.Accessible < total;
 
-            return _resultFactory(bossAccessibility, accessible, sequenceBreak, visible);
+            return _resultFactory(bossAccessibility, accessible, sequenceBreak, highestAccessible.Visible);
+        }
+
+        /// <summary>
+        ///     Processes a provided result queue. 
+        /// </summary>
+        /// <param name="resultQueue">
+        ///     The result queue to be processed.
+        /// </param>
+        /// <param name="lowestBossAccessibility">
+        ///     A list of the lowest accessibility for each boss so far.
+        /// </param>
+        /// <param name="highestBossAccessibility">
+        ///     A list of the highest accessibility for each boss so far.
+        /// </param>
+        /// <param name="lowestAccessible">
+        ///     The dungeon result with the fewest accessible items.
+        /// </param>
+        /// <param name="highestAccessible">
+        ///     The dungeon result with the most accessible items.
+        /// </param>
+        private void ProcessResultQueue(
+            BlockingCollection<IDungeonResult> resultQueue, List<AccessibilityLevel> lowestBossAccessibility,
+            List<AccessibilityLevel> highestBossAccessibility, ref IDungeonResult? lowestAccessible,
+            ref IDungeonResult? highestAccessible)
+        {
+            foreach (var result in resultQueue.GetConsumingEnumerable())
+            {
+                ProcessBossAccessibilityResult(result, lowestBossAccessibility, highestBossAccessibility);
+                ProcessItemAccessibilityResult(result, ref lowestAccessible, ref highestAccessible);
+            }
         }
 
         /// <summary>
@@ -191,28 +191,28 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         /// <param name="result">
         ///     The result to be processed.
         /// </param>
-        /// <param name="lowestBossAccessibilities">
+        /// <param name="lowestBossAccessibility">
         ///     A list of the lowest accessibilities for each boss so far.
         /// </param>
-        /// <param name="highestBossAccessibilities">
+        /// <param name="highestBossAccessibility">
         ///     A list of the highest accessibilities for each boss so far.
         /// </param>
         private static void ProcessBossAccessibilityResult(
-            IDungeonResult result, List<AccessibilityLevel> lowestBossAccessibilities,
-            List<AccessibilityLevel> highestBossAccessibilities)
+            IDungeonResult result, List<AccessibilityLevel> lowestBossAccessibility,
+            List<AccessibilityLevel> highestBossAccessibility)
         {
             for (var i = 0; i < result.BossAccessibility.Count; i++)
             {
-                highestBossAccessibilities[i] = AccessibilityLevelMethods.Max(
-                    highestBossAccessibilities[i], result.BossAccessibility[i]);
+                highestBossAccessibility[i] = AccessibilityLevelMethods.Max(
+                    highestBossAccessibility[i], result.BossAccessibility[i]);
 
                 if (result.SequenceBreak)
                 {
                     continue;
                 }
 
-                lowestBossAccessibilities[i] = AccessibilityLevelMethods.Min(
-                    lowestBossAccessibilities[i], result.BossAccessibility[i]);
+                lowestBossAccessibility[i] = AccessibilityLevelMethods.Min(
+                    lowestBossAccessibility[i], result.BossAccessibility[i]);
             }
         }
 
@@ -222,60 +222,83 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         /// <param name="result">
         ///     The result to be processed.
         /// </param>
-        /// <param name="highestAccessible">
-        ///     A 32-bit signed integer representing the most accessible checks.
-        /// </param>
         /// <param name="lowestAccessible">
-        ///     A 32-bit signed integer representing the least accessible checks.
+        ///     The dungeon result with the fewest accessible items.
         /// </param>
-        /// <param name="sequenceBreak">
-        ///     A boolean representing whether the result required a sequence break.
+        /// <param name="highestAccessible">
+        ///     The dungeon result with the most accessible items.
         /// </param>
-        /// <param name="visible">
-        ///     A boolean representing whether the last inaccessible item is visible.
-        /// </param>
-        private static void ProcessItemAccessibilityResult(
-            IDungeonResult result, ref int lowestAccessible, ref int highestAccessible, ref bool sequenceBreak,
-            ref bool visible)
+        private void ProcessItemAccessibilityResult(
+            IDungeonResult result, ref IDungeonResult? lowestAccessible, ref IDungeonResult? highestAccessible)
         {
+            highestAccessible ??= result;
             
-            if (highestAccessible < result.Accessible)
+            var adjustedHighestAccessible = AdjustResultForMapCompassAndBosses(highestAccessible);
+            var adjustedResultAccessible = AdjustResultForMapCompassAndBosses(result);
+            
+            if (adjustedHighestAccessible < adjustedResultAccessible || 
+                adjustedHighestAccessible == adjustedResultAccessible && 
+                highestAccessible.Accessible < result.Accessible)
             {
-                highestAccessible = result.Accessible;
-                sequenceBreak |= result.SequenceBreak;
+                highestAccessible = result;
             }
             
-            visible |= result.Visible;
-
             if (result.SequenceBreak)
             {
                 return;
             }
 
-            lowestAccessible = Math.Min(lowestAccessible, result.Accessible);
+            if (lowestAccessible is null)
+            {
+                lowestAccessible = result;
+                return;
+            }
+            
+            var adjustedLowestAccessible = AdjustResultForMapCompassAndBosses(lowestAccessible);
+            
+            if (adjustedLowestAccessible > adjustedResultAccessible ||
+                adjustedLowestAccessible == adjustedResultAccessible &&
+                lowestAccessible.Accessible > result.Accessible)
+            {
+                lowestAccessible = result;
+            }
         }
-        
+
+        /// <summary>
+        ///     Adjusts the accessible result to account for maps, compasses, and guaranteed boss items.
+        /// </summary>
+        /// <param name="result">
+        ///     The result to be adjusted.
+        /// </param>
+        /// <returns>
+        ///     A 32-bit signed integer representing the adjusted result.
+        /// </returns>
+        private int AdjustResultForMapCompassAndBosses(IDungeonResult result)
+        {
+            return Math.Min(result.Accessible, _dungeon.Total - result.MinimumInaccessible);
+        }
+
         /// <summary>
         ///     Returns the list of final boss accessibility values.
         /// </summary>
-        /// <param name="highestBossAccessibilities">
+        /// <param name="highestBossAccessibility">
         ///     A list of accessibility values for the most accessible.
         /// </param>
-        /// <param name="lowestBossAccessibilities">
+        /// <param name="lowestBossAccessibility">
         ///     A list of accessibility values for the least accessible.
         /// </param>
         /// <returns>
         ///     A list of boss accessibility values.
         /// </returns>
         private static IList<AccessibilityLevel> GetFinalBossAccessibility(
-            List<AccessibilityLevel> highestBossAccessibilities, List<AccessibilityLevel> lowestBossAccessibilities)
+            List<AccessibilityLevel> highestBossAccessibility, List<AccessibilityLevel> lowestBossAccessibility)
         {
             var bossAccessibility = new List<AccessibilityLevel>();
             
-            for (var i = 0; i < highestBossAccessibilities.Count; i++)
+            for (var i = 0; i < highestBossAccessibility.Count; i++)
             {
-                var highestAccessibility = highestBossAccessibilities[i];
-                var lowestAccessibility = lowestBossAccessibilities[i];
+                var highestAccessibility = highestBossAccessibility[i];
+                var lowestAccessibility = lowestBossAccessibility[i];
 
                 bossAccessibility.Add(highestAccessibility switch
                 {

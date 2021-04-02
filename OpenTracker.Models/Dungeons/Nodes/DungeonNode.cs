@@ -25,13 +25,6 @@ namespace OpenTracker.Models.Dungeons.Nodes
 
         public event EventHandler? ChangePropagated;
 
-        private bool _alwaysAccessible;
-        public bool AlwaysAccessible
-        {
-            get => _alwaysAccessible;
-            set => this.RaiseAndSetIfChanged(ref _alwaysAccessible, value);
-        }
-
         private AccessibilityLevel _accessibility;
         public AccessibilityLevel Accessibility
         {
@@ -62,27 +55,7 @@ namespace OpenTracker.Models.Dungeons.Nodes
             _factory = factory;
             _dungeonData = dungeonData;
 
-            PropertyChanged += OnPropertyChanged;
             dungeonData.Nodes.ItemCreated += OnNodeCreated;
-        }
-
-        /// <summary>
-        /// Subscribes to the PropertyChanged event on this object.
-        /// </summary>
-        /// <param name="sender">
-        /// The sending object of the event.
-        /// </param>
-        /// <param name="e">
-        /// The arguments of the PropertyChanged event.
-        /// </param>
-        private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case nameof(AlwaysAccessible):
-                    UpdateAccessibility();
-                    break;
-            }
         }
 
         /// <summary>
@@ -151,11 +124,6 @@ namespace OpenTracker.Models.Dungeons.Nodes
         /// </returns>
         public AccessibilityLevel GetNodeAccessibility(IList<IRequirementNode> excludedNodes)
         {
-            if (AlwaysAccessible)
-            {
-                return AccessibilityLevel.Normal;
-            }
-
             var finalAccessibility = AccessibilityLevel.None;
 
             foreach (var connection in Connections)

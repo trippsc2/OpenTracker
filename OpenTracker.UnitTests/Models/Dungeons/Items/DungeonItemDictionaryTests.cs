@@ -1,6 +1,5 @@
 using Autofac;
 using NSubstitute;
-using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.Dungeons.Items;
 using OpenTracker.Models.Dungeons.Mutable;
 using Xunit;
@@ -11,7 +10,6 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Items
     {
         private readonly IDungeonItemFactory _factory = Substitute.For<IDungeonItemFactory>();
         private readonly IMutableDungeon _dungeonData = Substitute.For<IMutableDungeon>();
-        private readonly IDungeon _dungeon = Substitute.For<IDungeon>();
         private readonly IDungeonItem _dungeonItem = Substitute.For<IDungeonItem>();
         
         // ReSharper disable once CollectionNeverUpdated.Local
@@ -36,7 +34,7 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Items
         {
             using var scope = ContainerConfig.Configure().BeginLifetimeScope();
             var factory = scope.Resolve<IDungeonItemDictionary.Factory>();
-            var sut = factory(_dungeonData, _dungeon);
+            var sut = factory(_dungeonData);
             
             Assert.NotNull(sut as DungeonItemDictionary);
         }

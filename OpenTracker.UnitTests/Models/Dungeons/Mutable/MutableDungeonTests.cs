@@ -24,12 +24,11 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Mutable
         
         private readonly IKeyDoorDictionary.Factory _keyDoors;
         private readonly IDungeonNodeDictionary.Factory _nodes = 
-            (dungeonData, dungeon) => new DungeonNodeDictionary((_, _) =>
-                Substitute.For<IDungeonNode>(), dungeonData);
+            dungeonData => new DungeonNodeDictionary((_, _) => Substitute.For<IDungeonNode>(), dungeonData);
         private readonly IDungeonItemDictionary.Factory _dungeonItems;
         private readonly IDungeonResult.Factory _resultFactory =
-            (bossAccessibility, accessible, sequenceBreak, visible) => new DungeonResult(
-                bossAccessibility, accessible, sequenceBreak, visible);
+            (bossAccessibility, accessible, sequenceBreak, visible, minimumInaccessible) => new DungeonResult(
+                bossAccessibility, accessible, sequenceBreak, visible, minimumInaccessible);
 
         private readonly IDungeon _dungeon = Substitute.For<IDungeon>();
 
@@ -37,13 +36,11 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Mutable
         {
             _keyDoorFactory.GetKeyDoor(Arg.Any<IMutableDungeon>()).Returns(
                 _ => Substitute.For<IKeyDoor>());
-            _keyDoors = (dungeonData, dungeon) => new KeyDoorDictionary(
-                () => _keyDoorFactory, dungeonData);
+            _keyDoors = dungeonData => new KeyDoorDictionary(() => _keyDoorFactory, dungeonData);
 
             _dungeonItemFactory.GetDungeonItem(Arg.Any<IMutableDungeon>(), Arg.Any<DungeonItemID>()).Returns(
                 _ => Substitute.For<IDungeonItem>());
-            _dungeonItems = (dungeonData, dungeon) => new DungeonItemDictionary(
-                () => _dungeonItemFactory, dungeonData);
+            _dungeonItems = dungeonData => new DungeonItemDictionary(() => _dungeonItemFactory, dungeonData);
         }
 
         [Theory]
@@ -441,6 +438,36 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Mutable
             Assert.Equal(1, result.Accessible);
         }
 
+        [Fact]
+        public void GetDungeonResult_ShouldAccountForSmallKeysRemaining()
+        {
+            var dungeonItems = new List<DungeonItemID>
+            {
+                DungeonItemID.HCSanctuary,
+                DungeonItemID.HCMapChest
+            };
+            
+            _dungeon.DungeonItems.Returns(dungeonItems);
+            _mode.SmallKeyShuffle.Returns(false);
+
+            var smallKey = Substitute.For<ISmallKeyItem>();
+            _dungeon.SmallKey.Returns(smallKey);
+            _dungeon.SmallKey.Maximum.Returns(1);
+            _dungeon.Total.Returns(1);
+            _dungeon.TotalWithMapAndCompass.Returns(1);
+
+            var sut = new MutableDungeon(_mode, _keyDoors, _nodes, _dungeonItems, _resultFactory, _dungeon);
+            sut.InitializeData();
+
+            sut.DungeonItems[DungeonItemID.HCSanctuary].Accessibility.Returns(AccessibilityLevel.Normal);
+            var state = Substitute.For<IDungeonState>();
+            state.BigKeyCollected.Returns(false);
+            
+            var result = sut.GetDungeonResult(state);
+
+            Assert.Equal(1, result.Accessible);
+        }
+        
         [Theory]
         [InlineData(AccessibilityLevel.None, AccessibilityLevel.None)]
         [InlineData(AccessibilityLevel.SequenceBreak, AccessibilityLevel.SequenceBreak)]
@@ -490,6 +517,41 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Mutable
             var result = sut.GetDungeonResult(state);
 
             Assert.Equal(expected, result.Accessible);
+        }
+
+        [Theory]
+        [InlineData(0, false, AccessibilityLevel.None, false)]
+        [InlineData(0, false, AccessibilityLevel.None, true)]
+        [InlineData(0, false, AccessibilityLevel.SequenceBreak, false)]
+        [InlineData(0, false, AccessibilityLevel.SequenceBreak, true)]
+        [InlineData(0, false, AccessibilityLevel.Normal, false)]
+        [InlineData(0, false, AccessibilityLevel.Normal, true)]
+        [InlineData(1, true, AccessibilityLevel.None, false)]
+        [InlineData(1, true, AccessibilityLevel.None, true)]
+        [InlineData(1, true, AccessibilityLevel.SequenceBreak, false)]
+        [InlineData(0, true, AccessibilityLevel.SequenceBreak, true)]
+        [InlineData(0, true, AccessibilityLevel.Normal, false)]
+        [InlineData(0, true, AccessibilityLevel.Normal, true)]
+        public void GetDungeonResult_ShouldReturnExpectedMinimumInaccessible(
+            int expected, bool guaranteedBossItems, AccessibilityLevel accessibility, bool sequenceBreak)
+        {
+            const DungeonItemID id = DungeonItemID.HCSanctuary;
+            _mode.GuaranteedBossItems.Returns(guaranteedBossItems);
+            var items = new List<DungeonItemID> {id};
+            _dungeon.DungeonItems.Returns(items);
+            _dungeon.Bosses.Returns(items);
+            _dungeon.Total.Returns(1);
+            _dungeon.TotalWithMapAndCompass.Returns(1);
+
+            var sut = new MutableDungeon(_mode, _keyDoors, _nodes, _dungeonItems, _resultFactory, _dungeon);
+            sut.InitializeData();
+            sut.DungeonItems[id].Accessibility.Returns(accessibility);
+            var state = Substitute.For<IDungeonState>();
+            state.SequenceBreak.Returns(sequenceBreak);
+
+            var result = sut.GetDungeonResult(state);
+
+            Assert.Equal(expected, result.MinimumInaccessible);
         }
     }
 }

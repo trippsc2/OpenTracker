@@ -12,7 +12,7 @@ namespace OpenTracker.Models.KeyDoors
     {
         event EventHandler<KeyValuePair<KeyDoorID, IKeyDoor>> ItemCreated;
 
-        delegate IKeyDoorDictionary Factory(IMutableDungeon dungeonData, IDungeon dungeon);
+        delegate IKeyDoorDictionary Factory(IMutableDungeon dungeonData);
 
         /// <summary>
         ///     Calls the indexer for each door in the specified list, so that it is initialized.

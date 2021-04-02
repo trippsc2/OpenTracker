@@ -11,7 +11,7 @@ namespace OpenTracker.Models.Dungeons.Nodes
     {
         event EventHandler<KeyValuePair<DungeonNodeID, IDungeonNode>> ItemCreated;
 
-        delegate IDungeonNodeDictionary Factory(IMutableDungeon dungeonData, IDungeon dungeon);
+        delegate IDungeonNodeDictionary Factory(IMutableDungeon dungeonData);
 
         /// <summary>
         ///     Calls the indexer for each node in the dungeon, so that it is initialized.

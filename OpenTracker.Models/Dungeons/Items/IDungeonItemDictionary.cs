@@ -20,13 +20,10 @@ namespace OpenTracker.Models.Dungeons.Items
         /// <param name="dungeonData">
         ///     The mutable dungeon data.
         /// </param>
-        /// <param name="dungeon">
-        ///     The dungeon data.
-        /// </param>
         /// <returns>
         ///     The dungeon item dictionary.
         /// </returns>
-        delegate IDungeonItemDictionary Factory(IMutableDungeon dungeonData, IDungeon dungeon);
+        delegate IDungeonItemDictionary Factory(IMutableDungeon dungeonData);
 
         /// <summary>
         ///     Calls the indexer for each item in the specified list, so that it is initialized.

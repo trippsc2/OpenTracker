@@ -53,9 +53,9 @@ namespace OpenTracker.Models.Dungeons.Mutable
             _dungeon = dungeon;
             _resultFactory = resultFactory;
 
-            Nodes = nodes(this, _dungeon);
-            KeyDoors = keyDoors(this, dungeon);
-            DungeonItems = dungeonItems(this, dungeon);
+            Nodes = nodes(this);
+            KeyDoors = keyDoors(this);
+            DungeonItems = dungeonItems(this);
         }
 
         public void InitializeData()
@@ -210,7 +210,6 @@ namespace OpenTracker.Models.Dungeons.Mutable
             }
 
             var bossAccessibility = GetBossAccessibility();
-            var total = _dungeon.TotalWithMapAndCompass;
 
             if (!_mode.BigKeyShuffle && !state.BigKeyCollected && _dungeon.BigKey is not null)
             {
@@ -223,9 +222,13 @@ namespace OpenTracker.Models.Dungeons.Mutable
                 inaccessibleItems -= smallKeys - state.KeysCollected;
             }
 
+            var total = _dungeon.TotalWithMapAndCompass;
             inaccessibleItems = Math.Max(0, inaccessibleItems);
+            var minimumInaccessible = _mode.GuaranteedBossItems ? inaccessibleBossItems : 0;
 
-            return _resultFactory(bossAccessibility, total - inaccessibleItems, state.SequenceBreak, visible);
+            return _resultFactory(
+                bossAccessibility, total - inaccessibleItems, state.SequenceBreak, visible,
+                minimumInaccessible);
         }
 
         /// <summary>

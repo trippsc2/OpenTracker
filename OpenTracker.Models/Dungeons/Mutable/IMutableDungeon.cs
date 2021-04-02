@@ -27,6 +27,15 @@ namespace OpenTracker.Models.Dungeons.Mutable
         /// </summary>
         IKeyDoorDictionary KeyDoors { get; }
 
+        /// <summary>
+        ///     A factory for creating mutable dungeon data.
+        /// </summary>
+        /// <param name="dungeon">
+        ///     The dungeon immutable data.
+        /// </param>
+        /// <returns>
+        ///     A new mutable dungeon data instance.
+        /// </returns>
         delegate IMutableDungeon Factory(IDungeon dungeon);
 
         /// <summary>

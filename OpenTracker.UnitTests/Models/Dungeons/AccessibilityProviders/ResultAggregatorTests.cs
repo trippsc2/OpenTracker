@@ -17,8 +17,8 @@ namespace OpenTracker.UnitTests.Models.Dungeons.AccessibilityProviders
     public class ResultAggregatorTests
     {
         private readonly IDungeonResult.Factory _resultFactory =
-            (bossAccessibility, accessible, sequenceBreak, visible) =>
-                new DungeonResult(bossAccessibility, accessible, sequenceBreak, visible);
+            (bossAccessibility, accessible, sequenceBreak, visible, minimumInaccessible) =>
+                new DungeonResult(bossAccessibility, accessible, sequenceBreak, visible, minimumInaccessible);
 
         private readonly IDungeon _dungeon = Substitute.For<IDungeon>();
         private readonly IMutableDungeonQueue _mutableDungeonQueue = Substitute.For<IMutableDungeonQueue>();
