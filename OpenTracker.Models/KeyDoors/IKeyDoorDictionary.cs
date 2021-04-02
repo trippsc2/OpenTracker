@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.Dungeons.Mutable;
 
 namespace OpenTracker.Models.KeyDoors
@@ -11,6 +12,14 @@ namespace OpenTracker.Models.KeyDoors
     {
         event EventHandler<KeyValuePair<KeyDoorID, IKeyDoor>> ItemCreated;
 
-        delegate IKeyDoorDictionary Factory(IMutableDungeon dungeonData);
+        delegate IKeyDoorDictionary Factory(IMutableDungeon dungeonData, IDungeon dungeon);
+
+        /// <summary>
+        ///     Calls the indexer for each door in the specified list, so that it is initialized.
+        /// </summary>
+        /// <param name="keyDoors">
+        ///     A list of key door IDs for which to call.
+        /// </param>
+        void PopulateDoors(IList<KeyDoorID> keyDoors);
     }
 }

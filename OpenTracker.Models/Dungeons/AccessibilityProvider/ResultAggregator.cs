@@ -238,12 +238,13 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
             IDungeonResult result, ref int lowestAccessible, ref int highestAccessible, ref bool sequenceBreak,
             ref bool visible)
         {
-            if (result.SequenceBreak && highestAccessible < result.Accessible)
+            
+            if (highestAccessible < result.Accessible)
             {
-                sequenceBreak = true;
+                highestAccessible = result.Accessible;
+                sequenceBreak |= result.SequenceBreak;
             }
             
-            highestAccessible = Math.Max(highestAccessible, result.Accessible);
             visible |= result.Visible;
 
             if (result.SequenceBreak)

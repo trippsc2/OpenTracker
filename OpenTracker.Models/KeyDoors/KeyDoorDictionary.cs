@@ -6,7 +6,7 @@ using OpenTracker.Utils;
 namespace OpenTracker.Models.KeyDoors
 {
     /// <summary>
-    /// This class contains the dictionary container for key door .
+    /// This class contains the dictionary container for key door data.
     /// </summary>
     public class KeyDoorDictionary : LazyDictionary<KeyDoorID, IKeyDoor>,
         IKeyDoorDictionary
@@ -21,13 +21,21 @@ namespace OpenTracker.Models.KeyDoors
         /// The key door factory.
         /// </param>
         /// <param name="dungeonData">
-        /// The mutable dungeon data parent class.
+        /// The mutable dungeon data.
         /// </param>
         public KeyDoorDictionary(IKeyDoorFactory.Factory factory, IMutableDungeon dungeonData)
             : base(new Dictionary<KeyDoorID, IKeyDoor>())
         {
             _dungeonData = dungeonData;
             _factory = new Lazy<IKeyDoorFactory>(() => factory());
+        }
+
+        public void PopulateDoors(IList<KeyDoorID> keyDoors)
+        {
+            foreach (var keyDoor in keyDoors)
+            {
+                _ = this[keyDoor];
+            }
         }
 
         protected override IKeyDoor Create(KeyDoorID key)

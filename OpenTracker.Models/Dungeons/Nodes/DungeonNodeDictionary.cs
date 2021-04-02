@@ -7,8 +7,7 @@ namespace OpenTracker.Models.Dungeons.Nodes
     /// <summary>
     /// This class contains the dictionary container for dungeon nodes.
     /// </summary>
-    public class DungeonNodeDictionary : LazyDictionary<DungeonNodeID, IDungeonNode>,
-        IDungeonNodeDictionary
+    public class DungeonNodeDictionary : LazyDictionary<DungeonNodeID, IDungeonNode>, IDungeonNodeDictionary
     {
         private readonly IMutableDungeon _dungeonData;
         private readonly IDungeonNode.Factory _factory;
@@ -20,7 +19,7 @@ namespace OpenTracker.Models.Dungeons.Nodes
         /// The factory for creating new dungeon nodes.
         /// </param>
         /// <param name="dungeonData">
-        /// The dungeon data.
+        /// The mutable dungeon data.
         /// </param>
         public DungeonNodeDictionary(IDungeonNode.Factory factory, IMutableDungeon dungeonData)
             : base(new Dictionary<DungeonNodeID, IDungeonNode>())
@@ -28,6 +27,14 @@ namespace OpenTracker.Models.Dungeons.Nodes
             _factory = factory;
 
             _dungeonData = dungeonData;
+        }
+
+        public void PopulateNodes(IList<DungeonNodeID> dungeonNodes)
+        {
+            foreach (var node in dungeonNodes)
+            {
+                _ = this[node];
+            }
         }
 
         protected override IDungeonNode Create(DungeonNodeID key)

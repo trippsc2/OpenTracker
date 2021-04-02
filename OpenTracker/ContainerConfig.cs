@@ -26,9 +26,6 @@ using OpenTracker.Models.Requirements;
 using OpenTracker.Models.RequirementNodes;
 using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.Prizes;
-using OpenTracker.Models.Requirements.Boss;
-using OpenTracker.Models.Requirements.Item;
-using OpenTracker.Models.Requirements.KeyDoor;
 using OpenTracker.Models.Requirements.Mode;
 using OpenTracker.Models.Requirements.Multiple;
 using OpenTracker.Models.Requirements.Node;
@@ -104,25 +101,19 @@ namespace OpenTracker
             nameof(AggregateRequirement),
             nameof(AlternativeRequirement),
             nameof(BigKeyShuffleRequirement),
-            nameof(BossRequirement),
             nameof(BossShuffleRequirement),
             nameof(CompassShuffleRequirement),
-            nameof(CrystalRequirement),
             nameof(EnemyShuffleRequirement),
             nameof(EntranceShuffleRequirement),
             nameof(GenericKeysRequirement),
             nameof(GuaranteedBossItemsRequirement),
-            nameof(ItemExactRequirement),
             nameof(ItemPlacementRequirement),
-            nameof(ItemRequirement),
-            nameof(KeyDoorRequirement),
             nameof(KeyDropShuffleRequirement),
             nameof(MapShuffleRequirement),
             nameof(RaceIllegalTrackingRequirement),
             nameof(RequirementNodeRequirement),
             nameof(SequenceBreakRequirement),
             nameof(ShopShuffleRequirement),
-            nameof(SmallKeyRequirement),
             nameof(SmallKeyShuffleRequirement),
             nameof(StaticRequirement),
             nameof(TakeAnyLocationsRequirement),

@@ -30,12 +30,29 @@ namespace OpenTracker.Models.Dungeons.Mutable
         delegate IMutableDungeon Factory(IDungeon dungeon);
 
         /// <summary>
+        ///     Initializes the dictionary data classes for this dungeon.
+        /// </summary>
+        void InitializeData();
+
+        /// <summary>
         ///     Applies the dungeon state conditions to this instance.
         /// </summary>
         /// <param name="state">
         ///     The dungeon state to be applied.
         /// </param>
         void ApplyState(IDungeonState state);
+
+        /// <summary>
+        ///     Returns the number of keys that are available to be collected in the dungeon.
+        /// </summary>
+        /// <param name="sequenceBreak">
+        ///     A boolean representing whether sequence breaking is allowed for this count.
+        /// </param>
+        /// <returns>
+        ///     A 32-bit integer representing the number of keys that are available to be collected in the
+        ///         dungeon.
+        /// </returns>
+        int GetAvailableSmallKeys(bool sequenceBreak = false);
         
         /// <summary>
         ///     Returns a list of accessible key doors in the dungeon.
@@ -47,14 +64,27 @@ namespace OpenTracker.Models.Dungeons.Mutable
         ///     A list of accessible key doors.
         /// </returns>
         IList<KeyDoorID> GetAccessibleKeyDoors(bool sequenceBreak = false);
-        int GetAvailableSmallKeys(bool sequenceBreak = false);
-        IDungeonResult GetDungeonResult(IDungeonState state);
+        
+        /// <summary>
+        ///     Returns whether the specified number of collected keys and big key can occur, based on key logic.
+        /// </summary>
+        /// <param name="state">
+        ///     The dungeon state data.
+        /// </param>
+        /// <returns>
+        ///     A boolean representing whether the result can occur.
+        /// </returns>
         bool ValidateKeyLayout(IDungeonState state);
-        void Reset();
 
         /// <summary>
-        /// Initialize all data in this dungeon data instance.
+        ///     Returns the current accessibility and accessible item count based on the specified dungeon state.
         /// </summary>
-        void InitializeData();
+        /// <param name="state">
+        ///     The dungeon state data.
+        /// </param>
+        /// <returns>
+        ///     The dungeon result data.
+        /// </returns>
+        IDungeonResult GetDungeonResult(IDungeonState state);
     }
 }

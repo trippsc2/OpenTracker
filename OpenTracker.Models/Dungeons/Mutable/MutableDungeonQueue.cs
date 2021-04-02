@@ -28,8 +28,8 @@ namespace OpenTracker.Models.Dungeons.Mutable
             for (var i = 0; i < count; i++)
             {
                 var dungeonData = factory(dungeon);
-                Enqueue(dungeonData);
                 dungeonData.InitializeData();
+                Enqueue(dungeonData);
             }
         }
 

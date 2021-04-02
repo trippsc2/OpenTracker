@@ -5,8 +5,8 @@ namespace OpenTracker.Models.Requirements.Item
     /// <summary>
     /// This interface contains small key requirement data.
     /// </summary>
-    public interface ISmallKeyRequirement
+    public interface ISmallKeyRequirement : IRequirement
     {
-        delegate SmallKeyRequirement Factory(ISmallKeyItem item, int count = 1);
+        delegate ISmallKeyRequirement Factory(ISmallKeyItem item, int count = 1);
     }
 }

@@ -86,8 +86,13 @@ namespace OpenTracker.Models.Settings
         /// <summary>
         /// Loads app settings save data.
         /// </summary>
-        public void Load(AppSettingsSaveData saveData)
+        public void Load(AppSettingsSaveData? saveData)
         {
+            if (saveData is null)
+            {
+                return;
+            }
+            
             Bounds.Maximized = saveData.Maximized;
             Bounds.X = saveData.X;
             Bounds.Y = saveData.Y;

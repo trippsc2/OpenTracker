@@ -12,7 +12,7 @@ using OpenTracker.Models.Modes;
 namespace OpenTracker.Models.Dungeons.Mutable
 {
     /// <summary>
-    /// This class contains the mutable dungeon data.
+    ///     This class contains the mutable dungeon data.
     /// </summary>
     public class MutableDungeon : IMutableDungeon
     {
@@ -20,37 +20,30 @@ namespace OpenTracker.Models.Dungeons.Mutable
         private readonly IDungeon _dungeon;
         private readonly IDungeonResult.Factory _resultFactory;
 
-        private readonly Dictionary<KeyDoorID, IKeyDoor> _smallKeyDoors = new();
-        private readonly Dictionary<KeyDoorID, IKeyDoor> _bigKeyDoors = new();
-        private readonly Dictionary<DungeonItemID, IDungeonItem> _items = new();
-        private readonly Dictionary<DungeonItemID, IDungeonItem> _smallKeyDrops = new();
-        private readonly Dictionary<DungeonItemID, IDungeonItem> _bigKeyDrops = new();
-        private readonly List<IDungeonItem> _bosses = new();
-
+        public IDungeonNodeDictionary Nodes { get; }
         public IKeyDoorDictionary KeyDoors { get; }
         public IDungeonItemDictionary DungeonItems { get; }
-        public IDungeonNodeDictionary Nodes { get; }
 
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="mode">
-        /// The mode data.
+        ///     The mode data.
         /// </param>
         /// <param name="keyDoors">
-        /// The key door dictionary.
+        ///     The key door dictionary.
         /// </param>
         /// <param name="nodes">
-        /// The dungeon node dictionary.
+        ///     The dungeon node dictionary.
         /// </param>
         /// <param name="dungeonItems">
-        /// The dungeon item dictionary.
+        ///     The dungeon item dictionary.
         /// </param>
         /// <param name="resultFactory">
-        /// An Autofac factory for creating dungeon results.
+        ///     An Autofac factory for creating dungeon results.
         /// </param>
         /// <param name="dungeon">
-        /// The dungeon immutable data.
+        ///     The dungeon immutable data.
         /// </param>
         public MutableDungeon(
             IMode mode, IKeyDoorDictionary.Factory keyDoors, IDungeonNodeDictionary.Factory nodes,
@@ -60,44 +53,90 @@ namespace OpenTracker.Models.Dungeons.Mutable
             _dungeon = dungeon;
             _resultFactory = resultFactory;
 
-            KeyDoors = keyDoors(this);
-            DungeonItems = dungeonItems(this);
-            Nodes = nodes(this);
+            Nodes = nodes(this, _dungeon);
+            KeyDoors = keyDoors(this, dungeon);
+            DungeonItems = dungeonItems(this, dungeon);
         }
 
-        /// <summary>
-        /// Initialize all data in this dungeon data instance.
-        /// </summary>
         public void InitializeData()
         {
-            PopulateSmallKeyDoors();
-            PopulateBigKeyDoors();
-            PopulateDungeonItems();
-            PopulateBosses();
-            PopulateSmallKeyDrops();
-            PopulateBigKeyDrops();
-            PopulateNodes();
+            Nodes.PopulateNodes(_dungeon.Nodes);
+            
+            KeyDoors.PopulateDoors(_dungeon.SmallKeyDoors);
+            KeyDoors.PopulateDoors(_dungeon.BigKeyDoors);
+            
+            DungeonItems.PopulateItems(_dungeon.DungeonItems);
+            DungeonItems.PopulateItems(_dungeon.Bosses);
+            DungeonItems.PopulateItems(_dungeon.SmallKeyDrops);
+            DungeonItems.PopulateItems(_dungeon.BigKeyDrops);
         }
 
         public void ApplyState(IDungeonState state)
         {
             SetSmallKeyDoorState(state.UnlockedDoors);
 
-            var bigKeyCollected = state.BigKeyCollected || GetAvailableBigKeys() > 0;
+            var bigKeyCollected = state.BigKeyCollected || GetAvailableBigKey(state.SequenceBreak);
 
             SetBigKeyDoorState(bigKeyCollected);
         }
 
         /// <summary>
-        /// Returns the number of keys that are available to be collected in the dungeon.
+        ///     Sets the state of all small key doors based on a specified list of unlocked doors.
+        /// </summary>
+        /// <param name="unlockedDoors">
+        ///     A list of unlocked doors.
+        /// </param>
+        private void SetSmallKeyDoorState(IList<KeyDoorID> unlockedDoors)
+        {
+            foreach (var id in _dungeon.SmallKeyDoors)
+            {
+                KeyDoors[id].Unlocked = unlockedDoors.Contains(id);
+            }
+        }
+
+        /// <summary>
+        ///     Returns whether the big key is available to be collected in the dungeon.
         /// </summary>
         /// <param name="sequenceBreak">
-        /// A boolean representing whether sequence breaking is allowed for this count.
+        ///     A boolean representing whether sequence breaking is allowed.
         /// </param>
         /// <returns>
-        /// A 32-bit integer representing the number of keys that are available to be collected in the
-        /// dungeon.
+        ///     A boolean representing whether the big key is available to be collected.
         /// </returns>
+        private bool GetAvailableBigKey(bool sequenceBreak = false)
+        {
+            if (_mode.KeyDropShuffle)
+            {
+                return false;
+            }
+
+            foreach (var id in _dungeon.BigKeyDrops)
+            {
+                switch (DungeonItems[id].Accessibility)
+                {
+                    case AccessibilityLevel.Normal:
+                    case AccessibilityLevel.SequenceBreak when sequenceBreak:
+                        return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        ///     Sets the state of all big key doors to a specified state.
+        /// </summary>
+        /// <param name="unlocked">
+        ///     A boolean representing whether the doors are to be unlocked.
+        /// </param>
+        private void SetBigKeyDoorState(bool unlocked)
+        {
+            foreach (var id in _dungeon.BigKeyDoors)
+            {
+                KeyDoors[id].Unlocked = unlocked;
+            }
+        }
+
         public int GetAvailableSmallKeys(bool sequenceBreak = false)
         {
             if (_mode.KeyDropShuffle)
@@ -107,8 +146,10 @@ namespace OpenTracker.Models.Dungeons.Mutable
 
             var smallKeys = 0;
 
-            foreach (var smallKeyDrop in _smallKeyDrops.Values)
+            foreach (var id in _dungeon.SmallKeyDrops)
             {
+                var smallKeyDrop = DungeonItems[id];
+                
                 switch (smallKeyDrop.Accessibility)
                 {
                     case AccessibilityLevel.Normal:
@@ -121,19 +162,13 @@ namespace OpenTracker.Models.Dungeons.Mutable
             return smallKeys;
         }
 
-        /// <summary>
-        /// Returns a list of locked key doors that are accessible.
-        /// </summary>
-        /// <returns>
-        /// A list of locked key doors that are accessible and whether they are a sequence break.
-        /// </returns>
         public IList<KeyDoorID> GetAccessibleKeyDoors(bool sequenceBreak = false)
         {
             var accessibleKeyDoors = new List<KeyDoorID>();
 
-            foreach (var key in _smallKeyDoors.Keys)
+            foreach (var id in _dungeon.SmallKeyDoors)
             {
-                var keyDoor = _smallKeyDoors[key];
+                var keyDoor = KeyDoors[id];
 
                 if (keyDoor.Unlocked)
                 {
@@ -144,7 +179,7 @@ namespace OpenTracker.Models.Dungeons.Mutable
                 {
                     case AccessibilityLevel.SequenceBreak when sequenceBreak:
                     case AccessibilityLevel.Normal:
-                        accessibleKeyDoors.Add(key);
+                        accessibleKeyDoors.Add(id);
                         break;
                 }
             }
@@ -152,93 +187,34 @@ namespace OpenTracker.Models.Dungeons.Mutable
             return accessibleKeyDoors;
         }
 
-        /// <summary>
-        /// Returns whether the specified number of collected keys and big key can occur,
-        /// based on key logic.
-        /// </summary>
-        /// <param name="state">
-        /// The dungeon state data.
-        /// </param>
-        /// <returns>
-        /// A boolean representing whether the result can occur.
-        /// </returns>
         public bool ValidateKeyLayout(IDungeonState state)
         {
             return _dungeon.KeyLayouts.Any(keyLayout => keyLayout.CanBeTrue(this, state));
         }
 
-        /// <summary>
-        /// Returns a list of the current accessibility of each boss in the dungeon.
-        /// </summary>
-        /// <returns>
-        /// A list of the current accessibility of each boss in the dungeon.
-        /// </returns>
-        private List<AccessibilityLevel> GetBossAccessibility()
-        {
-            List<AccessibilityLevel> bossAccessibility = new();
-
-            foreach (var bossItem in _bosses)
-            {
-                bossAccessibility.Add(bossItem.Accessibility);
-            }
-
-            return bossAccessibility;
-        }
-
-        /// <summary>
-        /// Returns the current accessibility and accessible item count based on the specified
-        /// number of small keys collected and whether the big key is collected.
-        /// </summary>
-        /// <param name="state">
-        /// The dungeon state data.
-        /// </param>
-        /// <returns>
-        /// A tuple of the accessibility of items in the dungeon and a 32-bit integer representing
-        /// the number of accessible items in the dungeon.
-        /// </returns>
         public IDungeonResult GetDungeonResult(IDungeonState state)
         {
-            var inaccessibleBosses = 0;
+            var inaccessibleBossItems = 0;
             var inaccessibleItems = 0;
             var visible = false;
 
-            CheckItemAccessibility(state, ref inaccessibleBosses, ref inaccessibleItems, ref visible);
-            CheckKeyDropAccessibility(state, ref inaccessibleItems);
+            CheckItemAccessibility(
+                state, _dungeon.DungeonItems, ref inaccessibleBossItems, ref inaccessibleItems, ref visible);
 
-            var minimumInaccessible = _mode.GuaranteedBossItems ? inaccessibleBosses : 0;
+            if (_mode.KeyDropShuffle)
+            {
+                CheckItemAccessibility(
+                    state, _dungeon.SmallKeyDrops, ref inaccessibleBossItems, ref inaccessibleItems, ref visible);
+                CheckItemAccessibility(
+                    state, _dungeon.BigKeyDrops, ref inaccessibleBossItems, ref inaccessibleItems, ref visible);
+            }
+
             var bossAccessibility = GetBossAccessibility();
-            var total = _dungeon.Total;
-
-            if (!_mode.MapShuffle && _dungeon.Map is not null)
-            {
-                total += _dungeon.Map.Maximum;
-            }
-
-            if (!_mode.CompassShuffle && _dungeon.Compass is not null)
-            {
-                total += _dungeon.Compass.Maximum;
-            }
-
-            if (inaccessibleItems <= minimumInaccessible)
-            {
-                return minimumInaccessible == 0
-                    ? _resultFactory(bossAccessibility, total, state.SequenceBreak, false)
-                    : _resultFactory(
-                        bossAccessibility, total - minimumInaccessible, state.SequenceBreak, visible);
-            }
+            var total = _dungeon.TotalWithMapAndCompass;
 
             if (!_mode.BigKeyShuffle && !state.BigKeyCollected && _dungeon.BigKey is not null)
             {
-                var bigKey = _dungeon.BigKey.Maximum;
-                inaccessibleItems -= bigKey;
-            }
-
-            if (inaccessibleItems <= minimumInaccessible)
-            {
-                return minimumInaccessible == 0
-                    ? _resultFactory(bossAccessibility, total, state.SequenceBreak, false)
-                    : _resultFactory(
-                        bossAccessibility, total - minimumInaccessible, state.SequenceBreak, visible);
+                inaccessibleItems -= _dungeon.BigKey.Maximum;
             }
 
             if (!_mode.SmallKeyShuffle)
@@ -247,49 +223,52 @@ namespace OpenTracker.Models.Dungeons.Mutable
                 inaccessibleItems -= smallKeys - state.KeysCollected;
             }
 
-            if (inaccessibleItems <= minimumInaccessible)
-            {
-                return minimumInaccessible == 0
-                    ? _resultFactory(bossAccessibility, total, state.SequenceBreak, false)
-                    : _resultFactory(
-                        bossAccessibility, total - minimumInaccessible, state.SequenceBreak, visible);
-            }
+            inaccessibleItems = Math.Max(0, inaccessibleItems);
 
-            inaccessibleItems = Math.Max(inaccessibleItems, minimumInaccessible);
-
-            return inaccessibleItems <= 0
-                ? _resultFactory(bossAccessibility, total, state.SequenceBreak, false)
-                : _resultFactory(
-                    bossAccessibility, total - inaccessibleItems, state.SequenceBreak, visible);
+            return _resultFactory(bossAccessibility, total - inaccessibleItems, state.SequenceBreak, visible);
         }
 
         /// <summary>
-        /// Check the accessibility of all items/bosses.
+        ///     Returns a list of the current accessibility of each boss in the dungeon.
+        /// </summary>
+        /// <returns>
+        ///     A list of the current accessibility of each boss in the dungeon.
+        /// </returns>
+        private List<AccessibilityLevel> GetBossAccessibility()
+        {
+            return _dungeon.Bosses.Select(id => DungeonItems[id].Accessibility).ToList();
+        }
+
+        /// <summary>
+        ///     Check the accessibility of a specified list of item IDs.
         /// </summary>
         /// <param name="state">
-        /// The dungeon state to be checked.
+        ///     The dungeon state to be checked.
         /// </param>
-        /// <param name="inaccessibleBosses">
-        /// A 32-bit signed integer representing the number of inaccessible bosses.
+        /// <param name="items">
+        ///     A list of item IDs to be checked.
+        /// </param>
+        /// <param name="inaccessibleBossItems">
+        ///     A 32-bit signed integer representing the number of inaccessible bosses.
         /// </param>
         /// <param name="inaccessibleItems">
-        /// A 32-bit signed integer representing the number of inaccessible items.
+        ///     A 32-bit signed integer representing the number of inaccessible items.
         /// </param>
         /// <param name="visible">
-        /// A boolean representing whether the last inaccessible item is visible.
+        ///     A boolean representing whether the last inaccessible item is visible.
         /// </param>
         private void CheckItemAccessibility(
-            IDungeonState state, ref int inaccessibleBosses, ref int inaccessibleItems, ref bool visible)
+            IDungeonState state, IList<DungeonItemID> items, ref int inaccessibleBossItems, ref int inaccessibleItems, ref bool visible)
         {
-            foreach (var item in _items.Keys)
+            foreach (var id in items)
             {
-                switch (_items[item].Accessibility)
+                switch (DungeonItems[id].Accessibility)
                 {
                     case AccessibilityLevel.None:
                     case AccessibilityLevel.SequenceBreak when !state.SequenceBreak:
-                        if (_dungeon.Bosses.Contains(item))
+                        if (_dungeon.Bosses.Contains(id))
                         {
-                            inaccessibleBosses++;
+                            inaccessibleBossItems++;
                         }
 
                         inaccessibleItems++;
@@ -300,194 +279,6 @@ namespace OpenTracker.Models.Dungeons.Mutable
                         break;
                 }
             }
-        }
-
-        /// <summary>
-        /// Check the accessibility of all key drops.
-        /// </summary>
-        /// <param name="state">
-        /// The dungeon state to be checked.
-        /// </param>
-        /// <param name="inaccessibleItems">
-        /// A 32-bit integer representing the number of inaccessible items.
-        /// </param>
-        private void CheckKeyDropAccessibility(IDungeonState state, ref int inaccessibleItems)
-        {
-            if (!_mode.KeyDropShuffle)
-            {
-                return;
-            }
-            
-            foreach (var item in _smallKeyDrops.Values)
-            {
-                switch (item.Accessibility)
-                {
-                    case AccessibilityLevel.None:
-                    case AccessibilityLevel.SequenceBreak when !state.SequenceBreak:
-                        inaccessibleItems++;
-                        break;
-                }
-            }
-
-            foreach (var item in _bigKeyDrops.Values)
-            {
-                switch (item.Accessibility)
-                {
-                    case AccessibilityLevel.None:
-                    case AccessibilityLevel.SequenceBreak when !state.SequenceBreak:
-                        inaccessibleItems++;
-                        break;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Resets the dungeon data for testing purposes.
-        /// </summary>
-        public void Reset()
-        {
-            foreach (var door in KeyDoors.Values)
-            {
-                door.Unlocked = false;
-            }
-        }
-
-        /// <summary>
-        /// Creates all small key doors and adds them to the list.
-        /// </summary>
-        private void PopulateSmallKeyDoors()
-        {
-            foreach (var smallKeyDoor in _dungeon.SmallKeyDoors)
-            {
-                _smallKeyDoors.Add(smallKeyDoor, KeyDoors[smallKeyDoor]);
-            }
-        }
-
-        /// <summary>
-        /// Creates all big key doors and adds them to the list.
-        /// </summary>
-        private void PopulateBigKeyDoors()
-        {
-            foreach (var bigKeyDoor in _dungeon.BigKeyDoors)
-            {
-                _bigKeyDoors.Add(bigKeyDoor, KeyDoors[bigKeyDoor]);
-            }
-        }
-
-        /// <summary>
-        /// Creates all dungeon items and adds them to the list.
-        /// </summary>
-        private void PopulateDungeonItems()
-        {
-            foreach (var item in _dungeon.DungeonItems)
-            {
-                _items.Add(item, DungeonItems[item]);
-            }
-        }
-
-        /// <summary>
-        /// Creates all dungeon bosses and adds them to the list.
-        /// </summary>
-        private void PopulateBosses()
-        {
-            foreach (var boss in _dungeon.Bosses)
-            {
-                _bosses.Add(DungeonItems[boss]);
-            }
-        }
-
-        /// <summary>
-        /// Creates all small key drops and adds them to the list.
-        /// </summary>
-        private void PopulateSmallKeyDrops()
-        {
-            foreach (var smallKeyDrop in _dungeon.SmallKeyDrops)
-            {
-                _smallKeyDrops.Add(smallKeyDrop, DungeonItems[smallKeyDrop]);
-            }
-        }
-
-        /// <summary>
-        /// Creates all big key drops and adds them to the list.
-        /// </summary>
-        private void PopulateBigKeyDrops()
-        {
-            foreach (var bigKeyDrop in _dungeon.BigKeyDrops)
-            {
-                _bigKeyDrops.Add(bigKeyDrop, DungeonItems[bigKeyDrop]);
-            }
-        }
-
-        /// <summary>
-        /// Creates all dungeon nodes.
-        /// </summary>
-        private void PopulateNodes()
-        {
-            foreach (var node in _dungeon.Nodes)
-            {
-                _ = Nodes[node];
-            }
-        }
-
-        /// <summary>
-        /// Sets the state of all small key doors based on a specified list of unlocked doors.
-        /// </summary>
-        /// <param name="unlockedDoors">
-        /// A list of unlocked doors.
-        /// </param>
-        private void SetSmallKeyDoorState(IList<KeyDoorID> unlockedDoors)
-        {
-            foreach (var smallKeyDoor in _smallKeyDoors.Keys)
-            {
-                _smallKeyDoors[smallKeyDoor].Unlocked = unlockedDoors.Contains(smallKeyDoor);
-            }
-        }
-
-        /// <summary>
-        /// Sets the state of all big key doors to a specified state.
-        /// </summary>
-        /// <param name="unlocked">
-        /// A boolean representing whether the doors are to be unlocked.
-        /// </param>
-        private void SetBigKeyDoorState(bool unlocked)
-        {
-            foreach (IKeyDoor bigKeyDoor in _bigKeyDoors.Values)
-            {
-                bigKeyDoor.Unlocked = unlocked;
-            }
-        }
-
-        /// <summary>
-        /// Returns the number of big keys that are available to be collected in the dungeon.
-        /// </summary>
-        /// <param name="sequenceBreak">
-        /// A boolean representing whether sequence breaking is allowed for this count.
-        /// </param>
-        /// <returns>
-        /// A 32-bit integer representing the number of big keys that are available to be collected in the
-        /// dungeon.
-        /// </returns>
-        private int GetAvailableBigKeys(bool sequenceBreak = false)
-        {
-            if (_mode.KeyDropShuffle)
-            {
-                return 0;
-            }
-
-            var bigKeys = 0;
-
-            foreach (var bigKeyDrop in _bigKeyDrops.Values)
-            {
-                switch (bigKeyDrop.Accessibility)
-                {
-                    case AccessibilityLevel.Normal:
-                    case AccessibilityLevel.SequenceBreak when sequenceBreak:
-                        bigKeys++;
-                        break;
-                }
-            }
-
-            return bigKeys;
         }
     }
 }
