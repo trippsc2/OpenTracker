@@ -40,6 +40,6 @@ namespace OpenTracker.Models.Items.Keys
         /// <returns>
         ///     A list of possible small key values.
         /// </returns>
-        List<int> GetKeyValues();
+        IList<int> GetKeyValues();
     }
 }

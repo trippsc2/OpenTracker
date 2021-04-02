@@ -1,3 +1,5 @@
+using OpenTracker.Models.Items;
+
 namespace OpenTracker.Models.Requirements.Item
 {
     /// <summary>
@@ -5,5 +7,6 @@ namespace OpenTracker.Models.Requirements.Item
     /// </summary>
     public interface IItemRequirement : IRequirement
     {
+        delegate IItemRequirement Factory(IItem item, int count = 1);
     }
 }

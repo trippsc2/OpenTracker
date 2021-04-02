@@ -14,7 +14,7 @@ namespace OpenTracker.Models.Items.Keys
         /// <returns>
         ///     A list of possible big key values.
         /// </returns>
-        List<bool> GetKeyValues();
+        IList<bool> GetKeyValues();
 
         /// <summary>
         ///     A factory for creating big key items.

@@ -11,8 +11,6 @@ namespace OpenTracker.Models.Requirements.Item
         private readonly IItem _item;
         private readonly int _count;
 
-        public delegate ItemRequirement Factory(IItem item, int count = 1);
-
         /// <summary>
         /// Constructor
         /// </summary>

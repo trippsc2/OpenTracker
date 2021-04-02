@@ -14,8 +14,6 @@ namespace OpenTracker.Models.Requirements.Item
         private readonly IItem _crystal;
         private readonly IItem _redCrystal;
 
-        public delegate CrystalRequirement Factory();
-
         /// <summary>
         /// Constructor
         /// </summary>

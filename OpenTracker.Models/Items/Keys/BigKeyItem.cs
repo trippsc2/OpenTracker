@@ -120,7 +120,7 @@ namespace OpenTracker.Models.Items.Keys
             Current = 0;
         }
 
-        public List<bool> GetKeyValues()
+        public IList<bool> GetKeyValues()
         {
             if (Maximum == 0)
             {

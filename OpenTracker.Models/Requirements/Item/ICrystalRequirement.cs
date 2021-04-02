@@ -5,5 +5,6 @@ namespace OpenTracker.Models.Requirements.Item
     /// </summary>
     public interface ICrystalRequirement : IRequirement
     {
+        delegate ICrystalRequirement Factory();
     }
 }

@@ -1,3 +1,5 @@
+using OpenTracker.Models.KeyDoors;
+
 namespace OpenTracker.Models.Requirements.KeyDoor
 {
     /// <summary>
@@ -5,5 +7,6 @@ namespace OpenTracker.Models.Requirements.KeyDoor
     /// </summary>
     public interface IKeyDoorRequirement : IRequirement
     {
+        delegate IKeyDoorRequirement Factory(IKeyDoor keyDoor);
     }
 }

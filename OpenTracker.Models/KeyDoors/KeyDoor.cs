@@ -42,7 +42,7 @@ namespace OpenTracker.Models.KeyDoors
         /// The mutable dungeon data parent class.
         /// </param>
         public KeyDoor(
-            IKeyDoorFactory factory, KeyDoorRequirement.Factory requirementFactory, IMutableDungeon dungeonData)
+            IKeyDoorFactory factory, IKeyDoorRequirement.Factory requirementFactory, IMutableDungeon dungeonData)
         {
             _factory = factory;
             _dungeonData = dungeonData;

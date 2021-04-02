@@ -79,144 +79,6 @@ namespace OpenTracker.Models.Dungeons.Mutable
             PopulateNodes();
         }
 
-        /// <summary>
-        /// Creates all small key doors and adds them to the list.
-        /// </summary>
-        private void PopulateSmallKeyDoors()
-        {
-            foreach (var smallKeyDoor in _dungeon.SmallKeyDoors)
-            {
-                _smallKeyDoors.Add(smallKeyDoor, KeyDoors[smallKeyDoor]);
-            }
-        }
-
-        /// <summary>
-        /// Creates all big key doors and adds them to the list.
-        /// </summary>
-        private void PopulateBigKeyDoors()
-        {
-            foreach (var bigKeyDoor in _dungeon.BigKeyDoors)
-            {
-                _bigKeyDoors.Add(bigKeyDoor, KeyDoors[bigKeyDoor]);
-            }
-        }
-
-        /// <summary>
-        /// Creates all dungeon items and adds them to the list.
-        /// </summary>
-        private void PopulateDungeonItems()
-        {
-            foreach (var item in _dungeon.DungeonItems)
-            {
-                _items.Add(item, DungeonItems[item]);
-            }
-        }
-
-        /// <summary>
-        /// Creates all dungeon bosses and adds them to the list.
-        /// </summary>
-        private void PopulateBosses()
-        {
-            foreach (var boss in _dungeon.Bosses)
-            {
-                _bosses.Add(DungeonItems[boss]);
-            }
-        }
-
-        /// <summary>
-        /// Creates all small key drops and adds them to the list.
-        /// </summary>
-        private void PopulateSmallKeyDrops()
-        {
-            foreach (var smallKeyDrop in _dungeon.SmallKeyDrops)
-            {
-                _smallKeyDrops.Add(smallKeyDrop, DungeonItems[smallKeyDrop]);
-            }
-        }
-
-        /// <summary>
-        /// Creates all big key drops and adds them to the list.
-        /// </summary>
-        private void PopulateBigKeyDrops()
-        {
-            foreach (var bigKeyDrop in _dungeon.BigKeyDrops)
-            {
-                _bigKeyDrops.Add(bigKeyDrop, DungeonItems[bigKeyDrop]);
-            }
-        }
-
-        /// <summary>
-        /// Creates all dungeon nodes.
-        /// </summary>
-        private void PopulateNodes()
-        {
-            foreach (var node in _dungeon.Nodes)
-            {
-                _ = Nodes[node];
-            }
-        }
-
-        /// <summary>
-        /// Sets the state of all small key doors based on a specified list of unlocked doors.
-        /// </summary>
-        /// <param name="unlockedDoors">
-        /// A list of unlocked doors.
-        /// </param>
-        private void SetSmallKeyDoorState(IList<KeyDoorID> unlockedDoors)
-        {
-            foreach (var smallKeyDoor in _smallKeyDoors.Keys)
-            {
-                _smallKeyDoors[smallKeyDoor].Unlocked = unlockedDoors.Contains(smallKeyDoor);
-            }
-        }
-
-        /// <summary>
-        /// Sets the state of all big key doors to a specified state.
-        /// </summary>
-        /// <param name="unlocked">
-        /// A boolean representing whether the doors are to be unlocked.
-        /// </param>
-        private void SetBigKeyDoorState(bool unlocked)
-        {
-            foreach (IKeyDoor bigKeyDoor in _bigKeyDoors.Values)
-            {
-                bigKeyDoor.Unlocked = unlocked;
-            }
-        }
-
-        /// <summary>
-        /// Returns the number of big keys that are available to be collected in the dungeon.
-        /// </summary>
-        /// <param name="sequenceBreak">
-        /// A boolean representing whether sequence breaking is allowed for this count.
-        /// </param>
-        /// <returns>
-        /// A 32-bit integer representing the number of big keys that are available to be collected in the
-        /// dungeon.
-        /// </returns>
-        private int GetAvailableBigKeys(bool sequenceBreak = false)
-        {
-            if (_mode.KeyDropShuffle)
-            {
-                return 0;
-            }
-
-            var bigKeys = 0;
-
-            foreach (var bigKeyDrop in _bigKeyDrops.Values)
-            {
-                switch (bigKeyDrop.Accessibility)
-                {
-                    case AccessibilityLevel.Normal:
-                    case AccessibilityLevel.SequenceBreak when sequenceBreak:
-                        bigKeys++;
-                        break;
-                }
-            }
-
-            return bigKeys;
-        }
-
         public void ApplyState(IDungeonState state)
         {
             SetSmallKeyDoorState(state.UnlockedDoors);
@@ -488,6 +350,144 @@ namespace OpenTracker.Models.Dungeons.Mutable
             {
                 door.Unlocked = false;
             }
+        }
+
+        /// <summary>
+        /// Creates all small key doors and adds them to the list.
+        /// </summary>
+        private void PopulateSmallKeyDoors()
+        {
+            foreach (var smallKeyDoor in _dungeon.SmallKeyDoors)
+            {
+                _smallKeyDoors.Add(smallKeyDoor, KeyDoors[smallKeyDoor]);
+            }
+        }
+
+        /// <summary>
+        /// Creates all big key doors and adds them to the list.
+        /// </summary>
+        private void PopulateBigKeyDoors()
+        {
+            foreach (var bigKeyDoor in _dungeon.BigKeyDoors)
+            {
+                _bigKeyDoors.Add(bigKeyDoor, KeyDoors[bigKeyDoor]);
+            }
+        }
+
+        /// <summary>
+        /// Creates all dungeon items and adds them to the list.
+        /// </summary>
+        private void PopulateDungeonItems()
+        {
+            foreach (var item in _dungeon.DungeonItems)
+            {
+                _items.Add(item, DungeonItems[item]);
+            }
+        }
+
+        /// <summary>
+        /// Creates all dungeon bosses and adds them to the list.
+        /// </summary>
+        private void PopulateBosses()
+        {
+            foreach (var boss in _dungeon.Bosses)
+            {
+                _bosses.Add(DungeonItems[boss]);
+            }
+        }
+
+        /// <summary>
+        /// Creates all small key drops and adds them to the list.
+        /// </summary>
+        private void PopulateSmallKeyDrops()
+        {
+            foreach (var smallKeyDrop in _dungeon.SmallKeyDrops)
+            {
+                _smallKeyDrops.Add(smallKeyDrop, DungeonItems[smallKeyDrop]);
+            }
+        }
+
+        /// <summary>
+        /// Creates all big key drops and adds them to the list.
+        /// </summary>
+        private void PopulateBigKeyDrops()
+        {
+            foreach (var bigKeyDrop in _dungeon.BigKeyDrops)
+            {
+                _bigKeyDrops.Add(bigKeyDrop, DungeonItems[bigKeyDrop]);
+            }
+        }
+
+        /// <summary>
+        /// Creates all dungeon nodes.
+        /// </summary>
+        private void PopulateNodes()
+        {
+            foreach (var node in _dungeon.Nodes)
+            {
+                _ = Nodes[node];
+            }
+        }
+
+        /// <summary>
+        /// Sets the state of all small key doors based on a specified list of unlocked doors.
+        /// </summary>
+        /// <param name="unlockedDoors">
+        /// A list of unlocked doors.
+        /// </param>
+        private void SetSmallKeyDoorState(IList<KeyDoorID> unlockedDoors)
+        {
+            foreach (var smallKeyDoor in _smallKeyDoors.Keys)
+            {
+                _smallKeyDoors[smallKeyDoor].Unlocked = unlockedDoors.Contains(smallKeyDoor);
+            }
+        }
+
+        /// <summary>
+        /// Sets the state of all big key doors to a specified state.
+        /// </summary>
+        /// <param name="unlocked">
+        /// A boolean representing whether the doors are to be unlocked.
+        /// </param>
+        private void SetBigKeyDoorState(bool unlocked)
+        {
+            foreach (IKeyDoor bigKeyDoor in _bigKeyDoors.Values)
+            {
+                bigKeyDoor.Unlocked = unlocked;
+            }
+        }
+
+        /// <summary>
+        /// Returns the number of big keys that are available to be collected in the dungeon.
+        /// </summary>
+        /// <param name="sequenceBreak">
+        /// A boolean representing whether sequence breaking is allowed for this count.
+        /// </param>
+        /// <returns>
+        /// A 32-bit integer representing the number of big keys that are available to be collected in the
+        /// dungeon.
+        /// </returns>
+        private int GetAvailableBigKeys(bool sequenceBreak = false)
+        {
+            if (_mode.KeyDropShuffle)
+            {
+                return 0;
+            }
+
+            var bigKeys = 0;
+
+            foreach (var bigKeyDrop in _bigKeyDrops.Values)
+            {
+                switch (bigKeyDrop.Accessibility)
+                {
+                    case AccessibilityLevel.Normal:
+                    case AccessibilityLevel.SequenceBreak when sequenceBreak:
+                        bigKeys++;
+                        break;
+                }
+            }
+
+            return bigKeys;
         }
     }
 }

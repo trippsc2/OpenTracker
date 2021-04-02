@@ -11,8 +11,6 @@ namespace OpenTracker.Models.Requirements.Item
         private readonly ISmallKeyItem _item;
         private readonly int _count;
 
-        public delegate SmallKeyRequirement Factory(ISmallKeyItem item, int count = 1);
-
         /// <summary>
         /// Constructor
         /// </summary>

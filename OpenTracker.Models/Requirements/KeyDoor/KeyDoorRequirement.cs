@@ -10,8 +10,6 @@ namespace OpenTracker.Models.Requirements.KeyDoor
     {
         private readonly IKeyDoor _keyDoor;
 
-        public delegate KeyDoorRequirement Factory(IKeyDoor keyDoor);
-
         /// <summary>
         /// Constructor
         /// </summary>

@@ -1,3 +1,5 @@
+using OpenTracker.Models.Items.Keys;
+
 namespace OpenTracker.Models.Requirements.Item
 {
     /// <summary>
@@ -5,5 +7,6 @@ namespace OpenTracker.Models.Requirements.Item
     /// </summary>
     public interface ISmallKeyRequirement
     {
+        delegate SmallKeyRequirement Factory(ISmallKeyItem item, int count = 1);
     }
 }

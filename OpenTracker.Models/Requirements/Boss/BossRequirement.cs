@@ -41,8 +41,6 @@ namespace OpenTracker.Models.Requirements.Boss
             }
         }
 
-        public delegate BossRequirement Factory(IBossPlacement bossPlacement);
-
         /// <summary>
         /// Constructor
         /// </summary>
