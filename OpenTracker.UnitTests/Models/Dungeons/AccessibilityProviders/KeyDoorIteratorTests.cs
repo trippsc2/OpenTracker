@@ -110,6 +110,36 @@ namespace OpenTracker.UnitTests.Models.Dungeons.AccessibilityProviders
         }
         
         [Fact]
+        public void ProcessKeyDoorPermutations_ShouldReturn4Permutations_When1AccessibleKeyDoorsAnd2AvailableKeys()
+        {
+            _smallKeyDoors.Add(KeyDoorID.ATFirstKeyDoor);
+            _smallKeyDoors.Add(KeyDoorID.ATSecondKeyDoor);
+            _dungeonData.GetAvailableSmallKeys(Arg.Any<bool>()).Returns(2);
+
+            var processKeyDoorPermutationsCalled = 0;
+
+            List<KeyDoorID> GetAccessibleKeyDoors()
+            {
+                var accessibleKeyDoors = new List<KeyDoorID>();
+
+                if (processKeyDoorPermutationsCalled < 2)
+                {
+                    accessibleKeyDoors.Add(KeyDoorID.ATFirstKeyDoor);
+                }
+                
+                processKeyDoorPermutationsCalled++;
+                return accessibleKeyDoors;
+            }
+
+            _dungeonData.GetAccessibleKeyDoors(Arg.Any<bool>()).Returns(
+                _ => GetAccessibleKeyDoors());
+            var finalQueue = new BlockingCollection<IDungeonState>();
+            _sut.ProcessKeyDoorPermutations(finalQueue);
+            
+            Assert.Equal(2, finalQueue.Count);
+        }
+
+        [Fact]
         public void ProcessKeyDoorPermutations_ShouldReturn4Permutations_When2AccessibleKeyDoorsAnd2AvailableKeys()
         {
             _smallKeyDoors.Add(KeyDoorID.ATFirstKeyDoor);

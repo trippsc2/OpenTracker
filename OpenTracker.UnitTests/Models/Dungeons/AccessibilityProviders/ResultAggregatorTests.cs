@@ -91,18 +91,22 @@ namespace OpenTracker.UnitTests.Models.Dungeons.AccessibilityProviders
         {
             var state1 = Substitute.For<IDungeonState>();
             var state2 = Substitute.For<IDungeonState>();
+            var state3 = Substitute.For<IDungeonState>();
 
             _dungeon.Total.Returns(2);
             _dungeon.TotalWithMapAndCompass.Returns(2);
 
             _dungeonData.ValidateKeyLayout(state1).Returns(true);
             _dungeonData.ValidateKeyLayout(state2).Returns(true);
+            _dungeonData.ValidateKeyLayout(state3).Returns(true);
             _dungeonData.GetDungeonResult(state1).Returns(_resultFactory(
-                new List<AccessibilityLevel>(), 2, true, false));
+                new List<AccessibilityLevel>(), 3, true, false));
             _dungeonData.GetDungeonResult(state2).Returns(_resultFactory(
                 new List<AccessibilityLevel>(), 1, false, false));
+            _dungeonData.GetDungeonResult(state3).Returns(_resultFactory(
+                new List<AccessibilityLevel>(), 2, false, false));
 
-            var finalQueue = new BlockingCollection<IDungeonState> {state1, state2};
+            var finalQueue = new BlockingCollection<IDungeonState> {state1, state2, state3};
             finalQueue.CompleteAdding();
 
             var result = _sut.AggregateResults(finalQueue);
@@ -113,11 +117,11 @@ namespace OpenTracker.UnitTests.Models.Dungeons.AccessibilityProviders
         [Theory]
         [InlineData(AccessibilityLevel.None, AccessibilityLevel.None, AccessibilityLevel.None)]
         [InlineData(AccessibilityLevel.SequenceBreak, AccessibilityLevel.SequenceBreak, AccessibilityLevel.None)]
-        [InlineData(AccessibilityLevel.SequenceBreak, AccessibilityLevel.Normal, AccessibilityLevel.None)]
+        [InlineData(AccessibilityLevel.Normal, AccessibilityLevel.Normal, AccessibilityLevel.None)]
         [InlineData(AccessibilityLevel.SequenceBreak, AccessibilityLevel.None, AccessibilityLevel.SequenceBreak)]
         [InlineData(
             AccessibilityLevel.SequenceBreak, AccessibilityLevel.SequenceBreak, AccessibilityLevel.SequenceBreak)]
-        [InlineData(AccessibilityLevel.SequenceBreak, AccessibilityLevel.Normal, AccessibilityLevel.SequenceBreak)]
+        [InlineData(AccessibilityLevel.Normal, AccessibilityLevel.Normal, AccessibilityLevel.SequenceBreak)]
         [InlineData(AccessibilityLevel.SequenceBreak, AccessibilityLevel.None, AccessibilityLevel.Normal)]
         [InlineData(AccessibilityLevel.SequenceBreak, AccessibilityLevel.SequenceBreak, AccessibilityLevel.Normal)]
         [InlineData(AccessibilityLevel.Normal, AccessibilityLevel.Normal, AccessibilityLevel.Normal)]
@@ -137,7 +141,7 @@ namespace OpenTracker.UnitTests.Models.Dungeons.AccessibilityProviders
                 new List<AccessibilityLevel> {state1Accessibility}, 2, false,
                 false));
             _dungeonData.GetDungeonResult(state2).Returns(_resultFactory(
-                new List<AccessibilityLevel> {state2Accessibility}, 1, false,
+                new List<AccessibilityLevel> {state2Accessibility}, 1, true,
                 false));
 
             var finalQueue = new BlockingCollection<IDungeonState> {state1, state2};

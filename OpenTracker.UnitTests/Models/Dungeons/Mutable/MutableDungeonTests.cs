@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Dungeons;
@@ -552,6 +553,16 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Mutable
             var result = sut.GetDungeonResult(state);
 
             Assert.Equal(expected, result.MinimumInaccessible);
+        }
+
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var factory = scope.Resolve<IMutableDungeon.Factory>();
+            var sut = factory(_dungeon);
+            
+            Assert.NotNull(sut as MutableDungeon);
         }
     }
 }

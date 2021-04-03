@@ -12,7 +12,7 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes
         private readonly IDungeonNodeFactory _factory = Substitute.For<IDungeonNodeFactory>();
         private readonly IMutableDungeon _dungeonData = Substitute.For<IMutableDungeon>();
 
-        private readonly List<INodeConnection> _connections = new List<INodeConnection>
+        private readonly List<INodeConnection> _connections = new()
         {
             Substitute.For<INodeConnection>(),
             Substitute.For<INodeConnection>()
@@ -37,5 +37,7 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes
                 _dungeonData.Nodes, new KeyValuePair<DungeonNodeID, IDungeonNode>(
                     DungeonNodeID.AT, _sut));
         }
+        
+        
     }
 }
