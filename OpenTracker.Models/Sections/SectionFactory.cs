@@ -4,8 +4,8 @@ using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.Dungeons.AccessibilityProvider;
 using OpenTracker.Models.Locations;
+using OpenTracker.Models.Nodes;
 using OpenTracker.Models.PrizePlacements;
-using OpenTracker.Models.RequirementNodes;
 using OpenTracker.Models.Requirements;
 
 namespace OpenTracker.Models.Sections
@@ -18,7 +18,7 @@ namespace OpenTracker.Models.Sections
         private readonly IBossPlacementDictionary _bossPlacements;
         private readonly IDungeonDictionary _dungeons;
         private readonly IPrizePlacementDictionary _prizePlacements;
-        private readonly IRequirementNodeDictionary _requirementNodes;
+        private readonly IOverworldNodeDictionary _requirementNodes;
         private readonly IRequirementDictionary _requirements;
         private readonly ISectionAutoTrackingFactory _autoTrackingFactory;
 
@@ -98,7 +98,7 @@ namespace OpenTracker.Models.Sections
         /// </param>
         public SectionFactory(
             IBossPlacementDictionary bossPlacements, IDungeonDictionary dungeons,
-            IPrizePlacementDictionary prizePlacements, IRequirementNodeDictionary requirementNodes,
+            IPrizePlacementDictionary prizePlacements, IOverworldNodeDictionary requirementNodes,
             IRequirementDictionary requirements, ISectionAutoTrackingFactory autoTrackingFactory,
             IDungeonAccessibilityProvider.Factory accessibilityProvider, BossSection.Factory bossFactory,
             DropdownSection.Factory dropdownFactory, DungeonEntranceSection.Factory dungeonEntranceFactory,
@@ -551,30 +551,30 @@ namespace OpenTracker.Models.Sections
         /// <returns>
         /// The requirement node to which the section belongs.
         /// </returns>
-        private IRequirementNode GetSectionNode(LocationID id, int index = 0)
+        private INode GetSectionNode(LocationID id, int index = 0)
         {
             switch (id)
             {
                 case LocationID.LinksHouse:
                     {
-                        return _requirementNodes[RequirementNodeID.Start];
+                        return _requirementNodes[OverworldNodeID.Start];
                     }
                 case LocationID.Pedestal:
                     {
-                        return _requirementNodes[RequirementNodeID.Pedestal];
+                        return _requirementNodes[OverworldNodeID.Pedestal];
                     }
                 case LocationID.LumberjackCave:
                 case LocationID.LumberjackCaveEntrance:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.LumberjackCaveHole];
+                            OverworldNodeID.LumberjackCaveHole];
                     }
                 case LocationID.BlindsHouse when index == 0:
                 case LocationID.Tavern:
                 case LocationID.Dam when index == 0:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.LightWorldNotBunnyOrSuperBunnyMirror];
+                            OverworldNodeID.LightWorldNotBunnyOrSuperBunnyMirror];
                     }
                 case LocationID.BlindsHouse when index == 1:
                 case LocationID.TheWell when index == 1:
@@ -596,12 +596,12 @@ namespace OpenTracker.Models.Sections
                 case LocationID.HypeFairyCaveTakeAny:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.LightWorldNotBunny];
+                            OverworldNodeID.LightWorldNotBunny];
                     }
                 case LocationID.TheWell when index == 0:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.LightWorldNotBunnyOrSuperBunnyFallInHole];
+                            OverworldNodeID.LightWorldNotBunnyOrSuperBunnyFallInHole];
                     }
                 case LocationID.BottleVendor:
                 case LocationID.LumberjackHouseEntrance:
@@ -653,20 +653,20 @@ namespace OpenTracker.Models.Sections
                 case LocationID.KakarikoShop:
                 case LocationID.LakeHyliaShop:
                     {
-                        return _requirementNodes[RequirementNodeID.LightWorld];
+                        return _requirementNodes[OverworldNodeID.LightWorld];
                     }
                 case LocationID.SickKid:
                     {
-                        return _requirementNodes[RequirementNodeID.SickKid];
+                        return _requirementNodes[OverworldNodeID.SickKid];
                     }
                 case LocationID.MagicBat:
                     {
-                        return _requirementNodes[RequirementNodeID.MagicBat];
+                        return _requirementNodes[OverworldNodeID.MagicBat];
                     }
                 case LocationID.RaceGame:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.RaceGameLedgeNotBunny];
+                            OverworldNodeID.RaceGameLedgeNotBunny];
                     }
                 case LocationID.Library:
                 case LocationID.BonkRocks:
@@ -675,268 +675,268 @@ namespace OpenTracker.Models.Sections
                 case LocationID.CentralBonkRocksTakeAny:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.LightWorldDash];
+                            OverworldNodeID.LightWorldDash];
                     }
                 case LocationID.WitchsHut:
                     {
-                        return _requirementNodes[RequirementNodeID.WitchsHut];
+                        return _requirementNodes[OverworldNodeID.WitchsHut];
                     }
                 case LocationID.SahasrahlasHut when index == 1:
                     {
-                        return _requirementNodes[RequirementNodeID.Sahasrahla];
+                        return _requirementNodes[OverworldNodeID.Sahasrahla];
                     }
                 case LocationID.KingsTomb:
                 case LocationID.KingsTombEntrance:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.KingsTombGrave];
+                            OverworldNodeID.KingsTombGrave];
                     }
                 case LocationID.GroveDiggingSpot:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.GroveDiggingSpot];
+                            OverworldNodeID.GroveDiggingSpot];
                     }
                 case LocationID.Hobo:
                     {
-                        return _requirementNodes[RequirementNodeID.Hobo];
+                        return _requirementNodes[OverworldNodeID.Hobo];
                     }
                 case LocationID.PyramidLedge:
                     {
-                        return _requirementNodes[RequirementNodeID.DarkWorldEast];
+                        return _requirementNodes[OverworldNodeID.DarkWorldEast];
                     }
                 case LocationID.FatFairy:
                     {
-                        return _requirementNodes[RequirementNodeID.BigBombToWall];
+                        return _requirementNodes[OverworldNodeID.BigBombToWall];
                     }
                 case LocationID.HauntedGrove:
                 case LocationID.HypeCaveEntrance:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.DarkWorldSouthNotBunny];
+                            OverworldNodeID.DarkWorldSouthNotBunny];
                     }
                 case LocationID.HypeCave:
                 case LocationID.DiggingGame:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.DarkWorldSouthNotBunny];
+                            OverworldNodeID.DarkWorldSouthNotBunny];
                     }
                 case LocationID.BombosTablet:
                     {
-                        return _requirementNodes[RequirementNodeID.BombosTablet];
+                        return _requirementNodes[OverworldNodeID.BombosTablet];
                     }
                 case LocationID.SouthOfGrove:
                     {
-                        return _requirementNodes[RequirementNodeID.SouthOfGrove];
+                        return _requirementNodes[OverworldNodeID.SouthOfGrove];
                     }
                 case LocationID.WaterfallFairy:
                     {
-                        return _requirementNodes[RequirementNodeID.WaterfallFairy];
+                        return _requirementNodes[OverworldNodeID.WaterfallFairy];
                     }
                 case LocationID.ZoraArea when index == 0:
                     {
-                        return _requirementNodes[RequirementNodeID.ZoraLedge];
+                        return _requirementNodes[OverworldNodeID.ZoraLedge];
                     }
                 case LocationID.ZoraArea when index == 1:
                     {
-                        return _requirementNodes[RequirementNodeID.ZoraArea];
+                        return _requirementNodes[OverworldNodeID.ZoraArea];
                     }
                 case LocationID.Catfish:
                     {
-                        return _requirementNodes[RequirementNodeID.CatfishArea];
+                        return _requirementNodes[OverworldNodeID.CatfishArea];
                     }
                 case LocationID.GraveyardLedge:
                     {
-                        return _requirementNodes[RequirementNodeID.LWGraveyardLedge];
+                        return _requirementNodes[OverworldNodeID.LWGraveyardLedge];
                     }
                 case LocationID.DesertLedge:
                     {
-                        return _requirementNodes[RequirementNodeID.DesertLedge];
+                        return _requirementNodes[OverworldNodeID.DesertLedge];
                     }
                 case LocationID.CShapedHouse:
                 case LocationID.TreasureGame:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.DarkWorldWestNotBunnyOrSuperBunnyMirror];
+                            OverworldNodeID.DarkWorldWestNotBunnyOrSuperBunnyMirror];
                     }
                 case LocationID.BombableShack:
                 case LocationID.BombableShackEntrance:
                 case LocationID.SkullWoodsNEHole:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.DarkWorldWestNotBunny];
+                            OverworldNodeID.DarkWorldWestNotBunny];
                     }
                 case LocationID.Blacksmith:
                     {
-                        return _requirementNodes[RequirementNodeID.Blacksmith];
+                        return _requirementNodes[OverworldNodeID.Blacksmith];
                     }
                 case LocationID.PurpleChest:
                     {
-                        return _requirementNodes[RequirementNodeID.PurpleChest];
+                        return _requirementNodes[OverworldNodeID.PurpleChest];
                     }
                 case LocationID.HammerPegs:
                 case LocationID.HammerPegsEntrance:
                     {
-                        return _requirementNodes[RequirementNodeID.HammerPegs];
+                        return _requirementNodes[OverworldNodeID.HammerPegs];
                     }
                 case LocationID.BumperCave:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.BumperCaveTop];
+                            OverworldNodeID.BumperCaveTop];
                     }
                 case LocationID.LakeHyliaIsland:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.LakeHyliaIsland];
+                            OverworldNodeID.LakeHyliaIsland];
                     }
                 case LocationID.MireShack:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.MireAreaNotBunnyOrSuperBunnyMirror];
+                            OverworldNodeID.MireAreaNotBunnyOrSuperBunnyMirror];
                     }
                 case LocationID.CheckerboardCave:
                 case LocationID.CheckerboardCaveEntrance:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.CheckerboardCave];
+                            OverworldNodeID.CheckerboardCave];
                     }
                 case LocationID.OldMan:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.DeathMountainEntryCaveDark];
+                            OverworldNodeID.DeathMountainEntryCaveDark];
                     }
                 case LocationID.SpectacleRock when index == 0:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.SpectacleRockTop];
+                            OverworldNodeID.SpectacleRockTop];
                     }
                 case LocationID.SpectacleRock when index == 1:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.DeathMountainWestBottom];
+                            OverworldNodeID.DeathMountainWestBottom];
                     }
                 case LocationID.EtherTablet:
                     {
-                        return _requirementNodes[RequirementNodeID.EtherTablet];
+                        return _requirementNodes[OverworldNodeID.EtherTablet];
                     }
                 case LocationID.SpikeCave:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.SpikeCaveChest];
+                            OverworldNodeID.SpikeCaveChest];
                     }
                 case LocationID.SpiralCave:
                     {
-                        return _requirementNodes[RequirementNodeID.SpiralCave];
+                        return _requirementNodes[OverworldNodeID.SpiralCave];
                     }
                 case LocationID.ParadoxCave when index == 0:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.ParadoxCaveNotBunny];
+                            OverworldNodeID.ParadoxCaveNotBunny];
                     }
                 case LocationID.ParadoxCave:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.ParadoxCaveTop];
+                            OverworldNodeID.ParadoxCaveTop];
                     }
                 case LocationID.SuperBunnyCave:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.SuperBunnyCaveChests];
+                            OverworldNodeID.SuperBunnyCaveChests];
                     }
                 case LocationID.HookshotCave when index == 0:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.HookshotCaveBonkableChest];
+                            OverworldNodeID.HookshotCaveBonkableChest];
                     }
                 case LocationID.HookshotCave when index == 1:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.HookshotCaveBack];
+                            OverworldNodeID.HookshotCaveBack];
                     }
                 case LocationID.FloatingIsland:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.LWFloatingIsland];
+                            OverworldNodeID.LWFloatingIsland];
                     }
                 case LocationID.MimicCave:
                     {
-                        return _requirementNodes[RequirementNodeID.MimicCave];
+                        return _requirementNodes[OverworldNodeID.MimicCave];
                     }
                 case LocationID.DeathMountainEntryCave:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.DeathMountainEntry];
+                            OverworldNodeID.DeathMountainEntry];
                     }
                 case LocationID.DeathMountainExitCave:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.DeathMountainExit];
+                            OverworldNodeID.DeathMountainExit];
                     }
                 case LocationID.GrassHouseEntrance:
                 case LocationID.GrassHouseTakeAny:
                     {
-                        return _requirementNodes[RequirementNodeID.GrassHouse];
+                        return _requirementNodes[OverworldNodeID.GrassHouse];
                     }
                 case LocationID.BombHutEntrance:
                 case LocationID.BombHutTakeAny:
                     {
-                        return _requirementNodes[RequirementNodeID.BombHut];
+                        return _requirementNodes[OverworldNodeID.BombHut];
                     }
                 case LocationID.MagicBatEntrance:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.MagicBatLedge];
+                            OverworldNodeID.MagicBatLedge];
                     }
                 case LocationID.RaceHouseLeft:
                     {
-                        return _requirementNodes[RequirementNodeID.RaceGameLedge];
+                        return _requirementNodes[OverworldNodeID.RaceGameLedge];
                     }
                 case LocationID.CastleLeftEntrance:
                 case LocationID.CastleRightEntrance:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.HyruleCastleTop];
+                            OverworldNodeID.HyruleCastleTop];
                     }
                 case LocationID.CastleTowerEntrance:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.AgahnimTowerEntrance];
+                            OverworldNodeID.AgahnimTowerEntrance];
                     }
                 case LocationID.WitchsHutEntrance:
                 case LocationID.PotionShop:
                     {
-                        return _requirementNodes[RequirementNodeID.LWWitchArea];
+                        return _requirementNodes[OverworldNodeID.LWWitchArea];
                     }
                 case LocationID.WaterfallFairyEntrance:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.WaterfallFairy];
+                            OverworldNodeID.WaterfallFairy];
                     }
                 case LocationID.SanctuaryGrave:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.EscapeGrave];
+                            OverworldNodeID.EscapeGrave];
                     }
                 case LocationID.GraveyardLedgeEntrance:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.LWGraveyardLedge];
+                            OverworldNodeID.LWGraveyardLedge];
                     }
                 case LocationID.DesertLeftEntrance:
                     {
-                        return _requirementNodes[RequirementNodeID.DesertLedge];
+                        return _requirementNodes[OverworldNodeID.DesertLedge];
                     }
                 case LocationID.DesertBackEntrance:
                     {
-                        return _requirementNodes[RequirementNodeID.DesertBack];
+                        return _requirementNodes[OverworldNodeID.DesertBack];
                     }
                 case LocationID.DesertRightEntrance:
                     {
-                        return _requirementNodes[RequirementNodeID.Inaccessible];
+                        return _requirementNodes[OverworldNodeID.Inaccessible];
                     }
                 case LocationID.DesertFrontEntrance:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.DesertPalaceFrontEntrance];
+                            OverworldNodeID.DesertPalaceFrontEntrance];
                     }
                 case LocationID.RupeeCaveEntrance:
                 case LocationID.IceFairyCaveEntrance:
@@ -944,17 +944,17 @@ namespace OpenTracker.Models.Sections
                 case LocationID.RupeeCaveTakeAny:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.LightWorldLift1];
+                            OverworldNodeID.LightWorldLift1];
                     }
                 case LocationID.SkullWoodsBack:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.SkullWoodsBack];
+                            OverworldNodeID.SkullWoodsBack];
                     }
                 case LocationID.ThievesTownEntrance:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.DarkWorldWestNotBunny];
+                            OverworldNodeID.DarkWorldWestNotBunny];
                     }
                 case LocationID.CShapedHouseEntrance:
                 case LocationID.DarkVillageFortuneTellerEntrance:
@@ -971,21 +971,21 @@ namespace OpenTracker.Models.Sections
                 case LocationID.DarkLumberjackShop:
                 case LocationID.RedShieldShop:
                     {
-                        return _requirementNodes[RequirementNodeID.DarkWorldWest];
+                        return _requirementNodes[OverworldNodeID.DarkWorldWest];
                     }
                 case LocationID.HammerHouse:
                 case LocationID.VillageOfOutcastsShop:
                     {
-                        return _requirementNodes[RequirementNodeID.HammerHouse];
+                        return _requirementNodes[OverworldNodeID.HammerHouse];
                     }
                 case LocationID.BumperCaveExit:
                     {
-                        return _requirementNodes[RequirementNodeID.BumperCaveTop];
+                        return _requirementNodes[OverworldNodeID.BumperCaveTop];
                     }
                 case LocationID.BumperCaveEntrance:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.BumperCaveEntry];
+                            OverworldNodeID.BumperCaveEntry];
                     }
                 case LocationID.SwampPalaceEntrance:
                 case LocationID.BombShop:
@@ -994,18 +994,18 @@ namespace OpenTracker.Models.Sections
                 case LocationID.ArrowGameTakeAny:
                 case LocationID.DarkLakeHyliaShop:
                     {
-                        return _requirementNodes[RequirementNodeID.DarkWorldSouth];
+                        return _requirementNodes[OverworldNodeID.DarkWorldSouth];
                     }
                 case LocationID.DarkCentralBonkRocksEntrance:
                 case LocationID.DarkCentralBonkRocksTakeAny:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.DarkWorldSouthDash];
+                            OverworldNodeID.DarkWorldSouthDash];
                     }
                 case LocationID.SouthOfGroveEntrance:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.SouthOfGroveLedge];
+                            OverworldNodeID.SouthOfGroveLedge];
                     }
                 case LocationID.DarkTreesFairyCaveEntrance:
                 case LocationID.DarkSahasrahlaEntrance:
@@ -1014,58 +1014,58 @@ namespace OpenTracker.Models.Sections
                 case LocationID.DarkSahasrahlaTakeAny:
                 case LocationID.DarkFluteSpotFiveTakeAny:
                     {
-                        return _requirementNodes[RequirementNodeID.DarkWorldEast];
+                        return _requirementNodes[OverworldNodeID.DarkWorldEast];
                     }
                 case LocationID.PalaceOfDarknessEntrance:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.DarkWorldEastNotBunny];
+                            OverworldNodeID.DarkWorldEastNotBunny];
                     }
                 case LocationID.DarkWitchsHut:
                 case LocationID.DarkPotionShop:
                     {
-                        return _requirementNodes[RequirementNodeID.DWWitchArea];
+                        return _requirementNodes[OverworldNodeID.DWWitchArea];
                     }
                 case LocationID.FatFairyEntrance:
                     {
-                        return _requirementNodes[RequirementNodeID.FatFairyEntrance];
+                        return _requirementNodes[OverworldNodeID.FatFairyEntrance];
                     }
                 case LocationID.GanonHole:
                     {
-                        return _requirementNodes[RequirementNodeID.GanonHole];
+                        return _requirementNodes[OverworldNodeID.GanonHole];
                     }
                 case LocationID.DarkIceRodCaveEntrance:
                 case LocationID.DarkIceRodCaveTakeAny:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.DarkWorldSouthEastNotBunny];
+                            OverworldNodeID.DarkWorldSouthEastNotBunny];
                     }
                 case LocationID.DarkFakeIceRodCaveEntrance:
                 case LocationID.DarkFakeIceRodCaveTakeAny:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.DarkWorldSouthEast];
+                            OverworldNodeID.DarkWorldSouthEast];
                     }
                 case LocationID.DarkIceRodRockEntrance:
                 case LocationID.DarkIceRodRockTakeAny:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.DarkWorldSouthEastLift1];
+                            OverworldNodeID.DarkWorldSouthEastLift1];
                     }
                 case LocationID.UpgradeFairy:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.LakeHyliaFairyIsland];
+                            OverworldNodeID.LakeHyliaFairyIsland];
                     }
                 case LocationID.IcePalaceEntrance:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.IcePalaceIsland];
+                            OverworldNodeID.IcePalaceIsland];
                     }
                 case LocationID.MiseryMireEntrance:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.MiseryMireEntrance];
+                            OverworldNodeID.MiseryMireEntrance];
                     }
                 case LocationID.MireShackEntrance:
                 case LocationID.MireRightShackEntrance:
@@ -1073,7 +1073,7 @@ namespace OpenTracker.Models.Sections
                 case LocationID.MireRightShackTakeAny:
                 case LocationID.MireCaveTakeAny:
                     {
-                        return _requirementNodes[RequirementNodeID.MireArea];
+                        return _requirementNodes[OverworldNodeID.MireArea];
                     }
                 case LocationID.DeathMountainEntranceBack:
                 case LocationID.OldManResidence:
@@ -1084,19 +1084,19 @@ namespace OpenTracker.Models.Sections
                 case LocationID.SpectacleRockTop:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.DeathMountainWestBottom];
+                            OverworldNodeID.DeathMountainWestBottom];
                     }
                 case LocationID.SpikeCaveEntrance:
                 case LocationID.DarkMountainFairyEntrance:
                 case LocationID.DarkMountainFairyTakeAny:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.DarkDeathMountainWestBottom];
+                            OverworldNodeID.DarkDeathMountainWestBottom];
                     }
                 case LocationID.TowerOfHeraEntrance:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.DeathMountainWestTop];
+                            OverworldNodeID.DeathMountainWestTop];
                     }
                 case LocationID.SpiralCaveBottom:
                 case LocationID.EDMFairyCaveEntrance:
@@ -1106,90 +1106,90 @@ namespace OpenTracker.Models.Sections
                 case LocationID.DeathMountainShop:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.DeathMountainEastBottom];
+                            OverworldNodeID.DeathMountainEastBottom];
                     }
                 case LocationID.EDMConnectorBottom:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.DeathMountainEastBottomConnector];
+                            OverworldNodeID.DeathMountainEastBottomConnector];
                     }
                 case LocationID.SpiralCaveTop:
                     {
                         {
                             return _requirementNodes[
-                                RequirementNodeID.SpiralCaveLedge];
+                                OverworldNodeID.SpiralCaveLedge];
                         }
                     }
                 case LocationID.MimicCaveEntrance:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.MimicCaveLedge];
+                            OverworldNodeID.MimicCaveLedge];
                     }
                 case LocationID.EDMConnectorTop:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.DeathMountainEastTopConnector];
+                            OverworldNodeID.DeathMountainEastTopConnector];
                     }
                 case LocationID.ParadoxCaveTop:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.DeathMountainEastTop];
+                            OverworldNodeID.DeathMountainEastTop];
                     }
                 case LocationID.SuperBunnyCaveBottom:
                 case LocationID.DeathMountainShopEntrance:
                 case LocationID.DarkDeathMountainShop:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.DarkDeathMountainEastBottom];
+                            OverworldNodeID.DarkDeathMountainEastBottom];
                     }
                 case LocationID.SuperBunnyCaveTop:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.DarkDeathMountainTop];
+                            OverworldNodeID.DarkDeathMountainTop];
                     }
                 case LocationID.HookshotCaveEntrance:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.HookshotCaveEntrance];
+                            OverworldNodeID.HookshotCaveEntrance];
                     }
                 case LocationID.TurtleRockEntrance:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.TurtleRockFrontEntrance];
+                            OverworldNodeID.TurtleRockFrontEntrance];
                     }
                 case LocationID.GanonsTowerEntrance:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.GanonsTowerEntrance];
+                            OverworldNodeID.GanonsTowerEntrance];
                     }
                 case LocationID.TRLedgeLeft:
                 case LocationID.TRLedgeRight:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.TurtleRockTunnel];
+                            OverworldNodeID.TurtleRockTunnel];
                     }
                 case LocationID.TRSafetyDoor:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.TurtleRockSafetyDoor];
+                            OverworldNodeID.TurtleRockSafetyDoor];
                     }
                 case LocationID.HookshotCaveTop:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.DWFloatingIsland];
+                            OverworldNodeID.DWFloatingIsland];
                     }
                 case LocationID.CastleSecretExit:
                     {
-                        return _requirementNodes[RequirementNodeID.CastleSecretExitArea];
+                        return _requirementNodes[OverworldNodeID.CastleSecretExitArea];
                     }
                 case LocationID.GanonHoleExit:
                     {
-                        return _requirementNodes[RequirementNodeID.LightWorldInverted];
+                        return _requirementNodes[OverworldNodeID.LightWorldInverted];
                     }
                 case LocationID.SkullWoodsWestEntrance:
                 case LocationID.SkullWoodsNWHole:
                     {
-                        return _requirementNodes[RequirementNodeID.SkullWoodsBackArea];
+                        return _requirementNodes[OverworldNodeID.SkullWoodsBackArea];
                     }
             }
 
@@ -1208,7 +1208,7 @@ namespace OpenTracker.Models.Sections
         /// <returns>
         /// The requirement node from which the section is visible.
         /// </returns>
-        private IRequirementNode? GetVisibleNode(LocationID id, int index = 0)
+        private INode? GetVisibleNode(LocationID id, int index = 0)
         {
             switch (id)
             {
@@ -1232,35 +1232,35 @@ namespace OpenTracker.Models.Sections
                 case LocationID.HoulihanHole:
                 case LocationID.SanctuaryGrave:
                     {
-                        return _requirementNodes[RequirementNodeID.LightWorld];
+                        return _requirementNodes[OverworldNodeID.LightWorld];
                     }
                 case LocationID.ZoraArea when index == 0:
                     {
-                        return _requirementNodes[RequirementNodeID.ZoraArea];
+                        return _requirementNodes[OverworldNodeID.ZoraArea];
                     }
                 case LocationID.BumperCave:
                     {
-                        return _requirementNodes[RequirementNodeID.DarkWorldWest];
+                        return _requirementNodes[OverworldNodeID.DarkWorldWest];
                     }
                 case LocationID.SpectacleRock when index == 0:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.DeathMountainWestBottom];
+                            OverworldNodeID.DeathMountainWestBottom];
                     }
                 case LocationID.FloatingIsland:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.DeathMountainEastTop];
+                            OverworldNodeID.DeathMountainEastTop];
                     }
                 case LocationID.CastleSecretEntrance:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.CastleSecretExitArea];
+                            OverworldNodeID.CastleSecretExitArea];
                     }
                 case LocationID.GanonHole:
                     {
                         return _requirementNodes[
-                            RequirementNodeID.LightWorldInverted];
+                            OverworldNodeID.LightWorldInverted];
                     }
             }
 
@@ -1620,7 +1620,7 @@ namespace OpenTracker.Models.Sections
         /// <returns>
         /// The item provided.
         /// </returns>
-        private IRequirementNode? GetEntranceSectionExitProvided(LocationID id)
+        private IOverworldNode? GetEntranceSectionExitProvided(LocationID id)
         {
             switch (id)
             {
@@ -1670,7 +1670,7 @@ namespace OpenTracker.Models.Sections
                 case LocationID.Sanctuary:
                 case LocationID.GanonHoleExit:
                     {
-                        return _requirementNodes[RequirementNodeID.LightWorld];
+                        return (IOverworldNode)_requirementNodes[OverworldNodeID.LightWorld];
                     }
                 case LocationID.LumberjackCaveEntrance:
                 case LocationID.ForestHideoutEntrance:
@@ -1689,49 +1689,49 @@ namespace OpenTracker.Models.Sections
                     }
                 case LocationID.DeathMountainEntryCave:
                     {
-                        return _requirementNodes[RequirementNodeID.DeathMountainEntry];
+                        return (IOverworldNode)_requirementNodes[OverworldNodeID.DeathMountainEntry];
                     }
                 case LocationID.DeathMountainExitCave:
                     {
-                        return _requirementNodes[RequirementNodeID.DeathMountainExit];
+                        return (IOverworldNode)_requirementNodes[OverworldNodeID.DeathMountainExit];
                     }
                 case LocationID.BombHutEntrance:
                     {
-                        return _requirementNodes[RequirementNodeID.BombHut];
+                        return (IOverworldNode)_requirementNodes[OverworldNodeID.BombHut];
                     }
                 case LocationID.RaceHouseLeft:
                     {
-                        return _requirementNodes[RequirementNodeID.RaceGameLedge];
+                        return (IOverworldNode)_requirementNodes[OverworldNodeID.RaceGameLedge];
                     }
                 case LocationID.CastleLeftEntrance:
                 case LocationID.CastleRightEntrance:
                 case LocationID.CastleTowerEntrance:
                     {
-                        return _requirementNodes[RequirementNodeID.HyruleCastleTop];
+                        return (IOverworldNode)_requirementNodes[OverworldNodeID.HyruleCastleTop];
                     }
                 case LocationID.WitchsHutEntrance:
                     {
-                        return _requirementNodes[RequirementNodeID.LWWitchArea];
+                        return (IOverworldNode)_requirementNodes[OverworldNodeID.LWWitchArea];
                     }
                 case LocationID.WaterfallFairyEntrance:
                     {
-                        return _requirementNodes[RequirementNodeID.WaterfallFairy];
+                        return (IOverworldNode)_requirementNodes[OverworldNodeID.WaterfallFairy];
                     }
                 case LocationID.KingsTombEntrance:
                     {
-                        return _requirementNodes[RequirementNodeID.KingsTomb];
+                        return (IOverworldNode)_requirementNodes[OverworldNodeID.KingsTomb];
                     }
                 case LocationID.GraveyardLedgeEntrance:
                     {
-                        return _requirementNodes[RequirementNodeID.LWGraveyardLedge];
+                        return (IOverworldNode)_requirementNodes[OverworldNodeID.LWGraveyardLedge];
                     }
                 case LocationID.DesertLeftEntrance:
                     {
-                        return _requirementNodes[RequirementNodeID.DesertLedge];
+                        return (IOverworldNode)_requirementNodes[OverworldNodeID.DesertLedge];
                     }
                 case LocationID.DesertBackEntrance:
                     {
-                        return _requirementNodes[RequirementNodeID.DesertBack];
+                        return (IOverworldNode)_requirementNodes[OverworldNodeID.DesertBack];
                     }
                 case LocationID.DesertFrontEntrance:
                     {
@@ -1740,7 +1740,7 @@ namespace OpenTracker.Models.Sections
                 case LocationID.SkullWoodsBack:
                 case LocationID.SkullWoodsWestEntrance:
                     {
-                        return _requirementNodes[RequirementNodeID.SkullWoodsBackArea];
+                        return (IOverworldNode)_requirementNodes[OverworldNodeID.SkullWoodsBackArea];
                     }
                 case LocationID.ThievesTownEntrance:
                 case LocationID.CShapedHouseEntrance:
@@ -1753,23 +1753,23 @@ namespace OpenTracker.Models.Sections
                 case LocationID.SkullWoodsCenterEntrance:
                 case LocationID.SkullWoodsEastEntrance:
                     {
-                        return _requirementNodes[RequirementNodeID.DarkWorldWest];
+                        return (IOverworldNode)_requirementNodes[OverworldNodeID.DarkWorldWest];
                     }
                 case LocationID.HammerHouse:
                     {
-                        return _requirementNodes[RequirementNodeID.HammerHouse];
+                        return (IOverworldNode)_requirementNodes[OverworldNodeID.HammerHouse];
                     }
                 case LocationID.HammerPegsEntrance:
                     {
-                        return _requirementNodes[RequirementNodeID.HammerPegsArea];
+                        return (IOverworldNode)_requirementNodes[OverworldNodeID.HammerPegsArea];
                     }
                 case LocationID.BumperCaveExit:
                     {
-                        return _requirementNodes[RequirementNodeID.BumperCaveTop];
+                        return (IOverworldNode)_requirementNodes[OverworldNodeID.BumperCaveTop];
                     }
                 case LocationID.BumperCaveEntrance:
                     {
-                        return _requirementNodes[RequirementNodeID.BumperCaveEntry];
+                        return (IOverworldNode)_requirementNodes[OverworldNodeID.BumperCaveEntry];
                     }
                 case LocationID.HypeCaveEntrance:
                 case LocationID.SwampPalaceEntrance:
@@ -1778,7 +1778,7 @@ namespace OpenTracker.Models.Sections
                 case LocationID.ArrowGameEntrance:
                 case LocationID.DarkHyliaFortuneTeller:
                     {
-                        return _requirementNodes[RequirementNodeID.DarkWorldSouth];
+                        return (IOverworldNode)_requirementNodes[OverworldNodeID.DarkWorldSouth];
                     }
                 case LocationID.DarkTreesFairyCaveEntrance:
                 case LocationID.DarkSahasrahlaEntrance:
@@ -1786,36 +1786,36 @@ namespace OpenTracker.Models.Sections
                 case LocationID.DarkFluteSpotFiveEntrance:
                 case LocationID.FatFairyEntrance:
                     {
-                        return _requirementNodes[RequirementNodeID.DarkWorldEast];
+                        return (IOverworldNode)_requirementNodes[OverworldNodeID.DarkWorldEast];
                     }
                 case LocationID.DarkWitchsHut:
                     {
-                        return _requirementNodes[RequirementNodeID.DWWitchArea];
+                        return (IOverworldNode)_requirementNodes[OverworldNodeID.DWWitchArea];
                     }
                 case LocationID.DarkIceRodCaveEntrance:
                 case LocationID.DarkFakeIceRodCaveEntrance:
                 case LocationID.DarkIceRodRockEntrance:
                     {
-                        return _requirementNodes[RequirementNodeID.DarkWorldSouthEast];
+                        return (IOverworldNode)_requirementNodes[OverworldNodeID.DarkWorldSouthEast];
                     }
                 case LocationID.UpgradeFairy:
                     {
-                        return _requirementNodes[RequirementNodeID.LakeHyliaFairyIsland];
+                        return (IOverworldNode)_requirementNodes[OverworldNodeID.LakeHyliaFairyIsland];
                     }
                 case LocationID.IcePalaceEntrance:
                     {
-                        return _requirementNodes[RequirementNodeID.IcePalaceIsland];
+                        return (IOverworldNode)_requirementNodes[OverworldNodeID.IcePalaceIsland];
                     }
                 case LocationID.MiseryMireEntrance:
                 case LocationID.MireShackEntrance:
                 case LocationID.MireRightShackEntrance:
                 case LocationID.MireCaveEntrance:
                     {
-                        return _requirementNodes[RequirementNodeID.MireArea];
+                        return (IOverworldNode)_requirementNodes[OverworldNodeID.MireArea];
                     }
                 case LocationID.CheckerboardCaveEntrance:
                     {
-                        return _requirementNodes[RequirementNodeID.CheckerboardLedge];
+                        return (IOverworldNode)_requirementNodes[OverworldNodeID.CheckerboardLedge];
                     }
                 case LocationID.DeathMountainEntranceBack:
                 case LocationID.OldManResidence:
@@ -1825,72 +1825,72 @@ namespace OpenTracker.Models.Sections
                 case LocationID.SpectacleRockRight:
                 case LocationID.SpectacleRockTop:
                     {
-                        return _requirementNodes[RequirementNodeID.DeathMountainWestBottom];
+                        return (IOverworldNode)_requirementNodes[OverworldNodeID.DeathMountainWestBottom];
                     }
                 case LocationID.SpikeCaveEntrance:
                 case LocationID.DarkMountainFairyEntrance:
                     {
-                        return _requirementNodes[RequirementNodeID.DarkDeathMountainWestBottom];
+                        return (IOverworldNode)_requirementNodes[OverworldNodeID.DarkDeathMountainWestBottom];
                     }
                 case LocationID.TowerOfHeraEntrance:
                     {
-                        return _requirementNodes[RequirementNodeID.DeathMountainWestTop];
+                        return (IOverworldNode)_requirementNodes[OverworldNodeID.DeathMountainWestTop];
                     }
                 case LocationID.SpiralCaveBottom:
                 case LocationID.EDMFairyCaveEntrance:
                 case LocationID.ParadoxCaveMiddle:
                 case LocationID.ParadoxCaveBottom:
                     {
-                        return _requirementNodes[RequirementNodeID.DeathMountainEastBottom];
+                        return (IOverworldNode)_requirementNodes[OverworldNodeID.DeathMountainEastBottom];
                     }
                 case LocationID.EDMConnectorBottom:
                     {
-                        return _requirementNodes[RequirementNodeID.DeathMountainEastBottomConnector];
+                        return (IOverworldNode)_requirementNodes[OverworldNodeID.DeathMountainEastBottomConnector];
                     }
                 case LocationID.SpiralCaveTop:
                     {
-                        return _requirementNodes[RequirementNodeID.SpiralCaveLedge];
+                        return (IOverworldNode)_requirementNodes[OverworldNodeID.SpiralCaveLedge];
                     }
                 case LocationID.MimicCaveEntrance:
                     {
-                        return _requirementNodes[RequirementNodeID.MimicCaveLedge];
+                        return (IOverworldNode)_requirementNodes[OverworldNodeID.MimicCaveLedge];
                     }
                 case LocationID.EDMConnectorTop:
                     {
-                        return _requirementNodes[RequirementNodeID.DeathMountainEastTopConnector];
+                        return (IOverworldNode)_requirementNodes[OverworldNodeID.DeathMountainEastTopConnector];
                     }
                 case LocationID.ParadoxCaveTop:
                     {
-                        return _requirementNodes[RequirementNodeID.DeathMountainEastTop];
+                        return (IOverworldNode)_requirementNodes[OverworldNodeID.DeathMountainEastTop];
                     }
                 case LocationID.SuperBunnyCaveBottom:
                 case LocationID.DeathMountainShopEntrance:
                     {
-                        return _requirementNodes[RequirementNodeID.DarkDeathMountainEastBottom];
+                        return (IOverworldNode)_requirementNodes[OverworldNodeID.DarkDeathMountainEastBottom];
                     }
                 case LocationID.SuperBunnyCaveTop:
                 case LocationID.HookshotCaveEntrance:
                 case LocationID.TurtleRockEntrance:
                 case LocationID.GanonsTowerEntrance:
                     {
-                        return _requirementNodes[RequirementNodeID.DarkDeathMountainTop];
+                        return (IOverworldNode)_requirementNodes[OverworldNodeID.DarkDeathMountainTop];
                     }
                 case LocationID.TRLedgeLeft:
                 case LocationID.TRLedgeRight:
                     {
-                        return _requirementNodes[RequirementNodeID.TurtleRockTunnel];
+                        return (IOverworldNode)_requirementNodes[OverworldNodeID.TurtleRockTunnel];
                     }
                 case LocationID.TRSafetyDoor:
                     {
-                        return _requirementNodes[RequirementNodeID.TurtleRockSafetyDoor];
+                        return (IOverworldNode)_requirementNodes[OverworldNodeID.TurtleRockSafetyDoor];
                     }
                 case LocationID.HookshotCaveTop:
                     {
-                        return _requirementNodes[RequirementNodeID.DWFloatingIsland];
+                        return (IOverworldNode)_requirementNodes[OverworldNodeID.DWFloatingIsland];
                     }
                 case LocationID.CastleSecretExit:
                     {
-                        return _requirementNodes[RequirementNodeID.CastleSecretExitArea];
+                        return (IOverworldNode)_requirementNodes[OverworldNodeID.CastleSecretExitArea];
                     }
             }
 

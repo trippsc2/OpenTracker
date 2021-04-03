@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using OpenTracker.Models.Accessibility;
-using OpenTracker.Models.RequirementNodes;
+using OpenTracker.Models.Nodes;
 using OpenTracker.Models.Requirements;
 using ReactiveUI;
 
@@ -13,8 +13,8 @@ namespace OpenTracker.Models.NodeConnections
     /// </summary>
     public class NodeConnection : ReactiveObject, INodeConnection
     {
-        private readonly IRequirementNode _fromNode;
-        private readonly IRequirementNode _toNode;
+        private readonly INode _fromNode;
+        private readonly INode _toNode;
 
         public IRequirement Requirement { get; }
         
@@ -25,8 +25,7 @@ namespace OpenTracker.Models.NodeConnections
             private set => this.RaiseAndSetIfChanged(ref _accessibility, value);
         }
 
-        public delegate NodeConnection Factory(
-            IRequirementNode fromNode, IRequirementNode toNode, IRequirement requirement);
+        public delegate NodeConnection Factory(INode fromNode, INode toNode, IRequirement requirement);
 
         /// <summary>
         /// Constructor
@@ -40,7 +39,7 @@ namespace OpenTracker.Models.NodeConnections
         /// <param name="requirement">
         /// The requirement for the connection to be accessible.
         /// </param>
-        public NodeConnection(IRequirementNode fromNode, IRequirementNode toNode, IRequirement requirement)
+        public NodeConnection(INode fromNode, INode toNode, IRequirement requirement)
         {
             _fromNode = fromNode;
             _toNode = toNode;
@@ -64,7 +63,7 @@ namespace OpenTracker.Models.NodeConnections
         /// </param>
         private void OnNodeChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(IRequirementNode.Accessibility))
+            if (e.PropertyName == nameof(IOverworldNode.Accessibility))
             {
                 UpdateAccessibility();
             }
@@ -92,19 +91,19 @@ namespace OpenTracker.Models.NodeConnections
         /// </summary>
         private void UpdateAccessibility()
         {
-            Accessibility = GetConnectionAccessibility(new List<IRequirementNode>());
+            Accessibility = GetConnectionAccessibility(new List<INode>());
         }
 
         /// <summary>
         /// Returns the availability of the connection, excluding loops from the specified nodes.
         /// </summary>
         /// <param name="excludedNodes">
-        /// A list of nodes to exclude to prevent loops.
+        ///     A list of nodes to exclude to prevent loops.
         /// </param>
         /// <returns>
         /// The availability of the connection.
         /// </returns>
-        public AccessibilityLevel GetConnectionAccessibility(IList<IRequirementNode> excludedNodes)
+        public AccessibilityLevel GetConnectionAccessibility(IList<INode> excludedNodes)
         {
             if (excludedNodes == null)
             {
@@ -117,7 +116,7 @@ namespace OpenTracker.Models.NodeConnections
                 return AccessibilityLevel.None;
             }
 
-            IList<IRequirementNode> newExcludedNodes = new List<IRequirementNode>(excludedNodes);
+            IList<INode> newExcludedNodes = new List<INode>(excludedNodes);
             newExcludedNodes.Add(_toNode);
 
             return AccessibilityLevelMethods.Min(Requirement.Accessibility,

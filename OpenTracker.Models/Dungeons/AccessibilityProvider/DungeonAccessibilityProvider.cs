@@ -9,7 +9,7 @@ using OpenTracker.Models.Dungeons.State;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Items.Keys;
 using OpenTracker.Models.Modes;
-using OpenTracker.Models.RequirementNodes;
+using OpenTracker.Models.Nodes;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Requirements.KeyDoor;
 using ReactiveUI;
@@ -55,7 +55,7 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         private IBigKeyItem? BigKey => _dungeon.BigKey;
         private IEnumerable<DungeonItemID> Bosses => _dungeon.Bosses;
         private IEnumerable<DungeonNodeID> Nodes => _dungeon.Nodes;
-        private IEnumerable<IRequirementNode> EntryNodes => _dungeon.EntryNodes;
+        private IEnumerable<INode> EntryNodes => _dungeon.EntryNodes;
 
         /// <summary>
         ///     Constructor
@@ -191,7 +191,7 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         /// </param>
         private void OnNodeChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(IRequirementNode.Accessibility))
+            if (e.PropertyName == nameof(IOverworldNode.Accessibility))
             {
                 UpdateValues();
             }

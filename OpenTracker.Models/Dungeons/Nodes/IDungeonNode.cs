@@ -1,17 +1,29 @@
 ﻿using System.Collections.Generic;
 using OpenTracker.Models.Dungeons.Mutable;
 using OpenTracker.Models.NodeConnections;
-using OpenTracker.Models.RequirementNodes;
+using OpenTracker.Models.Nodes;
 
 namespace OpenTracker.Models.Dungeons.Nodes
 {
     /// <summary>
-    /// This is the interface for dungeon requirement node.
+    ///     This interface contains the dungeon requirement node data.
     /// </summary>
-    public interface IDungeonNode : IRequirementNode
+    public interface IDungeonNode : INode
     {
+        /// <summary>
+        ///     A list of node connections to this node.
+        /// </summary>
         IList<INodeConnection> Connections { get; }
 
-        delegate IDungeonNode Factory(IMutableDungeon dungeonData, DungeonNodeID id);
+        /// <summary>
+        ///     A factory for creating dungeon nodes.
+        /// </summary>
+        /// <param name="dungeonData">
+        ///     The mutable dungeon data parent class.
+        /// </param>'
+        /// <returns>
+        ///     A new dungeon node.
+        /// </returns>
+        delegate IDungeonNode Factory(IMutableDungeon dungeonData);
     }
 }

@@ -9,8 +9,20 @@ namespace OpenTracker.Models.Dungeons.Nodes
     /// </summary>
     public interface IDungeonNodeDictionary : IDictionary<DungeonNodeID, IDungeonNode>
     {
+        /// <summary>
+        ///     The event raised when a new item is created in the dictionary.
+        /// </summary>
         event EventHandler<KeyValuePair<DungeonNodeID, IDungeonNode>> ItemCreated;
 
+        /// <summary>
+        ///     A factory for creating the dungeon node dictionary for the specified mutable dungeon data instance.
+        /// </summary>
+        /// <param name="dungeonData">
+        ///     The mutable dungeon data.
+        /// </param>
+        /// <returns>
+        ///     The dungeon node dictionary.
+        /// </returns>
         delegate IDungeonNodeDictionary Factory(IMutableDungeon dungeonData);
 
         /// <summary>

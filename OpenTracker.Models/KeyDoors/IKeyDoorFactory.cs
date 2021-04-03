@@ -1,5 +1,5 @@
 ﻿using OpenTracker.Models.Dungeons.Mutable;
-using OpenTracker.Models.RequirementNodes;
+using OpenTracker.Models.Nodes;
 
 namespace OpenTracker.Models.KeyDoors
 {
@@ -9,7 +9,7 @@ namespace OpenTracker.Models.KeyDoors
     public interface IKeyDoorFactory
     {
         IKeyDoor GetKeyDoor(IMutableDungeon dungeonData);
-        IRequirementNode GetKeyDoorNode(KeyDoorID id, IMutableDungeon dungeonData);
+        INode GetKeyDoorNode(KeyDoorID id, IMutableDungeon dungeonData);
 
         delegate IKeyDoorFactory Factory();
     }

@@ -2,7 +2,7 @@
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Markings;
 using OpenTracker.Models.Modes;
-using OpenTracker.Models.RequirementNodes;
+using OpenTracker.Models.Nodes;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.UndoRedo;
@@ -21,8 +21,8 @@ namespace OpenTracker.Models.Sections
         private readonly ICollectSection.Factory _collectSectionFactory;
         private readonly IUncollectSection.Factory _uncollectSectionFactory;
 
-        private readonly IRequirementNode _exitNode;
-        private readonly IRequirementNode _holeNode;
+        private readonly INode _exitNode;
+        private readonly INode _holeNode;
 
         public string Name { get; }
         public IRequirement Requirement { get; }
@@ -44,7 +44,7 @@ namespace OpenTracker.Models.Sections
         }
 
         public delegate DropdownSection Factory(
-            string name, IRequirementNode? exitNode, IRequirementNode holeNode, IRequirement requirement);
+            string name, INode? exitNode, INode holeNode, IRequirement requirement);
 
         /// <summary>
         /// Constructor
@@ -76,7 +76,7 @@ namespace OpenTracker.Models.Sections
         public DropdownSection(
             IMode mode, ICollectSection.Factory collectSectionFactory,
             IUncollectSection.Factory uncollectSectionFactory, IMarking marking, string name,
-            IRequirementNode? exitNode, IRequirementNode holeNode, IRequirement requirement)
+            INode? exitNode, INode holeNode, IRequirement requirement)
         {
             _mode = mode;
 
@@ -107,7 +107,7 @@ namespace OpenTracker.Models.Sections
         /// </param>
         private void OnNodeChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(IRequirementNode.Accessibility))
+            if (e.PropertyName == nameof(IOverworldNode.Accessibility))
             {
                 this.RaisePropertyChanged(nameof(Accessibility));
             }

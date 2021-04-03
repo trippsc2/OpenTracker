@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using OpenTracker.Models.Accessibility;
-using OpenTracker.Models.RequirementNodes;
+using OpenTracker.Models.Nodes;
 using OpenTracker.Models.Requirements;
 using ReactiveUI;
 
@@ -13,13 +13,13 @@ namespace OpenTracker.Models.NodeConnections
     /// </summary>
     public class EntryNodeConnection : ReactiveObject, INodeConnection
     {
-        private readonly IRequirementNode _fromNode;
+        private readonly INode _fromNode;
 
         public IRequirement Requirement { get; }
         
         public AccessibilityLevel Accessibility => _fromNode.Accessibility;
 
-        public delegate EntryNodeConnection Factory(IRequirementNode fromNode);
+        public delegate EntryNodeConnection Factory(INode fromNode);
 
         /// <summary>
         /// Constructor
@@ -30,7 +30,7 @@ namespace OpenTracker.Models.NodeConnections
         /// <param name="fromNode">
         /// The node from which the connection originates.
         /// </param>
-        public EntryNodeConnection(IRequirementDictionary requirements, IRequirementNode fromNode)
+        public EntryNodeConnection(IRequirementDictionary requirements, INode fromNode)
         {
             _fromNode = fromNode;
 
@@ -50,7 +50,7 @@ namespace OpenTracker.Models.NodeConnections
         /// </param>
         private void OnNodeChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(IRequirementNode.Accessibility))
+            if (e.PropertyName == nameof(IOverworldNode.Accessibility))
             {
                 this.RaisePropertyChanged(nameof(Accessibility));
             }
@@ -60,12 +60,12 @@ namespace OpenTracker.Models.NodeConnections
         /// Returns the availability of the connection, excluding loops from the specified nodes.
         /// </summary>
         /// <param name="excludedNodes">
-        /// A list of nodes to exclude to prevent loops.
+        ///     A list of nodes to exclude to prevent loops.
         /// </param>
         /// <returns>
         /// The availability of the connection.
         /// </returns>
-        public AccessibilityLevel GetConnectionAccessibility(IList<IRequirementNode> excludedNodes)
+        public AccessibilityLevel GetConnectionAccessibility(IList<INode> excludedNodes)
         {
             if (excludedNodes == null)
             {

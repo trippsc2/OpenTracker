@@ -3,7 +3,7 @@ using System.ComponentModel;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Dungeons.Mutable;
 using OpenTracker.Models.Dungeons.Nodes;
-using OpenTracker.Models.RequirementNodes;
+using OpenTracker.Models.Nodes;
 using ReactiveUI;
 
 namespace OpenTracker.Models.Dungeons.Items
@@ -14,7 +14,7 @@ namespace OpenTracker.Models.Dungeons.Items
     public class DungeonItem : ReactiveObject, IDungeonItem
     {
         private readonly IMutableDungeon _dungeonData;
-        private readonly IRequirementNode _node;
+        private readonly INode _node;
 
         private AccessibilityLevel _accessibility;
         public AccessibilityLevel Accessibility
@@ -32,7 +32,7 @@ namespace OpenTracker.Models.Dungeons.Items
         /// <param name="node">
         ///     The dungeon node to which this item belongs.
         /// </param>
-        public DungeonItem(IMutableDungeon dungeonData, IRequirementNode node)
+        public DungeonItem(IMutableDungeon dungeonData, INode node)
         {
             _dungeonData = dungeonData;
             _node = node;

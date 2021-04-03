@@ -5,7 +5,7 @@ using OpenTracker.Models.Dungeons.Nodes;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Items.Keys;
 using OpenTracker.Models.KeyDoors;
-using OpenTracker.Models.RequirementNodes;
+using OpenTracker.Models.Nodes;
 
 namespace OpenTracker.Models.Dungeons
 {
@@ -15,7 +15,7 @@ namespace OpenTracker.Models.Dungeons
     public class DungeonFactory : IDungeonFactory
     {
         private readonly IItemDictionary _items;
-        private readonly IRequirementNodeDictionary _requirementNodes;
+        private readonly IOverworldNodeDictionary _requirementNodes;
 
         private readonly IDungeon.Factory _factory;
 
@@ -32,7 +32,7 @@ namespace OpenTracker.Models.Dungeons
         /// An Autofac factory for creating dungeons.
         /// </param>
         public DungeonFactory(
-            IItemDictionary items, IRequirementNodeDictionary requirementNodes, IDungeon.Factory factory)
+            IItemDictionary items, IOverworldNodeDictionary requirementNodes, IDungeon.Factory factory)
         {
             _items = items;
             _requirementNodes = requirementNodes;
@@ -1228,68 +1228,68 @@ namespace OpenTracker.Models.Dungeons
         /// <returns>
         /// A list of dungeon entry nodes.
         /// </returns>
-        private IList<IRequirementNode> GetDungeonEntryNodes(DungeonID id)
+        private IList<INode> GetDungeonEntryNodes(DungeonID id)
         {
             return id switch
             {
-                DungeonID.HyruleCastle => new List<IRequirementNode>
+                DungeonID.HyruleCastle => new List<INode>
                 {
-                    _requirementNodes[RequirementNodeID.HCSanctuaryEntry],
-                    _requirementNodes[RequirementNodeID.HCFrontEntry],
-                    _requirementNodes[RequirementNodeID.HCBackEntry]
+                    _requirementNodes[OverworldNodeID.HCSanctuaryEntry],
+                    _requirementNodes[OverworldNodeID.HCFrontEntry],
+                    _requirementNodes[OverworldNodeID.HCBackEntry]
                 },
-                DungeonID.AgahnimTower => new List<IRequirementNode>
+                DungeonID.AgahnimTower => new List<INode>
                 {
-                    _requirementNodes[RequirementNodeID.ATEntry]
+                    _requirementNodes[OverworldNodeID.ATEntry]
                 },
-                DungeonID.EasternPalace => new List<IRequirementNode>
+                DungeonID.EasternPalace => new List<INode>
                 {
-                    _requirementNodes[RequirementNodeID.EPEntry]
+                    _requirementNodes[OverworldNodeID.EPEntry]
                 },
-                DungeonID.DesertPalace => new List<IRequirementNode>
+                DungeonID.DesertPalace => new List<INode>
                 {
-                    _requirementNodes[RequirementNodeID.DPFrontEntry],
-                    _requirementNodes[RequirementNodeID.DPLeftEntry],
-                    _requirementNodes[RequirementNodeID.DPBackEntry]
+                    _requirementNodes[OverworldNodeID.DPFrontEntry],
+                    _requirementNodes[OverworldNodeID.DPLeftEntry],
+                    _requirementNodes[OverworldNodeID.DPBackEntry]
                 },
-                DungeonID.TowerOfHera => new List<IRequirementNode>
+                DungeonID.TowerOfHera => new List<INode>
                 {
-                    _requirementNodes[RequirementNodeID.ToHEntry]
+                    _requirementNodes[OverworldNodeID.ToHEntry]
                 },
-                DungeonID.PalaceOfDarkness => new List<IRequirementNode>
+                DungeonID.PalaceOfDarkness => new List<INode>
                 {
-                    _requirementNodes[RequirementNodeID.PoDEntry]
+                    _requirementNodes[OverworldNodeID.PoDEntry]
                 },
-                DungeonID.SwampPalace => new List<IRequirementNode>
+                DungeonID.SwampPalace => new List<INode>
                 {
-                    _requirementNodes[RequirementNodeID.SPEntry]
+                    _requirementNodes[OverworldNodeID.SPEntry]
                 },
-                DungeonID.SkullWoods => new List<IRequirementNode>
+                DungeonID.SkullWoods => new List<INode>
                 {
-                    _requirementNodes[RequirementNodeID.SWFrontEntry],
-                    _requirementNodes[RequirementNodeID.SWBackEntry]
+                    _requirementNodes[OverworldNodeID.SWFrontEntry],
+                    _requirementNodes[OverworldNodeID.SWBackEntry]
                 },
-                DungeonID.ThievesTown => new List<IRequirementNode>
+                DungeonID.ThievesTown => new List<INode>
                 {
-                    _requirementNodes[RequirementNodeID.TTEntry]
+                    _requirementNodes[OverworldNodeID.TTEntry]
                 },
-                DungeonID.IcePalace => new List<IRequirementNode>
+                DungeonID.IcePalace => new List<INode>
                 {
-                    _requirementNodes[RequirementNodeID.IPEntry]
+                    _requirementNodes[OverworldNodeID.IPEntry]
                 },
-                DungeonID.MiseryMire => new List<IRequirementNode>
+                DungeonID.MiseryMire => new List<INode>
                 {
-                    _requirementNodes[RequirementNodeID.MMEntry]
+                    _requirementNodes[OverworldNodeID.MMEntry]
                 },
-                DungeonID.TurtleRock => new List<IRequirementNode>
+                DungeonID.TurtleRock => new List<INode>
                 {
-                    _requirementNodes[RequirementNodeID.TRFrontEntry],
-                    _requirementNodes[RequirementNodeID.TRMiddleEntry],
-                    _requirementNodes[RequirementNodeID.TRBackEntry]
+                    _requirementNodes[OverworldNodeID.TRFrontEntry],
+                    _requirementNodes[OverworldNodeID.TRMiddleEntry],
+                    _requirementNodes[OverworldNodeID.TRBackEntry]
                 },
-                DungeonID.GanonsTower => new List<IRequirementNode>
+                DungeonID.GanonsTower => new List<INode>
                 {
-                    _requirementNodes[RequirementNodeID.GTEntry]
+                    _requirementNodes[OverworldNodeID.GTEntry]
                 },
                 _ => throw new ArgumentOutOfRangeException(nameof(id))
             };

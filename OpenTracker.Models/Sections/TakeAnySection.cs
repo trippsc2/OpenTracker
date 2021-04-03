@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using OpenTracker.Models.Accessibility;
-using OpenTracker.Models.RequirementNodes;
+using OpenTracker.Models.Nodes;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.UndoRedo;
@@ -18,7 +18,7 @@ namespace OpenTracker.Models.Sections
         private readonly ICollectSection.Factory _collectSectionFactory;
         private readonly IUncollectSection.Factory _uncollectSectionFactory;
         
-        private readonly IRequirementNode _node;
+        private readonly INode _node;
 
         public string Name { get; } = "Take Any";
         public IRequirement Requirement { get; }
@@ -33,7 +33,7 @@ namespace OpenTracker.Models.Sections
             set => this.RaiseAndSetIfChanged(ref _available, value);
         }
 
-        public delegate TakeAnySection Factory(IRequirementNode node, IRequirement requirement);
+        public delegate TakeAnySection Factory(INode node, IRequirement requirement);
 
         /// <summary>
         /// Constructor
@@ -52,7 +52,7 @@ namespace OpenTracker.Models.Sections
         /// </param>
         public TakeAnySection(
             ICollectSection.Factory collectSectionFactory, IUncollectSection.Factory uncollectSectionFactory,
-             IRequirementNode node, IRequirement requirement)
+             INode node, IRequirement requirement)
         {
             _collectSectionFactory = collectSectionFactory;
             _uncollectSectionFactory = uncollectSectionFactory;
@@ -76,7 +76,7 @@ namespace OpenTracker.Models.Sections
         /// </param>
         private void OnRequirementChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(IRequirementNode.Accessibility))
+            if (e.PropertyName == nameof(IOverworldNode.Accessibility))
             {
                 this.RaisePropertyChanged(nameof(Accessibility));
             }

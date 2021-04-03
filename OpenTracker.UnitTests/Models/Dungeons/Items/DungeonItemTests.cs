@@ -7,7 +7,7 @@ using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Dungeons.Items;
 using OpenTracker.Models.Dungeons.Mutable;
 using OpenTracker.Models.Dungeons.Nodes;
-using OpenTracker.Models.RequirementNodes;
+using OpenTracker.Models.Nodes;
 using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Dungeons.Items
@@ -16,7 +16,7 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Items
     {
         private readonly IDungeonItemDictionary _dungeonItems = Substitute.For<IDungeonItemDictionary>();
         private readonly IMutableDungeon _dungeonData = Substitute.For<IMutableDungeon>();
-        private readonly IRequirementNode _node = Substitute.For<IRequirementNode>();
+        private readonly IOverworldNode _node = Substitute.For<IOverworldNode>();
         
         private readonly DungeonItem _sut;
 

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using OpenTracker.Models.Accessibility;
-using OpenTracker.Models.RequirementNodes;
+using OpenTracker.Models.Nodes;
 using OpenTracker.Models.Requirements;
 using ReactiveUI;
 
@@ -14,6 +14,6 @@ namespace OpenTracker.Models.NodeConnections
         AccessibilityLevel Accessibility { get; }
         IRequirement Requirement { get; }
 
-        AccessibilityLevel GetConnectionAccessibility(IList<IRequirementNode> excludedNodes);
+        AccessibilityLevel GetConnectionAccessibility(IList<INode> excludedNodes);
     }
 }

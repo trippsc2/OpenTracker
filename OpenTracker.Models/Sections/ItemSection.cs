@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.AutoTracking.Values;
-using OpenTracker.Models.RequirementNodes;
+using OpenTracker.Models.Nodes;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.UndoRedo;
@@ -20,7 +20,7 @@ namespace OpenTracker.Models.Sections
         private readonly ICollectSection.Factory _collectSectionFactory;
         private readonly IUncollectSection.Factory _uncollectSectionFactory;
         
-        private readonly IRequirementNode _node;
+        private readonly INode _node;
         private readonly IAutoTrackValue? _autoTrackValue;
 
         public string Name { get; }
@@ -45,7 +45,7 @@ namespace OpenTracker.Models.Sections
         }
 
         public delegate ItemSection Factory(
-            string name, int total, IRequirementNode node, IAutoTrackValue? autoTrackValue, IRequirement requirement);
+            string name, int total, INode node, IAutoTrackValue? autoTrackValue, IRequirement requirement);
 
         /// <summary>
         /// Constructor
@@ -76,7 +76,7 @@ namespace OpenTracker.Models.Sections
         /// </param>
         public ItemSection(
             ISaveLoadManager saveLoadManager, ICollectSection.Factory collectSectionFactory,
-            IUncollectSection.Factory uncollectSectionFactory, string name, int total, IRequirementNode node,
+            IUncollectSection.Factory uncollectSectionFactory, string name, int total, INode node,
             IAutoTrackValue? autoTrackValue, IRequirement requirement)
         {
             _saveLoadManager = saveLoadManager;
@@ -131,7 +131,7 @@ namespace OpenTracker.Models.Sections
         /// </param>
         private void OnNodeChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName != nameof(IRequirementNode.Accessibility))
+            if (e.PropertyName != nameof(IOverworldNode.Accessibility))
             {
                 return;
             }

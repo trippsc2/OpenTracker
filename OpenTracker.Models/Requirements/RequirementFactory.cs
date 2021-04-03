@@ -5,8 +5,8 @@ using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Items.Keys;
 using OpenTracker.Models.Modes;
+using OpenTracker.Models.Nodes;
 using OpenTracker.Models.Prizes;
-using OpenTracker.Models.RequirementNodes;
 using OpenTracker.Models.Requirements.Boss;
 using OpenTracker.Models.Requirements.Item;
 using OpenTracker.Models.Requirements.Mode;
@@ -26,7 +26,7 @@ namespace OpenTracker.Models.Requirements
         private readonly IItemDictionary _items;
         private readonly IPrizeDictionary _prizes;
         private readonly IRequirementDictionary _requirements;
-        private readonly IRequirementNodeDictionary _requirementNodes;
+        private readonly IOverworldNodeDictionary _requirementNodes;
         private readonly ISequenceBreakDictionary _sequenceBreaks;
         private readonly AggregateRequirement.Factory _aggregateFactory;
         private readonly AlternativeRequirement.Factory _alternativeFactory;
@@ -45,7 +45,7 @@ namespace OpenTracker.Models.Requirements
         private readonly KeyDropShuffleRequirement.Factory _keyDropShuffleFactory;
         private readonly MapShuffleRequirement.Factory _mapShuffleFactory;
         private readonly RaceIllegalTrackingRequirement.Factory _raceIllegalTrackingFactory;
-        private readonly RequirementNodeRequirement.Factory _requirementNodeFactory;
+        private readonly NodeRequirement.Factory _requirementNodeFactory;
         private readonly SequenceBreakRequirement.Factory _sequenceBreakFactory;
         private readonly ShopShuffleRequirement.Factory _shopShuffleFactory;
         private readonly ISmallKeyRequirement.Factory _smallKeyFactory;
@@ -154,7 +154,7 @@ namespace OpenTracker.Models.Requirements
         /// </param>
         public RequirementFactory(
             IBossPlacementDictionary bossPlacements, IItemDictionary items,
-            IPrizeDictionary prizes,  IRequirementNodeDictionary requirementNodes,
+            IPrizeDictionary prizes,  IOverworldNodeDictionary requirementNodes,
             ISequenceBreakDictionary sequenceBreaks, AggregateRequirement.Factory aggregateFactory,
             AlternativeRequirement.Factory alternativeFactory,
             BigKeyShuffleRequirement.Factory bigKeyShuffleFactory,
@@ -171,7 +171,7 @@ namespace OpenTracker.Models.Requirements
             KeyDropShuffleRequirement.Factory keyDropShuffleFactory,
             MapShuffleRequirement.Factory mapShuffleFactory,
             RaceIllegalTrackingRequirement.Factory raceIllegalTrackingFactory,
-            RequirementNodeRequirement.Factory requirementNodeFactory,
+            NodeRequirement.Factory requirementNodeFactory,
             SequenceBreakRequirement.Factory sequenceBreakFactory,
             ShopShuffleRequirement.Factory shopShuffleFactory,
             ISmallKeyRequirement.Factory smallKeyFactory,
@@ -679,12 +679,12 @@ namespace OpenTracker.Models.Requirements
         /// <returns>
         /// A requirement node.
         /// </returns>
-        private IRequirementNode GetRequirementNode(RequirementType type)
+        private INode GetOverworldNode(RequirementType type)
         {
             return type switch
             {
-                RequirementType.LightWorld => _requirementNodes[RequirementNodeID.LightWorld],
-                RequirementType.HammerPegsArea => _requirementNodes[RequirementNodeID.HammerPegsArea],
+                RequirementType.LightWorld => _requirementNodes[OverworldNodeID.LightWorld],
+                RequirementType.HammerPegsArea => _requirementNodes[OverworldNodeID.HammerPegsArea],
                 _ => throw new ArgumentOutOfRangeException(nameof(type))
             };
         }
@@ -1619,7 +1619,7 @@ namespace OpenTracker.Models.Requirements
                 case RequirementType.LightWorld:
                 case RequirementType.HammerPegsArea:
                     {
-                        return _requirementNodeFactory(GetRequirementNode(type));
+                        return _requirementNodeFactory(GetOverworldNode(type));
                     }
                 case RequirementType.AllMedallions:
                     {

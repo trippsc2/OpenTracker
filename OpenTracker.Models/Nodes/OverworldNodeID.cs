@@ -1,9 +1,9 @@
-﻿namespace OpenTracker.Models.RequirementNodes
+﻿namespace OpenTracker.Models.Nodes
 {
     /// <summary>
     /// This is the enum type for requirement node identity.
     /// </summary>
-    public enum RequirementNodeID
+    public enum OverworldNodeID
     {
         Inaccessible,
         Start,

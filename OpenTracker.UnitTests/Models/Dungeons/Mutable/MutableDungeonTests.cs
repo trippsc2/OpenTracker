@@ -25,7 +25,7 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Mutable
         
         private readonly IKeyDoorDictionary.Factory _keyDoors;
         private readonly IDungeonNodeDictionary.Factory _nodes = 
-            dungeonData => new DungeonNodeDictionary((_, _) => Substitute.For<IDungeonNode>(), dungeonData);
+            dungeonData => new DungeonNodeDictionary(_ => Substitute.For<IDungeonNode>(), dungeonData);
         private readonly IDungeonItemDictionary.Factory _dungeonItems;
         private readonly IDungeonResult.Factory _resultFactory =
             (bossAccessibility, accessible, sequenceBreak, visible, minimumInaccessible) => new DungeonResult(

@@ -22,8 +22,8 @@ using OpenTracker.Models.KeyLayouts.Factories;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.NodeConnections;
+using OpenTracker.Models.Nodes;
 using OpenTracker.Models.Requirements;
-using OpenTracker.Models.RequirementNodes;
 using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.Prizes;
 using OpenTracker.Models.Requirements.Mode;
@@ -111,7 +111,7 @@ namespace OpenTracker
             nameof(KeyDropShuffleRequirement),
             nameof(MapShuffleRequirement),
             nameof(RaceIllegalTrackingRequirement),
-            nameof(RequirementNodeRequirement),
+            nameof(NodeRequirement),
             nameof(SequenceBreakRequirement),
             nameof(ShopShuffleRequirement),
             nameof(SmallKeyShuffleRequirement),
@@ -162,8 +162,8 @@ namespace OpenTracker
             nameof(PrizePlacementDictionary),
             nameof(PrizePlacementFactory),
             nameof(PrizeDictionary),
-            nameof(RequirementNodeDictionary),
-            nameof(RequirementNodeFactory),
+            nameof(OverworldNodeDictionary),
+            nameof(OverworldNodeFactory),
             nameof(RequirementDictionary),
             nameof(RequirementFactory),
             nameof(SaveLoadManager),

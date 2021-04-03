@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Dungeons.Mutable;
-using OpenTracker.Models.RequirementNodes;
+using OpenTracker.Models.Nodes;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Requirements.KeyDoor;
 using ReactiveUI;
@@ -16,7 +16,7 @@ namespace OpenTracker.Models.KeyDoors
     {
         private readonly IKeyDoorFactory _factory;
         private readonly IMutableDungeon _dungeonData;
-        private IRequirementNode? _node;
+        private INode? _node;
 
         public IRequirement Requirement { get; }
 
@@ -91,7 +91,7 @@ namespace OpenTracker.Models.KeyDoors
         /// </param>
         private void OnNodeChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(IRequirementNode.Accessibility))
+            if (e.PropertyName == nameof(IOverworldNode.Accessibility))
             {
                 UpdateAccessibility();
             }

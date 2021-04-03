@@ -1,7 +1,7 @@
 ﻿using System;
 using OpenTracker.Models.Dungeons.Mutable;
 using OpenTracker.Models.Dungeons.Nodes;
-using OpenTracker.Models.RequirementNodes;
+using OpenTracker.Models.Nodes;
 
 namespace OpenTracker.Models.KeyDoors
 {
@@ -35,7 +35,7 @@ namespace OpenTracker.Models.KeyDoors
         /// <returns>
         /// The requirement for the specified key door.
         /// </returns>
-        public IRequirementNode GetKeyDoorNode(KeyDoorID id, IMutableDungeon dungeonData)
+        public INode GetKeyDoorNode(KeyDoorID id, IMutableDungeon dungeonData)
         {
             return id switch
             {

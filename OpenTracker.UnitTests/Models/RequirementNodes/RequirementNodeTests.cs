@@ -5,7 +5,7 @@ using NSubstitute;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.NodeConnections;
-using OpenTracker.Models.RequirementNodes;
+using OpenTracker.Models.Nodes;
 using Xunit;
 
 namespace OpenTracker.UnitTests.Models.RequirementNodes
@@ -18,20 +18,20 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
             Substitute.For<INodeConnection>(),
             Substitute.For<INodeConnection>()
         };
-        private readonly IRequirementNodeDictionary _requirementNodes = Substitute.For<IRequirementNodeDictionary>();
-        private readonly IRequirementNodeFactory _factory = Substitute.For<IRequirementNodeFactory>();
+        private readonly IOverworldNodeDictionary _requirementNodes = Substitute.For<IOverworldNodeDictionary>();
+        private readonly IOverworldNodeFactory _factory = Substitute.For<IOverworldNodeFactory>();
 
-        private readonly RequirementNode _sut;
+        private readonly OverworldNode _sut;
 
         public RequirementNodeTests()
         {
-            _sut = new RequirementNode(_mode, _requirementNodes, _factory);
+            _sut = new OverworldNode(_mode, _requirementNodes, _factory);
             _factory.GetNodeConnections(
-                Arg.Any<RequirementNodeID>(), Arg.Any<IRequirementNode>()).Returns(_nodeConnections);
+                Arg.Any<OverworldNodeID>(), Arg.Any<INode>()).Returns(_nodeConnections);
             _requirementNodes.ItemCreated +=
-                Raise.Event<EventHandler<KeyValuePair<RequirementNodeID, IRequirementNode>>>(
-                    _requirementNodes, new KeyValuePair<RequirementNodeID, IRequirementNode>(
-                        RequirementNodeID.LightWorld, _sut));
+                Raise.Event<EventHandler<KeyValuePair<OverworldNodeID, INode>>>(
+                    _requirementNodes, new KeyValuePair<OverworldNodeID, INode>(
+                        OverworldNodeID.LightWorld, _sut));
         }
 
         [Theory]
@@ -110,11 +110,11 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
             AccessibilityLevel connection2Accessibility)
         {
             _nodeConnections[0].Accessibility.Returns(connection1Accessibility);
-            _nodeConnections[0].GetConnectionAccessibility(Arg.Any<List<IRequirementNode>>())
+            _nodeConnections[0].GetConnectionAccessibility(Arg.Any<List<INode>>())
                 .Returns(connection1Accessibility);
 
             _nodeConnections[1].Accessibility.Returns(connection2Accessibility);
-            _nodeConnections[1].GetConnectionAccessibility(Arg.Any<List<IRequirementNode>>())
+            _nodeConnections[1].GetConnectionAccessibility(Arg.Any<List<INode>>())
                 .Returns(connection2Accessibility);
 
             _nodeConnections[0].PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
@@ -129,7 +129,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
          {
              _sut.ExitsAccessible = 1;
              
-             Assert.PropertyChanged(_sut, nameof(IRequirementNode.Accessibility),
+             Assert.PropertyChanged(_sut, nameof(IOverworldNode.Accessibility),
                  () =>
                  {
                      _mode.EntranceShuffle.Returns(EntranceShuffle.All);
@@ -142,10 +142,10 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
          public void Accessibility_ShouldRaisePropertyChanged_WhenConnection1IsChanged()
          {
              _nodeConnections[0].Accessibility.Returns(AccessibilityLevel.Normal);
-             _nodeConnections[0].GetConnectionAccessibility(Arg.Any<List<IRequirementNode>>())
+             _nodeConnections[0].GetConnectionAccessibility(Arg.Any<List<INode>>())
                  .Returns(AccessibilityLevel.Normal);
              
-             Assert.PropertyChanged(_sut, nameof(IRequirementNode.Accessibility),
+             Assert.PropertyChanged(_sut, nameof(IOverworldNode.Accessibility),
                  () => _nodeConnections[0].PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
                      _nodeConnections[0],
                      new PropertyChangedEventArgs(nameof(INodeConnection.Accessibility))));
@@ -155,10 +155,10 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
          public void Accessibility_ShouldRaisePropertyChanged_WhenConnection2IsChanged()
          {
              _nodeConnections[1].Accessibility.Returns(AccessibilityLevel.Normal);
-             _nodeConnections[1].GetConnectionAccessibility(Arg.Any<List<IRequirementNode>>())
+             _nodeConnections[1].GetConnectionAccessibility(Arg.Any<List<INode>>())
                  .Returns(AccessibilityLevel.Normal);
              
-             Assert.PropertyChanged(_sut, nameof(IRequirementNode.Accessibility),
+             Assert.PropertyChanged(_sut, nameof(IOverworldNode.Accessibility),
                  () => _nodeConnections[1].PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
                      _nodeConnections[1],
                      new PropertyChangedEventArgs(nameof(INodeConnection.Accessibility))));

@@ -1,7 +1,7 @@
 ﻿using System;
 using OpenTracker.Models.Dungeons.Mutable;
 using OpenTracker.Models.Dungeons.Nodes;
-using OpenTracker.Models.RequirementNodes;
+using OpenTracker.Models.Nodes;
 
 namespace OpenTracker.Models.Dungeons.Items
 {
@@ -35,7 +35,7 @@ namespace OpenTracker.Models.Dungeons.Items
         /// <returns>
         ///     A dungeon node.
         /// </returns>
-        private static IRequirementNode GetDungeonItemNode(IMutableDungeon dungeonData, DungeonItemID id)
+        private static INode GetDungeonItemNode(IMutableDungeon dungeonData, DungeonItemID id)
         {
             switch (id)
             {

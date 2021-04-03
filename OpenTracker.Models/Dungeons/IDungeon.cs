@@ -5,7 +5,7 @@ using OpenTracker.Models.Items;
 using OpenTracker.Models.Items.Keys;
 using OpenTracker.Models.KeyDoors;
 using OpenTracker.Models.KeyLayouts;
-using OpenTracker.Models.RequirementNodes;
+using OpenTracker.Models.Nodes;
 using ReactiveUI;
 
 namespace OpenTracker.Models.Dungeons
@@ -30,13 +30,13 @@ namespace OpenTracker.Models.Dungeons
         IList<DungeonNodeID> Nodes { get; }
         int Total { get; }
         DungeonID ID { get; }
-        IList<IRequirementNode> EntryNodes { get; }
+        IList<INode> EntryNodes { get; }
         int TotalWithMapAndCompass { get; }
 
         delegate IDungeon Factory(
             DungeonID id, ICappedItem? map, ICappedItem? compass, ISmallKeyItem smallKey, IBigKeyItem? bigKey,
             IList<DungeonItemID> dungeonItems, IList<DungeonItemID> bosses, IList<DungeonItemID> smallKeyDrops,
             IList<DungeonItemID> bigKeyDrops, IList<KeyDoorID> smallKeyDoors, IList<KeyDoorID> bigKeyDoors,
-            IList<DungeonNodeID> nodes, IList<IRequirementNode> entryNodes);
+            IList<DungeonNodeID> nodes, IList<INode> entryNodes);
     }
 }

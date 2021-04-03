@@ -1,6 +1,6 @@
 ﻿using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Dungeons.Mutable;
-using OpenTracker.Models.RequirementNodes;
+using OpenTracker.Models.Nodes;
 using ReactiveUI;
 
 namespace OpenTracker.Models.Dungeons.Items
@@ -27,6 +27,6 @@ namespace OpenTracker.Models.Dungeons.Items
         /// <returns>
         ///     A new dungeon item.
         /// </returns>
-        delegate IDungeonItem Factory(IMutableDungeon dungeonData, IRequirementNode node);
+        delegate IDungeonItem Factory(IMutableDungeon dungeonData, INode node);
     }
 }

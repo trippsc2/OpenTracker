@@ -5,7 +5,7 @@ using OpenTracker.Utils;
 namespace OpenTracker.Models.Dungeons.Nodes
 {
     /// <summary>
-    /// This class contains the dictionary container for dungeon nodes.
+    ///     This class contains the dictionary container for dungeon nodes.
     /// </summary>
     public class DungeonNodeDictionary : LazyDictionary<DungeonNodeID, IDungeonNode>, IDungeonNodeDictionary
     {
@@ -13,13 +13,13 @@ namespace OpenTracker.Models.Dungeons.Nodes
         private readonly IDungeonNode.Factory _factory;
 
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="factory">
-        /// The factory for creating new dungeon nodes.
+        ///     The factory for creating new dungeon nodes.
         /// </param>
         /// <param name="dungeonData">
-        /// The mutable dungeon data.
+        ///     The mutable dungeon data.
         /// </param>
         public DungeonNodeDictionary(IDungeonNode.Factory factory, IMutableDungeon dungeonData)
             : base(new Dictionary<DungeonNodeID, IDungeonNode>())
@@ -39,7 +39,7 @@ namespace OpenTracker.Models.Dungeons.Nodes
 
         protected override IDungeonNode Create(DungeonNodeID key)
         {
-            return _factory(_dungeonData, key);
+            return _factory(_dungeonData);
         }
     }
 }

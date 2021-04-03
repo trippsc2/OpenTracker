@@ -6,15 +6,15 @@ using OpenTracker.Models.Modes;
 using OpenTracker.Models.NodeConnections;
 using ReactiveUI;
 
-namespace OpenTracker.Models.RequirementNodes
+namespace OpenTracker.Models.Nodes
 {
     /// <summary>
     /// This class contains requirement node data.
     /// </summary>
-    public class RequirementNode : ReactiveObject, IRequirementNode
+    public class OverworldNode : ReactiveObject, IOverworldNode
     {
         private readonly IMode _mode;
-        private readonly IRequirementNodeFactory _factory;
+        private readonly IOverworldNodeFactory _factory;
 
         private readonly List<INodeConnection> _connections = new();
 
@@ -69,8 +69,8 @@ namespace OpenTracker.Models.RequirementNodes
         /// <param name="factory">
         /// The requirement node factory.
         /// </param>
-        public RequirementNode(
-            IMode mode, IRequirementNodeDictionary requirementNodes, IRequirementNodeFactory factory)
+        public OverworldNode(
+            IMode mode, IOverworldNodeDictionary requirementNodes, IOverworldNodeFactory factory)
         {
             _mode = mode;
             _factory = factory;
@@ -110,14 +110,14 @@ namespace OpenTracker.Models.RequirementNodes
         /// <param name="e">
         /// The arguments of the ItemCreated event.
         /// </param>
-        private void OnNodeCreated(object? sender, KeyValuePair<RequirementNodeID, IRequirementNode> e)
+        private void OnNodeCreated(object? sender, KeyValuePair<OverworldNodeID, INode> e)
         {
             if (e.Value != this)
             {
                 return;
             }
             
-            var requirementNodes = (IRequirementNodeDictionary)sender!;
+            var requirementNodes = (IOverworldNodeDictionary)sender!;
             requirementNodes.ItemCreated -= OnNodeCreated;
             _connections.AddRange(_factory.GetNodeConnections(e.Key, this));
 
@@ -173,7 +173,7 @@ namespace OpenTracker.Models.RequirementNodes
         /// </summary>
         private void UpdateAccessibility()
         {
-            Accessibility = GetNodeAccessibility(new List<IRequirementNode>());
+            Accessibility = GetNodeAccessibility(new List<INode>());
         }
 
         /// <summary>
@@ -185,7 +185,7 @@ namespace OpenTracker.Models.RequirementNodes
         /// <returns>
         /// The accessibility of the node.
         /// </returns>
-        public AccessibilityLevel GetNodeAccessibility(IList<IRequirementNode> excludedNodes)
+        public AccessibilityLevel GetNodeAccessibility(IList<INode> excludedNodes)
         {
             if (ExitsAccessible > 0 && _mode.EntranceShuffle >= EntranceShuffle.All)
             {

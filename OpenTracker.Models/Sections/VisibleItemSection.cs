@@ -3,7 +3,7 @@ using System.ComponentModel;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.AutoTracking.Values;
 using OpenTracker.Models.Markings;
-using OpenTracker.Models.RequirementNodes;
+using OpenTracker.Models.Nodes;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.UndoRedo;
@@ -22,8 +22,8 @@ namespace OpenTracker.Models.Sections
         private readonly ICollectSection.Factory _collectSectionFactory;
         private readonly IUncollectSection.Factory _uncollectSectionFactory;
         
-        private readonly IRequirementNode? _visibleNode;
-        private readonly IRequirementNode _node;
+        private readonly INode? _visibleNode;
+        private readonly INode _node;
         private readonly IAutoTrackValue? _autoTrackValue;
 
         public string Name { get; }
@@ -53,8 +53,8 @@ namespace OpenTracker.Models.Sections
         }
 
         public delegate VisibleItemSection Factory(
-            string name, int total, IRequirementNode node, IAutoTrackValue? autoTrackValue, IRequirement requirement,
-            IRequirementNode? visibleNode = null);
+            string name, int total, INode node, IAutoTrackValue? autoTrackValue, IRequirement requirement,
+            INode? visibleNode = null);
 
         /// <summary>
         /// Constructor
@@ -92,8 +92,8 @@ namespace OpenTracker.Models.Sections
         public VisibleItemSection(
             ISaveLoadManager saveLoadManager, ICollectSection.Factory collectSectionFactory,
             IUncollectSection.Factory uncollectSectionFactory, IMarking marking, string name, int total,
-            IRequirementNode node, IAutoTrackValue? autoTrackValue, IRequirement requirement,
-            IRequirementNode? visibleNode = null)
+            INode node, IAutoTrackValue? autoTrackValue, IRequirement requirement,
+            INode? visibleNode = null)
         {
             _saveLoadManager = saveLoadManager;
             
@@ -152,7 +152,7 @@ namespace OpenTracker.Models.Sections
         /// </param>
         private void OnNodeChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName != nameof(IRequirementNode.Accessibility))
+            if (e.PropertyName != nameof(IOverworldNode.Accessibility))
             {
                 return;
             }

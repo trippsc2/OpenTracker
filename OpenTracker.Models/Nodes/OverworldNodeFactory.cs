@@ -2,18 +2,18 @@
 using OpenTracker.Models.NodeConnections;
 using OpenTracker.Models.Requirements;
 
-namespace OpenTracker.Models.RequirementNodes
+namespace OpenTracker.Models.Nodes
 {
     /// <summary>
     /// This class contains creation logic for requirement node data.
     /// </summary>
-    public class RequirementNodeFactory : IRequirementNodeFactory
+    public class OverworldNodeFactory : IOverworldNodeFactory
     {
         private readonly IRequirementDictionary _requirements;
-        private readonly IRequirementNodeDictionary _requirementNodes;
+        private readonly IOverworldNodeDictionary _requirementNodes;
         
-        private readonly IRequirementNode.Factory _factory;
-        private readonly IStartRequirementNode.Factory _startFactory;
+        private readonly IOverworldNode.Factory _factory;
+        private readonly IStartNode.Factory _startFactory;
         private readonly NodeConnection.Factory _connectionFactory;
 
         /// <summary>
@@ -34,9 +34,9 @@ namespace OpenTracker.Models.RequirementNodes
         /// <param name="connectionFactory">
         /// An Autofac factory for creating node connections.
         /// </param>
-        public RequirementNodeFactory(
-            IRequirementDictionary requirements, IRequirementNodeDictionary requirementNodes,
-            IRequirementNode.Factory factory, IStartRequirementNode.Factory startFactory,
+        public OverworldNodeFactory(
+            IRequirementDictionary requirements, IOverworldNodeDictionary requirementNodes,
+            IOverworldNode.Factory factory, IStartNode.Factory startFactory,
             NodeConnection.Factory connectionFactory)
         {
             _requirements = requirements;
@@ -47,2525 +47,2525 @@ namespace OpenTracker.Models.RequirementNodes
         }
 
         /// <summary>
-        /// Populates the list of connections to the specified requirement node ID.
+        ///     Populates the list of connections to the specified requirement node ID.
         /// </summary>
         /// <param name="id">
-        /// The requirement node ID.
+        ///     The requirement node ID.
         /// </param>
         /// <param name="node">
-        /// The node.
+        ///     The node.
         /// </param>
-        public IEnumerable<INodeConnection> GetNodeConnections(RequirementNodeID id, IRequirementNode node)
+        public IEnumerable<INodeConnection> GetNodeConnections(OverworldNodeID id, INode node)
         {
             var connections = new List<INodeConnection>();
             
             switch (id)
             {
-                case RequirementNodeID.EntranceDungeonAllInsanity:
+                case OverworldNodeID.EntranceDungeonAllInsanity:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.Start], node,
+                            _requirementNodes[OverworldNodeID.Start], node,
                             _requirements[RequirementType.EntranceShuffleDungeonAllInsanity]));
                     }
                     break;
-                case RequirementNodeID.EntranceNone:
+                case OverworldNodeID.EntranceNone:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.Start], node,
+                            _requirementNodes[OverworldNodeID.Start], node,
                             _requirements[RequirementType.EntranceShuffleNoneDungeon]));
                     }
                     break;
-                case RequirementNodeID.EntranceNoneInverted:
+                case OverworldNodeID.EntranceNoneInverted:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.EntranceNone], node,
+                            _requirementNodes[OverworldNodeID.EntranceNone], node,
                             _requirements[RequirementType.WorldStateInverted]));
                     }
                     break;
-                case RequirementNodeID.Flute:
+                case OverworldNodeID.Flute:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.Start], node,
+                            _requirementNodes[OverworldNodeID.Start], node,
                             _requirements[RequirementType.Flute]));
                     }
                     break;
-                case RequirementNodeID.FluteActivated:
+                case OverworldNodeID.FluteActivated:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.Flute], node,
+                            _requirementNodes[OverworldNodeID.Flute], node,
                             _requirements[RequirementType.FluteActivated]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LightWorldFlute], node,
+                            _requirementNodes[OverworldNodeID.LightWorldFlute], node,
                             _requirements[RequirementType.NoRequirement]));
 
                     }
                     break;
-                case RequirementNodeID.LightWorld:
+                case OverworldNodeID.LightWorld:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.Start], node,
+                            _requirementNodes[OverworldNodeID.Start], node,
                             _requirements[RequirementType.WorldStateStandardOpen]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DeathMountainEntry], node,
+                            _requirementNodes[OverworldNodeID.DeathMountainEntry], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DeathMountainExit], node,
+                            _requirementNodes[OverworldNodeID.DeathMountainExit], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LWKakarikoPortalNotBunny], node,
+                            _requirementNodes[OverworldNodeID.LWKakarikoPortalNotBunny], node,
                             _requirements[RequirementType.Hammer]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LWKakarikoPortalNotBunny], node,
+                            _requirementNodes[OverworldNodeID.LWKakarikoPortalNotBunny], node,
                             _requirements[RequirementType.Gloves2]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DesertLedge], node,
+                            _requirementNodes[OverworldNodeID.DesertLedge], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.GrassHouse], node,
+                            _requirementNodes[OverworldNodeID.GrassHouse], node,
                             _requirements[RequirementType.NotBunnyLW]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.BombHut], node,
+                            _requirementNodes[OverworldNodeID.BombHut], node,
                             _requirements[RequirementType.NotBunnyLW]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.RaceGameLedge], node,
+                            _requirementNodes[OverworldNodeID.RaceGameLedge], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.CastleSecretExitArea], node,
+                            _requirementNodes[OverworldNodeID.CastleSecretExitArea], node,
                             _requirements[RequirementType.NotBunnyLW]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.SouthOfGroveLedge], node,
+                            _requirementNodes[OverworldNodeID.SouthOfGroveLedge], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.CheckerboardLedge], node,
+                            _requirementNodes[OverworldNodeID.CheckerboardLedge], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LWMirePortal], node,
+                            _requirementNodes[OverworldNodeID.LWMirePortal], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LWSouthPortalNotBunny], node,
+                            _requirementNodes[OverworldNodeID.LWSouthPortalNotBunny], node,
                             _requirements[RequirementType.Hammer]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LWWitchAreaNotBunny], node,
+                            _requirementNodes[OverworldNodeID.LWWitchAreaNotBunny], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LWEastPortalNotBunny], node,
+                            _requirementNodes[OverworldNodeID.LWEastPortalNotBunny], node,
                             _requirements[RequirementType.Hammer]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldSouthInverted], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldSouthInverted], node,
                             _requirements[RequirementType.Aga1]));
                     }
                     break;
-                case RequirementNodeID.LightWorldInverted:
+                case OverworldNodeID.LightWorldInverted:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LightWorld], node,
+                            _requirementNodes[OverworldNodeID.LightWorld], node,
                             _requirements[RequirementType.WorldStateInverted]));
                     }
                     break;
-                case RequirementNodeID.LightWorldInvertedNotBunny:
+                case OverworldNodeID.LightWorldInvertedNotBunny:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LightWorldInverted], node,
+                            _requirementNodes[OverworldNodeID.LightWorldInverted], node,
                             _requirements[RequirementType.MoonPearl]));
                     }
                     break;
-                case RequirementNodeID.LightWorldStandardOpen:
+                case OverworldNodeID.LightWorldStandardOpen:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LightWorld], node,
+                            _requirementNodes[OverworldNodeID.LightWorld], node,
                             _requirements[RequirementType.WorldStateStandardOpen]));
                     }
                     break;
-                case RequirementNodeID.LightWorldMirror:
+                case OverworldNodeID.LightWorldMirror:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LightWorld], node,
+                            _requirementNodes[OverworldNodeID.LightWorld], node,
                             _requirements[RequirementType.LWMirror]));
                     }
                     break;
-                case RequirementNodeID.LightWorldNotBunny:
+                case OverworldNodeID.LightWorldNotBunny:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LightWorld], node,
+                            _requirementNodes[OverworldNodeID.LightWorld], node,
                             _requirements[RequirementType.NotBunnyLW]));
                     }
                     break;
-                case RequirementNodeID.LightWorldNotBunnyOrDungeonRevive:
+                case OverworldNodeID.LightWorldNotBunnyOrDungeonRevive:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LightWorldNotBunny], node,
+                            _requirementNodes[OverworldNodeID.LightWorldNotBunny], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LightWorld], node,
+                            _requirementNodes[OverworldNodeID.LightWorld], node,
                             _requirements[RequirementType.DungeonRevive]));
                     }
                     break;
-                case RequirementNodeID.LightWorldNotBunnyOrSuperBunnyFallInHole:
+                case OverworldNodeID.LightWorldNotBunnyOrSuperBunnyFallInHole:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LightWorldNotBunny], node,
+                            _requirementNodes[OverworldNodeID.LightWorldNotBunny], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LightWorld], node,
+                            _requirementNodes[OverworldNodeID.LightWorld], node,
                             _requirements[RequirementType.SuperBunnyFallInHole]));
                     }
                     break;
-                case RequirementNodeID.LightWorldNotBunnyOrSuperBunnyMirror:
+                case OverworldNodeID.LightWorldNotBunnyOrSuperBunnyMirror:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LightWorldNotBunny], node,
+                            _requirementNodes[OverworldNodeID.LightWorldNotBunny], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LightWorld], node,
+                            _requirementNodes[OverworldNodeID.LightWorld], node,
                             _requirements[RequirementType.SuperBunnyMirror]));
                     }
                     break;
-                case RequirementNodeID.LightWorldDash:
+                case OverworldNodeID.LightWorldDash:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LightWorldNotBunny], node,
+                            _requirementNodes[OverworldNodeID.LightWorldNotBunny], node,
                             _requirements[RequirementType.Boots]));
                     }
                     break;
-                case RequirementNodeID.LightWorldHammer:
+                case OverworldNodeID.LightWorldHammer:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LightWorldNotBunny], node,
+                            _requirementNodes[OverworldNodeID.LightWorldNotBunny], node,
                             _requirements[RequirementType.Hammer]));
                     }
                     break;
-                case RequirementNodeID.LightWorldLift1:
+                case OverworldNodeID.LightWorldLift1:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LightWorldNotBunny], node,
+                            _requirementNodes[OverworldNodeID.LightWorldNotBunny], node,
                             _requirements[RequirementType.Gloves1]));
                     }
                     break;
-                case RequirementNodeID.LightWorldFlute:
+                case OverworldNodeID.LightWorldFlute:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LightWorldNotBunny], node,
+                            _requirementNodes[OverworldNodeID.LightWorldNotBunny], node,
                             _requirements[RequirementType.Flute]));
                     }
                     break;
-                case RequirementNodeID.FluteInverted:
+                case OverworldNodeID.FluteInverted:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.FluteActivated], node,
+                            _requirementNodes[OverworldNodeID.FluteActivated], node,
                             _requirements[RequirementType.WorldStateInverted]));
                     }
                     break;
-                case RequirementNodeID.FluteStandardOpen:
+                case OverworldNodeID.FluteStandardOpen:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.FluteActivated], node,
+                            _requirementNodes[OverworldNodeID.FluteActivated], node,
                             _requirements[RequirementType.WorldStateStandardOpen]));
                     }
                     break;
-                case RequirementNodeID.Pedestal:
+                case OverworldNodeID.Pedestal:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LightWorld], node,
+                            _requirementNodes[OverworldNodeID.LightWorld], node,
                             _requirements[RequirementType.Pedestal]));
                     }
                     break;
-                case RequirementNodeID.LumberjackCaveHole:
+                case OverworldNodeID.LumberjackCaveHole:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LightWorldDash], node,
+                            _requirementNodes[OverworldNodeID.LightWorldDash], node,
                             _requirements[RequirementType.Aga1]));
                     }
                     break;
-                case RequirementNodeID.DeathMountainEntry:
+                case OverworldNodeID.DeathMountainEntry:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LightWorldLift1], node,
+                            _requirementNodes[OverworldNodeID.LightWorldLift1], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.BumperCaveEntry], node,
+                            _requirementNodes[OverworldNodeID.BumperCaveEntry], node,
                             _requirements[RequirementType.DWMirror]));
                     }
                     break;
-                case RequirementNodeID.DeathMountainEntryNonEntrance:
+                case OverworldNodeID.DeathMountainEntryNonEntrance:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DeathMountainEntry], node,
+                            _requirementNodes[OverworldNodeID.DeathMountainEntry], node,
                             _requirements[RequirementType.EntranceShuffleNoneDungeon]));
                     }
                     break;
-                case RequirementNodeID.DeathMountainEntryCave:
+                case OverworldNodeID.DeathMountainEntryCave:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DeathMountainEntryNonEntrance], node,
+                            _requirementNodes[OverworldNodeID.DeathMountainEntryNonEntrance], node,
                             _requirements[RequirementType.WorldStateStandardOpen]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DeathMountainWestBottomNonEntrance], node,
+                            _requirementNodes[OverworldNodeID.DeathMountainWestBottomNonEntrance], node,
                             _requirements[RequirementType.WorldStateStandardOpen]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.BumperCaveEntryNonEntrance], node,
+                            _requirementNodes[OverworldNodeID.BumperCaveEntryNonEntrance], node,
                             _requirements[RequirementType.WorldStateInverted]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkDeathMountainWestBottomNonEntrance], node,
+                            _requirementNodes[OverworldNodeID.DarkDeathMountainWestBottomNonEntrance], node,
                             _requirements[RequirementType.WorldStateInverted]));
                     }
                     break;
-                case RequirementNodeID.DeathMountainEntryCaveDark:
+                case OverworldNodeID.DeathMountainEntryCaveDark:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DeathMountainEntryCave], node,
+                            _requirementNodes[OverworldNodeID.DeathMountainEntryCave], node,
                             _requirements[RequirementType.DarkRoomDeathMountainEntry]));
                     }
                     break;
-                case RequirementNodeID.DeathMountainExit:
+                case OverworldNodeID.DeathMountainExit:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DeathMountainExitCaveDark], node,
+                            _requirementNodes[OverworldNodeID.DeathMountainExitCaveDark], node,
                             _requirements[RequirementType.WorldStateStandardOpen]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.BumperCaveBack], node,
+                            _requirementNodes[OverworldNodeID.BumperCaveBack], node,
                             _requirements[RequirementType.WorldStateInverted]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.BumperCaveTop], node,
+                            _requirementNodes[OverworldNodeID.BumperCaveTop], node,
                             _requirements[RequirementType.DWMirror]));
                     }
                     break;
-                case RequirementNodeID.DeathMountainExitNonEntrance:
+                case OverworldNodeID.DeathMountainExitNonEntrance:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DeathMountainExit], node,
+                            _requirementNodes[OverworldNodeID.DeathMountainExit], node,
                             _requirements[RequirementType.EntranceShuffleNoneDungeon]));
                     }
                     break;
-                case RequirementNodeID.DeathMountainExitCave:
+                case OverworldNodeID.DeathMountainExitCave:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DeathMountainExitNonEntrance], node,
+                            _requirementNodes[OverworldNodeID.DeathMountainExitNonEntrance], node,
                             _requirements[RequirementType.WorldStateStandardOpen]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DeathMountainWestBottomNonEntrance], node,
+                            _requirementNodes[OverworldNodeID.DeathMountainWestBottomNonEntrance], node,
                             _requirements[RequirementType.WorldStateStandardOpen]));
                     }
                     break;
-                case RequirementNodeID.DeathMountainExitCaveDark:
+                case OverworldNodeID.DeathMountainExitCaveDark:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DeathMountainExitCave], node,
+                            _requirementNodes[OverworldNodeID.DeathMountainExitCave], node,
                             _requirements[RequirementType.DarkRoomDeathMountainExit]));
                     }
                     break;
-                case RequirementNodeID.LWKakarikoPortal:
+                case OverworldNodeID.LWKakarikoPortal:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LightWorldNotBunny], node,
+                            _requirementNodes[OverworldNodeID.LightWorldNotBunny], node,
                             _requirements[RequirementType.Gloves2]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LightWorldHammer], node,
+                            _requirementNodes[OverworldNodeID.LightWorldHammer], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DWKakarikoPortalInverted], node,
+                            _requirementNodes[OverworldNodeID.DWKakarikoPortalInverted], node,
                             _requirements[RequirementType.Gloves1]));
                     }
                     break;
-                case RequirementNodeID.LWKakarikoPortalStandardOpen:
+                case OverworldNodeID.LWKakarikoPortalStandardOpen:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LWKakarikoPortal], node,
+                            _requirementNodes[OverworldNodeID.LWKakarikoPortal], node,
                             _requirements[RequirementType.WorldStateStandardOpen]));
                     }
                     break;
-                case RequirementNodeID.LWKakarikoPortalNotBunny:
+                case OverworldNodeID.LWKakarikoPortalNotBunny:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LWKakarikoPortal], node,
+                            _requirementNodes[OverworldNodeID.LWKakarikoPortal], node,
                             _requirements[RequirementType.NotBunnyLW]));
                     }
                     break;
-                case RequirementNodeID.SickKid:
+                case OverworldNodeID.SickKid:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LightWorld], node,
+                            _requirementNodes[OverworldNodeID.LightWorld], node,
                             _requirements[RequirementType.Bottle]));
                     }
                     break;
-                case RequirementNodeID.GrassHouse:
-                case RequirementNodeID.BombHut:
-                case RequirementNodeID.CastleSecretExitArea:
+                case OverworldNodeID.GrassHouse:
+                case OverworldNodeID.BombHut:
+                case OverworldNodeID.CastleSecretExitArea:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LightWorldNotBunny], node,
+                            _requirementNodes[OverworldNodeID.LightWorldNotBunny], node,
                             _requirements[RequirementType.NoRequirement]));
 
                     }
                     break;
-                case RequirementNodeID.MagicBatLedge:
+                case OverworldNodeID.MagicBatLedge:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LightWorldHammer], node,
+                            _requirementNodes[OverworldNodeID.LightWorldHammer], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.HammerPegsArea], node,
+                            _requirementNodes[OverworldNodeID.HammerPegsArea], node,
                             _requirements[RequirementType.DWMirror]));
                     }
                     break;
-                case RequirementNodeID.MagicBat:
+                case OverworldNodeID.MagicBat:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.MagicBatLedge], node,
+                            _requirementNodes[OverworldNodeID.MagicBatLedge], node,
                             _requirements[RequirementType.MagicBat]));
                     }
                     break;
-                case RequirementNodeID.RaceGameLedge:
+                case OverworldNodeID.RaceGameLedge:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LightWorldNotBunny], node,
+                            _requirementNodes[OverworldNodeID.LightWorldNotBunny], node,
                             _requirements[RequirementType.EntranceShuffleNoneDungeon]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldSouthMirror], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldSouthMirror], node,
                             _requirements[RequirementType.NoRequirement]));
 
                     }
                     break;
-                case RequirementNodeID.RaceGameLedgeNotBunny:
+                case OverworldNodeID.RaceGameLedgeNotBunny:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.RaceGameLedge], node,
+                            _requirementNodes[OverworldNodeID.RaceGameLedge], node,
                             _requirements[RequirementType.NotBunnyLW]));
                     }
                     break;
-                case RequirementNodeID.SouthOfGroveLedge:
+                case OverworldNodeID.SouthOfGroveLedge:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LightWorldInverted], node,
+                            _requirementNodes[OverworldNodeID.LightWorldInverted], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldSouthMirror], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldSouthMirror], node,
                             _requirements[RequirementType.NoRequirement]));
 
                     }
                     break;
-                case RequirementNodeID.SouthOfGrove:
+                case OverworldNodeID.SouthOfGrove:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.SouthOfGroveLedge], node,
+                            _requirementNodes[OverworldNodeID.SouthOfGroveLedge], node,
                             _requirements[RequirementType.NotBunnyLW]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.SouthOfGroveLedge], node,
+                            _requirementNodes[OverworldNodeID.SouthOfGroveLedge], node,
                             _requirements[RequirementType.SuperBunnyMirror]));
                     }
                     break;
-                case RequirementNodeID.GroveDiggingSpot:
+                case OverworldNodeID.GroveDiggingSpot:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LightWorldNotBunny], node,
+                            _requirementNodes[OverworldNodeID.LightWorldNotBunny], node,
                             _requirements[RequirementType.Shovel]));
                     }
                     break;
-                case RequirementNodeID.DesertLedge:
+                case OverworldNodeID.DesertLedge:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DesertBackNotBunny], node,
+                            _requirementNodes[OverworldNodeID.DesertBackNotBunny], node,
                             _requirements[RequirementType.Gloves1]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.MireAreaMirror], node,
+                            _requirementNodes[OverworldNodeID.MireAreaMirror], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DPFrontEntry], node,
+                            _requirementNodes[OverworldNodeID.DPFrontEntry], node,
                             _requirements[RequirementType.EntranceShuffleNone]));
                     }
                     break;
-                case RequirementNodeID.DesertLedgeNotBunny:
+                case OverworldNodeID.DesertLedgeNotBunny:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DesertLedge], node,
+                            _requirementNodes[OverworldNodeID.DesertLedge], node,
                             _requirements[RequirementType.NotBunnyLW]));
                     }
                     break;
-                case RequirementNodeID.DesertBack:
+                case OverworldNodeID.DesertBack:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DesertLedgeNotBunny], node,
+                            _requirementNodes[OverworldNodeID.DesertLedgeNotBunny], node,
                             _requirements[RequirementType.Gloves1]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.MireAreaMirror], node,
+                            _requirementNodes[OverworldNodeID.MireAreaMirror], node,
                             _requirements[RequirementType.NoRequirement]));
 
                     }
                     break;
-                case RequirementNodeID.DesertBackNotBunny:
+                case OverworldNodeID.DesertBackNotBunny:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DesertBack], node,
+                            _requirementNodes[OverworldNodeID.DesertBack], node,
                             _requirements[RequirementType.NotBunnyLW]));
                     }
                     break;
-                case RequirementNodeID.CheckerboardLedge:
+                case OverworldNodeID.CheckerboardLedge:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LightWorldInverted], node,
+                            _requirementNodes[OverworldNodeID.LightWorldInverted], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.MireAreaMirror], node,
+                            _requirementNodes[OverworldNodeID.MireAreaMirror], node,
                             _requirements[RequirementType.NoRequirement]));
 
                     }
                     break;
-                case RequirementNodeID.CheckerboardLedgeNotBunny:
+                case OverworldNodeID.CheckerboardLedgeNotBunny:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.CheckerboardLedge], node,
+                            _requirementNodes[OverworldNodeID.CheckerboardLedge], node,
                             _requirements[RequirementType.NotBunnyLW]));
                     }
                     break;
-                case RequirementNodeID.CheckerboardCave:
+                case OverworldNodeID.CheckerboardCave:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.CheckerboardLedgeNotBunny], node,
+                            _requirementNodes[OverworldNodeID.CheckerboardLedgeNotBunny], node,
                             _requirements[RequirementType.Gloves1]));
                     }
                     break;
-                case RequirementNodeID.DesertPalaceFrontEntrance:
+                case OverworldNodeID.DesertPalaceFrontEntrance:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LightWorld], node,
+                            _requirementNodes[OverworldNodeID.LightWorld], node,
                             _requirements[RequirementType.Book]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.MireAreaMirror], node,
+                            _requirementNodes[OverworldNodeID.MireAreaMirror], node,
                             _requirements[RequirementType.NoRequirement]));
 
                     }
                     break;
-                case RequirementNodeID.BombosTabletLedge:
+                case OverworldNodeID.BombosTabletLedge:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LightWorldInverted], node,
+                            _requirementNodes[OverworldNodeID.LightWorldInverted], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldSouthMirror], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldSouthMirror], node,
                             _requirements[RequirementType.NoRequirement]));
 
                     }
                     break;
-                case RequirementNodeID.BombosTablet:
+                case OverworldNodeID.BombosTablet:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.BombosTabletLedge], node,
+                            _requirementNodes[OverworldNodeID.BombosTabletLedge], node,
                             _requirements[RequirementType.Tablet]));
                     }
                     break;
-                case RequirementNodeID.LWMirePortal:
+                case OverworldNodeID.LWMirePortal:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.FluteStandardOpen], node,
+                            _requirementNodes[OverworldNodeID.FluteStandardOpen], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DWMirePortalInverted], node,
+                            _requirementNodes[OverworldNodeID.DWMirePortalInverted], node,
                             _requirements[RequirementType.Gloves2]));
                     }
                     break;
-                case RequirementNodeID.LWMirePortalStandardOpen:
+                case OverworldNodeID.LWMirePortalStandardOpen:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LWMirePortal], node,
+                            _requirementNodes[OverworldNodeID.LWMirePortal], node,
                             _requirements[RequirementType.WorldStateStandardOpen]));
                     }
                     break;
-                case RequirementNodeID.LWGraveyard:
+                case OverworldNodeID.LWGraveyard:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LightWorldNotBunny], node,
+                            _requirementNodes[OverworldNodeID.LightWorldNotBunny], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LWGraveyardLedge], node,
+                            _requirementNodes[OverworldNodeID.LWGraveyardLedge], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.KingsTombNotBunny], node,
+                            _requirementNodes[OverworldNodeID.KingsTombNotBunny], node,
                             _requirements[RequirementType.Gloves2]));
                     }
                     break;
-                case RequirementNodeID.LWGraveyardNotBunny:
+                case OverworldNodeID.LWGraveyardNotBunny:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LWGraveyard], node,
+                            _requirementNodes[OverworldNodeID.LWGraveyard], node,
                             _requirements[RequirementType.NotBunnyLW]));
                     }
                     break;
-                case RequirementNodeID.LWGraveyardLedge:
+                case OverworldNodeID.LWGraveyardLedge:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LWGraveyardNotBunny], node,
+                            _requirementNodes[OverworldNodeID.LWGraveyardNotBunny], node,
                             _requirements[RequirementType.WorldStateInverted]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DWGraveyardMirror], node,
+                            _requirementNodes[OverworldNodeID.DWGraveyardMirror], node,
                             _requirements[RequirementType.NoRequirement]));
 
                     }
                     break;
-                case RequirementNodeID.EscapeGrave:
+                case OverworldNodeID.EscapeGrave:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LWGraveyardNotBunny], node,
+                            _requirementNodes[OverworldNodeID.LWGraveyardNotBunny], node,
                             _requirements[RequirementType.Gloves1]));
                     }
                     break;
-                case RequirementNodeID.KingsTomb:
+                case OverworldNodeID.KingsTomb:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LWGraveyardNotBunny], node,
+                            _requirementNodes[OverworldNodeID.LWGraveyardNotBunny], node,
                             _requirements[RequirementType.Gloves2]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DWGraveyardMirror], node,
+                            _requirementNodes[OverworldNodeID.DWGraveyardMirror], node,
                             _requirements[RequirementType.NoRequirement]));
 
                     }
                     break;
-                case RequirementNodeID.KingsTombNotBunny:
+                case OverworldNodeID.KingsTombNotBunny:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.KingsTomb], node,
+                            _requirementNodes[OverworldNodeID.KingsTomb], node,
                             _requirements[RequirementType.NotBunnyLW]));
                     }
                     break;
-                case RequirementNodeID.KingsTombGrave:
+                case OverworldNodeID.KingsTombGrave:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.KingsTombNotBunny], node,
+                            _requirementNodes[OverworldNodeID.KingsTombNotBunny], node,
                             _requirements[RequirementType.Boots]));
                     }
                     break;
-                case RequirementNodeID.HyruleCastleTop:
+                case OverworldNodeID.HyruleCastleTop:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LightWorld], node,
+                            _requirementNodes[OverworldNodeID.LightWorld], node,
                             _requirements[RequirementType.EntranceShuffleNone]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldEast], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldEast], node,
                             _requirements[RequirementType.DWMirror]));
                     }
                     break;
-                case RequirementNodeID.HyruleCastleTopInverted:
+                case OverworldNodeID.HyruleCastleTopInverted:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.HyruleCastleTop], node,
+                            _requirementNodes[OverworldNodeID.HyruleCastleTop], node,
                             _requirements[RequirementType.WorldStateInverted]));
                     }
                     break;
-                case RequirementNodeID.HyruleCastleTopStandardOpen:
+                case OverworldNodeID.HyruleCastleTopStandardOpen:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.HyruleCastleTop], node,
+                            _requirementNodes[OverworldNodeID.HyruleCastleTop], node,
                             _requirements[RequirementType.WorldStateStandardOpen]));
                     }
                     break;
-                case RequirementNodeID.AgahnimTowerEntrance:
+                case OverworldNodeID.AgahnimTowerEntrance:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.HyruleCastleTopInverted], node,
+                            _requirementNodes[OverworldNodeID.HyruleCastleTopInverted], node,
                             _requirements[RequirementType.GTCrystal]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.HyruleCastleTopStandardOpen], node,
+                            _requirementNodes[OverworldNodeID.HyruleCastleTopStandardOpen], node,
                             _requirements[RequirementType.ATBarrier]));
                     }
                     break;
-                case RequirementNodeID.GanonHole:
+                case OverworldNodeID.GanonHole:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.HyruleCastleTopInverted], node,
+                            _requirementNodes[OverworldNodeID.HyruleCastleTopInverted], node,
                             _requirements[RequirementType.Aga2]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldEastStandardOpen], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldEastStandardOpen], node,
                             _requirements[RequirementType.Aga2]));
                     }
                     break;
-                case RequirementNodeID.LWSouthPortal:
+                case OverworldNodeID.LWSouthPortal:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LightWorldHammer], node,
+                            _requirementNodes[OverworldNodeID.LightWorldHammer], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DWSouthPortalInverted], node,
+                            _requirementNodes[OverworldNodeID.DWSouthPortalInverted], node,
                             _requirements[RequirementType.Gloves1]));
                     }
                     break;
-                case RequirementNodeID.LWSouthPortalStandardOpen:
+                case OverworldNodeID.LWSouthPortalStandardOpen:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LWSouthPortal], node,
+                            _requirementNodes[OverworldNodeID.LWSouthPortal], node,
                             _requirements[RequirementType.WorldStateStandardOpen]));
                     }
                     break;
-                case RequirementNodeID.LWSouthPortalNotBunny:
+                case OverworldNodeID.LWSouthPortalNotBunny:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LWSouthPortal], node,
+                            _requirementNodes[OverworldNodeID.LWSouthPortal], node,
                             _requirements[RequirementType.NotBunnyLW]));
                     }
                     break;
-                case RequirementNodeID.ZoraArea:
+                case OverworldNodeID.ZoraArea:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LWLakeHyliaFlippers], node,
+                            _requirementNodes[OverworldNodeID.LWLakeHyliaFlippers], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LWWitchAreaNotBunny], node,
+                            _requirementNodes[OverworldNodeID.LWWitchAreaNotBunny], node,
                             _requirements[RequirementType.Gloves1]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.CatfishArea], node,
+                            _requirementNodes[OverworldNodeID.CatfishArea], node,
                             _requirements[RequirementType.DWMirror]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LWLakeHyliaFakeFlippers], node,
+                            _requirementNodes[OverworldNodeID.LWLakeHyliaFakeFlippers], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LWLakeHyliaWaterWalk], node,
+                            _requirementNodes[OverworldNodeID.LWLakeHyliaWaterWalk], node,
                             _requirements[RequirementType.NoRequirement]));
 
                     }
                     break;
-                case RequirementNodeID.ZoraLedge:
+                case OverworldNodeID.ZoraLedge:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.ZoraArea], node,
+                            _requirementNodes[OverworldNodeID.ZoraArea], node,
                             _requirements[RequirementType.Flippers]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.ZoraArea], node,
+                            _requirementNodes[OverworldNodeID.ZoraArea], node,
                             _requirements[RequirementType.FakeFlippersSplashDeletion]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.ZoraArea], node,
+                            _requirementNodes[OverworldNodeID.ZoraArea], node,
                             _requirements[RequirementType.WaterWalk]));
                     }
                     break;
-                case RequirementNodeID.WaterfallFairy:
+                case OverworldNodeID.WaterfallFairy:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LWLakeHyliaFlippers], node,
+                            _requirementNodes[OverworldNodeID.LWLakeHyliaFlippers], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LWLakeHyliaFakeFlippers], node,
+                            _requirementNodes[OverworldNodeID.LWLakeHyliaFakeFlippers], node,
                             _requirements[RequirementType.MoonPearl]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LWLakeHyliaWaterWalk], node,
+                            _requirementNodes[OverworldNodeID.LWLakeHyliaWaterWalk], node,
                             _requirements[RequirementType.NoRequirement]));
 
                     }
                     break;
-                case RequirementNodeID.WaterfallFairyNotBunny:
+                case OverworldNodeID.WaterfallFairyNotBunny:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.WaterfallFairy], node,
+                            _requirementNodes[OverworldNodeID.WaterfallFairy], node,
                             _requirements[RequirementType.NotBunnyLW]));
                     }
                     break;
-                case RequirementNodeID.LWWitchArea:
+                case OverworldNodeID.LWWitchArea:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LightWorldNotBunny], node,
+                            _requirementNodes[OverworldNodeID.LightWorldNotBunny], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.ZoraArea], node,
+                            _requirementNodes[OverworldNodeID.ZoraArea], node,
                             _requirements[RequirementType.Gloves1]));
                     }
                     break;
-                case RequirementNodeID.LWWitchAreaNotBunny:
+                case OverworldNodeID.LWWitchAreaNotBunny:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LWWitchArea], node,
+                            _requirementNodes[OverworldNodeID.LWWitchArea], node,
                             _requirements[RequirementType.NotBunnyLW]));
                     }
                     break;
-                case RequirementNodeID.WitchsHut:
+                case OverworldNodeID.WitchsHut:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LWWitchArea], node,
+                            _requirementNodes[OverworldNodeID.LWWitchArea], node,
                             _requirements[RequirementType.Mushroom]));
                     }
                     break;
-                case RequirementNodeID.Sahasrahla:
+                case OverworldNodeID.Sahasrahla:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LightWorld], node,
+                            _requirementNodes[OverworldNodeID.LightWorld], node,
                             _requirements[RequirementType.GreenPendant]));
                     }
                     break;
-                case RequirementNodeID.LWEastPortal:
+                case OverworldNodeID.LWEastPortal:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LightWorldHammer], node,
+                            _requirementNodes[OverworldNodeID.LightWorldHammer], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DWEastPortalInverted], node,
+                            _requirementNodes[OverworldNodeID.DWEastPortalInverted], node,
                             _requirements[RequirementType.Gloves1]));
                     }
                     break;
-                case RequirementNodeID.LWEastPortalStandardOpen:
+                case OverworldNodeID.LWEastPortalStandardOpen:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LWEastPortal], node,
+                            _requirementNodes[OverworldNodeID.LWEastPortal], node,
                             _requirements[RequirementType.WorldStateStandardOpen]));
                     }
                     break;
-                case RequirementNodeID.LWEastPortalNotBunny:
+                case OverworldNodeID.LWEastPortalNotBunny:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LWEastPortal], node,
+                            _requirementNodes[OverworldNodeID.LWEastPortal], node,
                             _requirements[RequirementType.NotBunnyLW]));
                     }
                     break;
-                case RequirementNodeID.LWLakeHyliaFakeFlippers:
+                case OverworldNodeID.LWLakeHyliaFakeFlippers:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LightWorldNotBunny], node,
+                            _requirementNodes[OverworldNodeID.LightWorldNotBunny], node,
                             _requirements[RequirementType.FakeFlippersFairyRevival]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LightWorldNotBunny], node,
+                            _requirementNodes[OverworldNodeID.LightWorldNotBunny], node,
                             _requirements[RequirementType.FakeFlippersScreenTransition]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LightWorldNotBunny], node,
+                            _requirementNodes[OverworldNodeID.LightWorldNotBunny], node,
                             _requirements[RequirementType.FakeFlippersSplashDeletion]));
                     }
                     break;
-                case RequirementNodeID.LWLakeHyliaFlippers:
+                case OverworldNodeID.LWLakeHyliaFlippers:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LightWorldNotBunny], node,
+                            _requirementNodes[OverworldNodeID.LightWorldNotBunny], node,
                             _requirements[RequirementType.Flippers]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.WaterfallFairyNotBunny], node,
+                            _requirementNodes[OverworldNodeID.WaterfallFairyNotBunny], node,
                             _requirements[RequirementType.Flippers]));
                     }
                     break;
-                case RequirementNodeID.LWLakeHyliaWaterWalk:
+                case OverworldNodeID.LWLakeHyliaWaterWalk:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LightWorldNotBunny], node,
+                            _requirementNodes[OverworldNodeID.LightWorldNotBunny], node,
                             _requirements[RequirementType.WaterWalk]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.WaterfallFairyNotBunny], node,
+                            _requirementNodes[OverworldNodeID.WaterfallFairyNotBunny], node,
                             _requirements[RequirementType.WaterWalkFromWaterfallCave]));
                     }
                     break;
-                case RequirementNodeID.Hobo:
+                case OverworldNodeID.Hobo:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LWLakeHyliaFlippers], node,
+                            _requirementNodes[OverworldNodeID.LWLakeHyliaFlippers], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LWLakeHyliaFakeFlippers], node,
+                            _requirementNodes[OverworldNodeID.LWLakeHyliaFakeFlippers], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LWLakeHyliaWaterWalk], node,
+                            _requirementNodes[OverworldNodeID.LWLakeHyliaWaterWalk], node,
                             _requirements[RequirementType.NoRequirement]));
 
                     }
                     break;
-                case RequirementNodeID.LakeHyliaIsland:
+                case OverworldNodeID.LakeHyliaIsland:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LWLakeHyliaFlippers], node,
+                            _requirementNodes[OverworldNodeID.LWLakeHyliaFlippers], node,
                             _requirements[RequirementType.WorldStateInverted]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DWLakeHyliaFlippers], node,
+                            _requirementNodes[OverworldNodeID.DWLakeHyliaFlippers], node,
                             _requirements[RequirementType.DWMirror]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LWLakeHyliaFakeFlippers], node,
+                            _requirementNodes[OverworldNodeID.LWLakeHyliaFakeFlippers], node,
                             _requirements[RequirementType.WorldStateInverted]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LWLakeHyliaWaterWalk], node,
+                            _requirementNodes[OverworldNodeID.LWLakeHyliaWaterWalk], node,
                             _requirements[RequirementType.WorldStateInverted]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DWLakeHyliaWaterWalk], node,
+                            _requirementNodes[OverworldNodeID.DWLakeHyliaWaterWalk], node,
                             _requirements[RequirementType.DWMirror]));
                     }
                     break;
-                case RequirementNodeID.LakeHyliaFairyIsland:
+                case OverworldNodeID.LakeHyliaFairyIsland:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LWLakeHyliaFlippers], node,
+                            _requirementNodes[OverworldNodeID.LWLakeHyliaFlippers], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.IcePalaceIsland], node,
+                            _requirementNodes[OverworldNodeID.IcePalaceIsland], node,
                             _requirements[RequirementType.DWMirror]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LWLakeHyliaFakeFlippers], node,
+                            _requirementNodes[OverworldNodeID.LWLakeHyliaFakeFlippers], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LWLakeHyliaWaterWalk], node,
+                            _requirementNodes[OverworldNodeID.LWLakeHyliaWaterWalk], node,
                             _requirements[RequirementType.NoRequirement]));
 
                     }
                     break;
-                case RequirementNodeID.LakeHyliaFairyIslandStandardOpen:
+                case OverworldNodeID.LakeHyliaFairyIslandStandardOpen:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LakeHyliaFairyIsland], node,
+                            _requirementNodes[OverworldNodeID.LakeHyliaFairyIsland], node,
                             _requirements[RequirementType.WorldStateStandardOpen]));
                     }
                     break;
-                case RequirementNodeID.DeathMountainWestBottom:
+                case OverworldNodeID.DeathMountainWestBottom:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.FluteStandardOpen], node,
+                            _requirementNodes[OverworldNodeID.FluteStandardOpen], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DeathMountainEntryCaveDark], node,
+                            _requirementNodes[OverworldNodeID.DeathMountainEntryCaveDark], node,
                             _requirements[RequirementType.WorldStateStandardOpen]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DeathMountainExitCaveDark], node,
+                            _requirementNodes[OverworldNodeID.DeathMountainExitCaveDark], node,
                             _requirements[RequirementType.WorldStateStandardOpen]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DeathMountainWestTop], node,
+                            _requirementNodes[OverworldNodeID.DeathMountainWestTop], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DeathMountainEastBottomNotBunny], node,
+                            _requirementNodes[OverworldNodeID.DeathMountainEastBottomNotBunny], node,
                             _requirements[RequirementType.Hookshot]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkDeathMountainWestBottomInverted], node,
+                            _requirementNodes[OverworldNodeID.DarkDeathMountainWestBottomInverted], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkDeathMountainWestBottomMirror], node,
+                            _requirementNodes[OverworldNodeID.DarkDeathMountainWestBottomMirror], node,
                             _requirements[RequirementType.NoRequirement]));
 
                     }
                     break;
-                case RequirementNodeID.DeathMountainWestBottomNonEntrance:
+                case OverworldNodeID.DeathMountainWestBottomNonEntrance:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DeathMountainWestBottom], node,
+                            _requirementNodes[OverworldNodeID.DeathMountainWestBottom], node,
                             _requirements[RequirementType.EntranceShuffleNoneDungeon]));
                     }
                     break;
-                case RequirementNodeID.DeathMountainWestBottomNotBunny:
+                case OverworldNodeID.DeathMountainWestBottomNotBunny:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DeathMountainWestBottom], node,
+                            _requirementNodes[OverworldNodeID.DeathMountainWestBottom], node,
                             _requirements[RequirementType.NotBunnyLW]));
                     }
                     break;
-                case RequirementNodeID.SpectacleRockTop:
+                case OverworldNodeID.SpectacleRockTop:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DeathMountainWestTop], node,
+                            _requirementNodes[OverworldNodeID.DeathMountainWestTop], node,
                             _requirements[RequirementType.WorldStateInverted]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkDeathMountainWestBottomMirror], node,
+                            _requirementNodes[OverworldNodeID.DarkDeathMountainWestBottomMirror], node,
                             _requirements[RequirementType.NoRequirement]));
 
                     }
                     break;
-                case RequirementNodeID.DeathMountainWestTop:
+                case OverworldNodeID.DeathMountainWestTop:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.SpectacleRockTop], node,
+                            _requirementNodes[OverworldNodeID.SpectacleRockTop], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DeathMountainEastTopNotBunny], node,
+                            _requirementNodes[OverworldNodeID.DeathMountainEastTopNotBunny], node,
                             _requirements[RequirementType.Hammer]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkDeathMountainTopMirror], node,
+                            _requirementNodes[OverworldNodeID.DarkDeathMountainTopMirror], node,
                             _requirements[RequirementType.NoRequirement]));
 
                     }
                     break;
-                case RequirementNodeID.DeathMountainWestTopNotBunny:
+                case OverworldNodeID.DeathMountainWestTopNotBunny:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DeathMountainWestTop], node,
+                            _requirementNodes[OverworldNodeID.DeathMountainWestTop], node,
                             _requirements[RequirementType.NotBunnyLW]));
                     }
                     break;
-                case RequirementNodeID.EtherTablet:
+                case OverworldNodeID.EtherTablet:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DeathMountainWestTop], node,
+                            _requirementNodes[OverworldNodeID.DeathMountainWestTop], node,
                             _requirements[RequirementType.Tablet]));
                     }
                     break;
-                case RequirementNodeID.DeathMountainEastBottom:
+                case OverworldNodeID.DeathMountainEastBottom:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DeathMountainWestBottomNotBunny], node,
+                            _requirementNodes[OverworldNodeID.DeathMountainWestBottomNotBunny], node,
                             _requirements[RequirementType.Hookshot]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DeathMountainEastBottomConnector], node,
+                            _requirementNodes[OverworldNodeID.DeathMountainEastBottomConnector], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.ParadoxCave], node,
+                            _requirementNodes[OverworldNodeID.ParadoxCave], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DeathMountainEastTop], node,
+                            _requirementNodes[OverworldNodeID.DeathMountainEastTop], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.SpiralCaveLedge], node,
+                            _requirementNodes[OverworldNodeID.SpiralCaveLedge], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.MimicCaveLedge], node,
+                            _requirementNodes[OverworldNodeID.MimicCaveLedge], node,
                             _requirements[RequirementType.WorldStateInverted]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkDeathMountainEastBottom], node,
+                            _requirementNodes[OverworldNodeID.DarkDeathMountainEastBottom], node,
                             _requirements[RequirementType.DWMirror]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkDeathMountainEastBottomInverted], node,
+                            _requirementNodes[OverworldNodeID.DarkDeathMountainEastBottomInverted], node,
                             _requirements[RequirementType.Gloves2]));
                     }
                     break;
-                case RequirementNodeID.DeathMountainEastBottomNotBunny:
+                case OverworldNodeID.DeathMountainEastBottomNotBunny:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DeathMountainEastBottom], node,
+                            _requirementNodes[OverworldNodeID.DeathMountainEastBottom], node,
                             _requirements[RequirementType.NotBunnyLW]));
                     }
                     break;
-                case RequirementNodeID.DeathMountainEastBottomLift2:
+                case OverworldNodeID.DeathMountainEastBottomLift2:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DeathMountainEastBottomNotBunny], node,
+                            _requirementNodes[OverworldNodeID.DeathMountainEastBottomNotBunny], node,
                             _requirements[RequirementType.Gloves2]));
                     }
                     break;
-                case RequirementNodeID.DeathMountainEastBottomConnector:
+                case OverworldNodeID.DeathMountainEastBottomConnector:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DeathMountainEastBottomLift2], node,
+                            _requirementNodes[OverworldNodeID.DeathMountainEastBottomLift2], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DeathMountainEastTopConnector], node,
+                            _requirementNodes[OverworldNodeID.DeathMountainEastTopConnector], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkDeathMountainEastBottomConnector], node,
+                            _requirementNodes[OverworldNodeID.DarkDeathMountainEastBottomConnector], node,
                             _requirements[RequirementType.DWMirror]));
                     }
                     break;
-                case RequirementNodeID.ParadoxCave:
+                case OverworldNodeID.ParadoxCave:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DeathMountainEastBottom], node,
+                            _requirementNodes[OverworldNodeID.DeathMountainEastBottom], node,
                             _requirements[RequirementType.EntranceShuffleNoneDungeon]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DeathMountainEastTop], node,
+                            _requirementNodes[OverworldNodeID.DeathMountainEastTop], node,
                             _requirements[RequirementType.EntranceShuffleNoneDungeon]));
                     }
                     break;
-                case RequirementNodeID.ParadoxCaveSuperBunnyFallInHole:
+                case OverworldNodeID.ParadoxCaveSuperBunnyFallInHole:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.ParadoxCave], node,
+                            _requirementNodes[OverworldNodeID.ParadoxCave], node,
                             _requirements[RequirementType.SuperBunnyFallInHole]));
                     }
                     break;
-                case RequirementNodeID.ParadoxCaveNotBunny:
+                case OverworldNodeID.ParadoxCaveNotBunny:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.ParadoxCave], node,
+                            _requirementNodes[OverworldNodeID.ParadoxCave], node,
                             _requirements[RequirementType.NotBunnyLW]));
                     }
                     break;
-                case RequirementNodeID.ParadoxCaveTop:
+                case OverworldNodeID.ParadoxCaveTop:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.ParadoxCaveNotBunny], node,
+                            _requirementNodes[OverworldNodeID.ParadoxCaveNotBunny], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.ParadoxCaveSuperBunnyFallInHole], node,
+                            _requirementNodes[OverworldNodeID.ParadoxCaveSuperBunnyFallInHole], node,
                             _requirements[RequirementType.Sword2]));
                     }
                     break;
-                case RequirementNodeID.DeathMountainEastTop:
+                case OverworldNodeID.DeathMountainEastTop:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DeathMountainWestTopNotBunny], node,
+                            _requirementNodes[OverworldNodeID.DeathMountainWestTopNotBunny], node,
                             _requirements[RequirementType.Hammer]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.ParadoxCave], node,
+                            _requirementNodes[OverworldNodeID.ParadoxCave], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LWTurtleRockTopInvertedNotBunny], node,
+                            _requirementNodes[OverworldNodeID.LWTurtleRockTopInvertedNotBunny], node,
                             _requirements[RequirementType.Hammer]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkDeathMountainTopMirror], node,
+                            _requirementNodes[OverworldNodeID.DarkDeathMountainTopMirror], node,
                             _requirements[RequirementType.NoRequirement]));
 
                     }
                     break;
-                case RequirementNodeID.DeathMountainEastTopInverted:
+                case OverworldNodeID.DeathMountainEastTopInverted:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DeathMountainEastTop], node,
+                            _requirementNodes[OverworldNodeID.DeathMountainEastTop], node,
                             _requirements[RequirementType.WorldStateInverted]));
                     }
                     break;
-                case RequirementNodeID.DeathMountainEastTopNotBunny:
+                case OverworldNodeID.DeathMountainEastTopNotBunny:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DeathMountainEastTop], node,
+                            _requirementNodes[OverworldNodeID.DeathMountainEastTop], node,
                             _requirements[RequirementType.NotBunnyLW]));
                     }
                     break;
-                case RequirementNodeID.DeathMountainEastTopConnector:
+                case OverworldNodeID.DeathMountainEastTopConnector:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DeathMountainEastTop], node,
+                            _requirementNodes[OverworldNodeID.DeathMountainEastTop], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.TurtleRockSafetyDoor], node,
+                            _requirementNodes[OverworldNodeID.TurtleRockSafetyDoor], node,
                             _requirements[RequirementType.DWMirror]));
                     }
                     break;
-                case RequirementNodeID.SpiralCaveLedge:
+                case OverworldNodeID.SpiralCaveLedge:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DeathMountainEastTop], node,
+                            _requirementNodes[OverworldNodeID.DeathMountainEastTop], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.TurtleRockTunnelMirror], node,
+                            _requirementNodes[OverworldNodeID.TurtleRockTunnelMirror], node,
                             _requirements[RequirementType.NoRequirement]));
 
                     }
                     break;
-                case RequirementNodeID.SpiralCave:
+                case OverworldNodeID.SpiralCave:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.SpiralCaveLedge], node,
+                            _requirementNodes[OverworldNodeID.SpiralCaveLedge], node,
                             _requirements[RequirementType.NotBunnyLW]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.SpiralCaveLedge], node,
+                            _requirementNodes[OverworldNodeID.SpiralCaveLedge], node,
                             _requirements[RequirementType.SuperBunnyFallInHole]));
                     }
                     break;
-                case RequirementNodeID.MimicCaveLedge:
+                case OverworldNodeID.MimicCaveLedge:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DeathMountainEastTopInverted], node,
+                            _requirementNodes[OverworldNodeID.DeathMountainEastTopInverted], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.TurtleRockTunnelMirror], node,
+                            _requirementNodes[OverworldNodeID.TurtleRockTunnelMirror], node,
                             _requirements[RequirementType.NoRequirement]));
 
                     }
                     break;
-                case RequirementNodeID.MimicCaveLedgeNotBunny:
+                case OverworldNodeID.MimicCaveLedgeNotBunny:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.MimicCaveLedge], node,
+                            _requirementNodes[OverworldNodeID.MimicCaveLedge], node,
                             _requirements[RequirementType.NotBunnyLW]));
                     }
                     break;
-                case RequirementNodeID.MimicCave:
+                case OverworldNodeID.MimicCave:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.MimicCaveLedgeNotBunny], node,
+                            _requirementNodes[OverworldNodeID.MimicCaveLedgeNotBunny], node,
                             _requirements[RequirementType.Hammer]));
                     }
                     break;
-                case RequirementNodeID.LWFloatingIsland:
+                case OverworldNodeID.LWFloatingIsland:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DeathMountainEastTopInverted], node,
+                            _requirementNodes[OverworldNodeID.DeathMountainEastTopInverted], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DWFloatingIsland], node,
+                            _requirementNodes[OverworldNodeID.DWFloatingIsland], node,
                             _requirements[RequirementType.DWMirror]));
                     }
                     break;
-                case RequirementNodeID.LWTurtleRockTop:
+                case OverworldNodeID.LWTurtleRockTop:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DeathMountainEastTopNotBunny], node,
+                            _requirementNodes[OverworldNodeID.DeathMountainEastTopNotBunny], node,
                             _requirements[RequirementType.Gloves2]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DWTurtleRockTopInverted], node,
+                            _requirementNodes[OverworldNodeID.DWTurtleRockTopInverted], node,
                             _requirements[RequirementType.Gloves2]));
                     }
                     break;
-                case RequirementNodeID.LWTurtleRockTopInverted:
+                case OverworldNodeID.LWTurtleRockTopInverted:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LWTurtleRockTop], node,
+                            _requirementNodes[OverworldNodeID.LWTurtleRockTop], node,
                             _requirements[RequirementType.WorldStateInverted]));
                     }
                     break;
-                case RequirementNodeID.LWTurtleRockTopInvertedNotBunny:
+                case OverworldNodeID.LWTurtleRockTopInvertedNotBunny:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LWTurtleRockTopInverted], node,
+                            _requirementNodes[OverworldNodeID.LWTurtleRockTopInverted], node,
                             _requirements[RequirementType.NotBunnyLW]));
                     }
                     break;
-                case RequirementNodeID.LWTurtleRockTopStandardOpen:
+                case OverworldNodeID.LWTurtleRockTopStandardOpen:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LWTurtleRockTop], node,
+                            _requirementNodes[OverworldNodeID.LWTurtleRockTop], node,
                             _requirements[RequirementType.WorldStateStandardOpen]));
                     }
                     break;
-                case RequirementNodeID.DWKakarikoPortal:
+                case OverworldNodeID.DWKakarikoPortal:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LWKakarikoPortalStandardOpen], node,
+                            _requirementNodes[OverworldNodeID.LWKakarikoPortalStandardOpen], node,
                             _requirements[RequirementType.Gloves1]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldWestNotBunny], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldWestNotBunny], node,
                             _requirements[RequirementType.NoRequirement]));
 
                     }
                     break;
-                case RequirementNodeID.DWKakarikoPortalInverted:
+                case OverworldNodeID.DWKakarikoPortalInverted:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DWKakarikoPortal], node,
+                            _requirementNodes[OverworldNodeID.DWKakarikoPortal], node,
                             _requirements[RequirementType.WorldStateInverted]));
                     }
                     break;
-                case RequirementNodeID.DarkWorldWest:
+                case OverworldNodeID.DarkWorldWest:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.EntranceNoneInverted], node,
+                            _requirementNodes[OverworldNodeID.EntranceNoneInverted], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.FluteInverted], node,
+                            _requirementNodes[OverworldNodeID.FluteInverted], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LightWorldMirror], node,
+                            _requirementNodes[OverworldNodeID.LightWorldMirror], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DWKakarikoPortal], node,
+                            _requirementNodes[OverworldNodeID.DWKakarikoPortal], node,
                             _requirements[RequirementType.NotBunnyDW]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.SkullWoodsBackArea], node,
+                            _requirementNodes[OverworldNodeID.SkullWoodsBackArea], node,
                             _requirements[RequirementType.EntranceShuffleNoneDungeonAll]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.BumperCaveEntry], node,
+                            _requirementNodes[OverworldNodeID.BumperCaveEntry], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.BumperCaveTop], node,
+                            _requirementNodes[OverworldNodeID.BumperCaveTop], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.HammerHouseNotBunny], node,
+                            _requirementNodes[OverworldNodeID.HammerHouseNotBunny], node,
                             _requirements[RequirementType.Hammer]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldSouthNotBunny], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldSouthNotBunny], node,
                             _requirements[RequirementType.Gloves2]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DWWitchAreaNotBunny], node,
+                            _requirementNodes[OverworldNodeID.DWWitchAreaNotBunny], node,
                             _requirements[RequirementType.Hookshot]));
                     }
                     break;
-                case RequirementNodeID.DarkWorldWestNotBunny:
+                case OverworldNodeID.DarkWorldWestNotBunny:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldWest], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldWest], node,
                             _requirements[RequirementType.NotBunnyDW]));
                     }
                     break;
-                case RequirementNodeID.DarkWorldWestNotBunnyOrSuperBunnyMirror:
+                case OverworldNodeID.DarkWorldWestNotBunnyOrSuperBunnyMirror:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldWestNotBunny], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldWestNotBunny], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldWest], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldWest], node,
                             _requirements[RequirementType.SuperBunnyMirror]));
                     }
                     break;
-                case RequirementNodeID.DarkWorldWestLift2:
+                case OverworldNodeID.DarkWorldWestLift2:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldWestNotBunny], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldWestNotBunny], node,
                             _requirements[RequirementType.Gloves2]));
                     }
                     break;
-                case RequirementNodeID.SkullWoodsBackArea:
+                case OverworldNodeID.SkullWoodsBackArea:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldWest], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldWest], node,
                             _requirements[RequirementType.EntranceShuffleNoneDungeonAll]));
                     }
                     break;
-                case RequirementNodeID.SkullWoodsBackAreaNotBunny:
+                case OverworldNodeID.SkullWoodsBackAreaNotBunny:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.SkullWoodsBackArea], node,
+                            _requirementNodes[OverworldNodeID.SkullWoodsBackArea], node,
                             _requirements[RequirementType.NotBunnyDW]));
                     }
                     break;
-                case RequirementNodeID.SkullWoodsBack:
+                case OverworldNodeID.SkullWoodsBack:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.SkullWoodsBackAreaNotBunny], node,
+                            _requirementNodes[OverworldNodeID.SkullWoodsBackAreaNotBunny], node,
                             _requirements[RequirementType.FireRod]));
                     }
                     break;
-                case RequirementNodeID.BumperCaveEntry:
+                case OverworldNodeID.BumperCaveEntry:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldWestNotBunny], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldWestNotBunny], node,
                             _requirements[RequirementType.Gloves1]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DeathMountainEntry], node,
+                            _requirementNodes[OverworldNodeID.DeathMountainEntry], node,
                             _requirements[RequirementType.LWMirror]));
                     }
                     break;
-                case RequirementNodeID.BumperCaveEntryNonEntrance:
+                case OverworldNodeID.BumperCaveEntryNonEntrance:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.BumperCaveEntry], node,
+                            _requirementNodes[OverworldNodeID.BumperCaveEntry], node,
                             _requirements[RequirementType.EntranceShuffleNoneDungeon]));
                     }
                     break;
-                case RequirementNodeID.BumperCaveFront:
+                case OverworldNodeID.BumperCaveFront:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DeathMountainEntryNonEntrance], node,
+                            _requirementNodes[OverworldNodeID.DeathMountainEntryNonEntrance], node,
                             _requirements[RequirementType.WorldStateInverted]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.BumperCaveEntryNonEntrance], node,
+                            _requirementNodes[OverworldNodeID.BumperCaveEntryNonEntrance], node,
                             _requirements[RequirementType.WorldStateStandardOpen]));
                     }
                     break;
-                case RequirementNodeID.BumperCaveNotBunny:
+                case OverworldNodeID.BumperCaveNotBunny:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.BumperCaveFront], node,
+                            _requirementNodes[OverworldNodeID.BumperCaveFront], node,
                             _requirements[RequirementType.MoonPearl]));
                     }
                     break;
-                case RequirementNodeID.BumperCavePastGap:
+                case OverworldNodeID.BumperCavePastGap:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.BumperCaveNotBunny], node,
+                            _requirementNodes[OverworldNodeID.BumperCaveNotBunny], node,
                             _requirements[RequirementType.BumperCaveGap]));
                     }
                     break;
-                case RequirementNodeID.BumperCaveBack:
+                case OverworldNodeID.BumperCaveBack:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.BumperCavePastGap], node,
+                            _requirementNodes[OverworldNodeID.BumperCavePastGap], node,
                             _requirements[RequirementType.Cape]));
                     }
                     break;
-                case RequirementNodeID.BumperCaveTop:
+                case OverworldNodeID.BumperCaveTop:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DeathMountainExit], node,
+                            _requirementNodes[OverworldNodeID.DeathMountainExit], node,
                             _requirements[RequirementType.LWMirror]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.BumperCaveBack], node,
+                            _requirementNodes[OverworldNodeID.BumperCaveBack], node,
                             _requirements[RequirementType.WorldStateStandardOpen]));
                     }
                     break;
-                case RequirementNodeID.HammerHouse:
+                case OverworldNodeID.HammerHouse:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldWestNotBunny], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldWestNotBunny], node,
                             _requirements[RequirementType.Hammer]));
                     }
                     break;
-                case RequirementNodeID.HammerHouseNotBunny:
+                case OverworldNodeID.HammerHouseNotBunny:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.HammerHouse], node,
+                            _requirementNodes[OverworldNodeID.HammerHouse], node,
                             _requirements[RequirementType.NotBunnyDW]));
                     }
                     break;
-                case RequirementNodeID.HammerPegsArea:
+                case OverworldNodeID.HammerPegsArea:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LightWorldMirror], node,
+                            _requirementNodes[OverworldNodeID.LightWorldMirror], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldWestLift2], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldWestLift2], node,
                             _requirements[RequirementType.NoRequirement]));
 
                     }
                     break;
-                case RequirementNodeID.HammerPegs:
+                case OverworldNodeID.HammerPegs:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.HammerPegsArea], node,
+                            _requirementNodes[OverworldNodeID.HammerPegsArea], node,
                             _requirements[RequirementType.Hammer]));
                     }
                     break;
-                case RequirementNodeID.PurpleChest:
+                case OverworldNodeID.PurpleChest:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.Blacksmith], node,
+                            _requirementNodes[OverworldNodeID.Blacksmith], node,
                             _requirements[RequirementType.HammerPegsArea]));
                     }
                     break;
-                case RequirementNodeID.BlacksmithPrison:
+                case OverworldNodeID.BlacksmithPrison:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LightWorldMirror], node,
+                            _requirementNodes[OverworldNodeID.LightWorldMirror], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldWestLift2], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldWestLift2], node,
                             _requirements[RequirementType.NoRequirement]));
 
                     }
                     break;
-                case RequirementNodeID.Blacksmith:
+                case OverworldNodeID.Blacksmith:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.BlacksmithPrison], node,
+                            _requirementNodes[OverworldNodeID.BlacksmithPrison], node,
                             _requirements[RequirementType.LightWorld]));
                     }
                     break;
-                case RequirementNodeID.DarkWorldSouth:
+                case OverworldNodeID.DarkWorldSouth:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.EntranceNoneInverted], node,
+                            _requirementNodes[OverworldNodeID.EntranceNoneInverted], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.FluteInverted], node,
+                            _requirementNodes[OverworldNodeID.FluteInverted], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LightWorldMirror], node,
+                            _requirementNodes[OverworldNodeID.LightWorldMirror], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DWSouthPortalNotBunny], node,
+                            _requirementNodes[OverworldNodeID.DWSouthPortalNotBunny], node,
                             _requirements[RequirementType.Hammer]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldWest], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldWest], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldEastHammer], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldEastHammer], node,
                             _requirements[RequirementType.NoRequirement]));
 
                     }
                     break;
-                case RequirementNodeID.DarkWorldSouthInverted:
+                case OverworldNodeID.DarkWorldSouthInverted:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldSouth], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldSouth], node,
                             _requirements[RequirementType.WorldStateInverted]));
                     }
                     break;
-                case RequirementNodeID.DarkWorldSouthStandardOpen:
+                case OverworldNodeID.DarkWorldSouthStandardOpen:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldSouth], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldSouth], node,
                             _requirements[RequirementType.WorldStateStandardOpen]));
                     }
                     break;
-                case RequirementNodeID.DarkWorldSouthStandardOpenNotBunny:
+                case OverworldNodeID.DarkWorldSouthStandardOpenNotBunny:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldSouthStandardOpen], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldSouthStandardOpen], node,
                             _requirements[RequirementType.MoonPearl]));
                     }
                     break;
-                case RequirementNodeID.DarkWorldSouthMirror:
+                case OverworldNodeID.DarkWorldSouthMirror:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldSouth], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldSouth], node,
                             _requirements[RequirementType.DWMirror]));
                     }
                     break;
-                case RequirementNodeID.DarkWorldSouthNotBunny:
+                case OverworldNodeID.DarkWorldSouthNotBunny:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldSouth], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldSouth], node,
                             _requirements[RequirementType.NotBunnyDW]));
                     }
                     break;
-                case RequirementNodeID.DarkWorldSouthDash:
+                case OverworldNodeID.DarkWorldSouthDash:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldSouthNotBunny], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldSouthNotBunny], node,
                             _requirements[RequirementType.Boots]));
                     }
                     break;
-                case RequirementNodeID.DarkWorldSouthHammer:
+                case OverworldNodeID.DarkWorldSouthHammer:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldSouthNotBunny], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldSouthNotBunny], node,
                             _requirements[RequirementType.Hammer]));
                     }
                     break;
-                case RequirementNodeID.BuyBigBomb:
+                case OverworldNodeID.BuyBigBomb:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LightWorldInvertedNotBunny], node,
+                            _requirementNodes[OverworldNodeID.LightWorldInvertedNotBunny], node,
                             _requirements[RequirementType.RedCrystal]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldSouthStandardOpenNotBunny], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldSouthStandardOpenNotBunny], node,
                             _requirements[RequirementType.RedCrystal]));
                     }
                     break;
-                case RequirementNodeID.BuyBigBombStandardOpen:
+                case OverworldNodeID.BuyBigBombStandardOpen:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.BuyBigBomb], node,
+                            _requirementNodes[OverworldNodeID.BuyBigBomb], node,
                             _requirements[RequirementType.WorldStateStandardOpen]));
                     }
                     break;
-                case RequirementNodeID.BigBombToLightWorld:
+                case OverworldNodeID.BigBombToLightWorld:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.BuyBigBomb], node,
+                            _requirementNodes[OverworldNodeID.BuyBigBomb], node,
                             _requirements[RequirementType.DWMirror]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.BuyBigBomb], node,
+                            _requirementNodes[OverworldNodeID.BuyBigBomb], node,
                             _requirements[RequirementType.WorldStateInverted]));
                     }
                     break;
-                case RequirementNodeID.BigBombToLightWorldStandardOpen:
+                case OverworldNodeID.BigBombToLightWorldStandardOpen:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.BigBombToLightWorld], node,
+                            _requirementNodes[OverworldNodeID.BigBombToLightWorld], node,
                             _requirements[RequirementType.WorldStateStandardOpen]));
                     }
                     break;
-                case RequirementNodeID.BigBombToDWLakeHylia:
+                case OverworldNodeID.BigBombToDWLakeHylia:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.BuyBigBombStandardOpen], node,
+                            _requirementNodes[OverworldNodeID.BuyBigBombStandardOpen], node,
                             _requirements[RequirementType.BombDuplicationMirror]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.BuyBigBombStandardOpen], node,
+                            _requirementNodes[OverworldNodeID.BuyBigBombStandardOpen], node,
                             _requirements[RequirementType.BombDuplicationAncillaOverload]));
                     }
                     break;
-                case RequirementNodeID.BigBombToWall:
+                case OverworldNodeID.BigBombToWall:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.BuyBigBombStandardOpen], node,
+                            _requirementNodes[OverworldNodeID.BuyBigBombStandardOpen], node,
                             _requirements[RequirementType.Hammer]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.BigBombToLightWorld], node,
+                            _requirementNodes[OverworldNodeID.BigBombToLightWorld], node,
                             _requirements[RequirementType.LWMirror]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.BigBombToLightWorldStandardOpen], node,
+                            _requirementNodes[OverworldNodeID.BigBombToLightWorldStandardOpen], node,
                             _requirements[RequirementType.Aga1]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.BigBombToDWLakeHylia], node,
+                            _requirementNodes[OverworldNodeID.BigBombToDWLakeHylia], node,
                             _requirements[RequirementType.NoRequirement]));
 
                     }
                     break;
-                case RequirementNodeID.DWSouthPortal:
+                case OverworldNodeID.DWSouthPortal:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LWSouthPortalStandardOpen], node,
+                            _requirementNodes[OverworldNodeID.LWSouthPortalStandardOpen], node,
                             _requirements[RequirementType.Gloves1]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldSouthHammer], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldSouthHammer], node,
                             _requirements[RequirementType.NoRequirement]));
 
                     }
                     break;
-                case RequirementNodeID.DWSouthPortalInverted:
+                case OverworldNodeID.DWSouthPortalInverted:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DWSouthPortal], node,
+                            _requirementNodes[OverworldNodeID.DWSouthPortal], node,
                             _requirements[RequirementType.WorldStateInverted]));
                     }
                     break;
-                case RequirementNodeID.DWSouthPortalNotBunny:
+                case OverworldNodeID.DWSouthPortalNotBunny:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DWSouthPortal], node,
+                            _requirementNodes[OverworldNodeID.DWSouthPortal], node,
                             _requirements[RequirementType.NotBunnyDW]));
                     }
                     break;
-                case RequirementNodeID.MireArea:
+                case OverworldNodeID.MireArea:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LightWorldMirror], node,
+                            _requirementNodes[OverworldNodeID.LightWorldMirror], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DWMirePortal], node,
+                            _requirementNodes[OverworldNodeID.DWMirePortal], node,
                             _requirements[RequirementType.NoRequirement]));
 
                     }
                     break;
-                case RequirementNodeID.MireAreaMirror:
+                case OverworldNodeID.MireAreaMirror:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.MireArea], node,
+                            _requirementNodes[OverworldNodeID.MireArea], node,
                             _requirements[RequirementType.DWMirror]));
                     }
                     break;
-                case RequirementNodeID.MireAreaNotBunny:
+                case OverworldNodeID.MireAreaNotBunny:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.MireArea], node,
+                            _requirementNodes[OverworldNodeID.MireArea], node,
                             _requirements[RequirementType.NotBunnyDW]));
                     }
                     break;
-                case RequirementNodeID.MireAreaNotBunnyOrSuperBunnyMirror:
+                case OverworldNodeID.MireAreaNotBunnyOrSuperBunnyMirror:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.MireAreaNotBunny], node,
+                            _requirementNodes[OverworldNodeID.MireAreaNotBunny], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.MireArea], node,
+                            _requirementNodes[OverworldNodeID.MireArea], node,
                             _requirements[RequirementType.SuperBunnyMirror]));
                     }
                     break;
-                case RequirementNodeID.MiseryMireEntrance:
+                case OverworldNodeID.MiseryMireEntrance:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.MireAreaNotBunny], node,
+                            _requirementNodes[OverworldNodeID.MireAreaNotBunny], node,
                             _requirements[RequirementType.MMMedallion]));
                     }
                     break;
-                case RequirementNodeID.DWMirePortal:
+                case OverworldNodeID.DWMirePortal:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.FluteInverted], node,
+                            _requirementNodes[OverworldNodeID.FluteInverted], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LWMirePortalStandardOpen], node,
+                            _requirementNodes[OverworldNodeID.LWMirePortalStandardOpen], node,
                             _requirements[RequirementType.Gloves2]));
                     }
                     break;
-                case RequirementNodeID.DWMirePortalInverted:
+                case OverworldNodeID.DWMirePortalInverted:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DWMirePortal], node,
+                            _requirementNodes[OverworldNodeID.DWMirePortal], node,
                             _requirements[RequirementType.WorldStateInverted]));
                     }
                     break;
-                case RequirementNodeID.DWGraveyard:
+                case OverworldNodeID.DWGraveyard:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldWestNotBunny], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldWestNotBunny], node,
                             _requirements[RequirementType.NoRequirement]));
 
                     }
                     break;
-                case RequirementNodeID.DWGraveyardMirror:
+                case OverworldNodeID.DWGraveyardMirror:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DWGraveyard], node,
+                            _requirementNodes[OverworldNodeID.DWGraveyard], node,
                             _requirements[RequirementType.DWMirror]));
                     }
                     break;
-                case RequirementNodeID.DWWitchArea:
+                case OverworldNodeID.DWWitchArea:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LWWitchArea], node,
+                            _requirementNodes[OverworldNodeID.LWWitchArea], node,
                             _requirements[RequirementType.LWMirror]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.FluteInverted], node,
+                            _requirementNodes[OverworldNodeID.FluteInverted], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldEastNotBunny], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldEastNotBunny], node,
                             _requirements[RequirementType.Hammer]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldEastNotBunny], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldEastNotBunny], node,
                             _requirements[RequirementType.Gloves1]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DWLakeHyliaFlippers], node,
+                            _requirementNodes[OverworldNodeID.DWLakeHyliaFlippers], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DWLakeHyliaFakeFlippers], node,
+                            _requirementNodes[OverworldNodeID.DWLakeHyliaFakeFlippers], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DWLakeHyliaWaterWalk], node,
+                            _requirementNodes[OverworldNodeID.DWLakeHyliaWaterWalk], node,
                             _requirements[RequirementType.NoRequirement]));
 
                     }
                     break;
-                case RequirementNodeID.DWWitchAreaNotBunny:
+                case OverworldNodeID.DWWitchAreaNotBunny:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DWWitchArea], node,
+                            _requirementNodes[OverworldNodeID.DWWitchArea], node,
                             _requirements[RequirementType.NotBunnyDW]));
                     }
                     break;
-                case RequirementNodeID.CatfishArea:
+                case OverworldNodeID.CatfishArea:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.ZoraArea], node,
+                            _requirementNodes[OverworldNodeID.ZoraArea], node,
                             _requirements[RequirementType.LWMirror]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DWWitchAreaNotBunny], node,
+                            _requirementNodes[OverworldNodeID.DWWitchAreaNotBunny], node,
                             _requirements[RequirementType.Gloves1]));
                     }
                     break;
-                case RequirementNodeID.DarkWorldEast:
+                case OverworldNodeID.DarkWorldEast:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LightWorldStandardOpen], node,
+                            _requirementNodes[OverworldNodeID.LightWorldStandardOpen], node,
                             _requirements[RequirementType.Aga1]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.FluteInverted], node,
+                            _requirementNodes[OverworldNodeID.FluteInverted], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LightWorldMirror], node,
+                            _requirementNodes[OverworldNodeID.LightWorldMirror], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DWWitchAreaNotBunny], node,
+                            _requirementNodes[OverworldNodeID.DWWitchAreaNotBunny], node,
                             _requirements[RequirementType.Gloves1]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DWWitchAreaNotBunny], node,
+                            _requirementNodes[OverworldNodeID.DWWitchAreaNotBunny], node,
                             _requirements[RequirementType.Hammer]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldSouthHammer], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldSouthHammer], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DWEastPortalNotBunny], node,
+                            _requirementNodes[OverworldNodeID.DWEastPortalNotBunny], node,
                             _requirements[RequirementType.Hammer]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DWLakeHyliaFlippers], node,
+                            _requirementNodes[OverworldNodeID.DWLakeHyliaFlippers], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DWLakeHyliaFakeFlippers], node,
+                            _requirementNodes[OverworldNodeID.DWLakeHyliaFakeFlippers], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DWLakeHyliaWaterWalk], node,
+                            _requirementNodes[OverworldNodeID.DWLakeHyliaWaterWalk], node,
                             _requirements[RequirementType.NoRequirement]));
 
                     }
                     break;
-                case RequirementNodeID.DarkWorldEastStandardOpen:
+                case OverworldNodeID.DarkWorldEastStandardOpen:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldEast], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldEast], node,
                             _requirements[RequirementType.WorldStateStandardOpen]));
                     }
                     break;
-                case RequirementNodeID.DarkWorldEastNotBunny:
+                case OverworldNodeID.DarkWorldEastNotBunny:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldEast], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldEast], node,
                             _requirements[RequirementType.NotBunnyDW]));
                     }
                     break;
-                case RequirementNodeID.DarkWorldEastHammer:
+                case OverworldNodeID.DarkWorldEastHammer:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldEastNotBunny], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldEastNotBunny], node,
                             _requirements[RequirementType.Hammer]));
                     }
                     break;
-                case RequirementNodeID.FatFairyEntrance:
+                case OverworldNodeID.FatFairyEntrance:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldEastNotBunny], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldEastNotBunny], node,
                             _requirements[RequirementType.RedCrystal]));
                     }
                     break;
-                case RequirementNodeID.DWEastPortal:
+                case OverworldNodeID.DWEastPortal:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LWEastPortalStandardOpen], node,
+                            _requirementNodes[OverworldNodeID.LWEastPortalStandardOpen], node,
                             _requirements[RequirementType.Gloves1]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldEastHammer], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldEastHammer], node,
                             _requirements[RequirementType.NoRequirement]));
 
                     }
                     break;
-                case RequirementNodeID.DWEastPortalInverted:
+                case OverworldNodeID.DWEastPortalInverted:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DWEastPortal], node,
+                            _requirementNodes[OverworldNodeID.DWEastPortal], node,
                             _requirements[RequirementType.WorldStateInverted]));
                     }
                     break;
-                case RequirementNodeID.DWEastPortalNotBunny:
+                case OverworldNodeID.DWEastPortalNotBunny:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DWEastPortal], node,
+                            _requirementNodes[OverworldNodeID.DWEastPortal], node,
                             _requirements[RequirementType.NotBunnyDW]));
                     }
                     break;
-                case RequirementNodeID.DWLakeHyliaFlippers:
+                case OverworldNodeID.DWLakeHyliaFlippers:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldWestNotBunny], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldWestNotBunny], node,
                             _requirements[RequirementType.Flippers]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldSouthNotBunny], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldSouthNotBunny], node,
                             _requirements[RequirementType.Flippers]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DWWitchAreaNotBunny], node,
+                            _requirementNodes[OverworldNodeID.DWWitchAreaNotBunny], node,
                             _requirements[RequirementType.Flippers]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldEastNotBunny], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldEastNotBunny], node,
                             _requirements[RequirementType.Flippers]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldSouthEastNotBunny], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldSouthEastNotBunny], node,
                             _requirements[RequirementType.Flippers]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.IcePalaceIslandInverted], node,
+                            _requirementNodes[OverworldNodeID.IcePalaceIslandInverted], node,
                             _requirements[RequirementType.Flippers]));
                     }
                     break;
-                case RequirementNodeID.DWLakeHyliaFakeFlippers:
+                case OverworldNodeID.DWLakeHyliaFakeFlippers:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldWestNotBunny], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldWestNotBunny], node,
                             _requirements[RequirementType.FakeFlippersFairyRevival]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldWestNotBunny], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldWestNotBunny], node,
                             _requirements[RequirementType.FakeFlippersQirnJump]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldWestNotBunny], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldWestNotBunny], node,
                             _requirements[RequirementType.FakeFlippersSplashDeletion]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldSouthNotBunny], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldSouthNotBunny], node,
                             _requirements[RequirementType.FakeFlippersFairyRevival]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldSouthNotBunny], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldSouthNotBunny], node,
                             _requirements[RequirementType.FakeFlippersSplashDeletion]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DWWitchAreaNotBunny], node,
+                            _requirementNodes[OverworldNodeID.DWWitchAreaNotBunny], node,
                             _requirements[RequirementType.FakeFlippersFairyRevival]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DWWitchAreaNotBunny], node,
+                            _requirementNodes[OverworldNodeID.DWWitchAreaNotBunny], node,
                             _requirements[RequirementType.FakeFlippersSplashDeletion]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldEastNotBunny], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldEastNotBunny], node,
                             _requirements[RequirementType.FakeFlippersFairyRevival]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldEastNotBunny], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldEastNotBunny], node,
                             _requirements[RequirementType.FakeFlippersSplashDeletion]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldSouthEastNotBunny], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldSouthEastNotBunny], node,
                             _requirements[RequirementType.FakeFlippersFairyRevival]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldSouthEastNotBunny], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldSouthEastNotBunny], node,
                             _requirements[RequirementType.FakeFlippersSplashDeletion]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.IcePalaceIslandInverted], node,
+                            _requirementNodes[OverworldNodeID.IcePalaceIslandInverted], node,
                             _requirements[RequirementType.FakeFlippersFairyRevival]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.IcePalaceIslandInverted], node,
+                            _requirementNodes[OverworldNodeID.IcePalaceIslandInverted], node,
                             _requirements[RequirementType.FakeFlippersSplashDeletion]));
                     }
                     break;
-                case RequirementNodeID.DWLakeHyliaWaterWalk:
+                case OverworldNodeID.DWLakeHyliaWaterWalk:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldWestNotBunny], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldWestNotBunny], node,
                             _requirements[RequirementType.WaterWalk]));
                     }
                     break;
-                case RequirementNodeID.IcePalaceIsland:
+                case OverworldNodeID.IcePalaceIsland:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LakeHyliaFairyIsland], node,
+                            _requirementNodes[OverworldNodeID.LakeHyliaFairyIsland], node,
                             _requirements[RequirementType.LWMirror]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LakeHyliaFairyIslandStandardOpen], node,
+                            _requirementNodes[OverworldNodeID.LakeHyliaFairyIslandStandardOpen], node,
                             _requirements[RequirementType.Gloves2]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DWLakeHyliaFlippers], node,
+                            _requirementNodes[OverworldNodeID.DWLakeHyliaFlippers], node,
                             _requirements[RequirementType.WorldStateInverted]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DWLakeHyliaFakeFlippers], node,
+                            _requirementNodes[OverworldNodeID.DWLakeHyliaFakeFlippers], node,
                             _requirements[RequirementType.WorldStateInverted]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DWLakeHyliaWaterWalk], node,
-                            _requirements[RequirementType.WorldStateInverted]));
-                    }
-                    break;
-                case RequirementNodeID.IcePalaceIslandInverted:
-                    {
-                        connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.IcePalaceIsland], node,
+                            _requirementNodes[OverworldNodeID.DWLakeHyliaWaterWalk], node,
                             _requirements[RequirementType.WorldStateInverted]));
                     }
                     break;
-                case RequirementNodeID.DarkWorldSouthEast:
+                case OverworldNodeID.IcePalaceIslandInverted:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.FluteInverted], node,
+                            _requirementNodes[OverworldNodeID.IcePalaceIsland], node,
+                            _requirements[RequirementType.WorldStateInverted]));
+                    }
+                    break;
+                case OverworldNodeID.DarkWorldSouthEast:
+                    {
+                        connections.Add(_connectionFactory(
+                            _requirementNodes[OverworldNodeID.FluteInverted], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LightWorldMirror], node,
+                            _requirementNodes[OverworldNodeID.LightWorldMirror], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DWLakeHyliaFlippers], node,
+                            _requirementNodes[OverworldNodeID.DWLakeHyliaFlippers], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DWLakeHyliaFakeFlippers], node,
+                            _requirementNodes[OverworldNodeID.DWLakeHyliaFakeFlippers], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DWLakeHyliaWaterWalk], node,
+                            _requirementNodes[OverworldNodeID.DWLakeHyliaWaterWalk], node,
                             _requirements[RequirementType.NoRequirement]));
 
                     }
                     break;
-                case RequirementNodeID.DarkWorldSouthEastNotBunny:
+                case OverworldNodeID.DarkWorldSouthEastNotBunny:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldSouthEast], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldSouthEast], node,
                             _requirements[RequirementType.NotBunnyDW]));
                     }
                     break;
-                case RequirementNodeID.DarkWorldSouthEastLift1:
+                case OverworldNodeID.DarkWorldSouthEastLift1:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldSouthEastNotBunny], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldSouthEastNotBunny], node,
                             _requirements[RequirementType.Gloves1]));
                     }
                     break;
-                case RequirementNodeID.DarkDeathMountainWestBottom:
+                case OverworldNodeID.DarkDeathMountainWestBottom:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.FluteInverted], node,
+                            _requirementNodes[OverworldNodeID.FluteInverted], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DeathMountainEntryCaveDark], node,
+                            _requirementNodes[OverworldNodeID.DeathMountainEntryCaveDark], node,
                             _requirements[RequirementType.WorldStateInverted]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DeathMountainWestBottom], node,
+                            _requirementNodes[OverworldNodeID.DeathMountainWestBottom], node,
                             _requirements[RequirementType.WorldStateStandardOpen]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DeathMountainWestBottom], node,
+                            _requirementNodes[OverworldNodeID.DeathMountainWestBottom], node,
                             _requirements[RequirementType.LWMirror]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkDeathMountainTop], node,
+                            _requirementNodes[OverworldNodeID.DarkDeathMountainTop], node,
                             _requirements[RequirementType.NoRequirement]));
 
                     }
                     break;
-                case RequirementNodeID.DarkDeathMountainWestBottomInverted:
+                case OverworldNodeID.DarkDeathMountainWestBottomInverted:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkDeathMountainWestBottom], node,
+                            _requirementNodes[OverworldNodeID.DarkDeathMountainWestBottom], node,
                             _requirements[RequirementType.WorldStateInverted]));
                     }
                     break;
-                case RequirementNodeID.DarkDeathMountainWestBottomNonEntrance:
+                case OverworldNodeID.DarkDeathMountainWestBottomNonEntrance:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkDeathMountainWestBottom], node,
+                            _requirementNodes[OverworldNodeID.DarkDeathMountainWestBottom], node,
                             _requirements[RequirementType.EntranceShuffleNoneDungeon]));
                     }
                     break;
-                case RequirementNodeID.DarkDeathMountainWestBottomMirror:
+                case OverworldNodeID.DarkDeathMountainWestBottomMirror:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkDeathMountainWestBottom], node,
+                            _requirementNodes[OverworldNodeID.DarkDeathMountainWestBottom], node,
                             _requirements[RequirementType.DWMirror]));
                     }
                     break;
-                case RequirementNodeID.DarkDeathMountainWestBottomNotBunny:
+                case OverworldNodeID.DarkDeathMountainWestBottomNotBunny:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkDeathMountainWestBottom], node,
+                            _requirementNodes[OverworldNodeID.DarkDeathMountainWestBottom], node,
                             _requirements[RequirementType.NotBunnyDW]));
                     }
                     break;
-                case RequirementNodeID.SpikeCavePastHammerBlocks:
+                case OverworldNodeID.SpikeCavePastHammerBlocks:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkDeathMountainWestBottomNotBunny], node,
+                            _requirementNodes[OverworldNodeID.DarkDeathMountainWestBottomNotBunny], node,
                             _requirements[RequirementType.Hammer]));
                     }
                     break;
-                case RequirementNodeID.SpikeCavePastSpikes:
+                case OverworldNodeID.SpikeCavePastSpikes:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.SpikeCavePastHammerBlocks], node,
+                            _requirementNodes[OverworldNodeID.SpikeCavePastHammerBlocks], node,
                             _requirements[RequirementType.SpikeCave]));
                     }
                     break;
-                case RequirementNodeID.SpikeCaveChest:
+                case OverworldNodeID.SpikeCaveChest:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.SpikeCavePastSpikes], node,
+                            _requirementNodes[OverworldNodeID.SpikeCavePastSpikes], node,
                             _requirements[RequirementType.Gloves1]));
                     }
                     break;
-                case RequirementNodeID.DarkDeathMountainTop:
+                case OverworldNodeID.DarkDeathMountainTop:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DeathMountainWestTop], node,
+                            _requirementNodes[OverworldNodeID.DeathMountainWestTop], node,
                             _requirements[RequirementType.LWMirror]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DeathMountainEastTop], node,
+                            _requirementNodes[OverworldNodeID.DeathMountainEastTop], node,
                             _requirements[RequirementType.LWMirror]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkDeathMountainWestBottomInverted], node,
+                            _requirementNodes[OverworldNodeID.DarkDeathMountainWestBottomInverted], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.SuperBunnyCave], node,
+                            _requirementNodes[OverworldNodeID.SuperBunnyCave], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DWFloatingIsland], node,
+                            _requirementNodes[OverworldNodeID.DWFloatingIsland], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DWTurtleRockTop], node,
+                            _requirementNodes[OverworldNodeID.DWTurtleRockTop], node,
                             _requirements[RequirementType.NoRequirement]));
 
                     }
                     break;
-                case RequirementNodeID.DarkDeathMountainTopInverted:
+                case OverworldNodeID.DarkDeathMountainTopInverted:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkDeathMountainTop], node,
+                            _requirementNodes[OverworldNodeID.DarkDeathMountainTop], node,
                             _requirements[RequirementType.WorldStateInverted]));
                     }
                     break;
-                case RequirementNodeID.DarkDeathMountainTopStandardOpen:
+                case OverworldNodeID.DarkDeathMountainTopStandardOpen:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkDeathMountainTop], node,
+                            _requirementNodes[OverworldNodeID.DarkDeathMountainTop], node,
                             _requirements[RequirementType.WorldStateStandardOpen]));
                     }
                     break;
-                case RequirementNodeID.DarkDeathMountainTopMirror:
+                case OverworldNodeID.DarkDeathMountainTopMirror:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkDeathMountainTop], node,
+                            _requirementNodes[OverworldNodeID.DarkDeathMountainTop], node,
                             _requirements[RequirementType.DWMirror]));
                     }
                     break;
-                case RequirementNodeID.DarkDeathMountainTopNotBunny:
+                case OverworldNodeID.DarkDeathMountainTopNotBunny:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkDeathMountainTop], node,
+                            _requirementNodes[OverworldNodeID.DarkDeathMountainTop], node,
                             _requirements[RequirementType.NotBunnyDW]));
                     }
                     break;
-                case RequirementNodeID.SuperBunnyCave:
+                case OverworldNodeID.SuperBunnyCave:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkDeathMountainTop], node,
+                            _requirementNodes[OverworldNodeID.DarkDeathMountainTop], node,
                             _requirements[RequirementType.EntranceShuffleNoneDungeon]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkDeathMountainEastBottom], node,
+                            _requirementNodes[OverworldNodeID.DarkDeathMountainEastBottom], node,
                             _requirements[RequirementType.EntranceShuffleNoneDungeon]));
                     }
                     break;
-                case RequirementNodeID.SuperBunnyCaveChests:
+                case OverworldNodeID.SuperBunnyCaveChests:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.SuperBunnyCave], node,
+                            _requirementNodes[OverworldNodeID.SuperBunnyCave], node,
                             _requirements[RequirementType.NotBunnyDW]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.SuperBunnyCave], node,
+                            _requirementNodes[OverworldNodeID.SuperBunnyCave], node,
                             _requirements[RequirementType.SuperBunnyFallInHole]));
                     }
                     break;
-                case RequirementNodeID.GanonsTowerEntrance:
+                case OverworldNodeID.GanonsTowerEntrance:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkDeathMountainTopInverted], node,
+                            _requirementNodes[OverworldNodeID.DarkDeathMountainTopInverted], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkDeathMountainTopStandardOpen], node,
+                            _requirementNodes[OverworldNodeID.DarkDeathMountainTopStandardOpen], node,
                             _requirements[RequirementType.GTCrystal]));
                     }
                     break;
-                case RequirementNodeID.GanonsTowerEntranceStandardOpen:
+                case OverworldNodeID.GanonsTowerEntranceStandardOpen:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.GanonsTowerEntrance], node,
+                            _requirementNodes[OverworldNodeID.GanonsTowerEntrance], node,
                             _requirements[RequirementType.WorldStateStandardOpen]));
                     }
                     break;
-                case RequirementNodeID.DWFloatingIsland:
+                case OverworldNodeID.DWFloatingIsland:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LWFloatingIsland], node,
+                            _requirementNodes[OverworldNodeID.LWFloatingIsland], node,
                             _requirements[RequirementType.LWMirror]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.HookshotCaveEntrance], node,
+                            _requirementNodes[OverworldNodeID.HookshotCaveEntrance], node,
                             _requirements[RequirementType.EntranceShuffleNoneDungeon]));
                     }
                     break;
-                case RequirementNodeID.HookshotCaveEntrance:
+                case OverworldNodeID.HookshotCaveEntrance:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkDeathMountainTopNotBunny], node,
+                            _requirementNodes[OverworldNodeID.DarkDeathMountainTopNotBunny], node,
                             _requirements[RequirementType.Gloves1]));
                     }
                     break;
-                case RequirementNodeID.HookshotCaveEntranceHookshot:
+                case OverworldNodeID.HookshotCaveEntranceHookshot:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.HookshotCaveEntrance], node,
+                            _requirementNodes[OverworldNodeID.HookshotCaveEntrance], node,
                             _requirements[RequirementType.Hookshot]));
                     }
                     break;
-                case RequirementNodeID.HookshotCaveEntranceHover:
+                case OverworldNodeID.HookshotCaveEntranceHover:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.HookshotCaveEntrance], node,
+                            _requirementNodes[OverworldNodeID.HookshotCaveEntrance], node,
                             _requirements[RequirementType.Hover]));
                     }
                     break;
-                case RequirementNodeID.HookshotCaveBonkableChest:
+                case OverworldNodeID.HookshotCaveBonkableChest:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.HookshotCaveEntranceHookshot], node,
+                            _requirementNodes[OverworldNodeID.HookshotCaveEntranceHookshot], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.HookshotCaveEntrance], node,
+                            _requirementNodes[OverworldNodeID.HookshotCaveEntrance], node,
                             _requirements[RequirementType.BonkOverLedge]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.HookshotCaveEntranceHover], node,
+                            _requirementNodes[OverworldNodeID.HookshotCaveEntranceHover], node,
                             _requirements[RequirementType.NoRequirement]));
 
                     }
                     break;
-                case RequirementNodeID.HookshotCaveBack:
+                case OverworldNodeID.HookshotCaveBack:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.HookshotCaveEntranceHookshot], node,
+                            _requirementNodes[OverworldNodeID.HookshotCaveEntranceHookshot], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.HookshotCaveEntranceHover], node,
+                            _requirementNodes[OverworldNodeID.HookshotCaveEntranceHover], node,
                             _requirements[RequirementType.NoRequirement]));
 
                     }
                     break;
-                case RequirementNodeID.DWTurtleRockTop:
+                case OverworldNodeID.DWTurtleRockTop:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LWTurtleRockTopStandardOpen], node,
+                            _requirementNodes[OverworldNodeID.LWTurtleRockTopStandardOpen], node,
                             _requirements[RequirementType.Hammer]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkDeathMountainTopInverted], node,
+                            _requirementNodes[OverworldNodeID.DarkDeathMountainTopInverted], node,
                             _requirements[RequirementType.NoRequirement]));
 
                     }
                     break;
-                case RequirementNodeID.DWTurtleRockTopInverted:
+                case OverworldNodeID.DWTurtleRockTopInverted:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DWTurtleRockTop], node,
+                            _requirementNodes[OverworldNodeID.DWTurtleRockTop], node,
                             _requirements[RequirementType.WorldStateInverted]));
                     }
                     break;
-                case RequirementNodeID.DWTurtleRockTopNotBunny:
+                case OverworldNodeID.DWTurtleRockTopNotBunny:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DWTurtleRockTop], node,
+                            _requirementNodes[OverworldNodeID.DWTurtleRockTop], node,
                             _requirements[RequirementType.NotBunnyDW]));
                     }
                     break;
-                case RequirementNodeID.TurtleRockFrontEntrance:
+                case OverworldNodeID.TurtleRockFrontEntrance:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DWTurtleRockTopNotBunny], node,
+                            _requirementNodes[OverworldNodeID.DWTurtleRockTopNotBunny], node,
                             _requirements[RequirementType.TRMedallion]));
                     }
                     break;
-                case RequirementNodeID.DarkDeathMountainEastBottom:
+                case OverworldNodeID.DarkDeathMountainEastBottom:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DeathMountainEastBottom], node,
+                            _requirementNodes[OverworldNodeID.DeathMountainEastBottom], node,
                             _requirements[RequirementType.LWMirror]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DeathMountainEastBottomLift2], node,
+                            _requirementNodes[OverworldNodeID.DeathMountainEastBottomLift2], node,
                             _requirements[RequirementType.WorldStateStandardOpen]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkDeathMountainTop], node,
+                            _requirementNodes[OverworldNodeID.DarkDeathMountainTop], node,
                             _requirements[RequirementType.NoRequirement]));
 
                     }
                     break;
-                case RequirementNodeID.DarkDeathMountainEastBottomInverted:
+                case OverworldNodeID.DarkDeathMountainEastBottomInverted:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkDeathMountainEastBottom], node,
+                            _requirementNodes[OverworldNodeID.DarkDeathMountainEastBottom], node,
                             _requirements[RequirementType.WorldStateInverted]));
                     }
                     break;
-                case RequirementNodeID.DarkDeathMountainEastBottomConnector:
+                case OverworldNodeID.DarkDeathMountainEastBottomConnector:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkDeathMountainEastBottom], node,
+                            _requirementNodes[OverworldNodeID.DarkDeathMountainEastBottom], node,
                             _requirements[RequirementType.NotBunnyDW]));
                     }
                     break;
-                case RequirementNodeID.TurtleRockTunnel:
+                case OverworldNodeID.TurtleRockTunnel:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.SpiralCaveLedge], node,
+                            _requirementNodes[OverworldNodeID.SpiralCaveLedge], node,
                             _requirements[RequirementType.LWMirror]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.MimicCaveLedge], node,
+                            _requirementNodes[OverworldNodeID.MimicCaveLedge], node,
                             _requirements[RequirementType.LWMirror]));
                     }
                     break;
-                case RequirementNodeID.TurtleRockTunnelMirror:
+                case OverworldNodeID.TurtleRockTunnelMirror:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.TurtleRockTunnel], node,
+                            _requirementNodes[OverworldNodeID.TurtleRockTunnel], node,
                             _requirements[RequirementType.DWMirror]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.TRKeyDoorsToMiddleExit], node,
+                            _requirementNodes[OverworldNodeID.TRKeyDoorsToMiddleExit], node,
                             _requirements[RequirementType.DWMirror]));
                     }
                     break;
-                case RequirementNodeID.TurtleRockSafetyDoor:
+                case OverworldNodeID.TurtleRockSafetyDoor:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DeathMountainEastTopConnector], node,
+                            _requirementNodes[OverworldNodeID.DeathMountainEastTopConnector], node,
                             _requirements[RequirementType.LWMirror]));
                     }
                     break;
-                case RequirementNodeID.HCSanctuaryEntry:
+                case OverworldNodeID.HCSanctuaryEntry:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.EntranceDungeonAllInsanity], node,
+                            _requirementNodes[OverworldNodeID.EntranceDungeonAllInsanity], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LightWorldNotBunnyOrSuperBunnyMirror], node,
+                            _requirementNodes[OverworldNodeID.LightWorldNotBunnyOrSuperBunnyMirror], node,
                             _requirements[RequirementType.NoRequirement]));
 
                     }
                     break;
-                case RequirementNodeID.HCFrontEntry:
+                case OverworldNodeID.HCFrontEntry:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.EntranceDungeonAllInsanity], node,
+                            _requirementNodes[OverworldNodeID.EntranceDungeonAllInsanity], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LightWorldNotBunnyOrDungeonRevive], node,
+                            _requirementNodes[OverworldNodeID.LightWorldNotBunnyOrDungeonRevive], node,
                             _requirements[RequirementType.NoRequirement]));
 
                     }
                     break;
-                case RequirementNodeID.HCBackEntry:
+                case OverworldNodeID.HCBackEntry:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.EntranceDungeonAllInsanity], node,
+                            _requirementNodes[OverworldNodeID.EntranceDungeonAllInsanity], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.EscapeGrave], node,
+                            _requirementNodes[OverworldNodeID.EscapeGrave], node,
                             _requirements[RequirementType.NoRequirement]));
 
                     }
                     break;
-                case RequirementNodeID.ATEntry:
+                case OverworldNodeID.ATEntry:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.EntranceDungeonAllInsanity], node,
+                            _requirementNodes[OverworldNodeID.EntranceDungeonAllInsanity], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.AgahnimTowerEntrance], node,
+                            _requirementNodes[OverworldNodeID.AgahnimTowerEntrance], node,
                             _requirements[RequirementType.WorldStateStandardOpen]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.GanonsTowerEntrance], node,
+                            _requirementNodes[OverworldNodeID.GanonsTowerEntrance], node,
                             _requirements[RequirementType.WorldStateInverted]));
                     }
                     break;
-                case RequirementNodeID.EPEntry:
+                case OverworldNodeID.EPEntry:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.EntranceDungeonAllInsanity], node,
+                            _requirementNodes[OverworldNodeID.EntranceDungeonAllInsanity], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LightWorldNotBunnyOrDungeonRevive], node,
+                            _requirementNodes[OverworldNodeID.LightWorldNotBunnyOrDungeonRevive], node,
                             _requirements[RequirementType.NoRequirement]));
 
                     }
                     break;
-                case RequirementNodeID.DPFrontEntry:
+                case OverworldNodeID.DPFrontEntry:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.EntranceDungeonAllInsanity], node,
+                            _requirementNodes[OverworldNodeID.EntranceDungeonAllInsanity], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DesertPalaceFrontEntrance], node,
+                            _requirementNodes[OverworldNodeID.DesertPalaceFrontEntrance], node,
                             _requirements[RequirementType.NotBunnyLW]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DesertPalaceFrontEntrance], node,
+                            _requirementNodes[OverworldNodeID.DesertPalaceFrontEntrance], node,
                             _requirements[RequirementType.DungeonRevive]));
                     }
                     break;
-                case RequirementNodeID.DPLeftEntry:
+                case OverworldNodeID.DPLeftEntry:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.EntranceDungeonAllInsanity], node,
+                            _requirementNodes[OverworldNodeID.EntranceDungeonAllInsanity], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DesertLedge], node,
+                            _requirementNodes[OverworldNodeID.DesertLedge], node,
                             _requirements[RequirementType.NoRequirement]));
 
                     }
                     break;
-                case RequirementNodeID.DPBackEntry:
+                case OverworldNodeID.DPBackEntry:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.EntranceDungeonAllInsanity], node,
+                            _requirementNodes[OverworldNodeID.EntranceDungeonAllInsanity], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DesertBack], node,
+                            _requirementNodes[OverworldNodeID.DesertBack], node,
                             _requirements[RequirementType.NoRequirement]));
 
                     }
                     break;
-                case RequirementNodeID.ToHEntry:
+                case OverworldNodeID.ToHEntry:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.EntranceDungeonAllInsanity], node,
+                            _requirementNodes[OverworldNodeID.EntranceDungeonAllInsanity], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DeathMountainWestTopNotBunny], node,
+                            _requirementNodes[OverworldNodeID.DeathMountainWestTopNotBunny], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DeathMountainWestTop], node,
+                            _requirementNodes[OverworldNodeID.DeathMountainWestTop], node,
                             _requirements[RequirementType.DungeonRevive]));
                     }
                     break;
-                case RequirementNodeID.PoDEntry:
+                case OverworldNodeID.PoDEntry:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.EntranceDungeonAllInsanity], node,
+                            _requirementNodes[OverworldNodeID.EntranceDungeonAllInsanity], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldEastNotBunny], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldEastNotBunny], node,
                             _requirements[RequirementType.NoRequirement]));
 
                     }
                     break;
-                case RequirementNodeID.SPEntry:
+                case OverworldNodeID.SPEntry:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.EntranceDungeonAllInsanity], node,
+                            _requirementNodes[OverworldNodeID.EntranceDungeonAllInsanity], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.LightWorldInvertedNotBunny], node,
+                            _requirementNodes[OverworldNodeID.LightWorldInvertedNotBunny], node,
                             _requirements[RequirementType.Mirror]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldSouthStandardOpenNotBunny], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldSouthStandardOpenNotBunny], node,
                             _requirements[RequirementType.Mirror]));
                     }
                     break;
-                case RequirementNodeID.SWFrontEntry:
+                case OverworldNodeID.SWFrontEntry:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldWestNotBunny], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldWestNotBunny], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldWest], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldWest], node,
                             _requirements[RequirementType.DungeonRevive]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.Start], node,
+                            _requirementNodes[OverworldNodeID.Start], node,
                             _requirements[RequirementType.EntranceShuffleInsanity]));
                     }
                     break;
-                case RequirementNodeID.SWBackEntry:
+                case OverworldNodeID.SWBackEntry:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.EntranceDungeonAllInsanity], node,
+                            _requirementNodes[OverworldNodeID.EntranceDungeonAllInsanity], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.SkullWoodsBack], node,
+                            _requirementNodes[OverworldNodeID.SkullWoodsBack], node,
                             _requirements[RequirementType.NoRequirement]));
 
                     }
                     break;
-                case RequirementNodeID.TTEntry:
+                case OverworldNodeID.TTEntry:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.EntranceDungeonAllInsanity], node,
+                            _requirementNodes[OverworldNodeID.EntranceDungeonAllInsanity], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.DarkWorldWestNotBunny], node,
+                            _requirementNodes[OverworldNodeID.DarkWorldWestNotBunny], node,
                             _requirements[RequirementType.NoRequirement]));
 
                     }
                     break;
-                case RequirementNodeID.IPEntry:
+                case OverworldNodeID.IPEntry:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.EntranceDungeonAllInsanity], node,
+                            _requirementNodes[OverworldNodeID.EntranceDungeonAllInsanity], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.IcePalaceIsland], node,
+                            _requirementNodes[OverworldNodeID.IcePalaceIsland], node,
                             _requirements[RequirementType.NotBunnyDW]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.IcePalaceIsland], node,
+                            _requirementNodes[OverworldNodeID.IcePalaceIsland], node,
                             _requirements[RequirementType.DungeonRevive]));
                     }
                     break;
-                case RequirementNodeID.MMEntry:
+                case OverworldNodeID.MMEntry:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.EntranceDungeonAllInsanity], node,
+                            _requirementNodes[OverworldNodeID.EntranceDungeonAllInsanity], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.MiseryMireEntrance], node,
+                            _requirementNodes[OverworldNodeID.MiseryMireEntrance], node,
                             _requirements[RequirementType.NoRequirement]));
 
                     }
                     break;
-                case RequirementNodeID.TRFrontEntry:
+                case OverworldNodeID.TRFrontEntry:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.EntranceDungeonAllInsanity], node,
+                            _requirementNodes[OverworldNodeID.EntranceDungeonAllInsanity], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.TurtleRockFrontEntrance], node,
+                            _requirementNodes[OverworldNodeID.TurtleRockFrontEntrance], node,
                             _requirements[RequirementType.NoRequirement]));
 
                     }
                     break;
-                case RequirementNodeID.TRFrontEntryStandardOpen:
+                case OverworldNodeID.TRFrontEntryStandardOpen:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.TRFrontEntry], node,
+                            _requirementNodes[OverworldNodeID.TRFrontEntry], node,
                             _requirements[RequirementType.WorldStateStandardOpen]));
                     }
                     break;
-                case RequirementNodeID.TRFrontEntryStandardOpenEntranceNone:
+                case OverworldNodeID.TRFrontEntryStandardOpenEntranceNone:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.TRFrontEntryStandardOpen], node,
+                            _requirementNodes[OverworldNodeID.TRFrontEntryStandardOpen], node,
                             _requirements[RequirementType.EntranceShuffleNone]));
                     }
                     break;
-                case RequirementNodeID.TRFrontToKeyDoors:
+                case OverworldNodeID.TRFrontToKeyDoors:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.TRFrontEntryStandardOpenEntranceNone], node,
+                            _requirementNodes[OverworldNodeID.TRFrontEntryStandardOpenEntranceNone], node,
                             _requirements[RequirementType.CaneOfSomaria]));
                     }
                     break;
-                case RequirementNodeID.TRKeyDoorsToMiddleExit:
+                case OverworldNodeID.TRKeyDoorsToMiddleExit:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.TRFrontToKeyDoors], node,
+                            _requirementNodes[OverworldNodeID.TRFrontToKeyDoors], node,
                             _requirements[RequirementType.TRKeyDoorsToMiddleExit]));
                     }
                     break;
-                case RequirementNodeID.TRMiddleEntry:
+                case OverworldNodeID.TRMiddleEntry:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.EntranceDungeonAllInsanity], node,
+                            _requirementNodes[OverworldNodeID.EntranceDungeonAllInsanity], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.TurtleRockTunnel], node,
+                            _requirementNodes[OverworldNodeID.TurtleRockTunnel], node,
                             _requirements[RequirementType.NoRequirement]));
 
                     }
                     break;
-                case RequirementNodeID.TRBackEntry:
+                case OverworldNodeID.TRBackEntry:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.EntranceDungeonAllInsanity], node,
+                            _requirementNodes[OverworldNodeID.EntranceDungeonAllInsanity], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.TurtleRockSafetyDoor], node,
+                            _requirementNodes[OverworldNodeID.TurtleRockSafetyDoor], node,
                             _requirements[RequirementType.NoRequirement]));
 
                     }
                     break;
-                case RequirementNodeID.GTEntry:
+                case OverworldNodeID.GTEntry:
                     {
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.EntranceDungeonAllInsanity], node,
+                            _requirementNodes[OverworldNodeID.EntranceDungeonAllInsanity], node,
                             _requirements[RequirementType.NoRequirement]));
 
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.AgahnimTowerEntrance], node,
+                            _requirementNodes[OverworldNodeID.AgahnimTowerEntrance], node,
                             _requirements[RequirementType.WorldStateInverted]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.GanonsTowerEntranceStandardOpen], node,
+                            _requirementNodes[OverworldNodeID.GanonsTowerEntranceStandardOpen], node,
                             _requirements[RequirementType.NotBunnyDW]));
                         connections.Add(_connectionFactory(
-                            _requirementNodes[RequirementNodeID.GanonsTowerEntranceStandardOpen], node,
+                            _requirementNodes[OverworldNodeID.GanonsTowerEntranceStandardOpen], node,
                             _requirements[RequirementType.DungeonRevive]));
                     }
                     break;
@@ -2578,14 +2578,14 @@ namespace OpenTracker.Models.RequirementNodes
         /// Returns a new requirement node for the specified requirement node ID.
         /// </summary>
         /// <param name="id">
-        /// The requirement node ID.
+        ///     The requirement node ID.
         /// </param>
         /// <returns>
         /// A new requirement node.
         /// </returns>
-        public IRequirementNode GetRequirementNode(RequirementNodeID id)
+        public INode GetOverworldNode(OverworldNodeID id)
         {
-            return id == RequirementNodeID.Start ? _startFactory() : _factory();
+            return id == OverworldNodeID.Start ? _startFactory() : _factory();
         }
     }
 }

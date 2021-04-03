@@ -4,7 +4,7 @@ using System.ComponentModel;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Dungeons.Mutable;
 using OpenTracker.Models.NodeConnections;
-using OpenTracker.Models.RequirementNodes;
+using OpenTracker.Models.Nodes;
 using ReactiveUI;
 
 namespace OpenTracker.Models.Dungeons.Nodes
@@ -16,10 +16,6 @@ namespace OpenTracker.Models.Dungeons.Nodes
     {
         private readonly IDungeonNodeFactory _factory;
         private readonly IMutableDungeon _dungeonData;
-
-        public int ExitsAccessible { get; set; }
-        public int DungeonExitsAccessible { get; set; }
-        public int InsanityExitsAccessible { get; set; }
 
         public IList<INodeConnection> Connections { get; } = new List<INodeConnection>();
 
@@ -42,13 +38,13 @@ namespace OpenTracker.Models.Dungeons.Nodes
         }
 
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="factory">
-        /// The dungeon node factory for creating node connections.
+        ///     The dungeon node factory for creating node connections.
         /// </param>
         /// <param name="dungeonData">
-        /// The mutable dungeon data parent class.
+        ///     The mutable dungeon data parent class.
         /// </param>
         public DungeonNode(IDungeonNodeFactory factory, IMutableDungeon dungeonData)
         {
@@ -59,13 +55,13 @@ namespace OpenTracker.Models.Dungeons.Nodes
         }
 
         /// <summary>
-        /// Subscribes to the NodeCreated event on the RequirementNodeDictionary class.
+        ///     Subscribes to the ItemCreated event on the IRequirementNodeDictionary interface.
         /// </summary>
         /// <param name="sender">
-        /// The sending object of the event.
+        ///     The sending object of the event.
         /// </param>
         /// <param name="e">
-        /// The arguments of the NodeCreated event.
+        ///     The arguments of the ItemCreated event.
         /// </param>
         private void OnNodeCreated(object? sender, KeyValuePair<DungeonNodeID, IDungeonNode> e)
         {
@@ -88,14 +84,13 @@ namespace OpenTracker.Models.Dungeons.Nodes
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the RequirementNode, DungeonNode,
-        /// IKeyDoor, and IRequirement classes/interfaces.
+        ///     Subscribes to the PropertyChanged event on the INodeConnection interface.
         /// </summary>
         /// <param name="sender">
-        /// The sending object of the event.
+        ///     The sending object of the event.
         /// </param>
         /// <param name="e">
-        /// The arguments of the PropertyChanged event.
+        ///     The arguments of the PropertyChanged event.
         /// </param>
         private void OnConnectionChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -106,23 +101,14 @@ namespace OpenTracker.Models.Dungeons.Nodes
         }
 
         /// <summary>
-        /// Updates the accessibility of the node.
+        ///     Updates the accessibility of the node.
         /// </summary>
         private void UpdateAccessibility()
         {
-            Accessibility = GetNodeAccessibility(new List<IRequirementNode>());
+            Accessibility = GetNodeAccessibility(new List<INode>());
         }
 
-        /// <summary>
-        /// Returns the node accessibility.
-        /// </summary>
-        /// <param name="excludedNodes">
-        ///     The list of node IDs from which to not check accessibility.
-        /// </param>
-        /// <returns>
-        /// The accessibility of the node.
-        /// </returns>
-        public AccessibilityLevel GetNodeAccessibility(IList<IRequirementNode> excludedNodes)
+        public AccessibilityLevel GetNodeAccessibility(IList<INode> excludedNodes)
         {
             var finalAccessibility = AccessibilityLevel.None;
 

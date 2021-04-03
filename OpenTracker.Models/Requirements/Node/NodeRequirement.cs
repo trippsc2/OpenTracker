@@ -1,17 +1,17 @@
 ﻿using System.ComponentModel;
 using OpenTracker.Models.Accessibility;
-using OpenTracker.Models.RequirementNodes;
+using OpenTracker.Models.Nodes;
 
 namespace OpenTracker.Models.Requirements.Node
 {
     /// <summary>
     /// This class containing requirement node requirement data.
     /// </summary>
-    public class RequirementNodeRequirement : AccessibilityRequirement
+    public class NodeRequirement : AccessibilityRequirement
     {
-        private readonly IRequirementNode _node;
+        private readonly INode _node;
 
-        public delegate RequirementNodeRequirement Factory(IRequirementNode node);
+        public delegate NodeRequirement Factory(INode node);
 
         /// <summary>
         /// Constructor
@@ -19,7 +19,7 @@ namespace OpenTracker.Models.Requirements.Node
         /// <param name="node">
         /// The required requirement node.
         /// </param>
-        public RequirementNodeRequirement(IRequirementNode node)
+        public NodeRequirement(INode node)
         {
             _node = node;
 
@@ -39,7 +39,7 @@ namespace OpenTracker.Models.Requirements.Node
         /// </param>
         private void OnNodeChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(IRequirementNode.Accessibility))
+            if (e.PropertyName == nameof(IOverworldNode.Accessibility))
             {
                 UpdateValue();
             }

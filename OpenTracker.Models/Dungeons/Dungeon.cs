@@ -8,7 +8,7 @@ using OpenTracker.Models.KeyDoors;
 using OpenTracker.Models.KeyLayouts;
 using OpenTracker.Models.KeyLayouts.Factories;
 using OpenTracker.Models.Modes;
-using OpenTracker.Models.RequirementNodes;
+using OpenTracker.Models.Nodes;
 using ReactiveUI;
 
 namespace OpenTracker.Models.Dungeons
@@ -35,7 +35,7 @@ namespace OpenTracker.Models.Dungeons
         public IList<KeyDoorID> BigKeyDoors { get; }
         public IList<IKeyLayout> KeyLayouts { get; }
         public IList<DungeonNodeID> Nodes { get; }
-        public IList<IRequirementNode> EntryNodes { get; }
+        public IList<INode> EntryNodes { get; }
 
         public int TotalWithMapAndCompass { get; private set; }
 
@@ -98,7 +98,7 @@ namespace OpenTracker.Models.Dungeons
             IMode mode, IKeyLayoutFactory keyLayoutFactory, DungeonID id, ICappedItem? map, ICappedItem? compass,
             ISmallKeyItem smallKey, IBigKeyItem? bigKey, IList<DungeonItemID> dungeonItems, IList<DungeonItemID> bosses,
             IList<DungeonItemID> smallKeyDrops, IList<DungeonItemID> bigKeyDrops, IList<KeyDoorID> smallKeyDoors,
-            IList<KeyDoorID> bigKeyDoors, IList<DungeonNodeID> nodes, IList<IRequirementNode> entryNodes)
+            IList<KeyDoorID> bigKeyDoors, IList<DungeonNodeID> nodes, IList<INode> entryNodes)
         {
             _mode = mode;
 

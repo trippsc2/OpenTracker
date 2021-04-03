@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Markings;
-using OpenTracker.Models.RequirementNodes;
+using OpenTracker.Models.Nodes;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.UndoRedo;
@@ -19,8 +19,8 @@ namespace OpenTracker.Models.Sections
         private readonly ICollectSection.Factory _collectSectionFactory;
         private readonly IUncollectSection.Factory _uncollectSectionFactory;
 
-        private readonly IRequirementNode _node;
-        private readonly IRequirementNode? _exitProvided;
+        private readonly INode _node;
+        private readonly IOverworldNode? _exitProvided;
 
         public string Name { get; }
         public IRequirement Requirement { get; }
@@ -37,7 +37,7 @@ namespace OpenTracker.Models.Sections
         }
 
         public delegate InsanityEntranceSection Factory(
-            string name, IRequirementNode? exitProvided, IRequirementNode node, IRequirement requirement);
+            string name, IOverworldNode? exitProvided, INode node, IRequirement requirement);
 
         /// <summary>
         /// Constructor
@@ -65,7 +65,7 @@ namespace OpenTracker.Models.Sections
         /// </param>
         public InsanityEntranceSection(
             ICollectSection.Factory collectSectionFactory, IUncollectSection.Factory uncollectSectionFactory,
-            IMarking marking, string name, IRequirementNode? exitProvided, IRequirementNode node,
+            IMarking marking, string name, IOverworldNode? exitProvided, INode node,
             IRequirement requirement)
         {
             _collectSectionFactory = collectSectionFactory;
@@ -119,7 +119,7 @@ namespace OpenTracker.Models.Sections
         /// </param>
         private void OnNodeChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(IRequirementNode.Accessibility))
+            if (e.PropertyName == nameof(IOverworldNode.Accessibility))
             {
                 this.RaisePropertyChanged(nameof(Accessibility));
             }
