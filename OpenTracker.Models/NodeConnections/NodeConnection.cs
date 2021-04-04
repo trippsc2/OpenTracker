@@ -25,8 +25,6 @@ namespace OpenTracker.Models.NodeConnections
             private set => this.RaiseAndSetIfChanged(ref _accessibility, value);
         }
 
-        public delegate NodeConnection Factory(INode fromNode, INode toNode, IRequirement requirement);
-
         /// <summary>
         /// Constructor
         /// </summary>

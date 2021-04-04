@@ -14,10 +14,10 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
     public class HCDungeonNodeFactory : IHCDungeonNodeFactory
     {
         private readonly IRequirementDictionary _requirements;
-        private readonly IOverworldNodeDictionary _requirementNodes;
+        private readonly IOverworldNodeDictionary _overworldNodes;
 
-        private readonly EntryNodeConnection.Factory _entryFactory;
-        private readonly NodeConnection.Factory _connectionFactory;
+        private readonly IEntryNodeConnection.Factory _entryFactory;
+        private readonly INodeConnection.Factory _connectionFactory;
 
         /// <summary>
         ///     Constructor
@@ -36,10 +36,10 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
         /// </param>
         public HCDungeonNodeFactory(
             IRequirementDictionary requirements, IOverworldNodeDictionary requirementNodes,
-            EntryNodeConnection.Factory entryFactory, NodeConnection.Factory connectionFactory)
+            IEntryNodeConnection.Factory entryFactory, INodeConnection.Factory connectionFactory)
         {
             _requirements = requirements;
-            _requirementNodes = requirementNodes;
+            _overworldNodes = requirementNodes;
 
             _entryFactory = entryFactory;
             _connectionFactory = connectionFactory;
@@ -52,13 +52,13 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
             {
                 case DungeonNodeID.HCSanctuary:
                     connections.Add(_entryFactory(
-                        _requirementNodes[OverworldNodeID.HCSanctuaryEntry]));
+                        _overworldNodes[OverworldNodeID.HCSanctuaryEntry]));
                     connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.HCBack],
                         node, _requirements[RequirementType.NoRequirement]));
                     break;
                 case DungeonNodeID.HCFront:
                     connections.Add(_entryFactory(
-                        _requirementNodes[OverworldNodeID.HCFrontEntry]));
+                        _overworldNodes[OverworldNodeID.HCFrontEntry]));
                     connections.Add(_connectionFactory(
                         dungeonData.Nodes[DungeonNodeID.HCPastEscapeFirstKeyDoor], node,
                         dungeonData.KeyDoors[KeyDoorID.HCEscapeFirstKeyDoor].Requirement));
@@ -157,7 +157,7 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
                         node, _requirements[RequirementType.DarkRoomHC]));
                     break;
                 case DungeonNodeID.HCBack:
-                    connections.Add(_entryFactory(_requirementNodes[OverworldNodeID.HCBackEntry]));
+                    connections.Add(_entryFactory(_overworldNodes[OverworldNodeID.HCBackEntry]));
                     connections.Add(_connectionFactory(
                         dungeonData.Nodes[DungeonNodeID.HCDarkRoomBack], node,
                         _requirements[RequirementType.NoRequirement]));

@@ -11,15 +11,13 @@ namespace OpenTracker.Models.NodeConnections
     /// <summary>
     /// This class contains dungeon entry node connection data.
     /// </summary>
-    public class EntryNodeConnection : ReactiveObject, INodeConnection
+    public class EntryNodeConnection : ReactiveObject, IEntryNodeConnection
     {
         private readonly INode _fromNode;
 
         public IRequirement Requirement { get; }
         
         public AccessibilityLevel Accessibility => _fromNode.Accessibility;
-
-        public delegate EntryNodeConnection Factory(INode fromNode);
 
         /// <summary>
         /// Constructor

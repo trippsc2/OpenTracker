@@ -16,8 +16,8 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
         private readonly IRequirementDictionary _requirements;
         private readonly IOverworldNodeDictionary _requirementNodes;
 
-        private readonly EntryNodeConnection.Factory _entryFactory;
-        private readonly NodeConnection.Factory _connectionFactory;
+        private readonly IEntryNodeConnection.Factory _entryFactory;
+        private readonly INodeConnection.Factory _connectionFactory;
 
         /// <summary>
         ///     Constructor
@@ -36,7 +36,7 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
         /// </param>
         public SWDungeonNodeFactory(
             IRequirementDictionary requirements, IOverworldNodeDictionary requirementNodes,
-            EntryNodeConnection.Factory entryFactory, NodeConnection.Factory connectionFactory)
+            IEntryNodeConnection.Factory entryFactory, INodeConnection.Factory connectionFactory)
         {
             _requirements = requirements;
             _requirementNodes = requirementNodes;

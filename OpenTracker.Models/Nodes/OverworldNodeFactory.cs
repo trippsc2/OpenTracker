@@ -14,7 +14,7 @@ namespace OpenTracker.Models.Nodes
         
         private readonly IOverworldNode.Factory _factory;
         private readonly IStartNode.Factory _startFactory;
-        private readonly NodeConnection.Factory _connectionFactory;
+        private readonly INodeConnection.Factory _connectionFactory;
 
         /// <summary>
         /// Constructor
@@ -36,8 +36,7 @@ namespace OpenTracker.Models.Nodes
         /// </param>
         public OverworldNodeFactory(
             IRequirementDictionary requirements, IOverworldNodeDictionary requirementNodes,
-            IOverworldNode.Factory factory, IStartNode.Factory startFactory,
-            NodeConnection.Factory connectionFactory)
+            IOverworldNode.Factory factory, IStartNode.Factory startFactory, INodeConnection.Factory connectionFactory)
         {
             _requirements = requirements;
             _requirementNodes = requirementNodes;

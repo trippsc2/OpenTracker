@@ -21,7 +21,6 @@ using OpenTracker.Models.KeyLayouts;
 using OpenTracker.Models.KeyLayouts.Factories;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Modes;
-using OpenTracker.Models.NodeConnections;
 using OpenTracker.Models.Nodes;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.PrizePlacements;
@@ -96,8 +95,6 @@ namespace OpenTracker
             nameof(BigKeyLayout),
             nameof(EndKeyLayout),
             nameof(SmallKeyLayout),
-            nameof(EntryNodeConnection),
-            nameof(NodeConnection),
             nameof(AggregateRequirement),
             nameof(AlternativeRequirement),
             nameof(BigKeyShuffleRequirement),

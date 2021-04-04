@@ -13,6 +13,8 @@ namespace OpenTracker.Models.NodeConnections
     {
         AccessibilityLevel Accessibility { get; }
         IRequirement Requirement { get; }
+        
+        delegate INodeConnection Factory(INode fromNode, INode toNode, IRequirement requirement);
 
         AccessibilityLevel GetConnectionAccessibility(IList<INode> excludedNodes);
     }
