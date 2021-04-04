@@ -5,13 +5,17 @@ using OpenTracker.Models.NodeConnections;
 using OpenTracker.Models.Nodes;
 using OpenTracker.Models.Requirements;
 
-namespace OpenTracker.Models.Dungeons.Nodes
+namespace OpenTracker.Models.Dungeons.Nodes.Factories
 {
     /// <summary>
     ///     This class contains the creation logic for dungeon nodes.
     /// </summary>
     public class DungeonNodeFactory : IDungeonNodeFactory
     {
+        private readonly IHCDungeonNodeFactory _hcFactory;
+        private readonly IATDungeonNodeFactory _atFactory;
+        private readonly IEPDungeonNodeFactory _epFactory;
+        
         private readonly IRequirementDictionary _requirements;
         private readonly IOverworldNodeDictionary _requirementNodes;
 
@@ -21,6 +25,15 @@ namespace OpenTracker.Models.Dungeons.Nodes
         /// <summary>
         ///     Constructor
         /// </summary>
+        /// <param name="hcFactory">
+        ///     The Hyrule Castle dungeon node factory.
+        /// </param>
+        /// <param name="atFactory">
+        ///     The Agahnim's Tower dungeon node factory.
+        /// </param>
+        /// <param name="epFactory">
+        ///     The Eastern Palace dungeon node factory.
+        /// </param>
         /// <param name="requirements">
         ///     The requirement dictionary.
         /// </param>
@@ -34,283 +47,26 @@ namespace OpenTracker.Models.Dungeons.Nodes
         ///     An Autofac factory for creating regular node connections.
         /// </param>
         public DungeonNodeFactory(
+            IHCDungeonNodeFactory hcFactory, IATDungeonNodeFactory atFactory, IEPDungeonNodeFactory epFactory,
             IRequirementDictionary requirements, IOverworldNodeDictionary requirementNodes,
             EntryNodeConnection.Factory entryFactory, NodeConnection.Factory connectionFactory)
         {
+            _hcFactory = hcFactory;
+            
             _requirements = requirements;
             _requirementNodes = requirementNodes;
 
             _entryFactory = entryFactory;
             _connectionFactory = connectionFactory;
+            _atFactory = atFactory;
+            _epFactory = epFactory;
         }
 
-        public void PopulateNodeConnections(IMutableDungeon dungeonData, DungeonNodeID id, INode node,
-            IList<INodeConnection> connections)
+        public void PopulateNodeConnections(
+            IMutableDungeon dungeonData, DungeonNodeID id, INode node, IList<INodeConnection> connections)
         {
             switch (id)
             {
-                case DungeonNodeID.HCSanctuary:
-                    {
-                        connections.Add(_entryFactory(
-                            _requirementNodes[OverworldNodeID.HCSanctuaryEntry]));
-                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.HCBack],
-                            node, _requirements[RequirementType.NoRequirement]));
-                    }
-                    break;
-                case DungeonNodeID.HCFront:
-                    {
-                        connections.Add(_entryFactory(
-                            _requirementNodes[OverworldNodeID.HCFrontEntry]));
-                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.HCPastEscapeFirstKeyDoor], node,
-                            dungeonData.KeyDoors[KeyDoorID.HCEscapeFirstKeyDoor].Requirement));
-                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.HCDarkRoomFront],
-                            node, _requirements[RequirementType.NoRequirement]));
-                    }
-                    break;
-                case DungeonNodeID.HCEscapeFirstKeyDoor:
-                    {
-                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.HCFront],
-                            node, _requirements[RequirementType.NoRequirement]));
-                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.HCPastEscapeFirstKeyDoor],
-                            node, _requirements[RequirementType.NoRequirement]));
-                    }
-                    break;
-                case DungeonNodeID.HCPastEscapeFirstKeyDoor:
-                    {
-                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.HCFront], node,
-                            dungeonData.KeyDoors[KeyDoorID.HCEscapeFirstKeyDoor].Requirement));
-                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.HCPastEscapeSecondKeyDoor], node,
-                            dungeonData.KeyDoors[KeyDoorID.HCEscapeSecondKeyDoor].Requirement));
-                    }
-                    break;
-                case DungeonNodeID.HCEscapeSecondKeyDoor:
-                    {
-                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.HCPastEscapeFirstKeyDoor],
-                            node, _requirements[RequirementType.NoRequirement]));
-                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.HCPastEscapeSecondKeyDoor],
-                            node, _requirements[RequirementType.NoRequirement]));
-                    }
-                    break;
-                case DungeonNodeID.HCPastEscapeSecondKeyDoor:
-                    {
-                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.HCPastEscapeFirstKeyDoor], node,
-                            dungeonData.KeyDoors[KeyDoorID.HCEscapeSecondKeyDoor].Requirement));
-                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.HCZeldasCell], node,
-                            dungeonData.KeyDoors[KeyDoorID.HCZeldasCellDoor].Requirement));
-                    }
-                    break;
-                case DungeonNodeID.HCZeldasCellDoor:
-                    {
-                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.HCPastEscapeSecondKeyDoor],
-                            node, _requirements[RequirementType.NoRequirement]));
-                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.HCZeldasCell],
-                            node, _requirements[RequirementType.NoRequirement]));
-                    }
-                    break;
-                case DungeonNodeID.HCZeldasCell:
-                    {
-                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.HCPastEscapeSecondKeyDoor], node,
-                            dungeonData.KeyDoors[KeyDoorID.HCZeldasCellDoor].Requirement));
-                    }
-                    break;
-                case DungeonNodeID.HCDarkRoomFront:
-                    {
-                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.HCFront], node,
-                            _requirements[RequirementType.DarkRoomHC]));
-                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.HCPastDarkCrossKeyDoor], node,
-                            dungeonData.KeyDoors[KeyDoorID.HCDarkCrossKeyDoor].Requirement));
-                    }
-                    break;
-                case DungeonNodeID.HCDarkCrossKeyDoor:
-                    {
-                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.HCDarkRoomFront],
-                            node, _requirements[RequirementType.NoRequirement]));
-                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.HCPastDarkCrossKeyDoor],
-                            node, _requirements[RequirementType.NoRequirement]));
-                    }
-                    break;
-                case DungeonNodeID.HCPastDarkCrossKeyDoor:
-                    {
-                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.HCDarkRoomFront], node,
-                            dungeonData.KeyDoors[KeyDoorID.HCDarkCrossKeyDoor].Requirement));
-                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.HCPastSewerRatRoomKeyDoor], node,
-                            dungeonData.KeyDoors[KeyDoorID.HCSewerRatRoomKeyDoor].Requirement));
-                    }
-                    break;
-                case DungeonNodeID.HCSewerRatRoomKeyDoor:
-                    {
-                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.HCPastDarkCrossKeyDoor],
-                            node, _requirements[RequirementType.NoRequirement]));
-                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.HCPastSewerRatRoomKeyDoor],
-                            node, _requirements[RequirementType.NoRequirement]));
-                    }
-                    break;
-                case DungeonNodeID.HCPastSewerRatRoomKeyDoor:
-                    {
-                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.HCDarkRoomBack],
-                            node, _requirements[RequirementType.NoRequirement]));
-                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.HCPastDarkCrossKeyDoor], node,
-                            dungeonData.KeyDoors[KeyDoorID.HCSewerRatRoomKeyDoor].Requirement));
-                    }
-                    break;
-                case DungeonNodeID.HCDarkRoomBack:
-                    {
-                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.HCPastSewerRatRoomKeyDoor],
-                            node, _requirements[RequirementType.NoRequirement]));
-                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.HCBack], node,
-                            _requirements[RequirementType.DarkRoomHC]));
-                    }
-                    break;
-                case DungeonNodeID.HCBack:
-                    {
-                        connections.Add(_entryFactory(
-                            _requirementNodes[OverworldNodeID.HCBackEntry]));
-                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.HCDarkRoomBack],
-                            node, _requirements[RequirementType.NoRequirement]));
-                    }
-                    break;
-                case DungeonNodeID.AT:
-                    {
-                        connections.Add(_entryFactory(
-                            _requirementNodes[OverworldNodeID.ATEntry]));
-                    }
-                    break;
-                case DungeonNodeID.ATDarkMaze:
-                    {
-                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.AT], node,
-                            _requirements[RequirementType.DarkRoomAT]));
-                    }
-                    break;
-                case DungeonNodeID.ATPastFirstKeyDoor:
-                    {
-                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.ATDarkMaze], node,
-                            dungeonData.KeyDoors[KeyDoorID.ATFirstKeyDoor].Requirement));
-                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.ATPastSecondKeyDoor], node,
-                            dungeonData.KeyDoors[KeyDoorID.ATSecondKeyDoor].Requirement));
-                    }
-                    break;
-                case DungeonNodeID.ATSecondKeyDoor:
-                    {
-                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.ATPastFirstKeyDoor],
-                            node, _requirements[RequirementType.NoRequirement]));
-                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.ATPastSecondKeyDoor],
-                            node, _requirements[RequirementType.NoRequirement]));
-                    }
-                    break;
-                case DungeonNodeID.ATPastSecondKeyDoor:
-                    {
-                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.ATPastFirstKeyDoor], node,
-                            dungeonData.KeyDoors[KeyDoorID.ATSecondKeyDoor].Requirement));
-                    }
-                    break;
-                case DungeonNodeID.ATPastThirdKeyDoor:
-                    {
-                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.ATPastSecondKeyDoor], node,
-                            dungeonData.KeyDoors[KeyDoorID.ATThirdKeyDoor].Requirement));
-                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.ATPastFourthKeyDoor], node,
-                            dungeonData.KeyDoors[KeyDoorID.ATFourthKeyDoor].Requirement));
-                    }
-                    break;
-                case DungeonNodeID.ATFourthKeyDoor:
-                    {
-                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.ATPastThirdKeyDoor],
-                            node, _requirements[RequirementType.NoRequirement]));
-                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.ATPastFourthKeyDoor],
-                            node, _requirements[RequirementType.NoRequirement]));
-                    }
-                    break;
-                case DungeonNodeID.ATPastFourthKeyDoor:
-                    {
-                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.ATPastThirdKeyDoor], node,
-                            dungeonData.KeyDoors[KeyDoorID.ATFourthKeyDoor].Requirement));
-                    }
-                    break;
-                case DungeonNodeID.ATBossRoom:
-                    {
-                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.ATPastFourthKeyDoor], node,
-                            _requirements[RequirementType.Curtains]));
-                    }
-                    break;
-                case DungeonNodeID.ATBoss:
-                    {
-                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.ATBossRoom], node,
-                            _requirements[RequirementType.ATBoss]));
-                    }
-                    break;
-                case DungeonNodeID.EP:
-                    {
-                        connections.Add(_entryFactory(
-                            _requirementNodes[OverworldNodeID.EPEntry]));
-                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.EPPastBigKeyDoor], node,
-                            dungeonData.KeyDoors[KeyDoorID.EPBigKeyDoor].Requirement));
-                    }
-                    break;
-                case DungeonNodeID.EPBigChest:
-                    {
-                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.EP], node,
-                            dungeonData.KeyDoors[KeyDoorID.EPBigChest].Requirement));
-                    }
-                    break;
-                case DungeonNodeID.EPRightDarkRoom:
-                    {
-                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.EP], node,
-                            _requirements[RequirementType.DarkRoomEPRight]));
-                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.EPPastRightKeyDoor], node,
-                            dungeonData.KeyDoors[KeyDoorID.EPRightKeyDoor].Requirement));
-                    }
-                    break;
-                case DungeonNodeID.EPRightKeyDoor:
-                    {
-                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.EPRightDarkRoom],
-                            node, _requirements[RequirementType.NoRequirement]));
-                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.EPPastRightKeyDoor],
-                            node, _requirements[RequirementType.NoRequirement]));
-                    }
-                    break;
-                case DungeonNodeID.EPPastRightKeyDoor:
-                    {
-                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.EPRightDarkRoom], node,
-                            dungeonData.KeyDoors[KeyDoorID.EPRightKeyDoor].Requirement));
-                    }
-                    break;
-                case DungeonNodeID.EPBigKeyDoor:
-                    {
-                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.EP],
-                            node, _requirements[RequirementType.NoRequirement]));
-                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.EPPastBigKeyDoor],
-                            node, _requirements[RequirementType.NoRequirement]));
-                    }
-                    break;
-                case DungeonNodeID.EPPastBigKeyDoor:
-                    {
-                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.EP], node,
-                            dungeonData.KeyDoors[KeyDoorID.EPBigKeyDoor].Requirement));
-                    }
-                    break;
-                case DungeonNodeID.EPBackDarkRoom:
-                    {
-                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.EPPastBigKeyDoor], node,
-                            _requirements[RequirementType.DarkRoomEPBack]));
-                    }
-                    break;
-                case DungeonNodeID.EPPastBackKeyDoor:
-                    {
-                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.EPBackDarkRoom], node,
-                            dungeonData.KeyDoors[KeyDoorID.EPBackKeyDoor].Requirement));
-                    }
-                    break;
-                case DungeonNodeID.EPBossRoom:
-                    {
-                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.EPPastBackKeyDoor], node,
-                            _requirements[RequirementType.RedEyegoreGoriya]));
-                    }
-                    break;
-                case DungeonNodeID.EPBoss:
-                    {
-                        connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.EPBossRoom], node,
-                            _requirements[RequirementType.EPBoss]));
-                    }
-                    break;
                 case DungeonNodeID.DPFront:
                     {
                         connections.Add(_entryFactory(

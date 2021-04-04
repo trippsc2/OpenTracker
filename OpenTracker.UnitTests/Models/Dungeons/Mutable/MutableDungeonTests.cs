@@ -191,6 +191,29 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Mutable
             Assert.Equal(expected, sut.DungeonItems.Count);
         }
 
+        [Theory]
+        [InlineData(DungeonID.HyruleCastle, DungeonID.HyruleCastle)]
+        [InlineData(DungeonID.AgahnimTower, DungeonID.AgahnimTower)]
+        [InlineData(DungeonID.EasternPalace, DungeonID.EasternPalace)]
+        [InlineData(DungeonID.DesertPalace, DungeonID.DesertPalace)]
+        [InlineData(DungeonID.TowerOfHera, DungeonID.TowerOfHera)]
+        [InlineData(DungeonID.PalaceOfDarkness, DungeonID.PalaceOfDarkness)]
+        [InlineData(DungeonID.SwampPalace, DungeonID.SwampPalace)]
+        [InlineData(DungeonID.SkullWoods, DungeonID.SkullWoods)]
+        [InlineData(DungeonID.ThievesTown, DungeonID.ThievesTown)]
+        [InlineData(DungeonID.IcePalace, DungeonID.IcePalace)]
+        [InlineData(DungeonID.MiseryMire, DungeonID.MiseryMire)]
+        [InlineData(DungeonID.TurtleRock, DungeonID.TurtleRock)]
+        [InlineData(DungeonID.GanonsTower, DungeonID.GanonsTower)]
+        public void ID_ShouldReturnDungeonID(DungeonID expected, DungeonID id)
+        {
+            _dungeon.ID.Returns(id);
+            
+            var sut = new MutableDungeon(_mode, _keyDoors, _nodes, _dungeonItems, _resultFactory, _dungeon);
+            
+            Assert.Equal(expected, sut.ID);
+        }
+
         [Fact]
         public void ApplyState_ShouldSetKeyDoorsToUnlocked()
         {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Dungeons.Mutable;
+using OpenTracker.Models.Dungeons.Nodes.Factories;
 using OpenTracker.Models.NodeConnections;
 using OpenTracker.Models.Nodes;
 using ReactiveUI;

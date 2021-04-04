@@ -3,7 +3,7 @@ using OpenTracker.Models.Dungeons.Mutable;
 using OpenTracker.Models.NodeConnections;
 using OpenTracker.Models.Nodes;
 
-namespace OpenTracker.Models.Dungeons.Nodes
+namespace OpenTracker.Models.Dungeons.Nodes.Factories
 {
     /// <summary>
     ///     This interface contains the creation logic for dungeon nodes.

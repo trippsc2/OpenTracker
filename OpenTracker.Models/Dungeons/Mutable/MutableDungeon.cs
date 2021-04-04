@@ -20,6 +20,8 @@ namespace OpenTracker.Models.Dungeons.Mutable
         private readonly IDungeon _dungeon;
         private readonly IDungeonResult.Factory _resultFactory;
 
+        public DungeonID ID => _dungeon.ID;
+
         public IDungeonNodeDictionary Nodes { get; }
         public IKeyDoorDictionary KeyDoors { get; }
         public IDungeonItemDictionary DungeonItems { get; }

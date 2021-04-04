@@ -13,6 +13,11 @@ namespace OpenTracker.Models.Dungeons.Mutable
     public interface IMutableDungeon
     {
         /// <summary>
+        ///     The dungeon ID to which this data belongs.
+        /// </summary>
+        DungeonID ID { get; }
+
+        /// <summary>
         ///     The dictionary of nodes by ID.
         /// </summary>
         IDungeonNodeDictionary Nodes { get; }
@@ -26,7 +31,7 @@ namespace OpenTracker.Models.Dungeons.Mutable
         ///     The dictionary of key doors by ID.
         /// </summary>
         IKeyDoorDictionary KeyDoors { get; }
-
+        
         /// <summary>
         ///     A factory for creating mutable dungeon data.
         /// </summary>

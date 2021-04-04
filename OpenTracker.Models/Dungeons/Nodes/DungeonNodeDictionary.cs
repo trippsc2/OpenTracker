@@ -9,8 +9,9 @@ namespace OpenTracker.Models.Dungeons.Nodes
     /// </summary>
     public class DungeonNodeDictionary : LazyDictionary<DungeonNodeID, IDungeonNode>, IDungeonNodeDictionary
     {
-        private readonly IMutableDungeon _dungeonData;
         private readonly IDungeonNode.Factory _factory;
+
+        private readonly IMutableDungeon _dungeonData;
 
         /// <summary>
         ///     Constructor
