@@ -13,7 +13,7 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
 {
-    public class HCDungeonNodeFactoryTests
+    public class EPDungeonNodeFactoryTests
     {
         private readonly IRequirementFactory _requirementFactory = Substitute.For<IRequirementFactory>();
         private readonly IOverworldNodeFactory _overworldNodeFactory = Substitute.For<IOverworldNodeFactory>();
@@ -24,7 +24,7 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
         private readonly List<INode> _entryFactoryCalls = new();
         private readonly List<(INode fromNode, INode toNode, IRequirement requirement)> _connectionFactoryCalls = new();
 
-        private readonly HCDungeonNodeFactory _sut;
+        private readonly EPDungeonNodeFactory _sut;
 
         private static readonly Dictionary<DungeonNodeID, OverworldNodeID> ExpectedEntryValues = new();
         private static readonly Dictionary<DungeonNodeID, List<
@@ -32,7 +32,7 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
         private static readonly Dictionary<DungeonNodeID, List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>>
             ExpectedKeyDoorValues = new();
 
-        public HCDungeonNodeFactoryTests()
+        public EPDungeonNodeFactoryTests()
         {
             _requirements = new RequirementDictionary(() => _requirementFactory);
             _overworldNodes = new OverworldNodeDictionary(() => _overworldNodeFactory);
@@ -49,7 +49,7 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
                 return Substitute.For<INodeConnection>();
             }
 
-            _sut = new HCDungeonNodeFactory(_requirements, _overworldNodes, EntryFactory, ConnectionFactory);
+            _sut = new EPDungeonNodeFactory(_requirements, _overworldNodes, EntryFactory, ConnectionFactory);
         }
 
         private static void PopulateExpectedValues()
@@ -62,136 +62,89 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
             {
                 switch (id)
                 {
-                    case DungeonNodeID.HCSanctuary:
-                        ExpectedEntryValues.Add(id, OverworldNodeID.HCSanctuaryEntry);
-                        ExpectedConnectionValue.Add(id,
-                            new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
+                    case DungeonNodeID.EP:
+                        ExpectedEntryValues.Add(id, OverworldNodeID.EPEntry);
+                        ExpectedKeyDoorValues.Add(id,
+                            new List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>
                             {
-                                (DungeonNodeID.HCBack, RequirementType.NoRequirement)
+                                (DungeonNodeID.EPPastBigKeyDoor, KeyDoorID.EPBigKeyDoor)
                             });
                         break;
-                    case DungeonNodeID.HCFront:
-                        ExpectedEntryValues.Add(id, OverworldNodeID.HCFrontEntry);
+                    case DungeonNodeID.EPBigChest:
+                        ExpectedKeyDoorValues.Add(id,
+                            new List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>
+                            {
+                                (DungeonNodeID.EP, KeyDoorID.EPBigChest)
+                            });
+                        break;
+                    case DungeonNodeID.EPRightDarkRoom:
                         ExpectedConnectionValue.Add(id,
                             new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
                             {
-                                (DungeonNodeID.HCDarkRoomFront, RequirementType.NoRequirement)
+                                (DungeonNodeID.EP, RequirementType.DarkRoomEPRight)
                             });
                         ExpectedKeyDoorValues.Add(id,
                             new List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>
                             {
-                                (DungeonNodeID.HCPastEscapeFirstKeyDoor, KeyDoorID.HCEscapeFirstKeyDoor)
+                                (DungeonNodeID.EPPastRightKeyDoor, KeyDoorID.EPRightKeyDoor)
                             });
                         break;
-                    case DungeonNodeID.HCEscapeFirstKeyDoor:
+                    case DungeonNodeID.EPRightKeyDoor:
                         ExpectedConnectionValue.Add(id,
                             new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
                             {
-                                (DungeonNodeID.HCFront, RequirementType.NoRequirement),
-                                (DungeonNodeID.HCPastEscapeFirstKeyDoor, RequirementType.NoRequirement)
+                                (DungeonNodeID.EPRightDarkRoom, RequirementType.NoRequirement),
+                                (DungeonNodeID.EPPastRightKeyDoor, RequirementType.NoRequirement)
                             });
                         break;
-                    case DungeonNodeID.HCPastEscapeFirstKeyDoor:
+                    case DungeonNodeID.EPPastRightKeyDoor:
                         ExpectedKeyDoorValues.Add(id,
                             new List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>
                             {
-                                (DungeonNodeID.HCFront, KeyDoorID.HCEscapeFirstKeyDoor),
-                                (DungeonNodeID.HCPastEscapeSecondKeyDoor, KeyDoorID.HCEscapeSecondKeyDoor)
+                                (DungeonNodeID.EPRightDarkRoom, KeyDoorID.EPRightKeyDoor)
                             });
                         break;
-                    case DungeonNodeID.HCEscapeSecondKeyDoor:
+                    case DungeonNodeID.EPBigKeyDoor:
                         ExpectedConnectionValue.Add(id,
                             new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
                             {
-                                (DungeonNodeID.HCPastEscapeFirstKeyDoor, RequirementType.NoRequirement),
-                                (DungeonNodeID.HCPastEscapeSecondKeyDoor, RequirementType.NoRequirement)
+                                (DungeonNodeID.EP, RequirementType.NoRequirement),
+                                (DungeonNodeID.EPPastBigKeyDoor, RequirementType.NoRequirement)
                             });
                         break;
-                    case DungeonNodeID.HCPastEscapeSecondKeyDoor:
+                    case DungeonNodeID.EPPastBigKeyDoor:
                         ExpectedKeyDoorValues.Add(id,
                             new List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>
                             {
-                                (DungeonNodeID.HCPastEscapeFirstKeyDoor, KeyDoorID.HCEscapeSecondKeyDoor),
-                                (DungeonNodeID.HCZeldasCell, KeyDoorID.HCZeldasCellDoor)
+                                (DungeonNodeID.EP, KeyDoorID.EPBigKeyDoor)
                             });
                         break;
-                    case DungeonNodeID.HCZeldasCellDoor:
+                    case DungeonNodeID.EPBackDarkRoom:
                         ExpectedConnectionValue.Add(id,
                             new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
                             {
-                                (DungeonNodeID.HCPastEscapeSecondKeyDoor, RequirementType.NoRequirement),
-                                (DungeonNodeID.HCZeldasCell, RequirementType.NoRequirement)
+                                (DungeonNodeID.EPPastBigKeyDoor, RequirementType.DarkRoomEPBack)
                             });
                         break;
-                    case DungeonNodeID.HCZeldasCell:
+                    case DungeonNodeID.EPPastBackKeyDoor:
                         ExpectedKeyDoorValues.Add(id,
                             new List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>
                             {
-                                (DungeonNodeID.HCPastEscapeSecondKeyDoor, KeyDoorID.HCZeldasCellDoor)
+                                (DungeonNodeID.EPBackDarkRoom, KeyDoorID.EPBackKeyDoor)
                             });
                         break;
-                    case DungeonNodeID.HCDarkRoomFront:
+                    case DungeonNodeID.EPBossRoom:
                         ExpectedConnectionValue.Add(id,
                             new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
                             {
-                                (DungeonNodeID.HCFront, RequirementType.DarkRoomHC)
-                            });
-                        ExpectedKeyDoorValues.Add(id,
-                            new List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>
-                            {
-                                (DungeonNodeID.HCPastDarkCrossKeyDoor, KeyDoorID.HCDarkCrossKeyDoor)
+                                (DungeonNodeID.EPPastBackKeyDoor, RequirementType.RedEyegoreGoriya)
                             });
                         break;
-                    case DungeonNodeID.HCDarkCrossKeyDoor:
+                    case DungeonNodeID.EPBoss:
                         ExpectedConnectionValue.Add(id,
                             new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
                             {
-                                (DungeonNodeID.HCDarkRoomFront, RequirementType.NoRequirement),
-                                (DungeonNodeID.HCPastDarkCrossKeyDoor, RequirementType.NoRequirement)
-                            });
-                        break;
-                    case DungeonNodeID.HCPastDarkCrossKeyDoor:
-                        ExpectedKeyDoorValues.Add(id,
-                            new List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>
-                            {
-                                (DungeonNodeID.HCDarkRoomFront, KeyDoorID.HCDarkCrossKeyDoor),
-                                (DungeonNodeID.HCPastSewerRatRoomKeyDoor, KeyDoorID.HCSewerRatRoomKeyDoor)
-                            });
-                        break;
-                    case DungeonNodeID.HCSewerRatRoomKeyDoor:
-                        ExpectedConnectionValue.Add(id,
-                            new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
-                            {
-                                (DungeonNodeID.HCPastDarkCrossKeyDoor, RequirementType.NoRequirement),
-                                (DungeonNodeID.HCPastSewerRatRoomKeyDoor, RequirementType.NoRequirement)
-                            });
-                        break;
-                    case DungeonNodeID.HCPastSewerRatRoomKeyDoor:
-                        ExpectedConnectionValue.Add(id,
-                            new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
-                            {
-                                (DungeonNodeID.HCDarkRoomBack, RequirementType.NoRequirement)
-                            });
-                        ExpectedKeyDoorValues.Add(id,
-                            new List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>
-                            {
-                                (DungeonNodeID.HCPastDarkCrossKeyDoor, KeyDoorID.HCSewerRatRoomKeyDoor)
-                            });
-                        break;
-                    case DungeonNodeID.HCDarkRoomBack:
-                        ExpectedConnectionValue.Add(id,
-                            new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
-                            {
-                                (DungeonNodeID.HCPastSewerRatRoomKeyDoor, RequirementType.NoRequirement),
-                                (DungeonNodeID.HCBack, RequirementType.DarkRoomHC)
-                            });
-                        break;
-                    case DungeonNodeID.HCBack:
-                        ExpectedEntryValues.Add(id, OverworldNodeID.HCBackEntry);
-                        ExpectedConnectionValue.Add(id,
-                            new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
-                            {
-                                (DungeonNodeID.HCDarkRoomBack, RequirementType.NoRequirement)
+                                (DungeonNodeID.EPBossRoom, RequirementType.EPBoss)
                             });
                         break;
                 }

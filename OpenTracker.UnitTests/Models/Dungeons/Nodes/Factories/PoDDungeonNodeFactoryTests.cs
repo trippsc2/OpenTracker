@@ -13,7 +13,7 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
 {
-    public class HCDungeonNodeFactoryTests
+    public class PoDDungeonNodeFactoryTests
     {
         private readonly IRequirementFactory _requirementFactory = Substitute.For<IRequirementFactory>();
         private readonly IOverworldNodeFactory _overworldNodeFactory = Substitute.For<IOverworldNodeFactory>();
@@ -24,7 +24,7 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
         private readonly List<INode> _entryFactoryCalls = new();
         private readonly List<(INode fromNode, INode toNode, IRequirement requirement)> _connectionFactoryCalls = new();
 
-        private readonly HCDungeonNodeFactory _sut;
+        private readonly PoDDungeonNodeFactory _sut;
 
         private static readonly Dictionary<DungeonNodeID, OverworldNodeID> ExpectedEntryValues = new();
         private static readonly Dictionary<DungeonNodeID, List<
@@ -32,7 +32,7 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
         private static readonly Dictionary<DungeonNodeID, List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>>
             ExpectedKeyDoorValues = new();
 
-        public HCDungeonNodeFactoryTests()
+        public PoDDungeonNodeFactoryTests()
         {
             _requirements = new RequirementDictionary(() => _requirementFactory);
             _overworldNodes = new OverworldNodeDictionary(() => _overworldNodeFactory);
@@ -49,7 +49,7 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
                 return Substitute.For<INodeConnection>();
             }
 
-            _sut = new HCDungeonNodeFactory(_requirements, _overworldNodes, EntryFactory, ConnectionFactory);
+            _sut = new PoDDungeonNodeFactory(_requirements, _overworldNodes, EntryFactory, ConnectionFactory);
         }
 
         private static void PopulateExpectedValues()
@@ -62,136 +62,194 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
             {
                 switch (id)
                 {
-                    case DungeonNodeID.HCSanctuary:
-                        ExpectedEntryValues.Add(id, OverworldNodeID.HCSanctuaryEntry);
-                        ExpectedConnectionValue.Add(id,
-                            new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
+                    case DungeonNodeID.PoD:
+                        ExpectedEntryValues.Add(id, OverworldNodeID.PoDEntry);
+                        ExpectedKeyDoorValues.Add(id,
+                            new List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>
                             {
-                                (DungeonNodeID.HCBack, RequirementType.NoRequirement)
+                                (DungeonNodeID.PoDLobbyArena, KeyDoorID.PoDFrontKeyDoor)
                             });
                         break;
-                    case DungeonNodeID.HCFront:
-                        ExpectedEntryValues.Add(id, OverworldNodeID.HCFrontEntry);
+                    case DungeonNodeID.PoDPastFirstRedGoriyaRoom:
                         ExpectedConnectionValue.Add(id,
                             new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
                             {
-                                (DungeonNodeID.HCDarkRoomFront, RequirementType.NoRequirement)
+                                (DungeonNodeID.PoD, RequirementType.RedEyegoreGoriya),
+                                (DungeonNodeID.PoD, RequirementType.CameraUnlock),
+                                (DungeonNodeID.PoD, RequirementType.MimicClip)
+                            });
+                        break;
+                    case DungeonNodeID.PoDFrontKeyDoor:
+                        ExpectedConnectionValue.Add(id,
+                            new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
+                            {
+                                (DungeonNodeID.PoD, RequirementType.NoRequirement),
+                                (DungeonNodeID.PoDLobbyArena, RequirementType.NoRequirement)
+                            });
+                        break;
+                    case DungeonNodeID.PoDLobbyArena:
+                        ExpectedConnectionValue.Add(id,
+                            new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
+                            {
+                                (DungeonNodeID.PoDPastFirstRedGoriyaRoom, RequirementType.Hammer)
                             });
                         ExpectedKeyDoorValues.Add(id,
                             new List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>
                             {
-                                (DungeonNodeID.HCPastEscapeFirstKeyDoor, KeyDoorID.HCEscapeFirstKeyDoor)
+                                (DungeonNodeID.PoD, KeyDoorID.PoDFrontKeyDoor),
+                                (DungeonNodeID.PoDPastCollapsingWalkwayKeyDoor, KeyDoorID.PoDCollapsingWalkwayKeyDoor)
                             });
                         break;
-                    case DungeonNodeID.HCEscapeFirstKeyDoor:
-                        ExpectedConnectionValue.Add(id,
-                            new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
-                            {
-                                (DungeonNodeID.HCFront, RequirementType.NoRequirement),
-                                (DungeonNodeID.HCPastEscapeFirstKeyDoor, RequirementType.NoRequirement)
-                            });
-                        break;
-                    case DungeonNodeID.HCPastEscapeFirstKeyDoor:
+                    case DungeonNodeID.PoDBigKeyChestArea:
                         ExpectedKeyDoorValues.Add(id,
                             new List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>
                             {
-                                (DungeonNodeID.HCFront, KeyDoorID.HCEscapeFirstKeyDoor),
-                                (DungeonNodeID.HCPastEscapeSecondKeyDoor, KeyDoorID.HCEscapeSecondKeyDoor)
+                                (DungeonNodeID.PoDLobbyArena, KeyDoorID.PoDBigKeyChestKeyDoor)
                             });
                         break;
-                    case DungeonNodeID.HCEscapeSecondKeyDoor:
+                    case DungeonNodeID.PoDCollapsingWalkwayKeyDoor:
                         ExpectedConnectionValue.Add(id,
                             new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
                             {
-                                (DungeonNodeID.HCPastEscapeFirstKeyDoor, RequirementType.NoRequirement),
-                                (DungeonNodeID.HCPastEscapeSecondKeyDoor, RequirementType.NoRequirement)
+                                (DungeonNodeID.PoDLobbyArena, RequirementType.NoRequirement),
+                                (DungeonNodeID.PoDPastCollapsingWalkwayKeyDoor, RequirementType.NoRequirement)
                             });
                         break;
-                    case DungeonNodeID.HCPastEscapeSecondKeyDoor:
+                    case DungeonNodeID.PoDPastCollapsingWalkwayKeyDoor:
                         ExpectedKeyDoorValues.Add(id,
                             new List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>
                             {
-                                (DungeonNodeID.HCPastEscapeFirstKeyDoor, KeyDoorID.HCEscapeSecondKeyDoor),
-                                (DungeonNodeID.HCZeldasCell, KeyDoorID.HCZeldasCellDoor)
+                                (DungeonNodeID.PoDLobbyArena, KeyDoorID.PoDCollapsingWalkwayKeyDoor),
+                                (DungeonNodeID.PoDPastDarkMazeKeyDoor, KeyDoorID.PoDDarkMazeKeyDoor),
+                                (DungeonNodeID.PoDHarmlessHellwayRoom, KeyDoorID.PoDHarmlessHellwayKeyDoor)
                             });
                         break;
-                    case DungeonNodeID.HCZeldasCellDoor:
+                    case DungeonNodeID.PoDDarkBasement:
                         ExpectedConnectionValue.Add(id,
                             new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
                             {
-                                (DungeonNodeID.HCPastEscapeSecondKeyDoor, RequirementType.NoRequirement),
-                                (DungeonNodeID.HCZeldasCell, RequirementType.NoRequirement)
+                                (DungeonNodeID.PoDPastCollapsingWalkwayKeyDoor, RequirementType.DarkRoomPoDDarkBasement)
                             });
                         break;
-                    case DungeonNodeID.HCZeldasCell:
+                    case DungeonNodeID.PoDHarmlessHellwayKeyDoor:
+                        ExpectedConnectionValue.Add(id,
+                            new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
+                            {
+                                (DungeonNodeID.PoDPastCollapsingWalkwayKeyDoor, RequirementType.NoRequirement),
+                                (DungeonNodeID.PoDHarmlessHellwayRoom, RequirementType.NoRequirement)
+                            });
+                        break;
+                    case DungeonNodeID.PoDHarmlessHellwayRoom:
                         ExpectedKeyDoorValues.Add(id,
                             new List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>
                             {
-                                (DungeonNodeID.HCPastEscapeSecondKeyDoor, KeyDoorID.HCZeldasCellDoor)
+                                (DungeonNodeID.PoDPastCollapsingWalkwayKeyDoor, KeyDoorID.PoDHarmlessHellwayKeyDoor)
                             });
                         break;
-                    case DungeonNodeID.HCDarkRoomFront:
+                    case DungeonNodeID.PoDDarkMazeKeyDoor:
                         ExpectedConnectionValue.Add(id,
                             new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
                             {
-                                (DungeonNodeID.HCFront, RequirementType.DarkRoomHC)
-                            });
-                        ExpectedKeyDoorValues.Add(id,
-                            new List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>
-                            {
-                                (DungeonNodeID.HCPastDarkCrossKeyDoor, KeyDoorID.HCDarkCrossKeyDoor)
+                                (DungeonNodeID.PoDPastCollapsingWalkwayKeyDoor, RequirementType.NoRequirement),
+                                (DungeonNodeID.PoDPastDarkMazeKeyDoor, RequirementType.NoRequirement)
                             });
                         break;
-                    case DungeonNodeID.HCDarkCrossKeyDoor:
+                    case DungeonNodeID.PoDPastDarkMazeKeyDoor:
                         ExpectedConnectionValue.Add(id,
                             new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
                             {
-                                (DungeonNodeID.HCDarkRoomFront, RequirementType.NoRequirement),
-                                (DungeonNodeID.HCPastDarkCrossKeyDoor, RequirementType.NoRequirement)
-                            });
-                        break;
-                    case DungeonNodeID.HCPastDarkCrossKeyDoor:
-                        ExpectedKeyDoorValues.Add(id,
-                            new List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>
-                            {
-                                (DungeonNodeID.HCDarkRoomFront, KeyDoorID.HCDarkCrossKeyDoor),
-                                (DungeonNodeID.HCPastSewerRatRoomKeyDoor, KeyDoorID.HCSewerRatRoomKeyDoor)
-                            });
-                        break;
-                    case DungeonNodeID.HCSewerRatRoomKeyDoor:
-                        ExpectedConnectionValue.Add(id,
-                            new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
-                            {
-                                (DungeonNodeID.HCPastDarkCrossKeyDoor, RequirementType.NoRequirement),
-                                (DungeonNodeID.HCPastSewerRatRoomKeyDoor, RequirementType.NoRequirement)
-                            });
-                        break;
-                    case DungeonNodeID.HCPastSewerRatRoomKeyDoor:
-                        ExpectedConnectionValue.Add(id,
-                            new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
-                            {
-                                (DungeonNodeID.HCDarkRoomBack, RequirementType.NoRequirement)
+                                (DungeonNodeID.PoDDarkMaze, RequirementType.NoRequirement)
                             });
                         ExpectedKeyDoorValues.Add(id,
                             new List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>
                             {
-                                (DungeonNodeID.HCPastDarkCrossKeyDoor, KeyDoorID.HCSewerRatRoomKeyDoor)
+                                (DungeonNodeID.PoDPastCollapsingWalkwayKeyDoor, KeyDoorID.PoDDarkMazeKeyDoor)
                             });
                         break;
-                    case DungeonNodeID.HCDarkRoomBack:
+                    case DungeonNodeID.PoDDarkMaze:
                         ExpectedConnectionValue.Add(id,
                             new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
                             {
-                                (DungeonNodeID.HCPastSewerRatRoomKeyDoor, RequirementType.NoRequirement),
-                                (DungeonNodeID.HCBack, RequirementType.DarkRoomHC)
+                                (DungeonNodeID.PoDPastDarkMazeKeyDoor, RequirementType.DarkRoomPoDDarkMaze),
+                                (DungeonNodeID.PoDBigChestLedge, RequirementType.DarkRoomPoDDarkMaze)
                             });
                         break;
-                    case DungeonNodeID.HCBack:
-                        ExpectedEntryValues.Add(id, OverworldNodeID.HCBackEntry);
+                    case DungeonNodeID.PoDBigChestLedge:
                         ExpectedConnectionValue.Add(id,
                             new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
                             {
-                                (DungeonNodeID.HCDarkRoomBack, RequirementType.NoRequirement)
+                                (DungeonNodeID.PoDDarkMaze, RequirementType.NoRequirement),
+                                (DungeonNodeID.PoDPastCollapsingWalkwayKeyDoor, RequirementType.BombJumpPoDHammerJump)
+                            });
+                        break;
+                    case DungeonNodeID.PoDBigChest:
+                        ExpectedKeyDoorValues.Add(id,
+                            new List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>
+                            {
+                                (DungeonNodeID.PoDBigChestLedge, KeyDoorID.PoDBigChest)
+                            });
+                        break;
+                    case DungeonNodeID.PoDPastSecondRedGoriyaRoom:
+                        ExpectedConnectionValue.Add(id,
+                            new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
+                            {
+                                (DungeonNodeID.PoDLobbyArena, RequirementType.RedEyegoreGoriya),
+                                (DungeonNodeID.PoDLobbyArena, RequirementType.MimicClip)
+                            });
+                        break;
+                    case DungeonNodeID.PoDPastBowStatue:
+                        ExpectedConnectionValue.Add(id,
+                            new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
+                            {
+                                (DungeonNodeID.PoDPastSecondRedGoriyaRoom, RequirementType.Bow)
+                            });
+                        break;
+                    case DungeonNodeID.PoDBossAreaDarkRooms:
+                        ExpectedConnectionValue.Add(id,
+                            new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
+                            {
+                                (DungeonNodeID.PoDPastBowStatue, RequirementType.DarkRoomPoDBossArea)
+                            });
+                        break;
+                    case DungeonNodeID.PoDPastHammerBlocks:
+                        ExpectedConnectionValue.Add(id,
+                            new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
+                            {
+                                (DungeonNodeID.PoDBossAreaDarkRooms, RequirementType.Hammer)
+                            });
+                        ExpectedKeyDoorValues.Add(id,
+                            new List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>
+                            {
+                                (DungeonNodeID.PoDPastBossAreaKeyDoor, KeyDoorID.PoDBossAreaKeyDoor)
+                            });
+                        break;
+                    case DungeonNodeID.PoDBossAreaKeyDoor:
+                        ExpectedConnectionValue.Add(id,
+                            new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
+                            {
+                                (DungeonNodeID.PoDPastHammerBlocks, RequirementType.NoRequirement),
+                                (DungeonNodeID.PoDPastBossAreaKeyDoor, RequirementType.NoRequirement)
+                            });
+                        break;
+                    case DungeonNodeID.PoDPastBossAreaKeyDoor:
+                        ExpectedKeyDoorValues.Add(id,
+                            new List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>
+                            {
+                                (DungeonNodeID.PoDPastHammerBlocks, KeyDoorID.PoDBossAreaKeyDoor)
+                            });
+                        break;
+                    case DungeonNodeID.PoDBossRoom:
+                        ExpectedKeyDoorValues.Add(id,
+                            new List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>
+                            {
+                                (DungeonNodeID.PoDPastBossAreaKeyDoor, KeyDoorID.PoDBigKeyDoor)
+                            });
+                        break;
+                    case DungeonNodeID.PoDBoss:
+                        ExpectedConnectionValue.Add(id,
+                            new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
+                            {
+                                (DungeonNodeID.PoDBossRoom, RequirementType.PoDBoss)
                             });
                         break;
                 }
