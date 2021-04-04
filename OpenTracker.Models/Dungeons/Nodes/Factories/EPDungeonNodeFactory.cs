@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using OpenTracker.Models.Dungeons.Mutable;
 using OpenTracker.Models.KeyDoors;
@@ -114,6 +115,8 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
                         dungeonData.Nodes[DungeonNodeID.EPBossRoom], node,
                         _requirements[RequirementType.EPBoss]));
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(id));
             }
         }
     }

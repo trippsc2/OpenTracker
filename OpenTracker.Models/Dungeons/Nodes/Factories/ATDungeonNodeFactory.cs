@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using OpenTracker.Models.Dungeons.Mutable;
 using OpenTracker.Models.KeyDoors;
@@ -109,6 +110,8 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
                         dungeonData.Nodes[DungeonNodeID.ATBossRoom], node,
                         _requirements[RequirementType.ATBoss]));
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(id));
             }
         }
     }

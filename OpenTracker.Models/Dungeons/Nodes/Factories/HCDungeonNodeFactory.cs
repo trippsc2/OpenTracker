@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using OpenTracker.Models.Dungeons.Mutable;
 using OpenTracker.Models.KeyDoors;
@@ -161,6 +162,8 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
                         dungeonData.Nodes[DungeonNodeID.HCDarkRoomBack], node,
                         _requirements[RequirementType.NoRequirement]));
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(id));
             }
         }
     }

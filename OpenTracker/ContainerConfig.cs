@@ -13,7 +13,6 @@ using OpenTracker.Models.Connections;
 using OpenTracker.Models.Dropdowns;
 using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.Dungeons.Items;
-using OpenTracker.Models.Dungeons.Nodes;
 using OpenTracker.Models.Dungeons.Nodes.Factories;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Items.Factories;
