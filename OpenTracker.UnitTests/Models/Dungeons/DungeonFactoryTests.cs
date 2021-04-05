@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.Dungeons.Items;
@@ -100,7 +102,7 @@ namespace OpenTracker.UnitTests.Models.Dungeons
             }
             
             var overworldNodeFactory = Substitute.For<IOverworldNodeFactory>();
-            overworldNodeFactory.GetOverworldNode(Arg.Any<OverworldNodeID>()).Returns(x =>
+            overworldNodeFactory.GetOverworldNode(Arg.Any<OverworldNodeID>()).Returns(_ =>
                 GetOverworldNode());
             _overworldNodes = new OverworldNodeDictionary(() => overworldNodeFactory);
 
@@ -121,6 +123,8 @@ namespace OpenTracker.UnitTests.Models.Dungeons
 
         private static void PopulateExpectedValues()
         {
+            ExpectedValues.Clear();
+            
             foreach (DungeonID id in Enum.GetValues(typeof(DungeonID)))
             {
                 ItemType? map = null;
@@ -930,21 +934,277 @@ namespace OpenTracker.UnitTests.Models.Dungeons
         public static IEnumerable<object?[]> GetDungeon_ShouldReturnExpectedMapData()
         {
             PopulateExpectedValues();
-            
-            var results = new List<object?[]>();
-            
-            foreach (var id in ExpectedValues.Keys)
-            {
-                if (ExpectedValues[id].map is null)
-                {
-                    results.Add(new object?[] {null, id});
-                    continue;
-                }
-                
-                results.Add(new object?[] {ExpectedValues[id].map, id});
-            }
 
-            return results;
+            return ExpectedValues.Keys.Select(id => new object?[] {ExpectedValues[id].map, id}).ToList();
+        }
+
+        [Theory]
+        [MemberData(nameof(GetDungeon_ShouldReturnExpectedCompassData))]
+        public void GetDungeon_ShouldReturnExpectedCompass(ItemType? expected, DungeonID id)
+        {
+            _ = _sut.GetDungeon(id);
+
+            var item = expected is not null ? (ICappedItem?)_items[expected.Value] : null; 
+            
+            Assert.Equal(item, _factoryCall!.Value.compass);
+        }
+
+        public static IEnumerable<object?[]> GetDungeon_ShouldReturnExpectedCompassData()
+        {
+            PopulateExpectedValues();
+
+            return ExpectedValues.Keys.Select(id => new object?[] {ExpectedValues[id].compass, id}).ToList();
+        }
+
+        [Theory]
+        [MemberData(nameof(GetDungeon_ShouldReturnExpectedSmallKeyData))]
+        public void GetDungeon_ShouldReturnExpectedSmallKey(ItemType expected, DungeonID id)
+        {
+            _ = _sut.GetDungeon(id);
+
+            var item = (ISmallKeyItem) _items[expected]; 
+            
+            Assert.Equal(item, _factoryCall!.Value.smallKey);
+        }
+
+        public static IEnumerable<object[]> GetDungeon_ShouldReturnExpectedSmallKeyData()
+        {
+            PopulateExpectedValues();
+
+            return ExpectedValues.Keys.Select(id => new object[] {ExpectedValues[id].smallKey, id}).ToList();
+        }
+
+        [Theory]
+        [MemberData(nameof(GetDungeon_ShouldReturnExpectedBigKeyData))]
+        public void GetDungeon_ShouldReturnExpectedBigKey(ItemType? expected, DungeonID id)
+        {
+            _ = _sut.GetDungeon(id);
+
+            var item = expected is not null ? (IBigKeyItem?)_items[expected.Value] : null; 
+            
+            Assert.Equal(item, _factoryCall!.Value.bigKey);
+        }
+
+        public static IEnumerable<object?[]> GetDungeon_ShouldReturnExpectedBigKeyData()
+        {
+            PopulateExpectedValues();
+
+            return ExpectedValues.Keys.Select(id => new object?[] {ExpectedValues[id].bigKey, id}).ToList();
+        }
+
+        [Theory]
+        [MemberData(nameof(GetDungeon_ShouldReturnExpectedDungeonItemsData))]
+        public void GetDungeon_ShouldReturnExpectedDungeonItems(DungeonItemID expected, DungeonID id)
+        {
+            _ = _sut.GetDungeon(id);
+
+            Assert.Contains(expected, _factoryCall!.Value.dungeonItems);
+        }
+
+        public static IEnumerable<object[]> GetDungeon_ShouldReturnExpectedDungeonItemsData()
+        {
+            PopulateExpectedValues();
+
+            return (from id in ExpectedValues.Keys from dungeonItem in ExpectedValues[id].dungeonItems
+                select new object[] {dungeonItem, id}).ToList();
+        }
+
+        [Theory]
+        [MemberData(nameof(GetDungeon_ShouldReturnExpectedBossesData))]
+        public void GetDungeon_ShouldReturnExpectedBosses(DungeonItemID expected, DungeonID id)
+        {
+            _ = _sut.GetDungeon(id);
+
+            Assert.Contains(expected, _factoryCall!.Value.bosses);
+        }
+
+        public static IEnumerable<object[]> GetDungeon_ShouldReturnExpectedBossesData()
+        {
+            PopulateExpectedValues();
+
+            return (from id in ExpectedValues.Keys from boss in ExpectedValues[id].bosses
+                select new object[] {boss, id}).ToList();
+        }
+
+        [Theory]
+        [MemberData(nameof(GetDungeon_ShouldReturnEmptyBossesData))]
+        public void GetDungeon_ShouldReturnEmptyBosses(DungeonID id)
+        {
+            _ = _sut.GetDungeon(id);
+
+            Assert.Empty(_factoryCall!.Value.bosses);
+        }
+
+        public static IEnumerable<object[]> GetDungeon_ShouldReturnEmptyBossesData()
+        {
+            PopulateExpectedValues();
+
+            return (from id in ExpectedValues.Keys where ExpectedValues[id].bosses.Count == 0
+                select new object[] {id}).ToList();
+        }
+
+        [Theory]
+        [MemberData(nameof(GetDungeon_ShouldReturnExpectedSmallKeyDropsData))]
+        public void GetDungeon_ShouldReturnExpectedSmallKeyDrops(DungeonItemID expected, DungeonID id)
+        {
+            _ = _sut.GetDungeon(id);
+
+            Assert.Contains(expected, _factoryCall!.Value.smallKeyDrops);
+        }
+
+        public static IEnumerable<object[]> GetDungeon_ShouldReturnExpectedSmallKeyDropsData()
+        {
+            PopulateExpectedValues();
+
+            return (from id in ExpectedValues.Keys from smallKeyDrop in ExpectedValues[id].smallKeyDrops
+                select new object[] {smallKeyDrop, id}).ToList();
+        }
+
+        [Theory]
+        [MemberData(nameof(GetDungeon_ShouldReturnEmptySmallKeyDropsData))]
+        public void GetDungeon_ShouldReturnEmptySmallKeyDrops(DungeonID id)
+        {
+            _ = _sut.GetDungeon(id);
+
+            Assert.Empty(_factoryCall!.Value.smallKeyDrops);
+        }
+
+        public static IEnumerable<object[]> GetDungeon_ShouldReturnEmptySmallKeyDropsData()
+        {
+            PopulateExpectedValues();
+
+            return (from id in ExpectedValues.Keys where ExpectedValues[id].smallKeyDrops.Count == 0
+                select new object[] {id}).ToList();
+        }
+
+        [Theory]
+        [MemberData(nameof(GetDungeon_ShouldReturnExpectedBigKeyDropsData))]
+        public void GetDungeon_ShouldReturnExpectedBigKeyDrops(DungeonItemID expected, DungeonID id)
+        {
+            _ = _sut.GetDungeon(id);
+
+            Assert.Contains(expected, _factoryCall!.Value.bigKeyDrops);
+        }
+
+        public static IEnumerable<object[]> GetDungeon_ShouldReturnExpectedBigKeyDropsData()
+        {
+            PopulateExpectedValues();
+
+            return (from id in ExpectedValues.Keys from bigKeyDrop in ExpectedValues[id].bigKeyDrops
+                select new object[] {bigKeyDrop, id}).ToList();
+        }
+
+        [Theory]
+        [MemberData(nameof(GetDungeon_ShouldReturnEmptyBigKeyDropsData))]
+        public void GetDungeon_ShouldReturnEmptyBigKeyDrops(DungeonID id)
+        {
+            _ = _sut.GetDungeon(id);
+
+            Assert.Empty(_factoryCall!.Value.bigKeyDrops);
+        }
+
+        public static IEnumerable<object[]> GetDungeon_ShouldReturnEmptyBigKeyDropsData()
+        {
+            PopulateExpectedValues();
+
+            return (from id in ExpectedValues.Keys where ExpectedValues[id].bigKeyDrops.Count == 0
+                select new object[] {id}).ToList();
+        }
+
+        [Theory]
+        [MemberData(nameof(GetDungeon_ShouldReturnExpectedSmallKeyDoorsData))]
+        public void GetDungeon_ShouldReturnExpectedSmallKeyDoors(KeyDoorID expected, DungeonID id)
+        {
+            _ = _sut.GetDungeon(id);
+
+            Assert.Contains(expected, _factoryCall!.Value.smallKeyDoors);
+        }
+
+        public static IEnumerable<object[]> GetDungeon_ShouldReturnExpectedSmallKeyDoorsData()
+        {
+            PopulateExpectedValues();
+
+            return (from id in ExpectedValues.Keys from smallKeyDoor in ExpectedValues[id].smallKeyDoors
+                select new object[] {smallKeyDoor, id}).ToList();
+        }
+
+        [Theory]
+        [MemberData(nameof(GetDungeon_ShouldReturnExpectedBigKeyDoorsData))]
+        public void GetDungeon_ShouldReturnExpectedBigKeyDoors(KeyDoorID expected, DungeonID id)
+        {
+            _ = _sut.GetDungeon(id);
+
+            Assert.Contains(expected, _factoryCall!.Value.bigKeyDoors);
+        }
+
+        public static IEnumerable<object[]> GetDungeon_ShouldReturnExpectedBigKeyDoorsData()
+        {
+            PopulateExpectedValues();
+
+            return (from id in ExpectedValues.Keys from bigKeyDoor in ExpectedValues[id].bigKeyDoors
+                select new object[] {bigKeyDoor, id}).ToList();
+        }
+
+        [Theory]
+        [MemberData(nameof(GetDungeon_ShouldReturnEmptyBigKeyDoorsData))]
+        public void GetDungeon_ShouldReturnEmptyBigKeyDoors(DungeonID id)
+        {
+            _ = _sut.GetDungeon(id);
+
+            Assert.Empty(_factoryCall!.Value.bigKeyDoors);
+        }
+
+        public static IEnumerable<object[]> GetDungeon_ShouldReturnEmptyBigKeyDoorsData()
+        {
+            PopulateExpectedValues();
+
+            return (from id in ExpectedValues.Keys where ExpectedValues[id].bigKeyDoors.Count == 0
+                select new object[] {id}).ToList();
+        }
+
+        [Theory]
+        [MemberData(nameof(GetDungeon_ShouldReturnExpectedNodesData))]
+        public void GetDungeon_ShouldReturnExpectedNodes(DungeonNodeID expected, DungeonID id)
+        {
+            _ = _sut.GetDungeon(id);
+
+            Assert.Contains(expected, _factoryCall!.Value.nodes);
+        }
+
+        public static IEnumerable<object[]> GetDungeon_ShouldReturnExpectedNodesData()
+        {
+            PopulateExpectedValues();
+
+            return (from id in ExpectedValues.Keys from node in ExpectedValues[id].nodes
+                select new object[] {node, id}).ToList();
+        }
+
+        [Theory]
+        [MemberData(nameof(GetDungeon_ShouldReturnExpectedEntryNodesData))]
+        public void GetDungeon_ShouldReturnExpectedEntryNodes(OverworldNodeID expected, DungeonID id)
+        {
+            _ = _sut.GetDungeon(id);
+            var node = _overworldNodes[expected];
+
+            Assert.Contains(node, _factoryCall!.Value.entryNodes);
+        }
+
+        public static IEnumerable<object[]> GetDungeon_ShouldReturnExpectedEntryNodesData()
+        {
+            PopulateExpectedValues();
+
+            return (from id in ExpectedValues.Keys from entryNode in ExpectedValues[id].entryNodes
+                select new object[] {entryNode, id}).ToList();
+        }
+
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var factory = scope.Resolve<IDungeonFactory.Factory>();
+            var sut = factory();
+            
+            Assert.NotNull(sut as DungeonFactory);
         }
     }
 }
