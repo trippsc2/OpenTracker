@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using OpenTracker.Models.Dungeons.Items;
 using OpenTracker.Models.Dungeons.Nodes;
@@ -14,7 +15,7 @@ using ReactiveUI;
 namespace OpenTracker.Models.Dungeons
 {
     /// <summary>
-    ///     This is the class containing dungeon data.
+    ///     This class contains the immutable dungeon data.
     /// </summary>
     public class Dungeon : ReactiveObject, IDungeon
     {
@@ -145,12 +146,15 @@ namespace OpenTracker.Models.Dungeons
                 case nameof(IMode.MapShuffle) when Map is not null:
                 case nameof(IMode.CompassShuffle) when Compass is not null:
                 case nameof(IMode.SmallKeyShuffle):
-                case nameof(IMode.BigKeyShuffle):
+                case nameof(IMode.BigKeyShuffle) when BigKey is not null:
                     UpdateTotal();
                     break;
             }
         }
 
+        /// <summary>
+        ///     Updates the value of the Total and TotalWithMapAndCompass properties.
+        /// </summary>
         private void UpdateTotal()
         {
             var total = DungeonItems.Count;
@@ -170,7 +174,7 @@ namespace OpenTracker.Models.Dungeons
                 total -= BigKey.Maximum;
             }
 
-            TotalWithMapAndCompass = total;
+            TotalWithMapAndCompass = Math.Max(0, total);
 
             if (!_mode.MapShuffle && Map is not null)
             {
@@ -182,7 +186,7 @@ namespace OpenTracker.Models.Dungeons
                 total -= Compass.Maximum;
             }
 
-            Total = total;
+            Total = Math.Max(0, total);
         }
     }
 }

@@ -1,5 +1,8 @@
 namespace OpenTracker.Models.Dungeons
 {
+    /// <summary>
+    ///     This enum type contains the dungeon IDs.
+    /// </summary>
     public enum DungeonID
     {
         HyruleCastle,

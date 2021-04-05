@@ -5,17 +5,17 @@ using OpenTracker.Utils;
 namespace OpenTracker.Models.Dungeons
 {
     /// <summary>
-    /// This class contains the dictionary container for dungeon data.
+    ///     This class contains the dictionary container for dungeon data.
     /// </summary>
     public class DungeonDictionary : LazyDictionary<DungeonID, IDungeon>, IDungeonDictionary
     {
         private readonly Lazy<IDungeonFactory> _factory;
         
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="factory">
-        /// An Autofac factory for creating the dungeon factory.
+        ///     An Autofac factory for creating the dungeon factory.
         /// </param>
         public DungeonDictionary(IDungeonFactory.Factory factory) : base(new Dictionary<DungeonID, IDungeon>())
         {

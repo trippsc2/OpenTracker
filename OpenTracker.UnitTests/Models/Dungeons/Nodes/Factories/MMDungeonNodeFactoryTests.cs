@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Dungeons.Mutable;
 using OpenTracker.Models.Dungeons.Nodes;
@@ -62,6 +63,205 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
             {
                 switch (id)
                 {
+                case DungeonNodeID.MM:
+                    ExpectedEntryValues.Add(id, OverworldNodeID.MMEntry);
+                    break;
+                case DungeonNodeID.MMPastEntranceGap:
+                    ExpectedConnectionValue.Add(id,
+                        new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
+                        {
+                            (DungeonNodeID.MM, RequirementType.Hookshot),
+                            (DungeonNodeID.MM, RequirementType.BonkOverLedge),
+                            (DungeonNodeID.MM, RequirementType.Hover)
+                        });
+                    ExpectedKeyDoorValues.Add(id,
+                        new List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>
+                        {
+                            (DungeonNodeID.MMB1TopSide, KeyDoorID.MMB1TopLeftKeyDoor),
+                            (DungeonNodeID.MMB1TopSide, KeyDoorID.MMB1TopRightKeyDoor),
+                            (DungeonNodeID.MMB1LeftSidePastFirstKeyDoor, KeyDoorID.MMB1LeftSideFirstKeyDoor)
+                        });
+                    break;
+                case DungeonNodeID.MMBigChest:
+                    ExpectedKeyDoorValues.Add(id,
+                        new List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>
+                        {
+                            (DungeonNodeID.MMPastEntranceGap, KeyDoorID.MMBigChest)
+                        });
+                    break;
+                case DungeonNodeID.MMB1TopLeftKeyDoor:
+                    ExpectedConnectionValue.Add(id,
+                        new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
+                        {
+                            (DungeonNodeID.MMPastEntranceGap, RequirementType.NoRequirement),
+                            (DungeonNodeID.MMB1TopSide, RequirementType.NoRequirement)
+                        });
+                    break;
+                case DungeonNodeID.MMB1TopRightKeyDoor:
+                    ExpectedConnectionValue.Add(id,
+                        new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
+                        {
+                            (DungeonNodeID.MMPastEntranceGap, RequirementType.NoRequirement),
+                            (DungeonNodeID.MMB1TopSide, RequirementType.NoRequirement)
+                        });
+                    break;
+                case DungeonNodeID.MMB1TopSide:
+                    ExpectedConnectionValue.Add(id,
+                        new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
+                        {
+                            (DungeonNodeID.MMB1PastPortalBigKeyDoor, RequirementType.NoRequirement)
+                        });
+                    ExpectedKeyDoorValues.Add(id,
+                        new List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>
+                        {
+                            (DungeonNodeID.MMPastEntranceGap, KeyDoorID.MMB1TopLeftKeyDoor),
+                            (DungeonNodeID.MMPastEntranceGap, KeyDoorID.MMB1TopRightKeyDoor),
+                            (DungeonNodeID.MMB1PastBridgeBigKeyDoor, KeyDoorID.MMBridgeBigKeyDoor)
+                        });
+                    break;
+                case DungeonNodeID.MMB1LobbyBeyondBlueBlocks:
+                    ExpectedConnectionValue.Add(id,
+                        new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
+                        {
+                            (DungeonNodeID.MMB1TopSide, RequirementType.NoRequirement),
+                            (DungeonNodeID.MMB1LeftSidePastFirstKeyDoor, RequirementType.NoRequirement)
+                        });
+                    ExpectedKeyDoorValues.Add(id,
+                        new List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>
+                        {
+                            (DungeonNodeID.MMB1RightSideBeyondBlueBlocks, KeyDoorID.MMB1RightSideKeyDoor)
+                        });
+                    break;
+                case DungeonNodeID.MMB1RightSideKeyDoor:
+                    ExpectedConnectionValue.Add(id,
+                        new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
+                        {
+                            (DungeonNodeID.MMB1LobbyBeyondBlueBlocks, RequirementType.NoRequirement),
+                            (DungeonNodeID.MMB1RightSideBeyondBlueBlocks, RequirementType.NoRequirement)
+                        });
+                    break;
+                case DungeonNodeID.MMB1RightSideBeyondBlueBlocks:
+                    ExpectedConnectionValue.Add(id,
+                        new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
+                        {
+                            (DungeonNodeID.MMB1LeftSideFirstKeyDoor, RequirementType.NoRequirement),
+                            (DungeonNodeID.MMB1TopSide, RequirementType.NoRequirement)
+                        });
+                    ExpectedKeyDoorValues.Add(id,
+                        new List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>
+                        {
+                            (DungeonNodeID.MMB1LobbyBeyondBlueBlocks, KeyDoorID.MMB1RightSideKeyDoor)
+                        });
+                    break;
+                case DungeonNodeID.MMB1LeftSideFirstKeyDoor:
+                    ExpectedConnectionValue.Add(id,
+                        new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
+                        {
+                            (DungeonNodeID.MMPastEntranceGap, RequirementType.NoRequirement),
+                            (DungeonNodeID.MMB1LeftSidePastFirstKeyDoor, RequirementType.NoRequirement)
+                        });
+                    break;
+                case DungeonNodeID.MMB1LeftSidePastFirstKeyDoor:
+                    ExpectedKeyDoorValues.Add(id,
+                        new List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>
+                        {
+                            (DungeonNodeID.MMPastEntranceGap, KeyDoorID.MMB1LeftSideFirstKeyDoor),
+                            (DungeonNodeID.MMB1LeftSidePastSecondKeyDoor, KeyDoorID.MMB1LeftSideSecondKeyDoor)
+                        });
+                    break;
+                case DungeonNodeID.MMB1LeftSideSecondKeyDoor:
+                    ExpectedConnectionValue.Add(id,
+                        new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
+                        {
+                            (DungeonNodeID.MMB1LeftSidePastFirstKeyDoor, RequirementType.NoRequirement),
+                            (DungeonNodeID.MMB1LeftSidePastSecondKeyDoor, RequirementType.NoRequirement)
+                        });
+                    break;
+                case DungeonNodeID.MMB1LeftSidePastSecondKeyDoor:
+                    ExpectedKeyDoorValues.Add(id,
+                        new List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>
+                        {
+                            (DungeonNodeID.MMB1LeftSidePastFirstKeyDoor, KeyDoorID.MMB1LeftSideSecondKeyDoor)
+                        });
+                    break;
+                case DungeonNodeID.MMB1PastFourTorchRoom:
+                case DungeonNodeID.MMF1PastFourTorchRoom:
+                    ExpectedConnectionValue.Add(id,
+                        new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
+                        {
+                            (DungeonNodeID.MMB1LeftSidePastSecondKeyDoor, RequirementType.FireSource)
+                        });
+                    break;
+                case DungeonNodeID.MMB1PastPortalBigKeyDoor:
+                    ExpectedKeyDoorValues.Add(id,
+                        new List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>
+                        {
+                            (DungeonNodeID.MMPastEntranceGap, KeyDoorID.MMPortalBigKeyDoor)
+                        });
+                    break;
+                case DungeonNodeID.MMBridgeBigKeyDoor:
+                    ExpectedConnectionValue.Add(id,
+                        new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
+                        {
+                            (DungeonNodeID.MMB1TopSide, RequirementType.NoRequirement),
+                            (DungeonNodeID.MMB1PastBridgeBigKeyDoor, RequirementType.NoRequirement)
+                        });
+                    break;
+                case DungeonNodeID.MMB1PastBridgeBigKeyDoor:
+                    ExpectedKeyDoorValues.Add(id,
+                        new List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>
+                        {
+                            (DungeonNodeID.MMB1TopSide, KeyDoorID.MMBridgeBigKeyDoor)
+                        });
+                    break;
+                case DungeonNodeID.MMDarkRoom:
+                    ExpectedConnectionValue.Add(id,
+                        new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
+                        {
+                            (DungeonNodeID.MMB1PastBridgeBigKeyDoor, RequirementType.DarkRoomMM)
+                        });
+                    ExpectedKeyDoorValues.Add(id,
+                        new List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>
+                        {
+                            (DungeonNodeID.MMB2PastWorthlessKeyDoor, KeyDoorID.MMB2WorthlessKeyDoor)
+                        });
+                    break;
+                case DungeonNodeID.MMB2WorthlessKeyDoor:
+                    ExpectedConnectionValue.Add(id,
+                        new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
+                        {
+                            (DungeonNodeID.MMDarkRoom, RequirementType.NoRequirement),
+                            (DungeonNodeID.MMB2PastWorthlessKeyDoor, RequirementType.NoRequirement)
+                        });
+                    break;
+                case DungeonNodeID.MMB2PastWorthlessKeyDoor:
+                    ExpectedKeyDoorValues.Add(id,
+                        new List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>
+                        {
+                            (DungeonNodeID.MMDarkRoom, KeyDoorID.MMB2WorthlessKeyDoor)
+                        });
+                    break;
+                case DungeonNodeID.MMB2PastCaneOfSomariaSwitch:
+                    ExpectedConnectionValue.Add(id,
+                        new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
+                        {
+                            (DungeonNodeID.MMDarkRoom, RequirementType.CaneOfSomaria)
+                        });
+                    break;
+                case DungeonNodeID.MMBossRoom:
+                    ExpectedKeyDoorValues.Add(id,
+                        new List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>
+                        {
+                            (DungeonNodeID.MMB2PastCaneOfSomariaSwitch, KeyDoorID.MMBossRoomBigKeyDoor)
+                        });
+                    break;
+                case DungeonNodeID.MMBoss:
+                    ExpectedConnectionValue.Add(id,
+                        new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
+                        {
+                            (DungeonNodeID.MMBossRoom, RequirementType.MMBoss)
+                        });
+                    break;
                 }
             }
         }
@@ -141,6 +341,15 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
 
             return (from id in ExpectedKeyDoorValues.Keys from value in ExpectedKeyDoorValues[id]
                 select new object[] {id, value.fromNodeID, value.keyDoor}).ToList();
+        }
+
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var sut = scope.Resolve<IMMDungeonNodeFactory>();
+            
+            Assert.NotNull(sut as MMDungeonNodeFactory);
         }
     }
 }

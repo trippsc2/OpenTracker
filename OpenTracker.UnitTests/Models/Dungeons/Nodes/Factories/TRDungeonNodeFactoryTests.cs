@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Dungeons.Mutable;
 using OpenTracker.Models.Dungeons.Nodes;
@@ -62,6 +63,252 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
             {
                 switch (id)
                 {
+                    case DungeonNodeID.TRFront:
+                        ExpectedEntryValues.Add(id, OverworldNodeID.TRFrontEntry);
+                        ExpectedConnectionValue.Add(id,
+                            new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
+                            {
+                                (DungeonNodeID.TRF1SomariaTrack, RequirementType.NoRequirement)
+                            });
+                        break;
+                    case DungeonNodeID.TRF1SomariaTrack:
+                        ExpectedConnectionValue.Add(id,
+                            new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
+                            {
+                                (DungeonNodeID.TRFront, RequirementType.CaneOfSomaria),
+                                (DungeonNodeID.TRF1CompassChestArea, RequirementType.CaneOfSomaria),
+                                (DungeonNodeID.TRF1FourTorchRoom, RequirementType.CaneOfSomaria),
+                                (DungeonNodeID.TRF1FirstKeyDoorArea, RequirementType.CaneOfSomaria)
+                            });
+                        break;
+                    case DungeonNodeID.TRF1CompassChestArea:
+                    case DungeonNodeID.TRF1FourTorchRoom:
+                        ExpectedConnectionValue.Add(id,
+                            new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
+                            {
+                                (DungeonNodeID.TRF1SomariaTrack, RequirementType.NoRequirement)
+                            });
+                        break;
+                    case DungeonNodeID.TRF1RollerRoom:
+                        ExpectedConnectionValue.Add(id,
+                            new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
+                            {
+                                (DungeonNodeID.TRF1FourTorchRoom, RequirementType.FireRod)
+                            });
+                        break;
+                    case DungeonNodeID.TRF1FirstKeyDoorArea:
+                        ExpectedConnectionValue.Add(id,
+                            new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
+                            {
+                                (DungeonNodeID.TRF1SomariaTrack, RequirementType.NoRequirement)
+                            });
+                        ExpectedKeyDoorValues.Add(id,
+                            new List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>
+                            {
+                                (DungeonNodeID.TRF1PastFirstKeyDoor, KeyDoorID.TR1FFirstKeyDoor)
+                            });
+                        break;
+                    case DungeonNodeID.TRF1FirstKeyDoor:
+                        ExpectedConnectionValue.Add(id,
+                            new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
+                            {
+                                (DungeonNodeID.TRF1FirstKeyDoorArea, RequirementType.NoRequirement),
+                                (DungeonNodeID.TRF1PastFirstKeyDoor, RequirementType.NoRequirement)
+                            });
+                        break;
+                    case DungeonNodeID.TRF1PastFirstKeyDoor:
+                        ExpectedKeyDoorValues.Add(id,
+                            new List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>
+                            {
+                                (DungeonNodeID.TRF1FirstKeyDoorArea, KeyDoorID.TR1FFirstKeyDoor),
+                                (DungeonNodeID.TRF1PastSecondKeyDoor, KeyDoorID.TR1FSecondKeyDoor)
+                            });
+                        break;
+                    case DungeonNodeID.TRF1SecondKeyDoor:
+                        ExpectedConnectionValue.Add(id,
+                            new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
+                            {
+                                (DungeonNodeID.TRF1PastFirstKeyDoor, RequirementType.NoRequirement),
+                                (DungeonNodeID.TRF1PastSecondKeyDoor, RequirementType.NoRequirement)
+                            });
+                        break;
+                    case DungeonNodeID.TRF1PastSecondKeyDoor:
+                        ExpectedConnectionValue.Add(id,
+                            new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
+                            {
+                                (DungeonNodeID.TRB1, RequirementType.NoRequirement)
+                            });
+                        ExpectedKeyDoorValues.Add(id,
+                            new List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>
+                            {
+                                (DungeonNodeID.TRF1PastFirstKeyDoor, KeyDoorID.TR1FSecondKeyDoor)
+                            });
+                        break;
+                    case DungeonNodeID.TRB1:
+                        ExpectedEntryValues.Add(id, OverworldNodeID.TRMiddleEntry);
+                        ExpectedConnectionValue.Add(id,
+                            new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
+                            {
+                                (DungeonNodeID.TRB1BigChestArea, RequirementType.NoRequirement)
+                            });
+                        ExpectedKeyDoorValues.Add(id,
+                            new List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>
+                            {
+                                (DungeonNodeID.TRF1PastSecondKeyDoor, KeyDoorID.TR1FThirdKeyDoor),
+                                (DungeonNodeID.TRB1RightSide, KeyDoorID.TRB1BigKeyDoor),
+                                (DungeonNodeID.TRB1PastBigKeyChestKeyDoor, KeyDoorID.TRB1BigKeyChestKeyDoor)
+                            });
+                        break;
+                    case DungeonNodeID.TRB1BigKeyChestKeyDoor:
+                        ExpectedConnectionValue.Add(id,
+                            new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
+                            {
+                                (DungeonNodeID.TRB1, RequirementType.NoRequirement),
+                                (DungeonNodeID.TRB1PastBigKeyChestKeyDoor, RequirementType.NoRequirement)
+                            });
+                        break;
+                    case DungeonNodeID.TRB1PastBigKeyChestKeyDoor:
+                        ExpectedKeyDoorValues.Add(id,
+                            new List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>
+                            {
+                                (DungeonNodeID.TRB1, KeyDoorID.TRB1BigKeyChestKeyDoor)
+                            });
+                        break;
+                    case DungeonNodeID.TRB1MiddleRightEntranceArea:
+                        ExpectedEntryValues.Add(id, OverworldNodeID.TRMiddleEntry);
+                        ExpectedConnectionValue.Add(id,
+                            new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
+                            {
+                                (DungeonNodeID.TRB1, RequirementType.NoRequirement)
+                            });
+                        break;
+                    case DungeonNodeID.TRB1BigChestArea:
+                        ExpectedConnectionValue.Add(id,
+                            new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
+                            {
+                                (DungeonNodeID.TRB1MiddleRightEntranceArea, RequirementType.Hookshot),
+                                (DungeonNodeID.TRB1MiddleRightEntranceArea, RequirementType.CaneOfSomaria),
+                                (DungeonNodeID.TRB1MiddleRightEntranceArea, RequirementType.Hover)
+                            });
+                        break;
+                    case DungeonNodeID.TRBigChest:
+                        ExpectedKeyDoorValues.Add(id,
+                            new List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>
+                            {
+                                (DungeonNodeID.TRB1BigChestArea, KeyDoorID.TRBigChest)
+                            });
+                        break;
+                    case DungeonNodeID.TRB1BigKeyDoor:
+                        ExpectedConnectionValue.Add(id,
+                            new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
+                            {
+                                (DungeonNodeID.TRB1, RequirementType.NoRequirement),
+                                (DungeonNodeID.TRB1RightSide, RequirementType.NoRequirement)
+                            });
+                        break;
+                    case DungeonNodeID.TRB1RightSide:
+                        ExpectedConnectionValue.Add(id,
+                            new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
+                            {
+                                (DungeonNodeID.TRPastB1ToB2KeyDoor, RequirementType.NoRequirement)
+                            });
+                        ExpectedKeyDoorValues.Add(id,
+                            new List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>
+                            {
+                                (DungeonNodeID.TRB1, KeyDoorID.TRB1BigKeyDoor)
+                            });
+                        break;
+                    case DungeonNodeID.TRPastB1ToB2KeyDoor:
+                        ExpectedConnectionValue.Add(id,
+                            new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
+                            {
+                                (DungeonNodeID.TRB2DarkRoomTop, RequirementType.NoRequirement)
+                            });
+                        ExpectedKeyDoorValues.Add(id,
+                            new List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>
+                            {
+                                (DungeonNodeID.TRB1RightSide, KeyDoorID.TRB1ToB2KeyDoor)
+                            });
+                        break;
+                    case DungeonNodeID.TRB2DarkRoomTop:
+                        ExpectedConnectionValue.Add(id,
+                            new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
+                            {
+                                (DungeonNodeID.TRPastB1ToB2KeyDoor, RequirementType.DarkRoomTR),
+                                (DungeonNodeID.TRB2DarkRoomBottom, RequirementType.CaneOfSomaria)
+                            });
+                        break;
+                    case DungeonNodeID.TRB2DarkRoomBottom:
+                        ExpectedConnectionValue.Add(id,
+                            new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
+                            {
+                                (DungeonNodeID.TRB2DarkRoomTop, RequirementType.CaneOfSomaria),
+                                (DungeonNodeID.TRB2PastDarkMaze, RequirementType.DarkRoomTR)
+                            });
+                        break;
+                    case DungeonNodeID.TRB2PastDarkMaze:
+                        ExpectedEntryValues.Add(id, OverworldNodeID.TRBackEntry);
+                        ExpectedConnectionValue.Add(id,
+                            new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
+                            {
+                                (DungeonNodeID.TRB2DarkRoomBottom, RequirementType.NoRequirement)
+                            });
+                        ExpectedKeyDoorValues.Add(id,
+                            new List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>
+                            {
+                                (DungeonNodeID.TRB2PastKeyDoor, KeyDoorID.TRB2KeyDoor)
+                            });
+                        break;
+                    case DungeonNodeID.TRLaserBridgeChests:
+                        ExpectedConnectionValue.Add(id,
+                            new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
+                            {
+                                (DungeonNodeID.TRB2PastDarkMaze, RequirementType.LaserBridge)
+                            });
+                        break;
+                    case DungeonNodeID.TRB2KeyDoor:
+                        ExpectedConnectionValue.Add(id,
+                            new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
+                            {
+                                (DungeonNodeID.TRB2PastDarkMaze, RequirementType.NoRequirement),
+                                (DungeonNodeID.TRB2PastKeyDoor, RequirementType.NoRequirement)
+                            });
+                        break;
+                    case DungeonNodeID.TRB2PastKeyDoor:
+                        ExpectedKeyDoorValues.Add(id,
+                            new List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>
+                            {
+                                (DungeonNodeID.TRB2PastDarkMaze, KeyDoorID.TRB2KeyDoor)
+                            });
+                        break;
+                    case DungeonNodeID.TRB3:
+                        ExpectedConnectionValue.Add(id,
+                            new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
+                            {
+                                (DungeonNodeID.TRB2PastKeyDoor, RequirementType.NoRequirement)
+                            });
+                        break;
+                    case DungeonNodeID.TRB3BossRoomEntry:
+                        ExpectedConnectionValue.Add(id,
+                            new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
+                            {
+                                (DungeonNodeID.TRB3, RequirementType.CaneOfSomaria)
+                            });
+                        break;
+                    case DungeonNodeID.TRBossRoom:
+                        ExpectedKeyDoorValues.Add(id,
+                            new List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>
+                            {
+                                (DungeonNodeID.TRB3BossRoomEntry, KeyDoorID.TRBossRoomBigKeyDoor)
+                            });
+                        break;
+                    case DungeonNodeID.TRBoss:
+                        ExpectedConnectionValue.Add(id,
+                            new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
+                            {
+                                (DungeonNodeID.TRBossRoom, RequirementType.TRBoss)
+                            });
+                        break;
                 }
             }
         }
@@ -141,6 +388,15 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
 
             return (from id in ExpectedKeyDoorValues.Keys from value in ExpectedKeyDoorValues[id]
                 select new object[] {id, value.fromNodeID, value.keyDoor}).ToList();
+        }
+
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var sut = scope.Resolve<ITRDungeonNodeFactory>();
+            
+            Assert.NotNull(sut as TRDungeonNodeFactory);
         }
     }
 }

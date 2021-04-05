@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Dungeons.Mutable;
 using OpenTracker.Models.Dungeons.Nodes;
@@ -281,6 +282,15 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
 
             return (from id in ExpectedKeyDoorValues.Keys from value in ExpectedKeyDoorValues[id]
                 select new object[] {id, value.fromNodeID, value.keyDoor}).ToList();
+        }
+
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var sut = scope.Resolve<ISPDungeonNodeFactory>();
+            
+            Assert.NotNull(sut as SPDungeonNodeFactory);
         }
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Dungeons.Mutable;
 using OpenTracker.Models.Dungeons.Nodes;
@@ -62,6 +63,97 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
             {
                 switch (id)
                 {
+                case DungeonNodeID.TT:
+                    ExpectedEntryValues.Add(id, OverworldNodeID.TTEntry);
+                    ExpectedKeyDoorValues.Add(id,
+                        new List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>
+                        {
+                            (DungeonNodeID.TTPastBigKeyDoor, KeyDoorID.TTBigKeyDoor)
+                        });
+                    break;
+                case DungeonNodeID.TTBigKeyDoor:
+                    ExpectedConnectionValue.Add(id,
+                        new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
+                        {
+                            (DungeonNodeID.TT, RequirementType.NoRequirement),
+                            (DungeonNodeID.TTPastBigKeyDoor, RequirementType.NoRequirement)
+                        });
+                    break;
+                case DungeonNodeID.TTPastBigKeyDoor:
+                    ExpectedKeyDoorValues.Add(id,
+                        new List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>
+                        {
+                            (DungeonNodeID.TT, KeyDoorID.TTBigKeyDoor),
+                            (DungeonNodeID.TTPastFirstKeyDoor, KeyDoorID.TTFirstKeyDoor)
+                        });
+                    break;
+                case DungeonNodeID.TTFirstKeyDoor:
+                    ExpectedConnectionValue.Add(id,
+                        new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
+                        {
+                            (DungeonNodeID.TTPastBigKeyDoor, RequirementType.NoRequirement),
+                            (DungeonNodeID.TTPastFirstKeyDoor, RequirementType.NoRequirement)
+                        });
+                    break;
+                case DungeonNodeID.TTPastFirstKeyDoor:
+                    ExpectedKeyDoorValues.Add(id,
+                        new List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>
+                        {
+                            (DungeonNodeID.TTPastBigKeyDoor, KeyDoorID.TTFirstKeyDoor),
+                            (DungeonNodeID.TTPastBigChestRoomKeyDoor, KeyDoorID.TTBigChestKeyDoor)
+                        });
+                    break;
+                case DungeonNodeID.TTPastSecondKeyDoor:
+                    ExpectedKeyDoorValues.Add(id,
+                        new List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>
+                        {
+                            (DungeonNodeID.TTPastFirstKeyDoor, KeyDoorID.TTSecondKeyDoor)
+                        });
+                    break;
+                case DungeonNodeID.TTBigChestKeyDoor:
+                    ExpectedConnectionValue.Add(id,
+                        new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
+                        {
+                            (DungeonNodeID.TTPastFirstKeyDoor, RequirementType.NoRequirement),
+                            (DungeonNodeID.TTPastBigChestRoomKeyDoor, RequirementType.NoRequirement)
+                        });
+                    break;
+                case DungeonNodeID.TTPastBigChestRoomKeyDoor:
+                    ExpectedKeyDoorValues.Add(id,
+                        new List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>
+                        {
+                            (DungeonNodeID.TTPastFirstKeyDoor, KeyDoorID.TTBigChestKeyDoor)
+                        });
+                    break;
+                case DungeonNodeID.TTPastHammerBlocks:
+                    ExpectedConnectionValue.Add(id,
+                        new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
+                        {
+                            (DungeonNodeID.TTPastBigChestRoomKeyDoor, RequirementType.Hammer)
+                        });
+                    break;
+                case DungeonNodeID.TTBigChest:
+                    ExpectedKeyDoorValues.Add(id,
+                        new List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>
+                        {
+                            (DungeonNodeID.TTPastHammerBlocks, KeyDoorID.TTBigChest)
+                        });
+                    break;
+                case DungeonNodeID.TTBossRoom:
+                    ExpectedConnectionValue.Add(id,
+                        new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
+                        {
+                            (DungeonNodeID.TTPastBigKeyDoor, RequirementType.BossShuffleOn),
+                            (DungeonNodeID.TTPastSecondKeyDoor, RequirementType.BossShuffleOff)
+                        });
+                    break;
+                case DungeonNodeID.TTBoss:
+                    ExpectedConnectionValue.Add(id,
+                        new List<(DungeonNodeID fromNodeID, RequirementType requirementType)>
+                        {
+                            (DungeonNodeID.TTBossRoom, RequirementType.TTBoss)
+                        });
+                    break;
                 }
             }
         }
@@ -141,6 +233,15 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
 
             return (from id in ExpectedKeyDoorValues.Keys from value in ExpectedKeyDoorValues[id]
                 select new object[] {id, value.fromNodeID, value.keyDoor}).ToList();
+        }
+
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var sut = scope.Resolve<ITTDungeonNodeFactory>();
+            
+            Assert.NotNull(sut as TTDungeonNodeFactory);
         }
     }
 }
