@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Dungeons.Items;
@@ -22,11 +23,16 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Items
         }
 
         [Fact]
-        public void Index_ShouldCreateAndReturnDungeonItem()
+        public void PopulateItems_ShouldCreateSpecifiedItems()
         {
-            var dungeonItem = _sut[DungeonItemID.ATBoss];
+            var items = new List<DungeonItemID>
+            {
+                DungeonItemID.ATBoss
+            };
             
-            Assert.Equal(_dungeonItem, dungeonItem);
+            _sut.PopulateItems(items);
+
+            Assert.Contains(DungeonItemID.ATBoss, _sut.Keys);
         }
     
         [Fact]

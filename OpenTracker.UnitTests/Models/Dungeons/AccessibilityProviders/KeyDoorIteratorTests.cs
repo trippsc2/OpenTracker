@@ -4,10 +4,10 @@ using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.Dungeons.AccessibilityProvider;
+using OpenTracker.Models.Dungeons.KeyDoors;
 using OpenTracker.Models.Dungeons.Mutable;
 using OpenTracker.Models.Dungeons.State;
 using OpenTracker.Models.Items.Keys;
-using OpenTracker.Models.KeyDoors;
 using OpenTracker.Utils;
 using Xunit;
 

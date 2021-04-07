@@ -21,21 +21,6 @@ namespace OpenTracker.Models.Items.Factories
             _factory = factory;
         }
 
-        /// <summary>
-        ///     Returns a new item.
-        /// </summary>
-        /// <param name="type">
-        ///     The item type.
-        /// </param>
-        /// <param name="starting">
-        ///     A 32-bit signed integer representing the starting value.
-        /// </param>
-        /// <param name="autoTrackValue">
-        ///     The auto-track value for the item.
-        /// </param>
-        /// <returns>
-        ///     A new item.
-        /// </returns>
         public IItem GetItem(ItemType type, int starting, IAutoTrackValue? autoTrackValue)
         {
             return _factory(starting, GetItemMaximum(type), autoTrackValue);

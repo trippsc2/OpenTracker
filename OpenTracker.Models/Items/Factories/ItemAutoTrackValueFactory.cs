@@ -9,7 +9,7 @@ using OpenTracker.Models.Requirements;
 namespace OpenTracker.Models.Items.Factories
 {
     /// <summary>
-    /// This class contains creation logic for item auto-track values.
+    ///     This class contains creation logic for item auto-track values.
     /// </summary>
     public class ItemAutoTrackValueFactory : IItemAutoTrackValueFactory
     {
@@ -28,48 +28,6 @@ namespace OpenTracker.Models.Items.Factories
         private readonly IAutoTrackStaticValue.Factory _staticFactory;
         private readonly IMemoryFlag.Factory _memoryFlagFactory;
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="items">
-        /// The item dictionary.
-        /// </param>
-        /// <param name="memoryAddressProvider">
-        /// The memory address provider.
-        /// </param>
-        /// <param name="requirements">
-        /// The requirement dictionary.
-        /// </param>
-        /// <param name="boolFactory">
-        /// An Autofac factory for creating boolean auto-track values.
-        /// </param>
-        /// <param name="valueFactory">
-        /// An Autofac factory for creating address auto-track values.
-        /// </param>
-        /// <param name="conditionalFactory">
-        /// An Autofac factory for creating conditional auto-track values.
-        /// </param>
-        /// <param name="flagBoolFactory">
-        /// An Autofac factory for creating boolean memory flag auto-track values.
-        /// </param>
-        /// <param name="itemValueFactory">
-        /// An Autofac factory for creating item auto-track values.
-        /// </param>
-        /// <param name="differenceFactory">
-        /// An Autofac factory for creating difference auto-track values.
-        /// </param>
-        /// <param name="overrideFactory">
-        /// An Autofac factory for creating override auto-track values.
-        /// </param>
-        /// <param name="sumFactory">
-        /// An Autofac factory for creating sum auto-track values.
-        /// </param>
-        /// <param name="staticFactory">
-        /// An Autofac factory for creating static auto track values.
-        /// </param>
-        /// <param name="memoryFlagFactory">
-        /// An Autofac factory for creating memory flags.
-        /// </param>
         public ItemAutoTrackValueFactory(
             IItemDictionary items, IMemoryAddressProvider memoryAddressProvider, IRequirementDictionary requirements,
             IAutoTrackAddressBool.Factory boolFactory, IAutoTrackAddressValue.Factory valueFactory,
@@ -94,15 +52,6 @@ namespace OpenTracker.Models.Items.Factories
             _memoryFlagFactory = memoryFlagFactory;
         }
 
-        /// <summary>
-        /// Returns the auto-tracking value for the specified item.
-        /// </summary>
-        /// <param name="type">
-        /// The item type.
-        /// </param>
-        /// <returns>
-        /// The auto-tracking value for the specified item.
-        /// </returns>
         public IAutoTrackValue? GetAutoTrackValue(ItemType type)
         {
             return type switch

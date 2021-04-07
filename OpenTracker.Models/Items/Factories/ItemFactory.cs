@@ -3,7 +3,7 @@
 namespace OpenTracker.Models.Items.Factories
 {
     /// <summary>
-    /// This class contains creation logic for item data.
+    ///     This class contains creation logic for item data.
     /// </summary>
     public class ItemFactory : IItemFactory
     {
@@ -46,29 +46,6 @@ namespace OpenTracker.Models.Items.Factories
             _crystalRequirementFactory = crystalRequirementFactory;
         }
 
-        /// <summary>
-        /// Returns the starting amount of the item.
-        /// </summary>
-        /// <param name="type">
-        /// The type of item.
-        /// </param>
-        /// <returns>
-        /// A 32-bit integer representing the starting amount of the item.
-        /// </returns>
-        private static int GetItemStarting(ItemType type)
-        {
-            return type == ItemType.Sword ? 1 : 0;
-        }
-
-        /// <summary>
-        ///     Returns a new item.
-        /// </summary>
-        /// <param name="type">
-        ///     The item type.
-        /// </param>
-        /// <returns>
-        ///     A new item.
-        /// </returns>
         public IItem GetItem(ItemType type)
         {
             var starting = GetItemStarting(type);
@@ -196,6 +173,20 @@ namespace OpenTracker.Models.Items.Factories
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
+        }
+
+        /// <summary>
+        ///     Returns the starting amount of the item.
+        /// </summary>
+        /// <param name="type">
+        ///     The item type.
+        /// </param>
+        /// <returns>
+        ///     A 32-bit integer representing the starting amount of the item.
+        /// </returns>
+        private static int GetItemStarting(ItemType type)
+        {
+            return type == ItemType.Sword ? 1 : 0;
         }
     }
 }

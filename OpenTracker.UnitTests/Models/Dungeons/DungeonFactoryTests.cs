@@ -5,11 +5,11 @@ using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.Dungeons.Items;
+using OpenTracker.Models.Dungeons.KeyDoors;
 using OpenTracker.Models.Dungeons.Nodes;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Items.Factories;
 using OpenTracker.Models.Items.Keys;
-using OpenTracker.Models.KeyDoors;
 using OpenTracker.Models.Nodes;
 using Xunit;
 

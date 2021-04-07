@@ -1,4 +1,4 @@
-using OpenTracker.Models.KeyDoors;
+using OpenTracker.Models.Dungeons.KeyDoors;
 
 namespace OpenTracker.Models.Requirements.KeyDoor
 {

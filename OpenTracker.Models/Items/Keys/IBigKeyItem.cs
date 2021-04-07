@@ -9,14 +9,6 @@ namespace OpenTracker.Models.Items.Keys
     public interface IBigKeyItem : ICappedItem
     {
         /// <summary>
-        ///     Returns a list of possible key values.
-        /// </summary>
-        /// <returns>
-        ///     A list of possible big key values.
-        /// </returns>
-        IList<bool> GetKeyValues();
-
-        /// <summary>
         ///     A factory for creating big key items.
         /// </summary>
         /// <param name="nonKeyDropMaximum">
@@ -32,5 +24,13 @@ namespace OpenTracker.Models.Items.Keys
         ///     A new big key item.
         /// </returns>
         delegate IBigKeyItem Factory(int nonKeyDropMaximum, int keyDropMaximum, IAutoTrackValue? autoTrackValue);
+        
+        /// <summary>
+        ///     Returns a list of possible key values.
+        /// </summary>
+        /// <returns>
+        ///     A list of possible big key values.
+        /// </returns>
+        IList<bool> GetKeyValues();
     }
 }

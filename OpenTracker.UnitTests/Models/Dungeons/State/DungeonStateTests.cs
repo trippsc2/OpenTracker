@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using NSubstitute;
+using OpenTracker.Models.Dungeons.KeyDoors;
 using OpenTracker.Models.Dungeons.State;
-using OpenTracker.Models.KeyDoors;
 using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Dungeons.State

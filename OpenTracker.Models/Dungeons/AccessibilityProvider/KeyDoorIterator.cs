@@ -2,10 +2,10 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using OpenTracker.Models.Dungeons.KeyDoors;
 using OpenTracker.Models.Dungeons.Mutable;
 using OpenTracker.Models.Dungeons.State;
 using OpenTracker.Models.Items.Keys;
-using OpenTracker.Models.KeyDoors;
 using OpenTracker.Utils;
 
 namespace OpenTracker.Models.Dungeons.AccessibilityProvider

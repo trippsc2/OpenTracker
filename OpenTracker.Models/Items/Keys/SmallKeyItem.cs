@@ -174,14 +174,12 @@ namespace OpenTracker.Models.Items.Keys
             switch (e.PropertyName)
             {
                 case nameof(IMode.KeyDropShuffle):
-                {
                     if (Current > Maximum)
                     {
                         Current = Maximum;
                     }
 
                     this.RaisePropertyChanged(nameof(Maximum));
-                }
                     break;
                 case nameof(IMode.GenericKeys):
                     UpdateEffectiveCurrent();

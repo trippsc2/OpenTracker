@@ -4,13 +4,13 @@ using NSubstitute;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.Dungeons.Items;
+using OpenTracker.Models.Dungeons.KeyDoors;
+using OpenTracker.Models.Dungeons.KeyLayouts;
 using OpenTracker.Models.Dungeons.Mutable;
 using OpenTracker.Models.Dungeons.Nodes;
 using OpenTracker.Models.Dungeons.Result;
 using OpenTracker.Models.Dungeons.State;
 using OpenTracker.Models.Items.Keys;
-using OpenTracker.Models.KeyDoors;
-using OpenTracker.Models.KeyLayouts;
 using OpenTracker.Models.Modes;
 using Xunit;
 
@@ -35,7 +35,7 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Mutable
 
         public MutableDungeonTests()
         {
-            _keyDoorFactory.GetKeyDoor(Arg.Any<IMutableDungeon>()).Returns(
+            _keyDoorFactory.GetKeyDoor(Arg.Any<KeyDoorID>(), Arg.Any<IMutableDungeon>()).Returns(
                 _ => Substitute.For<IKeyDoor>());
             _keyDoors = dungeonData => new KeyDoorDictionary(() => _keyDoorFactory, dungeonData);
 

@@ -8,7 +8,7 @@ namespace OpenTracker.Models.Items.Factories
     public interface IKeyItemFactory
     {
         /// <summary>
-        /// Returns a new key item.
+        ///     Returns a new key item.
         /// </summary>
         /// <param name="type">
         ///     The item type.
