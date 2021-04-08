@@ -1,4 +1,5 @@
 using System;
+using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.Dungeons.KeyLayouts.Factories;
@@ -81,6 +82,15 @@ namespace OpenTracker.UnitTests.Models.Dungeons.KeyLayouts.Factories
             _sut.GetDungeonKeyLayouts(dungeon);
 
             factory.Received().GetDungeonKeyLayouts(dungeon);
+        }
+
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var sut = scope.Resolve<IKeyLayoutFactory>();
+            
+            Assert.NotNull(sut as KeyLayoutFactory);
         }
     }
 }
