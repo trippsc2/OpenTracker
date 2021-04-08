@@ -61,16 +61,18 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts
             }
 
             var inaccessibleCount = _smallKeyLocations.Count(inaccessible.Contains);
-
+            var inaccessibleWithoutBigKey = inaccessibleCount;
+            
             if (_bigKeyInLocations && !state.BigKeyCollected)
             {
-                inaccessibleCount--;
+                inaccessibleWithoutBigKey--;
             }
 
             var dungeonSmallKeys = _dungeon.SmallKey.Maximum;
 
-            return ValidateMinimumKeyCount(state.KeysCollected, inaccessibleCount) &&
-                   ValidateMaximumKeyCount(dungeonSmallKeys, state.KeysCollected, inaccessibleCount) &&
+            return ValidateMinimumKeyCount(state.KeysCollected, inaccessibleWithoutBigKey) &&
+                   ValidateMaximumKeyCount(
+                       dungeonSmallKeys, state.KeysCollected, state.BigKeyCollected, inaccessibleCount) &&
                    _children.Any(child => child.CanBeTrue(inaccessible, accessible, state));
         }
 
@@ -100,15 +102,25 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts
         /// <param name="collectedKeys">
         ///     A 32-bit signed integer representing the number of small keys collected.
         /// </param>
+        /// <param name="bigKeyCollected">
+        ///     A boolean representing whether the big key has been collected.
+        /// </param>
         /// <param name="inaccessible">
         ///     A 32-bit signed integer representing the number of inaccessible locations.
         /// </param>
         /// <returns>
         ///     A boolean representing whether the key layout is possible.
         /// </returns>
-        private bool ValidateMaximumKeyCount(int dungeonKeys, int collectedKeys, int inaccessible)
+        private bool ValidateMaximumKeyCount(int dungeonKeys, int collectedKeys, bool bigKeyCollected, int inaccessible)
         {
-            return collectedKeys <= dungeonKeys - Math.Max(0, inaccessible - (_smallKeyLocations.Count - _count));
+            var locationCount = _smallKeyLocations.Count;
+
+            if (_bigKeyInLocations && bigKeyCollected)
+            {
+                locationCount--;
+            }
+            
+            return collectedKeys <= dungeonKeys - Math.Max(0, inaccessible - (locationCount - _count));
         }
     }
 }
