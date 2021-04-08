@@ -5,34 +5,34 @@ using OpenTracker.Models.Requirements;
 namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
 {
     /// <summary>
-    /// This class contains the creation logic for Palace of Darkness key layouts.
+    ///     This class contains the creation logic for Palace of Darkness key layouts.
     /// </summary>
     public class PoDKeyLayoutFactory : IPoDKeyLayoutFactory
     {
         private readonly IRequirementDictionary _requirements;
         
-        private readonly BigKeyLayout.Factory _bigKeyFactory;
-        private readonly EndKeyLayout.Factory _endFactory;
-        private readonly SmallKeyLayout.Factory _smallKeyFactory;
+        private readonly IBigKeyLayout.Factory _bigKeyFactory;
+        private readonly IEndKeyLayout.Factory _endFactory;
+        private readonly ISmallKeyLayout.Factory _smallKeyFactory;
 
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="requirements">
-        /// The requirement dictionary.
+        ///     The requirement dictionary.
         /// </param>
         /// <param name="bigKeyFactory">
-        /// An Autofac factory for creating big key layouts.
+        ///     An Autofac factory for creating big key layouts.
         /// </param>
         /// <param name="endFactory">
-        /// An Autofac factory for ending key layouts.
+        ///     An Autofac factory for ending key layouts.
         /// </param>
         /// <param name="smallKeyFactory">
-        /// An Autofac factory for creating small key layouts.
+        ///     An Autofac factory for creating small key layouts.
         /// </param>
         public PoDKeyLayoutFactory(
-            IRequirementDictionary requirements, BigKeyLayout.Factory bigKeyFactory, EndKeyLayout.Factory endFactory,
-            SmallKeyLayout.Factory smallKeyFactory)
+            IRequirementDictionary requirements, IBigKeyLayout.Factory bigKeyFactory, IEndKeyLayout.Factory endFactory,
+            ISmallKeyLayout.Factory smallKeyFactory)
         {
             _requirements = requirements;
             

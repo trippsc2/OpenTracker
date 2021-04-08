@@ -12,9 +12,9 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
     {
         private readonly IRequirementDictionary _requirements;
         
-        private readonly BigKeyLayout.Factory _bigKeyFactory;
-        private readonly EndKeyLayout.Factory _endFactory;
-        private readonly SmallKeyLayout.Factory _smallKeyFactory;
+        private readonly IBigKeyLayout.Factory _bigKeyFactory;
+        private readonly IEndKeyLayout.Factory _endFactory;
+        private readonly ISmallKeyLayout.Factory _smallKeyFactory;
         private readonly AlternativeRequirement.Factory _alternativeFactory;
 
         /// <summary>
@@ -36,8 +36,8 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
         /// An Autofac factory for creating an alternative requirement.
         /// </param>
         public EPKeyLayoutFactory(
-            IRequirementDictionary requirements, BigKeyLayout.Factory bigKeyFactory, EndKeyLayout.Factory endFactory,
-            SmallKeyLayout.Factory smallKeyFactory, AlternativeRequirement.Factory alternativeFactory)
+            IRequirementDictionary requirements, IBigKeyLayout.Factory bigKeyFactory, IEndKeyLayout.Factory endFactory,
+            ISmallKeyLayout.Factory smallKeyFactory, AlternativeRequirement.Factory alternativeFactory)
         {
             _requirements = requirements;
             

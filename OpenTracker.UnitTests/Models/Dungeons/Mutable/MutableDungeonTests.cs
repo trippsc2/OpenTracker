@@ -372,10 +372,12 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Mutable
                 Substitute.For<IKeyLayout>()
             };
 
-            keyLayouts[0].CanBeTrue(Arg.Any<IMutableDungeon>(), Arg.Any<IDungeonState>())
-                .Returns(firstKeyLayoutCanBeTrue);
-            keyLayouts[1].CanBeTrue(Arg.Any<IMutableDungeon>(), Arg.Any<IDungeonState>())
-                .Returns(secondKeyLayoutCanBeTrue);
+            keyLayouts[0].CanBeTrue(
+                    Arg.Any<IList<DungeonItemID>>(), Arg.Any<IList<DungeonItemID>>(),
+                    Arg.Any<IDungeonState>()).Returns(firstKeyLayoutCanBeTrue);
+            keyLayouts[1].CanBeTrue(
+                    Arg.Any<IList<DungeonItemID>>(), Arg.Any<IList<DungeonItemID>>(),
+                    Arg.Any<IDungeonState>()).Returns(secondKeyLayoutCanBeTrue);
 
             _dungeon.KeyLayouts.Returns(keyLayouts);
             

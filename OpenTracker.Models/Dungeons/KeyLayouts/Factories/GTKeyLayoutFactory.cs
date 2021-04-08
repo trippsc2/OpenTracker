@@ -11,9 +11,9 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
     {
         private readonly IRequirementDictionary _requirements;
         
-        private readonly BigKeyLayout.Factory _bigKeyFactory;
-        private readonly EndKeyLayout.Factory _endFactory;
-        private readonly SmallKeyLayout.Factory _smallKeyFactory;
+        private readonly IBigKeyLayout.Factory _bigKeyFactory;
+        private readonly IEndKeyLayout.Factory _endFactory;
+        private readonly ISmallKeyLayout.Factory _smallKeyFactory;
 
         /// <summary>
         /// Constructor
@@ -31,8 +31,8 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
         /// An Autofac factory for creating small key layouts.
         /// </param>
         public GTKeyLayoutFactory(
-            IRequirementDictionary requirements, BigKeyLayout.Factory bigKeyFactory, EndKeyLayout.Factory endFactory,
-            SmallKeyLayout.Factory smallKeyFactory)
+            IRequirementDictionary requirements, IBigKeyLayout.Factory bigKeyFactory, IEndKeyLayout.Factory endFactory,
+            ISmallKeyLayout.Factory smallKeyFactory)
         {
             _requirements = requirements;
             

@@ -191,7 +191,37 @@ namespace OpenTracker.Models.Dungeons.Mutable
 
         public bool ValidateKeyLayout(IDungeonState state)
         {
-            return _dungeon.KeyLayouts.Any(keyLayout => keyLayout.CanBeTrue(this, state));
+            List<DungeonItemID> inaccessible = new();
+            List<DungeonItemID> accessible = new();
+            
+            PopulateItemAccessibility(state, _dungeon.DungeonItems, inaccessible, accessible);
+
+            if (_mode.KeyDropShuffle)
+            {
+                PopulateItemAccessibility(state, _dungeon.SmallKeyDrops, inaccessible, accessible);
+                PopulateItemAccessibility(state, _dungeon.BigKeyDrops, inaccessible, accessible);
+            }
+            
+            return _dungeon.KeyLayouts.Any(keyLayout => keyLayout.CanBeTrue(inaccessible, accessible, state));
+        }
+
+        private void PopulateItemAccessibility(
+            IDungeonState state, IList<DungeonItemID> items, List<DungeonItemID> inaccessible,
+            List<DungeonItemID> accessible)
+        {
+            foreach (var id in items)
+            {
+                switch (DungeonItems[id].Accessibility)
+                {
+                    case AccessibilityLevel.SequenceBreak when state.SequenceBreak:
+                    case AccessibilityLevel.Normal:
+                        accessible.Add(id);
+                        break;
+                    default:
+                        inaccessible.Add(id);
+                        break;
+                }
+            }
         }
 
         public IDungeonResult GetDungeonResult(IDungeonState state)

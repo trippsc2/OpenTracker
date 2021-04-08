@@ -14,7 +14,6 @@ using OpenTracker.Models.Dropdowns;
 using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.Dungeons.Items;
 using OpenTracker.Models.Dungeons.KeyDoors;
-using OpenTracker.Models.Dungeons.KeyLayouts;
 using OpenTracker.Models.Dungeons.KeyLayouts.Factories;
 using OpenTracker.Models.Dungeons.Nodes.Factories;
 using OpenTracker.Models.Items;
@@ -92,9 +91,6 @@ namespace OpenTracker
 
         private static List<string> ModelsSelfTypes => new()
         {
-            nameof(BigKeyLayout),
-            nameof(EndKeyLayout),
-            nameof(SmallKeyLayout),
             nameof(AggregateRequirement),
             nameof(AlternativeRequirement),
             nameof(BigKeyShuffleRequirement),

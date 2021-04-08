@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
 {
     /// <summary>
-    /// This class contains creation logic for key layout data.
+    ///     This class contains creation logic for key layout data.
     /// </summary>
     public class KeyLayoutFactory : IKeyLayoutFactory
     {
@@ -23,8 +23,47 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
         private readonly IGTKeyLayoutFactory _gtFactory;
 
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
+        /// <param name="hcFactory">
+        ///     A factory for creating Hyrule Castle key layouts.
+        /// </param>
+        /// <param name="atFactory">
+        ///     A factory for creating Agahnim's Tower key layouts.
+        /// </param>
+        /// <param name="epFactory">
+        ///     A factory for creating Eastern Palace key layouts.
+        /// </param>
+        /// <param name="dpFactory">
+        ///     A factory for creating Desert Palace key layouts.
+        /// </param>
+        /// <param name="tohFactory">
+        ///     A factory for creating Tower of Hera key layouts.
+        /// </param>
+        /// <param name="podFactory">
+        ///     A factory for creating Palace of Darkness key layouts.
+        /// </param>
+        /// <param name="spFactory">
+        ///     A factory for creating Swamp Palace key layouts.
+        /// </param>
+        /// <param name="swFactory">
+        ///     A factory for creating Skull Woods key layouts.
+        /// </param>
+        /// <param name="ttFactory">
+        ///     A factory for creating Thieves' Town key layouts.
+        /// </param>
+        /// <param name="ipFactory">
+        ///     A factory for creating Ice Palace key layouts.
+        /// </param>
+        /// <param name="mmFactory">
+        ///     A factory for creating Misery Mire key layouts.
+        /// </param>
+        /// <param name="trFactory">
+        ///     A factory for creating Turtle Rock key layouts.
+        /// </param>
+        /// <param name="gtFactory">
+        ///     A factory for creating Ganon's Tower key layouts.
+        /// </param>
         public KeyLayoutFactory(
             IHCKeyLayoutFactory hcFactory, IATKeyLayoutFactory atFactory, IEPKeyLayoutFactory epFactory,
             IDPKeyLayoutFactory dpFactory, IToHKeyLayoutFactory tohFactory, IPoDKeyLayoutFactory podFactory,
@@ -47,15 +86,6 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
             _gtFactory = gtFactory;
         }
 
-        /// <summary>
-        /// Returns the list of key layouts for the specified dungeon.
-        /// </summary>
-        /// <param name="dungeon">
-        /// The dungeon parent class.
-        /// </param>
-        /// <returns>
-        /// The list of key layouts.
-        /// </returns>
         public IList<IKeyLayout> GetDungeonKeyLayouts(IDungeon dungeon)
         {
             return dungeon.ID switch
