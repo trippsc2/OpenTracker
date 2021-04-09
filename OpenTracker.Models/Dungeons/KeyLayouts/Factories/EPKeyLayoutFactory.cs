@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using OpenTracker.Models.Dungeons.Items;
 using OpenTracker.Models.Requirements;
-using OpenTracker.Models.Requirements.Multiple;
+using OpenTracker.Models.Requirements.Alternative;
 
 namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
 {
@@ -15,7 +15,7 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
         private readonly IBigKeyLayout.Factory _bigKeyFactory;
         private readonly IEndKeyLayout.Factory _endFactory;
         private readonly ISmallKeyLayout.Factory _smallKeyFactory;
-        private readonly AlternativeRequirement.Factory _alternativeFactory;
+        private readonly IAlternativeRequirement.Factory _alternativeFactory;
 
         /// <summary>
         /// Constructor
@@ -37,7 +37,7 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
         /// </param>
         public EPKeyLayoutFactory(
             IRequirementDictionary requirements, IBigKeyLayout.Factory bigKeyFactory, IEndKeyLayout.Factory endFactory,
-            ISmallKeyLayout.Factory smallKeyFactory, AlternativeRequirement.Factory alternativeFactory)
+            ISmallKeyLayout.Factory smallKeyFactory, IAlternativeRequirement.Factory alternativeFactory)
         {
             _requirements = requirements;
             

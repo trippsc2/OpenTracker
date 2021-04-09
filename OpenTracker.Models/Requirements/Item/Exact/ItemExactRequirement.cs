@@ -1,14 +1,15 @@
-﻿using System.ComponentModel;
-using OpenTracker.Models.Items.Keys;
+﻿using System;
+using System.ComponentModel;
+using OpenTracker.Models.Items;
 
-namespace OpenTracker.Models.Requirements.Item
+namespace OpenTracker.Models.Requirements.Item.Exact
 {
     /// <summary>
-    /// This class contains small key requirement data.
+    /// This class contains item exact value requirement data.
     /// </summary>
-    public class SmallKeyRequirement : BooleanRequirement, ISmallKeyRequirement
+    public class ItemExactRequirement : BooleanRequirement, IItemExactRequirement
     {
-        private readonly ISmallKeyItem _item;
+        private readonly IItem _item;
         private readonly int _count;
 
         /// <summary>
@@ -20,16 +21,16 @@ namespace OpenTracker.Models.Requirements.Item
         /// <param name="count">
         /// A 32-bit integer representing the number of the item required.
         /// </param>
-        public SmallKeyRequirement(ISmallKeyItem item, int count = 1)
+        public ItemExactRequirement(IItem item, int count)
         {
-            _item = item;
+            _item = item ?? throw new ArgumentNullException(nameof(item));
             _count = count;
 
-            UpdateValue();
-            
             _item.PropertyChanged += OnItemChanged;
+
+            UpdateValue();
         }
-        
+
         /// <summary>
         /// Subscribes to the PropertyChanged event on the IItem interface.
         /// </summary>
@@ -41,7 +42,7 @@ namespace OpenTracker.Models.Requirements.Item
         /// </param>
         private void OnItemChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(ISmallKeyItem.EffectiveCurrent))
+            if (e.PropertyName == nameof(IItem.Current))
             {
                 UpdateValue();
             }
@@ -49,7 +50,7 @@ namespace OpenTracker.Models.Requirements.Item
 
         protected override bool ConditionMet()
         {
-            return _item.EffectiveCurrent >= _count;
+            return _item.Current == _count;
         }
     }
 }

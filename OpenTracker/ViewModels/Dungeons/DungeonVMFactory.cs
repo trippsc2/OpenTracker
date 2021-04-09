@@ -5,7 +5,8 @@ using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Requirements;
-using OpenTracker.Models.Requirements.Multiple;
+using OpenTracker.Models.Requirements.Aggregate;
+using OpenTracker.Models.Requirements.Alternative;
 using OpenTracker.Models.Sections;
 using OpenTracker.ViewModels.Items;
 using OpenTracker.ViewModels.Items.Adapters;
@@ -18,8 +19,8 @@ namespace OpenTracker.ViewModels.Dungeons
         private readonly ILocationDictionary _locations;
         private readonly IRequirementDictionary _requirements;
 
-        private readonly AggregateRequirement.Factory _aggregateFactory;
-        private readonly AlternativeRequirement.Factory _alternativeFactory;
+        private readonly IAggregateRequirement.Factory _aggregateFactory;
+        private readonly IAlternativeRequirement.Factory _alternativeFactory;
         private readonly AlwaysDisplayDungeonItemsRequirement.Factory _alwaysDisplayFactory;
         private readonly DisplayMapsCompassesRequirement.Factory _displayMapsCompassesFactory;
         private readonly ItemsPanelOrientationRequirement.Factory _itemsPanelOrientationFactory;
@@ -35,7 +36,7 @@ namespace OpenTracker.ViewModels.Dungeons
 
         public DungeonVMFactory(
             IDungeonDictionary dungeons, ILocationDictionary locations, IRequirementDictionary requirements,
-            AggregateRequirement.Factory aggregateFactory, AlternativeRequirement.Factory alternativeFactory,
+            IAggregateRequirement.Factory aggregateFactory, IAlternativeRequirement.Factory alternativeFactory,
             AlwaysDisplayDungeonItemsRequirement.Factory alwaysDisplayFactory,
             DisplayMapsCompassesRequirement.Factory displayMapsCompassesFactory,
             ItemsPanelOrientationRequirement.Factory itemsPanelOrientationFactory,

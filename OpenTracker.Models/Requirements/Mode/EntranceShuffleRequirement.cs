@@ -4,23 +4,21 @@ using OpenTracker.Models.Modes;
 namespace OpenTracker.Models.Requirements.Mode
 {
     /// <summary>
-    /// This class contains entrance shuffle requirement data.
+    ///     This class contains entrance shuffle requirement data.
     /// </summary>
-    public class EntranceShuffleRequirement : BooleanRequirement
+    public class EntranceShuffleRequirement : BooleanRequirement, IEntranceShuffleRequirement
     {
         private readonly IMode _mode;
         private readonly EntranceShuffle _expectedValue;
 
-        public delegate EntranceShuffleRequirement Factory(EntranceShuffle expectedValue);
-
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="mode">
-        /// The mode settings.
+        ///     The mode settings.
         /// </param>
         /// <param name="expectedValue">
-        /// The required entrance shuffle value.
+        ///     The required entrance shuffle value.
         /// </param>
         public EntranceShuffleRequirement(IMode mode, EntranceShuffle expectedValue)
         {

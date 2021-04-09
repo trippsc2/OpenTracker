@@ -24,10 +24,15 @@ using OpenTracker.Models.Nodes;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.Prizes;
+using OpenTracker.Models.Requirements.Aggregate;
+using OpenTracker.Models.Requirements.Alternative;
+using OpenTracker.Models.Requirements.Item;
+using OpenTracker.Models.Requirements.Item.Crystal;
+using OpenTracker.Models.Requirements.Item.Exact;
+using OpenTracker.Models.Requirements.Item.SmallKey;
 using OpenTracker.Models.Requirements.Mode;
-using OpenTracker.Models.Requirements.Multiple;
-using OpenTracker.Models.Requirements.Node;
 using OpenTracker.Models.Requirements.SequenceBreak;
+using OpenTracker.Models.Requirements.SmallKeyShuffle;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.Sections;
 using OpenTracker.Models.SequenceBreaks;
@@ -91,24 +96,16 @@ namespace OpenTracker
 
         private static List<string> ModelsSelfTypes => new()
         {
-            nameof(AggregateRequirement),
-            nameof(AlternativeRequirement),
             nameof(BigKeyShuffleRequirement),
             nameof(BossShuffleRequirement),
             nameof(CompassShuffleRequirement),
             nameof(EnemyShuffleRequirement),
-            nameof(EntranceShuffleRequirement),
             nameof(GenericKeysRequirement),
             nameof(GuaranteedBossItemsRequirement),
             nameof(ItemPlacementRequirement),
-            nameof(KeyDropShuffleRequirement),
             nameof(MapShuffleRequirement),
             nameof(RaceIllegalTrackingRequirement),
-            nameof(NodeRequirement),
-            nameof(SequenceBreakRequirement),
             nameof(ShopShuffleRequirement),
-            nameof(SmallKeyShuffleRequirement),
-            nameof(StaticRequirement),
             nameof(TakeAnyLocationsRequirement),
             nameof(WorldStateRequirement),
             nameof(BossSection),
@@ -157,6 +154,15 @@ namespace OpenTracker
             nameof(PrizeDictionary),
             nameof(OverworldNodeDictionary),
             nameof(OverworldNodeFactory),
+            nameof(AggregateRequirementDictionary),
+            nameof(AlternativeRequirementDictionary),
+            nameof(EntranceShuffleRequirementDictionary),
+            nameof(CrystalRequirement),
+            nameof(ItemRequirementDictionary),
+            nameof(ItemExactRequirementDictionary),
+            nameof(SmallKeyRequirementDictionary),
+            nameof(SequenceBreakRequirementDictionary),
+            nameof(SmallKeyShuffleRequirementDictionary),
             nameof(RequirementDictionary),
             nameof(RequirementFactory),
             nameof(SaveLoadManager),

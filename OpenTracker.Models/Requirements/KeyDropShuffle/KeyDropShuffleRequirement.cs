@@ -1,28 +1,26 @@
 ﻿using System.ComponentModel;
 using OpenTracker.Models.Modes;
 
-namespace OpenTracker.Models.Requirements.Mode
+namespace OpenTracker.Models.Requirements.KeyDropShuffle
 {
     /// <summary>
-    /// This class contains small key shuffle requirement data.
+    ///     This class contains key drop shuffle setting requirement data.
     /// </summary>
-    public class SmallKeyShuffleRequirement : BooleanRequirement
+    public class KeyDropShuffleRequirement : BooleanRequirement, IKeyDropShuffleRequirement
     {
         private readonly IMode _mode;
         private readonly bool _expectedValue;
 
-        public delegate SmallKeyShuffleRequirement Factory(bool expectedValue);
-
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="mode">
-        /// The mode settings.
+        ///     The mode settings.
         /// </param>
         /// <param name="expectedValue">
-        /// A boolean expected small key shuffle value.
+        ///     A boolean expected key door shuffle value.
         /// </param>
-        public SmallKeyShuffleRequirement(IMode mode, bool expectedValue)
+        public KeyDropShuffleRequirement(IMode mode, bool expectedValue)
         {
             _mode = mode;
             _expectedValue = expectedValue;
@@ -33,17 +31,17 @@ namespace OpenTracker.Models.Requirements.Mode
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the IMode interface.
+        ///     Subscribes to the PropertyChanged event on the IMode interface.
         /// </summary>
         /// <param name="sender">
-        /// The sending object of the event.
+        ///     The sending object of the event.
         /// </param>
         /// <param name="e">
-        /// The arguments of the PropertyChanged event.
+        ///     The arguments of the PropertyChanged event.
         /// </param>
         private void OnModeChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(IMode.SmallKeyShuffle))
+            if (e.PropertyName == nameof(IMode.KeyDropShuffle))
             {
                 UpdateValue();
             }
@@ -51,7 +49,7 @@ namespace OpenTracker.Models.Requirements.Mode
 
         protected override bool ConditionMet()
         {
-            return _mode.SmallKeyShuffle == _expectedValue;
+            return _mode.KeyDropShuffle == _expectedValue;
         }
     }
 }

@@ -2,24 +2,22 @@
 using System.ComponentModel;
 using OpenTracker.Models.Accessibility;
 
-namespace OpenTracker.Models.Requirements.Multiple
+namespace OpenTracker.Models.Requirements.Aggregate
 {
     /// <summary>
-    /// This class contains logic for a set of requirement alternatives.
+    ///     This class contains logic aggregating a set of requirements.
     /// </summary>
-    public class AlternativeRequirement : AccessibilityRequirement
+    public class AggregateRequirement : AccessibilityRequirement, IAggregateRequirement
     {
-        private readonly List<IRequirement> _requirements;
-
-        public delegate AlternativeRequirement Factory(List<IRequirement> requirements);
+        private readonly IList<IRequirement> _requirements;
 
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="requirements">
-        /// A list of requirements to be aggregated.
+        ///     A list of requirements to be aggregated.
         /// </param>
-        public AlternativeRequirement(List<IRequirement> requirements)
+        public AggregateRequirement(IList<IRequirement> requirements)
         {
             _requirements = requirements;
 
@@ -32,13 +30,13 @@ namespace OpenTracker.Models.Requirements.Multiple
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the IRequirement interface.
+        ///     Subscribes to the PropertyChanged event on the IRequirement interface.
         /// </summary>
         /// <param name="sender">
-        /// The sending object of the event.
+        ///     The sending object of the event.
         /// </param>
         /// <param name="e">
-        /// The arguments of the PropertyChanged event.
+        ///     The arguments of the PropertyChanged event.
         /// </param>
         private void OnRequirementChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -50,13 +48,13 @@ namespace OpenTracker.Models.Requirements.Multiple
 
         protected override AccessibilityLevel GetAccessibility()
         {
-            var accessibility = AccessibilityLevel.None;
+            var accessibility = AccessibilityLevel.Normal;
 
             foreach (var requirement in _requirements)
             {
-                accessibility = AccessibilityLevelMethods.Max(accessibility, requirement.Accessibility);
+                accessibility = AccessibilityLevelMethods.Min(accessibility, requirement.Accessibility);
 
-                if (accessibility == AccessibilityLevel.Normal)
+                if (accessibility == AccessibilityLevel.None)
                 {
                     break;
                 }

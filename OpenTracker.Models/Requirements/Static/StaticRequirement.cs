@@ -2,12 +2,12 @@
 using OpenTracker.Models.Accessibility;
 using ReactiveUI;
 
-namespace OpenTracker.Models.Requirements
+namespace OpenTracker.Models.Requirements.Static
 {
     /// <summary>
-    /// This class contains unchanging requirement data.
+    ///     This class contains unchanging requirement data.
     /// </summary>
-    public class StaticRequirement : ReactiveObject, IRequirement
+    public class StaticRequirement : ReactiveObject, IStaticRequirement
     {
         public bool Met => true;
         
@@ -15,13 +15,11 @@ namespace OpenTracker.Models.Requirements
 
         public event EventHandler? ChangePropagated;
 
-        public delegate StaticRequirement Factory(AccessibilityLevel accessibility);
-
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="accessibility">
-        /// The accessibility level of the requirement.
+        ///     The accessibility level of the requirement.
         /// </param>
         public StaticRequirement(AccessibilityLevel accessibility)
         {

@@ -1,6 +1,11 @@
 using System.Collections.Generic;
+using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Dungeons.Items;
 using OpenTracker.Models.Requirements;
+using OpenTracker.Models.Requirements.Aggregate;
+using OpenTracker.Models.Requirements.KeyDropShuffle;
+using OpenTracker.Models.Requirements.SmallKeyShuffle;
+using OpenTracker.Models.Requirements.Static;
 
 namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
 {
@@ -9,7 +14,10 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
     /// </summary>
     public class ATKeyLayoutFactory : IATKeyLayoutFactory
     {
-        private readonly IRequirementDictionary _requirements;
+        private readonly IAggregateRequirementDictionary _aggregateRequirements;
+        private readonly IKeyDropShuffleRequirementDictionary _keyDropShuffleRequirements;
+        private readonly ISmallKeyShuffleRequirementDictionary _smallKeyShuffleRequirements;
+        private readonly IStaticRequirementDictionary _staticRequirements;
 
         private readonly IEndKeyLayout.Factory _endFactory;
         private readonly ISmallKeyLayout.Factory _smallKeyFactory;
@@ -17,8 +25,17 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
         /// <summary>
         ///     Constructor
         /// </summary>
-        /// <param name="requirements">
-        ///     The requirement dictionary.
+        /// <param name="aggregateRequirements">
+        ///     The aggregate requirement dictionary.
+        /// </param>
+        /// <param name="keyDropShuffleRequirements">
+        ///     The key drop shuffle requirement dictionary.
+        /// </param>
+        /// <param name="smallKeyShuffleRequirements">
+        ///     The small key shuffle requirement dictionary.
+        /// </param>
+        /// <param name="staticRequirements">
+        ///     The static requirement dictionary.
         /// </param>
         /// <param name="endFactory">
         ///     An Autofac factory for ending key layouts.
@@ -27,40 +44,53 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
         ///     An Autofac factory for creating small key layouts.
         /// </param>
         public ATKeyLayoutFactory(
-            IRequirementDictionary requirements, IEndKeyLayout.Factory endFactory,
+            IAggregateRequirementDictionary aggregateRequirements,
+            IKeyDropShuffleRequirementDictionary keyDropShuffleRequirements,
+            ISmallKeyShuffleRequirementDictionary smallKeyShuffleRequirements,
+            IStaticRequirementDictionary staticRequirements, IEndKeyLayout.Factory endFactory,
             ISmallKeyLayout.Factory smallKeyFactory)
         {
-            _requirements = requirements;
-
             _endFactory = endFactory;
             _smallKeyFactory = smallKeyFactory;
+            _staticRequirements = staticRequirements;
+            _keyDropShuffleRequirements = keyDropShuffleRequirements;
+            _aggregateRequirements = aggregateRequirements;
+            _smallKeyShuffleRequirements = smallKeyShuffleRequirements;
         }
         
         public IList<IKeyLayout> GetDungeonKeyLayouts(IDungeon dungeon)
         {
             return new List<IKeyLayout>
             {
-                _endFactory(_requirements[RequirementType.SmallKeyShuffleOn]),
-                _smallKeyFactory(2, new List<DungeonItemID>
-                    {
-                        DungeonItemID.ATRoom03, DungeonItemID.ATDarkMaze
-                    },
+                _endFactory(_smallKeyShuffleRequirements[true]),
+                _smallKeyFactory(
+                    2, new List<DungeonItemID> {DungeonItemID.ATRoom03, DungeonItemID.ATDarkMaze},
                     false, new List<IKeyLayout>
                     {
-                        _endFactory(_requirements[RequirementType.NoRequirement])
+                        _endFactory(_staticRequirements[AccessibilityLevel.Normal])
                     },
-                    dungeon, _requirements[RequirementType.KeyDropShuffleOffSmallKeyShuffleOff]),
-                _smallKeyFactory(4, new List<DungeonItemID>
+                    dungeon, _aggregateRequirements[new HashSet<IRequirement>
+                    {
+                        _keyDropShuffleRequirements[false],
+                        _smallKeyShuffleRequirements[false]
+                    }]),
+                _smallKeyFactory(
+                    4, new List<DungeonItemID>
                     {
                         DungeonItemID.ATRoom03,
                         DungeonItemID.ATDarkMaze,
                         DungeonItemID.ATDarkArcherDrop,
                         DungeonItemID.ATCircleOfPotsDrop
-                    }, false,
-                    new List<IKeyLayout>
+                    },
+                    false, new List<IKeyLayout>
                     {
-                        _endFactory(_requirements[RequirementType.NoRequirement])
-                    }, dungeon, _requirements[RequirementType.KeyDropShuffleOnSmallKeyShuffleOff])
+                        _endFactory(_staticRequirements[AccessibilityLevel.Normal])
+                    },
+                    dungeon, _aggregateRequirements[new HashSet<IRequirement>
+                    {
+                        _keyDropShuffleRequirements[true],
+                        _smallKeyShuffleRequirements[false]
+                    }])
             };
         }
     }

@@ -7,12 +7,19 @@ using OpenTracker.Models.Items.Keys;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.Nodes;
 using OpenTracker.Models.Prizes;
+using OpenTracker.Models.Requirements.Aggregate;
+using OpenTracker.Models.Requirements.Alternative;
 using OpenTracker.Models.Requirements.Boss;
 using OpenTracker.Models.Requirements.Item;
+using OpenTracker.Models.Requirements.Item.Crystal;
+using OpenTracker.Models.Requirements.Item.Exact;
+using OpenTracker.Models.Requirements.Item.SmallKey;
+using OpenTracker.Models.Requirements.KeyDropShuffle;
 using OpenTracker.Models.Requirements.Mode;
-using OpenTracker.Models.Requirements.Multiple;
 using OpenTracker.Models.Requirements.Node;
 using OpenTracker.Models.Requirements.SequenceBreak;
+using OpenTracker.Models.Requirements.SmallKeyShuffle;
+using OpenTracker.Models.Requirements.Static;
 using OpenTracker.Models.SequenceBreaks;
 
 namespace OpenTracker.Models.Requirements
@@ -28,29 +35,29 @@ namespace OpenTracker.Models.Requirements
         private readonly IRequirementDictionary _requirements;
         private readonly IOverworldNodeDictionary _requirementNodes;
         private readonly ISequenceBreakDictionary _sequenceBreaks;
-        private readonly AggregateRequirement.Factory _aggregateFactory;
-        private readonly AlternativeRequirement.Factory _alternativeFactory;
+        private readonly IAggregateRequirement.Factory _aggregateFactory;
+        private readonly IAlternativeRequirement.Factory _alternativeFactory;
         private readonly BigKeyShuffleRequirement.Factory _bigKeyShuffleFactory;
         private readonly IBossRequirement.Factory _bossFactory;
         private readonly BossShuffleRequirement.Factory _bossShuffleFactory;
         private readonly CompassShuffleRequirement.Factory _compassShuffleFactory;
         private readonly ICrystalRequirement.Factory _crystalFactory;
         private readonly EnemyShuffleRequirement.Factory _enemyShuffleFactory;
-        private readonly EntranceShuffleRequirement.Factory _entranceShuffleFactory;
+        private readonly IEntranceShuffleRequirement.Factory _entranceShuffleFactory;
         private readonly GenericKeysRequirement.Factory _genericKeysFactory;
         private readonly GuaranteedBossItemsRequirement.Factory _guaranteedBossItemsFactory;
         private readonly IItemExactRequirement.Factory _itemExactFactory;
         private readonly ItemPlacementRequirement.Factory _itemPlacementFactory;
         private readonly IItemRequirement.Factory _itemFactory;
-        private readonly KeyDropShuffleRequirement.Factory _keyDropShuffleFactory;
+        private readonly IKeyDropShuffleRequirement.Factory _keyDropShuffleFactory;
         private readonly MapShuffleRequirement.Factory _mapShuffleFactory;
         private readonly RaceIllegalTrackingRequirement.Factory _raceIllegalTrackingFactory;
-        private readonly NodeRequirement.Factory _requirementNodeFactory;
-        private readonly SequenceBreakRequirement.Factory _sequenceBreakFactory;
+        private readonly INodeRequirement.Factory _requirementNodeFactory;
+        private readonly ISequenceBreakRequirement.Factory _sequenceBreakFactory;
         private readonly ShopShuffleRequirement.Factory _shopShuffleFactory;
         private readonly ISmallKeyRequirement.Factory _smallKeyFactory;
-        private readonly SmallKeyShuffleRequirement.Factory _smallKeyShuffleFactory;
-        private readonly StaticRequirement.Factory _staticFactory;
+        private readonly ISmallKeyShuffleRequirement.Factory _smallKeyShuffleFactory;
+        private readonly IStaticRequirement.Factory _staticFactory;
         private readonly TakeAnyLocationsRequirement.Factory _takeAnyLocationsFactory;
         private readonly WorldStateRequirement.Factory _worldStateFactory;
 
@@ -155,28 +162,28 @@ namespace OpenTracker.Models.Requirements
         public RequirementFactory(
             IBossPlacementDictionary bossPlacements, IItemDictionary items,
             IPrizeDictionary prizes,  IOverworldNodeDictionary requirementNodes,
-            ISequenceBreakDictionary sequenceBreaks, AggregateRequirement.Factory aggregateFactory,
-            AlternativeRequirement.Factory alternativeFactory,
+            ISequenceBreakDictionary sequenceBreaks, IAggregateRequirement.Factory aggregateFactory,
+            IAlternativeRequirement.Factory alternativeFactory,
             BigKeyShuffleRequirement.Factory bigKeyShuffleFactory,
             IBossRequirement.Factory bossFactory, BossShuffleRequirement.Factory bossShuffleFactory,
             CompassShuffleRequirement.Factory compassShuffleFactory,
             ICrystalRequirement.Factory crystalFactory,
             EnemyShuffleRequirement.Factory enemyShuffleFactory,
-            EntranceShuffleRequirement.Factory entranceShuffleFactory,
+            IEntranceShuffleRequirement.Factory entranceShuffleFactory,
             GenericKeysRequirement.Factory genericKeysFactory,
             GuaranteedBossItemsRequirement.Factory guaranteedBossItemsFactory,
             IItemExactRequirement.Factory itemExactFactory,
             ItemPlacementRequirement.Factory itemPlacementFactory,
             IItemRequirement.Factory itemFactory,
-            KeyDropShuffleRequirement.Factory keyDropShuffleFactory,
+            IKeyDropShuffleRequirement.Factory keyDropShuffleFactory,
             MapShuffleRequirement.Factory mapShuffleFactory,
             RaceIllegalTrackingRequirement.Factory raceIllegalTrackingFactory,
-            NodeRequirement.Factory requirementNodeFactory,
-            SequenceBreakRequirement.Factory sequenceBreakFactory,
+            INodeRequirement.Factory requirementNodeFactory,
+            ISequenceBreakRequirement.Factory sequenceBreakFactory,
             ShopShuffleRequirement.Factory shopShuffleFactory,
             ISmallKeyRequirement.Factory smallKeyFactory,
-            SmallKeyShuffleRequirement.Factory smallKeyShuffleFactory,
-            StaticRequirement.Factory staticFactory,
+            ISmallKeyShuffleRequirement.Factory smallKeyShuffleFactory,
+            IStaticRequirement.Factory staticFactory,
             TakeAnyLocationsRequirement.Factory takeAnyLocationsFactory,
             WorldStateRequirement.Factory worldStateFactory,
             IRequirementDictionary requirements)

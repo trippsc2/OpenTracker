@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using OpenTracker.Models.Modes;
 using OpenTracker.Models.Requirements;
+using OpenTracker.Models.Requirements.Aggregate;
+using OpenTracker.Models.Requirements.Mode;
 
 namespace OpenTracker.Models.Dropdowns
 {
@@ -8,22 +12,30 @@ namespace OpenTracker.Models.Dropdowns
     /// </summary>
     public class DropdownFactory : IDropdownFactory
     {
+        private readonly IAggregateRequirementDictionary _aggregateRequirements;
+        private readonly IEntranceShuffleRequirementDictionary _entranceShuffleRequirements;
+        
         private readonly IDropdown.Factory _factory;
-        private readonly IRequirementDictionary _requirements;
 
         /// <summary>
         ///     Constructor
         /// </summary>
-        /// <param name="requirements">
-        ///     The requirement dictionary.
+        /// <param name="aggregateRequirements">
+        ///     The aggregate requirement dictionary.
+        /// </param>
+        /// <param name="entranceShuffleRequirements">
+        ///     The entrance shuffle requirement dictionary.
         /// </param>
         /// <param name="factory">
         ///     The factory for creating new dropdowns.
         /// </param>
-        public DropdownFactory(IRequirementDictionary requirements, IDropdown.Factory factory)
+        public DropdownFactory(
+            IAggregateRequirementDictionary aggregateRequirements,
+            IEntranceShuffleRequirementDictionary entranceShuffleRequirements, IDropdown.Factory factory)
         {
-            _requirements = requirements;
             _factory = factory;
+            _aggregateRequirements = aggregateRequirements;
+            _entranceShuffleRequirements = entranceShuffleRequirements;
         }
 
         /// <summary>
@@ -47,12 +59,16 @@ namespace OpenTracker.Models.Dropdowns
                 case DropdownID.SanctuaryGrave:
                 case DropdownID.HoulihanHole:
                 case DropdownID.GanonHole:
-                    return _requirements[RequirementType.EntranceShuffleAllInsanity];
+                    return _aggregateRequirements[new HashSet<IRequirement>
+                    {
+                        _entranceShuffleRequirements[EntranceShuffle.All],
+                        _entranceShuffleRequirements[EntranceShuffle.Insanity]
+                    }];
                 case DropdownID.SWNEHole:
                 case DropdownID.SWNWHole:
                 case DropdownID.SWSEHole:
                 case DropdownID.SWSWHole:
-                    return _requirements[RequirementType.EntranceShuffleInsanity];
+                    return _entranceShuffleRequirements[EntranceShuffle.Insanity];
             }
 
             throw new ArgumentOutOfRangeException(nameof(id));

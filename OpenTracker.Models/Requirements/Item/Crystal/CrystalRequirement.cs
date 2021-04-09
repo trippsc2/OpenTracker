@@ -3,10 +3,10 @@ using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Prizes;
 
-namespace OpenTracker.Models.Requirements.Item
+namespace OpenTracker.Models.Requirements.Item.Crystal
 {
     /// <summary>
-    /// This class contains GT crystal requirement data.
+    ///     This class contains GT crystal requirement data.
     /// </summary>
     public class CrystalRequirement : AccessibilityRequirement, ICrystalRequirement
     {
@@ -15,13 +15,13 @@ namespace OpenTracker.Models.Requirements.Item
         private readonly IItem _redCrystal;
 
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="items">
-        /// The item dictionary.
+        ///     The item dictionary.
         /// </param>
         /// <param name="prizes">
-        /// The prize dictionary.
+        ///     The prize dictionary.
         /// </param>
         public CrystalRequirement(IItemDictionary items, IPrizeDictionary prizes)
         {
@@ -37,13 +37,13 @@ namespace OpenTracker.Models.Requirements.Item
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the IItem interface.
+        ///     Subscribes to the PropertyChanged event on the IItem interface.
         /// </summary>
         /// <param name="sender">
-        /// The sending object of the event.
+        ///     The sending object of the event.
         /// </param>
         /// <param name="e">
-        /// The arguments of the PropertyChanged event.
+        ///     The arguments of the PropertyChanged event.
         /// </param>
         private void OnItemChanged(object? sender, PropertyChangedEventArgs e)
         {

@@ -1,15 +1,14 @@
-﻿using System;
-using System.ComponentModel;
-using OpenTracker.Models.Items;
+﻿using System.ComponentModel;
+using OpenTracker.Models.Items.Keys;
 
-namespace OpenTracker.Models.Requirements.Item
+namespace OpenTracker.Models.Requirements.Item.SmallKey
 {
     /// <summary>
-    /// This class contains item exact value requirement data.
+    /// This class contains small key requirement data.
     /// </summary>
-    public class ItemExactRequirement : BooleanRequirement, IItemExactRequirement
+    public class SmallKeyRequirement : BooleanRequirement, ISmallKeyRequirement
     {
-        private readonly IItem _item;
+        private readonly ISmallKeyItem _item;
         private readonly int _count;
 
         /// <summary>
@@ -21,16 +20,16 @@ namespace OpenTracker.Models.Requirements.Item
         /// <param name="count">
         /// A 32-bit integer representing the number of the item required.
         /// </param>
-        public ItemExactRequirement(IItem item, int count)
+        public SmallKeyRequirement(ISmallKeyItem item, int count = 1)
         {
-            _item = item ?? throw new ArgumentNullException(nameof(item));
+            _item = item;
             _count = count;
 
-            _item.PropertyChanged += OnItemChanged;
-
             UpdateValue();
+            
+            _item.PropertyChanged += OnItemChanged;
         }
-
+        
         /// <summary>
         /// Subscribes to the PropertyChanged event on the IItem interface.
         /// </summary>
@@ -42,7 +41,7 @@ namespace OpenTracker.Models.Requirements.Item
         /// </param>
         private void OnItemChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(IItem.Current))
+            if (e.PropertyName == nameof(ISmallKeyItem.EffectiveCurrent))
             {
                 UpdateValue();
             }
@@ -50,7 +49,7 @@ namespace OpenTracker.Models.Requirements.Item
 
         protected override bool ConditionMet()
         {
-            return _item.Current == _count;
+            return _item.EffectiveCurrent >= _count;
         }
     }
 }
