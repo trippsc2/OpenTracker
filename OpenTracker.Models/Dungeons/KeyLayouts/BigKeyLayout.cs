@@ -13,7 +13,7 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts
     {
         private readonly IList<DungeonItemID> _bigKeyLocations;
         private readonly IList<IKeyLayout> _children;
-        private readonly IRequirement _requirement;
+        private readonly IRequirement? _requirement;
 
         /// <summary>
         ///     Constructor
@@ -27,7 +27,8 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts
         /// <param name="requirement">
         ///     The requirement for this key layout to be valid.
         /// </param>
-        public BigKeyLayout(IList<DungeonItemID> bigKeyLocations, IList<IKeyLayout> children, IRequirement requirement)
+        public BigKeyLayout(
+            IList<DungeonItemID> bigKeyLocations, IList<IKeyLayout> children, IRequirement? requirement = null)
         {
             _bigKeyLocations = bigKeyLocations;
             _children = children;
@@ -36,7 +37,7 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts
 
         public bool CanBeTrue(IList<DungeonItemID> inaccessible, IList<DungeonItemID> accessible, IDungeonState state)
         {
-            if (!_requirement.Met)
+            if (_requirement is not null && !_requirement.Met)
             {
                 return false;
             }

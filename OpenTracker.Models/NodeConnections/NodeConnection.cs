@@ -16,7 +16,7 @@ namespace OpenTracker.Models.NodeConnections
         private readonly INode _fromNode;
         private readonly INode _toNode;
 
-        public IRequirement Requirement { get; }
+        public IRequirement? Requirement { get; }
         
         private AccessibilityLevel _accessibility;
         public AccessibilityLevel Accessibility
@@ -26,18 +26,18 @@ namespace OpenTracker.Models.NodeConnections
         }
 
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="fromNode">
-        /// The node from which the connection originates.
+        ///     The node from which the connection originates.
         /// </param>
         /// <param name="toNode">
-        /// The node to which the connection belongs.
+        ///     The node to which the connection belongs.
         /// </param>
         /// <param name="requirement">
-        /// The requirement for the connection to be accessible.
+        ///     The requirement for the connection to be accessible.
         /// </param>
-        public NodeConnection(INode fromNode, INode toNode, IRequirement requirement)
+        public NodeConnection(INode fromNode, INode toNode, IRequirement? requirement = null)
         {
             _fromNode = fromNode;
             _toNode = toNode;
@@ -45,19 +45,44 @@ namespace OpenTracker.Models.NodeConnections
             Requirement = requirement;
 
             _fromNode.PropertyChanged += OnNodeChanged;
-            Requirement.PropertyChanged += OnRequirementChanged;
+
+            if (Requirement is not null)
+            {
+                Requirement.PropertyChanged += OnRequirementChanged;
+            }
 
             UpdateAccessibility();
         }
+
+        public AccessibilityLevel GetConnectionAccessibility(IList<INode> excludedNodes)
+        {
+            if (excludedNodes == null)
+            {
+                throw new ArgumentNullException(nameof(excludedNodes));
+            }
+
+            var requirement = Requirement?.Accessibility ?? AccessibilityLevel.Normal;
+
+            if (requirement == AccessibilityLevel.None || _fromNode.Accessibility == AccessibilityLevel.None ||
+                excludedNodes.Contains(_fromNode))
+            {
+                return AccessibilityLevel.None;
+            }
+
+            IList<INode> newExcludedNodes = new List<INode>(excludedNodes);
+            newExcludedNodes.Add(_toNode);
+
+            return AccessibilityLevelMethods.Min(requirement, _fromNode.GetNodeAccessibility(newExcludedNodes));
+        }
         
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the IRequirementNode interface.
+        ///     Subscribes to the PropertyChanged event on the IRequirementNode interface.
         /// </summary>
         /// <param name="sender">
-        /// The sending object of the event.
+        ///     The sending object of the event.
         /// </param>
         /// <param name="e">
-        /// The arguments of the PropertyChanged event.
+        ///     The arguments of the PropertyChanged event.
         /// </param>
         private void OnNodeChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -68,13 +93,13 @@ namespace OpenTracker.Models.NodeConnections
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the IRequirement interface.
+        ///     Subscribes to the PropertyChanged event on the IRequirement interface.
         /// </summary>
         /// <param name="sender">
-        /// The sending object of the event.
+        ///     The sending object of the event.
         /// </param>
         /// <param name="e">
-        /// The arguments of the PropertyChanged event.
+        ///     The arguments of the PropertyChanged event.
         /// </param>
         private void OnRequirementChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -85,40 +110,11 @@ namespace OpenTracker.Models.NodeConnections
         }
 
         /// <summary>
-        /// Updates the Accessibility property.
+        ///     Updates the Accessibility property.
         /// </summary>
         private void UpdateAccessibility()
         {
             Accessibility = GetConnectionAccessibility(new List<INode>());
-        }
-
-        /// <summary>
-        /// Returns the availability of the connection, excluding loops from the specified nodes.
-        /// </summary>
-        /// <param name="excludedNodes">
-        ///     A list of nodes to exclude to prevent loops.
-        /// </param>
-        /// <returns>
-        /// The availability of the connection.
-        /// </returns>
-        public AccessibilityLevel GetConnectionAccessibility(IList<INode> excludedNodes)
-        {
-            if (excludedNodes == null)
-            {
-                throw new ArgumentNullException(nameof(excludedNodes));
-            }
-
-            if (Requirement.Accessibility == AccessibilityLevel.None ||
-                _fromNode.Accessibility == AccessibilityLevel.None || excludedNodes.Contains(_fromNode))
-            {
-                return AccessibilityLevel.None;
-            }
-
-            IList<INode> newExcludedNodes = new List<INode>(excludedNodes);
-            newExcludedNodes.Add(_toNode);
-
-            return AccessibilityLevelMethods.Min(Requirement.Accessibility,
-                _fromNode.GetNodeAccessibility(newExcludedNodes));
         }
     }
 }

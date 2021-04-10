@@ -16,6 +16,6 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts
         /// <returns>
         ///     A new end key layout.
         /// </returns>
-        delegate IEndKeyLayout Factory(IRequirement requirement);
+        delegate IEndKeyLayout Factory(IRequirement? requirement = null);
     }
 }

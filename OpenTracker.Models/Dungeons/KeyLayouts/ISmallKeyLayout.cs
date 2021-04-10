@@ -36,6 +36,6 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts
         /// </returns>
         delegate ISmallKeyLayout Factory(
             int count, IList<DungeonItemID> smallKeyLocations, bool bigKeyInLocations, IList<IKeyLayout> children,
-            IDungeon dungeon, IRequirement requirement);
+            IDungeon dungeon, IRequirement requirement = null);
     }
 }

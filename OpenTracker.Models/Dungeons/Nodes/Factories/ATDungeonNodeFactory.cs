@@ -5,6 +5,11 @@ using OpenTracker.Models.Dungeons.Mutable;
 using OpenTracker.Models.NodeConnections;
 using OpenTracker.Models.Nodes;
 using OpenTracker.Models.Requirements;
+using OpenTracker.Models.Requirements.Alternative;
+using OpenTracker.Models.Requirements.Complex;
+using OpenTracker.Models.Requirements.Item;
+using OpenTracker.Models.Requirements.Item.Exact;
+using OpenTracker.Models.Requirements.SequenceBreak;
 
 namespace OpenTracker.Models.Dungeons.Nodes.Factories
 {
@@ -13,6 +18,11 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
     /// </summary>
     public class ATDungeonNodeFactory : IATDungeonNodeFactory
     {
+        private readonly IAlternativeRequirementDictionary _alternativeRequirements;
+        private readonly IComplexRequirementDictionary _complexRequirements;
+        private readonly IItemRequirementDictionary _itemRequirements;
+        private readonly IItemExactRequirementDictionary _itemExactRequirements;
+        private readonly ISequenceBreakRequirementDictionary _sequenceBreakRequirements;
         private readonly IRequirementDictionary _requirements;
         private readonly IOverworldNodeDictionary _requirementNodes;
 
@@ -56,7 +66,7 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
                 case DungeonNodeID.ATDarkMaze:
                     connections.Add(_connectionFactory(
                         dungeonData.Nodes[DungeonNodeID.AT], node,
-                        _requirements[RequirementType.DarkRoomAT]));
+                        _complexRequirements[ComplexRequirementType.DarkRoomAT]));
                     break;
                 case DungeonNodeID.ATPastFirstKeyDoor:
                     connections.Add(_connectionFactory(
@@ -68,11 +78,9 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
                     break;
                 case DungeonNodeID.ATSecondKeyDoor:
                     connections.Add(_connectionFactory(
-                        dungeonData.Nodes[DungeonNodeID.ATPastFirstKeyDoor], node,
-                        _requirements[RequirementType.NoRequirement]));
+                        dungeonData.Nodes[DungeonNodeID.ATPastFirstKeyDoor], node));
                     connections.Add(_connectionFactory(
-                        dungeonData.Nodes[DungeonNodeID.ATPastSecondKeyDoor], node,
-                        _requirements[RequirementType.NoRequirement]));
+                        dungeonData.Nodes[DungeonNodeID.ATPastSecondKeyDoor], node));
                     break;
                 case DungeonNodeID.ATPastSecondKeyDoor:
                     connections.Add(_connectionFactory(
@@ -89,11 +97,9 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
                     break;
                 case DungeonNodeID.ATFourthKeyDoor:
                     connections.Add(_connectionFactory(
-                        dungeonData.Nodes[DungeonNodeID.ATPastThirdKeyDoor], node,
-                        _requirements[RequirementType.NoRequirement]));
+                        dungeonData.Nodes[DungeonNodeID.ATPastThirdKeyDoor], node));
                     connections.Add(_connectionFactory(
-                        dungeonData.Nodes[DungeonNodeID.ATPastFourthKeyDoor], node,
-                        _requirements[RequirementType.NoRequirement]));
+                        dungeonData.Nodes[DungeonNodeID.ATPastFourthKeyDoor], node));
                     break;
                 case DungeonNodeID.ATPastFourthKeyDoor:
                     connections.Add(_connectionFactory(
@@ -103,7 +109,7 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
                 case DungeonNodeID.ATBossRoom:
                     connections.Add(_connectionFactory(
                         dungeonData.Nodes[DungeonNodeID.ATPastFourthKeyDoor], node,
-                        _requirements[RequirementType.Curtains]));
+                        _complexRequirements[ComplexRequirementType.Curtains]));
                     break;
                 case DungeonNodeID.ATBoss:
                     connections.Add(_connectionFactory(

@@ -1,28 +1,26 @@
 ﻿using System.ComponentModel;
 using OpenTracker.Models.Modes;
 
-namespace OpenTracker.Models.Requirements.Mode
+namespace OpenTracker.Models.Requirements.BigKeyShuffle
 {
     /// <summary>
-    /// This class contains guaranteed boss items requirement data.
+    ///     This class contains big key shuffle requirement data.
     /// </summary>
-    public class GuaranteedBossItemsRequirement : BooleanRequirement
+    public class BigKeyShuffleRequirement : BooleanRequirement, IBigKeyShuffleRequirement
     {
         private readonly IMode _mode;
         private readonly bool _expectedValue;
 
-        public delegate GuaranteedBossItemsRequirement Factory(bool expectedValue);
-
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="mode">
-        /// The mode settings.
+        ///     The mode settings.
         /// </param>
         /// <param name="expectedValue">
-        /// A boolean expected guaranteed boss items value.
+        ///     The expected big key shuffle value.
         /// </param>
-        public GuaranteedBossItemsRequirement(IMode mode, bool expectedValue)
+        public BigKeyShuffleRequirement(IMode mode, bool expectedValue)
         {
             _mode = mode;
             _expectedValue = expectedValue;
@@ -33,17 +31,17 @@ namespace OpenTracker.Models.Requirements.Mode
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the IMode interface.
+        ///     Subscribes to the PropertyChanged event on the IMode interface.
         /// </summary>
         /// <param name="sender">
-        /// The sending object of the event.
+        ///     The event sender.
         /// </param>
         /// <param name="e">
-        /// The arguments of the PropertyChanged event.
+        ///     The PropertyChanged event args.
         /// </param>
         private void OnModeChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(IMode.GuaranteedBossItems))
+            if (e.PropertyName == nameof(IMode.BigKeyShuffle))
             {
                 UpdateValue();
             }
@@ -51,7 +49,7 @@ namespace OpenTracker.Models.Requirements.Mode
 
         protected override bool ConditionMet()
         {
-            return _mode.GuaranteedBossItems == _expectedValue;
+            return _mode.BigKeyShuffle == _expectedValue;
         }
     }
 }

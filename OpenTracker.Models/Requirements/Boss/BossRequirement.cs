@@ -42,16 +42,16 @@ namespace OpenTracker.Models.Requirements.Boss
         }
 
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="mode">
-        /// The mode settings.
+        ///     The mode settings.
         /// </param>
         /// <param name="requirements">
-        /// The requirement dictionary.
+        ///     The requirement dictionary.
         /// </param>
         /// <param name="bossPlacement">
-        /// The boss placement to provide requirements.
+        ///     The boss placement to provide requirements.
         /// </param>
         public BossRequirement(IMode mode, IRequirementDictionary requirements, IBossPlacement bossPlacement)
         {

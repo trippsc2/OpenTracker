@@ -1,7 +1,11 @@
 using System.Collections.Generic;
 using OpenTracker.Models.Dungeons.Items;
 using OpenTracker.Models.Requirements;
+using OpenTracker.Models.Requirements.Aggregate;
 using OpenTracker.Models.Requirements.Alternative;
+using OpenTracker.Models.Requirements.BigKeyShuffle;
+using OpenTracker.Models.Requirements.KeyDropShuffle;
+using OpenTracker.Models.Requirements.SmallKeyShuffle;
 
 namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
 {
@@ -10,18 +14,33 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
     /// </summary>
     public class HCKeyLayoutFactory : IHCKeyLayoutFactory
     {
-        private readonly IRequirementDictionary _requirements;
+        private readonly IAggregateRequirementDictionary _aggregateRequirements;
+        private readonly IAlternativeRequirementDictionary _alternativeRequirements;
+        private readonly IBigKeyShuffleRequirementDictionary _bigKeyShuffleRequirements;
+        private readonly IKeyDropShuffleRequirementDictionary _keyDropShuffleRequirements;
+        private readonly ISmallKeyShuffleRequirementDictionary _smallKeyShuffleRequirements;
         
         private readonly IBigKeyLayout.Factory _bigKeyFactory;
         private readonly IEndKeyLayout.Factory _endFactory;
         private readonly ISmallKeyLayout.Factory _smallKeyFactory;
-        private readonly IAlternativeRequirement.Factory _alternativeFactory;
 
         /// <summary>
         ///     Constructor
         /// </summary>
-        /// <param name="requirements">
-        ///     The requirement dictionary.
+        /// <param name="aggregateRequirements">
+        ///     The aggregate requirement dictionary.
+        /// </param>
+        /// <param name="alternativeRequirements">
+        ///     The alternative requirement dictionary.
+        /// </param>
+        /// <param name="bigKeyShuffleRequirements">
+        ///     The big key shuffle requirement dictionary.
+        /// </param>
+        /// <param name="keyDropShuffleRequirements">
+        ///     The key drop shuffle requirement dictionary.
+        /// </param>
+        /// <param name="smallKeyShuffleRequirements">
+        ///     The small key shuffle requirement dictionary.
         /// </param>
         /// <param name="bigKeyFactory">
         ///     An Autofac factory for creating big key layouts.
@@ -32,19 +51,22 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
         /// <param name="smallKeyFactory">
         ///     An Autofac factory for creating small key layouts.
         /// </param>
-        /// <param name="alternativeFactory">
-        ///     An Autofac factory for creating an alternative requirement.
-        /// </param>
         public HCKeyLayoutFactory(
-            IRequirementDictionary requirements, IBigKeyLayout.Factory bigKeyFactory, IEndKeyLayout.Factory endFactory,
-            ISmallKeyLayout.Factory smallKeyFactory, IAlternativeRequirement.Factory alternativeFactory)
+            IAggregateRequirementDictionary aggregateRequirements,
+            IAlternativeRequirementDictionary alternativeRequirements,
+            IBigKeyShuffleRequirementDictionary bigKeyShuffleRequirements,
+            IKeyDropShuffleRequirementDictionary keyDropShuffleRequirements,
+            ISmallKeyShuffleRequirementDictionary smallKeyShuffleRequirements, IBigKeyLayout.Factory bigKeyFactory,
+            IEndKeyLayout.Factory endFactory, ISmallKeyLayout.Factory smallKeyFactory)
         {
-            _requirements = requirements;
-            
             _bigKeyFactory = bigKeyFactory;
             _endFactory = endFactory;
             _smallKeyFactory = smallKeyFactory;
-            _alternativeFactory = alternativeFactory;
+            _aggregateRequirements = aggregateRequirements;
+            _alternativeRequirements = alternativeRequirements;
+            _bigKeyShuffleRequirements = bigKeyShuffleRequirements;
+            _keyDropShuffleRequirements = keyDropShuffleRequirements;
+            _smallKeyShuffleRequirements = smallKeyShuffleRequirements;
         }
         
         public IList<IKeyLayout> GetDungeonKeyLayouts(IDungeon dungeon)
@@ -52,14 +74,17 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
             return new List<IKeyLayout>
             {
                 _endFactory(
-                    _alternativeFactory(new List<IRequirement>
+                    _aggregateRequirements[new HashSet<IRequirement>
                     {
-                        _requirements[RequirementType.KeyDropShuffleOnAllKeyShuffle],
-                        _requirements[RequirementType.KeyDropShuffleOffSmallKeyShuffleOn]
-                    })),
+                        _alternativeRequirements[new HashSet<IRequirement>
+                        {
+                            _bigKeyShuffleRequirements[true],
+                            _keyDropShuffleRequirements[false]
+                        }],
+                        _smallKeyShuffleRequirements[true]
+                    }]),
                 _smallKeyFactory(
-                    1,
-                    new List<DungeonItemID>
+                    1, new List<DungeonItemID>
                     {
                         DungeonItemID.HCSanctuary,
                         DungeonItemID.HCMapChest,
@@ -67,15 +92,15 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
                         DungeonItemID.HCSecretRoomLeft,
                         DungeonItemID.HCSecretRoomMiddle,
                         DungeonItemID.HCSecretRoomRight
-                    }, false,
-                    new List<IKeyLayout>
+                    },
+                    false, new List<IKeyLayout> {_endFactory()}, dungeon,
+                    _aggregateRequirements[new HashSet<IRequirement>
                     {
-                        _endFactory(_requirements[RequirementType.NoRequirement])
-                    }, dungeon,
-                    _requirements[RequirementType.KeyDropShuffleOffSmallKeyShuffleOff]),
+                        _keyDropShuffleRequirements[false],
+                        _smallKeyShuffleRequirements[false]
+                    }]),
                 _smallKeyFactory(
-                    3,
-                    new List<DungeonItemID>
+                    3, new List<DungeonItemID>
                     {
                         DungeonItemID.HCSanctuary,
                         DungeonItemID.HCMapChest,
@@ -84,12 +109,11 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
                         DungeonItemID.HCSecretRoomMiddle,
                         DungeonItemID.HCSecretRoomRight,
                         DungeonItemID.HCMapGuardDrop
-                    }, false,
-                    new List<IKeyLayout>
+                    },
+                    false, new List<IKeyLayout>
                     {
                         _smallKeyFactory(
-                            4,
-                            new List<DungeonItemID>
+                            4, new List<DungeonItemID>
                             {
                                 DungeonItemID.HCSanctuary,
                                 DungeonItemID.HCMapChest,
@@ -100,14 +124,14 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
                                 DungeonItemID.HCSecretRoomRight,
                                 DungeonItemID.HCMapGuardDrop,
                                 DungeonItemID.HCBoomerangGuardDrop
-                            }, false,
-                            new List<IKeyLayout>
-                            {
-                                _endFactory(_requirements[RequirementType.NoRequirement])
-                            }, dungeon,
-                            _requirements[RequirementType.NoRequirement])
-                    }, dungeon,
-                    _requirements[RequirementType.KeyDropShuffleOnBigKeyShuffleOnly]),
+                            },
+                            false, new List<IKeyLayout> {_endFactory()}, dungeon)
+                    },
+                    dungeon, _aggregateRequirements[new HashSet<IRequirement>
+                    {
+                        _bigKeyShuffleRequirements[true],
+                        _keyDropShuffleRequirements[true]
+                    }]),
                 _bigKeyFactory(
                     new List<DungeonItemID>
                     {
@@ -122,11 +146,12 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
                         DungeonItemID.HCBoomerangGuardDrop,
                         DungeonItemID.HCBigKeyDrop
                     },
-                    new List<IKeyLayout>
+                    new List<IKeyLayout> {_endFactory()}, _aggregateRequirements[new HashSet<IRequirement>
                     {
-                        _endFactory(_requirements[RequirementType.NoRequirement])
-                    },
-                    _requirements[RequirementType.KeyDropShuffleOnSmallKeyShuffleOnly]),
+                        _bigKeyShuffleRequirements[false],
+                        _keyDropShuffleRequirements[true],
+                        _smallKeyShuffleRequirements[true]
+                    }]),
                 _bigKeyFactory(
                     new List<DungeonItemID>
                     {
@@ -141,8 +166,7 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
                     new List<IKeyLayout>
                     {
                         _smallKeyFactory(
-                            3,
-                            new List<DungeonItemID>
+                            3, new List<DungeonItemID>
                             {
                                 DungeonItemID.HCSanctuary,
                                 DungeonItemID.HCMapChest,
@@ -152,12 +176,10 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
                                 DungeonItemID.HCSecretRoomRight,
                                 DungeonItemID.HCMapGuardDrop
                             },
-                            true,
-                            new List<IKeyLayout>
+                            true, new List<IKeyLayout>
                             {
                                 _smallKeyFactory(
-                                    4,
-                                    new List<DungeonItemID>
+                                    4, new List<DungeonItemID>
                                     {
                                         DungeonItemID.HCSanctuary,
                                         DungeonItemID.HCMapChest,
@@ -169,16 +191,16 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
                                         DungeonItemID.HCMapGuardDrop,
                                         DungeonItemID.HCBoomerangGuardDrop
                                     },
-                                    true,
-                                    new List<IKeyLayout>
-                                    {
-                                        _endFactory(_requirements[RequirementType.NoRequirement])
-                                    }, dungeon,
-                            _requirements[RequirementType.NoRequirement])
-                            }, dungeon,
-                            _requirements[RequirementType.NoRequirement])
+                                    true, new List<IKeyLayout> {_endFactory()}, dungeon)
+                            },
+                            dungeon)
                     },
-                    _requirements[RequirementType.KeyDropShuffleOnNoKeyShuffle]),
+                    _aggregateRequirements[new HashSet<IRequirement>
+                    {
+                        _bigKeyShuffleRequirements[false],
+                        _keyDropShuffleRequirements[true],
+                        _smallKeyShuffleRequirements[false]
+                    }]),
                 _bigKeyFactory(
                     new List<DungeonItemID>
                     {
@@ -188,8 +210,7 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
                     new List<IKeyLayout>
                     {
                         _smallKeyFactory(
-                            3,
-                            new List<DungeonItemID>
+                            3, new List<DungeonItemID>
                             {
                                 DungeonItemID.HCSanctuary,
                                 DungeonItemID.HCMapChest,
@@ -199,12 +220,10 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
                                 DungeonItemID.HCSecretRoomRight,
                                 DungeonItemID.HCMapGuardDrop
                             },
-                            false,
-                            new List<IKeyLayout>
+                            false, new List<IKeyLayout>
                             {
                                 _smallKeyFactory(
-                                    4,
-                                    new List<DungeonItemID>
+                                    4, new List<DungeonItemID>
                                     {
                                         DungeonItemID.HCSanctuary,
                                         DungeonItemID.HCMapChest,
@@ -216,26 +235,20 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
                                         DungeonItemID.HCMapGuardDrop,
                                         DungeonItemID.HCBoomerangGuardDrop
                                     },
-                                    true,
-                                    new List<IKeyLayout>
-                                    {
-                                        _endFactory(_requirements[RequirementType.NoRequirement])
-                                    }, dungeon,
-                            _requirements[RequirementType.NoRequirement])
-                            }, dungeon,
-                            _requirements[RequirementType.NoRequirement])
+                                    true, new List<IKeyLayout> {_endFactory()}, dungeon)
+                            }, dungeon)
                     },
-                    _requirements[RequirementType.KeyDropShuffleOnNoKeyShuffle]),
-                _bigKeyFactory(
-                    new List<DungeonItemID>
+                    _aggregateRequirements[new HashSet<IRequirement>
                     {
-                        DungeonItemID.HCBigKeyDrop
-                    },
-                    new List<IKeyLayout>
+                        _bigKeyShuffleRequirements[false],
+                        _keyDropShuffleRequirements[true],
+                        _smallKeyShuffleRequirements[false]
+                    }]),
+                _bigKeyFactory(
+                    new List<DungeonItemID> {DungeonItemID.HCBigKeyDrop}, new List<IKeyLayout>
                     {
                         _smallKeyFactory(
-                            3,
-                            new List<DungeonItemID>
+                            3, new List<DungeonItemID>
                             {
                                 DungeonItemID.HCSanctuary,
                                 DungeonItemID.HCMapChest,
@@ -245,12 +258,10 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
                                 DungeonItemID.HCSecretRoomRight,
                                 DungeonItemID.HCMapGuardDrop
                             },
-                            false,
-                            new List<IKeyLayout>
+                            false, new List<IKeyLayout>
                             {
                                 _smallKeyFactory(
-                                    4,
-                                    new List<DungeonItemID>
+                                    4, new List<DungeonItemID>
                                     {
                                         DungeonItemID.HCSanctuary,
                                         DungeonItemID.HCMapChest,
@@ -262,16 +273,15 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
                                         DungeonItemID.HCMapGuardDrop,
                                         DungeonItemID.HCBoomerangGuardDrop
                                     },
-                                    false,
-                                    new List<IKeyLayout>
-                                    {
-                                        _endFactory(_requirements[RequirementType.NoRequirement])
-                                    }, dungeon,
-                            _requirements[RequirementType.NoRequirement])
-                            }, dungeon,
-                            _requirements[RequirementType.NoRequirement])
+                                    false, new List<IKeyLayout> {_endFactory()}, dungeon)
+                            }, dungeon)
                     },
-                    _requirements[RequirementType.KeyDropShuffleOnNoKeyShuffle])
+                    _aggregateRequirements[new HashSet<IRequirement>
+                    {
+                        _bigKeyShuffleRequirements[false],
+                        _keyDropShuffleRequirements[true],
+                        _smallKeyShuffleRequirements[false]
+                    }])
             };
         }
     }

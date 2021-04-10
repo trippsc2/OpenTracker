@@ -27,8 +27,7 @@ namespace OpenTracker.UnitTests.Models.Requirements.SmallKeyShuffle
         [InlineData(true, false, false)]
         [InlineData(false, false, true)]
         [InlineData(true, true, true)]
-        public void Met_ShouldReturnExpectedValue(
-            bool expected, bool smallKeyShuffle, bool requirement)
+        public void Met_ShouldReturnExpectedValue(bool expected, bool smallKeyShuffle, bool requirement)
         {
             _mode.SmallKeyShuffle.Returns(smallKeyShuffle);
             var sut = new SmallKeyShuffleRequirement(_mode, requirement);

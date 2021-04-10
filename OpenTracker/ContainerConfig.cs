@@ -26,10 +26,17 @@ using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.Prizes;
 using OpenTracker.Models.Requirements.Aggregate;
 using OpenTracker.Models.Requirements.Alternative;
+using OpenTracker.Models.Requirements.BigKeyShuffle;
+using OpenTracker.Models.Requirements.Boss;
+using OpenTracker.Models.Requirements.Complex;
+using OpenTracker.Models.Requirements.EnemyShuffle;
+using OpenTracker.Models.Requirements.GuaranteedBossItems;
 using OpenTracker.Models.Requirements.Item;
 using OpenTracker.Models.Requirements.Item.Crystal;
 using OpenTracker.Models.Requirements.Item.Exact;
+using OpenTracker.Models.Requirements.Item.Prizes;
 using OpenTracker.Models.Requirements.Item.SmallKey;
+using OpenTracker.Models.Requirements.KeyDropShuffle;
 using OpenTracker.Models.Requirements.Mode;
 using OpenTracker.Models.Requirements.SequenceBreak;
 using OpenTracker.Models.Requirements.SmallKeyShuffle;
@@ -96,18 +103,13 @@ namespace OpenTracker
 
         private static List<string> ModelsSelfTypes => new()
         {
-            nameof(BigKeyShuffleRequirement),
             nameof(BossShuffleRequirement),
             nameof(CompassShuffleRequirement),
-            nameof(EnemyShuffleRequirement),
             nameof(GenericKeysRequirement),
-            nameof(GuaranteedBossItemsRequirement),
-            nameof(ItemPlacementRequirement),
             nameof(MapShuffleRequirement),
             nameof(RaceIllegalTrackingRequirement),
             nameof(ShopShuffleRequirement),
             nameof(TakeAnyLocationsRequirement),
-            nameof(WorldStateRequirement),
             nameof(BossSection),
             nameof(DropdownSection),
             nameof(DungeonEntranceSection),
@@ -156,11 +158,21 @@ namespace OpenTracker
             nameof(OverworldNodeFactory),
             nameof(AggregateRequirementDictionary),
             nameof(AlternativeRequirementDictionary),
-            nameof(EntranceShuffleRequirementDictionary),
+            nameof(BigKeyShuffleRequirementDictionary),
+            nameof(BossTypeRequirementDictionary),
+            nameof(ComplexRequirementDictionary),
+            nameof(ComplexRequirementFactory),
+            nameof(EnemyShuffleRequirementDictionary),
+            nameof(GuaranteedBossItemsRequirementDictionary),
             nameof(CrystalRequirement),
             nameof(ItemRequirementDictionary),
             nameof(ItemExactRequirementDictionary),
+            nameof(PrizeRequirementDictionary),
             nameof(SmallKeyRequirementDictionary),
+            nameof(KeyDropShuffleRequirementDictionary),
+            nameof(EntranceShuffleRequirementDictionary),
+            nameof(ItemPlacementRequirementDictionary),
+            nameof(WorldStateRequirementDictionary),
             nameof(SequenceBreakRequirementDictionary),
             nameof(SmallKeyShuffleRequirementDictionary),
             nameof(RequirementDictionary),

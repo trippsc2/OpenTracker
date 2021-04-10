@@ -1,41 +1,63 @@
 using System.Collections.Generic;
 using OpenTracker.Models.Dungeons.Items;
 using OpenTracker.Models.Requirements;
+using OpenTracker.Models.Requirements.Aggregate;
+using OpenTracker.Models.Requirements.BigKeyShuffle;
+using OpenTracker.Models.Requirements.KeyDropShuffle;
+using OpenTracker.Models.Requirements.SmallKeyShuffle;
 
 namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
 {
     /// <summary>
-    /// This class contains the creation logic for Ganon's Tower key layouts.
+    ///     This class contains the creation logic for Ganon's Tower key layouts.
     /// </summary>
     public class GTKeyLayoutFactory : IGTKeyLayoutFactory
     {
-        private readonly IRequirementDictionary _requirements;
-        
+        private readonly IAggregateRequirementDictionary _aggregateRequirements;
+        private readonly IBigKeyShuffleRequirementDictionary _bigKeyShuffleRequirements;
+        private readonly IKeyDropShuffleRequirementDictionary _keyDropShuffleRequirements;
+        private readonly ISmallKeyShuffleRequirementDictionary _smallKeyShuffleRequirements;
+
         private readonly IBigKeyLayout.Factory _bigKeyFactory;
         private readonly IEndKeyLayout.Factory _endFactory;
         private readonly ISmallKeyLayout.Factory _smallKeyFactory;
 
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
-        /// <param name="requirements">
-        /// The requirement dictionary.
+        /// <param name="aggregateRequirements">
+        ///     The aggregate requirement dictionary.
+        /// </param>
+        /// <param name="bigKeyShuffleRequirements">
+        ///     The big key shuffle requirement dictionary.
+        /// </param>
+        /// <param name="keyDropShuffleRequirements">
+        ///     The key drop shuffle requirement dictionary.
+        /// </param>
+        /// <param name="smallKeyShuffleRequirements">
+        ///     The small key shuffle requirement dictionary.
         /// </param>
         /// <param name="bigKeyFactory">
-        /// An Autofac factory for creating big key layouts.
+        ///     An Autofac factory for creating big key layouts.
         /// </param>
         /// <param name="endFactory">
-        /// An Autofac factory for ending key layouts.
+        ///     An Autofac factory for ending key layouts.
         /// </param>
         /// <param name="smallKeyFactory">
-        /// An Autofac factory for creating small key layouts.
+        ///     An Autofac factory for creating small key layouts.
         /// </param>
         public GTKeyLayoutFactory(
-            IRequirementDictionary requirements, IBigKeyLayout.Factory bigKeyFactory, IEndKeyLayout.Factory endFactory,
-            ISmallKeyLayout.Factory smallKeyFactory)
+            IAggregateRequirementDictionary aggregateRequirements,
+            IBigKeyShuffleRequirementDictionary bigKeyShuffleRequirements,
+            IKeyDropShuffleRequirementDictionary keyDropShuffleRequirements,
+            ISmallKeyShuffleRequirementDictionary smallKeyShuffleRequirements, IBigKeyLayout.Factory bigKeyFactory,
+            IEndKeyLayout.Factory endFactory, ISmallKeyLayout.Factory smallKeyFactory)
         {
-            _requirements = requirements;
-            
+            _aggregateRequirements = aggregateRequirements;
+            _bigKeyShuffleRequirements = bigKeyShuffleRequirements;
+            _keyDropShuffleRequirements = keyDropShuffleRequirements;
+            _smallKeyShuffleRequirements = smallKeyShuffleRequirements;
+
             _bigKeyFactory = bigKeyFactory;
             _endFactory = endFactory;
             _smallKeyFactory = smallKeyFactory;
@@ -45,9 +67,13 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
         {
             return new List<IKeyLayout>
             {
-                    _endFactory(_requirements[RequirementType.AllKeyShuffle]),
-                    _smallKeyFactory(3,
-                        new List<DungeonItemID>
+                    _endFactory(_aggregateRequirements[new HashSet<IRequirement>
+                    {
+                        _bigKeyShuffleRequirements[true],
+                        _smallKeyShuffleRequirements[true]
+                    }]),
+                    _smallKeyFactory(
+                        3, new List<DungeonItemID>
                         {
                             DungeonItemID.GTHopeRoomLeft,
                             DungeonItemID.GTHopeRoomRight,
@@ -57,11 +83,11 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
                             DungeonItemID.GTDMsRoomBottomLeft,
                             DungeonItemID.GTDMsRoomBottomRight,
                             DungeonItemID.GTTileRoom
-                        }, false,
-                        new List<IKeyLayout>
+                        },
+                        false, new List<IKeyLayout>
                         {
-                            _smallKeyFactory(4,
-                                new List<DungeonItemID>
+                            _smallKeyFactory(
+                                4, new List<DungeonItemID>
                                 {
                                     DungeonItemID.GTHopeRoomLeft,
                                     DungeonItemID.GTHopeRoomRight,
@@ -81,12 +107,14 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
                                     DungeonItemID.GTMiniHelmasaurRoomLeft,
                                     DungeonItemID.GTMiniHelmasaurRoomRight,
                                     DungeonItemID.GTPreMoldormChest
-                                }, false,
-                                new List<IKeyLayout>
-                                {
-                                    _endFactory(_requirements[RequirementType.NoRequirement])
-                                }, dungeon, _requirements[RequirementType.NoRequirement])
-                        }, dungeon, _requirements[RequirementType.KeyDropShuffleOffBigKeyShuffleOnly]),
+                                },
+                                false, new List<IKeyLayout> {_endFactory()}, dungeon)
+                        },
+                        dungeon, _aggregateRequirements[new HashSet<IRequirement>
+                        {
+                            _bigKeyShuffleRequirements[true],
+                            _keyDropShuffleRequirements[false]
+                        }]),
                     _bigKeyFactory(
                         new List<DungeonItemID>
                         {
@@ -101,9 +129,9 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
                         },
                         new List<IKeyLayout>
                         {
-                            _endFactory(_requirements[RequirementType.SmallKeyShuffleOn]),
-                            _smallKeyFactory(3,
-                                new List<DungeonItemID>
+                            _endFactory(_smallKeyShuffleRequirements[true]),
+                            _smallKeyFactory(
+                                3, new List<DungeonItemID>
                                 {
                                     DungeonItemID.GTHopeRoomLeft,
                                     DungeonItemID.GTHopeRoomRight,
@@ -113,11 +141,11 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
                                     DungeonItemID.GTDMsRoomBottomLeft,
                                     DungeonItemID.GTDMsRoomBottomRight,
                                     DungeonItemID.GTTileRoom
-                                }, true,
-                                new List<IKeyLayout>
+                                },
+                                true, new List<IKeyLayout>
                                 {
-                                    _smallKeyFactory(4,
-                                        new List<DungeonItemID>
+                                    _smallKeyFactory(
+                                        4, new List<DungeonItemID>
                                         {
                                             DungeonItemID.GTHopeRoomLeft,
                                             DungeonItemID.GTHopeRoomRight,
@@ -137,13 +165,16 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
                                             DungeonItemID.GTMiniHelmasaurRoomLeft,
                                             DungeonItemID.GTMiniHelmasaurRoomRight,
                                             DungeonItemID.GTPreMoldormChest
-                                        }, true,
-                                        new List<IKeyLayout>
-                                        {
-                                            _endFactory(_requirements[RequirementType.NoRequirement])
-                                        }, dungeon, _requirements[RequirementType.NoRequirement])
-                                }, dungeon, _requirements[RequirementType.SmallKeyShuffleOff])
-                        }, _requirements[RequirementType.KeyDropShuffleOffBigKeyShuffleOff]),
+                                        },
+                                        true, new List<IKeyLayout> {_endFactory()}, dungeon)
+                                },
+                                dungeon)
+                        },
+                        _aggregateRequirements[new HashSet<IRequirement>
+                        {
+                            _bigKeyShuffleRequirements[false],
+                            _keyDropShuffleRequirements[false]
+                        }]),
                     _bigKeyFactory(
                         new List<DungeonItemID>
                         {
@@ -155,9 +186,9 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
                         },
                         new List<IKeyLayout>
                         {
-                            _endFactory(_requirements[RequirementType.SmallKeyShuffleOn]),
-                            _smallKeyFactory(3,
-                                new List<DungeonItemID>
+                            _endFactory(_smallKeyShuffleRequirements[true]),
+                            _smallKeyFactory(
+                                3, new List<DungeonItemID>
                                 {
                                     DungeonItemID.GTHopeRoomLeft,
                                     DungeonItemID.GTHopeRoomRight,
@@ -167,11 +198,11 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
                                     DungeonItemID.GTDMsRoomBottomLeft,
                                     DungeonItemID.GTDMsRoomBottomRight,
                                     DungeonItemID.GTTileRoom
-                                }, false,
-                                new List<IKeyLayout>
+                                },
+                                false, new List<IKeyLayout>
                                 {
-                                    _smallKeyFactory(4,
-                                        new List<DungeonItemID>
+                                    _smallKeyFactory(
+                                        4, new List<DungeonItemID>
                                         {
                                             DungeonItemID.GTHopeRoomLeft,
                                             DungeonItemID.GTHopeRoomRight,
@@ -191,19 +222,22 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
                                             DungeonItemID.GTMiniHelmasaurRoomLeft,
                                             DungeonItemID.GTMiniHelmasaurRoomRight,
                                             DungeonItemID.GTPreMoldormChest
-                                        }, true,
-                                        new List<IKeyLayout>
-                                        {
-                                            _endFactory(_requirements[RequirementType.NoRequirement])
-                                        }, dungeon, _requirements[RequirementType.NoRequirement])
-                                }, dungeon, _requirements[RequirementType.SmallKeyShuffleOff])
-                        }, _requirements[RequirementType.KeyDropShuffleOffBigKeyShuffleOff]),
-                    _bigKeyFactory(new List<DungeonItemID> {DungeonItemID.GTMapChest},
-                        new List<IKeyLayout>
+                                        },
+                                        true, new List<IKeyLayout> {_endFactory()}, dungeon)
+                                },
+                                dungeon, _smallKeyShuffleRequirements[false])
+                        },
+                        _aggregateRequirements[new HashSet<IRequirement>
                         {
-                            _endFactory(_requirements[RequirementType.SmallKeyShuffleOn]),
-                            _smallKeyFactory(3,
-                                new List<DungeonItemID>
+                            _bigKeyShuffleRequirements[false],
+                            _keyDropShuffleRequirements[false]
+                        }]),
+                    _bigKeyFactory(
+                        new List<DungeonItemID> {DungeonItemID.GTMapChest}, new List<IKeyLayout>
+                        {
+                            _endFactory(_smallKeyShuffleRequirements[true]),
+                            _smallKeyFactory(
+                                3, new List<DungeonItemID>
                                 {
                                     DungeonItemID.GTHopeRoomLeft,
                                     DungeonItemID.GTHopeRoomRight,
@@ -213,11 +247,11 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
                                     DungeonItemID.GTDMsRoomBottomLeft,
                                     DungeonItemID.GTDMsRoomBottomRight,
                                     DungeonItemID.GTTileRoom
-                                }, false,
-                                new List<IKeyLayout>
+                                },
+                                false, new List<IKeyLayout>
                                 {
-                                    _smallKeyFactory(4,
-                                        new List<DungeonItemID>
+                                    _smallKeyFactory(
+                                        4, new List<DungeonItemID>
                                         {
                                             DungeonItemID.GTHopeRoomLeft,
                                             DungeonItemID.GTHopeRoomRight,
@@ -236,13 +270,16 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
                                             DungeonItemID.GTMiniHelmasaurRoomLeft,
                                             DungeonItemID.GTMiniHelmasaurRoomRight,
                                             DungeonItemID.GTPreMoldormChest
-                                        }, false,
-                                        new List<IKeyLayout>
-                                        {
-                                            _endFactory(_requirements[RequirementType.NoRequirement])
-                                        }, dungeon, _requirements[RequirementType.NoRequirement])
-                                }, dungeon, _requirements[RequirementType.SmallKeyShuffleOff])
-                        }, _requirements[RequirementType.KeyDropShuffleOffBigKeyShuffleOff]),
+                                        },
+                                        false, new List<IKeyLayout> {_endFactory()}, dungeon)
+                                },
+                                dungeon)
+                        },
+                        _aggregateRequirements[new HashSet<IRequirement>
+                        {
+                            _bigKeyShuffleRequirements[false],
+                            _keyDropShuffleRequirements[false]
+                        }]),
                     _bigKeyFactory(
                         new List<DungeonItemID>
                         {
@@ -253,9 +290,9 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
                         },
                         new List<IKeyLayout>
                         {
-                            _endFactory(_requirements[RequirementType.SmallKeyShuffleOn]),
-                            _smallKeyFactory(2,
-                                new List<DungeonItemID>
+                            _endFactory(_smallKeyShuffleRequirements[true]),
+                            _smallKeyFactory(
+                                2, new List<DungeonItemID>
                                 {
                                     DungeonItemID.GTHopeRoomLeft,
                                     DungeonItemID.GTHopeRoomRight,
@@ -265,11 +302,11 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
                                     DungeonItemID.GTDMsRoomBottomLeft,
                                     DungeonItemID.GTDMsRoomBottomRight,
                                     DungeonItemID.GTTileRoom
-                                }, false,
-                                new List<IKeyLayout>
+                                },
+                                false, new List<IKeyLayout>
                                 {
-                                    _smallKeyFactory(3,
-                                        new List<DungeonItemID>
+                                    _smallKeyFactory(
+                                        3, new List<DungeonItemID>
                                         {
                                             DungeonItemID.GTHopeRoomLeft,
                                             DungeonItemID.GTHopeRoomRight,
@@ -280,11 +317,11 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
                                             DungeonItemID.GTDMsRoomBottomRight,
                                             DungeonItemID.GTFiresnakeRoom,
                                             DungeonItemID.GTTileRoom
-                                        }, false,
-                                        new List<IKeyLayout>
+                                        },
+                                        false, new List<IKeyLayout>
                                         {
-                                            _smallKeyFactory(4,
-                                                new List<DungeonItemID>
+                                            _smallKeyFactory(
+                                                4, new List<DungeonItemID>
                                                 {
                                                     DungeonItemID.GTHopeRoomLeft,
                                                     DungeonItemID.GTHopeRoomRight,
@@ -304,17 +341,18 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
                                                     DungeonItemID.GTBigKeyRoomTopLeft,
                                                     DungeonItemID.GTBigKeyRoomTopRight,
                                                     DungeonItemID.GTBigKeyChest
-                                                }, true,
-                                                new List<IKeyLayout>
-                                                {
-                                                    _endFactory(
-                                                        _requirements
-                                                            [RequirementType.NoRequirement])
-                                                }, dungeon,
-                                                _requirements[RequirementType.NoRequirement])
-                                        }, dungeon, _requirements[RequirementType.NoRequirement])
-                                }, dungeon, _requirements[RequirementType.SmallKeyShuffleOff])
-                        }, _requirements[RequirementType.KeyDropShuffleOffBigKeyShuffleOff]),
+                                                },
+                                                true, new List<IKeyLayout> {_endFactory()},
+                                                dungeon)
+                                        },
+                                        dungeon)
+                                }, dungeon)
+                        },
+                        _aggregateRequirements[new HashSet<IRequirement>
+                        {
+                            _bigKeyShuffleRequirements[false],
+                            _keyDropShuffleRequirements[false]
+                        }]),
                     _bigKeyFactory(
                         new List<DungeonItemID>
                         {
@@ -325,9 +363,9 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
                         },
                         new List<IKeyLayout>
                         {
-                            _endFactory(_requirements[RequirementType.SmallKeyShuffleOn]),
-                            _smallKeyFactory(2,
-                                new List<DungeonItemID>
+                            _endFactory(_smallKeyShuffleRequirements[true]),
+                            _smallKeyFactory(
+                                2, new List<DungeonItemID>
                                 {
                                     DungeonItemID.GTHopeRoomLeft,
                                     DungeonItemID.GTHopeRoomRight,
@@ -337,11 +375,11 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
                                     DungeonItemID.GTDMsRoomBottomLeft,
                                     DungeonItemID.GTDMsRoomBottomRight,
                                     DungeonItemID.GTTileRoom
-                                }, false,
-                                new List<IKeyLayout>
+                                },
+                                false, new List<IKeyLayout>
                                 {
-                                    _smallKeyFactory(3,
-                                        new List<DungeonItemID>
+                                    _smallKeyFactory(
+                                        3, new List<DungeonItemID>
                                         {
                                             DungeonItemID.GTHopeRoomLeft,
                                             DungeonItemID.GTHopeRoomRight,
@@ -352,11 +390,11 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
                                             DungeonItemID.GTDMsRoomBottomRight,
                                             DungeonItemID.GTFiresnakeRoom,
                                             DungeonItemID.GTTileRoom
-                                        }, false,
-                                        new List<IKeyLayout>
+                                        },
+                                        false, new List<IKeyLayout>
                                         {
-                                            _smallKeyFactory(4,
-                                                new List<DungeonItemID>
+                                            _smallKeyFactory(
+                                                4, new List<DungeonItemID>
                                                 {
                                                     DungeonItemID.GTHopeRoomLeft,
                                                     DungeonItemID.GTHopeRoomRight,
@@ -376,19 +414,21 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
                                                     DungeonItemID.GTBigKeyRoomTopLeft,
                                                     DungeonItemID.GTBigKeyRoomTopRight,
                                                     DungeonItemID.GTBigKeyChest
-                                                }, true,
-                                                new List<IKeyLayout>
-                                                {
-                                                    _endFactory(
-                                                        _requirements
-                                                            [RequirementType.NoRequirement])
-                                                }, dungeon,
-                                                _requirements[RequirementType.NoRequirement])
-                                        }, dungeon, _requirements[RequirementType.NoRequirement])
-                                }, dungeon, _requirements[RequirementType.SmallKeyShuffleOff])
-                        }, _requirements[RequirementType.KeyDropShuffleOffBigKeyShuffleOff]),
-                    _smallKeyFactory(7,
-                        new List<DungeonItemID>
+                                                },
+                                                true, new List<IKeyLayout> {_endFactory()},
+                                                dungeon)
+                                        },
+                                        dungeon)
+                                },
+                                dungeon)
+                        },
+                        _aggregateRequirements[new HashSet<IRequirement>
+                        {
+                            _bigKeyShuffleRequirements[false],
+                            _keyDropShuffleRequirements[false]
+                        }]),
+                    _smallKeyFactory(
+                        7, new List<DungeonItemID>
                         {
                             DungeonItemID.GTHopeRoomLeft,
                             DungeonItemID.GTHopeRoomRight,
@@ -403,11 +443,11 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
                             DungeonItemID.GTConveyorCrossPot,
                             DungeonItemID.GTDoubleSwitchPot,
                             DungeonItemID.GTMiniHelmasaurDrop
-                        }, false,
-                        new List<IKeyLayout>
+                        },
+                        false, new List<IKeyLayout>
                         {
-                            _smallKeyFactory(8,
-                                new List<DungeonItemID>
+                            _smallKeyFactory(
+                                8, new List<DungeonItemID>
                                 {
                                     DungeonItemID.GTHopeRoomLeft,
                                     DungeonItemID.GTHopeRoomRight,
@@ -434,12 +474,14 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
                                     DungeonItemID.GTDoubleSwitchPot,
                                     DungeonItemID.GTConveyorStarPitsPot,
                                     DungeonItemID.GTMiniHelmasaurDrop
-                                }, false,
-                                new List<IKeyLayout>
-                                {
-                                    _endFactory(_requirements[RequirementType.NoRequirement])
-                                }, dungeon, _requirements[RequirementType.NoRequirement])
-                        }, dungeon, _requirements[RequirementType.KeyDropShuffleOnBigKeyShuffleOnly]),
+                                },
+                                false, new List<IKeyLayout> {_endFactory()}, dungeon)
+                        },
+                        dungeon, _aggregateRequirements[new HashSet<IRequirement>
+                        {
+                            _bigKeyShuffleRequirements[true],
+                            _keyDropShuffleRequirements[true]
+                        }]),
                     _bigKeyFactory(
                         new List<DungeonItemID>
                         {
@@ -456,9 +498,9 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
                         },
                         new List<IKeyLayout>
                         {
-                            _endFactory(_requirements[RequirementType.SmallKeyShuffleOn]),
-                            _smallKeyFactory(7,
-                                new List<DungeonItemID>
+                            _endFactory(_smallKeyShuffleRequirements[true]),
+                            _smallKeyFactory(
+                                7, new List<DungeonItemID>
                                 {
                                     DungeonItemID.GTHopeRoomLeft,
                                     DungeonItemID.GTHopeRoomRight,
@@ -473,11 +515,11 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
                                     DungeonItemID.GTConveyorCrossPot,
                                     DungeonItemID.GTDoubleSwitchPot,
                                     DungeonItemID.GTMiniHelmasaurDrop
-                                }, true,
-                                new List<IKeyLayout>
+                                },
+                                true, new List<IKeyLayout>
                                 {
-                                    _smallKeyFactory(8,
-                                        new List<DungeonItemID>
+                                    _smallKeyFactory(
+                                        8, new List<DungeonItemID>
                                         {
                                             DungeonItemID.GTHopeRoomLeft,
                                             DungeonItemID.GTHopeRoomRight,
@@ -504,13 +546,16 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
                                             DungeonItemID.GTDoubleSwitchPot,
                                             DungeonItemID.GTConveyorStarPitsPot,
                                             DungeonItemID.GTMiniHelmasaurDrop
-                                        }, true,
-                                        new List<IKeyLayout>
-                                        {
-                                            _endFactory(_requirements[RequirementType.NoRequirement])
-                                        }, dungeon, _requirements[RequirementType.NoRequirement])
-                                }, dungeon, _requirements[RequirementType.SmallKeyShuffleOff])
-                        }, _requirements[RequirementType.KeyDropShuffleOnBigKeyShuffleOff]),
+                                        },
+                                        true, new List<IKeyLayout> {_endFactory()}, dungeon)
+                                },
+                                dungeon)
+                        },
+                        _aggregateRequirements[new HashSet<IRequirement>
+                        {
+                            _bigKeyShuffleRequirements[false],
+                            _keyDropShuffleRequirements[true]
+                        }]),
                     _bigKeyFactory(
                         new List<DungeonItemID>
                         {
@@ -527,9 +572,9 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
                         },
                         new List<IKeyLayout>
                         {
-                            _endFactory(_requirements[RequirementType.SmallKeyShuffleOn]),
-                            _smallKeyFactory(7,
-                                new List<DungeonItemID>
+                            _endFactory(_smallKeyShuffleRequirements[true]),
+                            _smallKeyFactory(
+                                7, new List<DungeonItemID>
                                 {
                                     DungeonItemID.GTHopeRoomLeft,
                                     DungeonItemID.GTHopeRoomRight,
@@ -541,11 +586,11 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
                                     DungeonItemID.GTTileRoom,
                                     DungeonItemID.GTConveyorCrossPot,
                                     DungeonItemID.GTDoubleSwitchPot
-                                }, false,
-                                new List<IKeyLayout>
+                                },
+                                false, new List<IKeyLayout>
                                 {
-                                    _smallKeyFactory(8,
-                                        new List<DungeonItemID>
+                                    _smallKeyFactory(
+                                        8, new List<DungeonItemID>
                                         {
                                             DungeonItemID.GTHopeRoomLeft,
                                             DungeonItemID.GTHopeRoomRight,
@@ -572,13 +617,16 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
                                             DungeonItemID.GTDoubleSwitchPot,
                                             DungeonItemID.GTConveyorStarPitsPot,
                                             DungeonItemID.GTMiniHelmasaurDrop
-                                        }, true,
-                                        new List<IKeyLayout>
-                                        {
-                                            _endFactory(_requirements[RequirementType.NoRequirement])
-                                        }, dungeon, _requirements[RequirementType.NoRequirement])
-                                }, dungeon, _requirements[RequirementType.SmallKeyShuffleOff])
-                        }, _requirements[RequirementType.KeyDropShuffleOnBigKeyShuffleOff]),
+                                        },
+                                        true, new List<IKeyLayout> {_endFactory()}, dungeon)
+                                },
+                                dungeon)
+                        },
+                        _aggregateRequirements[new HashSet<IRequirement>
+                        {
+                            _bigKeyShuffleRequirements[false],
+                            _keyDropShuffleRequirements[true]
+                        }]),
                     _bigKeyFactory(
                         new List<DungeonItemID>
                         {
@@ -589,9 +637,9 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
                         },
                         new List<IKeyLayout>
                         {
-                            _endFactory(_requirements[RequirementType.SmallKeyShuffleOn]),
-                            _smallKeyFactory(7,
-                                new List<DungeonItemID>
+                            _endFactory(_smallKeyShuffleRequirements[true]),
+                            _smallKeyFactory(
+                                7, new List<DungeonItemID>
                                 {
                                     DungeonItemID.GTHopeRoomLeft,
                                     DungeonItemID.GTHopeRoomRight,
@@ -603,11 +651,11 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
                                     DungeonItemID.GTTileRoom,
                                     DungeonItemID.GTConveyorCrossPot,
                                     DungeonItemID.GTDoubleSwitchPot
-                                }, false,
-                                new List<IKeyLayout>
+                                },
+                                false, new List<IKeyLayout>
                                 {
-                                    _smallKeyFactory(8,
-                                        new List<DungeonItemID>
+                                    _smallKeyFactory(
+                                        8, new List<DungeonItemID>
                                         {
                                             DungeonItemID.GTHopeRoomLeft,
                                             DungeonItemID.GTHopeRoomRight,
@@ -629,13 +677,16 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
                                             DungeonItemID.GTConveyorCrossPot,
                                             DungeonItemID.GTDoubleSwitchPot,
                                             DungeonItemID.GTConveyorStarPitsPot
-                                        }, false,
-                                        new List<IKeyLayout>
-                                        {
-                                            _endFactory(_requirements[RequirementType.NoRequirement])
-                                        }, dungeon, _requirements[RequirementType.NoRequirement])
-                                }, dungeon, _requirements[RequirementType.SmallKeyShuffleOff])
-                        }, _requirements[RequirementType.KeyDropShuffleOnBigKeyShuffleOff])
+                                        },
+                                        false, new List<IKeyLayout> {_endFactory()}, dungeon)
+                                },
+                                dungeon)
+                        },
+                        _aggregateRequirements[new HashSet<IRequirement>
+                        {
+                            _bigKeyShuffleRequirements[false],
+                            _keyDropShuffleRequirements[true]
+                        }])
                 };
         }
     }

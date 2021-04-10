@@ -4,23 +4,21 @@ using OpenTracker.Models.Modes;
 namespace OpenTracker.Models.Requirements.Mode
 {
     /// <summary>
-    /// This class contains item placement setting requirement data.
+    ///     This class contains item placement setting requirement data.
     /// </summary>
-    public class ItemPlacementRequirement : BooleanRequirement
+    public class ItemPlacementRequirement : BooleanRequirement, IItemPlacementRequirement
     {
         private readonly IMode _mode;
         private readonly ItemPlacement _expectedValue;
 
-        public delegate ItemPlacementRequirement Factory(ItemPlacement expectedValue);
-
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="mode">
-        /// The mode settings.
+        ///     The mode settings.
         /// </param>
         /// <param name="expectedValue">
-        /// The expected item placement value.
+        ///     The expected item placement value.
         /// </param>
         public ItemPlacementRequirement(IMode mode, ItemPlacement expectedValue)
         {
@@ -33,13 +31,13 @@ namespace OpenTracker.Models.Requirements.Mode
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the IMode interface.
+        ///     Subscribes to the PropertyChanged event on the IMode interface.
         /// </summary>
         /// <param name="sender">
-        /// The sending object of the event.
+        ///     The sending object of the event.
         /// </param>
         /// <param name="e">
-        /// The arguments of the PropertyChanged event.
+        ///     The arguments of the PropertyChanged event.
         /// </param>
         private void OnModeChanged(object? sender, PropertyChangedEventArgs e)
         {

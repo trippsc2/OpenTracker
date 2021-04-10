@@ -25,6 +25,6 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts
         ///     A new big key layout.
         /// </returns>
         delegate IBigKeyLayout Factory(
-            IList<DungeonItemID> bigKeyLocations, IList<IKeyLayout> children, IRequirement requirement);
+            IList<DungeonItemID> bigKeyLocations, IList<IKeyLayout> children, IRequirement? requirement = null);
     }
 }

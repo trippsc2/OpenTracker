@@ -1,34 +1,32 @@
 ﻿using System.ComponentModel;
 using OpenTracker.Models.Modes;
 
-namespace OpenTracker.Models.Requirements.Mode
+namespace OpenTracker.Models.Requirements.GuaranteedBossItems
 {
     /// <summary>
-    /// This class contains enemy shuffle requirement data.
+    ///     This class contains guaranteed boss items requirement data.
     /// </summary>
-    public class EnemyShuffleRequirement : BooleanRequirement
+    public class GuaranteedBossItemsRequirement : BooleanRequirement, IGuaranteedBossItemsRequirement
     {
         private readonly IMode _mode;
         private readonly bool _expectedValue;
 
-        public delegate EnemyShuffleRequirement Factory(bool expectedValue);
-        
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="mode">
-        /// The mode settings.
+        ///     The mode settings.
         /// </param>
         /// <param name="expectedValue">
-        /// The required enemy shuffle value.
+        ///     A boolean expected guaranteed boss items value.
         /// </param>
-        public EnemyShuffleRequirement(IMode mode, bool expectedValue)
+        public GuaranteedBossItemsRequirement(IMode mode, bool expectedValue)
         {
             _mode = mode;
             _expectedValue = expectedValue;
-            
+
             _mode.PropertyChanged += OnModeChanged;
-            
+
             UpdateValue();
         }
 
@@ -43,7 +41,7 @@ namespace OpenTracker.Models.Requirements.Mode
         /// </param>
         private void OnModeChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(IMode.EnemyShuffle))
+            if (e.PropertyName == nameof(IMode.GuaranteedBossItems))
             {
                 UpdateValue();
             }
@@ -51,7 +49,7 @@ namespace OpenTracker.Models.Requirements.Mode
 
         protected override bool ConditionMet()
         {
-            return _mode.EnemyShuffle == _expectedValue;
+            return _mode.GuaranteedBossItems == _expectedValue;
         }
     }
 }

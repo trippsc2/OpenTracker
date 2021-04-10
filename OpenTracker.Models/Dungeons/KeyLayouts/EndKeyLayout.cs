@@ -10,7 +10,7 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts
     /// </summary>
     public class EndKeyLayout : IEndKeyLayout
     {
-        private readonly IRequirement _requirement;
+        private readonly IRequirement? _requirement;
 
         /// <summary>
         ///     Constructor
@@ -18,14 +18,14 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts
         /// <param name="requirement">
         ///     The requirement for this key layout to be valid.
         /// </param>
-        public EndKeyLayout(IRequirement requirement)
+        public EndKeyLayout(IRequirement? requirement = null)
         {
             _requirement = requirement;
         }
 
         public bool CanBeTrue(IList<DungeonItemID> inaccessible, IList<DungeonItemID> accessible, IDungeonState state)
         {
-            return _requirement.Met;
+            return _requirement is null || _requirement.Met;
         }
     }
 }

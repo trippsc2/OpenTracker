@@ -1,6 +1,10 @@
 using System.Collections.Generic;
 using OpenTracker.Models.Dungeons.Items;
 using OpenTracker.Models.Requirements;
+using OpenTracker.Models.Requirements.Aggregate;
+using OpenTracker.Models.Requirements.BigKeyShuffle;
+using OpenTracker.Models.Requirements.KeyDropShuffle;
+using OpenTracker.Models.Requirements.SmallKeyShuffle;
 
 namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
 {
@@ -9,8 +13,11 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
     /// </summary>
     public class DPKeyLayoutFactory : IDPKeyLayoutFactory
     {
-        private readonly IRequirementDictionary _requirements;
-        
+        private readonly IAggregateRequirementDictionary _aggregateRequirements;
+        private readonly IBigKeyShuffleRequirementDictionary _bigKeyShuffleRequirements;
+        private readonly IKeyDropShuffleRequirementDictionary _keyDropShuffleRequirements;
+        private readonly ISmallKeyShuffleRequirementDictionary _smallKeyShuffleRequirements;
+
         private readonly IBigKeyLayout.Factory _bigKeyFactory;
         private readonly IEndKeyLayout.Factory _endFactory;
         private readonly ISmallKeyLayout.Factory _smallKeyFactory;
@@ -18,8 +25,17 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
         /// <summary>
         ///     Constructor
         /// </summary>
-        /// <param name="requirements">
-        ///     The requirement dictionary.
+        /// <param name="aggregateRequirements">
+        ///     The aggregate requirement dictionary.
+        /// </param>
+        /// <param name="bigKeyShuffleRequirements">
+        ///     The big key shuffle requirement dictionary.
+        /// </param>
+        /// <param name="keyDropShuffleRequirements">
+        ///     The key drop shuffle requirement dictionary.
+        /// </param>
+        /// <param name="smallKeyRequirements">
+        ///     The small key shuffle requirement dictionary.
         /// </param>
         /// <param name="bigKeyFactory">
         ///     An Autofac factory for creating big key layouts.
@@ -31,11 +47,17 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
         ///     An Autofac factory for creating small key layouts.
         /// </param>
         public DPKeyLayoutFactory(
-            IRequirementDictionary requirements, IBigKeyLayout.Factory bigKeyFactory, IEndKeyLayout.Factory endFactory,
-            ISmallKeyLayout.Factory smallKeyFactory)
+            IAggregateRequirementDictionary aggregateRequirements,
+            IBigKeyShuffleRequirementDictionary bigKeyShuffleRequirements,
+            IKeyDropShuffleRequirementDictionary keyDropShuffleRequirements,
+            ISmallKeyShuffleRequirementDictionary smallKeyRequirements, IBigKeyLayout.Factory bigKeyFactory,
+            IEndKeyLayout.Factory endFactory, ISmallKeyLayout.Factory smallKeyFactory)
         {
-            _requirements = requirements;
-            
+            _aggregateRequirements = aggregateRequirements;
+            _bigKeyShuffleRequirements = bigKeyShuffleRequirements;
+            _keyDropShuffleRequirements = keyDropShuffleRequirements;
+            _smallKeyShuffleRequirements = smallKeyRequirements;
+
             _bigKeyFactory = bigKeyFactory;
             _endFactory = endFactory;
             _smallKeyFactory = smallKeyFactory;
@@ -45,66 +67,81 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
         {
             return new List<IKeyLayout>
             {
-                _endFactory(_requirements[RequirementType.AllKeyShuffle]),
-                _smallKeyFactory(1,
-                    new List<DungeonItemID>
+                _endFactory(_aggregateRequirements[new HashSet<IRequirement>
+                {
+                    _bigKeyShuffleRequirements[true],
+                    _smallKeyShuffleRequirements[true]
+                }]),
+                _smallKeyFactory(
+                    1, new List<DungeonItemID>
                     {
-                        DungeonItemID.DPMapChest, DungeonItemID.DPTorch, DungeonItemID.DPBigChest
-                    }, false,
-                    new List<IKeyLayout> {_endFactory(_requirements[RequirementType.NoRequirement])}, dungeon,
-                    _requirements[RequirementType.KeyDropShuffleOffBigKeyShuffleOnly]),
-                _bigKeyFactory(new List<DungeonItemID> {DungeonItemID.DPMapChest, DungeonItemID.DPTorch},
+                        DungeonItemID.DPMapChest,
+                        DungeonItemID.DPTorch,
+                        DungeonItemID.DPBigChest
+                    },
+                    false, new List<IKeyLayout> {_endFactory()}, dungeon,
+                    _aggregateRequirements[new HashSet<IRequirement>
+                    {
+                        _bigKeyShuffleRequirements[true],
+                        _keyDropShuffleRequirements[false]
+                    }]),
+                _bigKeyFactory(
+                    new List<DungeonItemID> {DungeonItemID.DPMapChest, DungeonItemID.DPTorch},
                     new List<IKeyLayout>
                     {
-                        _endFactory(_requirements[RequirementType.SmallKeyShuffleOn]),
-                        _smallKeyFactory(1,
-                            new List<DungeonItemID>
+                        _endFactory(_smallKeyShuffleRequirements[true]),
+                        _smallKeyFactory(
+                            1, new List<DungeonItemID>
                             {
                                 DungeonItemID.DPMapChest,
                                 DungeonItemID.DPTorch,
                                 DungeonItemID.DPBigChest
-                            }, true,
-                            new List<IKeyLayout>
-                            {
-                                _endFactory(_requirements[RequirementType.NoRequirement])
-                            }, dungeon, _requirements[RequirementType.SmallKeyShuffleOff])
-                    }, _requirements[RequirementType.KeyDropShuffleOffBigKeyShuffleOff]),
+                            },
+                            true, new List<IKeyLayout> {_endFactory()}, dungeon)
+                    },
+                    _aggregateRequirements[new HashSet<IRequirement>
+                    {
+                        _bigKeyShuffleRequirements[false],
+                        _keyDropShuffleRequirements[false]
+                    }]),
                 _bigKeyFactory(
                     new List<DungeonItemID> {DungeonItemID.DPCompassChest, DungeonItemID.DPBigKeyChest},
                     new List<IKeyLayout>
                     {
-                        _endFactory(_requirements[RequirementType.SmallKeyShuffleOn]),
-                        _smallKeyFactory(1,
+                        _endFactory(_smallKeyShuffleRequirements[true]),
+                        _smallKeyFactory(
+                            1,
                             new List<DungeonItemID> {DungeonItemID.DPMapChest, DungeonItemID.DPTorch},
-                            false,
-                            new List<IKeyLayout>
-                            {
-                                _endFactory(_requirements[RequirementType.NoRequirement])
-                            }, dungeon, _requirements[RequirementType.SmallKeyShuffleOff])
-                    }, _requirements[RequirementType.KeyDropShuffleOffBigKeyShuffleOff]),
-                _smallKeyFactory(2,
-                    new List<DungeonItemID>
+                            false, new List<IKeyLayout> {_endFactory()}, dungeon)
+                    },
+                    _aggregateRequirements[new HashSet<IRequirement>
+                    {
+                        _bigKeyShuffleRequirements[false],
+                        _keyDropShuffleRequirements[false]
+                    }]),
+                _smallKeyFactory(
+                    2, new List<DungeonItemID>
                     {
                         DungeonItemID.DPMapChest,
                         DungeonItemID.DPTorch,
                         DungeonItemID.DPBigChest,
                         DungeonItemID.DPTiles1Pot
-                    }, false,
-                    new List<IKeyLayout>
+                    },
+                    false, new List<IKeyLayout>
                     {
-                        _smallKeyFactory(3,
-                            new List<DungeonItemID>
+                        _smallKeyFactory(
+                            3, new List<DungeonItemID>
                             {
                                 DungeonItemID.DPMapChest,
                                 DungeonItemID.DPTorch,
                                 DungeonItemID.DPBigChest,
                                 DungeonItemID.DPTiles1Pot,
                                 DungeonItemID.DPBeamosHallPot
-                            }, false,
-                            new List<IKeyLayout>
+                            },
+                            false, new List<IKeyLayout>
                             {
-                                _smallKeyFactory(4,
-                                    new List<DungeonItemID>
+                                _smallKeyFactory(
+                                    4, new List<DungeonItemID>
                                     {
                                         DungeonItemID.DPMapChest,
                                         DungeonItemID.DPTorch,
@@ -112,13 +149,16 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
                                         DungeonItemID.DPTiles1Pot,
                                         DungeonItemID.DPBeamosHallPot,
                                         DungeonItemID.DPTiles2Pot
-                                    }, false,
-                                    new List<IKeyLayout>
-                                    {
-                                        _endFactory(_requirements[RequirementType.NoRequirement])
-                                    }, dungeon, _requirements[RequirementType.NoRequirement])
-                            }, dungeon, _requirements[RequirementType.NoRequirement])
-                    }, dungeon, _requirements[RequirementType.KeyDropShuffleOnBigKeyShuffleOnly]),
+                                    },
+                                    false, new List<IKeyLayout> {_endFactory()}, dungeon)
+                            },
+                            dungeon)
+                    },
+                    dungeon, _aggregateRequirements[new HashSet<IRequirement>
+                    {
+                        _bigKeyShuffleRequirements[true],
+                        _keyDropShuffleRequirements[true]
+                    }]),
                 _bigKeyFactory(
                     new List<DungeonItemID>
                     {
@@ -129,39 +169,46 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
                         DungeonItemID.DPTiles1Pot,
                         DungeonItemID.DPBeamosHallPot,
                         DungeonItemID.DPTiles2Pot
-                    }, new List<IKeyLayout> {_endFactory(_requirements[RequirementType.NoRequirement])},
-                    _requirements[RequirementType.KeyDropShuffleOnSmallKeyShuffleOnly]),
+                    },
+                    new List<IKeyLayout> {_endFactory()}, _aggregateRequirements[new HashSet<IRequirement>
+                    {
+                        _bigKeyShuffleRequirements[false],
+                        _keyDropShuffleRequirements[true],
+                        _smallKeyShuffleRequirements[true]
+                    }]),
                 _bigKeyFactory(
                     new List<DungeonItemID>
                     {
-                        DungeonItemID.DPMapChest, DungeonItemID.DPTorch, DungeonItemID.DPTiles1Pot
+                        DungeonItemID.DPMapChest,
+                        DungeonItemID.DPTorch,
+                        DungeonItemID.DPTiles1Pot
                     },
                     new List<IKeyLayout>
                     {
-                        _endFactory(_requirements[RequirementType.SmallKeyShuffleOn]),
-                        _smallKeyFactory(2,
-                            new List<DungeonItemID>
+                        _endFactory(_smallKeyShuffleRequirements[true]),
+                        _smallKeyFactory(
+                            2, new List<DungeonItemID>
                             {
                                 DungeonItemID.DPMapChest,
                                 DungeonItemID.DPTorch,
                                 DungeonItemID.DPBigChest,
                                 DungeonItemID.DPTiles1Pot
-                            }, true,
-                            new List<IKeyLayout>
+                            },
+                            true, new List<IKeyLayout>
                             {
-                                _smallKeyFactory(3,
-                                    new List<DungeonItemID>
+                                _smallKeyFactory(
+                                    3, new List<DungeonItemID>
                                     {
                                         DungeonItemID.DPMapChest,
                                         DungeonItemID.DPTorch,
                                         DungeonItemID.DPBigChest,
                                         DungeonItemID.DPTiles1Pot,
                                         DungeonItemID.DPBeamosHallPot
-                                    }, true,
-                                    new List<IKeyLayout>
+                                    },
+                                    true, new List<IKeyLayout>
                                     {
-                                        _smallKeyFactory(4,
-                                            new List<DungeonItemID>
+                                        _smallKeyFactory(
+                                            4, new List<DungeonItemID>
                                             {
                                                 DungeonItemID.DPMapChest,
                                                 DungeonItemID.DPTorch,
@@ -169,87 +216,94 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
                                                 DungeonItemID.DPTiles1Pot,
                                                 DungeonItemID.DPBeamosHallPot,
                                                 DungeonItemID.DPTiles2Pot
-                                            }, true,
-                                            new List<IKeyLayout>
-                                            {
-                                                _endFactory(
-                                                    _requirements
-                                                        [RequirementType.NoRequirement])
-                                            }, dungeon,
-                                            _requirements[RequirementType.NoRequirement])
-                                    }, dungeon, _requirements[RequirementType.NoRequirement])
-                            }, dungeon, _requirements[RequirementType.SmallKeyShuffleOff])
-                    }, _requirements[RequirementType.KeyDropShuffleOnBigKeyShuffleOff]),
-                _bigKeyFactory(new List<DungeonItemID> {DungeonItemID.DPBeamosHallPot},
+                                            },
+                                            true, new List<IKeyLayout> {_endFactory()}, dungeon)
+                                    },
+                                    dungeon)
+                            },
+                            dungeon)
+                    },
+                    _aggregateRequirements[new HashSet<IRequirement>
+                    {
+                        _bigKeyShuffleRequirements[false],
+                        _keyDropShuffleRequirements[true]
+                    }]),
+                _bigKeyFactory(
+                    new List<DungeonItemID> {DungeonItemID.DPBeamosHallPot},
                     new List<IKeyLayout>
                     {
-                        _endFactory(_requirements[RequirementType.SmallKeyShuffleOn]),
-                        _smallKeyFactory(2,
-                            new List<DungeonItemID>
+                        _endFactory(_smallKeyShuffleRequirements[true]),
+                        _smallKeyFactory(
+                            2, new List<DungeonItemID>
                             {
                                 DungeonItemID.DPMapChest,
                                 DungeonItemID.DPTorch,
                                 DungeonItemID.DPTiles1Pot
-                            }, false,
-                            new List<IKeyLayout>
+                            },
+                            false, new List<IKeyLayout>
                             {
-                                _smallKeyFactory(3,
-                                    new List<DungeonItemID>
+                                _smallKeyFactory(
+                                    3, new List<DungeonItemID>
                                     {
                                         DungeonItemID.DPMapChest,
                                         DungeonItemID.DPTorch,
                                         DungeonItemID.DPBigChest,
                                         DungeonItemID.DPTiles1Pot
-                                    }, false,
-                                    new List<IKeyLayout>
+                                    },
+                                    false, new List<IKeyLayout>
                                     {
-                                        _smallKeyFactory(4,
-                                            new List<DungeonItemID>
+                                        _smallKeyFactory(
+                                            4, new List<DungeonItemID>
                                             {
                                                 DungeonItemID.DPMapChest,
                                                 DungeonItemID.DPTorch,
                                                 DungeonItemID.DPBigChest,
                                                 DungeonItemID.DPTiles1Pot,
                                                 DungeonItemID.DPTiles2Pot
-                                            }, false,
-                                            new List<IKeyLayout>
-                                            {
-                                                _endFactory(
-                                                    _requirements
-                                                        [RequirementType.NoRequirement])
-                                            }, dungeon,
-                                            _requirements[RequirementType.NoRequirement])
-                                    }, dungeon, _requirements[RequirementType.NoRequirement])
-                            }, dungeon, _requirements[RequirementType.SmallKeyShuffleOff])
-                    }, _requirements[RequirementType.KeyDropShuffleOnBigKeyShuffleOff]),
-                _bigKeyFactory(new List<DungeonItemID> {DungeonItemID.DPTiles2Pot},
+                                            },
+                                            false, new List<IKeyLayout> {_endFactory()}, dungeon)
+                                    },
+                                    dungeon)
+                            },
+                            dungeon)
+                    },
+                    _aggregateRequirements[new HashSet<IRequirement>
+                    {
+                        _bigKeyShuffleRequirements[false],
+                        _keyDropShuffleRequirements[true]
+                    }]),
+                _bigKeyFactory(
+                    new List<DungeonItemID> {DungeonItemID.DPTiles2Pot},
                     new List<IKeyLayout>
                     {
-                        _endFactory(_requirements[RequirementType.SmallKeyShuffleOn]),
-                        _smallKeyFactory(2,
-                            new List<DungeonItemID>
+                        _endFactory(_smallKeyShuffleRequirements[true]),
+                        _smallKeyFactory(
+                            2, new List<DungeonItemID>
                             {
                                 DungeonItemID.DPMapChest,
                                 DungeonItemID.DPTorch,
                                 DungeonItemID.DPTiles1Pot
-                            }, false,
-                            new List<IKeyLayout>
+                            },
+                            false, new List<IKeyLayout>
                             {
-                                _smallKeyFactory(4,
-                                    new List<DungeonItemID>
+                                _smallKeyFactory(
+                                    4, new List<DungeonItemID>
                                     {
                                         DungeonItemID.DPMapChest,
                                         DungeonItemID.DPTorch,
                                         DungeonItemID.DPBigChest,
                                         DungeonItemID.DPTiles1Pot,
                                         DungeonItemID.DPBeamosHallPot
-                                    }, false,
-                                    new List<IKeyLayout>
-                                    {
-                                        _endFactory(_requirements[RequirementType.NoRequirement])
-                                    }, dungeon, _requirements[RequirementType.NoRequirement])
-                            }, dungeon, _requirements[RequirementType.SmallKeyShuffleOff])
-                    }, _requirements[RequirementType.KeyDropShuffleOnBigKeyShuffleOff])
+                                    },
+                                    false, new List<IKeyLayout> {_endFactory()}, dungeon)
+                            },
+                            dungeon)
+                    },
+                    _aggregateRequirements[new HashSet<IRequirement>
+                    {
+                        _bigKeyShuffleRequirements[false],
+                        _keyDropShuffleRequirements[true]
+                    }])
                 };
         }
     }

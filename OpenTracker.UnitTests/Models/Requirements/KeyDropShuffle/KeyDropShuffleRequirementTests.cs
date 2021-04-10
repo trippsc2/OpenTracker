@@ -27,8 +27,7 @@ namespace OpenTracker.UnitTests.Models.Requirements.KeyDropShuffle
         [InlineData(true, false, false)]
         [InlineData(false, false, true)]
         [InlineData(true, true, true)]
-        public void Met_ShouldReturnExpectedValue(
-            bool expected, bool keyDropShuffle, bool requirement)
+        public void Met_ShouldReturnExpectedValue(bool expected, bool keyDropShuffle, bool requirement)
         {
             _mode.KeyDropShuffle.Returns(keyDropShuffle);
             var sut = new KeyDropShuffleRequirement(_mode, requirement);

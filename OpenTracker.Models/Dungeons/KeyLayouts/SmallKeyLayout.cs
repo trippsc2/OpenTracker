@@ -16,7 +16,7 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts
         private readonly IList<DungeonItemID> _smallKeyLocations;
         private readonly bool _bigKeyInLocations;
         private readonly IList<IKeyLayout> _children;
-        private readonly IRequirement _requirement;
+        private readonly IRequirement? _requirement;
         private readonly IDungeon _dungeon;
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts
         /// </param>
         public SmallKeyLayout(
             int count, IList<DungeonItemID> smallKeyLocations, bool bigKeyInLocations, IList<IKeyLayout> children,
-            IDungeon dungeon, IRequirement requirement)
+            IDungeon dungeon, IRequirement? requirement = null)
         {
             _count = count;
             _smallKeyLocations = smallKeyLocations;
@@ -55,7 +55,7 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts
 
         public bool CanBeTrue(IList<DungeonItemID> inaccessible, IList<DungeonItemID> accessible, IDungeonState state)
         {
-            if (!_requirement.Met)
+            if (_requirement is not null && !_requirement.Met)
             {
                 return false;
             }
