@@ -211,7 +211,8 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
                 {
                     var requirement = connection.Requirement;
 
-                    if (requirement is KeyDoorRequirement || requirementSubscriptions.Contains(requirement))
+                    if (requirement is null || requirement is KeyDoorRequirement ||
+                        requirementSubscriptions.Contains(requirement))
                     {
                         continue;
                     }
