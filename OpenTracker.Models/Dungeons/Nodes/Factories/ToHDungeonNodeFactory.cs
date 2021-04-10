@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.Dungeons.KeyDoors;
 using OpenTracker.Models.Dungeons.Mutable;
 using OpenTracker.Models.NodeConnections;
 using OpenTracker.Models.Nodes;
-using OpenTracker.Models.Requirements;
+using OpenTracker.Models.Requirements.Boss;
+using OpenTracker.Models.Requirements.Complex;
 
 namespace OpenTracker.Models.Dungeons.Nodes.Factories
 {
@@ -13,8 +15,10 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
     /// </summary>
     public class ToHDungeonNodeFactory : IToHDungeonNodeFactory
     {
-        private readonly IRequirementDictionary _requirements;
-        private readonly IOverworldNodeDictionary _requirementNodes;
+        private readonly IBossRequirementDictionary _bossRequirements;
+        private readonly IComplexRequirementDictionary _complexRequirements;
+        
+        private readonly IOverworldNodeDictionary _overworldNodes;
 
         private readonly IEntryNodeConnection.Factory _entryFactory;
         private readonly INodeConnection.Factory _connectionFactory;
@@ -22,11 +26,14 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
         /// <summary>
         ///     Constructor
         /// </summary>
-        /// <param name="requirements">
-        ///     The requirement dictionary.
+        /// <param name="bossRequirements">
+        ///     The boss requirement dictionary.
         /// </param>
-        /// <param name="requirementNodes">
-        ///     The requirement node dictionary.
+        /// <param name="complexRequirements">
+        ///     The complex requirement dictionary.
+        /// </param>
+        /// <param name="overworldNodes">
+        ///     The overworld node dictionary.
         /// </param>
         /// <param name="entryFactory">
         ///     An Autofac factory for creating entry node connections.
@@ -35,11 +42,14 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
         ///     An Autofac factory for creating regular node connections.
         /// </param>
         public ToHDungeonNodeFactory(
-            IRequirementDictionary requirements, IOverworldNodeDictionary requirementNodes,
-            IEntryNodeConnection.Factory entryFactory, INodeConnection.Factory connectionFactory)
+            IBossRequirementDictionary bossRequirements, IComplexRequirementDictionary complexRequirements,
+            IOverworldNodeDictionary overworldNodes, IEntryNodeConnection.Factory entryFactory,
+            INodeConnection.Factory connectionFactory)
         {
-            _requirements = requirements;
-            _requirementNodes = requirementNodes;
+            _bossRequirements = bossRequirements;
+            _complexRequirements = complexRequirements;
+
+            _overworldNodes = overworldNodes;
 
             _entryFactory = entryFactory;
             _connectionFactory = connectionFactory;
@@ -51,7 +61,7 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
             switch (id)
             {
                 case DungeonNodeID.ToH:
-                    connections.Add(_entryFactory(_requirementNodes[OverworldNodeID.ToHEntry]));
+                    connections.Add(_entryFactory(_overworldNodes[OverworldNodeID.ToHEntry]));
                     break;
                 case DungeonNodeID.ToHPastKeyDoor:
                     connections.Add(_connectionFactory(
@@ -61,7 +71,7 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
                 case DungeonNodeID.ToHBasementTorchRoom:
                     connections.Add(_connectionFactory(
                         dungeonData.Nodes[DungeonNodeID.ToHPastKeyDoor], node,
-                        _requirements[RequirementType.FireSource]));
+                        _complexRequirements[ComplexRequirementType.FireSource]));
                     break;
                 case DungeonNodeID.ToHPastBigKeyDoor:
                     connections.Add(_connectionFactory(
@@ -69,7 +79,7 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
                         dungeonData.KeyDoors[KeyDoorID.ToHBigKeyDoor].Requirement));
                     connections.Add(_connectionFactory(
                         dungeonData.Nodes[DungeonNodeID.ToH], node,
-                        _requirements[RequirementType.ToHHerapot]));
+                        _complexRequirements[ComplexRequirementType.ToHHerapot]));
                     break;
                 case DungeonNodeID.ToHBigChest:
                     connections.Add(_connectionFactory(
@@ -78,7 +88,7 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
                     break;
                 case DungeonNodeID.ToHBoss:
                     connections.Add(_connectionFactory(dungeonData.Nodes[DungeonNodeID.ToHPastBigKeyDoor], node,
-                        _requirements[RequirementType.ToHBoss]));
+                        _bossRequirements[BossPlacementID.ToHBoss]));
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(id));

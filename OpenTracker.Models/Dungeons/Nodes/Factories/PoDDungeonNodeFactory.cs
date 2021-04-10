@@ -1,10 +1,16 @@
 using System;
 using System.Collections.Generic;
+using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.Dungeons.KeyDoors;
 using OpenTracker.Models.Dungeons.Mutable;
+using OpenTracker.Models.Items;
 using OpenTracker.Models.NodeConnections;
 using OpenTracker.Models.Nodes;
-using OpenTracker.Models.Requirements;
+using OpenTracker.Models.Requirements.Boss;
+using OpenTracker.Models.Requirements.Complex;
+using OpenTracker.Models.Requirements.Item;
+using OpenTracker.Models.Requirements.SequenceBreak;
+using OpenTracker.Models.SequenceBreaks;
 
 namespace OpenTracker.Models.Dungeons.Nodes.Factories
 {
@@ -13,8 +19,12 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
     /// </summary>
     public class PoDDungeonNodeFactory : IPoDDungeonNodeFactory
     {
-        private readonly IRequirementDictionary _requirements;
-        private readonly IOverworldNodeDictionary _requirementNodes;
+        private readonly IBossRequirementDictionary _bossRequirements;
+        private readonly IComplexRequirementDictionary _complexRequirements;
+        private readonly IItemRequirementDictionary _itemRequirements;
+        private readonly ISequenceBreakRequirementDictionary _sequenceBreakRequirements;
+        
+        private readonly IOverworldNodeDictionary _overworldNodes;
 
         private readonly IEntryNodeConnection.Factory _entryFactory;
         private readonly INodeConnection.Factory _connectionFactory;
@@ -22,11 +32,20 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
         /// <summary>
         ///     Constructor
         /// </summary>
-        /// <param name="requirements">
-        ///     The requirement dictionary.
+        /// <param name="bossRequirements">
+        ///     The boss requirement dictionary.
         /// </param>
-        /// <param name="requirementNodes">
-        ///     The requirement node dictionary.
+        /// <param name="complexRequirements">
+        ///     The complex requirement dictionary.
+        /// </param>
+        /// <param name="itemRequirements">
+        ///     The item requirement dictionary.
+        /// </param>
+        /// <param name="sequenceBreakRequirements">
+        ///     The sequence break requirement dictionary.
+        /// </param>
+        /// <param name="overworldNodes">
+        ///     The overworld node dictionary.
         /// </param>
         /// <param name="entryFactory">
         ///     An Autofac factory for creating entry node connections.
@@ -35,11 +54,17 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
         ///     An Autofac factory for creating regular node connections.
         /// </param>
         public PoDDungeonNodeFactory(
-            IRequirementDictionary requirements, IOverworldNodeDictionary requirementNodes,
-            IEntryNodeConnection.Factory entryFactory, INodeConnection.Factory connectionFactory)
+            IBossRequirementDictionary bossRequirements, IComplexRequirementDictionary complexRequirements,
+            IItemRequirementDictionary itemRequirements, ISequenceBreakRequirementDictionary sequenceBreakRequirements,
+            IOverworldNodeDictionary overworldNodes, IEntryNodeConnection.Factory entryFactory,
+            INodeConnection.Factory connectionFactory)
         {
-            _requirements = requirements;
-            _requirementNodes = requirementNodes;
+            _bossRequirements = bossRequirements;
+            _complexRequirements = complexRequirements;
+            _itemRequirements = itemRequirements;
+            _sequenceBreakRequirements = sequenceBreakRequirements;
+
+            _overworldNodes = overworldNodes;
 
             _entryFactory = entryFactory;
             _connectionFactory = connectionFactory;
@@ -51,7 +76,7 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
             switch (id)
             {
                 case DungeonNodeID.PoD:
-                    connections.Add(_entryFactory(_requirementNodes[OverworldNodeID.PoDEntry]));
+                    connections.Add(_entryFactory(_overworldNodes[OverworldNodeID.PoDEntry]));
                     connections.Add(_connectionFactory(
                         dungeonData.Nodes[DungeonNodeID.PoDLobbyArena], node,
                         dungeonData.KeyDoors[KeyDoorID.PoDFrontKeyDoor].Requirement));
@@ -59,21 +84,19 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
                 case DungeonNodeID.PoDPastFirstRedGoriyaRoom:
                     connections.Add(_connectionFactory(
                         dungeonData.Nodes[DungeonNodeID.PoD], node,
-                        _requirements[RequirementType.RedEyegoreGoriya]));
+                        _complexRequirements[ComplexRequirementType.RedEyegoreGoriya]));
                     connections.Add(_connectionFactory(
                         dungeonData.Nodes[DungeonNodeID.PoD], node,
-                        _requirements[RequirementType.CameraUnlock]));
+                        _complexRequirements[ComplexRequirementType.CameraUnlock]));
                     connections.Add(_connectionFactory(
                         dungeonData.Nodes[DungeonNodeID.PoD], node,
-                        _requirements[RequirementType.MimicClip]));
+                        _sequenceBreakRequirements[SequenceBreakType.MimicClip]));
                     break;
                 case DungeonNodeID.PoDFrontKeyDoor:
                     connections.Add(_connectionFactory(
-                        dungeonData.Nodes[DungeonNodeID.PoD], node,
-                        _requirements[RequirementType.NoRequirement]));
+                        dungeonData.Nodes[DungeonNodeID.PoD], node));
                     connections.Add(_connectionFactory(
-                        dungeonData.Nodes[DungeonNodeID.PoDLobbyArena], node,
-                        _requirements[RequirementType.NoRequirement]));
+                        dungeonData.Nodes[DungeonNodeID.PoDLobbyArena], node));
                     break;
                 case DungeonNodeID.PoDLobbyArena:
                     connections.Add(_connectionFactory(
@@ -81,7 +104,7 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
                         dungeonData.KeyDoors[KeyDoorID.PoDFrontKeyDoor].Requirement));
                     connections.Add(_connectionFactory(
                         dungeonData.Nodes[DungeonNodeID.PoDPastFirstRedGoriyaRoom], node,
-                        _requirements[RequirementType.Hammer]));
+                        _itemRequirements[(ItemType.Hammer, 1)]));
                     connections.Add(_connectionFactory(
                         dungeonData.Nodes[DungeonNodeID.PoDPastCollapsingWalkwayKeyDoor], node,
                         dungeonData.KeyDoors[KeyDoorID.PoDCollapsingWalkwayKeyDoor].Requirement));
@@ -93,11 +116,9 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
                     break;
                 case DungeonNodeID.PoDCollapsingWalkwayKeyDoor:
                     connections.Add(_connectionFactory(
-                        dungeonData.Nodes[DungeonNodeID.PoDLobbyArena], node,
-                        _requirements[RequirementType.NoRequirement]));
+                        dungeonData.Nodes[DungeonNodeID.PoDLobbyArena], node));
                     connections.Add(_connectionFactory(
-                        dungeonData.Nodes[DungeonNodeID.PoDPastCollapsingWalkwayKeyDoor], node,
-                        _requirements[RequirementType.NoRequirement]));
+                        dungeonData.Nodes[DungeonNodeID.PoDPastCollapsingWalkwayKeyDoor], node));
                     break;
                 case DungeonNodeID.PoDPastCollapsingWalkwayKeyDoor:
                     connections.Add(_connectionFactory(
@@ -113,15 +134,13 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
                 case DungeonNodeID.PoDDarkBasement:
                     connections.Add(_connectionFactory(
                         dungeonData.Nodes[DungeonNodeID.PoDPastCollapsingWalkwayKeyDoor], node,
-                        _requirements[RequirementType.DarkRoomPoDDarkBasement]));
+                        _complexRequirements[ComplexRequirementType.DarkRoomPoDDarkBasement]));
                     break;
                 case DungeonNodeID.PoDHarmlessHellwayKeyDoor:
                     connections.Add(_connectionFactory(
-                        dungeonData.Nodes[DungeonNodeID.PoDPastCollapsingWalkwayKeyDoor], node,
-                        _requirements[RequirementType.NoRequirement]));
+                        dungeonData.Nodes[DungeonNodeID.PoDPastCollapsingWalkwayKeyDoor], node));
                     connections.Add(_connectionFactory(
-                        dungeonData.Nodes[DungeonNodeID.PoDHarmlessHellwayRoom], node,
-                        _requirements[RequirementType.NoRequirement]));
+                        dungeonData.Nodes[DungeonNodeID.PoDHarmlessHellwayRoom], node));
                     break;
                 case DungeonNodeID.PoDHarmlessHellwayRoom:
                     connections.Add(_connectionFactory(
@@ -130,35 +149,31 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
                     break;
                 case DungeonNodeID.PoDDarkMazeKeyDoor:
                     connections.Add(_connectionFactory(
-                        dungeonData.Nodes[DungeonNodeID.PoDPastCollapsingWalkwayKeyDoor], node,
-                        _requirements[RequirementType.NoRequirement]));
+                        dungeonData.Nodes[DungeonNodeID.PoDPastCollapsingWalkwayKeyDoor], node));
                     connections.Add(_connectionFactory(
-                        dungeonData.Nodes[DungeonNodeID.PoDPastDarkMazeKeyDoor], node,
-                        _requirements[RequirementType.NoRequirement]));
+                        dungeonData.Nodes[DungeonNodeID.PoDPastDarkMazeKeyDoor], node));
                     break;
                 case DungeonNodeID.PoDPastDarkMazeKeyDoor:
                     connections.Add(_connectionFactory(
                         dungeonData.Nodes[DungeonNodeID.PoDPastCollapsingWalkwayKeyDoor], node,
                         dungeonData.KeyDoors[KeyDoorID.PoDDarkMazeKeyDoor].Requirement));
                     connections.Add(_connectionFactory(
-                        dungeonData.Nodes[DungeonNodeID.PoDDarkMaze], node,
-                        _requirements[RequirementType.NoRequirement]));
+                        dungeonData.Nodes[DungeonNodeID.PoDDarkMaze], node));
                     break;
                 case DungeonNodeID.PoDDarkMaze:
                     connections.Add(_connectionFactory(
                         dungeonData.Nodes[DungeonNodeID.PoDPastDarkMazeKeyDoor], node,
-                        _requirements[RequirementType.DarkRoomPoDDarkMaze]));
+                        _complexRequirements[ComplexRequirementType.DarkRoomPoDDarkMaze]));
                     connections.Add(_connectionFactory(
                         dungeonData.Nodes[DungeonNodeID.PoDBigChestLedge], node,
-                        _requirements[RequirementType.DarkRoomPoDDarkMaze]));
+                        _complexRequirements[ComplexRequirementType.DarkRoomPoDDarkMaze]));
                     break;
                 case DungeonNodeID.PoDBigChestLedge:
                     connections.Add(_connectionFactory(
-                        dungeonData.Nodes[DungeonNodeID.PoDDarkMaze], node,
-                        _requirements[RequirementType.NoRequirement]));
+                        dungeonData.Nodes[DungeonNodeID.PoDDarkMaze], node));
                     connections.Add(_connectionFactory(
                         dungeonData.Nodes[DungeonNodeID.PoDPastCollapsingWalkwayKeyDoor], node,
-                        _requirements[RequirementType.BombJumpPoDHammerJump]));
+                        _sequenceBreakRequirements[SequenceBreakType.BombJumpPoDHammerJump]));
                     break;
                 case DungeonNodeID.PoDBigChest:
                     connections.Add(_connectionFactory(
@@ -168,36 +183,34 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
                 case DungeonNodeID.PoDPastSecondRedGoriyaRoom:
                     connections.Add(_connectionFactory(
                         dungeonData.Nodes[DungeonNodeID.PoDLobbyArena], node,
-                        _requirements[RequirementType.RedEyegoreGoriya]));
+                        _complexRequirements[ComplexRequirementType.RedEyegoreGoriya]));
                     connections.Add(_connectionFactory(
                         dungeonData.Nodes[DungeonNodeID.PoDLobbyArena], node,
-                        _requirements[RequirementType.MimicClip]));
+                        _sequenceBreakRequirements[SequenceBreakType.MimicClip]));
                     break;
                 case DungeonNodeID.PoDPastBowStatue:
                     connections.Add(_connectionFactory(
                         dungeonData.Nodes[DungeonNodeID.PoDPastSecondRedGoriyaRoom], node,
-                        _requirements[RequirementType.Bow]));
+                        _itemRequirements[(ItemType.Bow, 1)]));
                     break;
                 case DungeonNodeID.PoDBossAreaDarkRooms:
                     connections.Add(_connectionFactory(
                         dungeonData.Nodes[DungeonNodeID.PoDPastBowStatue], node,
-                        _requirements[RequirementType.DarkRoomPoDBossArea]));
+                        _complexRequirements[ComplexRequirementType.DarkRoomPoDBossArea]));
                     break;
                 case DungeonNodeID.PoDPastHammerBlocks:
                     connections.Add(_connectionFactory(
                         dungeonData.Nodes[DungeonNodeID.PoDBossAreaDarkRooms], node,
-                        _requirements[RequirementType.Hammer]));
+                        _itemRequirements[(ItemType.Hammer, 1)]));
                     connections.Add(_connectionFactory(
                         dungeonData.Nodes[DungeonNodeID.PoDPastBossAreaKeyDoor], node,
                         dungeonData.KeyDoors[KeyDoorID.PoDBossAreaKeyDoor].Requirement));
                     break;
                 case DungeonNodeID.PoDBossAreaKeyDoor:
                     connections.Add(_connectionFactory(
-                        dungeonData.Nodes[DungeonNodeID.PoDPastHammerBlocks], node,
-                        _requirements[RequirementType.NoRequirement]));
+                        dungeonData.Nodes[DungeonNodeID.PoDPastHammerBlocks], node));
                     connections.Add(_connectionFactory(
-                        dungeonData.Nodes[DungeonNodeID.PoDPastBossAreaKeyDoor], node,
-                        _requirements[RequirementType.NoRequirement]));
+                        dungeonData.Nodes[DungeonNodeID.PoDPastBossAreaKeyDoor], node));
                     break;
                 case DungeonNodeID.PoDPastBossAreaKeyDoor:
                     connections.Add(_connectionFactory(
@@ -212,7 +225,7 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
                 case DungeonNodeID.PoDBoss:
                     connections.Add(_connectionFactory(
                         dungeonData.Nodes[DungeonNodeID.PoDBossRoom], node,
-                        _requirements[RequirementType.PoDBoss]));
+                        _bossRequirements[BossPlacementID.PoDBoss]));
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(id));

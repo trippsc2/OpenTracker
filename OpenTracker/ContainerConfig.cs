@@ -28,6 +28,7 @@ using OpenTracker.Models.Requirements.Aggregate;
 using OpenTracker.Models.Requirements.Alternative;
 using OpenTracker.Models.Requirements.BigKeyShuffle;
 using OpenTracker.Models.Requirements.Boss;
+using OpenTracker.Models.Requirements.BossShuffle;
 using OpenTracker.Models.Requirements.Complex;
 using OpenTracker.Models.Requirements.EnemyShuffle;
 using OpenTracker.Models.Requirements.GuaranteedBossItems;
@@ -103,7 +104,6 @@ namespace OpenTracker
 
         private static List<string> ModelsSelfTypes => new()
         {
-            nameof(BossShuffleRequirement),
             nameof(CompassShuffleRequirement),
             nameof(GenericKeysRequirement),
             nameof(MapShuffleRequirement),
@@ -159,7 +159,10 @@ namespace OpenTracker
             nameof(AggregateRequirementDictionary),
             nameof(AlternativeRequirementDictionary),
             nameof(BigKeyShuffleRequirementDictionary),
+            nameof(BossRequirementDictionary),
             nameof(BossTypeRequirementDictionary),
+            nameof(BossTypeRequirementFactory),
+            nameof(BossShuffleRequirementDictionary),
             nameof(BossTypeRequirementFactory),
             nameof(ComplexRequirementDictionary),
             nameof(ComplexRequirementFactory),

@@ -1,26 +1,24 @@
 ﻿using System.ComponentModel;
 using OpenTracker.Models.Modes;
 
-namespace OpenTracker.Models.Requirements.Mode
+namespace OpenTracker.Models.Requirements.BossShuffle
 {
     /// <summary>
-    /// This class contains boss shuffle requirement data.
+    ///     This class contains boss shuffle requirement data.
     /// </summary>
-    public class BossShuffleRequirement : BooleanRequirement
+    public class BossShuffleRequirement : BooleanRequirement, IBossShuffleRequirement
     {
         private readonly IMode _mode;
         private readonly bool _expectedValue;
 
-        public delegate BossShuffleRequirement Factory(bool expectedValue);
-
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="mode">
-        /// The mode settings.
+        ///     The mode settings.
         /// </param>
         /// <param name="expectedValue">
-        /// The expected boss shuffle value.
+        ///     The expected boss shuffle value.
         /// </param>
         public BossShuffleRequirement(IMode mode, bool expectedValue)
         {
@@ -33,13 +31,13 @@ namespace OpenTracker.Models.Requirements.Mode
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the IMode interface.
+        ///     Subscribes to the PropertyChanged event on the IMode interface.
         /// </summary>
         /// <param name="sender">
-        /// The event sender.
+        ///     The event sender.
         /// </param>
         /// <param name="e">
-        /// The PropertyChanged event args.
+        ///     The PropertyChanged event args.
         /// </param>
         private void OnModeChanged(object? sender, PropertyChangedEventArgs e)
         {

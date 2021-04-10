@@ -21,7 +21,7 @@ namespace OpenTracker.Models.Requirements.Complex
         public ComplexRequirementDictionary(IComplexRequirementFactory.Factory factory)
             : base(new Dictionary<ComplexRequirementType, IRequirement>())
         {
-            _factory = new Lazy<IComplexRequirementFactory>(factory());
+            _factory = new Lazy<IComplexRequirementFactory>(() => factory());
         }
 
         protected override IRequirement Create(ComplexRequirementType key)

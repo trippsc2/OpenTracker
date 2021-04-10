@@ -17,9 +17,9 @@ namespace OpenTracker.Models.Requirements.Boss
         public BossTypeRequirementDictionary(IBossTypeRequirementFactory.Factory factory)
             : base(new Dictionary<BossType, IRequirement>())
         {
-            _factory = new Lazy<IBossTypeRequirementFactory>(factory());
+            _factory = new Lazy<IBossTypeRequirementFactory>(() => factory());
 
-            NoBoss = new Lazy<IRequirement>(_factory.Value.GetBossTypeRequirement(null));
+            NoBoss = new Lazy<IRequirement>(() => _factory.Value.GetBossTypeRequirement(null));
         }
 
         protected override IRequirement Create(BossType key)

@@ -1,10 +1,14 @@
 using System;
 using System.Collections.Generic;
+using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.Dungeons.KeyDoors;
 using OpenTracker.Models.Dungeons.Mutable;
+using OpenTracker.Models.Items;
 using OpenTracker.Models.NodeConnections;
 using OpenTracker.Models.Nodes;
-using OpenTracker.Models.Requirements;
+using OpenTracker.Models.Requirements.Boss;
+using OpenTracker.Models.Requirements.BossShuffle;
+using OpenTracker.Models.Requirements.Item;
 
 namespace OpenTracker.Models.Dungeons.Nodes.Factories
 {
@@ -13,8 +17,11 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
     /// </summary>
     public class TTDungeonNodeFactory : ITTDungeonNodeFactory
     {
-        private readonly IRequirementDictionary _requirements;
-        private readonly IOverworldNodeDictionary _requirementNodes;
+        private readonly IBossRequirementDictionary _bossRequirements;
+        private readonly IBossShuffleRequirementDictionary _bossShuffleRequirements;
+        private readonly IItemRequirementDictionary _itemRequirements;
+        
+        private readonly IOverworldNodeDictionary _overworldNodes;
 
         private readonly IEntryNodeConnection.Factory _entryFactory;
         private readonly INodeConnection.Factory _connectionFactory;
@@ -22,11 +29,17 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
         /// <summary>
         ///     Constructor
         /// </summary>
-        /// <param name="requirements">
-        ///     The requirement dictionary.
+        /// <param name="bossRequirements">
+        ///     The boss requirement dictionary.
         /// </param>
-        /// <param name="requirementNodes">
-        ///     The requirement node dictionary.
+        /// <param name="bossShuffleRequirements">
+        ///     The boss shuffle requirement dictionary.
+        /// </param>
+        /// <param name="itemRequirements">
+        ///     The item requirement dictionary.
+        /// </param>
+        /// <param name="overworldNodes">
+        ///     The overworld node dictionary.
         /// </param>
         /// <param name="entryFactory">
         ///     An Autofac factory for creating entry node connections.
@@ -35,11 +48,15 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
         ///     An Autofac factory for creating regular node connections.
         /// </param>
         public TTDungeonNodeFactory(
-            IRequirementDictionary requirements, IOverworldNodeDictionary requirementNodes,
+            IBossRequirementDictionary bossRequirements, IBossShuffleRequirementDictionary bossShuffleRequirements,
+            IItemRequirementDictionary itemRequirements, IOverworldNodeDictionary overworldNodes,
             IEntryNodeConnection.Factory entryFactory, INodeConnection.Factory connectionFactory)
         {
-            _requirements = requirements;
-            _requirementNodes = requirementNodes;
+            _bossRequirements = bossRequirements;
+            _bossShuffleRequirements = bossShuffleRequirements;
+            _itemRequirements = itemRequirements;
+
+            _overworldNodes = overworldNodes;
 
             _entryFactory = entryFactory;
             _connectionFactory = connectionFactory;
@@ -51,18 +68,16 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
             switch (id)
             {
                 case DungeonNodeID.TT:
-                    connections.Add(_entryFactory(_requirementNodes[OverworldNodeID.TTEntry]));
+                    connections.Add(_entryFactory(_overworldNodes[OverworldNodeID.TTEntry]));
                     connections.Add(_connectionFactory(
                         dungeonData.Nodes[DungeonNodeID.TTPastBigKeyDoor], node,
                         dungeonData.KeyDoors[KeyDoorID.TTBigKeyDoor].Requirement));
                     break;
                 case DungeonNodeID.TTBigKeyDoor:
                     connections.Add(_connectionFactory(
-                        dungeonData.Nodes[DungeonNodeID.TT], node,
-                        _requirements[RequirementType.NoRequirement]));
+                        dungeonData.Nodes[DungeonNodeID.TT], node));
                     connections.Add(_connectionFactory(
-                        dungeonData.Nodes[DungeonNodeID.TTPastBigKeyDoor], node,
-                        _requirements[RequirementType.NoRequirement]));
+                        dungeonData.Nodes[DungeonNodeID.TTPastBigKeyDoor], node));
                     break;
                 case DungeonNodeID.TTPastBigKeyDoor:
                     connections.Add(_connectionFactory(
@@ -74,11 +89,9 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
                     break;
                 case DungeonNodeID.TTFirstKeyDoor:
                     connections.Add(_connectionFactory(
-                        dungeonData.Nodes[DungeonNodeID.TTPastBigKeyDoor], node,
-                        _requirements[RequirementType.NoRequirement]));
+                        dungeonData.Nodes[DungeonNodeID.TTPastBigKeyDoor], node));
                     connections.Add(_connectionFactory(
-                        dungeonData.Nodes[DungeonNodeID.TTPastFirstKeyDoor], node,
-                        _requirements[RequirementType.NoRequirement]));
+                        dungeonData.Nodes[DungeonNodeID.TTPastFirstKeyDoor], node));
                     break;
                 case DungeonNodeID.TTPastFirstKeyDoor:
                     connections.Add(_connectionFactory(
@@ -95,11 +108,9 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
                     break;
                 case DungeonNodeID.TTBigChestKeyDoor:
                     connections.Add(_connectionFactory(
-                        dungeonData.Nodes[DungeonNodeID.TTPastFirstKeyDoor], node,
-                        _requirements[RequirementType.NoRequirement]));
+                        dungeonData.Nodes[DungeonNodeID.TTPastFirstKeyDoor], node));
                     connections.Add(_connectionFactory(
-                        dungeonData.Nodes[DungeonNodeID.TTPastBigChestRoomKeyDoor], node,
-                        _requirements[RequirementType.NoRequirement]));
+                        dungeonData.Nodes[DungeonNodeID.TTPastBigChestRoomKeyDoor], node));
                     break;
                 case DungeonNodeID.TTPastBigChestRoomKeyDoor:
                     connections.Add(_connectionFactory(
@@ -109,7 +120,7 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
                 case DungeonNodeID.TTPastHammerBlocks:
                     connections.Add(_connectionFactory(
                         dungeonData.Nodes[DungeonNodeID.TTPastBigChestRoomKeyDoor], node,
-                        _requirements[RequirementType.Hammer]));
+                        _itemRequirements[(ItemType.Hammer, 1)]));
                     break;
                 case DungeonNodeID.TTBigChest:
                     connections.Add(_connectionFactory(
@@ -119,15 +130,15 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
                 case DungeonNodeID.TTBossRoom:
                     connections.Add(_connectionFactory(
                         dungeonData.Nodes[DungeonNodeID.TTPastBigKeyDoor], node,
-                        _requirements[RequirementType.BossShuffleOn]));
+                        _bossShuffleRequirements[true]));
                     connections.Add(_connectionFactory(
                         dungeonData.Nodes[DungeonNodeID.TTPastSecondKeyDoor], node,
-                        _requirements[RequirementType.BossShuffleOff]));
+                        _bossShuffleRequirements[false]));
                     break;
                 case DungeonNodeID.TTBoss:
                     connections.Add(_connectionFactory(
                         dungeonData.Nodes[DungeonNodeID.TTBossRoom], node,
-                        _requirements[RequirementType.TTBoss]));
+                        _bossRequirements[BossPlacementID.TTBoss]));
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(id));

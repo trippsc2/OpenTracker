@@ -11,6 +11,7 @@ using OpenTracker.Models.Requirements.Aggregate;
 using OpenTracker.Models.Requirements.Alternative;
 using OpenTracker.Models.Requirements.BigKeyShuffle;
 using OpenTracker.Models.Requirements.Boss;
+using OpenTracker.Models.Requirements.BossShuffle;
 using OpenTracker.Models.Requirements.EnemyShuffle;
 using OpenTracker.Models.Requirements.GuaranteedBossItems;
 using OpenTracker.Models.Requirements.Item;
@@ -42,7 +43,7 @@ namespace OpenTracker.Models.Requirements
         private readonly IAlternativeRequirement.Factory _alternativeFactory;
         private readonly IBigKeyShuffleRequirement.Factory _bigKeyShuffleFactory;
         private readonly IBossRequirement.Factory _bossFactory;
-        private readonly BossShuffleRequirement.Factory _bossShuffleFactory;
+        private readonly IBossShuffleRequirement.Factory _bossShuffleFactory;
         private readonly CompassShuffleRequirement.Factory _compassShuffleFactory;
         private readonly ICrystalRequirement.Factory _crystalFactory;
         private readonly IEnemyShuffleRequirement.Factory _enemyShuffleFactory;
@@ -168,7 +169,7 @@ namespace OpenTracker.Models.Requirements
             ISequenceBreakDictionary sequenceBreaks, IAggregateRequirement.Factory aggregateFactory,
             IAlternativeRequirement.Factory alternativeFactory,
             IBigKeyShuffleRequirement.Factory bigKeyShuffleFactory,
-            IBossRequirement.Factory bossFactory, BossShuffleRequirement.Factory bossShuffleFactory,
+            IBossRequirement.Factory bossFactory, IBossShuffleRequirement.Factory bossShuffleFactory,
             CompassShuffleRequirement.Factory compassShuffleFactory,
             ICrystalRequirement.Factory crystalFactory,
             IEnemyShuffleRequirement.Factory enemyShuffleFactory,
