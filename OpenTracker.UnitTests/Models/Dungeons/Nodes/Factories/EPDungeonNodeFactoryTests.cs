@@ -50,7 +50,7 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
                 return Substitute.For<INodeConnection>();
             }
 
-            _sut = new EPDungeonNodeFactory(_requirements, _overworldNodes, EntryFactory, ConnectionFactory);
+            _sut = new EPDungeonNodeFactory(_overworldNodes, EntryFactory, ConnectionFactory);
         }
 
         private static void PopulateExpectedValues()

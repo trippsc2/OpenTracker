@@ -1,19 +1,30 @@
+using System;
 using System.Collections.Generic;
 using OpenTracker.Models.BossPlacements;
 using OpenTracker.Utils;
 
 namespace OpenTracker.Models.Requirements.Boss
 {
-    public class BossTypeRequirementDictionary : LazyDictionary<BossType, IRequirement>
+    /// <summary>
+    ///     This interface contains the dictionary container for boss type requirements. 
+    /// </summary>
+    public class BossTypeRequirementDictionary : LazyDictionary<BossType, IRequirement>, IBossTypeRequirementDictionary
     {
-        public BossTypeRequirementDictionary()
+        private readonly Lazy<IBossTypeRequirementFactory> _factory;
+        
+        public Lazy<IRequirement> NoBoss { get; }
+
+        public BossTypeRequirementDictionary(IBossTypeRequirementFactory.Factory factory)
             : base(new Dictionary<BossType, IRequirement>())
         {
+            _factory = new Lazy<IBossTypeRequirementFactory>(factory());
+
+            NoBoss = new Lazy<IRequirement>(_factory.Value.GetBossTypeRequirement(null));
         }
 
         protected override IRequirement Create(BossType key)
         {
-            throw new System.NotImplementedException();
+            return _factory.Value.GetBossTypeRequirement(key);
         }
     }
 }

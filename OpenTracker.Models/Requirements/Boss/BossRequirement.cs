@@ -7,11 +7,11 @@ using OpenTracker.Models.Modes;
 namespace OpenTracker.Models.Requirements.Boss
 {
     /// <summary>
-    /// This class contains boss placement requirement data.
+    ///     This class contains boss placement requirement data.
     /// </summary>
     public class BossRequirement : AccessibilityRequirement, IBossRequirement
     {
-        private readonly IRequirementDictionary _requirements;
+        private readonly IBossTypeRequirementDictionary _bossTypeRequirements;
         private readonly IBossPlacement _bossPlacement;
 
         private IRequirement? _currentBossRequirement;
@@ -47,15 +47,17 @@ namespace OpenTracker.Models.Requirements.Boss
         /// <param name="mode">
         ///     The mode settings.
         /// </param>
-        /// <param name="requirements">
-        ///     The requirement dictionary.
+        /// <param name="bossTypeRequirements">
+        ///     The boss type requirement dictionary.
         /// </param>
         /// <param name="bossPlacement">
         ///     The boss placement to provide requirements.
         /// </param>
-        public BossRequirement(IMode mode, IRequirementDictionary requirements, IBossPlacement bossPlacement)
+        public BossRequirement(
+            IMode mode, IBossTypeRequirementDictionary bossTypeRequirements, IBossPlacement bossPlacement)
         {
-            _requirements = requirements;
+            _bossTypeRequirements = bossTypeRequirements;
+
             _bossPlacement = bossPlacement;
 
             mode.PropertyChanged += OnModeChanged;
@@ -65,13 +67,13 @@ namespace OpenTracker.Models.Requirements.Boss
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the IMode interface.
+        ///     Subscribes to the PropertyChanged event on the IMode interface.
         /// </summary>
         /// <param name="sender">
-        /// The sending object of the event.
+        ///     The sending object of the event.
         /// </param>
         /// <param name="e">
-        /// The arguments of the PropertyChanged event.
+        ///     The arguments of the PropertyChanged event.
         /// </param>
         private void OnModeChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -82,13 +84,13 @@ namespace OpenTracker.Models.Requirements.Boss
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the IBossPlacement interface.
+        ///     Subscribes to the PropertyChanged event on the IBossPlacement interface.
         /// </summary>
         /// <param name="sender">
-        /// The sending object of the event.
+        ///     The sending object of the event.
         /// </param>
         /// <param name="e">
-        /// The arguments of the PropertyChanged event.
+        ///     The arguments of the PropertyChanged event.
         /// </param>
         private void OnBossPlacementChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -99,13 +101,13 @@ namespace OpenTracker.Models.Requirements.Boss
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the IRequirement interface.
+        ///     Subscribes to the PropertyChanged event on the IRequirement interface.
         /// </summary>
         /// <param name="sender">
-        /// The sending object of the event.
+        ///     The sending object of the event.
         /// </param>
         /// <param name="e">
-        /// The arguments of the PropertyChanged event.
+        ///     The arguments of the PropertyChanged event.
         /// </param>
         private void OnRequirementChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -116,7 +118,7 @@ namespace OpenTracker.Models.Requirements.Boss
         }
 
         /// <summary>
-        /// Updates boss requirement of this requirement.
+        ///     Updates boss requirement of this requirement.
         /// </summary>
         private void UpdateRequirement()
         {
@@ -124,26 +126,11 @@ namespace OpenTracker.Models.Requirements.Boss
 
             if (boss == null)
             {
-                CurrentBossRequirement = _requirements[RequirementType.UnknownBoss];
+                CurrentBossRequirement = _bossTypeRequirements.NoBoss.Value;
                 return;
             }
             
-            CurrentBossRequirement = boss.Value switch
-            {
-                BossType.Test => _requirements[RequirementType.NoRequirement],
-                BossType.Armos => _requirements[RequirementType.Armos],
-                BossType.Lanmolas => _requirements[RequirementType.Lanmolas],
-                BossType.Moldorm => _requirements[RequirementType.Moldorm],
-                BossType.HelmasaurKing => _requirements[RequirementType.HelmasaurKing],
-                BossType.Arrghus => _requirements[RequirementType.Arrghus],
-                BossType.Mothula => _requirements[RequirementType.Mothula],
-                BossType.Blind => _requirements[RequirementType.Blind],
-                BossType.Kholdstare => _requirements[RequirementType.Kholdstare],
-                BossType.Vitreous => _requirements[RequirementType.Vitreous],
-                BossType.Trinexx => _requirements[RequirementType.Trinexx],
-                BossType.Aga => _requirements[RequirementType.AgaBoss],
-                _ => throw new Exception()
-            };
+            CurrentBossRequirement = _bossTypeRequirements[boss.Value];
         }
 
         protected override AccessibilityLevel GetAccessibility()

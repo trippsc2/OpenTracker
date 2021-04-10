@@ -1,15 +1,12 @@
 using System;
 using System.Collections.Generic;
+using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.Dungeons.KeyDoors;
 using OpenTracker.Models.Dungeons.Mutable;
 using OpenTracker.Models.NodeConnections;
 using OpenTracker.Models.Nodes;
-using OpenTracker.Models.Requirements;
-using OpenTracker.Models.Requirements.Alternative;
+using OpenTracker.Models.Requirements.Boss;
 using OpenTracker.Models.Requirements.Complex;
-using OpenTracker.Models.Requirements.Item;
-using OpenTracker.Models.Requirements.Item.Exact;
-using OpenTracker.Models.Requirements.SequenceBreak;
 
 namespace OpenTracker.Models.Dungeons.Nodes.Factories
 {
@@ -18,13 +15,10 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
     /// </summary>
     public class ATDungeonNodeFactory : IATDungeonNodeFactory
     {
-        private readonly IAlternativeRequirementDictionary _alternativeRequirements;
+        private readonly IBossRequirementDictionary _bossRequirements;
         private readonly IComplexRequirementDictionary _complexRequirements;
-        private readonly IItemRequirementDictionary _itemRequirements;
-        private readonly IItemExactRequirementDictionary _itemExactRequirements;
-        private readonly ISequenceBreakRequirementDictionary _sequenceBreakRequirements;
-        private readonly IRequirementDictionary _requirements;
-        private readonly IOverworldNodeDictionary _requirementNodes;
+        
+        private readonly IOverworldNodeDictionary _overworldNodes;
 
         private readonly IEntryNodeConnection.Factory _entryFactory;
         private readonly INodeConnection.Factory _connectionFactory;
@@ -32,11 +26,14 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
         /// <summary>
         ///     Constructor
         /// </summary>
-        /// <param name="requirements">
-        ///     The requirement dictionary.
+        /// <param name="bossRequirements">
+        ///     The boss requirement dictionary.
         /// </param>
-        /// <param name="requirementNodes">
-        ///     The requirement node dictionary.
+        /// <param name="complexRequirements">
+        ///     The complex requirement dictionary.
+        /// </param>
+        /// <param name="overworldNodes">
+        ///     The overworld node dictionary.
         /// </param>
         /// <param name="entryFactory">
         ///     An Autofac factory for creating entry node connections.
@@ -45,11 +42,13 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
         ///     An Autofac factory for creating regular node connections.
         /// </param>
         public ATDungeonNodeFactory(
-            IRequirementDictionary requirements, IOverworldNodeDictionary requirementNodes,
-            IEntryNodeConnection.Factory entryFactory, INodeConnection.Factory connectionFactory)
+            IBossRequirementDictionary bossRequirements, IComplexRequirementDictionary complexRequirements,
+            IOverworldNodeDictionary overworldNodes, IEntryNodeConnection.Factory entryFactory, INodeConnection.Factory connectionFactory)
         {
-            _requirements = requirements;
-            _requirementNodes = requirementNodes;
+            _bossRequirements = bossRequirements;
+            _complexRequirements = complexRequirements;
+
+            _overworldNodes = overworldNodes;
 
             _entryFactory = entryFactory;
             _connectionFactory = connectionFactory;
@@ -61,7 +60,7 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
             switch (id)
             {
                 case DungeonNodeID.AT:
-                    connections.Add(_entryFactory(_requirementNodes[OverworldNodeID.ATEntry]));
+                    connections.Add(_entryFactory(_overworldNodes[OverworldNodeID.ATEntry]));
                     break;
                 case DungeonNodeID.ATDarkMaze:
                     connections.Add(_connectionFactory(
@@ -114,7 +113,7 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
                 case DungeonNodeID.ATBoss:
                     connections.Add(_connectionFactory(
                         dungeonData.Nodes[DungeonNodeID.ATBossRoom], node,
-                        _requirements[RequirementType.ATBoss]));
+                        _bossRequirements[BossPlacementID.ATBoss]));
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(id));

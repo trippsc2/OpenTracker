@@ -160,6 +160,7 @@ namespace OpenTracker
             nameof(AlternativeRequirementDictionary),
             nameof(BigKeyShuffleRequirementDictionary),
             nameof(BossTypeRequirementDictionary),
+            nameof(BossTypeRequirementFactory),
             nameof(ComplexRequirementDictionary),
             nameof(ComplexRequirementFactory),
             nameof(EnemyShuffleRequirementDictionary),

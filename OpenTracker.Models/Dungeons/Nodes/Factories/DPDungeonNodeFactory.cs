@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.Dungeons.KeyDoors;
 using OpenTracker.Models.Dungeons.Mutable;
 using OpenTracker.Models.NodeConnections;
 using OpenTracker.Models.Nodes;
-using OpenTracker.Models.Requirements;
+using OpenTracker.Models.Requirements.Boss;
+using OpenTracker.Models.Requirements.Complex;
 
 namespace OpenTracker.Models.Dungeons.Nodes.Factories
 {
@@ -13,8 +15,10 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
     /// </summary>
     public class DPDungeonNodeFactory : IDPDungeonNodeFactory
     {
-        private readonly IRequirementDictionary _requirements;
-        private readonly IOverworldNodeDictionary _requirementNodes;
+        private readonly IBossRequirementDictionary _bossRequirements;
+        private readonly IComplexRequirementDictionary _complexRequirements;
+        
+        private readonly IOverworldNodeDictionary _overworldNodes;
 
         private readonly IEntryNodeConnection.Factory _entryFactory;
         private readonly INodeConnection.Factory _connectionFactory;
@@ -22,11 +26,14 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
         /// <summary>
         ///     Constructor
         /// </summary>
-        /// <param name="requirements">
-        ///     The requirement dictionary.
+        /// <param name="bossRequirements">
+        ///     The boss requirement dictionary.
         /// </param>
-        /// <param name="requirementNodes">
-        ///     The requirement node dictionary.
+        /// <param name="complexRequirements">
+        ///     The complex requirement dictionary.
+        /// </param>
+        /// <param name="overworldNodes">
+        ///     The overworld node dictionary.
         /// </param>
         /// <param name="entryFactory">
         ///     An Autofac factory for creating entry node connections.
@@ -35,14 +42,16 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
         ///     An Autofac factory for creating regular node connections.
         /// </param>
         public DPDungeonNodeFactory(
-            IRequirementDictionary requirements, IOverworldNodeDictionary requirementNodes,
-            IEntryNodeConnection.Factory entryFactory, INodeConnection.Factory connectionFactory)
+            IBossRequirementDictionary bossRequirements, IComplexRequirementDictionary complexRequirements,
+            IOverworldNodeDictionary overworldNodes, IEntryNodeConnection.Factory entryFactory,
+            INodeConnection.Factory connectionFactory)
         {
-            _requirements = requirements;
-            _requirementNodes = requirementNodes;
+            _overworldNodes = overworldNodes;
 
             _entryFactory = entryFactory;
             _connectionFactory = connectionFactory;
+            _bossRequirements = bossRequirements;
+            _complexRequirements = complexRequirements;
         }
 
         public void PopulateNodeConnections(
@@ -51,8 +60,8 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
             switch (id)
             {
                 case DungeonNodeID.DPFront:
-                    connections.Add(_entryFactory(_requirementNodes[OverworldNodeID.DPFrontEntry]));
-                    connections.Add(_entryFactory(_requirementNodes[OverworldNodeID.DPLeftEntry]));
+                    connections.Add(_entryFactory(_overworldNodes[OverworldNodeID.DPFrontEntry]));
+                    connections.Add(_entryFactory(_overworldNodes[OverworldNodeID.DPLeftEntry]));
                     connections.Add(_connectionFactory(
                         dungeonData.Nodes[DungeonNodeID.DPPastRightKeyDoor], node,
                         dungeonData.KeyDoors[KeyDoorID.DPRightKeyDoor].Requirement));
@@ -60,7 +69,7 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
                 case DungeonNodeID.DPTorch:
                     connections.Add(_connectionFactory(
                         dungeonData.Nodes[DungeonNodeID.DPFront], node,
-                        _requirements[RequirementType.Torch]));
+                        _complexRequirements[ComplexRequirementType.Torch]));
                     break;
                 case DungeonNodeID.DPBigChest:
                     connections.Add(_connectionFactory(
@@ -69,11 +78,9 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
                     break;
                 case DungeonNodeID.DPRightKeyDoor:
                     connections.Add(_connectionFactory(
-                        dungeonData.Nodes[DungeonNodeID.DPFront], node,
-                        _requirements[RequirementType.NoRequirement]));
+                        dungeonData.Nodes[DungeonNodeID.DPFront], node));
                     connections.Add(_connectionFactory(
-                        dungeonData.Nodes[DungeonNodeID.DPPastRightKeyDoor], node,
-                        _requirements[RequirementType.NoRequirement]));
+                        dungeonData.Nodes[DungeonNodeID.DPPastRightKeyDoor], node));
                     break;
                 case DungeonNodeID.DPPastRightKeyDoor:
                     connections.Add(_connectionFactory(
@@ -81,7 +88,7 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
                         dungeonData.KeyDoors[KeyDoorID.DPRightKeyDoor].Requirement));
                     break;
                 case DungeonNodeID.DPBack:
-                    connections.Add(_entryFactory(_requirementNodes[OverworldNodeID.DPBackEntry]));
+                    connections.Add(_entryFactory(_overworldNodes[OverworldNodeID.DPBackEntry]));
                     break;
                 case DungeonNodeID.DP2F:
                     connections.Add(_connectionFactory(
@@ -93,11 +100,9 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
                     break;
                 case DungeonNodeID.DP2FFirstKeyDoor:
                     connections.Add(_connectionFactory(
-                        dungeonData.Nodes[DungeonNodeID.DP2F], node,
-                        _requirements[RequirementType.NoRequirement]));
+                        dungeonData.Nodes[DungeonNodeID.DP2F], node));
                     connections.Add(_connectionFactory(
-                        dungeonData.Nodes[DungeonNodeID.DP2FPastFirstKeyDoor], node,
-                        _requirements[RequirementType.NoRequirement]));
+                        dungeonData.Nodes[DungeonNodeID.DP2FPastFirstKeyDoor], node));
                     break;
                 case DungeonNodeID.DP2FPastFirstKeyDoor:
                     connections.Add(_connectionFactory(
@@ -109,11 +114,9 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
                     break;
                 case DungeonNodeID.DP2FSecondKeyDoor:
                     connections.Add(_connectionFactory(
-                        dungeonData.Nodes[DungeonNodeID.DP2FPastFirstKeyDoor], node,
-                        _requirements[RequirementType.NoRequirement]));
+                        dungeonData.Nodes[DungeonNodeID.DP2FPastFirstKeyDoor], node));
                     connections.Add(_connectionFactory(
-                        dungeonData.Nodes[DungeonNodeID.DP2FPastSecondKeyDoor], node,
-                        _requirements[RequirementType.NoRequirement]));
+                        dungeonData.Nodes[DungeonNodeID.DP2FPastSecondKeyDoor], node));
                     break;
                 case DungeonNodeID.DP2FPastSecondKeyDoor:
                     connections.Add(_connectionFactory(
@@ -123,7 +126,7 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
                 case DungeonNodeID.DPPastFourTorchWall:
                     connections.Add(_connectionFactory(
                         dungeonData.Nodes[DungeonNodeID.DP2FPastSecondKeyDoor], node,
-                        _requirements[RequirementType.FireSource]));
+                        _complexRequirements[ComplexRequirementType.FireSource]));
                     break;
                 case DungeonNodeID.DPBossRoom:
                     connections.Add(_connectionFactory(
@@ -133,7 +136,7 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
                 case DungeonNodeID.DPBoss:
                     connections.Add(_connectionFactory(
                         dungeonData.Nodes[DungeonNodeID.DPBossRoom], node,
-                        _requirements[RequirementType.DPBoss]));
+                        _bossRequirements[BossPlacementID.DPBoss]));
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(id));

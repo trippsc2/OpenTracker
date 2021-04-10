@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.Dungeons.KeyDoors;
 using OpenTracker.Models.Dungeons.Mutable;
 using OpenTracker.Models.NodeConnections;
 using OpenTracker.Models.Nodes;
-using OpenTracker.Models.Requirements;
+using OpenTracker.Models.Requirements.Boss;
+using OpenTracker.Models.Requirements.Complex;
 
 namespace OpenTracker.Models.Dungeons.Nodes.Factories
 {
@@ -13,8 +15,10 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
     /// </summary>
     public class EPDungeonNodeFactory : IEPDungeonNodeFactory
     {
-        private readonly IRequirementDictionary _requirements;
-        private readonly IOverworldNodeDictionary _requirementNodes;
+        private readonly IBossRequirementDictionary _bossRequirements;
+        private readonly IComplexRequirementDictionary _complexRequirements;
+        
+        private readonly IOverworldNodeDictionary _overworldNodes;
 
         private readonly IEntryNodeConnection.Factory _entryFactory;
         private readonly INodeConnection.Factory _connectionFactory;
@@ -22,11 +26,14 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
         /// <summary>
         ///     Constructor
         /// </summary>
-        /// <param name="requirements">
-        ///     The requirement dictionary.
+        /// <param name="bossRequirements">
+        ///     The boss requirement dictionary.
         /// </param>
-        /// <param name="requirementNodes">
-        ///     The requirement node dictionary.
+        /// <param name="complexRequirements">
+        ///     The complex requirement dictionary.
+        /// </param>
+        /// <param name="overworldNodes">
+        ///     The overworld node dictionary.
         /// </param>
         /// <param name="entryFactory">
         ///     An Autofac factory for creating entry node connections.
@@ -35,14 +42,16 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
         ///     An Autofac factory for creating regular node connections.
         /// </param>
         public EPDungeonNodeFactory(
-            IRequirementDictionary requirements, IOverworldNodeDictionary requirementNodes,
-            IEntryNodeConnection.Factory entryFactory, INodeConnection.Factory connectionFactory)
+            IBossRequirementDictionary bossRequirements, IComplexRequirementDictionary complexRequirements,
+            IOverworldNodeDictionary overworldNodes, IEntryNodeConnection.Factory entryFactory,
+            INodeConnection.Factory connectionFactory)
         {
-            _requirements = requirements;
-            _requirementNodes = requirementNodes;
+            _overworldNodes = overworldNodes;
 
             _entryFactory = entryFactory;
             _connectionFactory = connectionFactory;
+            _bossRequirements = bossRequirements;
+            _complexRequirements = complexRequirements;
         }
 
         public void PopulateNodeConnections(
@@ -51,7 +60,7 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
             switch (id)
             {
                 case DungeonNodeID.EP:
-                    connections.Add(_entryFactory(_requirementNodes[OverworldNodeID.EPEntry]));
+                    connections.Add(_entryFactory(_overworldNodes[OverworldNodeID.EPEntry]));
                     connections.Add(_connectionFactory(
                         dungeonData.Nodes[DungeonNodeID.EPPastBigKeyDoor], node,
                         dungeonData.KeyDoors[KeyDoorID.EPBigKeyDoor].Requirement));
@@ -64,18 +73,16 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
                 case DungeonNodeID.EPRightDarkRoom:
                     connections.Add(_connectionFactory(
                         dungeonData.Nodes[DungeonNodeID.EP], node,
-                        _requirements[RequirementType.DarkRoomEPRight]));
+                        _complexRequirements[ComplexRequirementType.DarkRoomEPRight]));
                     connections.Add(_connectionFactory(
                         dungeonData.Nodes[DungeonNodeID.EPPastRightKeyDoor], node,
                         dungeonData.KeyDoors[KeyDoorID.EPRightKeyDoor].Requirement));
                     break;
                 case DungeonNodeID.EPRightKeyDoor:
                     connections.Add(_connectionFactory(
-                        dungeonData.Nodes[DungeonNodeID.EPRightDarkRoom], node,
-                        _requirements[RequirementType.NoRequirement]));
+                        dungeonData.Nodes[DungeonNodeID.EPRightDarkRoom], node));
                     connections.Add(_connectionFactory(
-                        dungeonData.Nodes[DungeonNodeID.EPPastRightKeyDoor], node,
-                        _requirements[RequirementType.NoRequirement]));
+                        dungeonData.Nodes[DungeonNodeID.EPPastRightKeyDoor], node));
                     break;
                 case DungeonNodeID.EPPastRightKeyDoor:
                     connections.Add(_connectionFactory(
@@ -84,11 +91,9 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
                     break;
                 case DungeonNodeID.EPBigKeyDoor:
                     connections.Add(_connectionFactory(
-                        dungeonData.Nodes[DungeonNodeID.EP], node,
-                        _requirements[RequirementType.NoRequirement]));
+                        dungeonData.Nodes[DungeonNodeID.EP], node));
                     connections.Add(_connectionFactory(
-                        dungeonData.Nodes[DungeonNodeID.EPPastBigKeyDoor], node,
-                        _requirements[RequirementType.NoRequirement]));
+                        dungeonData.Nodes[DungeonNodeID.EPPastBigKeyDoor], node));
                     break;
                 case DungeonNodeID.EPPastBigKeyDoor:
                     connections.Add(_connectionFactory(
@@ -98,7 +103,7 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
                 case DungeonNodeID.EPBackDarkRoom:
                     connections.Add(_connectionFactory(
                         dungeonData.Nodes[DungeonNodeID.EPPastBigKeyDoor], node,
-                        _requirements[RequirementType.DarkRoomEPBack]));
+                        _complexRequirements[ComplexRequirementType.DarkRoomEPBack]));
                     break;
                 case DungeonNodeID.EPPastBackKeyDoor:
                     connections.Add(_connectionFactory(
@@ -108,12 +113,12 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
                 case DungeonNodeID.EPBossRoom:
                     connections.Add(_connectionFactory(
                         dungeonData.Nodes[DungeonNodeID.EPPastBackKeyDoor], node,
-                        _requirements[RequirementType.RedEyegoreGoriya]));
+                        _complexRequirements[ComplexRequirementType.RedEyegoreGoriya]));
                     break;
                 case DungeonNodeID.EPBoss:
                     connections.Add(_connectionFactory(
                         dungeonData.Nodes[DungeonNodeID.EPBossRoom], node,
-                        _requirements[RequirementType.EPBoss]));
+                        _bossRequirements[BossPlacementID.EPBoss]));
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(id));
