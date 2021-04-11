@@ -4,7 +4,6 @@ using OpenTracker.Models.Items;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.NodeConnections;
 using OpenTracker.Models.Prizes;
-using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Requirements.Complex;
 using OpenTracker.Models.Requirements.Item;
 using OpenTracker.Models.Requirements.Item.Prizes;
@@ -14,6 +13,9 @@ using OpenTracker.Models.SequenceBreaks;
 
 namespace OpenTracker.Models.Nodes.Factories
 {
+    /// <summary>
+    ///     This class contains the creation logic for general light world node connections. 
+    /// </summary>
     public class LightWorldConnectionFactory : ILightWorldConnectionFactory
     {
         private readonly IComplexRequirementDictionary _complexRequirements;
@@ -25,7 +27,49 @@ namespace OpenTracker.Models.Nodes.Factories
         private readonly IOverworldNodeDictionary _overworldNodes;
 
         private readonly INodeConnection.Factory _connectionFactory;
-        
+
+        /// <summary>
+        ///     Constructor
+        /// </summary>
+        /// <param name="complexRequirements">
+        ///     The complex requirement dictionary.
+        /// </param>
+        /// <param name="itemRequirements">
+        ///     The item requirement dictionary.
+        /// </param>
+        /// <param name="prizeRequirements">
+        ///     The prize requirement dictionary.
+        /// </param>
+        /// <param name="sequenceBreakRequirements">
+        ///     The sequence break requirement dictionary.
+        /// </param>
+        /// <param name="worldStateRequirements">
+        ///     The world state requirement dictionary.
+        /// </param>
+        /// <param name="overworldNodes">
+        ///     The overworld node dictionary.
+        /// </param>
+        /// <param name="connectionFactory">
+        ///     An Autofac factory for creating node connections.
+        /// </param>
+        public LightWorldConnectionFactory(
+            IComplexRequirementDictionary complexRequirements, IItemRequirementDictionary itemRequirements,
+            IPrizeRequirementDictionary prizeRequirements,
+            ISequenceBreakRequirementDictionary sequenceBreakRequirements,
+            IWorldStateRequirementDictionary worldStateRequirements, IOverworldNodeDictionary overworldNodes,
+            INodeConnection.Factory connectionFactory)
+        {
+            _complexRequirements = complexRequirements;
+            _itemRequirements = itemRequirements;
+            _prizeRequirements = prizeRequirements;
+            _sequenceBreakRequirements = sequenceBreakRequirements;
+            _worldStateRequirements = worldStateRequirements;
+            
+            _overworldNodes = overworldNodes;
+            
+            _connectionFactory = connectionFactory;
+        }
+
         public IEnumerable<INodeConnection> GetNodeConnections(OverworldNodeID id, INode node)
         {
             return id switch

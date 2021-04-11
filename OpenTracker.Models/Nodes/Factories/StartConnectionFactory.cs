@@ -11,7 +11,7 @@ using OpenTracker.Models.Requirements.Mode;
 namespace OpenTracker.Models.Nodes.Factories
 {
     /// <summary>
-    ///     This class contains the creation logic for start node connections.
+    ///     This class contains the creation logic for starting node connections.
     /// </summary>
     public class StartConnectionFactory : IStartConnectionFactory
     {

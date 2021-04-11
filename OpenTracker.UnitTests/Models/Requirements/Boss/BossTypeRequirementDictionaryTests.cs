@@ -1,5 +1,4 @@
 using Autofac;
-using ExpectedObjects;
 using NSubstitute;
 using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.Requirements.Boss;
