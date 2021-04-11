@@ -19,26 +19,24 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
 {
     public class ATDungeonNodeFactoryTests
     {
-        private readonly IOverworldNodeFactory _overworldNodeFactory = Substitute.For<IOverworldNodeFactory>();
-        
-        private readonly IOverworldNodeDictionary _overworldNodes;
-        
-        private readonly List<INode> _entryFactoryCalls = new();
-        private readonly List<(INode fromNode, INode toNode, IRequirement? requirement)> _connectionFactoryCalls = new();
-        
         private readonly IBossRequirementDictionary _bossRequirements;
         private readonly IComplexRequirementDictionary _complexRequirements;
+
+        private readonly IOverworldNodeDictionary _overworldNodes;
         
         private readonly ATDungeonNodeFactory _sut;
         
-        private static readonly Dictionary<DungeonNodeID, OverworldNodeID> ExpectedEntryValues = new();
+        private readonly List<INode> _entryFactoryCalls = new();
+        private readonly List<(INode fromNode, INode toNode, IRequirement? requirement)> _connectionFactoryCalls = new();
+
+        private static readonly Dictionary<DungeonNodeID, List<OverworldNodeID>> ExpectedEntryValues = new();
         private static readonly Dictionary<DungeonNodeID, List<DungeonNodeID>> ExpectedNoRequirementValues = new();
-        private static readonly Dictionary<DungeonNodeID, List<
-            (DungeonNodeID fromNodeID, ComplexRequirementType requirementType)>> ExpectedComplexRequirementValues = new();
-        private static readonly Dictionary<DungeonNodeID, List<
-            (DungeonNodeID fromNodeID, BossPlacementID bossID)>> ExpectedBossRequirementValues = new();
-        private static readonly Dictionary<DungeonNodeID, List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>>
-            ExpectedKeyDoorValues = new();
+        private static readonly Dictionary<DungeonNodeID,
+            List<(DungeonNodeID fromNodeID, BossPlacementID bossID)>> ExpectedBossValues = new();
+        private static readonly Dictionary<DungeonNodeID,
+            List<(DungeonNodeID fromNodeID, ComplexRequirementType type)>> ExpectedComplexValues = new();
+        private static readonly Dictionary<DungeonNodeID,
+            List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>> ExpectedKeyDoorValues = new();
         
         public ATDungeonNodeFactoryTests()
         {
@@ -52,7 +50,7 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
         
             _complexRequirements = new ComplexRequirementDictionary(() => factory);
             
-            _overworldNodes = new OverworldNodeDictionary(() => _overworldNodeFactory);
+            _overworldNodes = new OverworldNodeDictionary(() => Substitute.For<IOverworldNodeFactory>());
         
             IEntryNodeConnection EntryFactory(INode fromNode)
             {
@@ -74,8 +72,8 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
         {
             ExpectedEntryValues.Clear();
             ExpectedNoRequirementValues.Clear();
-            ExpectedComplexRequirementValues.Clear();
-            ExpectedBossRequirementValues.Clear();
+            ExpectedComplexValues.Clear();
+            ExpectedBossValues.Clear();
             ExpectedKeyDoorValues.Clear();
             
             foreach (DungeonNodeID id in Enum.GetValues(typeof(DungeonNodeID)))
@@ -83,10 +81,10 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
                 switch (id)
                 {
                     case DungeonNodeID.AT:
-                        ExpectedEntryValues.Add(id, OverworldNodeID.ATEntry);
+                        ExpectedEntryValues.Add(id, new List<OverworldNodeID> {OverworldNodeID.ATEntry});
                         break;
                     case DungeonNodeID.ATDarkMaze:
-                        ExpectedComplexRequirementValues.Add(id,
+                        ExpectedComplexValues.Add(id,
                             new List<(DungeonNodeID fromNodeID, ComplexRequirementType requirementType)>
                             {
                                 (DungeonNodeID.AT, ComplexRequirementType.DarkRoomAT)
@@ -139,14 +137,14 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
                             });
                         break;
                     case DungeonNodeID.ATBossRoom:
-                        ExpectedComplexRequirementValues.Add(id,
+                        ExpectedComplexValues.Add(id,
                             new List<(DungeonNodeID fromNodeID, ComplexRequirementType requirementType)>
                             {
                                 (DungeonNodeID.ATPastFourthKeyDoor, ComplexRequirementType.Curtains)
                             });
                         break;
                     case DungeonNodeID.ATBoss:
-                        ExpectedBossRequirementValues.Add(id,
+                        ExpectedBossValues.Add(id,
                             new List<(DungeonNodeID fromNodeID, BossPlacementID bossID)>
                             {
                                 (DungeonNodeID.ATBossRoom, BossPlacementID.ATBoss)
@@ -185,7 +183,8 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
         {
             PopulateExpectedValues();
         
-            return ExpectedEntryValues.Keys.Select(id => new object[] {id, ExpectedEntryValues[id]}).ToList();
+            return (from id in ExpectedEntryValues.Keys from value in ExpectedEntryValues[id]
+                select new object[] {id, value}).ToList();
         }
         
         [Theory]
@@ -207,14 +206,15 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
         {
             PopulateExpectedValues();
         
-            return (from id in ExpectedNoRequirementValues.Keys from value in ExpectedNoRequirementValues[id]
+            return (from id in ExpectedNoRequirementValues.Keys
+                from value in ExpectedNoRequirementValues[id]
                 select new object[] {id, value}).ToList();
         }
         
         [Theory]
         [MemberData(nameof(PopulateNodeConnections_ShouldCreateExpectedComplexConnectionsData))]
         public void PopulateNodeConnections_ShouldCreateExpectedComplexConnections(
-            DungeonNodeID id, DungeonNodeID fromNodeID, ComplexRequirementType requirementType)
+            DungeonNodeID id, DungeonNodeID fromNodeID, ComplexRequirementType type)
         {
             var dungeonData = Substitute.For<IMutableDungeon>();
             var node = Substitute.For<IDungeonNode>();
@@ -223,15 +223,15 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
         
             Assert.Contains(_connectionFactoryCalls, x =>
                 x.fromNode == dungeonData.Nodes[fromNodeID] &&
-                x.requirement == _complexRequirements[requirementType]);
+                x.requirement == _complexRequirements[type]);
         }
         
         public static IEnumerable<object[]> PopulateNodeConnections_ShouldCreateExpectedComplexConnectionsData()
         {
             PopulateExpectedValues();
         
-            return (from id in ExpectedComplexRequirementValues.Keys from value in ExpectedComplexRequirementValues[id]
-                select new object[] {id, value.fromNodeID, value.requirementType}).ToList();
+            return (from id in ExpectedComplexValues.Keys from value in ExpectedComplexValues[id]
+                select new object[] {id, value.fromNodeID, value.type}).ToList();
         }
         
         [Theory]
@@ -253,7 +253,7 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
         {
             PopulateExpectedValues();
         
-            return (from id in ExpectedBossRequirementValues.Keys from value in ExpectedBossRequirementValues[id]
+            return (from id in ExpectedBossValues.Keys from value in ExpectedBossValues[id]
                 select new object[] {id, value.fromNodeID, value.bossID}).ToList();
         }
         

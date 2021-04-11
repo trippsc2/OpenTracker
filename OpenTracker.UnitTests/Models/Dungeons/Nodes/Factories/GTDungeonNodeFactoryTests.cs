@@ -37,20 +37,18 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
 
         private readonly GTDungeonNodeFactory _sut;
 
-        private static readonly Dictionary<DungeonNodeID, OverworldNodeID> ExpectedEntryValues = new();
-        private static readonly Dictionary<DungeonNodeID, List<DungeonNodeID>>
-            ExpectedNoRequirementConnectionValues = new();
-        private static readonly Dictionary<DungeonNodeID, List<
-                (DungeonNodeID fromNodeID, BossPlacementID bossID)>> ExpectedBossConnectionValues = new();
-        private static readonly Dictionary<DungeonNodeID, List<
-            (DungeonNodeID fromNodeID, ComplexRequirementType requirementType)>>
-            ExpectedComplexConnectionValues = new();
-        private static readonly Dictionary<DungeonNodeID, List<
-            (DungeonNodeID fromNodeID, ItemType type, int count)>> ExpectedItemConnectionValues = new();
-        private static readonly Dictionary<DungeonNodeID, List<
-            (DungeonNodeID fromNodeID, SequenceBreakType type)>> ExpectedSequenceBreakConnectionValues = new();
-        private static readonly Dictionary<DungeonNodeID, List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>>
-            ExpectedKeyDoorValues = new();
+        private static readonly Dictionary<DungeonNodeID, List<OverworldNodeID>> ExpectedEntryValues = new();
+        private static readonly Dictionary<DungeonNodeID, List<DungeonNodeID>> ExpectedNoRequirementValues = new();
+        private static readonly Dictionary<DungeonNodeID,
+            List<(DungeonNodeID fromNodeID, BossPlacementID bossID)>> ExpectedBossValues = new();
+        private static readonly Dictionary<DungeonNodeID,
+            List<(DungeonNodeID fromNodeID, ComplexRequirementType type)>> ExpectedComplexValues = new();
+        private static readonly Dictionary<DungeonNodeID,
+            List<(DungeonNodeID fromNodeID, ItemType type, int count)>> ExpectedItemValues = new();
+        private static readonly Dictionary<DungeonNodeID,
+            List<(DungeonNodeID fromNodeID, SequenceBreakType type)>> ExpectedSequenceBreakValues = new();
+        private static readonly Dictionary<DungeonNodeID,
+            List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>> ExpectedKeyDoorValues = new();
 
         public GTDungeonNodeFactoryTests()
         {
@@ -87,11 +85,11 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
         private static void PopulateExpectedValues()
         {
             ExpectedEntryValues.Clear();
-            ExpectedNoRequirementConnectionValues.Clear();
-            ExpectedBossConnectionValues.Clear();
-            ExpectedComplexConnectionValues.Clear();
-            ExpectedItemConnectionValues.Clear();
-            ExpectedSequenceBreakConnectionValues.Clear();
+            ExpectedNoRequirementValues.Clear();
+            ExpectedBossValues.Clear();
+            ExpectedComplexValues.Clear();
+            ExpectedItemValues.Clear();
+            ExpectedSequenceBreakValues.Clear();
             ExpectedKeyDoorValues.Clear();
             
             foreach (DungeonNodeID id in Enum.GetValues(typeof(DungeonNodeID)))
@@ -99,17 +97,17 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
                 switch (id)
                 {
                 case DungeonNodeID.GT:
-                    ExpectedEntryValues.Add(id, OverworldNodeID.GTEntry);
+                    ExpectedEntryValues.Add(id, new List<OverworldNodeID> {OverworldNodeID.GTEntry});
                     break;
                 case DungeonNodeID.GTBobsTorch:
-                    ExpectedComplexConnectionValues.Add(id,
+                    ExpectedComplexValues.Add(id,
                         new List<(DungeonNodeID fromNodeID, ComplexRequirementType requirementType)>
                         {
                             (DungeonNodeID.GT1FLeft, ComplexRequirementType.Torch)
                         });
                     break;
                 case DungeonNodeID.GT1FLeft:
-                    ExpectedNoRequirementConnectionValues.Add(id, new List<DungeonNodeID>
+                    ExpectedNoRequirementValues.Add(id, new List<DungeonNodeID>
                     {
                         DungeonNodeID.GT
                     });
@@ -120,38 +118,38 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
                         });
                     break;
                 case DungeonNodeID.GT1FLeftToRightKeyDoor:
-                    ExpectedNoRequirementConnectionValues.Add(id, new List<DungeonNodeID>
+                    ExpectedNoRequirementValues.Add(id, new List<DungeonNodeID>
                     {
                         DungeonNodeID.GT1FLeft,
                         DungeonNodeID.GT1FRight
                     });
                     break;
                 case DungeonNodeID.GT1FLeftPastHammerBlocks:
-                    ExpectedItemConnectionValues.Add(id,
+                    ExpectedItemValues.Add(id,
                         new List<(DungeonNodeID fromNodeID, ItemType type, int count)>
                         {
                             (DungeonNodeID.GT1FLeft, ItemType.Hammer, 1)
                         });
                     break;
                 case DungeonNodeID.GT1FLeftDMsRoom:
-                    ExpectedItemConnectionValues.Add(id,
+                    ExpectedItemValues.Add(id,
                         new List<(DungeonNodeID fromNodeID, ItemType type, int count)>
                         {
                             (DungeonNodeID.GT1FLeftPastHammerBlocks, ItemType.Hookshot, 1)
                         });
-                    ExpectedComplexConnectionValues.Add(id,
+                    ExpectedComplexValues.Add(id,
                         new List<(DungeonNodeID fromNodeID, ComplexRequirementType requirementType)>
                         {
                             (DungeonNodeID.GT1FLeftPastHammerBlocks, ComplexRequirementType.Hover)
                         });
                     break;
                 case DungeonNodeID.GT1FLeftPastBonkableGaps:
-                    ExpectedItemConnectionValues.Add(id,
+                    ExpectedItemValues.Add(id,
                         new List<(DungeonNodeID fromNodeID, ItemType type, int count)>
                         {
                             (DungeonNodeID.GT1FLeftPastHammerBlocks, ItemType.Hookshot, 1)
                         });
-                    ExpectedComplexConnectionValues.Add(id,
+                    ExpectedComplexValues.Add(id,
                         new List<(DungeonNodeID fromNodeID, ComplexRequirementType requirementType)>
                         {
                             (DungeonNodeID.GT1FLeftPastHammerBlocks, ComplexRequirementType.BonkOverLedge),
@@ -165,7 +163,7 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
                         });
                     break;
                 case DungeonNodeID.GT1FMapChestRoomKeyDoor:
-                    ExpectedNoRequirementConnectionValues.Add(id, new List<DungeonNodeID>
+                    ExpectedNoRequirementValues.Add(id, new List<DungeonNodeID>
                     {
                         DungeonNodeID.GT1FLeftPastBonkableGaps,
                         DungeonNodeID.GT1FLeftMapChestRoom
@@ -179,7 +177,7 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
                         });
                     break;
                 case DungeonNodeID.GT1FSpikeTrapPortalRoomKeyDoor:
-                    ExpectedNoRequirementConnectionValues.Add(id, new List<DungeonNodeID>
+                    ExpectedNoRequirementValues.Add(id, new List<DungeonNodeID>
                     {
                         DungeonNodeID.GT1FLeftPastBonkableGaps,
                         DungeonNodeID.GT1FLeftSpikeTrapPortalRoom
@@ -193,18 +191,18 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
                         });
                     break;
                 case DungeonNodeID.GT1FLeftFiresnakeRoom:
-                    ExpectedNoRequirementConnectionValues.Add(id, new List<DungeonNodeID>
+                    ExpectedNoRequirementValues.Add(id, new List<DungeonNodeID>
                     {
                         DungeonNodeID.GT1FLeftSpikeTrapPortalRoom
                     });
                     break;
                 case DungeonNodeID.GT1FLeftPastFiresnakeRoomGap:
-                    ExpectedItemConnectionValues.Add(id,
+                    ExpectedItemValues.Add(id,
                         new List<(DungeonNodeID fromNodeID, ItemType type, int count)>
                         {
                             (DungeonNodeID.GT1FLeftFiresnakeRoom, ItemType.Hookshot, 1)
                         });
-                    ExpectedComplexConnectionValues.Add(id,
+                    ExpectedComplexValues.Add(id,
                         new List<(DungeonNodeID fromNodeID, ComplexRequirementType requirementType)>
                         {
                             (DungeonNodeID.GT1FLeftFiresnakeRoom, ComplexRequirementType.Hover)
@@ -216,7 +214,7 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
                         });
                     break;
                 case DungeonNodeID.GT1FFiresnakeRoomKeyDoor:
-                    ExpectedNoRequirementConnectionValues.Add(id, new List<DungeonNodeID>
+                    ExpectedNoRequirementValues.Add(id, new List<DungeonNodeID>
                     {
                         DungeonNodeID.GT1FLeftPastFiresnakeRoomGap,
                         DungeonNodeID.GT1FLeftPastFiresnakeRoomKeyDoor
@@ -230,13 +228,13 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
                         });
                     break;
                 case DungeonNodeID.GT1FLeftRandomizerRoom:
-                    ExpectedNoRequirementConnectionValues.Add(id, new List<DungeonNodeID>
+                    ExpectedNoRequirementValues.Add(id, new List<DungeonNodeID>
                     {
                         DungeonNodeID.GT1FLeftPastFiresnakeRoomKeyDoor
                     });
                     break;
                 case DungeonNodeID.GT1FRight:
-                    ExpectedNoRequirementConnectionValues.Add(id, new List<DungeonNodeID>
+                    ExpectedNoRequirementValues.Add(id, new List<DungeonNodeID>
                     {
                         DungeonNodeID.GT
                     });
@@ -247,7 +245,7 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
                         });
                     break;
                 case DungeonNodeID.GT1FRightTileRoom:
-                    ExpectedItemConnectionValues.Add(id,
+                    ExpectedItemValues.Add(id,
                         new List<(DungeonNodeID fromNodeID, ItemType type, int count)>
                         {
                             (DungeonNodeID.GT1FRight, ItemType.CaneOfSomaria, 1)
@@ -259,7 +257,7 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
                         });
                     break;
                 case DungeonNodeID.GT1FTileRoomKeyDoor:
-                    ExpectedNoRequirementConnectionValues.Add(id, new List<DungeonNodeID>
+                    ExpectedNoRequirementValues.Add(id, new List<DungeonNodeID>
                         {
                             DungeonNodeID.GT1FRightTileRoom,
                             DungeonNodeID.GT1FRightFourTorchRoom
@@ -273,14 +271,14 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
                         });
                     break;
                 case DungeonNodeID.GT1FRightCompassRoom:
-                    ExpectedItemConnectionValues.Add(id,
+                    ExpectedItemValues.Add(id,
                         new List<(DungeonNodeID fromNodeID, ItemType type, int count)>
                         {
                             (DungeonNodeID.GT1FRightFourTorchRoom, ItemType.FireRod, 1)
                         });
                     break;
                 case DungeonNodeID.GT1FRightPastCompassRoomPortal:
-                    ExpectedNoRequirementConnectionValues.Add(id, new List<DungeonNodeID>
+                    ExpectedNoRequirementValues.Add(id, new List<DungeonNodeID>
                     {
                         DungeonNodeID.GT1FRightCompassRoom
                     });
@@ -291,7 +289,7 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
                         });
                     break;
                 case DungeonNodeID.GT1FCollapsingWalkwayKeyDoor:
-                    ExpectedNoRequirementConnectionValues.Add(id, new List<DungeonNodeID>
+                    ExpectedNoRequirementValues.Add(id, new List<DungeonNodeID>
                     {
                         DungeonNodeID.GT1FRightPastCompassRoomPortal,
                         DungeonNodeID.GT1FRightCollapsingWalkway
@@ -305,21 +303,21 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
                         });
                     break;
                 case DungeonNodeID.GT1FBottomRoom:
-                    ExpectedNoRequirementConnectionValues.Add(id, new List<DungeonNodeID>
+                    ExpectedNoRequirementValues.Add(id, new List<DungeonNodeID>
                     {
                         DungeonNodeID.GT1FLeftRandomizerRoom,
                         DungeonNodeID.GT1FRightCollapsingWalkway
                     });
                     break;
                 case DungeonNodeID.GTBoss1:
-                    ExpectedBossConnectionValues.Add(id,
+                    ExpectedBossValues.Add(id,
                         new List<(DungeonNodeID fromNodeID, BossPlacementID bossID)>
                         {
                             (DungeonNodeID.GT1FBottomRoom, BossPlacementID.GTBoss1)
                         });
                     break;
                 case DungeonNodeID.GTB1BossChests:
-                    ExpectedNoRequirementConnectionValues.Add(id, new List<DungeonNodeID>
+                    ExpectedNoRequirementValues.Add(id, new List<DungeonNodeID>
                     {
                         DungeonNodeID.GTBoss1
                     });
@@ -332,12 +330,12 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
                         });
                     break;
                 case DungeonNodeID.GT3FPastRedGoriyaRooms:
-                    ExpectedSequenceBreakConnectionValues.Add(id,
+                    ExpectedSequenceBreakValues.Add(id,
                         new List<(DungeonNodeID fromNodeID, SequenceBreakType type)>
                         {
                             (DungeonNodeID.GT, SequenceBreakType.MimicClip)
                         });
-                    ExpectedComplexConnectionValues.Add(id,
+                    ExpectedComplexValues.Add(id,
                         new List<(DungeonNodeID fromNodeID, ComplexRequirementType requirementType)>
                         {
                             (DungeonNodeID.GT, ComplexRequirementType.RedEyegoreGoriya)
@@ -349,7 +347,7 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
                         });
                     break;
                 case DungeonNodeID.GT3FBigKeyDoor:
-                    ExpectedNoRequirementConnectionValues.Add(id, new List<DungeonNodeID>
+                    ExpectedNoRequirementValues.Add(id, new List<DungeonNodeID>
                     {
                         DungeonNodeID.GT3FPastRedGoriyaRooms,
                         DungeonNodeID.GT3FPastBigKeyDoor
@@ -363,20 +361,20 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
                         });
                     break;
                 case DungeonNodeID.GTBoss2:
-                    ExpectedBossConnectionValues.Add(id,
+                    ExpectedBossValues.Add(id,
                         new List<(DungeonNodeID fromNodeID, BossPlacementID bossID)>
                         {
                             (DungeonNodeID.GT3FPastBigKeyDoor, BossPlacementID.GTBoss2)
                         });
                     break;
                 case DungeonNodeID.GT4FPastBoss2:
-                    ExpectedNoRequirementConnectionValues.Add(id, new List<DungeonNodeID>
+                    ExpectedNoRequirementValues.Add(id, new List<DungeonNodeID>
                     {
                         DungeonNodeID.GTBoss2
                     });
                     break;
                 case DungeonNodeID.GT5FPastFourTorchRooms:
-                    ExpectedComplexConnectionValues.Add(id,
+                    ExpectedComplexValues.Add(id,
                         new List<(DungeonNodeID fromNodeID, ComplexRequirementType requirementType)>
                         {
                             (DungeonNodeID.GT4FPastBoss2, ComplexRequirementType.FireSource)
@@ -388,7 +386,7 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
                         });
                     break;
                 case DungeonNodeID.GT6FFirstKeyDoor:
-                    ExpectedNoRequirementConnectionValues.Add(id, new List<DungeonNodeID> 
+                    ExpectedNoRequirementValues.Add(id, new List<DungeonNodeID> 
                     {
                         DungeonNodeID.GT5FPastFourTorchRooms,
                         DungeonNodeID.GT6FPastFirstKeyDoor
@@ -403,7 +401,7 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
                         });
                     break;
                 case DungeonNodeID.GT6FSecondKeyDoor:
-                    ExpectedNoRequirementConnectionValues.Add(id, new List<DungeonNodeID>
+                    ExpectedNoRequirementValues.Add(id, new List<DungeonNodeID>
                     {
                         DungeonNodeID.GT6FPastFirstKeyDoor,
                         DungeonNodeID.GT6FBossRoom
@@ -417,30 +415,30 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
                         });
                     break;
                 case DungeonNodeID.GTBoss3:
-                    ExpectedBossConnectionValues.Add(id,
+                    ExpectedBossValues.Add(id,
                         new List<(DungeonNodeID fromNodeID, BossPlacementID bossID)>
                         {
                             (DungeonNodeID.GT6FBossRoom, BossPlacementID.GTBoss3)
                         });
                     break;
                 case DungeonNodeID.GTBoss3Item:
-                    ExpectedItemConnectionValues.Add(id,
+                    ExpectedItemValues.Add(id,
                         new List<(DungeonNodeID fromNodeID, ItemType type, int count)>
                         {
                             (DungeonNodeID.GTBoss3, ItemType.Hookshot, 1)
                         });
-                    ExpectedComplexConnectionValues.Add(id,
+                    ExpectedComplexValues.Add(id,
                         new List<(DungeonNodeID fromNodeID, ComplexRequirementType requirementType)>
                         {
                             (DungeonNodeID.GTBoss3, ComplexRequirementType.Hover)
                         });
                     break;
                 case DungeonNodeID.GT6FPastBossRoomGap:
-                    ExpectedNoRequirementConnectionValues.Add(id, new List<DungeonNodeID>
+                    ExpectedNoRequirementValues.Add(id, new List<DungeonNodeID>
                     {
                         DungeonNodeID.GTBoss3Item
                     });
-                    ExpectedComplexConnectionValues.Add(id,
+                    ExpectedComplexValues.Add(id,
                         new List<(DungeonNodeID fromNodeID, ComplexRequirementType requirementType)>
                         {
                             (DungeonNodeID.GT6FBossRoom, ComplexRequirementType.Hover)
@@ -454,7 +452,7 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
                         });
                     break;
                 case DungeonNodeID.GTFinalBoss:
-                    ExpectedBossConnectionValues.Add(id,
+                    ExpectedBossValues.Add(id,
                         new List<(DungeonNodeID fromNodeID, BossPlacementID bossID)>
                         {
                             (DungeonNodeID.GTFinalBossRoom, BossPlacementID.GTFinalBoss)
@@ -493,7 +491,9 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
         {
             PopulateExpectedValues();
 
-            return ExpectedEntryValues.Keys.Select(id => new object[] {id, ExpectedEntryValues[id]}).ToList();
+            return (from id in ExpectedEntryValues.Keys
+                from value in ExpectedEntryValues[id]
+                select new object[] {id, value}).ToList();
         }
 
         [Theory]
@@ -514,8 +514,8 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
         {
             PopulateExpectedValues();
 
-            return (from id in ExpectedNoRequirementConnectionValues.Keys from
-                    value in ExpectedNoRequirementConnectionValues[id]
+            return (from id in ExpectedNoRequirementValues.Keys
+                from value in ExpectedNoRequirementValues[id]
                 select new object[] {id, value}).ToList();
         }
 
@@ -537,7 +537,7 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
         {
             PopulateExpectedValues();
 
-            return (from id in ExpectedBossConnectionValues.Keys from value in ExpectedBossConnectionValues[id]
+            return (from id in ExpectedBossValues.Keys from value in ExpectedBossValues[id]
                 select new object[] {id, value.fromNodeID, value.bossID}).ToList();
         }
 
@@ -559,8 +559,8 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
         {
             PopulateExpectedValues();
 
-            return (from id in ExpectedComplexConnectionValues.Keys from value in ExpectedComplexConnectionValues[id]
-                select new object[] {id, value.fromNodeID, value.requirementType}).ToList();
+            return (from id in ExpectedComplexValues.Keys from value in ExpectedComplexValues[id]
+                select new object[] {id, value.fromNodeID, value.type}).ToList();
         }
 
         [Theory]
@@ -581,7 +581,7 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
         {
             PopulateExpectedValues();
 
-            return (from id in ExpectedItemConnectionValues.Keys from value in ExpectedItemConnectionValues[id]
+            return (from id in ExpectedItemValues.Keys from value in ExpectedItemValues[id]
                 select new object[] {id, value.fromNodeID, value.type, value.count}).ToList();
         }
 
@@ -603,8 +603,8 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
         {
             PopulateExpectedValues();
 
-            return (from id in ExpectedSequenceBreakConnectionValues.Keys from value in
-                ExpectedSequenceBreakConnectionValues[id] select new
+            return (from id in ExpectedSequenceBreakValues.Keys from value in
+                ExpectedSequenceBreakValues[id] select new
                 object[] {id, value.fromNodeID, value.type}).ToList();
         }
 

@@ -17,32 +17,28 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
 {
     public class HCDungeonNodeFactoryTests
     {
-        private readonly IOverworldNodeFactory _overworldNodeFactory = Substitute.For<IOverworldNodeFactory>();
-        
         private readonly IComplexRequirementDictionary _complexRequirements;
         
         private readonly IOverworldNodeDictionary _overworldNodes;
 
-        private readonly List<INode> _entryFactoryCalls = new();
-        private readonly List<(INode fromNode, INode toNode, IRequirement? requirement)> _connectionFactoryCalls =
-            new();
-
         private readonly HCDungeonNodeFactory _sut;
 
-        private static readonly Dictionary<DungeonNodeID, OverworldNodeID> ExpectedEntryValues = new();
-        private static readonly Dictionary<DungeonNodeID, List<DungeonNodeID>> ExpectedNoRequirementConnectionValues =
-            new();
-        private static readonly Dictionary<DungeonNodeID, List<
-            (DungeonNodeID fromNodeID, ComplexRequirementType requirementType)>> ExpectedConnectionValues = new();
-        private static readonly Dictionary<DungeonNodeID, List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>>
-            ExpectedKeyDoorValues = new();
+        private readonly List<INode> _entryFactoryCalls = new();
+        private readonly List<(INode fromNode, INode toNode, IRequirement? requirement)> _connectionFactoryCalls = new();
+
+        private static readonly Dictionary<DungeonNodeID, List<OverworldNodeID>> ExpectedEntryValues = new();
+        private static readonly Dictionary<DungeonNodeID, List<DungeonNodeID>> ExpectedNoRequirementValues = new();
+        private static readonly Dictionary<DungeonNodeID,
+            List<(DungeonNodeID fromNodeID, ComplexRequirementType type)>> ExpectedComplexValues = new();
+        private static readonly Dictionary<DungeonNodeID,
+            List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>> ExpectedKeyDoorValues = new();
 
         public HCDungeonNodeFactoryTests()
         {
             _complexRequirements = new ComplexRequirementDictionary(
                 () => Substitute.For<IComplexRequirementFactory>());
             
-            _overworldNodes = new OverworldNodeDictionary(() => _overworldNodeFactory);
+            _overworldNodes = new OverworldNodeDictionary(() => Substitute.For<IOverworldNodeFactory>());
 
             IEntryNodeConnection EntryFactory(INode fromNode)
             {
@@ -62,8 +58,8 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
         private static void PopulateExpectedValues()
         {
             ExpectedEntryValues.Clear();
-            ExpectedNoRequirementConnectionValues.Clear();
-            ExpectedConnectionValues.Clear();
+            ExpectedNoRequirementValues.Clear();
+            ExpectedComplexValues.Clear();
             ExpectedKeyDoorValues.Clear();
             
             foreach (DungeonNodeID id in Enum.GetValues(typeof(DungeonNodeID)))
@@ -71,26 +67,25 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
                 switch (id)
                 {
                     case DungeonNodeID.HCSanctuary:
-                        ExpectedEntryValues.Add(id, OverworldNodeID.HCSanctuaryEntry);
-                        ExpectedNoRequirementConnectionValues.Add(id, new List<DungeonNodeID>
+                        ExpectedEntryValues.Add(id, new List<OverworldNodeID> {OverworldNodeID.HCSanctuaryEntry});
+                        ExpectedNoRequirementValues.Add(id, new List<DungeonNodeID>
                         {
                             DungeonNodeID.HCBack
                         });
                         break;
                     case DungeonNodeID.HCFront:
-                        ExpectedEntryValues.Add(id, OverworldNodeID.HCFrontEntry);
-                        ExpectedNoRequirementConnectionValues.Add(id, new List<DungeonNodeID>
+                        ExpectedEntryValues.Add(id, new List<OverworldNodeID> {OverworldNodeID.HCFrontEntry});
+                        ExpectedNoRequirementValues.Add(id, new List<DungeonNodeID>
                         {
                             DungeonNodeID.HCDarkRoomFront
                         });
-                        ExpectedKeyDoorValues.Add(id,
-                            new List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>
-                            {
-                                (DungeonNodeID.HCPastEscapeFirstKeyDoor, KeyDoorID.HCEscapeFirstKeyDoor)
-                            });
+                        ExpectedKeyDoorValues.Add(id, new List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>
+                        {
+                            (DungeonNodeID.HCPastEscapeFirstKeyDoor, KeyDoorID.HCEscapeFirstKeyDoor)
+                        });
                         break;
                     case DungeonNodeID.HCEscapeFirstKeyDoor:
-                        ExpectedNoRequirementConnectionValues.Add(id, new List<DungeonNodeID> 
+                        ExpectedNoRequirementValues.Add(id, new List<DungeonNodeID> 
                         {
                             DungeonNodeID.HCFront,
                             DungeonNodeID.HCPastEscapeFirstKeyDoor
@@ -105,7 +100,7 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
                             });
                         break;
                     case DungeonNodeID.HCEscapeSecondKeyDoor:
-                        ExpectedNoRequirementConnectionValues.Add(id, new List<DungeonNodeID> 
+                        ExpectedNoRequirementValues.Add(id, new List<DungeonNodeID> 
                         {
                             DungeonNodeID.HCPastEscapeFirstKeyDoor,
                             DungeonNodeID.HCPastEscapeSecondKeyDoor
@@ -120,7 +115,7 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
                             });
                         break;
                     case DungeonNodeID.HCZeldasCellDoor:
-                        ExpectedNoRequirementConnectionValues.Add(id, new List<DungeonNodeID>
+                        ExpectedNoRequirementValues.Add(id, new List<DungeonNodeID>
                         {
                             DungeonNodeID.HCPastEscapeSecondKeyDoor,
                             DungeonNodeID.HCZeldasCell
@@ -134,7 +129,7 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
                             });
                         break;
                     case DungeonNodeID.HCDarkRoomFront:
-                        ExpectedConnectionValues.Add(id,
+                        ExpectedComplexValues.Add(id,
                             new List<(DungeonNodeID fromNodeID, ComplexRequirementType requirementType)>
                             {
                                 (DungeonNodeID.HCFront, ComplexRequirementType.DarkRoomHC)
@@ -146,7 +141,7 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
                             });
                         break;
                     case DungeonNodeID.HCDarkCrossKeyDoor:
-                        ExpectedNoRequirementConnectionValues.Add(id, new List<DungeonNodeID>
+                        ExpectedNoRequirementValues.Add(id, new List<DungeonNodeID>
                         {
                             DungeonNodeID.HCDarkRoomFront,
                             DungeonNodeID.HCPastDarkCrossKeyDoor
@@ -161,14 +156,14 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
                             });
                         break;
                     case DungeonNodeID.HCSewerRatRoomKeyDoor:
-                        ExpectedNoRequirementConnectionValues.Add(id, new List<DungeonNodeID>
+                        ExpectedNoRequirementValues.Add(id, new List<DungeonNodeID>
                         {
                             DungeonNodeID.HCPastDarkCrossKeyDoor,
                             DungeonNodeID.HCPastSewerRatRoomKeyDoor
                         });
                         break;
                     case DungeonNodeID.HCPastSewerRatRoomKeyDoor:
-                        ExpectedNoRequirementConnectionValues.Add(id, new List<DungeonNodeID> 
+                        ExpectedNoRequirementValues.Add(id, new List<DungeonNodeID> 
                         {
                             DungeonNodeID.HCDarkRoomBack
                         });
@@ -179,19 +174,19 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
                             });
                         break;
                     case DungeonNodeID.HCDarkRoomBack:
-                        ExpectedNoRequirementConnectionValues.Add(id, new List<DungeonNodeID> 
+                        ExpectedNoRequirementValues.Add(id, new List<DungeonNodeID> 
                         {
                             DungeonNodeID.HCPastSewerRatRoomKeyDoor
                         });
-                        ExpectedConnectionValues.Add(id,
+                        ExpectedComplexValues.Add(id,
                             new List<(DungeonNodeID fromNodeID, ComplexRequirementType requirementType)>
                             {
                                 (DungeonNodeID.HCBack, ComplexRequirementType.DarkRoomHC)
                             });
                         break;
                     case DungeonNodeID.HCBack:
-                        ExpectedEntryValues.Add(id, OverworldNodeID.HCBackEntry);
-                        ExpectedNoRequirementConnectionValues.Add(id, new List<DungeonNodeID>
+                        ExpectedEntryValues.Add(id, new List<OverworldNodeID> {OverworldNodeID.HCBackEntry});
+                        ExpectedNoRequirementValues.Add(id, new List<DungeonNodeID>
                         {
                             DungeonNodeID.HCDarkRoomBack
                         });
@@ -229,7 +224,9 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
         {
             PopulateExpectedValues();
 
-            return ExpectedEntryValues.Keys.Select(id => new object[] {id, ExpectedEntryValues[id]}).ToList();
+            return (from id in ExpectedEntryValues.Keys
+                from value in ExpectedEntryValues[id]
+                select new object[] {id, value}).ToList();
         }
 
         [Theory]
@@ -250,8 +247,8 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
         {
             PopulateExpectedValues();
 
-            return (from id in ExpectedNoRequirementConnectionValues.Keys from value in
-                    ExpectedNoRequirementConnectionValues[id]
+            return (from id in ExpectedNoRequirementValues.Keys
+                from value in ExpectedNoRequirementValues[id]
                 select new object[] {id, value}).ToList();
         }
 
@@ -273,8 +270,8 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
         {
             PopulateExpectedValues();
 
-            return (from id in ExpectedConnectionValues.Keys from value in ExpectedConnectionValues[id]
-                select new object[] {id, value.fromNodeID, value.requirementType}).ToList();
+            return (from id in ExpectedComplexValues.Keys from value in ExpectedComplexValues[id]
+                select new object[] {id, value.fromNodeID, value.type}).ToList();
         }
 
         [Theory]

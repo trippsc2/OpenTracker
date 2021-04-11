@@ -19,26 +19,24 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
 {
     public class EPDungeonNodeFactoryTests
     {
-        private readonly IOverworldNodeFactory _overworldNodeFactory = Substitute.For<IOverworldNodeFactory>();
-        
         private readonly IBossRequirementDictionary _bossRequirements;
         private readonly IComplexRequirementDictionary _complexRequirements;
 
         private readonly IOverworldNodeDictionary _overworldNodes;
+        
+        private readonly EPDungeonNodeFactory _sut;
 
         private readonly List<INode> _entryFactoryCalls = new();
         private readonly List<(INode fromNode, INode toNode, IRequirement? requirement)> _connectionFactoryCalls = new();
 
-        private readonly EPDungeonNodeFactory _sut;
-
         private static readonly Dictionary<DungeonNodeID, List<OverworldNodeID>> ExpectedEntryValues = new();
         private static readonly Dictionary<DungeonNodeID, List<DungeonNodeID>> ExpectedNoRequirementValues = new();
-        private static readonly Dictionary<DungeonNodeID, List<
-            (DungeonNodeID fromNodeID, ComplexRequirementType requirementType)>> ExpectedComplexConnectionValues = new();
-        private static readonly Dictionary<DungeonNodeID, List<
-            (DungeonNodeID fromNodeID, BossPlacementID bossID)>> ExpectedBossConnectionValues = new();
-        private static readonly Dictionary<DungeonNodeID, List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>>
-            ExpectedKeyDoorValues = new();
+        private static readonly Dictionary<DungeonNodeID,
+            List<(DungeonNodeID fromNodeID, ComplexRequirementType requirementType)>> ExpectedComplexValues = new();
+        private static readonly Dictionary<DungeonNodeID,
+            List<(DungeonNodeID fromNodeID, BossPlacementID bossID)>> ExpectedBossValues = new();
+        private static readonly Dictionary<DungeonNodeID,
+            List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>> ExpectedKeyDoorValues = new();
 
         public EPDungeonNodeFactoryTests()
         {
@@ -48,7 +46,7 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
             _complexRequirements = new ComplexRequirementDictionary(
                 () => Substitute.For<IComplexRequirementFactory>());
 
-            _overworldNodes = new OverworldNodeDictionary(() => _overworldNodeFactory);
+            _overworldNodes = new OverworldNodeDictionary(() => Substitute.For<IOverworldNodeFactory>());
 
             IEntryNodeConnection EntryFactory(INode fromNode)
             {
@@ -70,8 +68,8 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
         {
             ExpectedEntryValues.Clear();
             ExpectedNoRequirementValues.Clear();
-            ExpectedComplexConnectionValues.Clear();
-            ExpectedBossConnectionValues.Clear();
+            ExpectedComplexValues.Clear();
+            ExpectedBossValues.Clear();
             ExpectedKeyDoorValues.Clear();
             
             foreach (DungeonNodeID id in Enum.GetValues(typeof(DungeonNodeID)))
@@ -94,7 +92,7 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
                             });
                         break;
                     case DungeonNodeID.EPRightDarkRoom:
-                        ExpectedComplexConnectionValues.Add(id,
+                        ExpectedComplexValues.Add(id,
                             new List<(DungeonNodeID fromNodeID, ComplexRequirementType requirementType)>
                             {
                                 (DungeonNodeID.EP, ComplexRequirementType.DarkRoomEPRight)
@@ -136,7 +134,7 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
                             });
                         break;
                     case DungeonNodeID.EPBackDarkRoom:
-                        ExpectedComplexConnectionValues.Add(id,
+                        ExpectedComplexValues.Add(id,
                             new List<(DungeonNodeID fromNodeID, ComplexRequirementType requirementType)>
                             {
                                 (DungeonNodeID.EPPastBigKeyDoor, ComplexRequirementType.DarkRoomEPBack)
@@ -150,14 +148,14 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
                             });
                         break;
                     case DungeonNodeID.EPBossRoom:
-                        ExpectedComplexConnectionValues.Add(id,
+                        ExpectedComplexValues.Add(id,
                             new List<(DungeonNodeID fromNodeID, ComplexRequirementType requirementType)>
                             {
                                 (DungeonNodeID.EPPastBackKeyDoor, ComplexRequirementType.RedEyegoreGoriya)
                             });
                         break;
                     case DungeonNodeID.EPBoss:
-                        ExpectedBossConnectionValues.Add(id,
+                        ExpectedBossValues.Add(id,
                             new List<(DungeonNodeID fromNodeID, BossPlacementID bossID)>
                             {
                                 (DungeonNodeID.EPBossRoom, BossPlacementID.EPBoss)
@@ -240,7 +238,7 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
         {
             PopulateExpectedValues();
 
-            return (from id in ExpectedComplexConnectionValues.Keys from value in ExpectedComplexConnectionValues[id]
+            return (from id in ExpectedComplexValues.Keys from value in ExpectedComplexValues[id]
                 select new object[] {id, value.fromNodeID, value.requirementType}).ToList();
         }
 
@@ -262,7 +260,7 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
         {
             PopulateExpectedValues();
 
-            return (from id in ExpectedBossConnectionValues.Keys from value in ExpectedBossConnectionValues[id]
+            return (from id in ExpectedBossValues.Keys from value in ExpectedBossValues[id]
                 select new object[] {id, value.fromNodeID, value.bossID}).ToList();
         }
 
