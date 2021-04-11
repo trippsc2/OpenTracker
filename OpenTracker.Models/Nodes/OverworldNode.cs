@@ -4,6 +4,7 @@ using System.ComponentModel;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.NodeConnections;
+using OpenTracker.Models.Nodes.Factories;
 using ReactiveUI;
 
 namespace OpenTracker.Models.Nodes

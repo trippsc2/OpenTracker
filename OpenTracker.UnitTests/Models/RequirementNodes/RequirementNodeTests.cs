@@ -6,6 +6,7 @@ using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.NodeConnections;
 using OpenTracker.Models.Nodes;
+using OpenTracker.Models.Nodes.Factories;
 using Xunit;
 
 namespace OpenTracker.UnitTests.Models.RequirementNodes

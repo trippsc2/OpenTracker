@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Nodes;
@@ -9,42 +8,43 @@ using ReactiveUI;
 namespace OpenTracker.Models.NodeConnections
 {
     /// <summary>
-    /// This class contains dungeon entry node connection data.
+    ///     This class contains dungeon entry node connection data.
     /// </summary>
     public class EntryNodeConnection : ReactiveObject, IEntryNodeConnection
     {
         private readonly INode _fromNode;
 
-        public IRequirement Requirement { get; }
+        // ReSharper disable once UnassignedGetOnlyAutoProperty
+        public IRequirement? Requirement { get; }
         
         public AccessibilityLevel Accessibility => _fromNode.Accessibility;
 
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
-        /// <param name="requirements">
-        /// The requirement dictionary.
-        /// </param>
         /// <param name="fromNode">
-        /// The node from which the connection originates.
+        ///     The node from which the connection originates.
         /// </param>
-        public EntryNodeConnection(IRequirementDictionary requirements, INode fromNode)
+        public EntryNodeConnection(INode fromNode)
         {
             _fromNode = fromNode;
 
-            Requirement = requirements[RequirementType.NoRequirement];
-
             _fromNode.PropertyChanged += OnNodeChanged;
+        }
+
+        public AccessibilityLevel GetConnectionAccessibility(IList<INode> excludedNodes)
+        {
+            return Accessibility;
         }
         
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the IRequirementNode interface.
+        ///     Subscribes to the PropertyChanged event on the IRequirementNode interface.
         /// </summary>
         /// <param name="sender">
-        /// The sending object of the event.
+        ///     The sending object of the event.
         /// </param>
         /// <param name="e">
-        /// The arguments of the PropertyChanged event.
+        ///     The arguments of the PropertyChanged event.
         /// </param>
         private void OnNodeChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -52,25 +52,6 @@ namespace OpenTracker.Models.NodeConnections
             {
                 this.RaisePropertyChanged(nameof(Accessibility));
             }
-        }
-
-        /// <summary>
-        /// Returns the availability of the connection, excluding loops from the specified nodes.
-        /// </summary>
-        /// <param name="excludedNodes">
-        ///     A list of nodes to exclude to prevent loops.
-        /// </param>
-        /// <returns>
-        /// The availability of the connection.
-        /// </returns>
-        public AccessibilityLevel GetConnectionAccessibility(IList<INode> excludedNodes)
-        {
-            if (excludedNodes == null)
-            {
-                throw new ArgumentNullException(nameof(excludedNodes));
-            }
-
-            return Accessibility;
         }
     }
 }

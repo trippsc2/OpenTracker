@@ -11,6 +11,7 @@ using OpenTracker.Models.Dungeons.Nodes.Factories;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.NodeConnections;
 using OpenTracker.Models.Nodes;
+using OpenTracker.Models.Nodes.Factories;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Requirements.Boss;
 using OpenTracker.Models.Requirements.BossShuffle;

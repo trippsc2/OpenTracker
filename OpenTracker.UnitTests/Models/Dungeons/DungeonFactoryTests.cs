@@ -11,6 +11,7 @@ using OpenTracker.Models.Items;
 using OpenTracker.Models.Items.Factories;
 using OpenTracker.Models.Items.Keys;
 using OpenTracker.Models.Nodes;
+using OpenTracker.Models.Nodes.Factories;
 using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Dungeons

@@ -21,6 +21,7 @@ using OpenTracker.Models.Items.Factories;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.Nodes;
+using OpenTracker.Models.Nodes.Factories;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.Prizes;

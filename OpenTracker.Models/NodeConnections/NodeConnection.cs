@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Nodes;
@@ -56,11 +55,6 @@ namespace OpenTracker.Models.NodeConnections
 
         public AccessibilityLevel GetConnectionAccessibility(IList<INode> excludedNodes)
         {
-            if (excludedNodes == null)
-            {
-                throw new ArgumentNullException(nameof(excludedNodes));
-            }
-
             var requirement = Requirement?.Accessibility ?? AccessibilityLevel.Normal;
 
             if (requirement == AccessibilityLevel.None || _fromNode.Accessibility == AccessibilityLevel.None ||

@@ -9,6 +9,7 @@ using OpenTracker.Models.Dungeons.Nodes;
 using OpenTracker.Models.Dungeons.Nodes.Factories;
 using OpenTracker.Models.NodeConnections;
 using OpenTracker.Models.Nodes;
+using OpenTracker.Models.Nodes.Factories;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Requirements.Complex;
 using Xunit;
