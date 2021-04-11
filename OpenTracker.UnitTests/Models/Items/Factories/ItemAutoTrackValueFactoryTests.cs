@@ -9,6 +9,9 @@ using OpenTracker.Models.AutoTracking.Values.Static;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Items.Factories;
 using OpenTracker.Models.Requirements;
+using OpenTracker.Models.Requirements.AutoTracking;
+using OpenTracker.Models.Requirements.GenericKeys;
+using OpenTracker.Models.Requirements.KeyDropShuffle;
 using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Items.Factories
@@ -19,6 +22,14 @@ namespace OpenTracker.UnitTests.Models.Items.Factories
         private readonly IMemoryAddressProvider _memoryAddressProvider = new MemoryAddressProvider(() =>
             Substitute.For<IMemoryAddress>());
         private readonly IRequirementDictionary _requirements = Substitute.For<IRequirementDictionary>();
+        
+        private readonly IGenericKeysRequirementDictionary _genericKeysRequirements =
+            Substitute.For<IGenericKeysRequirementDictionary>();
+        private readonly IKeyDropShuffleRequirementDictionary _keyDropShuffleRequirements =
+            Substitute.For<IKeyDropShuffleRequirementDictionary>();
+
+        private readonly IRaceIllegalTrackingRequirement _raceIllegalTrackingRequirement =
+            Substitute.For<IRaceIllegalTrackingRequirement>();
         
         private readonly IAutoTrackAddressBool.Factory _boolFactory = (address, comparison, trueValue) => 
             new AutoTrackAddressBool(address, comparison, trueValue);
@@ -46,8 +57,9 @@ namespace OpenTracker.UnitTests.Models.Items.Factories
             _requirements[Arg.Any<RequirementType>()].Returns(Substitute.For<IRequirement>());
             
             _sut = new ItemAutoTrackValueFactory(
-                _items, _memoryAddressProvider, _requirements, _boolFactory, _valueFactory, _conditionalFactory,
-                _flagBoolFactory, _itemValueFactory, _differenceFactory, _overrideFactory, _sumFactory, _staticFactory,
+                _items, _memoryAddressProvider, _genericKeysRequirements, _keyDropShuffleRequirements,
+                _raceIllegalTrackingRequirement, _boolFactory, _valueFactory, _conditionalFactory, _flagBoolFactory,
+                _itemValueFactory, _differenceFactory, _overrideFactory, _sumFactory, _staticFactory,
                 _memoryFlagFactory);
         }
 

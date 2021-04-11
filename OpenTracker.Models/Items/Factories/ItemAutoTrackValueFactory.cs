@@ -4,7 +4,9 @@ using OpenTracker.Models.AutoTracking.Values;
 using OpenTracker.Models.AutoTracking.Values.Multiple;
 using OpenTracker.Models.AutoTracking.Values.Single;
 using OpenTracker.Models.AutoTracking.Values.Static;
-using OpenTracker.Models.Requirements;
+using OpenTracker.Models.Requirements.AutoTracking;
+using OpenTracker.Models.Requirements.GenericKeys;
+using OpenTracker.Models.Requirements.KeyDropShuffle;
 
 namespace OpenTracker.Models.Items.Factories
 {
@@ -15,8 +17,12 @@ namespace OpenTracker.Models.Items.Factories
     {
         private readonly IItemDictionary _items;
         private readonly IMemoryAddressProvider _memoryAddressProvider;
-        private readonly IRequirementDictionary _requirements;
-        
+
+        private readonly IGenericKeysRequirementDictionary _genericKeysRequirements;
+        private readonly IKeyDropShuffleRequirementDictionary _keyDropShuffleRequirements;
+
+        private readonly IRaceIllegalTrackingRequirement _raceIllegalTrackingRequirement;
+
         private readonly IAutoTrackAddressBool.Factory _boolFactory;
         private readonly IAutoTrackAddressValue.Factory _valueFactory;
         private readonly IAutoTrackConditionalValue.Factory _conditionalFactory;
@@ -28,18 +34,73 @@ namespace OpenTracker.Models.Items.Factories
         private readonly IAutoTrackStaticValue.Factory _staticFactory;
         private readonly IMemoryFlag.Factory _memoryFlagFactory;
 
+        /// <summary>
+        ///     Constructor
+        /// </summary>
+        /// <param name="items">
+        ///     The item dictionary.
+        /// </param>
+        /// <param name="memoryAddressProvider">
+        ///     The memory address provider.
+        /// </param>
+        /// <param name="genericKeysRequirements">
+        ///     The generic keys requirement dictionary.
+        /// </param>
+        /// <param name="keyDropShuffleRequirements">
+        ///     The key drop shuffle requirement dictionary.
+        /// </param>
+        /// <param name="raceIllegalTrackingRequirement">
+        ///     The race illegal tracking requirement.
+        /// </param>
+        /// <param name="boolFactory">
+        ///     An Autofac factory for creating memory address boolean result values.
+        /// </param>
+        /// <param name="valueFactory">
+        ///     An Autofac factory for creating memory address value result values.
+        /// </param>
+        /// <param name="conditionalFactory">
+        ///     An Autofac factory for creating conditional result values.
+        /// </param>
+        /// <param name="flagBoolFactory">
+        ///     An Autofac factory for creating memory flag boolean result values.
+        /// </param>
+        /// <param name="itemValueFactory">
+        ///     An Autofac factory for creating item value result values.
+        /// </param>
+        /// <param name="differenceFactory">
+        ///     An Autofac factory for creating the difference of two values result values.
+        /// </param>
+        /// <param name="overrideFactory">
+        ///     An Autofac factory for creating multiple overriding values result values.
+        /// </param>
+        /// <param name="sumFactory">
+        ///     An Autofac factory for creating the sum of multiple values result values.
+        /// </param>
+        /// <param name="staticFactory">
+        ///     An Autofac factory for creating static result values.
+        /// </param>
+        /// <param name="memoryFlagFactory">
+        ///     An Autofac factory for memory flags.
+        /// </param>
         public ItemAutoTrackValueFactory(
-            IItemDictionary items, IMemoryAddressProvider memoryAddressProvider, IRequirementDictionary requirements,
-            IAutoTrackAddressBool.Factory boolFactory, IAutoTrackAddressValue.Factory valueFactory,
-            IAutoTrackConditionalValue.Factory conditionalFactory, IAutoTrackFlagBool.Factory flagBoolFactory,
-            IAutoTrackItemValue.Factory itemValueFactory, IAutoTrackMultipleDifference.Factory differenceFactory,
-            IAutoTrackMultipleOverride.Factory overrideFactory, IAutoTrackMultipleSum.Factory sumFactory,
-            IAutoTrackStaticValue.Factory staticFactory, IMemoryFlag.Factory memoryFlagFactory)
+            IItemDictionary items, IMemoryAddressProvider memoryAddressProvider,
+            IGenericKeysRequirementDictionary genericKeysRequirements,
+            IKeyDropShuffleRequirementDictionary keyDropShuffleRequirements,
+            IRaceIllegalTrackingRequirement raceIllegalTrackingRequirement, IAutoTrackAddressBool.Factory boolFactory,
+            IAutoTrackAddressValue.Factory valueFactory, IAutoTrackConditionalValue.Factory conditionalFactory,
+            IAutoTrackFlagBool.Factory flagBoolFactory, IAutoTrackItemValue.Factory itemValueFactory,
+            IAutoTrackMultipleDifference.Factory differenceFactory, IAutoTrackMultipleOverride.Factory overrideFactory,
+            IAutoTrackMultipleSum.Factory sumFactory, IAutoTrackStaticValue.Factory staticFactory,
+            IMemoryFlag.Factory memoryFlagFactory)
         {
             _memoryAddressProvider = memoryAddressProvider;
             _items = items;
-            _requirements = requirements;
+
+            _genericKeysRequirements = genericKeysRequirements;
+            _keyDropShuffleRequirements = keyDropShuffleRequirements;
             
+            _raceIllegalTrackingRequirement = raceIllegalTrackingRequirement;
+
             _boolFactory = boolFactory;
             _valueFactory = valueFactory;
             _conditionalFactory = conditionalFactory;
@@ -158,13 +219,13 @@ namespace OpenTracker.Models.Items.Factories
                 ItemType.MoonPearl => _boolFactory(
                     _memoryAddressProvider.MemoryAddresses[0x7ef357], 0, 1),
                 ItemType.HCSmallKey => _conditionalFactory(
-                    _requirements[RequirementType.GenericKeys],
+                    _genericKeysRequirements[true],
                     _conditionalFactory(
-                        _requirements[RequirementType.RaceIllegalTracking],
+                        _raceIllegalTrackingRequirement,
                         _differenceFactory(
                             _itemValueFactory(_items[ItemType.HCUnlockedDoor]),
                             _conditionalFactory(
-                                _requirements[RequirementType.KeyDropShuffleOff],
+                                _keyDropShuffleRequirements[false],
                                 _itemValueFactory(_items[ItemType.HCFreeKey]),
                                 _staticFactory(0))), null),
                     _overrideFactory(new List<IAutoTrackValue>
@@ -175,135 +236,135 @@ namespace OpenTracker.Models.Items.Factories
                             _memoryAddressProvider.MemoryAddresses[0x7ef4e1], 4, 0)
                     })),
                 ItemType.EPSmallKey => _conditionalFactory(
-                    _requirements[RequirementType.GenericKeys],
+                    _genericKeysRequirements[true],
                     _conditionalFactory(
-                        _requirements[RequirementType.RaceIllegalTracking],
+                        _raceIllegalTrackingRequirement,
                         _differenceFactory(
                             _itemValueFactory(_items[ItemType.EPUnlockedDoor]),
                             _conditionalFactory(
-                                _requirements[RequirementType.KeyDropShuffleOff],
+                                _keyDropShuffleRequirements[false],
                                 _itemValueFactory(_items[ItemType.EPFreeKey]),
                                 _staticFactory(0))), null),
                     _valueFactory(
                         _memoryAddressProvider.MemoryAddresses[0x7ef4e2], 2, 0)),
                 ItemType.DPSmallKey => _conditionalFactory(
-                    _requirements[RequirementType.GenericKeys],
+                    _genericKeysRequirements[true],
                     _conditionalFactory(
-                        _requirements[RequirementType.RaceIllegalTracking],
+                        _raceIllegalTrackingRequirement,
                         _differenceFactory(
                             _itemValueFactory(_items[ItemType.DPUnlockedDoor]),
                             _conditionalFactory(
-                                _requirements[RequirementType.KeyDropShuffleOff],
+                                _keyDropShuffleRequirements[false],
                                 _itemValueFactory(_items[ItemType.DPFreeKey]),
                                 _staticFactory(0))), null),
                     _valueFactory(
                         _memoryAddressProvider.MemoryAddresses[0x7ef4e3], 4, 0)),
                 ItemType.ToHSmallKey => _conditionalFactory(
-                    _requirements[RequirementType.GenericKeys],
+                    _genericKeysRequirements[true],
                     _conditionalFactory(
-                        _requirements[RequirementType.RaceIllegalTracking],
+                        _raceIllegalTrackingRequirement,
                         _itemValueFactory(_items[ItemType.ToHUnlockedDoor]), null),
                     _valueFactory(
                         _memoryAddressProvider.MemoryAddresses[0x7ef4ea], 1, 0)),
                 ItemType.ATSmallKey => _conditionalFactory(
-                    _requirements[RequirementType.GenericKeys],
+                    _genericKeysRequirements[true],
                     _conditionalFactory(
-                        _requirements[RequirementType.RaceIllegalTracking],
+                        _raceIllegalTrackingRequirement,
                         _differenceFactory(
                             _itemValueFactory(_items[ItemType.ATUnlockedDoor]),
                             _conditionalFactory(
-                                _requirements[RequirementType.KeyDropShuffleOff],
+                                _keyDropShuffleRequirements[false],
                                 _itemValueFactory(_items[ItemType.ATFreeKey]),
                                 _staticFactory(0))), null),
                     _valueFactory(
                         _memoryAddressProvider.MemoryAddresses[0x7ef4e4], 4, 0)),
                 ItemType.PoDSmallKey => _conditionalFactory(
-                    _requirements[RequirementType.GenericKeys],
+                    _genericKeysRequirements[true],
                     _conditionalFactory(
-                        _requirements[RequirementType.RaceIllegalTracking],
+                        _raceIllegalTrackingRequirement,
                         _itemValueFactory(_items[ItemType.PoDUnlockedDoor]), null),
                     _valueFactory(
                         _memoryAddressProvider.MemoryAddresses[0x7ef4e6], 6, 0)),
                 ItemType.SPSmallKey => _conditionalFactory(
-                    _requirements[RequirementType.GenericKeys],
+                    _genericKeysRequirements[true],
                     _conditionalFactory(
-                        _requirements[RequirementType.RaceIllegalTracking],
+                        _raceIllegalTrackingRequirement,
                         _differenceFactory(
                             _itemValueFactory(_items[ItemType.SPUnlockedDoor]),
                             _conditionalFactory(
-                                _requirements[RequirementType.KeyDropShuffleOff],
+                                _keyDropShuffleRequirements[false],
                                 _itemValueFactory(_items[ItemType.SPFreeKey]),
                                 _staticFactory(0))), null),
                     _valueFactory(
                         _memoryAddressProvider.MemoryAddresses[0x7ef4e5], 6, 0)),
                 ItemType.SWSmallKey => _conditionalFactory(
-                    _requirements[RequirementType.GenericKeys],
+                    _genericKeysRequirements[true],
                     _conditionalFactory(
-                        _requirements[RequirementType.RaceIllegalTracking],
+                        _raceIllegalTrackingRequirement,
                         _differenceFactory(
                             _itemValueFactory(_items[ItemType.SWUnlockedDoor]),
                             _conditionalFactory(
-                                _requirements[RequirementType.KeyDropShuffleOff],
+                                _keyDropShuffleRequirements[false],
                                 _itemValueFactory(_items[ItemType.SWFreeKey]),
                                 _staticFactory(0))), null),
                     _valueFactory(
                         _memoryAddressProvider.MemoryAddresses[0x7ef4e8], 5, 0)),
                 ItemType.TTSmallKey => _conditionalFactory(
-                    _requirements[RequirementType.GenericKeys],
+                    _genericKeysRequirements[true],
                     _conditionalFactory(
-                        _requirements[RequirementType.RaceIllegalTracking],
+                        _raceIllegalTrackingRequirement,
                         _differenceFactory(
                             _itemValueFactory(_items[ItemType.TTUnlockedDoor]),
                             _conditionalFactory(
-                                _requirements[RequirementType.KeyDropShuffleOff],
+                                _keyDropShuffleRequirements[false],
                                 _itemValueFactory(_items[ItemType.TTFreeKey]),
                                 _staticFactory(0))), null),
                     _valueFactory(
                         _memoryAddressProvider.MemoryAddresses[0x7ef4eb], 3, 0)),
                 ItemType.IPSmallKey => _conditionalFactory(
-                    _requirements[RequirementType.GenericKeys],
+                    _genericKeysRequirements[true],
                     _conditionalFactory(
-                        _requirements[RequirementType.RaceIllegalTracking],
+                        _raceIllegalTrackingRequirement,
                         _differenceFactory(
                             _itemValueFactory(_items[ItemType.IPUnlockedDoor]),
                             _conditionalFactory(
-                                _requirements[RequirementType.KeyDropShuffleOff],
+                                _keyDropShuffleRequirements[false],
                                 _itemValueFactory(_items[ItemType.IPFreeKey]),
                                 _staticFactory(0))), null),
                     _valueFactory(
                         _memoryAddressProvider.MemoryAddresses[0x7ef4e9], 6, 0)),
                 ItemType.MMSmallKey => _conditionalFactory(
-                    _requirements[RequirementType.GenericKeys],
+                    _genericKeysRequirements[true],
                     _conditionalFactory(
-                        _requirements[RequirementType.RaceIllegalTracking],
+                        _raceIllegalTrackingRequirement,
                         _differenceFactory(
                             _itemValueFactory(_items[ItemType.MMUnlockedDoor]),
                             _conditionalFactory(
-                                _requirements[RequirementType.KeyDropShuffleOff],
+                                _keyDropShuffleRequirements[false],
                                 _itemValueFactory(_items[ItemType.MMFreeKey]),
                                 _staticFactory(0))), null),
                     _valueFactory(
                         _memoryAddressProvider.MemoryAddresses[0x7ef4e7], 6, 0)),
                 ItemType.TRSmallKey => _conditionalFactory(
-                    _requirements[RequirementType.GenericKeys],
+                    _genericKeysRequirements[true],
                     _conditionalFactory(
-                        _requirements[RequirementType.RaceIllegalTracking],
+                        _raceIllegalTrackingRequirement,
                         _differenceFactory(
                             _itemValueFactory(_items[ItemType.TRUnlockedDoor]),
                             _conditionalFactory(
-                                _requirements[RequirementType.KeyDropShuffleOff],
+                                _keyDropShuffleRequirements[false],
                                 _itemValueFactory(_items[ItemType.TRFreeKey]),
                                 _staticFactory(0))), null),
                     _valueFactory(
                         _memoryAddressProvider.MemoryAddresses[0x7ef4ec], 6, 0)),
                 ItemType.GTSmallKey => _conditionalFactory(
-                    _requirements[RequirementType.GenericKeys],
+                    _genericKeysRequirements[true],
                     _conditionalFactory(
-                        _requirements[RequirementType.RaceIllegalTracking],
+                        _raceIllegalTrackingRequirement,
                         _differenceFactory(
                             _itemValueFactory(_items[ItemType.GTUnlockedDoor]),
                             _conditionalFactory(
-                                _requirements[RequirementType.KeyDropShuffleOff],
+                                _keyDropShuffleRequirements[false],
                                 _itemValueFactory(_items[ItemType.GTFreeKey]),
                                 _staticFactory(0))), null),
                     _valueFactory(

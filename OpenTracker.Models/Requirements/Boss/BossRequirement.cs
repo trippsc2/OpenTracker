@@ -124,13 +124,8 @@ namespace OpenTracker.Models.Requirements.Boss
         {
             var boss = _bossPlacement.GetCurrentBoss();
 
-            if (boss == null)
-            {
-                CurrentBossRequirement = _bossTypeRequirements.NoBoss.Value;
-                return;
-            }
-            
-            CurrentBossRequirement = _bossTypeRequirements[boss.Value];
+            CurrentBossRequirement = boss is null ? _bossTypeRequirements.NoBoss.Value
+                : _bossTypeRequirements[boss.Value];
         }
 
         protected override AccessibilityLevel GetAccessibility()

@@ -1,26 +1,24 @@
 ﻿using System.ComponentModel;
 using OpenTracker.Models.Modes;
 
-namespace OpenTracker.Models.Requirements.Mode
+namespace OpenTracker.Models.Requirements.TakeAnyLocations
 {
     /// <summary>
-    /// This class contains take any locations requirement data.
+    ///     This class contains take any locations requirement data.
     /// </summary>
-    public class TakeAnyLocationsRequirement : BooleanRequirement
+    public class TakeAnyLocationsRequirement : BooleanRequirement, ITakeAnyLocationsRequirement
     {
         private readonly IMode _mode;
         private readonly bool _expectedValue;
-
-        public delegate TakeAnyLocationsRequirement Factory(bool expectedValue);
-
+        
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="mode">
-        /// The mode settings.
+        ///     The mode settings.
         /// </param>
         /// <param name="expectedValue">
-        /// A boolean expected enemy shuffle value.
+        ///     A boolean expected take any locations value.
         /// </param>
         public TakeAnyLocationsRequirement(IMode mode, bool expectedValue)
         {
@@ -33,13 +31,13 @@ namespace OpenTracker.Models.Requirements.Mode
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the IMode interface.
+        ///     Subscribes to the PropertyChanged event on the IMode interface.
         /// </summary>
         /// <param name="sender">
-        /// The sending object of the event.
+        ///     The sending object of the event.
         /// </param>
         /// <param name="e">
-        /// The arguments of the PropertyChanged event.
+        ///     The arguments of the PropertyChanged event.
         /// </param>
         private void OnModeChanged(object? sender, PropertyChangedEventArgs e)
         {

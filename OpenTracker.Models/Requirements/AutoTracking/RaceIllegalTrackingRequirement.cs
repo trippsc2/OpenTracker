@@ -1,31 +1,26 @@
 ﻿using System.ComponentModel;
 using OpenTracker.Models.AutoTracking;
 
-namespace OpenTracker.Models.Requirements.Mode
+namespace OpenTracker.Models.Requirements.AutoTracking
 {
     /// <summary>
-    /// This class contains race illegal tracking requirement data.
+    ///     This class contains race illegal tracking requirement data.
     /// </summary>
-    public class RaceIllegalTrackingRequirement : BooleanRequirement
+    public class RaceIllegalTrackingRequirement : BooleanRequirement, IRaceIllegalTrackingRequirement
     {
         private readonly IAutoTracker _autoTracker;
         private readonly bool _expectedValue;
 
-        public delegate RaceIllegalTrackingRequirement Factory(bool expectedValue);
-
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="autoTracker">
-        /// The auto-tracker data.
+        ///     The auto-tracker data.
         /// </param>
-        /// <param name="expectedValue">
-        /// A boolean expected race illegal tracking requirement value.
-        /// </param>
-        public RaceIllegalTrackingRequirement(IAutoTracker autoTracker, bool expectedValue)
+        public RaceIllegalTrackingRequirement(IAutoTracker autoTracker)
         {
             _autoTracker = autoTracker;
-            _expectedValue = expectedValue;
+            _expectedValue = true;
 
             _autoTracker.PropertyChanged += OnAutoTrackerChanged;
 
@@ -33,13 +28,13 @@ namespace OpenTracker.Models.Requirements.Mode
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the IAutoTracker interface.
+        ///     Subscribes to the PropertyChanged event on the IAutoTracker interface.
         /// </summary>
         /// <param name="sender">
-        /// The sending object of the event.
+        ///     The sending object of the event.
         /// </param>
         /// <param name="e">
-        /// The arguments of the PropertyChanged event.
+        ///     The arguments of the PropertyChanged event.
         /// </param>
         private void OnAutoTrackerChanged(object? sender, PropertyChangedEventArgs e)
         {

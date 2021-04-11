@@ -26,11 +26,13 @@ using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.Prizes;
 using OpenTracker.Models.Requirements.Aggregate;
 using OpenTracker.Models.Requirements.Alternative;
+using OpenTracker.Models.Requirements.AutoTracking;
 using OpenTracker.Models.Requirements.BigKeyShuffle;
 using OpenTracker.Models.Requirements.Boss;
 using OpenTracker.Models.Requirements.BossShuffle;
 using OpenTracker.Models.Requirements.Complex;
 using OpenTracker.Models.Requirements.EnemyShuffle;
+using OpenTracker.Models.Requirements.GenericKeys;
 using OpenTracker.Models.Requirements.GuaranteedBossItems;
 using OpenTracker.Models.Requirements.Item;
 using OpenTracker.Models.Requirements.Item.Crystal;
@@ -40,7 +42,9 @@ using OpenTracker.Models.Requirements.Item.SmallKey;
 using OpenTracker.Models.Requirements.KeyDropShuffle;
 using OpenTracker.Models.Requirements.Mode;
 using OpenTracker.Models.Requirements.SequenceBreak;
+using OpenTracker.Models.Requirements.ShopShuffle;
 using OpenTracker.Models.Requirements.SmallKeyShuffle;
+using OpenTracker.Models.Requirements.TakeAnyLocations;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.Sections;
 using OpenTracker.Models.SequenceBreaks;
@@ -105,11 +109,7 @@ namespace OpenTracker
         private static List<string> ModelsSelfTypes => new()
         {
             nameof(CompassShuffleRequirement),
-            nameof(GenericKeysRequirement),
             nameof(MapShuffleRequirement),
-            nameof(RaceIllegalTrackingRequirement),
-            nameof(ShopShuffleRequirement),
-            nameof(TakeAnyLocationsRequirement),
             nameof(BossSection),
             nameof(DropdownSection),
             nameof(DungeonEntranceSection),
@@ -158,6 +158,7 @@ namespace OpenTracker
             nameof(OverworldNodeFactory),
             nameof(AggregateRequirementDictionary),
             nameof(AlternativeRequirementDictionary),
+            nameof(RaceIllegalTrackingRequirement),
             nameof(BigKeyShuffleRequirementDictionary),
             nameof(BossRequirementDictionary),
             nameof(BossTypeRequirementDictionary),
@@ -167,6 +168,7 @@ namespace OpenTracker
             nameof(ComplexRequirementDictionary),
             nameof(ComplexRequirementFactory),
             nameof(EnemyShuffleRequirementDictionary),
+            nameof(GenericKeysRequirementDictionary),
             nameof(GuaranteedBossItemsRequirementDictionary),
             nameof(CrystalRequirement),
             nameof(ItemRequirementDictionary),
@@ -178,7 +180,9 @@ namespace OpenTracker
             nameof(ItemPlacementRequirementDictionary),
             nameof(WorldStateRequirementDictionary),
             nameof(SequenceBreakRequirementDictionary),
+            nameof(ShopShuffleRequirementDictionary),
             nameof(SmallKeyShuffleRequirementDictionary),
+            nameof(TakeAnyLocationsRequirementDictionary),
             nameof(RequirementDictionary),
             nameof(RequirementFactory),
             nameof(SaveLoadManager),

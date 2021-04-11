@@ -9,10 +9,12 @@ using OpenTracker.Models.Nodes;
 using OpenTracker.Models.Prizes;
 using OpenTracker.Models.Requirements.Aggregate;
 using OpenTracker.Models.Requirements.Alternative;
+using OpenTracker.Models.Requirements.AutoTracking;
 using OpenTracker.Models.Requirements.BigKeyShuffle;
 using OpenTracker.Models.Requirements.Boss;
 using OpenTracker.Models.Requirements.BossShuffle;
 using OpenTracker.Models.Requirements.EnemyShuffle;
+using OpenTracker.Models.Requirements.GenericKeys;
 using OpenTracker.Models.Requirements.GuaranteedBossItems;
 using OpenTracker.Models.Requirements.Item;
 using OpenTracker.Models.Requirements.Item.Crystal;
@@ -22,8 +24,10 @@ using OpenTracker.Models.Requirements.KeyDropShuffle;
 using OpenTracker.Models.Requirements.Mode;
 using OpenTracker.Models.Requirements.Node;
 using OpenTracker.Models.Requirements.SequenceBreak;
+using OpenTracker.Models.Requirements.ShopShuffle;
 using OpenTracker.Models.Requirements.SmallKeyShuffle;
 using OpenTracker.Models.Requirements.Static;
+using OpenTracker.Models.Requirements.TakeAnyLocations;
 using OpenTracker.Models.SequenceBreaks;
 
 namespace OpenTracker.Models.Requirements
@@ -37,6 +41,7 @@ namespace OpenTracker.Models.Requirements
         private readonly IItemDictionary _items;
         private readonly IPrizeDictionary _prizes;
         private readonly IRequirementDictionary _requirements;
+        
         private readonly IOverworldNodeDictionary _requirementNodes;
         private readonly ISequenceBreakDictionary _sequenceBreaks;
         private readonly IAggregateRequirement.Factory _aggregateFactory;
@@ -48,24 +53,23 @@ namespace OpenTracker.Models.Requirements
         private readonly ICrystalRequirement.Factory _crystalFactory;
         private readonly IEnemyShuffleRequirement.Factory _enemyShuffleFactory;
         private readonly IEntranceShuffleRequirement.Factory _entranceShuffleFactory;
-        private readonly GenericKeysRequirement.Factory _genericKeysFactory;
+        private readonly IGenericKeysRequirement.Factory _genericKeysFactory;
         private readonly IGuaranteedBossItemsRequirement.Factory _guaranteedBossItemsFactory;
         private readonly IItemExactRequirement.Factory _itemExactFactory;
         private readonly IItemPlacementRequirement.Factory _itemPlacementFactory;
         private readonly IItemRequirement.Factory _itemFactory;
         private readonly IKeyDropShuffleRequirement.Factory _keyDropShuffleFactory;
         private readonly MapShuffleRequirement.Factory _mapShuffleFactory;
-        private readonly RaceIllegalTrackingRequirement.Factory _raceIllegalTrackingFactory;
         private readonly INodeRequirement.Factory _requirementNodeFactory;
         private readonly ISequenceBreakRequirement.Factory _sequenceBreakFactory;
-        private readonly ShopShuffleRequirement.Factory _shopShuffleFactory;
+        private readonly IShopShuffleRequirement.Factory _shopShuffleFactory;
         private readonly ISmallKeyRequirement.Factory _smallKeyFactory;
         private readonly ISmallKeyShuffleRequirement.Factory _smallKeyShuffleFactory;
         private readonly IStaticRequirement.Factory _staticFactory;
-        private readonly TakeAnyLocationsRequirement.Factory _takeAnyLocationsFactory;
+        private readonly ITakeAnyLocationsRequirement.Factory _takeAnyLocationsFactory;
         private readonly IWorldStateRequirement.Factory _worldStateFactory;
 
-        public delegate IRequirementFactory Factory(IRequirementDictionary requirements);
+        private readonly IRaceIllegalTrackingRequirement _raceIllegalTrackingRequirement;
 
         /// <summary>
         /// Constructor
@@ -133,7 +137,7 @@ namespace OpenTracker.Models.Requirements
         /// <param name="mapShuffleFactory">
         /// An Autofac factory for creating map shuffle requirements.
         /// </param>
-        /// <param name="raceIllegalTrackingFactory">
+        /// <param name="raceIllegalTrackingRequirement">
         /// An Autofac factory for creating race illegal tracking requirements.
         /// </param>
         /// <param name="requirementNodeFactory">
@@ -174,22 +178,22 @@ namespace OpenTracker.Models.Requirements
             ICrystalRequirement.Factory crystalFactory,
             IEnemyShuffleRequirement.Factory enemyShuffleFactory,
             IEntranceShuffleRequirement.Factory entranceShuffleFactory,
-            GenericKeysRequirement.Factory genericKeysFactory,
+            IGenericKeysRequirement.Factory genericKeysFactory,
             IGuaranteedBossItemsRequirement.Factory guaranteedBossItemsFactory,
             IItemExactRequirement.Factory itemExactFactory,
             IItemPlacementRequirement.Factory itemPlacementFactory,
             IItemRequirement.Factory itemFactory,
             IKeyDropShuffleRequirement.Factory keyDropShuffleFactory,
             MapShuffleRequirement.Factory mapShuffleFactory,
-            RaceIllegalTrackingRequirement.Factory raceIllegalTrackingFactory,
             INodeRequirement.Factory requirementNodeFactory,
             ISequenceBreakRequirement.Factory sequenceBreakFactory,
-            ShopShuffleRequirement.Factory shopShuffleFactory,
+            IShopShuffleRequirement.Factory shopShuffleFactory,
             ISmallKeyRequirement.Factory smallKeyFactory,
             ISmallKeyShuffleRequirement.Factory smallKeyShuffleFactory,
             IStaticRequirement.Factory staticFactory,
-            TakeAnyLocationsRequirement.Factory takeAnyLocationsFactory,
+            ITakeAnyLocationsRequirement.Factory takeAnyLocationsFactory,
             IWorldStateRequirement.Factory worldStateFactory,
+            IRaceIllegalTrackingRequirement raceIllegalTrackingRequirement,
             IRequirementDictionary requirements)
         {
             _bossPlacements = bossPlacements;
@@ -214,7 +218,6 @@ namespace OpenTracker.Models.Requirements
             _itemFactory = itemFactory;
             _keyDropShuffleFactory = keyDropShuffleFactory;
             _mapShuffleFactory = mapShuffleFactory;
-            _raceIllegalTrackingFactory = raceIllegalTrackingFactory;
             _requirementNodeFactory = requirementNodeFactory;
             _sequenceBreakFactory = sequenceBreakFactory;
             _shopShuffleFactory = shopShuffleFactory;
@@ -223,6 +226,8 @@ namespace OpenTracker.Models.Requirements
             _staticFactory = staticFactory;
             _takeAnyLocationsFactory = takeAnyLocationsFactory;
             _worldStateFactory = worldStateFactory;
+            
+            _raceIllegalTrackingRequirement = raceIllegalTrackingRequirement;
         }
 
         /// <summary>
@@ -1512,7 +1517,7 @@ namespace OpenTracker.Models.Requirements
                     }
                 case RequirementType.RaceIllegalTracking:
                     {
-                        return _raceIllegalTrackingFactory(GetBooleanValue(type));
+                        return _raceIllegalTrackingRequirement;
                     }
                 case RequirementType.Swordless:
                 case RequirementType.Mushroom:

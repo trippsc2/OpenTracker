@@ -366,6 +366,20 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Mutable
         public void ValidateKeyLayout_ShouldReturnExpected(
             bool expected, bool firstKeyLayoutCanBeTrue, bool secondKeyLayoutCanBeTrue)
         {
+            _mode.KeyDropShuffle.Returns(true);
+
+            var state = Substitute.For<IDungeonState>();
+            state.SequenceBreak.Returns(true);
+
+            _dungeon.DungeonItems.Returns(new List<DungeonItemID>
+            {
+                DungeonItemID.HCSanctuary,
+                DungeonItemID.HCMapChest
+            });
+
+            _dungeon.SmallKeyDrops.Returns(new List<DungeonItemID> {DungeonItemID.HCBoomerangChest});
+            _dungeon.BigKeyDrops.Returns(new List<DungeonItemID> {DungeonItemID.HCZeldasCell});
+            
             var keyLayouts = new List<IKeyLayout>
             {
                 Substitute.For<IKeyLayout>(),
@@ -373,18 +387,23 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Mutable
             };
 
             keyLayouts[0].CanBeTrue(
-                    Arg.Any<IList<DungeonItemID>>(), Arg.Any<IList<DungeonItemID>>(),
-                    Arg.Any<IDungeonState>()).Returns(firstKeyLayoutCanBeTrue);
+                Arg.Any<IList<DungeonItemID>>(), Arg.Any<IList<DungeonItemID>>(),
+                Arg.Any<IDungeonState>()).Returns(firstKeyLayoutCanBeTrue);
             keyLayouts[1].CanBeTrue(
-                    Arg.Any<IList<DungeonItemID>>(), Arg.Any<IList<DungeonItemID>>(),
-                    Arg.Any<IDungeonState>()).Returns(secondKeyLayoutCanBeTrue);
+                Arg.Any<IList<DungeonItemID>>(), Arg.Any<IList<DungeonItemID>>(),
+                Arg.Any<IDungeonState>()).Returns(secondKeyLayoutCanBeTrue);
 
             _dungeon.KeyLayouts.Returns(keyLayouts);
             
             var sut = new MutableDungeon(_mode, _keyDoors, _nodes, _dungeonItems, _resultFactory, _dungeon);
             sut.InitializeData();
 
-            Assert.Equal(expected, sut.ValidateKeyLayout(Substitute.For<IDungeonState>()));
+            sut.DungeonItems[DungeonItemID.HCSanctuary].Accessibility.Returns(AccessibilityLevel.Normal);
+            sut.DungeonItems[DungeonItemID.HCMapChest].Accessibility.Returns(AccessibilityLevel.SequenceBreak);
+            sut.DungeonItems[DungeonItemID.HCBoomerangChest].Accessibility.Returns(AccessibilityLevel.Inspect);
+            sut.DungeonItems[DungeonItemID.HCZeldasCell].Accessibility.Returns(AccessibilityLevel.None);
+
+            Assert.Equal(expected, sut.ValidateKeyLayout(state));
         }
 
         [Fact]

@@ -1,28 +1,26 @@
 ﻿using System.ComponentModel;
 using OpenTracker.Models.Modes;
 
-namespace OpenTracker.Models.Requirements.Mode
+namespace OpenTracker.Models.Requirements.ShopShuffle
 {
     /// <summary>
-    /// This class contains generic keys requirement data.
+    ///     This class contains shop shuffle requirement data.
     /// </summary>
-    public class GenericKeysRequirement : BooleanRequirement
+    public class ShopShuffleRequirement : BooleanRequirement, IShopShuffleRequirement
     {
         private readonly IMode _mode;
         private readonly bool _expectedValue;
-
-        public delegate GenericKeysRequirement Factory(bool expectedValue);
-
+        
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="mode">
-        /// The mode settings.
+        ///     The mode settings.
         /// </param>
         /// <param name="expectedValue">
-        /// The required enemy shuffle value.
+        ///     A boolean expected shop shuffle shuffle value.
         /// </param>
-        public GenericKeysRequirement(IMode mode, bool expectedValue)
+        public ShopShuffleRequirement(IMode mode, bool expectedValue)
         {
             _mode = mode;
             _expectedValue = expectedValue;
@@ -33,17 +31,17 @@ namespace OpenTracker.Models.Requirements.Mode
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the IMode interface.
+        ///     Subscribes to the PropertyChanged event on the IMode interface.
         /// </summary>
         /// <param name="sender">
-        /// The sending object of the event.
+        ///     The sending object of the event.
         /// </param>
         /// <param name="e">
-        /// The arguments of the PropertyChanged event.
+        ///     The arguments of the PropertyChanged event.
         /// </param>
         private void OnModeChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(IMode.GenericKeys))
+            if (e.PropertyName == nameof(IMode.ShopShuffle))
             {
                 UpdateValue();
             }
@@ -51,7 +49,7 @@ namespace OpenTracker.Models.Requirements.Mode
 
         protected override bool ConditionMet()
         {
-            return _mode.GenericKeys == _expectedValue;
+            return _mode.ShopShuffle == _expectedValue;
         }
     }
 }
