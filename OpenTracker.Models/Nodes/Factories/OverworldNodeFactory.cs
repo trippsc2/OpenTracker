@@ -98,6 +98,8 @@ namespace OpenTracker.Models.Nodes.Factories
         {
             switch (id)
             {
+                case OverworldNodeID.Inaccessible:
+                    return new List<INodeConnection>();
                 case OverworldNodeID.EntranceDungeonAllInsanity:
                 case OverworldNodeID.EntranceNone:
                 case OverworldNodeID.EntranceNoneInverted:
