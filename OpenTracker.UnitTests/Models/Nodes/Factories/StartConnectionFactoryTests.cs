@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Autofac;
 using ExpectedObjects;
 using NSubstitute;
 using OpenTracker.Models.Items;
@@ -111,8 +112,7 @@ namespace OpenTracker.UnitTests.Models.Nodes.Factories
                     continue;
                 }
                 
-                var expected = connections.ToExpectedObject();
-                ExpectedValues.Add(id, expected);
+                ExpectedValues.Add(id, connections.ToExpectedObject());
             }
         }
 
@@ -135,6 +135,15 @@ namespace OpenTracker.UnitTests.Models.Nodes.Factories
             PopulateExpectedValues();
 
             return ExpectedValues.Keys.Select(id => new object[] {ExpectedValues[id], id}).ToList();
+        }
+
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var sut = scope.Resolve<IStartConnectionFactory>();
+            
+            Assert.NotNull(sut as StartConnectionFactory);
         }
     }
 }
