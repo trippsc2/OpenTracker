@@ -1,28 +1,26 @@
 ﻿using System.ComponentModel;
 using OpenTracker.Models.Modes;
 
-namespace OpenTracker.Models.Requirements.Mode
+namespace OpenTracker.Models.Requirements.MapShuffle
 {
     /// <summary>
-    /// This class contains compass shuffle requirement data.
+    ///     This class contains map shuffle setting requirement data.
     /// </summary>
-    public class CompassShuffleRequirement : BooleanRequirement
+    public class MapShuffleRequirement : BooleanRequirement, IMapShuffleRequirement
     {
         private readonly IMode _mode;
         private readonly bool _expectedValue;
 
-        public delegate CompassShuffleRequirement Factory(bool expectedValue);
-
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="mode">
-        /// The mode settings data.
+        ///     The mode settings.
         /// </param>
         /// <param name="expectedValue">
-        /// A boolean representing the required compass shuffle value.
+        ///     A boolean expected map shuffle value.
         /// </param>
-        public CompassShuffleRequirement(IMode mode, bool expectedValue)
+        public MapShuffleRequirement(IMode mode, bool expectedValue)
         {
             _mode = mode;
             _expectedValue = expectedValue;
@@ -33,17 +31,17 @@ namespace OpenTracker.Models.Requirements.Mode
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the IMode interface.
+        ///     Subscribes to the PropertyChanged event on the IMode interface.
         /// </summary>
         /// <param name="sender">
-        /// The sending object of the event.
+        ///     The sending object of the event.
         /// </param>
         /// <param name="e">
-        /// The arguments of the PropertyChanged event.
+        ///     The arguments of the PropertyChanged event.
         /// </param>
         private void OnModeChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(IMode.CompassShuffle))
+            if (e.PropertyName == nameof(IMode.MapShuffle))
             {
                 UpdateValue();
             }
@@ -51,7 +49,7 @@ namespace OpenTracker.Models.Requirements.Mode
 
         protected override bool ConditionMet()
         {
-            return _mode.CompassShuffle == _expectedValue;
+            return _mode.MapShuffle == _expectedValue;
         }
     }
 }

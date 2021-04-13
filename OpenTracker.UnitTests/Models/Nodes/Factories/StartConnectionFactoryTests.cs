@@ -31,17 +31,14 @@ namespace OpenTracker.UnitTests.Models.Nodes.Factories
 
         private static readonly IOverworldNodeDictionary OverworldNodes = Substitute.For<IOverworldNodeDictionary>();
 
+        private static readonly INodeConnection.Factory ConnectionFactory = (fromNode, toNode, requirement) =>
+            new NodeConnection(fromNode, toNode, requirement);
+
         private static readonly Dictionary<OverworldNodeID, ExpectedObject> ExpectedValues = new();
 
-        private readonly StartConnectionFactory _sut;
-
-        public StartConnectionFactoryTests()
-        {
-            _sut = new StartConnectionFactory(
-                AlternativeRequirements, EntranceShuffleRequirements, ItemRequirements, WorldStateRequirements,
-                OverworldNodes,
-                (fromNode, toNode, requirement) => new NodeConnection(fromNode, toNode, requirement));
-        }
+        private readonly StartConnectionFactory _sut = new(
+            AlternativeRequirements, EntranceShuffleRequirements, ItemRequirements, WorldStateRequirements,
+            OverworldNodes, ConnectionFactory);
 
         private static void PopulateExpectedValues()
         {
@@ -53,7 +50,7 @@ namespace OpenTracker.UnitTests.Models.Nodes.Factories
                 {
                     OverworldNodeID.EntranceDungeonAllInsanity => new List<INodeConnection>
                     {
-                        new NodeConnection(
+                        ConnectionFactory(
                             OverworldNodes[OverworldNodeID.Start], OverworldNodes[id],
                             AlternativeRequirements[new HashSet<IRequirement>
                             {
@@ -64,7 +61,7 @@ namespace OpenTracker.UnitTests.Models.Nodes.Factories
                     },
                     OverworldNodeID.EntranceNone => new List<INodeConnection>
                     {
-                        new NodeConnection(
+                        ConnectionFactory(
                             OverworldNodes[OverworldNodeID.Start], OverworldNodes[id],
                             AlternativeRequirements[new HashSet<IRequirement>
                             {
@@ -74,33 +71,33 @@ namespace OpenTracker.UnitTests.Models.Nodes.Factories
                     },
                     OverworldNodeID.EntranceNoneInverted => new List<INodeConnection>
                     {
-                        new NodeConnection(
+                        ConnectionFactory(
                             OverworldNodes[OverworldNodeID.EntranceNone], OverworldNodes[id],
                             WorldStateRequirements[WorldState.Inverted])
                     },
                     OverworldNodeID.Flute => new List<INodeConnection>
                     {
-                        new NodeConnection(
+                        ConnectionFactory(
                             OverworldNodes[OverworldNodeID.Start], OverworldNodes[id],
                             ItemRequirements[(ItemType.Flute, 1)])
                     },
                     OverworldNodeID.FluteActivated => new List<INodeConnection>
                     {
-                        new NodeConnection(
+                        ConnectionFactory(
                             OverworldNodes[OverworldNodeID.Flute], OverworldNodes[id],
                             ItemRequirements[(ItemType.FluteActivated, 1)]),
-                        new NodeConnection(
+                        ConnectionFactory(
                             OverworldNodes[OverworldNodeID.LightWorldFlute], OverworldNodes[id])
                     },
                     OverworldNodeID.FluteInverted => new List<INodeConnection>
                     {
-                        new NodeConnection(
+                        ConnectionFactory(
                             OverworldNodes[OverworldNodeID.FluteActivated], OverworldNodes[id],
                             WorldStateRequirements[WorldState.Inverted])
                     },
                     OverworldNodeID.FluteStandardOpen => new List<INodeConnection>
                     {
-                        new NodeConnection(
+                        ConnectionFactory(
                             OverworldNodes[OverworldNodeID.FluteActivated], OverworldNodes[id],
                             WorldStateRequirements[WorldState.StandardOpen])
                     },

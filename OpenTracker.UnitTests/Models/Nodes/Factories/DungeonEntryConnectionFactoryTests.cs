@@ -40,17 +40,11 @@ namespace OpenTracker.UnitTests.Models.Nodes.Factories
         private static readonly INodeConnection.Factory ConnectionFactory =
             (fromNode, toNode, requirement) => new NodeConnection(fromNode, toNode, requirement);
 
-        private readonly DungeonEntryConnectionFactory _sut;
-
         private static readonly Dictionary<OverworldNodeID, ExpectedObject> ExpectedValues = new();
 
-        public DungeonEntryConnectionFactoryTests()
-        {
-            _sut = new DungeonEntryConnectionFactory(
-                ComplexRequirements, EntranceShuffleRequirements, ItemRequirements, PrizeRequirements,
-                SequenceBreakRequirements, WorldStateRequirements, OverworldNodes,
-                (fromNode, toNode, requirement) => new NodeConnection(fromNode, toNode, requirement));
-        }
+        private readonly DungeonEntryConnectionFactory _sut = new(
+            ComplexRequirements, EntranceShuffleRequirements, ItemRequirements, PrizeRequirements,
+            SequenceBreakRequirements, WorldStateRequirements, OverworldNodes, ConnectionFactory);
 
         private static void PopulateExpectedValues()
         {

@@ -79,7 +79,6 @@ namespace OpenTracker.Models.Nodes.Factories
             IDungeonEntryConnectionFactory dungeonEntryConnectionFactory, IOverworldNode.Factory factory,
             IStartNode.Factory startFactory)
         {
-            _factory = factory;
             _startConnectionFactory = startConnectionFactory;
             _lightWorldConnectionFactory = lightWorldConnectionFactory;
             _nwLightWorldConnectionFactory = nwLightWorldConnectionFactory;
@@ -91,7 +90,14 @@ namespace OpenTracker.Models.Nodes.Factories
             _neDarkWorldConnectionFactory = neDarkWorldConnectionFactory;
             _dwDeathMountainConnectionFactory = dwDeathMountainConnectionFactory;
             _dungeonEntryConnectionFactory = dungeonEntryConnectionFactory;
+
             _startFactory = startFactory;
+            _factory = factory;
+        }
+
+        public INode GetOverworldNode(OverworldNodeID id)
+        {
+            return id == OverworldNodeID.Start ? _startFactory() : _factory();
         }
 
         public IEnumerable<INodeConnection> GetNodeConnections(OverworldNodeID id, INode node)
@@ -357,11 +363,6 @@ namespace OpenTracker.Models.Nodes.Factories
             }
 
             throw new ArgumentOutOfRangeException(nameof(id), id, null);
-        }
-
-        public INode GetOverworldNode(OverworldNodeID id)
-        {
-            return id == OverworldNodeID.Start ? _startFactory() : _factory();
         }
     }
 }

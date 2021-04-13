@@ -40,14 +40,9 @@ namespace OpenTracker.UnitTests.Models.Nodes.Factories
 
         private static readonly Dictionary<OverworldNodeID, ExpectedObject> ExpectedValues = new();
 
-        private readonly LightWorldConnectionFactory _sut;
-
-        public LightWorldConnectionFactoryTests()
-        {
-            _sut = new LightWorldConnectionFactory(
-                ComplexRequirements, ItemRequirements, PrizeRequirements, SequenceBreakRequirements,
-                WorldStateRequirements, OverworldNodes, ConnectionFactory);
-        }
+        private readonly LightWorldConnectionFactory _sut = new(
+            ComplexRequirements, ItemRequirements, PrizeRequirements, SequenceBreakRequirements,
+            WorldStateRequirements, OverworldNodes, ConnectionFactory);
 
         private static void PopulateExpectedValues()
         {

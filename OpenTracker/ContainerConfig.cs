@@ -31,6 +31,7 @@ using OpenTracker.Models.Requirements.AutoTracking;
 using OpenTracker.Models.Requirements.BigKeyShuffle;
 using OpenTracker.Models.Requirements.Boss;
 using OpenTracker.Models.Requirements.BossShuffle;
+using OpenTracker.Models.Requirements.CompassShuffle;
 using OpenTracker.Models.Requirements.Complex;
 using OpenTracker.Models.Requirements.EnemyShuffle;
 using OpenTracker.Models.Requirements.GenericKeys;
@@ -41,6 +42,7 @@ using OpenTracker.Models.Requirements.Item.Exact;
 using OpenTracker.Models.Requirements.Item.Prizes;
 using OpenTracker.Models.Requirements.Item.SmallKey;
 using OpenTracker.Models.Requirements.KeyDropShuffle;
+using OpenTracker.Models.Requirements.MapShuffle;
 using OpenTracker.Models.Requirements.Mode;
 using OpenTracker.Models.Requirements.SequenceBreak;
 using OpenTracker.Models.Requirements.ShopShuffle;
@@ -109,8 +111,6 @@ namespace OpenTracker
 
         private static List<string> ModelsSelfTypes => new()
         {
-            nameof(CompassShuffleRequirement),
-            nameof(MapShuffleRequirement),
             nameof(BossSection),
             nameof(DropdownSection),
             nameof(DungeonEntranceSection),
@@ -166,6 +166,7 @@ namespace OpenTracker
             nameof(BossTypeRequirementFactory),
             nameof(BossShuffleRequirementDictionary),
             nameof(BossTypeRequirementFactory),
+            nameof(CompassShuffleRequirementDictionary),
             nameof(ComplexRequirementDictionary),
             nameof(ComplexRequirementFactory),
             nameof(EnemyShuffleRequirementDictionary),
@@ -177,6 +178,7 @@ namespace OpenTracker
             nameof(PrizeRequirementDictionary),
             nameof(SmallKeyRequirementDictionary),
             nameof(KeyDropShuffleRequirementDictionary),
+            nameof(MapShuffleRequirementDictionary),
             nameof(EntranceShuffleRequirementDictionary),
             nameof(ItemPlacementRequirementDictionary),
             nameof(WorldStateRequirementDictionary),
