@@ -4,9 +4,14 @@ using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.Dungeons.AccessibilityProvider;
 using OpenTracker.Models.Locations;
+using OpenTracker.Models.Modes;
 using OpenTracker.Models.Nodes;
 using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.Requirements;
+using OpenTracker.Models.Requirements.Alternative;
+using OpenTracker.Models.Requirements.BossShuffle;
+using OpenTracker.Models.Requirements.Mode;
+using OpenTracker.Models.Requirements.SmallKeyShuffle;
 
 namespace OpenTracker.Models.Sections
 {
@@ -19,7 +24,12 @@ namespace OpenTracker.Models.Sections
         private readonly IDungeonDictionary _dungeons;
         private readonly IPrizePlacementDictionary _prizePlacements;
         private readonly IOverworldNodeDictionary _requirementNodes;
-        private readonly IRequirementDictionary _requirements;
+
+        private readonly IAlternativeRequirementDictionary _alternativeRequirements;
+        private readonly IBossShuffleRequirementDictionary _bossShuffleRequirements;
+        private readonly IEntranceShuffleRequirementDictionary _entranceShuffleRequirements;
+        private readonly ISmallKeyShuffleRequirementDictionary _smallKeyShuffleRequirements;
+
         private readonly ISectionAutoTrackingFactory _autoTrackingFactory;
 
         private readonly IDungeonAccessibilityProvider.Factory _accessibilityProvider;
@@ -51,8 +61,17 @@ namespace OpenTracker.Models.Sections
         /// <param name="requirementNodes">
         /// The requirement node dictionary.
         /// </param>
-        /// <param name="requirements">
-        /// The requirement dictionary.
+        /// <param name="alternativeRequirements">
+        ///     The alternative requirement dictionary.
+        /// </param>
+        /// <param name="bossShuffleRequirements">
+        ///     The boss shuffle requirement dictionary.
+        /// </param>
+        /// <param name="entranceShuffleRequirements">
+        ///     The entrance shuffle requirement dictionary.
+        /// </param>
+        /// <param name="smallKeyShuffleRequirements">
+        ///     The small key shuffle requirement dictionary.
         /// </param>
         /// <param name="autoTrackingFactory">
         /// The item auto-tracking factory.
@@ -99,7 +118,7 @@ namespace OpenTracker.Models.Sections
         public SectionFactory(
             IBossPlacementDictionary bossPlacements, IDungeonDictionary dungeons,
             IPrizePlacementDictionary prizePlacements, IOverworldNodeDictionary requirementNodes,
-            IRequirementDictionary requirements, ISectionAutoTrackingFactory autoTrackingFactory,
+            IAlternativeRequirementDictionary alternativeRequirements, IBossShuffleRequirementDictionary bossShuffleRequirements, IEntranceShuffleRequirementDictionary entranceShuffleRequirements, ISmallKeyShuffleRequirementDictionary smallKeyShuffleRequirements, ISectionAutoTrackingFactory autoTrackingFactory,
             IDungeonAccessibilityProvider.Factory accessibilityProvider, BossSection.Factory bossFactory,
             DropdownSection.Factory dropdownFactory, DungeonEntranceSection.Factory dungeonEntranceFactory,
             DungeonItemSection.Factory dungeonItemFactory, EntranceSection.Factory entranceFactory,
@@ -111,7 +130,6 @@ namespace OpenTracker.Models.Sections
             _bossPlacements = bossPlacements;
             _prizePlacements = prizePlacements;
             _requirementNodes = requirementNodes;
-            _requirements = requirements;
             _autoTrackingFactory = autoTrackingFactory;
             _bossFactory = bossFactory;
             _dropdownFactory = dropdownFactory;
@@ -125,6 +143,10 @@ namespace OpenTracker.Models.Sections
             _shopFactory = shopFactory;
             _takeAnyFactory = takeAnyFactory;
             _visibleItemFactory = visibleItemFactory;
+            _alternativeRequirements = alternativeRequirements;
+            _bossShuffleRequirements = bossShuffleRequirements;
+            _entranceShuffleRequirements = entranceShuffleRequirements;
+            _smallKeyShuffleRequirements = smallKeyShuffleRequirements;
             _accessibilityProvider = accessibilityProvider;
             _dungeons = dungeons;
         }
@@ -1279,28 +1301,24 @@ namespace OpenTracker.Models.Sections
         /// <returns>
         /// The requirement.
         /// </returns>
-        private IRequirement GetSectionRequirement(LocationID id, int index = 0)
+        private IRequirement? GetSectionRequirement(LocationID id, int index = 0)
         {
-            switch (id)
+            return id switch
             {
-                case LocationID.Dam when index == 0:
-                case LocationID.SpectacleRock when index == 1:
-                    {
-                        return _requirements[RequirementType.EntranceShuffleNoneDungeon];
-                    }
-                case LocationID.AgahnimTower when index == 0:
-                    {
-                        return _requirements[RequirementType.SmallKeyShuffleOn];
-                    }
-                case LocationID.GanonsTower when index > 0 && index < 4:
-                    {
-                        return _requirements[RequirementType.BossShuffleOn];
-                    }
-                default:
-                    {
-                        return _requirements[RequirementType.NoRequirement];
-                    }
-            }
+                LocationID.Dam when index == 0 => _alternativeRequirements[new HashSet<IRequirement>
+                {
+                    _entranceShuffleRequirements[EntranceShuffle.None],
+                    _entranceShuffleRequirements[EntranceShuffle.Dungeon]
+                }],
+                LocationID.SpectacleRock when index == 1 => _alternativeRequirements[new HashSet<IRequirement>
+                {
+                    _entranceShuffleRequirements[EntranceShuffle.None],
+                    _entranceShuffleRequirements[EntranceShuffle.Dungeon]
+                }],
+                LocationID.AgahnimTower when index == 0 => _smallKeyShuffleRequirements[true],
+                LocationID.GanonsTower when index > 0 && index < 4 => _bossShuffleRequirements[true],
+                _ => null
+            };
         }
 
         /// <summary>

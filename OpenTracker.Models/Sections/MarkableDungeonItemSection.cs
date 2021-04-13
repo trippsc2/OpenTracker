@@ -16,7 +16,7 @@ namespace OpenTracker.Models.Sections
         private readonly IDungeonItemSection _section;
 
         public string Name => _section.Name;
-        public IRequirement Requirement => _section.Requirement;
+        public IRequirement? Requirement => _section.Requirement;
 
         public bool UserManipulated
         {

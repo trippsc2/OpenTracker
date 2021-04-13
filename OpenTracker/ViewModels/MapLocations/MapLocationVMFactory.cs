@@ -2,7 +2,10 @@ using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Controls;
 using OpenTracker.Models.Locations;
+using OpenTracker.Models.Modes;
 using OpenTracker.Models.Requirements;
+using OpenTracker.Models.Requirements.Alternative;
+using OpenTracker.Models.Requirements.Mode;
 using OpenTracker.Models.Sections;
 using OpenTracker.ViewModels.Tooltips;
 
@@ -10,7 +13,9 @@ namespace OpenTracker.ViewModels.MapLocations
 {
     public class MapLocationVMFactory : IMapLocationVMFactory
     {
-        private readonly IRequirementDictionary _requirements;
+        private readonly IAlternativeRequirementDictionary _alternativeRequirements;
+        private readonly IEntranceShuffleRequirementDictionary _entranceShuffleRequirements;
+        
         private readonly IMapLocationMarkingVM.Factory _markingFactory;
         private readonly IMapLocationToolTipVM.Factory _toolTipFactory;
 
@@ -22,12 +27,16 @@ namespace OpenTracker.ViewModels.MapLocations
         private readonly IMapLocationVM.Factory _locationFactory;
 
         public MapLocationVMFactory(
-            IRequirementDictionary requirements, IMapLocationMarkingVM.Factory markingFactory,
-            IMapLocationToolTipVM.Factory toolTipFactory, EntranceMapLocationVM.Factory entranceFactory,
-            ShopMapLocationVM.Factory shopFactory, StandardMapLocationVM.Factory standardFactory,
-            TakeAnyMapLocationVM.Factory takeAnyFactory, IMapLocationVM.Factory locationFactory)
+            IAlternativeRequirementDictionary alternativeRequirements,
+            IEntranceShuffleRequirementDictionary entranceShuffleRequirements,
+            IMapLocationMarkingVM.Factory markingFactory, IMapLocationToolTipVM.Factory toolTipFactory,
+            EntranceMapLocationVM.Factory entranceFactory, ShopMapLocationVM.Factory shopFactory,
+            StandardMapLocationVM.Factory standardFactory, TakeAnyMapLocationVM.Factory takeAnyFactory,
+            IMapLocationVM.Factory locationFactory)
         {
-            _requirements = requirements;
+            _alternativeRequirements = alternativeRequirements;
+            _entranceShuffleRequirements = entranceShuffleRequirements;
+
             _markingFactory = markingFactory;
             _toolTipFactory = toolTipFactory;
 
@@ -45,7 +54,11 @@ namespace OpenTracker.ViewModels.MapLocations
             {
                 case LocationID.BumperCave:
                 case LocationID.DesertPalace:
-                    return _requirements[RequirementType.EntranceShuffleAllInsanity];
+                    return _alternativeRequirements[new HashSet<IRequirement>
+                    {
+                        _entranceShuffleRequirements[EntranceShuffle.All],
+                        _entranceShuffleRequirements[EntranceShuffle.Insanity]
+                    }];
                 default:
                     return null;
             }

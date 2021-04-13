@@ -21,7 +21,7 @@ namespace OpenTracker.Models.Sections
         private readonly IBossAccessibilityProvider _accessibilityProvider;
 
         public string Name { get; }
-        public IRequirement Requirement { get; }
+        public IRequirement? Requirement { get; }
         public bool UserManipulated { get; set; }
         public IBossPlacement BossPlacement { get; }
         
@@ -41,7 +41,7 @@ namespace OpenTracker.Models.Sections
         }
 
         public delegate BossSection Factory(
-            string name, IBossPlacement bossPlacement, IRequirement requirement,
+            string name, IBossPlacement bossPlacement, IRequirement? requirement,
             IBossAccessibilityProvider accessibilityProvider);
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace OpenTracker.Models.Sections
         /// </param>
         public BossSection(
             ICollectSection.Factory collectSectionFactory, IUncollectSection.Factory uncollectSectionFactory,
-            string name, IBossPlacement bossPlacement, IRequirement requirement,
+            string name, IBossPlacement bossPlacement, IRequirement? requirement,
             IBossAccessibilityProvider accessibilityProvider)
         {
             _collectSectionFactory = collectSectionFactory;

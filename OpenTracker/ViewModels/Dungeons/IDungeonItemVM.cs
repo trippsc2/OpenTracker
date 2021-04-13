@@ -5,6 +5,6 @@ namespace OpenTracker.ViewModels.Dungeons
 {
     public interface IDungeonItemVM
     {
-        delegate IDungeonItemVM Factory(IRequirement requirement, IItemVM? item);
+        delegate IDungeonItemVM Factory(IRequirement? requirement, IItemVM? item);
     }
 }

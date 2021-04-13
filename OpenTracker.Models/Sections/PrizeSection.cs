@@ -26,7 +26,7 @@ namespace OpenTracker.Models.Sections
 
         public delegate PrizeSection Factory(
             string name, IBossPlacement bossPlacement, IPrizePlacement prizePlacement,
-            IBossAccessibilityProvider accessibilityProvider, IAutoTrackValue? autoTrackValue, IRequirement requirement,
+            IBossAccessibilityProvider accessibilityProvider, IAutoTrackValue? autoTrackValue, IRequirement? requirement,
             bool alwaysClearable = false);
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace OpenTracker.Models.Sections
             ISaveLoadManager saveLoadManager, ICollectSection.Factory collectSectionFactory,
             IUncollectSection.Factory uncollectSectionFactory, ITogglePrizeSection.Factory togglePrizeSectionFactory,
             string name, IBossPlacement bossPlacement, IPrizePlacement prizePlacement,
-            IBossAccessibilityProvider accessibilityProvider, IAutoTrackValue? autoTrackValue, IRequirement requirement,
+            IBossAccessibilityProvider accessibilityProvider, IAutoTrackValue? autoTrackValue, IRequirement? requirement,
             bool alwaysClearable = false)
             : base(collectSectionFactory, uncollectSectionFactory, name, bossPlacement, requirement,
                 accessibilityProvider)

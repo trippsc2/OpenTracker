@@ -1,26 +1,24 @@
 ﻿using System.ComponentModel;
 using OpenTracker.Models.Settings;
 
-namespace OpenTracker.Models.Requirements
+namespace OpenTracker.Models.Requirements.DisplaysMapsCompasses
 {
     /// <summary>
-    /// This class contains display maps/compasses setting requirement data.
+    ///     This class contains display maps/compasses setting requirement data.
     /// </summary>
-    public class DisplayMapsCompassesRequirement : BooleanRequirement
+    public class DisplayMapsCompassesRequirement : BooleanRequirement, IDisplayMapsCompassesRequirement
     {
         private readonly ILayoutSettings _layoutSettings;
         private readonly bool _expectedValue;
-
-        public delegate DisplayMapsCompassesRequirement Factory(bool expectedValue);
-
+        
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="layoutSettings">
-        /// The layout settings.
+        ///     The layout settings.
         /// </param>
         /// <param name="expectedValue">
-        /// A boolean representing the expected value.
+        ///     A boolean representing the expected value.
         /// </param>
         public DisplayMapsCompassesRequirement(
             ILayoutSettings layoutSettings, bool expectedValue)

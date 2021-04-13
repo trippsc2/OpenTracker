@@ -28,7 +28,7 @@ namespace OpenTracker.Models.Sections
 
         public string Name { get; }
         public int Total { get; }
-        public IRequirement Requirement { get; }
+        public IRequirement? Requirement { get; }
         public bool UserManipulated { get; set; }
         public IMarking Marking { get; }
 
@@ -53,7 +53,7 @@ namespace OpenTracker.Models.Sections
         }
 
         public delegate VisibleItemSection Factory(
-            string name, int total, INode node, IAutoTrackValue? autoTrackValue, IRequirement requirement,
+            string name, int total, INode node, IAutoTrackValue? autoTrackValue, IRequirement? requirement,
             INode? visibleNode = null);
 
         /// <summary>

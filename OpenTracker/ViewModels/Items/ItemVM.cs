@@ -16,9 +16,9 @@ namespace OpenTracker.ViewModels.Items
     public class ItemVM : ViewModelBase, IItemVM
     {
         private readonly IItemAdapter _item;
-        private readonly IRequirement _requirement;
+        private readonly IRequirement? _requirement;
 
-        public bool Visible => _requirement.Met;
+        public bool Visible => _requirement is null || _requirement.Met;
         public string ImageSource => _item.ImageSource;
         public bool LabelVisible => !(_item.Label is null);
         public string? Label => _item.Label;
@@ -37,7 +37,7 @@ namespace OpenTracker.ViewModels.Items
         /// <param name="requirement">
         /// The visibility requirement for the item.
         /// </param>
-        public ItemVM(IItemAdapter item, IRequirement requirement)
+        public ItemVM(IItemAdapter item, IRequirement? requirement)
         {
             _item = item;
             _requirement = requirement;
@@ -45,7 +45,11 @@ namespace OpenTracker.ViewModels.Items
             HandleClick = _item.HandleClick;
 
             _item.PropertyChanged += OnAdapterChanged;
-            _requirement.PropertyChanged += OnRequirementChanged;
+
+            if (_requirement is not null)
+            {
+                _requirement.PropertyChanged += OnRequirementChanged;
+            }
         }
 
         /// <summary>

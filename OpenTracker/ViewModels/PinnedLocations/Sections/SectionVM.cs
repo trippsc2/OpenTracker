@@ -21,7 +21,7 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
         private readonly ISection _section;
 
         public Color FontColor => Color.Parse(_colorSettings.AccessibilityColors[_section.Accessibility]);
-        public bool Visible => _section.Requirement.Met;
+        public bool Visible => _section.Requirement is null || _section.Requirement.Met;
         public string Name => _section.Name;
         public bool NormalAccessibility => _section.Accessibility == AccessibilityLevel.Normal;
 
@@ -47,7 +47,11 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
 
             _colorSettings.AccessibilityColors.PropertyChanged += OnColorChanged;
             _section.PropertyChanged += OnSectionChanged;
-            _section.Requirement.PropertyChanged += OnRequirementChanged;
+
+            if (_section.Requirement is not null)
+            {
+                _section.Requirement.PropertyChanged += OnRequirementChanged;
+            }
         }
 
         /// <summary>

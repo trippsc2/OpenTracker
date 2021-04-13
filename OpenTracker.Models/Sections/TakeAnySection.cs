@@ -21,7 +21,7 @@ namespace OpenTracker.Models.Sections
         private readonly INode _node;
 
         public string Name { get; } = "Take Any";
-        public IRequirement Requirement { get; }
+        public IRequirement? Requirement { get; }
         public bool UserManipulated { get; set; }
 
         public AccessibilityLevel Accessibility => _node.Accessibility;
@@ -33,7 +33,7 @@ namespace OpenTracker.Models.Sections
             set => this.RaiseAndSetIfChanged(ref _available, value);
         }
 
-        public delegate TakeAnySection Factory(INode node, IRequirement requirement);
+        public delegate TakeAnySection Factory(INode node, IRequirement? requirement);
 
         /// <summary>
         /// Constructor
@@ -52,7 +52,7 @@ namespace OpenTracker.Models.Sections
         /// </param>
         public TakeAnySection(
             ICollectSection.Factory collectSectionFactory, IUncollectSection.Factory uncollectSectionFactory,
-             INode node, IRequirement requirement)
+             INode node, IRequirement? requirement)
         {
             _collectSectionFactory = collectSectionFactory;
             _uncollectSectionFactory = uncollectSectionFactory;

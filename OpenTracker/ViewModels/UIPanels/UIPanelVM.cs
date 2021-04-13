@@ -13,9 +13,9 @@ namespace OpenTracker.ViewModels.UIPanels
     public class UIPanelVM : ViewModelBase, IUIPanelVM
     {
         private readonly ILayoutSettings _layoutSettings;
-        private readonly IRequirement _requirement;
+        private readonly IRequirement? _requirement;
 
-        public bool Visible => _requirement.Met;
+        public bool Visible => _requirement is null || _requirement.Met;
         public double Scale => _layoutSettings.UIScale;
 
         public string Title { get; }
@@ -45,7 +45,7 @@ namespace OpenTracker.ViewModels.UIPanels
         /// The body control of the panel.
         /// </param>
         public UIPanelVM(
-            ILayoutSettings layoutSettings, IRequirement requirement, string title, IModeSettingsVM? modeSettings,
+            ILayoutSettings layoutSettings, IRequirement? requirement, string title, IModeSettingsVM? modeSettings,
             bool alternateBodyColor, IUIPanelBodyVMBase body)
         {
             _layoutSettings = layoutSettings;
@@ -57,7 +57,11 @@ namespace OpenTracker.ViewModels.UIPanels
             Body = body;
 
             _layoutSettings.PropertyChanged += OnLayoutSettingsChanged;
-            _requirement.PropertyChanged += OnRequirementChanged;
+
+            if (_requirement is not null)
+            {
+                _requirement.PropertyChanged += OnRequirementChanged;
+            }
         }
 
         /// <summary>

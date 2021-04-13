@@ -27,12 +27,14 @@ using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.Prizes;
 using OpenTracker.Models.Requirements.Aggregate;
 using OpenTracker.Models.Requirements.Alternative;
+using OpenTracker.Models.Requirements.AlwaysDisplay;
 using OpenTracker.Models.Requirements.AutoTracking;
 using OpenTracker.Models.Requirements.BigKeyShuffle;
 using OpenTracker.Models.Requirements.Boss;
 using OpenTracker.Models.Requirements.BossShuffle;
 using OpenTracker.Models.Requirements.CompassShuffle;
 using OpenTracker.Models.Requirements.Complex;
+using OpenTracker.Models.Requirements.DisplaysMapsCompasses;
 using OpenTracker.Models.Requirements.EnemyShuffle;
 using OpenTracker.Models.Requirements.GenericKeys;
 using OpenTracker.Models.Requirements.GuaranteedBossItems;
@@ -41,6 +43,7 @@ using OpenTracker.Models.Requirements.Item.Crystal;
 using OpenTracker.Models.Requirements.Item.Exact;
 using OpenTracker.Models.Requirements.Item.Prizes;
 using OpenTracker.Models.Requirements.Item.SmallKey;
+using OpenTracker.Models.Requirements.ItemsPanelOrientation;
 using OpenTracker.Models.Requirements.KeyDropShuffle;
 using OpenTracker.Models.Requirements.MapShuffle;
 using OpenTracker.Models.Requirements.Mode;
@@ -186,8 +189,6 @@ namespace OpenTracker
             nameof(ShopShuffleRequirementDictionary),
             nameof(SmallKeyShuffleRequirementDictionary),
             nameof(TakeAnyLocationsRequirementDictionary),
-            nameof(RequirementDictionary),
-            nameof(RequirementFactory),
             nameof(SaveLoadManager),
             nameof(SectionFactory),
             nameof(SectionAutoTrackingFactory),
@@ -202,13 +203,10 @@ namespace OpenTracker
 
         private static List<string> GUISelfTypes => new()
         {
-            nameof(AlwaysDisplayDungeonItemsRequirement),
             nameof(CaptureWindowOpenRequirement),
             nameof(DisplayAllLocationsRequirement),
-            nameof(DisplayMapsCompassesRequirement),
             nameof(HorizontalItemsPanelPlacementRequirement),
             nameof(HorizontalUIPanelPlacementRequirement),
-            nameof(ItemsPanelOrientationRequirement),
             nameof(LayoutOrientationRequirement),
             nameof(MapOrientationRequirement),
             nameof(ShowItemCountsOnMapRequirement),
@@ -241,6 +239,9 @@ namespace OpenTracker
 
         private static List<string> GUISingleInstanceTypes => new()
         {
+            nameof(AlwaysDisplayDungeonItemsRequirementDictionary),
+            nameof(DisplayMapsCompassesRequirementDictionary),
+            nameof(ItemsPanelOrientationRequirementDictionary),
             nameof(ResetManager),
             nameof(AppSettings),
             nameof(BoundsSettings),

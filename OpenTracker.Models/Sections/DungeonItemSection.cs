@@ -28,7 +28,7 @@ namespace OpenTracker.Models.Sections
 
         public string Name => "Dungeon";
 
-        public IRequirement Requirement { get; }
+        public IRequirement? Requirement { get; }
         public bool UserManipulated { get; set; }
 
         private AccessibilityLevel _accessibility;
@@ -61,7 +61,7 @@ namespace OpenTracker.Models.Sections
 
         public delegate DungeonItemSection Factory(
             IAutoTrackValue? autoTrackValue, IDungeon dungeon, IDungeonAccessibilityProvider accessibilityProvider, 
-            IRequirement requirement);
+            IRequirement? requirement);
 
         /// <summary>
         /// Constructor
@@ -90,7 +90,7 @@ namespace OpenTracker.Models.Sections
         public DungeonItemSection(
             ISaveLoadManager saveLoadManager, ICollectSection.Factory collectSectionFactory,
             IUncollectSection.Factory uncollectSectionFactory, IAutoTrackValue? autoTrackValue, IDungeon dungeon,
-            IDungeonAccessibilityProvider accessibilityProvider, IRequirement requirement)
+            IDungeonAccessibilityProvider accessibilityProvider, IRequirement? requirement)
         {
             _saveLoadManager = saveLoadManager;
 

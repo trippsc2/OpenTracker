@@ -25,7 +25,7 @@ namespace OpenTracker.Models.Sections
 
         public string Name { get; }
         public int Total { get; }
-        public IRequirement Requirement { get; }
+        public IRequirement? Requirement { get; }
         public bool UserManipulated { get; set; }
 
         public AccessibilityLevel Accessibility => _node.Accessibility;
@@ -45,7 +45,7 @@ namespace OpenTracker.Models.Sections
         }
 
         public delegate ItemSection Factory(
-            string name, int total, INode node, IAutoTrackValue? autoTrackValue, IRequirement requirement);
+            string name, int total, INode node, IAutoTrackValue? autoTrackValue, IRequirement? requirement);
 
         /// <summary>
         /// Constructor
@@ -77,7 +77,7 @@ namespace OpenTracker.Models.Sections
         public ItemSection(
             ISaveLoadManager saveLoadManager, ICollectSection.Factory collectSectionFactory,
             IUncollectSection.Factory uncollectSectionFactory, string name, int total, INode node,
-            IAutoTrackValue? autoTrackValue, IRequirement requirement)
+            IAutoTrackValue? autoTrackValue, IRequirement? requirement)
         {
             _saveLoadManager = saveLoadManager;
 

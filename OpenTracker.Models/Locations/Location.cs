@@ -327,7 +327,7 @@ namespace OpenTracker.Models.Locations
 
             foreach (ISection section in Sections)
             {
-                if (!section.IsAvailable() || !section.Requirement.Met)
+                if (!section.IsAvailable() || section.Requirement is not null && !section.Requirement.Met)
                 {
                     continue;
                 }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using OpenTracker.Models.Dropdowns;
-using OpenTracker.Models.Requirements;
 using OpenTracker.ViewModels.Items;
 using OpenTracker.ViewModels.Items.Adapters;
 
@@ -13,7 +12,6 @@ namespace OpenTracker.ViewModels.Dropdowns
     public class DropdownVMFactory : IDropdownVMFactory
     {
         private readonly IDropdownDictionary _dropdowns;
-        private readonly IRequirementDictionary _requirements;
         private readonly IDropdownVMDictionary _dropdownControls;
 
         private readonly ILargeItemVM.Factory _factory;
@@ -25,9 +23,6 @@ namespace OpenTracker.ViewModels.Dropdowns
         /// </summary>
         /// <param name="dropdowns">
         /// The dropdown dictionary.
-        /// </param>
-        /// <param name="requirements">
-        /// The requirement dictionary.
         /// </param>
         /// <param name="dropdownControls">
         /// The dropdown control dictionary.
@@ -42,11 +37,10 @@ namespace OpenTracker.ViewModels.Dropdowns
         /// An Autofac factory for creating dropdown item adapters.
         /// </param>
         public DropdownVMFactory(
-            IDropdownDictionary dropdowns, IRequirementDictionary requirements, IDropdownVMDictionary dropdownControls,
-            ILargeItemVM.Factory factory, IItemVM.Factory itemFactory, DropdownAdapter.Factory adapterFactory)
+            IDropdownDictionary dropdowns, IDropdownVMDictionary dropdownControls, ILargeItemVM.Factory factory,
+            IItemVM.Factory itemFactory, DropdownAdapter.Factory adapterFactory)
         {
             _dropdowns = dropdowns;
-            _requirements = requirements;
             _dropdownControls = dropdownControls;
 
             _factory = factory;
@@ -79,8 +73,7 @@ namespace OpenTracker.ViewModels.Dropdowns
         /// </returns>
         public ILargeItemVM GetDropdownVM(DropdownID id)
         {
-            return _factory(_itemFactory(_adapterFactory(
-                _dropdowns[id], GetBaseImageSource(id)), _requirements[RequirementType.NoRequirement]));
+            return _factory(_itemFactory(_adapterFactory(_dropdowns[id], GetBaseImageSource(id))));
         }
 
         /// <summary>

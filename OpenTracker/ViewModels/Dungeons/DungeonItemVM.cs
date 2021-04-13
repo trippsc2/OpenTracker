@@ -14,9 +14,9 @@ namespace OpenTracker.ViewModels.Dungeons
     /// </summary>
     public class DungeonItemVM : ViewModelBase, IDungeonItemVM
     {
-        private readonly IRequirement _requirement;
+        private readonly IRequirement? _requirement;
 
-        public bool Visible => _requirement.Met;
+        public bool Visible => _requirement is null || _requirement.Met;
         public IItemVM? Item { get; }
         
         public ReactiveCommand<PointerReleasedEventArgs, Unit>? HandleClick { get; }
@@ -30,13 +30,16 @@ namespace OpenTracker.ViewModels.Dungeons
         /// <param name="item">
         /// The item control.
         /// </param>
-        public DungeonItemVM(IRequirement requirement, IItemVM? item)
+        public DungeonItemVM(IRequirement? requirement, IItemVM? item)
         {
             _requirement = requirement;
             
             Item = item;
 
-            _requirement.PropertyChanged += OnRequirementChanged;
+            if (_requirement is not null)
+            {
+                _requirement.PropertyChanged += OnRequirementChanged;
+            }
 
             if (Item is null)
             {

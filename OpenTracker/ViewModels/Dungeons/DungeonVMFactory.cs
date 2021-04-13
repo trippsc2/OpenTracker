@@ -7,6 +7,15 @@ using OpenTracker.Models.Locations;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Requirements.Aggregate;
 using OpenTracker.Models.Requirements.Alternative;
+using OpenTracker.Models.Requirements.AlwaysDisplay;
+using OpenTracker.Models.Requirements.BigKeyShuffle;
+using OpenTracker.Models.Requirements.BossShuffle;
+using OpenTracker.Models.Requirements.CompassShuffle;
+using OpenTracker.Models.Requirements.DisplaysMapsCompasses;
+using OpenTracker.Models.Requirements.ItemsPanelOrientation;
+using OpenTracker.Models.Requirements.KeyDropShuffle;
+using OpenTracker.Models.Requirements.MapShuffle;
+using OpenTracker.Models.Requirements.SmallKeyShuffle;
 using OpenTracker.Models.Sections;
 using OpenTracker.ViewModels.Items;
 using OpenTracker.ViewModels.Items.Adapters;
@@ -17,13 +26,18 @@ namespace OpenTracker.ViewModels.Dungeons
     {
         private readonly IDungeonDictionary _dungeons;
         private readonly ILocationDictionary _locations;
-        private readonly IRequirementDictionary _requirements;
 
-        private readonly IAggregateRequirement.Factory _aggregateFactory;
-        private readonly IAlternativeRequirement.Factory _alternativeFactory;
-        private readonly AlwaysDisplayDungeonItemsRequirement.Factory _alwaysDisplayFactory;
-        private readonly DisplayMapsCompassesRequirement.Factory _displayMapsCompassesFactory;
-        private readonly ItemsPanelOrientationRequirement.Factory _itemsPanelOrientationFactory;
+        private readonly IAggregateRequirementDictionary _aggregateRequirements;
+        private readonly IAlternativeRequirementDictionary _alternativeRequirements;
+        private readonly IAlwaysDisplayDungeonItemsRequirementDictionary _alwaysDisplayDungeonItemsRequirements;
+        private readonly IBigKeyShuffleRequirementDictionary _bigKeyShuffleRequirements;
+        private readonly IBossShuffleRequirementDictionary _bossShuffleRequirements;
+        private readonly ICompassShuffleRequirementDictionary _compassShuffleRequirements;
+        private readonly IDisplayMapsCompassesRequirementDictionary _displayMapsCompassesRequirements;
+        private readonly IItemsPanelOrientationRequirementDictionary _itemsPanelOrientationRequirements;
+        private readonly IKeyDropShuffleRequirementDictionary _keyDropShuffleRequirements;
+        private readonly IMapShuffleRequirementDictionary _mapShuffleRequirements;
+        private readonly ISmallKeyShuffleRequirementDictionary _smallKeyShuffleRequirements;
 
         private readonly IDungeonItemVM.Factory _factory;
         private readonly IItemVM.Factory _itemFactory;
@@ -35,23 +49,23 @@ namespace OpenTracker.ViewModels.Dungeons
         private readonly BossAdapter.Factory _bossFactory;
 
         public DungeonVMFactory(
-            IDungeonDictionary dungeons, ILocationDictionary locations, IRequirementDictionary requirements,
-            IAggregateRequirement.Factory aggregateFactory, IAlternativeRequirement.Factory alternativeFactory,
-            AlwaysDisplayDungeonItemsRequirement.Factory alwaysDisplayFactory,
-            DisplayMapsCompassesRequirement.Factory displayMapsCompassesFactory,
-            ItemsPanelOrientationRequirement.Factory itemsPanelOrientationFactory,
-            IDungeonItemVM.Factory factory, IItemVM.Factory itemFactory, ItemAdapter.Factory adapterFactory,
+            IDungeonDictionary dungeons, ILocationDictionary locations,
+            IAggregateRequirementDictionary aggregateRequirements,
+            IAlternativeRequirementDictionary alternativeRequirements,
+            IAlwaysDisplayDungeonItemsRequirementDictionary alwaysDisplayDungeonItemsRequirements,
+            IBigKeyShuffleRequirementDictionary bigKeyShuffleRequirements,
+            IBossShuffleRequirementDictionary bossShuffleRequirements,
+            ICompassShuffleRequirementDictionary compassShuffleRequirements,
+            IDisplayMapsCompassesRequirementDictionary displayMapsCompassesRequirements,
+            IItemsPanelOrientationRequirementDictionary itemsPanelOrientationRequirements,
+            IKeyDropShuffleRequirementDictionary keyDropShuffleRequirements,
+            IMapShuffleRequirementDictionary mapShuffleRequirements,
+            ISmallKeyShuffleRequirementDictionary smallKeyShuffleRequirements, IDungeonItemVM.Factory factory,
+            IItemVM.Factory itemFactory, ItemAdapter.Factory adapterFactory,
             DungeonSmallKeyAdapter.Factory smallKeyFactory, IDungeonItemSectionVM.Factory dungeonItemFactory,
             PrizeAdapter.Factory prizeFactory, BossAdapter.Factory bossFactory)
         {
             _locations = locations;
-            _requirements = requirements;
-
-            _aggregateFactory = aggregateFactory;
-            _alternativeFactory = alternativeFactory;
-            _alwaysDisplayFactory = alwaysDisplayFactory;
-            _displayMapsCompassesFactory = displayMapsCompassesFactory;
-            _itemsPanelOrientationFactory = itemsPanelOrientationFactory;
 
             _factory = factory;
             _itemFactory = itemFactory;
@@ -61,46 +75,56 @@ namespace OpenTracker.ViewModels.Dungeons
             _dungeonItemFactory = dungeonItemFactory;
             _prizeFactory = prizeFactory;
             _bossFactory = bossFactory;
+            _aggregateRequirements = aggregateRequirements;
+            _alternativeRequirements = alternativeRequirements;
+            _alwaysDisplayDungeonItemsRequirements = alwaysDisplayDungeonItemsRequirements;
+            _bigKeyShuffleRequirements = bigKeyShuffleRequirements;
+            _bossShuffleRequirements = bossShuffleRequirements;
+            _compassShuffleRequirements = compassShuffleRequirements;
+            _displayMapsCompassesRequirements = displayMapsCompassesRequirements;
+            _itemsPanelOrientationRequirements = itemsPanelOrientationRequirements;
+            _keyDropShuffleRequirements = keyDropShuffleRequirements;
+            _mapShuffleRequirements = mapShuffleRequirements;
+            _smallKeyShuffleRequirements = smallKeyShuffleRequirements;
             _dungeons = dungeons;
         }
 
         /// <summary>
-        /// Returns a new small item control representing a compass.
+        ///     Returns a new small item control representing a compass.
         /// </summary>
         /// <param name="dungeon">
-        /// The dungeon from which the compass represented.
+        ///     The dungeon from which the compass represented.
         /// </param>
         /// <returns>
-        /// A new small item control.
+        ///     A new small item control.
         /// </returns>
         private IDungeonItemVM GetCompassItemVM(IDungeon dungeon)
         {
             var compassItem = dungeon.Compass;
 
-            var requirement = compassItem is null ?
-                (IRequirement) _aggregateFactory(new List<IRequirement>
+            var requirement = compassItem is null
+                ? _aggregateRequirements[new HashSet<IRequirement>
                 {
-                    _displayMapsCompassesFactory(true),
-                    _itemsPanelOrientationFactory(Orientation.Vertical),
-                    _alternativeFactory(new List<IRequirement>
+                    _displayMapsCompassesRequirements[true],
+                    _itemsPanelOrientationRequirements[Orientation.Vertical],
+                    _alternativeRequirements[new HashSet<IRequirement>
                     {
-                        _alwaysDisplayFactory(true),
-                        _requirements[RequirementType.CompassShuffleOn]
-                    })
-                })
-                : _aggregateFactory(new List<IRequirement>
+                        _alwaysDisplayDungeonItemsRequirements[true],
+                        _compassShuffleRequirements[true]
+                    }]
+                }]
+                : _aggregateRequirements[new HashSet<IRequirement>
                 {
-                    _displayMapsCompassesFactory(true),
-                    _alternativeFactory(new List<IRequirement>
+                    _displayMapsCompassesRequirements[true],
+                    _alternativeRequirements[new HashSet<IRequirement>
                     {
-                        _alwaysDisplayFactory(true),
-                        _requirements[RequirementType.CompassShuffleOn]
-                    })
-                }); 
+                        _alwaysDisplayDungeonItemsRequirements[true],
+                        _compassShuffleRequirements[true]
+                    }]
+                }]; 
 
             var item = compassItem is null ? null : _itemFactory(
-                _adapterFactory(compassItem, "avares://OpenTracker/Assets/Images/Items/compass"),
-                _requirements[RequirementType.NoRequirement]);
+                _adapterFactory(compassItem, "avares://OpenTracker/Assets/Images/Items/compass"));
 
             return _factory(requirement, item);
         }
@@ -118,30 +142,29 @@ namespace OpenTracker.ViewModels.Dungeons
         {
             var mapItem = dungeon.Map;
 
-            var requirement = mapItem is null ?
-                (IRequirement) _aggregateFactory(new List<IRequirement>
+            var requirement = mapItem is null
+                ? _aggregateRequirements[new HashSet<IRequirement>
                 {
-                    _displayMapsCompassesFactory(true),
-                    _itemsPanelOrientationFactory(Orientation.Vertical),
-                    _alternativeFactory(new List<IRequirement>
+                    _displayMapsCompassesRequirements[true],
+                    _itemsPanelOrientationRequirements[Orientation.Vertical],
+                    _alternativeRequirements[new HashSet<IRequirement>
                     {
-                        _alwaysDisplayFactory(true),
-                        _requirements[RequirementType.MapShuffleOn]
-                    })
-                })
-                : _aggregateFactory(new List<IRequirement>
+                        _alwaysDisplayDungeonItemsRequirements[true],
+                        _mapShuffleRequirements[true]
+                    }]
+                }]
+                : _aggregateRequirements[new HashSet<IRequirement>
                 {
-                    _displayMapsCompassesFactory(true),
-                    _alternativeFactory(new List<IRequirement>
+                    _displayMapsCompassesRequirements[true],
+                    _alternativeRequirements[new HashSet<IRequirement>
                     {
-                        _alwaysDisplayFactory(true),
-                        _requirements[RequirementType.MapShuffleOn]
-                    })
-                });
+                        _alwaysDisplayDungeonItemsRequirements[true],
+                        _mapShuffleRequirements[true]
+                    }]
+                }];
 
             var item = mapItem is null ? null : _itemFactory(
-                _adapterFactory(mapItem, "avares://OpenTracker/Assets/Images/Items/map"),
-                _requirements[RequirementType.NoRequirement]);
+                _adapterFactory(mapItem, "avares://OpenTracker/Assets/Images/Items/map"));
 
             return _factory(requirement, item);
         }
@@ -157,15 +180,14 @@ namespace OpenTracker.ViewModels.Dungeons
         /// </returns>
         private IDungeonItemVM GetSmallKeyItemVM(IDungeon dungeon)
         {
-            var requirement = dungeon.ID == DungeonID.EasternPalace ?
-                _requirements[RequirementType.KeyDropShuffleOn] :
-                _requirements[RequirementType.NoRequirement];
+            var requirement = dungeon.ID == DungeonID.EasternPalace 
+                ? _keyDropShuffleRequirements[true] : null;
             
-            var spacerRequirement = _alternativeFactory(new List<IRequirement>
+            var spacerRequirement = _alternativeRequirements[new HashSet<IRequirement>
             {
-                _alwaysDisplayFactory(true),
-                _requirements[RequirementType.SmallKeyShuffleOn]
-            });
+                _alwaysDisplayDungeonItemsRequirements[true],
+                _smallKeyShuffleRequirements[true]
+            }];
 
             var item = _itemFactory(_smallKeyFactory(dungeon.SmallKey), requirement);
 
@@ -185,58 +207,59 @@ namespace OpenTracker.ViewModels.Dungeons
         {
             var bigKeyItem = dungeon.BigKey;
 
-            var requirement = dungeon.ID == DungeonID.HyruleCastle ?
-                (IRequirement) _aggregateFactory(new List<IRequirement>
+            var requirement = dungeon.ID == DungeonID.HyruleCastle
+                ? _aggregateRequirements[new HashSet<IRequirement>
                 {
-                    _requirements[RequirementType.KeyDropShuffleOn],
-                    _alternativeFactory(new List<IRequirement>
+                    _keyDropShuffleRequirements[true],
+                    _alternativeRequirements[new HashSet<IRequirement>
                     {
-                        _alwaysDisplayFactory(true),
-                        _requirements[RequirementType.BigKeyShuffleOn]
-                    })
-                }) :
-                _alternativeFactory(new List<IRequirement>
+                        _alwaysDisplayDungeonItemsRequirements[true],
+                        _bigKeyShuffleRequirements[true]
+                    }]
+                }]
+                : _alternativeRequirements[new HashSet<IRequirement>
                 {
-                    _alwaysDisplayFactory(true),
-                    _requirements[RequirementType.BigKeyShuffleOn]
-                });
+                    _alwaysDisplayDungeonItemsRequirements[true],
+                    _bigKeyShuffleRequirements[true]
+                }];
             var spacerRequirement = bigKeyItem is null ?
-                _aggregateFactory(new List<IRequirement>
+                _aggregateRequirements[new HashSet<IRequirement>
                 {
-                    _itemsPanelOrientationFactory(Orientation.Vertical),
-                    _alternativeFactory(new List<IRequirement>
+                    _itemsPanelOrientationRequirements[Orientation.Vertical],
+                    _aggregateRequirements[new HashSet<IRequirement>
                     {
-                        _alwaysDisplayFactory(true),
-                        _requirements[RequirementType.BigKeyShuffleOn]
+                        _alwaysDisplayDungeonItemsRequirements[true],
+                        _bigKeyShuffleRequirements[true]
                         
-                    })
-                }) : dungeon.ID == DungeonID.HyruleCastle ?
-                (IRequirement) _alternativeFactory(new List<IRequirement>
-                {
-                    _aggregateFactory(new List<IRequirement>
+                    }]
+                }]
+                : dungeon.ID == DungeonID.HyruleCastle
+                    ? _alternativeRequirements[new HashSet<IRequirement>
                     {
-                        _itemsPanelOrientationFactory(Orientation.Vertical),
-                        _alternativeFactory(new List<IRequirement>
+                        _aggregateRequirements[new HashSet<IRequirement>
                         {
-                            _alwaysDisplayFactory(true),
-                            _requirements[RequirementType.BigKeyShuffleOn]
-                        })
-                    }),
-                    _aggregateFactory(new List<IRequirement>
+                            _itemsPanelOrientationRequirements[Orientation.Vertical],
+                            _alternativeRequirements[new HashSet<IRequirement>
+                            {
+                                _alwaysDisplayDungeonItemsRequirements[true],
+                                _bigKeyShuffleRequirements[true]
+                            }]
+                        }],
+                        _aggregateRequirements[new HashSet<IRequirement>
+                        {
+                            _keyDropShuffleRequirements[true],
+                            _alternativeRequirements[new HashSet<IRequirement>
+                            {
+                                _alwaysDisplayDungeonItemsRequirements[true],
+                                _bigKeyShuffleRequirements[true]
+                            }]
+                        }]
+                    }]
+                    : _alternativeRequirements[new HashSet<IRequirement>
                     {
-                        _requirements[RequirementType.KeyDropShuffleOn],
-                        _alternativeFactory(new List<IRequirement>
-                        {
-                            _alwaysDisplayFactory(true),
-                            _requirements[RequirementType.BigKeyShuffleOn]
-                        })
-                    })
-                }) :
-                _alternativeFactory(new List<IRequirement>
-                {
-                    _alwaysDisplayFactory(true),
-                    _requirements[RequirementType.BigKeyShuffleOn]
-                });
+                        _alwaysDisplayDungeonItemsRequirements[true],
+                        _bigKeyShuffleRequirements[true]
+                    }];
             
             var item = bigKeyItem is null ? null : _itemFactory(_adapterFactory(
                 bigKeyItem, "avares://OpenTracker/Assets/Images/Items/bigkey"), requirement);
@@ -266,17 +289,11 @@ namespace OpenTracker.ViewModels.Dungeons
                         dungeonItems.Add(_dungeonItemFactory(section));
                         break;
                     case IPrizeSection prizeSection when id != LocationID.AgahnimTower && id != LocationID.GanonsTower:
-                        dungeonItems.Add(_factory(
-                            _requirements[RequirementType.NoRequirement],
-                            _itemFactory(
-                                _prizeFactory(prizeSection), _requirements[RequirementType.NoRequirement])));
+                        dungeonItems.Add(_factory(null, _itemFactory(_prizeFactory(prizeSection))));
                         break;
                     case IBossSection bossSection when bossSection.BossPlacement.Boss != BossType.Aga:
                         dungeonItems.Add(_factory(
-                            _requirements[RequirementType.BossShuffleOn],
-                            _itemFactory(
-                                _bossFactory(bossSection.BossPlacement),
-                                _requirements[RequirementType.NoRequirement])));
+                            _bossShuffleRequirements[true], _itemFactory(_bossFactory(bossSection.BossPlacement))));
                         break;
                 }
             }

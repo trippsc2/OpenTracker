@@ -12,7 +12,7 @@ namespace OpenTracker.Models.Sections
     public interface ISection : IReactiveObject
     {
         string Name { get; }
-        IRequirement Requirement { get; }
+        IRequirement? Requirement { get; }
         AccessibilityLevel Accessibility { get; }
         bool UserManipulated { get; set; }
         int Available { get; set; }

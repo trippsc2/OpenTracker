@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Locations;
-using OpenTracker.Models.Requirements;
+using OpenTracker.Models.Requirements.GenericKeys;
 using OpenTracker.Models.Sections;
 using OpenTracker.ViewModels.Items.Adapters;
 
@@ -15,8 +15,9 @@ namespace OpenTracker.ViewModels.Items
     {
         private readonly IItemDictionary _items;
         private readonly ILocationDictionary _locations;
-        private readonly IRequirementDictionary _requirements;
         private readonly IItemVMDictionary _itemControls;
+
+        private readonly IGenericKeysRequirementDictionary _genericKeysRequirements;
 
         private readonly ILargeItemVM.Factory _factory;
         private readonly IItemVM.Factory _itemFactory;
@@ -35,11 +36,11 @@ namespace OpenTracker.ViewModels.Items
         /// <param name="locations">
         /// The location dictionary.
         /// </param>
-        /// <param name="requirements">
-        /// The requirement dictionary.
-        /// </param>
         /// <param name="itemControls">
         /// The item control dictionary.
+        /// </param>
+        /// <param name="genericKeysRequirements">
+        ///     The generic keys requirement dictionary.
         /// </param>
         /// <param name="factory">
         /// An Autofac factory for creating large item controls.
@@ -63,15 +64,14 @@ namespace OpenTracker.ViewModels.Items
         /// An Autofac factory for creating small key adapters.
         /// </param>
         public ItemVMFactory(
-            IItemDictionary items, ILocationDictionary locations, IRequirementDictionary requirements,
-            IItemVMDictionary itemControls, ILargeItemVM.Factory factory, IItemVM.Factory itemFactory,
-            CrystalRequirementAdapter.Factory crystalFactory, ItemAdapter.Factory adapterFactory,
-            PairItemAdapter.Factory pairFactory, StaticPrizeAdapter.Factory prizeFactory,
-            SmallKeyAdapter.Factory smallKeyFactory)
+            IItemDictionary items, ILocationDictionary locations, IItemVMDictionary itemControls,
+            IGenericKeysRequirementDictionary genericKeysRequirements, ILargeItemVM.Factory factory,
+            IItemVM.Factory itemFactory, CrystalRequirementAdapter.Factory crystalFactory,
+            ItemAdapter.Factory adapterFactory, PairItemAdapter.Factory pairFactory,
+            StaticPrizeAdapter.Factory prizeFactory, SmallKeyAdapter.Factory smallKeyFactory)
         {
             _items = items;
             _locations = locations;
-            _requirements = requirements;
             _itemControls = itemControls;
 
             _factory = factory;
@@ -81,6 +81,7 @@ namespace OpenTracker.ViewModels.Items
             _pairFactory = pairFactory;
             _prizeFactory = prizeFactory;
             _smallKeyFactory = smallKeyFactory;
+            _genericKeysRequirements = genericKeysRequirements;
         }
 
         /// <summary>
@@ -98,8 +99,7 @@ namespace OpenTracker.ViewModels.Items
             return _itemFactory(
                 _adapterFactory(
                     _items[Enum.Parse<ItemType>(type.ToString())],
-                    $"avares://OpenTracker/Assets/Images/Items/{type.ToString().ToLowerInvariant()}"),
-                _requirements[RequirementType.NoRequirement]);
+                    $"avares://OpenTracker/Assets/Images/Items/{type.ToString().ToLowerInvariant()}"));
         }
 
         /// <summary>
@@ -125,8 +125,7 @@ namespace OpenTracker.ViewModels.Items
             return _itemFactory(
                 _prizeFactory(
                     section,
-                    $"avares://OpenTracker/Assets/Images/Prizes/{type.ToString().ToLowerInvariant()}"),
-                _requirements[RequirementType.NoRequirement]);
+                    $"avares://OpenTracker/Assets/Images/Prizes/{type.ToString().ToLowerInvariant()}"));
         }
 
         /// <summary>
@@ -142,8 +141,7 @@ namespace OpenTracker.ViewModels.Items
         {
             return _itemFactory(_crystalFactory(
                     (ICrystalRequirementItem)_items[Enum.Parse<ItemType>(type.ToString())],
-                    $"avares://OpenTracker/Assets/Images/Items/{type.ToString().ToLowerInvariant()}.png"),
-                _requirements[RequirementType.NoRequirement]);
+                    $"avares://OpenTracker/Assets/Images/Items/{type.ToString().ToLowerInvariant()}.png"));
         }
 
         /// <summary>
@@ -159,7 +157,7 @@ namespace OpenTracker.ViewModels.Items
         {
             return _itemFactory(_smallKeyFactory(
                 _items[Enum.Parse<ItemType>(type.ToString())]),
-                _requirements[RequirementType.GenericKeys]);
+                _genericKeysRequirements[true]);
         }
 
         /// <summary>
@@ -181,8 +179,7 @@ namespace OpenTracker.ViewModels.Items
                         (ICappedItem) _items[itemType],
                         (ICappedItem) _items[itemType + 1]
                     },
-                    $"avares://OpenTracker/Assets/Images/Items/{type.ToString().ToLowerInvariant()}"),
-                _requirements[RequirementType.NoRequirement]);
+                    $"avares://OpenTracker/Assets/Images/Items/{type.ToString().ToLowerInvariant()}"));
         }
 
         /// <summary>

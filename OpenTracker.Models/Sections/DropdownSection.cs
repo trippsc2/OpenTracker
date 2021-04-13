@@ -25,7 +25,7 @@ namespace OpenTracker.Models.Sections
         private readonly INode _holeNode;
 
         public string Name { get; }
-        public IRequirement Requirement { get; }
+        public IRequirement? Requirement { get; }
         public bool UserManipulated { get; set; }
         public IMarking Marking { get; }
         
@@ -44,7 +44,7 @@ namespace OpenTracker.Models.Sections
         }
 
         public delegate DropdownSection Factory(
-            string name, INode? exitNode, INode holeNode, IRequirement requirement);
+            string name, INode? exitNode, INode holeNode, IRequirement? requirement);
 
         /// <summary>
         /// Constructor
@@ -76,7 +76,7 @@ namespace OpenTracker.Models.Sections
         public DropdownSection(
             IMode mode, ICollectSection.Factory collectSectionFactory,
             IUncollectSection.Factory uncollectSectionFactory, IMarking marking, string name,
-            INode? exitNode, INode holeNode, IRequirement requirement)
+            INode? exitNode, INode holeNode, IRequirement? requirement)
         {
             _mode = mode;
 

@@ -8,7 +8,6 @@ using OpenTracker.Models.AutoTracking.Values.Single;
 using OpenTracker.Models.AutoTracking.Values.Static;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Items.Factories;
-using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Requirements.AutoTracking;
 using OpenTracker.Models.Requirements.GenericKeys;
 using OpenTracker.Models.Requirements.KeyDropShuffle;
@@ -21,8 +20,7 @@ namespace OpenTracker.UnitTests.Models.Items.Factories
         private readonly IItemDictionary _items = Substitute.For<IItemDictionary>();
         private readonly IMemoryAddressProvider _memoryAddressProvider = new MemoryAddressProvider(() =>
             Substitute.For<IMemoryAddress>());
-        private readonly IRequirementDictionary _requirements = Substitute.For<IRequirementDictionary>();
-        
+
         private readonly IGenericKeysRequirementDictionary _genericKeysRequirements =
             Substitute.For<IGenericKeysRequirementDictionary>();
         private readonly IKeyDropShuffleRequirementDictionary _keyDropShuffleRequirements =
@@ -54,7 +52,6 @@ namespace OpenTracker.UnitTests.Models.Items.Factories
         public ItemAutoTrackValueFactoryTests()
         {
             _items[Arg.Any<ItemType>()].Returns(Substitute.For<IItem>());
-            _requirements[Arg.Any<RequirementType>()].Returns(Substitute.For<IRequirement>());
             
             _sut = new ItemAutoTrackValueFactory(
                 _items, _memoryAddressProvider, _genericKeysRequirements, _keyDropShuffleRequirements,

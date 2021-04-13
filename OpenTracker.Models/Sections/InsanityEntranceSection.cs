@@ -23,7 +23,7 @@ namespace OpenTracker.Models.Sections
         private readonly IOverworldNode? _exitProvided;
 
         public string Name { get; }
-        public IRequirement Requirement { get; }
+        public IRequirement? Requirement { get; }
         public bool UserManipulated { get; set; }
         public IMarking Marking { get; }
 
@@ -37,7 +37,7 @@ namespace OpenTracker.Models.Sections
         }
 
         public delegate InsanityEntranceSection Factory(
-            string name, IOverworldNode? exitProvided, INode node, IRequirement requirement);
+            string name, IOverworldNode? exitProvided, INode node, IRequirement? requirement);
 
         /// <summary>
         /// Constructor
@@ -66,7 +66,7 @@ namespace OpenTracker.Models.Sections
         public InsanityEntranceSection(
             ICollectSection.Factory collectSectionFactory, IUncollectSection.Factory uncollectSectionFactory,
             IMarking marking, string name, IOverworldNode? exitProvided, INode node,
-            IRequirement requirement)
+            IRequirement? requirement)
         {
             _collectSectionFactory = collectSectionFactory;
             _uncollectSectionFactory = uncollectSectionFactory;

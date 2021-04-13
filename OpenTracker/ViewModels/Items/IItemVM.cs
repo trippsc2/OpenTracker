@@ -10,6 +10,6 @@ namespace OpenTracker.ViewModels.Items
     {
         ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
 
-        delegate IItemVM Factory(IItemAdapter item, IRequirement requirement);
+        delegate IItemVM Factory(IItemAdapter item, IRequirement? requirement = null);
     }
 }

@@ -1,26 +1,24 @@
 ﻿using System.ComponentModel;
 using OpenTracker.Models.Settings;
 
-namespace OpenTracker.Models.Requirements
+namespace OpenTracker.Models.Requirements.AlwaysDisplay
 {
     /// <summary>
-    /// This class contains always display dungeon items setting requirement data.
+    ///     This class contains always display dungeon items setting requirement data.
     /// </summary>
-    public class AlwaysDisplayDungeonItemsRequirement : BooleanRequirement
+    public class AlwaysDisplayDungeonItemsRequirement : BooleanRequirement, IAlwaysDisplayDungeonItemsRequirement
     {
         private readonly ILayoutSettings _layoutSettings;
         private readonly bool _expectedValue;
 
-        public delegate AlwaysDisplayDungeonItemsRequirement Factory(bool expectedValue);
-
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="layoutSettings">
-        /// The layout settings.
+        ///     The layout settings.
         /// </param>
         /// <param name="expectedValue">
-        /// A boolean representing the expected value.
+        ///     A boolean representing the expected value.
         /// </param>
         public AlwaysDisplayDungeonItemsRequirement(ILayoutSettings layoutSettings, bool expectedValue)
         {
@@ -33,13 +31,13 @@ namespace OpenTracker.Models.Requirements
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the ILayoutSettings interface.
+        ///     Subscribes to the PropertyChanged event on the ILayoutSettings interface.
         /// </summary>
         /// <param name="sender">
-        /// The sending object of the event.
+        ///     The sending object of the event.
         /// </param>
         /// <param name="e">
-        /// The arguments of the PropertyChanged event.
+        ///     The arguments of the PropertyChanged event.
         /// </param>
         private void OnLayoutChanged(object? sender, PropertyChangedEventArgs e)
         {

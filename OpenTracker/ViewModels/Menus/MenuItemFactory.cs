@@ -4,6 +4,8 @@ using System.Windows.Input;
 using Avalonia.Controls;
 using Avalonia.Layout;
 using OpenTracker.Models.Requirements;
+using OpenTracker.Models.Requirements.AlwaysDisplay;
+using OpenTracker.Models.Requirements.DisplaysMapsCompasses;
 using OpenTracker.Utils.Themes;
 
 namespace OpenTracker.ViewModels.Menus
@@ -16,13 +18,14 @@ namespace OpenTracker.ViewModels.Menus
         private readonly ICaptureWindowMenuCollection _captureWindowMenuItems;
         private readonly IThemeManager _themeManager;
         
+        private readonly IAlwaysDisplayDungeonItemsRequirementDictionary _alwaysDisplayDungeonItemsRequirements;
+        private readonly IDisplayMapsCompassesRequirementDictionary _displayMapsCompassesRequirements;
+
         private readonly IMenuItemVM.Factory _itemFactory;
 
         private readonly ThemeSelectedRequirement.Factory _themeSelectedFactory;
         private readonly DisplayAllLocationsRequirement.Factory _displayAllLocationsFactory;
         private readonly ShowItemCountsOnMapRequirement.Factory _showItemCountsOnMapFactory;
-        private readonly DisplayMapsCompassesRequirement.Factory _displayMapsCompassesFactory;
-        private readonly AlwaysDisplayDungeonItemsRequirement.Factory _alwaysDisplayDungeonItemsFactory;
         private readonly LayoutOrientationRequirement.Factory _layoutOrientationFactory;
         private readonly HorizontalUIPanelPlacementRequirement.Factory _horizontalUIPanelPlacementFactory;
         private readonly HorizontalItemsPanelPlacementRequirement.Factory _horizontalItemsPanelPlacementFactory;
@@ -33,11 +36,11 @@ namespace OpenTracker.ViewModels.Menus
 
         public MenuItemFactory(
             ICaptureWindowMenuCollection captureWindowMenuItems, IThemeManager themeManager,
+            IAlwaysDisplayDungeonItemsRequirementDictionary alwaysDisplayDungeonItemsRequirements,
+            IDisplayMapsCompassesRequirementDictionary displayMapsCompassesRequirements,
             IMenuItemVM.Factory itemFactory, ThemeSelectedRequirement.Factory themeSelectedFactory,
             DisplayAllLocationsRequirement.Factory displayAllLocationsFactory,
             ShowItemCountsOnMapRequirement.Factory showItemCountsOnMapFactory,
-            DisplayMapsCompassesRequirement.Factory displayMapsCompassesFactory,
-            AlwaysDisplayDungeonItemsRequirement.Factory alwaysDisplayDungeonItemsFactory,
             LayoutOrientationRequirement.Factory layoutOrientationFactory,
             HorizontalUIPanelPlacementRequirement.Factory horizontalUIPanelPlacementFactory,
             HorizontalItemsPanelPlacementRequirement.Factory horizontalItemsPanelPlacementFactory,
@@ -53,8 +56,6 @@ namespace OpenTracker.ViewModels.Menus
             _themeSelectedFactory = themeSelectedFactory;
             _displayAllLocationsFactory = displayAllLocationsFactory;
             _showItemCountsOnMapFactory = showItemCountsOnMapFactory;
-            _displayMapsCompassesFactory = displayMapsCompassesFactory;
-            _alwaysDisplayDungeonItemsFactory = alwaysDisplayDungeonItemsFactory;
             _layoutOrientationFactory = layoutOrientationFactory;
             _horizontalUIPanelPlacementFactory = horizontalUIPanelPlacementFactory;
             _horizontalItemsPanelPlacementFactory = horizontalItemsPanelPlacementFactory;
@@ -62,6 +63,8 @@ namespace OpenTracker.ViewModels.Menus
             _verticalItemsPanelPlacementFactory = verticalItemsPanelPlacementFactory;
             _mapOrientationFactory = mapOrientationFactory;
             _uiScaleFactory = uiScaleFactory;
+            _alwaysDisplayDungeonItemsRequirements = alwaysDisplayDungeonItemsRequirements;
+            _displayMapsCompassesRequirements = displayMapsCompassesRequirements;
         }
 
         private List<IMenuItemVM> GetFileMenuItems(
@@ -129,10 +132,10 @@ namespace OpenTracker.ViewModels.Menus
                     command: toggleShowItemCountsOnMap),
                 _itemFactory("-"),
                 _itemFactory("Display Maps/Compass",
-                    _displayMapsCompassesFactory(true),
+                    _displayMapsCompassesRequirements[true],
                     command: toggleDisplayMapsCompasses),
                 _itemFactory("Always Display Dungeon Items",
-                    _alwaysDisplayDungeonItemsFactory(true),
+                    _alwaysDisplayDungeonItemsRequirements[true],
                     command: toggleAlwaysDisplayDungeonItems),
                 _itemFactory("-"),
                 _itemFactory("Change Colors...", command: colorSelect),

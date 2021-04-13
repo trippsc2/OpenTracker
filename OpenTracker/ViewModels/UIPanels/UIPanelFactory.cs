@@ -1,5 +1,9 @@
 using System;
+using System.Collections.Generic;
+using OpenTracker.Models.Modes;
 using OpenTracker.Models.Requirements;
+using OpenTracker.Models.Requirements.Alternative;
+using OpenTracker.Models.Requirements.Mode;
 using OpenTracker.ViewModels.Dropdowns;
 using OpenTracker.ViewModels.Dungeons;
 using OpenTracker.ViewModels.Items;
@@ -8,11 +12,13 @@ using OpenTracker.ViewModels.PinnedLocations;
 namespace OpenTracker.ViewModels.UIPanels
 {
     /// <summary>
-    /// This class contains the creation logic for UI panel controls.
+    ///     This class contains the creation logic for UI panel controls.
     /// </summary>
     public class UIPanelFactory : IUIPanelFactory
     {
-        private readonly IRequirementDictionary _requirements;
+        private readonly IAlternativeRequirementDictionary _alternativeRequirements;
+        private readonly IEntranceShuffleRequirementDictionary _entranceShuffleRequirements;
+        
         private readonly IModeSettingsVM _modeSettings;
         private readonly IDungeonPanelVM _dungeons;
         private readonly IPinnedLocationsPanelVM _pinnedLocations;
@@ -25,8 +31,11 @@ namespace OpenTracker.ViewModels.UIPanels
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="requirements">
-        /// The requirement dictionary.
+        /// <param name="alternativeRequirements">
+        ///     The alternative requirement dictionary.
+        /// </param>
+        /// <param name="entranceShuffleRequirements">
+        ///     The entrance shuffle requirement dictionary.
         /// </param>
         /// <param name="modeSettings">
         /// The mode settings control.
@@ -50,11 +59,11 @@ namespace OpenTracker.ViewModels.UIPanels
         /// The items panel body control.
         /// </param>
         public UIPanelFactory(
-            IRequirementDictionary requirements, IModeSettingsVM modeSettings, IItemVMFactory itemFactory,
-            IDungeonPanelVM dungeons, IPinnedLocationsPanelVM pinnedLocations, IDropdownVMFactory dropdownFactory,
-            IUIPanelVM.Factory factory, ILargeItemPanelVM.Factory largeFactory)
+            IAlternativeRequirementDictionary alternativeRequirements,
+            IEntranceShuffleRequirementDictionary entranceShuffleRequirements, IModeSettingsVM modeSettings,
+            IItemVMFactory itemFactory, IDungeonPanelVM dungeons, IPinnedLocationsPanelVM pinnedLocations,
+            IDropdownVMFactory dropdownFactory, IUIPanelVM.Factory factory, ILargeItemPanelVM.Factory largeFactory)
         {
-            _requirements = requirements;
             _modeSettings = modeSettings;
             _dungeons = dungeons;
             _pinnedLocations = pinnedLocations;
@@ -63,6 +72,8 @@ namespace OpenTracker.ViewModels.UIPanels
             
             _factory = factory;
             _largeFactory = largeFactory;
+            _alternativeRequirements = alternativeRequirements;
+            _entranceShuffleRequirements = entranceShuffleRequirements;
         }
 
         /// <summary>
@@ -74,14 +85,18 @@ namespace OpenTracker.ViewModels.UIPanels
         /// <returns>
         /// The requirement to be visible.
         /// </returns>
-        private IRequirement GetUIPanelRequirement(UIPanelType type)
+        private IRequirement? GetUIPanelRequirement(UIPanelType type)
         {
             return type switch
             {
-                UIPanelType.Item => _requirements[RequirementType.NoRequirement],
-                UIPanelType.Dungeon => _requirements[RequirementType.NoRequirement],
-                UIPanelType.Dropdown => _requirements[RequirementType.EntranceShuffleAllInsanity],
-                UIPanelType.Location => _requirements[RequirementType.NoRequirement],
+                UIPanelType.Item => null,
+                UIPanelType.Dungeon => null,
+                UIPanelType.Dropdown => _alternativeRequirements[new HashSet<IRequirement>
+                {
+                    _entranceShuffleRequirements[EntranceShuffle.All],
+                    _entranceShuffleRequirements[EntranceShuffle.Insanity]
+                }],
+                UIPanelType.Location => null,
                 _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
             };
         }
