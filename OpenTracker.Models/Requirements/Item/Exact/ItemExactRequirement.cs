@@ -5,7 +5,7 @@ using OpenTracker.Models.Items;
 namespace OpenTracker.Models.Requirements.Item.Exact
 {
     /// <summary>
-    /// This class contains item exact value requirement data.
+    ///     This class contains item exact value requirement data.
     /// </summary>
     public class ItemExactRequirement : BooleanRequirement, IItemExactRequirement
     {
@@ -13,13 +13,13 @@ namespace OpenTracker.Models.Requirements.Item.Exact
         private readonly int _count;
 
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="item">
-        /// The item of the requirement.
+        ///     The item of the requirement.
         /// </param>
         /// <param name="count">
-        /// A 32-bit integer representing the number of the item required.
+        ///     A 32-bit integer representing the number of the item required.
         /// </param>
         public ItemExactRequirement(IItem item, int count)
         {
@@ -32,13 +32,13 @@ namespace OpenTracker.Models.Requirements.Item.Exact
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the IItem interface.
+        ///     Subscribes to the PropertyChanged event on the IItem interface.
         /// </summary>
         /// <param name="sender">
-        /// The sending object of the event.
+        ///     The sending object of the event.
         /// </param>
         /// <param name="e">
-        /// The arguments of the PropertyChanged event.
+        ///     The arguments of the PropertyChanged event.
         /// </param>
         private void OnItemChanged(object? sender, PropertyChangedEventArgs e)
         {

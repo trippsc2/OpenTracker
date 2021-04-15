@@ -41,7 +41,7 @@ using OpenTracker.Models.Requirements.GuaranteedBossItems;
 using OpenTracker.Models.Requirements.Item;
 using OpenTracker.Models.Requirements.Item.Crystal;
 using OpenTracker.Models.Requirements.Item.Exact;
-using OpenTracker.Models.Requirements.Item.Prizes;
+using OpenTracker.Models.Requirements.Item.Prize;
 using OpenTracker.Models.Requirements.Item.SmallKey;
 using OpenTracker.Models.Requirements.ItemsPanelOrientation;
 using OpenTracker.Models.Requirements.KeyDropShuffle;

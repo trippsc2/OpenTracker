@@ -30,6 +30,15 @@ namespace OpenTracker.UnitTests.Models.Requirements.GuaranteedBossItems
         }
 
         [Fact]
+        public void Indexer_ShouldReturnTheDifferentInstances()
+        {
+            var requirement1 = _sut[false];
+            var requirement2 = _sut[true];
+            
+            Assert.NotEqual(requirement1, requirement2);
+        }
+
+        [Fact]
         public void AutofacTest()
         {
             using var scope = ContainerConfig.Configure().BeginLifetimeScope();

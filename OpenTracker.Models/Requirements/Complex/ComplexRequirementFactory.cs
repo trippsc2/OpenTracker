@@ -10,7 +10,7 @@ using OpenTracker.Models.Requirements.Alternative;
 using OpenTracker.Models.Requirements.EnemyShuffle;
 using OpenTracker.Models.Requirements.Item;
 using OpenTracker.Models.Requirements.Item.Exact;
-using OpenTracker.Models.Requirements.Item.Prizes;
+using OpenTracker.Models.Requirements.Item.Prize;
 using OpenTracker.Models.Requirements.Item.SmallKey;
 using OpenTracker.Models.Requirements.KeyDropShuffle;
 using OpenTracker.Models.Requirements.Mode;

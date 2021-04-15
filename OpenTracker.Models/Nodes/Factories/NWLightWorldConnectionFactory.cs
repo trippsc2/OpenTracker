@@ -8,7 +8,7 @@ using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Requirements.Alternative;
 using OpenTracker.Models.Requirements.Complex;
 using OpenTracker.Models.Requirements.Item;
-using OpenTracker.Models.Requirements.Item.Prizes;
+using OpenTracker.Models.Requirements.Item.Prize;
 using OpenTracker.Models.Requirements.Mode;
 
 namespace OpenTracker.Models.Nodes.Factories

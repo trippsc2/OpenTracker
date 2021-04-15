@@ -1,7 +1,10 @@
+using System;
 using System.ComponentModel;
 using Autofac;
 using NSubstitute;
+using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Modes;
+using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Requirements.Mode;
 using Xunit;
 
@@ -22,6 +25,40 @@ namespace OpenTracker.UnitTests.Models.Requirements.Mode
                 _mode, new PropertyChangedEventArgs(nameof(IMode.EntranceShuffle)));
             
             Assert.True(sut.Met);
+        }
+
+        [Fact]
+        public void Met_ShouldRaisePropertyChanged()
+        {
+            const EntranceShuffle entranceShuffle = EntranceShuffle.Dungeon;
+            var sut = new EntranceShuffleRequirement(_mode, entranceShuffle);
+            _mode.EntranceShuffle.Returns(entranceShuffle);
+
+            Assert.PropertyChanged(sut, nameof(IRequirement.Met), 
+                () => _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                    _mode, new PropertyChangedEventArgs(nameof(IMode.EntranceShuffle))));
+        }
+
+        [Fact]
+        public void Met_ShouldRaiseChangePropagated()
+        {
+            const EntranceShuffle entranceShuffle = EntranceShuffle.Dungeon;
+            var sut = new EntranceShuffleRequirement(_mode, entranceShuffle);
+            _mode.EntranceShuffle.Returns(entranceShuffle);
+
+            var eventRaised = false;
+
+            void Handler(object? sender, EventArgs e)
+            {
+                eventRaised = true;
+            }
+            
+            sut.ChangePropagated += Handler;
+            _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                _mode, new PropertyChangedEventArgs(nameof(IMode.EntranceShuffle)));
+            sut.ChangePropagated -= Handler;
+            
+            Assert.True(eventRaised);
         }
 
         [Theory]
@@ -48,6 +85,44 @@ namespace OpenTracker.UnitTests.Models.Requirements.Mode
             var sut = new EntranceShuffleRequirement(_mode, requirement);
             
             Assert.Equal(expected, sut.Met);
+        }
+
+        [Fact]
+        public void Accessibility_ShouldRaisePropertyChanged()
+        {
+            const EntranceShuffle entranceShuffle = EntranceShuffle.Dungeon;
+            var sut = new EntranceShuffleRequirement(_mode, entranceShuffle);
+            _mode.EntranceShuffle.Returns(entranceShuffle);
+
+            Assert.PropertyChanged(sut, nameof(IRequirement.Accessibility), 
+                () => _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                    _mode, new PropertyChangedEventArgs(nameof(IMode.EntranceShuffle))));
+        }
+
+        [Theory]
+        [InlineData(AccessibilityLevel.Normal, EntranceShuffle.None, EntranceShuffle.None)]
+        [InlineData(AccessibilityLevel.None, EntranceShuffle.None, EntranceShuffle.Dungeon)]
+        [InlineData(AccessibilityLevel.None, EntranceShuffle.None, EntranceShuffle.All)]
+        [InlineData(AccessibilityLevel.None, EntranceShuffle.None, EntranceShuffle.Insanity)]
+        [InlineData(AccessibilityLevel.None, EntranceShuffle.Dungeon, EntranceShuffle.None)]
+        [InlineData(AccessibilityLevel.Normal, EntranceShuffle.Dungeon, EntranceShuffle.Dungeon)]
+        [InlineData(AccessibilityLevel.None, EntranceShuffle.Dungeon, EntranceShuffle.All)]
+        [InlineData(AccessibilityLevel.None, EntranceShuffle.Dungeon, EntranceShuffle.Insanity)]
+        [InlineData(AccessibilityLevel.None, EntranceShuffle.All, EntranceShuffle.None)]
+        [InlineData(AccessibilityLevel.None, EntranceShuffle.All, EntranceShuffle.Dungeon)]
+        [InlineData(AccessibilityLevel.Normal, EntranceShuffle.All, EntranceShuffle.All)]
+        [InlineData(AccessibilityLevel.None, EntranceShuffle.All, EntranceShuffle.Insanity)]
+        [InlineData(AccessibilityLevel.None, EntranceShuffle.Insanity, EntranceShuffle.None)]
+        [InlineData(AccessibilityLevel.None, EntranceShuffle.Insanity, EntranceShuffle.Dungeon)]
+        [InlineData(AccessibilityLevel.None, EntranceShuffle.Insanity, EntranceShuffle.All)]
+        [InlineData(AccessibilityLevel.Normal, EntranceShuffle.Insanity, EntranceShuffle.Insanity)]
+        public void Accessibility_ShouldReturnExpectedValue(
+            AccessibilityLevel expected, EntranceShuffle entranceShuffle, EntranceShuffle requirement)
+        {
+            _mode.EntranceShuffle.Returns(entranceShuffle);
+            var sut = new EntranceShuffleRequirement(_mode, requirement);
+            
+            Assert.Equal(expected, sut.Accessibility);
         }
 
         [Fact]

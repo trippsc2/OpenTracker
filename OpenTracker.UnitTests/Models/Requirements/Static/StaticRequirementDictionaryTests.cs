@@ -32,6 +32,15 @@ namespace OpenTracker.UnitTests.Models.Requirements.Static
         }
 
         [Fact]
+        public void Indexer_ShouldReturnDifferentInstances()
+        {
+            var requirement1 = _sut[AccessibilityLevel.None];
+            var requirement2 = _sut[AccessibilityLevel.SequenceBreak];
+            
+            Assert.NotEqual(requirement1, requirement2);
+        }
+
+        [Fact]
         public void AutofacTest()
         {
             using var scope = ContainerConfig.Configure().BeginLifetimeScope();

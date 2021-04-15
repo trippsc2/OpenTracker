@@ -7,14 +7,6 @@ namespace OpenTracker.UnitTests.Models.Requirements.Static
 {
     public class StaticRequirementTests
     {
-        [Fact]
-        public void Met_ShouldAlwaysReturnTrue()
-        {
-            var sut = new StaticRequirement(AccessibilityLevel.None);
-            
-            Assert.True(sut.Met);
-        }
-        
         [Theory]
         [InlineData(AccessibilityLevel.None, AccessibilityLevel.None)]
         [InlineData(AccessibilityLevel.Inspect, AccessibilityLevel.Inspect)]
@@ -28,6 +20,14 @@ namespace OpenTracker.UnitTests.Models.Requirements.Static
             Assert.Equal(expected, sut.Accessibility);
         }
 
+        [Fact]
+        public void Met_ShouldAlwaysReturnTrue()
+        {
+            var sut = new StaticRequirement(AccessibilityLevel.None);
+            
+            Assert.True(sut.Met);
+        }
+        
         [Fact]
         public void AutofacTest()
         {

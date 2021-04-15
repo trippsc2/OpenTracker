@@ -6,7 +6,7 @@ using OpenTracker.Models.NodeConnections;
 using OpenTracker.Models.Prizes;
 using OpenTracker.Models.Requirements.Complex;
 using OpenTracker.Models.Requirements.Item;
-using OpenTracker.Models.Requirements.Item.Prizes;
+using OpenTracker.Models.Requirements.Item.Prize;
 using OpenTracker.Models.Requirements.Mode;
 using OpenTracker.Models.Requirements.SequenceBreak;
 using OpenTracker.Models.SequenceBreaks;

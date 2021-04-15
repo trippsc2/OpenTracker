@@ -15,7 +15,7 @@ using ReactiveUI;
 namespace OpenTracker.Models.Locations
 {
     /// <summary>
-    /// This class contains location data.
+    ///     This class contains location data.
     /// </summary>
     public class Location : ReactiveObject, ILocation
     {
@@ -69,40 +69,40 @@ namespace OpenTracker.Models.Locations
         }
 
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="factory">
-        /// The location factory.
+        ///     The location factory.
         /// </param>
         /// <param name="mapLocationFactory">
-        /// The map location factory.
+        ///     The map location factory.
         /// </param>
         /// <param name="sectionFactory">
-        /// The section factory.
+        ///     The section factory.
         /// </param>
         /// <param name="markingFactory">
-        /// The marking factory.
+        ///     The marking factory.
         /// </param>
         /// <param name="addNoteFactory">
-        /// An Autofac factory for creating undoable actions to add a note.
+        ///     An Autofac factory for creating undoable actions to add a note.
         /// </param>
         /// <param name="clearLocationFactory">
-        /// An Autofac factory for creating undoable actions to clear the location.
+        ///     An Autofac factory for creating undoable actions to clear the location.
         /// </param>
         /// <param name="pinLocationFactory">
-        /// An Autofac factory for creating undoable actions to pin the location.
+        ///     An Autofac factory for creating undoable actions to pin the location.
         /// </param>
         /// <param name="removeNoteFactory">
-        /// An Autofac factory for creating undoable actions to remove a note.
+        ///     An Autofac factory for creating undoable actions to remove a note.
         /// </param>
         /// <param name="unpinLocationFactory">
-        /// An Autofac factory for creating undoable actions to unpin the location.
+        ///     An Autofac factory for creating undoable actions to unpin the location.
         /// </param>
         /// <param name="notes">
-        /// A new collection of location notes.
+        ///     A new collection of location notes.
         /// </param>
         /// <param name="id">
-        /// The ID of the location.
+        ///     The ID of the location.
         /// </param>
         public Location(
             ILocationFactory factory, IMapLocationFactory mapLocationFactory, ISectionFactory sectionFactory,
@@ -137,121 +137,36 @@ namespace OpenTracker.Models.Locations
             UpdateTotal();
         }
 
-        /// <summary>
-        /// Subscribes to the PropertyChanged event on this object.
-        /// </summary>
-        /// <param name="sender">
-        /// The sending object of the event.
-        /// </param>
-        /// <param name="e">
-        /// The arguments of the PropertyChanged event.
-        /// </param>
-        private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(Accessibility))
-            {
-                UpdateVisible();
-            }
-        }
-
-        /// <summary>
-        /// Subscribes to the PropertyChanged event on the ISection interface.
-        /// </summary>
-        /// <param name="sender">
-        /// The sending object of the event.
-        /// </param>
-        /// <param name="e">
-        /// The arguments of the PropertyChanged event.
-        /// </param>
-        private void OnSectionChanged(object? sender, PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case nameof(ISection.Available):
-                    UpdateAccessibility();
-                    UpdateAvailable();
-                    break;
-                case nameof(ISection.Accessibility):
-                    UpdateAccessibility();
-                    break;
-                case nameof(IItemSection.Accessible):
-                    UpdateAccessible();
-                    break;
-                case nameof(IItemSection.Total):
-                    UpdateTotal();
-                    break;
-            }
-        }
-
-        /// <summary>
-        /// Returns whether the location can be cleared.
-        /// </summary>
-        /// <returns>
-        /// A boolean representing whether the location can be cleared.
-        /// </returns>
         public bool CanBeCleared(bool force)
         {
             return Sections.Any(section => section.CanBeCleared(force));
         }
 
-        /// <summary>
-        /// Returns a new undoable action to add a note.
-        /// </summary>
         public IUndoable CreateAddNoteAction()
         {
             return _addNoteFactory(this);
         }
 
-        /// <summary>
-        /// Returns a new undoable action to remove a note.
-        /// </summary>
-        /// <param name="note">
-        ///     The note to be removed.
-        /// </param>
         public IUndoable CreateRemoveNoteAction(IMarking note)
         {
             return _removeNoteFactory(note, this);
         }
 
-        /// <summary>
-        /// Returns a new undoable action to clear the location.
-        /// </summary>
-        /// <param name="force">
-        /// A boolean representing whether to ignore the logic.
-        /// </param>
-        /// <returns>
-        /// A new undoable action to clear the location.
-        /// </returns>
         public IUndoable CreateClearLocationAction(bool force = false)
         {
             return _clearLocationFactory(this, force);
         }
 
-        /// <summary>
-        /// Returns a new undoable action to pin the location.
-        /// </summary>
-        /// <returns>
-        /// A new undoable action to pin the location.
-        /// </returns>
         public IUndoable CreatePinLocationAction()
         {
             return _pinLocationFactory(this);
         }
 
-        /// <summary>
-        /// Returns a new undoable action to unpin the location.
-        /// </summary>
-        /// <returns>
-        /// A new undoable action to unpin the location.
-        /// </returns>
         public IUndoable CreateUnpinLocationAction()
         {
             return _unpinLocationFactory(this);
         }
 
-        /// <summary>
-        /// Resets the location to its starting values.
-        /// </summary>
         public void Reset()
         {
             foreach (ISection section in Sections)
@@ -259,12 +174,12 @@ namespace OpenTracker.Models.Locations
                 section.Reset();
             }
         }
-
+        
         /// <summary>
-        /// Returns a new location save data instance for this location.
+        ///     Returns a new location save data instance for this location.
         /// </summary>
         /// <returns>
-        /// A new location save data instance.
+        ///     A new location save data instance.
         /// </returns>
         public LocationSaveData Save()
         {
@@ -289,7 +204,7 @@ namespace OpenTracker.Models.Locations
         }
 
         /// <summary>
-        /// Loads location save data.
+        ///     Loads location save data.
         /// </summary>
         public void Load(LocationSaveData? saveData)
         {
@@ -316,7 +231,53 @@ namespace OpenTracker.Models.Locations
         }
 
         /// <summary>
-        /// Updates the accessibility of the location.
+        ///     Subscribes to the PropertyChanged event on this object.
+        /// </summary>
+        /// <param name="sender">
+        ///     The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        ///     The arguments of the PropertyChanged event.
+        /// </param>
+        private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Accessibility))
+            {
+                UpdateVisible();
+            }
+        }
+
+        /// <summary>
+        ///     Subscribes to the PropertyChanged event on the ISection interface.
+        /// </summary>
+        /// <param name="sender">
+        ///     The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        ///     The arguments of the PropertyChanged event.
+        /// </param>
+        private void OnSectionChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(ISection.Available):
+                    UpdateAccessibility();
+                    UpdateAvailable();
+                    break;
+                case nameof(ISection.Accessibility):
+                    UpdateAccessibility();
+                    break;
+                case nameof(IItemSection.Accessible):
+                    UpdateAccessible();
+                    break;
+                case nameof(IItemSection.Total):
+                    UpdateTotal();
+                    break;
+            }
+        }
+
+        /// <summary>
+        ///     Updates the accessibility of the location.
         /// </summary>
         private void UpdateAccessibility()
         {
@@ -367,7 +328,7 @@ namespace OpenTracker.Models.Locations
         }
 
         /// <summary>
-        /// Updates the available count of the location.
+        ///     Updates the available count of the location.
         /// </summary>
         private void UpdateAvailable()
         {
@@ -385,7 +346,7 @@ namespace OpenTracker.Models.Locations
         }
 
         /// <summary>
-        /// Updates the accessible count of the location.
+        ///     Updates the accessible count of the location.
         /// </summary>
         private void UpdateAccessible()
         {
@@ -403,7 +364,7 @@ namespace OpenTracker.Models.Locations
         }
 
         /// <summary>
-        /// Updates the total count of the location.
+        ///     Updates the total count of the location.
         /// </summary>
         private void UpdateTotal()
         {
@@ -421,7 +382,7 @@ namespace OpenTracker.Models.Locations
         }
 
         /// <summary>
-        /// Updates whether the location is currently visible.
+        ///     Updates whether the location is currently visible.
         /// </summary>
         private void UpdateVisible()
         {

@@ -7,7 +7,8 @@ namespace OpenTracker.Models.Requirements.Item
     /// <summary>
     ///     This class contains the dictionary container for item requirements.
     /// </summary>
-    public class ItemRequirementDictionary : LazyDictionary<(ItemType type, int count), IRequirement>, IItemRequirementDictionary
+    public class ItemRequirementDictionary : LazyDictionary<(ItemType type, int count), IRequirement>,
+        IItemRequirementDictionary
     {
         private readonly IItemDictionary _items;
 

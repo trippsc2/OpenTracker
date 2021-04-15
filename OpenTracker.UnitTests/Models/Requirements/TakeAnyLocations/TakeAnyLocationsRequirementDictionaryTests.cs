@@ -30,6 +30,15 @@ namespace OpenTracker.UnitTests.Models.Requirements.TakeAnyLocations
         }
 
         [Fact]
+        public void Indexer_ShouldReturnDifferentInstances()
+        {
+            var requirement1 = _sut[false];
+            var requirement2 = _sut[true];
+            
+            Assert.NotEqual(requirement1, requirement2);
+        }
+
+        [Fact]
         public void AutofacTest()
         {
             using var scope = ContainerConfig.Configure().BeginLifetimeScope();

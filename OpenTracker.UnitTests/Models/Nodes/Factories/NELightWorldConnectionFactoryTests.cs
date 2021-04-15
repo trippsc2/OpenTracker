@@ -14,7 +14,7 @@ using OpenTracker.Models.Requirements.Complex;
 using OpenTracker.Models.Requirements.Item;
 using OpenTracker.Models.Requirements.Item.Crystal;
 using OpenTracker.Models.Requirements.Item.Exact;
-using OpenTracker.Models.Requirements.Item.Prizes;
+using OpenTracker.Models.Requirements.Item.Prize;
 using OpenTracker.Models.Requirements.Mode;
 using Xunit;
 

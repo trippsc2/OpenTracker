@@ -1,4 +1,6 @@
+using System;
 using System.ComponentModel;
+using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.BossPlacements;
@@ -64,6 +66,40 @@ namespace OpenTracker.UnitTests.Models.Requirements.Boss
             Assert.Equal(requirement.Accessibility, _sut.Accessibility);
         }
 
+        [Fact]
+        public void Accessibility_ShouldRaisePropertyChanged()
+        {
+            const BossType bossType = BossType.Armos;
+            _bossTypeRequirements[bossType].Accessibility.Returns(AccessibilityLevel.Normal);
+            _bossPlacement.GetCurrentBoss().Returns(bossType);
+
+            Assert.PropertyChanged(_sut, nameof(IRequirement.Accessibility),
+                () => _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                    _mode, new PropertyChangedEventArgs(nameof(IMode.BossShuffle))));
+        }
+
+        [Fact]
+        public void Accessibility_ShouldRaiseChangePropagated()
+        {
+            const BossType bossType = BossType.Armos;
+            _bossTypeRequirements[bossType].Accessibility.Returns(AccessibilityLevel.Normal);
+            _bossPlacement.GetCurrentBoss().Returns(bossType);
+
+            var eventRaised = false;
+
+            void Handler(object? sender, EventArgs e)
+            {
+                eventRaised = true;
+            }
+            
+            _sut.ChangePropagated += Handler;
+            _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                _mode, new PropertyChangedEventArgs(nameof(IMode.BossShuffle)));
+            _sut.ChangePropagated -= Handler;
+            
+            Assert.True(eventRaised);
+        }
+
         [Theory]
         [InlineData(AccessibilityLevel.None, null)]
         [InlineData(AccessibilityLevel.Normal, null)]
@@ -103,6 +139,47 @@ namespace OpenTracker.UnitTests.Models.Requirements.Boss
                 requirement, new PropertyChangedEventArgs(nameof(IRequirement.Accessibility)));
             
             Assert.Equal(requirement.Accessibility, _sut.Accessibility);
+        }
+
+        [Fact]
+        public void Met_ShouldRaisePropertyChanged()
+        {
+            const BossType bossType = BossType.Armos;
+            _bossTypeRequirements[bossType].Accessibility.Returns(AccessibilityLevel.Normal);
+            _bossPlacement.GetCurrentBoss().Returns(bossType);
+
+            Assert.PropertyChanged(_sut, nameof(IRequirement.Met),
+                () => _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                    _mode, new PropertyChangedEventArgs(nameof(IMode.BossShuffle))));
+        }
+
+        [Theory]
+        [InlineData(false, AccessibilityLevel.None)]
+        [InlineData(true, AccessibilityLevel.Inspect)]
+        [InlineData(true, AccessibilityLevel.SequenceBreak)]
+        [InlineData(true, AccessibilityLevel.Normal)]
+        public void Met_ShouldEqualExpected(bool expected, AccessibilityLevel accessibility)
+        {
+            var requirement = _bossTypeRequirements.NoBoss.Value;
+            
+            requirement.Accessibility.Returns(accessibility);
+
+            _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                _mode, new PropertyChangedEventArgs(nameof(IMode.BossShuffle)));
+            requirement.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                requirement, new PropertyChangedEventArgs(nameof(IRequirement.Accessibility)));
+            
+            Assert.Equal(expected, _sut.Met);
+        }
+
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var factory = scope.Resolve<IBossRequirement.Factory>();
+            var sut = factory(_bossPlacement);
+            
+            Assert.NotNull(sut as BossRequirement);
         }
     }
 }

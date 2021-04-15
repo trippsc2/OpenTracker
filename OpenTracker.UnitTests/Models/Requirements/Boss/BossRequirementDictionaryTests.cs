@@ -25,6 +25,15 @@ namespace OpenTracker.UnitTests.Models.Requirements.Boss
             
             Assert.Equal(requirement1, requirement2);
         }
+
+        [Fact]
+        public void Indexer_ShouldReturnDifferentInstances()
+        {
+            var requirement1 = _sut[BossPlacementID.ATBoss];
+            var requirement2 = _sut[BossPlacementID.EPBoss];
+            
+            Assert.NotEqual(requirement1, requirement2);
+        }
         
         [Fact]
         public void AutofacTest()
