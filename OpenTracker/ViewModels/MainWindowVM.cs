@@ -31,7 +31,7 @@ namespace OpenTracker.ViewModels
             {
                 var sb = new StringBuilder();
                 sb.Append("OpenTracker - ");
-                sb.Append(_saveLoadManager.CurrentFilePath ?? "Untitled");
+                sb.Append(_saveLoadManager.CurrentFilePath ?? "Unsaved");
 
                 if (_saveLoadManager.Unsaved)
                 {

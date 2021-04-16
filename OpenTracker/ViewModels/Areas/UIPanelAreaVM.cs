@@ -15,12 +15,11 @@ namespace OpenTracker.ViewModels.Areas
     public class UIPanelAreaVM : ViewModelBase, IUIPanelAreaVM
     {
         private readonly ILayoutSettings _layoutSettings;
-        public Dock ItemsDock =>
-            _layoutSettings.CurrentLayoutOrientation switch
-            {
-                Orientation.Horizontal => _layoutSettings.HorizontalItemsPlacement,
-                _ => _layoutSettings.VerticalItemsPlacement
-            };
+        public Dock ItemsDock => _layoutSettings.CurrentLayoutOrientation switch
+        {
+            Orientation.Horizontal => _layoutSettings.HorizontalItemsPlacement,
+            _ => _layoutSettings.VerticalItemsPlacement
+        };
 
         public IUIPanelVM Dropdowns { get; }
         public IUIPanelVM Items { get; }
