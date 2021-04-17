@@ -2,7 +2,7 @@
 using Avalonia;
 using Avalonia.Layout;
 using Avalonia.Threading;
-using OpenTracker.Models.Locations;
+using OpenTracker.Models.Locations.Map;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.Settings;
 using OpenTracker.Utils;

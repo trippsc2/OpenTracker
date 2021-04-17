@@ -1,3 +1,4 @@
+using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Markings;
 using OpenTracker.Models.UndoRedo.Markings;
@@ -28,6 +29,22 @@ namespace OpenTracker.UnitTests.Models.Markings
             _sut.Mark = MarkType.HCLeft;
             
             Assert.Equal(MarkType.HCLeft, _sut.Mark);
+        }
+
+        [Fact]
+        public void CreateChangeMarkingAction_ShouldReturnNewAction()
+        {
+            Assert.NotNull(_sut.CreateChangeMarkingAction(MarkType.Aga));
+        }
+
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var factory = scope.Resolve<IMarking.Factory>();
+            var sut = factory();
+            
+            Assert.NotNull(sut as Marking);
         }
     }
 }

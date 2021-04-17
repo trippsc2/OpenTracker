@@ -1,7 +1,7 @@
 ﻿namespace OpenTracker.Models.Markings
 {
     /// <summary>
-    /// This is the enum type for marking types.
+    ///     This is the enum type for marking types.
     /// </summary>
     public enum MarkType
     {

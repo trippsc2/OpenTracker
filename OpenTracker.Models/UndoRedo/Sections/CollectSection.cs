@@ -44,8 +44,8 @@ namespace OpenTracker.Models.UndoRedo.Sections
         /// </summary>
         public void ExecuteDo()
         {
-            _previousMarking = _section is IMarkableSection markableSection ?
-                (MarkType?)markableSection.Marking.Mark : null;
+            _previousMarking = _section is IMarkableSection markableSection
+                ? markableSection.Marking.Mark : null;
 
             _previousUserManipulated = _section.UserManipulated;
             _section.UserManipulated = true;

@@ -7,6 +7,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
 using OpenTracker.Models.Locations;
+using OpenTracker.Models.Locations.Map;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.Sections;
 using OpenTracker.Models.Settings;

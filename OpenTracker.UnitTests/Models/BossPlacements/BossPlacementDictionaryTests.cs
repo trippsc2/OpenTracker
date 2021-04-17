@@ -17,6 +17,24 @@ namespace OpenTracker.UnitTests.Models.BossPlacements
         }
 
         [Fact]
+        public void Indexer_ShouldReturnTheSameInstance()
+        {
+            var bossPlacement1 = _sut[BossPlacementID.ATBoss];
+            var bossPlacement2 = _sut[BossPlacementID.ATBoss];
+            
+            Assert.Equal(bossPlacement1, bossPlacement2);
+        }
+
+        [Fact]
+        public void Indexer_ShouldReturnTheDifferentInstances()
+        {
+            var bossPlacement1 = _sut[BossPlacementID.ATBoss];
+            var bossPlacement2 = _sut[BossPlacementID.EPBoss];
+            
+            Assert.NotEqual(bossPlacement1, bossPlacement2);
+        }
+
+        [Fact]
         public void Reset_ShouldCallResetOnBossPlacements()
         {
             var bossPlacement = _sut[BossPlacementID.ATBoss];

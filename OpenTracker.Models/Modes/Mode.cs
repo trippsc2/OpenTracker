@@ -7,7 +7,7 @@ using ReactiveUI;
 namespace OpenTracker.Models.Modes
 {
     /// <summary>
-    /// This class contains game mode settings data.
+    ///     This class contains game mode settings data.
     /// </summary>
     public class Mode : ReactiveObject, IMode
     {
@@ -125,49 +125,49 @@ namespace OpenTracker.Models.Modes
         }
 
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="changeItemPlacementFactory">
-        /// An Autofac factory for creating undoable actions to change item placement setting.
+        ///     An Autofac factory for creating undoable actions to change item placement setting.
         /// </param>
         /// <param name="changeMapShuffleFactory">
-        /// An Autofac factory for creating undoable actions to change map shuffle setting.
+        ///     An Autofac factory for creating undoable actions to change map shuffle setting.
         /// </param>
         /// <param name="changeCompassShuffleFactory">
-        /// An Autofac factory for creating undoable actions to change compass shuffle setting.
+        ///     An Autofac factory for creating undoable actions to change compass shuffle setting.
         /// </param>
         /// <param name="changeSmallKeyShuffleFactory">
-        /// An Autofac factory for creating undoable actions to change small key shuffle setting.
+        ///     An Autofac factory for creating undoable actions to change small key shuffle setting.
         /// </param>
         /// <param name="changeBigKeyShuffleFactory">
-        /// An Autofac factory for creating undoable actions to change big key shuffle setting.
+        ///     An Autofac factory for creating undoable actions to change big key shuffle setting.
         /// </param>
         /// <param name="changeWorldStateFactory">
-        /// An Autofac factory for creating undoable actions to change world state setting.
+        ///     An Autofac factory for creating undoable actions to change world state setting.
         /// </param>
         /// <param name="changeEntranceShuffleFactory">
-        /// An Autofac factory for creating undoable actions to change entrance shuffle setting.
+        ///     An Autofac factory for creating undoable actions to change entrance shuffle setting.
         /// </param>
         /// <param name="changeBossShuffleFactory">
-        /// An Autofac factory for creating undoable actions to change boss shuffle setting.
+        ///     An Autofac factory for creating undoable actions to change boss shuffle setting.
         /// </param>
         /// <param name="changeEnemyShuffleFactory">
-        /// An Autofac factory for creating undoable actions to change enemy shuffle setting.
+        ///     An Autofac factory for creating undoable actions to change enemy shuffle setting.
         /// </param>
         /// <param name="changeGuaranteedBossItemsFactory">
-        /// An Autofac factory for creating undoable actions to change guaranteed boss items setting.
+        ///     An Autofac factory for creating undoable actions to change guaranteed boss items setting.
         /// </param>
         /// <param name="changeGenericKeysFactory">
-        /// An Autofac factory for creating undoable actions to change generic keys setting.
+        ///     An Autofac factory for creating undoable actions to change generic keys setting.
         /// </param>
         /// <param name="changeTakeAnyLocationsFactory">
-        /// An Autofac factory for creating undoable actions to change take any locations setting.
+        ///     An Autofac factory for creating undoable actions to change take any locations setting.
         /// </param>
         /// <param name="changeKeyDropShuffleFactory">
-        /// An Autofac factory for creating undoable actions to change key drop shuffle setting.
+        ///     An Autofac factory for creating undoable actions to change key drop shuffle setting.
         /// </param>
         /// <param name="changeShopShuffleFactory">
-        /// An Autofac factory for creating undoable actions to change shop shuffle setting.
+        ///     An Autofac factory for creating undoable actions to change shop shuffle setting.
         /// </param>
         public Mode(
             IChangeItemPlacement.Factory changeItemPlacementFactory, IChangeMapShuffle.Factory changeMapShuffleFactory,
@@ -200,229 +200,81 @@ namespace OpenTracker.Models.Modes
             PropertyChanged += OnPropertyChanged;
         }
 
-        /// <summary>
-        /// Subscribes to the PropertyChanged event on this object.
-        /// </summary>
-        /// <param name="sender">
-        /// The sending object of the event.
-        /// </param>
-        /// <param name="e">
-        /// The arguments of the PropertyChanged event.
-        /// </param>
-        private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case nameof(WorldState) when WorldState == WorldState.Inverted:
-                    ItemPlacement = ItemPlacement.Advanced;
-                    break;
-                case nameof(GenericKeys) when GenericKeys:
-                    SmallKeyShuffle = true;
-                    break;
-            }
-        }
-
-        /// <summary>
-        /// Returns a new undoable action changing the item placement setting.
-        /// </summary>
-        /// <param name="newValue">
-        /// The new item placement value.
-        /// </param>
-        /// <returns>
-        /// The new undoable action.
-        /// </returns>
         public IUndoable CreateChangeItemPlacementAction(ItemPlacement newValue)
         {
             return _changeItemPlacementFactory(newValue);
         }
 
-        /// <summary>
-        /// Returns a new undoable action changing the map shuffle setting.
-        /// </summary>
-        /// <param name="newValue">
-        /// The new map shuffle value.
-        /// </param>
-        /// <returns>
-        /// The new undoable action.
-        /// </returns>
         public IUndoable CreateChangeMapShuffleAction(bool newValue)
         {
             return _changeMapShuffleFactory(newValue);
         }
 
-        /// <summary>
-        /// Returns a new undoable action changing the compass shuffle setting.
-        /// </summary>
-        /// <param name="newValue">
-        /// The new compass shuffle value.
-        /// </param>
-        /// <returns>
-        /// The new undoable action.
-        /// </returns>
         public IUndoable CreateChangeCompassShuffleAction(bool newValue)
         {
             return _changeCompassShuffleFactory(newValue);
         }
 
-        /// <summary>
-        /// Returns a new undoable action changing the small key shuffle setting.
-        /// </summary>
-        /// <param name="newValue">
-        /// The new small key shuffle value.
-        /// </param>
-        /// <returns>
-        /// The new undoable action.
-        /// </returns>
         public IUndoable CreateChangeSmallKeyShuffleAction(bool newValue)
         {
             return _changeSmallKeyShuffleFactory(newValue);
         }
 
-        /// <summary>
-        /// Returns a new undoable action changing the big key shuffle setting.
-        /// </summary>
-        /// <param name="newValue">
-        /// The new big key shuffle value.
-        /// </param>
-        /// <returns>
-        /// The new undoable action.
-        /// </returns>
         public IUndoable CreateChangeBigKeyShuffleAction(bool newValue)
         {
             return _changeBigKeyShuffleFactory(newValue);
         }
 
-        /// <summary>
-        /// Returns a new undoable action changing the world state setting.
-        /// </summary>
-        /// <param name="newValue">
-        /// The new world state value.
-        /// </param>
-        /// <returns>
-        /// The new undoable action.
-        /// </returns>
         public IUndoable CreateChangeWorldStateAction(WorldState newValue)
         {
             return _changeWorldStateFactory(newValue);
         }
 
-        /// <summary>
-        /// Returns a new undoable action changing the entrance shuffle setting.
-        /// </summary>
-        /// <param name="newValue">
-        /// The new entrance shuffle value.
-        /// </param>
-        /// <returns>
-        /// The new undoable action.
-        /// </returns>
         public IUndoable CreateChangeEntranceShuffleAction(EntranceShuffle newValue)
         {
             return _changeEntranceShuffleFactory(newValue);
         }
 
-        /// <summary>
-        /// Returns a new undoable action changing the boss shuffle setting.
-        /// </summary>
-        /// <param name="newValue">
-        /// The new boss shuffle value.
-        /// </param>
-        /// <returns>
-        /// The new undoable action.
-        /// </returns>
         public IUndoable CreateChangeBossShuffleAction(bool newValue)
         {
             return _changeBossShuffleFactory(newValue);
         }
 
-        /// <summary>
-        /// Returns a new undoable action changing the enemy shuffle setting.
-        /// </summary>
-        /// <param name="newValue">
-        /// The new enemy shuffle value.
-        /// </param>
-        /// <returns>
-        /// The new undoable action.
-        /// </returns>
         public IUndoable CreateChangeEnemyShuffleAction(bool newValue)
         {
             return _changeEnemyShuffleFactory(newValue);
         }
 
-        /// <summary>
-        /// Returns a new undoable action changing the guaranteed boss items setting.
-        /// </summary>
-        /// <param name="newValue">
-        /// The new guaranteed boss items value.
-        /// </param>
-        /// <returns>
-        /// The new undoable action.
-        /// </returns>
         public IUndoable CreateChangeGuaranteedBossItemsAction(bool newValue)
         {
             return _changeGuaranteedBossItemsFactory(newValue);
         }
 
-        /// <summary>
-        /// Returns a new undoable action changing the generic keys setting.
-        /// </summary>
-        /// <param name="newValue">
-        /// The new generic keys value.
-        /// </param>
-        /// <returns>
-        /// The new undoable action.
-        /// </returns>
         public IUndoable CreateChangeGenericKeysAction(bool newValue)
         {
             return _changeGenericKeysFactory(newValue);
         }
 
-        /// <summary>
-        /// Returns a new undoable action changing the take any locations setting.
-        /// </summary>
-        /// <param name="newValue">
-        /// The new take any locations value.
-        /// </param>
-        /// <returns>
-        /// The new undoable action.
-        /// </returns>
         public IUndoable CreateChangeTakeAnyLocationsAction(bool newValue)
         {
             return _changeTakeAnyLocationsFactory(newValue);
         }
 
-        /// <summary>
-        /// Returns a new undoable action changing the key drop shuffle setting.
-        /// </summary>
-        /// <param name="newValue">
-        /// The new key drop shuffle value.
-        /// </param>
-        /// <returns>
-        /// The new undoable action.
-        /// </returns>
         public IUndoable CreateChangeKeyDropShuffleAction(bool newValue)
         {
             return _changeKeyDropShuffleFactory(newValue);
         }
 
-        /// <summary>
-        /// Returns a new undoable action changing the shop shuffle setting.
-        /// </summary>
-        /// <param name="newValue">
-        /// The new shop shuffle value.
-        /// </param>
-        /// <returns>
-        /// The new undoable action.
-        /// </returns>
         public IUndoable CreateChangeShopShuffleAction(bool newValue)
         {
             return _changeShopShuffleFactory(newValue);
         }
         
         /// <summary>
-        /// Returns save data for this mode instance.
+        ///     Returns save data for this mode instance.
         /// </summary>
         /// <returns>
-        /// Save data for this mode instance.
+        ///     Save data for this mode instance.
         /// </returns>
         public ModeSaveData Save()
         {
@@ -446,10 +298,10 @@ namespace OpenTracker.Models.Modes
         }
 
         /// <summary>
-        /// Loads the save data to this mode instance.
+        ///     Loads the save data to this mode instance.
         /// </summary>
         /// <param name="saveData">
-        /// The save data to be loaded.
+        ///     The save data to be loaded.
         /// </param>
         public void Load(ModeSaveData? saveData)
         {
@@ -472,6 +324,28 @@ namespace OpenTracker.Models.Modes
             TakeAnyLocations = saveData.TakeAnyLocations;
             KeyDropShuffle = saveData.KeyDropShuffle;
             ShopShuffle = saveData.ShopShuffle;
+        }
+
+        /// <summary>
+        ///     Subscribes to the PropertyChanged event on this object.
+        /// </summary>
+        /// <param name="sender">
+        ///     The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        ///     The arguments of the PropertyChanged event.
+        /// </param>
+        private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(WorldState) when WorldState == WorldState.Inverted:
+                    ItemPlacement = ItemPlacement.Advanced;
+                    break;
+                case nameof(GenericKeys) when GenericKeys:
+                    SmallKeyShuffle = true;
+                    break;
+            }
         }
     }
 }

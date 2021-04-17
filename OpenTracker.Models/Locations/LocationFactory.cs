@@ -3,20 +3,38 @@
 namespace OpenTracker.Models.Locations
 {
     /// <summary>
-    /// This class contains creation logic for location data.
+    ///     This class contains creation logic for location data.
     /// </summary>
     public class LocationFactory : ILocationFactory
     {
+        private readonly ILocation.Factory _factory;
+
         /// <summary>
-        /// Returns the name of a specified location.
+        ///     Constructor
+        /// </summary>
+        /// <param name="factory">
+        ///     An Autofac factory for creating new locations.
+        /// </param>
+        public LocationFactory(ILocation.Factory factory)
+        {
+            _factory = factory;
+        }
+
+        public ILocation GetLocation(LocationID id)
+        {
+            return _factory(id, GetLocationName(id));
+        }
+
+        /// <summary>
+        ///     Returns the name of a specified location.
         /// </summary>
         /// <param name="id">
-        /// The identity of the location.
+        ///     The identity of the location.
         /// </param>
         /// <returns>
-        /// A string representing the name of the location.
+        ///     A string representing the name of the location.
         /// </returns>
-        public string GetLocationName(LocationID id)
+        private static string GetLocationName(LocationID id)
         {
             return id switch
             {

@@ -9,8 +9,7 @@ namespace OpenTracker.Models.Dropdowns
     /// <summary>
     ///     This class contains the dictionary container of dropdowns.
     /// </summary>
-    public class DropdownDictionary : LazyDictionary<DropdownID, IDropdown>,
-        IDropdownDictionary
+    public class DropdownDictionary : LazyDictionary<DropdownID, IDropdown>, IDropdownDictionary
     {
         private readonly Lazy<IDropdownFactory> _factory;
 

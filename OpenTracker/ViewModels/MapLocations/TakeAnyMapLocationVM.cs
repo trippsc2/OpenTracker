@@ -3,7 +3,7 @@ using System.Reactive;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
-using OpenTracker.Models.Locations;
+using OpenTracker.Models.Locations.Map;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
 using ReactiveUI;

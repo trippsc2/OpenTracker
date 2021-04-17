@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using OpenTracker.Models.Accessibility;
+using OpenTracker.Models.Locations.Map;
 using OpenTracker.Models.Markings;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.Sections;
@@ -40,18 +41,18 @@ namespace OpenTracker.Models.Locations
             private set => this.RaiseAndSetIfChanged(ref _accessibility, value);
         }
 
-        private int _available;
-        public int Available
-        {
-            get => _available;
-            private set => this.RaiseAndSetIfChanged(ref _available, value);
-        }
-
         private int _accessible;
         public int Accessible
         {
             get => _accessible;
             private set => this.RaiseAndSetIfChanged(ref _accessible, value);
+        }
+
+        private int _available;
+        public int Available
+        {
+            get => _available;
+            private set => this.RaiseAndSetIfChanged(ref _available, value);
         }
 
         private int _total;
@@ -71,9 +72,6 @@ namespace OpenTracker.Models.Locations
         /// <summary>
         ///     Constructor
         /// </summary>
-        /// <param name="factory">
-        ///     The location factory.
-        /// </param>
         /// <param name="mapLocationFactory">
         ///     The map location factory.
         /// </param>
@@ -104,12 +102,15 @@ namespace OpenTracker.Models.Locations
         /// <param name="id">
         ///     The ID of the location.
         /// </param>
+        /// <param name="name">
+        ///     A string representing the name of the location.
+        /// </param>
         public Location(
-            ILocationFactory factory, IMapLocationFactory mapLocationFactory, ISectionFactory sectionFactory,
+            IMapLocationFactory mapLocationFactory, ISectionFactory sectionFactory,
             IMarking.Factory markingFactory, IClearLocation.Factory clearLocationFactory,
             IPinLocation.Factory pinLocationFactory, IUnpinLocation.Factory unpinLocationFactory,
             IAddNote.Factory addNoteFactory, IRemoveNote.Factory removeNoteFactory, ILocationNoteCollection notes,
-            LocationID id)
+            LocationID id, string name)
         {
             _markingFactory = markingFactory;
             _clearLocationFactory = clearLocationFactory;
@@ -119,7 +120,7 @@ namespace OpenTracker.Models.Locations
             _removeNoteFactory = removeNoteFactory;
 
             ID = id;
-            Name = factory.GetLocationName(ID);
+            Name = name;
             MapLocations = mapLocationFactory.GetMapLocations(this);
             Sections = sectionFactory.GetSections(ID);
             Notes = notes;
@@ -135,6 +136,7 @@ namespace OpenTracker.Models.Locations
             UpdateAccessible();
             UpdateAvailable();
             UpdateTotal();
+            UpdateVisible();
         }
 
         public bool CanBeCleared(bool force)
@@ -183,18 +185,9 @@ namespace OpenTracker.Models.Locations
         /// </returns>
         public LocationSaveData Save()
         {
-            IList<SectionSaveData> sections = new List<SectionSaveData>();
-            IList<MarkType?> markings = new List<MarkType?>();
-
-            foreach (var section in Sections)
-            {
-                sections.Add(section.Save());
-            }
-
-            foreach (var marking in Notes)
-            {
-                markings.Add(marking.Mark);
-            }
+            IList<SectionSaveData> sections = Sections.Select(section => section.Save()).ToList();
+            IList<MarkType?> markings = Notes.Select(marking => marking.Mark).Select(
+                mark => (MarkType?) mark).ToList();
 
             return new LocationSaveData()
             {
@@ -208,19 +201,49 @@ namespace OpenTracker.Models.Locations
         /// </summary>
         public void Load(LocationSaveData? saveData)
         {
-            if (saveData == null)
+            if (saveData is null)
             {
                 return;
             }
 
             Notes.Clear();
+            LoadSections(saveData.Sections);
+            LoadMarkings(saveData.Markings);
+        }
 
-            for (var i = 0; i < saveData.Sections!.Count; i++)
+        /// <summary>
+        ///     Loads the section save data.
+        /// </summary>
+        /// <param name="sectionSaveData">
+        ///     The section save data.
+        /// </param>
+        private void LoadSections(IList<SectionSaveData>? sectionSaveData)
+        {
+            if (sectionSaveData is null)
             {
-                Sections[i].Load(saveData.Sections[i]);
+                return;
+            }
+            
+            for (var i = 0; i < sectionSaveData.Count; i++)
+            {
+                Sections[i].Load(sectionSaveData[i]);
+            }
+        }
+
+        /// <summary>
+        ///     Loads the marking save data.
+        /// </summary>
+        /// <param name="noteSaveData">
+        ///     The note save data.
+        /// </param>
+        private void LoadMarkings(IList<MarkType?>? noteSaveData)
+        {
+            if (noteSaveData is null)
+            {
+                return;
             }
 
-            foreach (var marking in saveData.Markings!)
+            foreach (var marking in noteSaveData)
             {
                 var newMarking = _markingFactory();
 
@@ -260,12 +283,12 @@ namespace OpenTracker.Models.Locations
         {
             switch (e.PropertyName)
             {
+                case nameof(ISection.Accessibility):
+                    UpdateAccessibility();
+                    break;
                 case nameof(ISection.Available):
                     UpdateAccessibility();
                     UpdateAvailable();
-                    break;
-                case nameof(ISection.Accessibility):
-                    UpdateAccessibility();
                     break;
                 case nameof(IItemSection.Accessible):
                     UpdateAccessible();
@@ -286,7 +309,7 @@ namespace OpenTracker.Models.Locations
 
             var available = false;
 
-            foreach (ISection section in Sections)
+            foreach (var section in Sections)
             {
                 if (!section.IsAvailable() || section.Requirement is not null && !section.Requirement.Met)
                 {
@@ -318,31 +341,17 @@ namespace OpenTracker.Models.Locations
                 AccessibilityLevel.None => AccessibilityLevel.None,
                 AccessibilityLevel.Inspect => AccessibilityLevel.Inspect,
                 AccessibilityLevel.Partial => AccessibilityLevel.Partial,
-                AccessibilityLevel.SequenceBreak when leastAccessible <= AccessibilityLevel.Partial => AccessibilityLevel.Partial,
+                AccessibilityLevel.SequenceBreak when leastAccessible <= AccessibilityLevel.Partial =>
+                    AccessibilityLevel.Partial,
                 AccessibilityLevel.SequenceBreak => AccessibilityLevel.SequenceBreak,
-                AccessibilityLevel.Normal when leastAccessible <= AccessibilityLevel.Partial => AccessibilityLevel.Partial,
-                AccessibilityLevel.Normal when leastAccessible == AccessibilityLevel.SequenceBreak => AccessibilityLevel.SequenceBreak,
+                AccessibilityLevel.Normal when leastAccessible <= AccessibilityLevel.Partial =>
+                    AccessibilityLevel.Partial,
+                AccessibilityLevel.Normal when leastAccessible == AccessibilityLevel.SequenceBreak =>
+                    AccessibilityLevel.SequenceBreak,
                 AccessibilityLevel.Normal => AccessibilityLevel.Normal,
-                _ => throw new Exception(string.Format(CultureInfo.InvariantCulture, "Unknown availability state for location {0}", ID.ToString())),
+                _ => throw new Exception(string.Format(
+                    CultureInfo.InvariantCulture, "Unknown availability state for location {0}", ID.ToString())),
             };
-        }
-
-        /// <summary>
-        ///     Updates the available count of the location.
-        /// </summary>
-        private void UpdateAvailable()
-        {
-            var available = 0;
-
-            foreach (ISection section in Sections)
-            {
-                if (section is IItemSection itemSection)
-                {
-                    available += itemSection.Available;
-                }
-            }
-
-            Available = available;
         }
 
         /// <summary>
@@ -361,6 +370,24 @@ namespace OpenTracker.Models.Locations
             }
 
             Accessible = accessible;
+        }
+
+        /// <summary>
+        ///     Updates the available count of the location.
+        /// </summary>
+        private void UpdateAvailable()
+        {
+            var available = 0;
+
+            foreach (ISection section in Sections)
+            {
+                if (section is IItemSection itemSection)
+                {
+                    available += itemSection.Available;
+                }
+            }
+
+            Available = available;
         }
 
         /// <summary>

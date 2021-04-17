@@ -1,6 +1,6 @@
 using System.Reactive;
 using Avalonia.Input;
-using OpenTracker.Models.Locations;
+using OpenTracker.Models.Locations.Map;
 using ReactiveUI;
 
 namespace OpenTracker.ViewModels.MapLocations

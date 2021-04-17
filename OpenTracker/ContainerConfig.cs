@@ -19,6 +19,7 @@ using OpenTracker.Models.Dungeons.Nodes.Factories;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Items.Factories;
 using OpenTracker.Models.Locations;
+using OpenTracker.Models.Locations.Map;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.Nodes;
 using OpenTracker.Models.Nodes.Factories;

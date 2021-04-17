@@ -1,7 +1,7 @@
 ﻿using OpenTracker.Models.Requirements;
 using ReactiveUI;
 
-namespace OpenTracker.Models.Locations
+namespace OpenTracker.Models.Locations.Map
 {
     /// <summary>
     /// This interface contains map location data.
@@ -10,13 +10,12 @@ namespace OpenTracker.Models.Locations
     {
         ILocation Location { get; }
         MapID Map { get; }
-        IRequirement Requirement { get; }
         double X { get; }
         double Y { get; }
         bool RequirementMet { get; }
         bool Visible { get; }
 
         delegate IMapLocation Factory(
-            MapID map, double x, double y, ILocation location, IRequirement requirement);
+            MapID map, double x, double y, ILocation location, IRequirement? requirement = null);
     }
 }

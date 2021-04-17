@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using OpenTracker.Models.Locations;
+using OpenTracker.Models.Locations.Map;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Models.UndoRedo.Connections;

@@ -17,8 +17,7 @@ namespace OpenTracker.ViewModels.Dungeons
         public Orientation Orientation => _layoutSettings.CurrentLayoutOrientation;
 
         public IOrientedDungeonPanelVMBase Items =>
-            Orientation == Orientation.Horizontal ?
-                (IOrientedDungeonPanelVMBase) _horizontalSmallItemPanel : _verticalSmallItemPanel;
+            Orientation == Orientation.Horizontal ? _horizontalSmallItemPanel : _verticalSmallItemPanel;
 
         /// <summary>
         /// Constructor

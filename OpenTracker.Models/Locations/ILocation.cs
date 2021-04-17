@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using OpenTracker.Models.Accessibility;
+using OpenTracker.Models.Locations.Map;
 using OpenTracker.Models.Markings;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.Sections;
@@ -63,7 +64,19 @@ namespace OpenTracker.Models.Locations
         /// </summary>
         bool Visible { get; }
 
-        delegate ILocation Factory(LocationID id);
+        /// <summary>
+        ///     A factory for creating new locations.
+        /// </summary>
+        /// <param name="id">
+        ///     The ID of the location.
+        /// </param>
+        /// <param name="name">
+        ///     A string representing the name of the location.
+        /// </param>
+        /// <returns>
+        ///     A new location.
+        /// </returns>
+        delegate ILocation Factory(LocationID id, string name);
 
         /// <summary>
         ///     Returns whether the location can be cleared.

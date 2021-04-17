@@ -62,7 +62,7 @@ namespace OpenTracker.Models.AutoTracking.Values.Single
             
             var newValue = _address.Value.Value + _adjustment;
 
-            return newValue > _maximum ? (int?) null : newValue;
+            return newValue > _maximum ? null : newValue;
         }
     }
 }

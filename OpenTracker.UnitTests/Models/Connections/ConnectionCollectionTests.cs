@@ -3,6 +3,7 @@ using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Connections;
 using OpenTracker.Models.Locations;
+using OpenTracker.Models.Locations.Map;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.UndoRedo.Connections;
 using Xunit;

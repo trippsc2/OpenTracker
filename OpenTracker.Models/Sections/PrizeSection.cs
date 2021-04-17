@@ -24,7 +24,7 @@ namespace OpenTracker.Models.Sections
 
         public IPrizePlacement PrizePlacement { get; }
 
-        public delegate PrizeSection Factory(
+        public new delegate PrizeSection Factory(
             string name, IBossPlacement bossPlacement, IPrizePlacement prizePlacement,
             IBossAccessibilityProvider accessibilityProvider, IAutoTrackValue? autoTrackValue, IRequirement? requirement,
             bool alwaysClearable = false);

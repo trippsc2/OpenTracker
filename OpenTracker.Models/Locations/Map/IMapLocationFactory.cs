@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace OpenTracker.Models.Locations
+namespace OpenTracker.Models.Locations.Map
 {
     /// <summary>
     /// This interface contains the creation logic for map location data.

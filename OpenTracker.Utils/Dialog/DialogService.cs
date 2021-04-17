@@ -126,7 +126,7 @@ namespace OpenTracker.Utils.Dialog
         {
             var mainWindow = _mainWindowProvider.GetMainWindow();
 
-            TResult result = default;
+            TResult result = default!;
 
             if (locking)
             {

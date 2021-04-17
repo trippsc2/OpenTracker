@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Requirements.Aggregate;
 using OpenTracker.Models.Requirements.Alternative;
 using OpenTracker.Models.Requirements.Mode;
 using OpenTracker.Models.Requirements.ShopShuffle;
-using OpenTracker.Models.Requirements.Static;
 using OpenTracker.Models.Requirements.TakeAnyLocations;
 
-namespace OpenTracker.Models.Locations
+namespace OpenTracker.Models.Locations.Map
 {
     /// <summary>
     /// This class contains the creation logic for map location data.
@@ -21,7 +19,6 @@ namespace OpenTracker.Models.Locations
         private readonly IAggregateRequirementDictionary _aggregateRequirements;
         private readonly IEntranceShuffleRequirementDictionary _entranceShuffleRequirements;
         private readonly IShopShuffleRequirementDictionary _shopShuffleRequirements;
-        private readonly IStaticRequirementDictionary _staticRequirements;
         private readonly ITakeAnyLocationsRequirementDictionary _takeAnyLocationsRequirements;
         private readonly IWorldStateRequirementDictionary _worldStateRequirements;
         
@@ -42,9 +39,6 @@ namespace OpenTracker.Models.Locations
         /// <param name="shopShuffleRequirements">
         ///     The shop shuffle requirement dictionary.
         /// </param>
-        /// <param name="staticRequirements">
-        ///     The static requirement dictionary.
-        /// </param>
         /// <param name="takeAnyLocationsRequirements">
         ///     The take any locations requirement dictionary.
         /// </param>
@@ -58,7 +52,7 @@ namespace OpenTracker.Models.Locations
             IAlternativeRequirementDictionary alternativeRequirements,
             IAggregateRequirementDictionary aggregateRequirements,
             IEntranceShuffleRequirementDictionary entranceShuffleRequirements,
-            IShopShuffleRequirementDictionary shopShuffleRequirements, IStaticRequirementDictionary staticRequirements,
+            IShopShuffleRequirementDictionary shopShuffleRequirements,
             ITakeAnyLocationsRequirementDictionary takeAnyLocationsRequirements,
             IWorldStateRequirementDictionary worldStateRequirements, IMapLocation.Factory factory)
         {
@@ -66,7 +60,6 @@ namespace OpenTracker.Models.Locations
             _aggregateRequirements = aggregateRequirements;
             _entranceShuffleRequirements = entranceShuffleRequirements;
             _shopShuffleRequirements = shopShuffleRequirements;
-            _staticRequirements = staticRequirements;
             _takeAnyLocationsRequirements = takeAnyLocationsRequirements;
             _worldStateRequirements = worldStateRequirements;
 
@@ -74,13 +67,13 @@ namespace OpenTracker.Models.Locations
         }
 
         /// <summary>
-        /// Returns the list of map locations for the specified location.
+        ///     Returns the list of map locations for the specified location.
         /// </summary>
         /// <param name="location">
-        /// The location data.
+        ///     The location data.
         /// </param>
         /// <returns>
-        /// The list of map locations.
+        ///     The list of map locations.
         /// </returns>
         public IList<IMapLocation> GetMapLocations(ILocation location)
         {
@@ -103,8 +96,7 @@ namespace OpenTracker.Models.Locations
                 },
                 LocationID.Pedestal => new List<IMapLocation>
                 {
-                    _factory(MapID.LightWorld, 83, 101, location,
-                        _staticRequirements[AccessibilityLevel.Normal])
+                    _factory(MapID.LightWorld, 83, 101, location)
                 },
                 LocationID.LumberjackCave => new List<IMapLocation>
                 {
@@ -135,8 +127,7 @@ namespace OpenTracker.Models.Locations
                 },
                 LocationID.BottleVendor => new List<IMapLocation>
                 {
-                    _factory(MapID.LightWorld, 190, 933, location,
-                        _staticRequirements[AccessibilityLevel.Normal])
+                    _factory(MapID.LightWorld, 190, 933, location)
                 },
                 LocationID.ChickenHouse => new List<IMapLocation>
                 {
@@ -149,8 +140,7 @@ namespace OpenTracker.Models.Locations
                 },
                 LocationID.Tavern => new List<IMapLocation>
                 {
-                    _factory(MapID.LightWorld, 320, 1145, location,
-                        _staticRequirements[AccessibilityLevel.Normal])
+                    _factory(MapID.LightWorld, 320, 1145, location)
                 },
                 LocationID.SickKid => new List<IMapLocation>
                 {
@@ -172,8 +162,7 @@ namespace OpenTracker.Models.Locations
                 },
                 LocationID.RaceGame => new List<IMapLocation>
                 {
-                    _factory(MapID.LightWorld, 111, 1354, location,
-                        _staticRequirements[AccessibilityLevel.Normal])
+                    _factory(MapID.LightWorld, 111, 1354, location)
                 },
                 LocationID.Library => new List<IMapLocation>
                 {
@@ -186,8 +175,7 @@ namespace OpenTracker.Models.Locations
                 },
                 LocationID.MushroomSpot => new List<IMapLocation>
                 {
-                    _factory(MapID.LightWorld, 244, 170, location,
-                        _staticRequirements[AccessibilityLevel.Normal])
+                    _factory(MapID.LightWorld, 244, 170, location)
                 },
                 LocationID.ForestHideout => new List<IMapLocation>
                 {
@@ -254,8 +242,7 @@ namespace OpenTracker.Models.Locations
                 },
                 LocationID.GroveDiggingSpot => new List<IMapLocation>
                 {
-                    _factory(MapID.LightWorld, 600, 1350, location,
-                        _staticRequirements[AccessibilityLevel.Normal])
+                    _factory(MapID.LightWorld, 600, 1350, location)
                 },
                 LocationID.Dam => new List<IMapLocation>
                 {
@@ -292,13 +279,11 @@ namespace OpenTracker.Models.Locations
                 },
                 LocationID.Hobo => new List<IMapLocation>
                 {
-                    _factory(MapID.LightWorld, 1390, 1390, location,
-                        _staticRequirements[AccessibilityLevel.Normal])
+                    _factory(MapID.LightWorld, 1390, 1390, location)
                 },
                 LocationID.PyramidLedge => new List<IMapLocation>
                 {
-                    _factory(MapID.DarkWorld, 1164, 922, location,
-                        _staticRequirements[AccessibilityLevel.Normal])
+                    _factory(MapID.DarkWorld, 1164, 922, location)
                 },
                 LocationID.FatFairy => new List<IMapLocation>
                 {
@@ -311,8 +296,7 @@ namespace OpenTracker.Models.Locations
                 },
                 LocationID.HauntedGrove => new List<IMapLocation>
                 {
-                    _factory(MapID.DarkWorld, 620, 1371, location,
-                        _staticRequirements[AccessibilityLevel.Normal])
+                    _factory(MapID.DarkWorld, 620, 1371, location)
                 },
                 LocationID.HypeCave => new List<IMapLocation>
                 {
@@ -325,8 +309,7 @@ namespace OpenTracker.Models.Locations
                 },
                 LocationID.BombosTablet => new List<IMapLocation>
                 {
-                    _factory(MapID.LightWorld, 440, 1845, location,
-                        _staticRequirements[AccessibilityLevel.Normal]),
+                    _factory(MapID.LightWorld, 440, 1845, location),
                     _factory(MapID.DarkWorld, 440, 1845, location,
                         _worldStateRequirements[WorldState.StandardOpen])
                 },
@@ -351,8 +334,7 @@ namespace OpenTracker.Models.Locations
                 },
                 LocationID.DiggingGame => new List<IMapLocation>
                 {
-                    _factory(MapID.DarkWorld, 100, 1385, location,
-                        _staticRequirements[AccessibilityLevel.Normal])
+                    _factory(MapID.DarkWorld, 100, 1385, location)
                 },
                 LocationID.WaterfallFairy => new List<IMapLocation>
                 {
@@ -365,13 +347,11 @@ namespace OpenTracker.Models.Locations
                 },
                 LocationID.ZoraArea => new List<IMapLocation>
                 {
-                    _factory(MapID.LightWorld, 1920, 273, location,
-                        _staticRequirements[AccessibilityLevel.Normal])
+                    _factory(MapID.LightWorld, 1920, 273, location)
                 },
                 LocationID.Catfish => new List<IMapLocation>
                 {
-                    _factory(MapID.DarkWorld, 1813, 347, location,
-                        _staticRequirements[AccessibilityLevel.Normal])
+                    _factory(MapID.DarkWorld, 1813, 347, location)
                 },
                 LocationID.GraveyardLedge => new List<IMapLocation>
                 {
@@ -394,8 +374,7 @@ namespace OpenTracker.Models.Locations
                 },
                 LocationID.DesertLedge => new List<IMapLocation>
                 {
-                    _factory(MapID.LightWorld, 40, 1835, location,
-                        _staticRequirements[AccessibilityLevel.Normal])
+                    _factory(MapID.LightWorld, 40, 1835, location)
                 },
                 LocationID.CShapedHouse => new List<IMapLocation>
                 {
@@ -441,10 +420,8 @@ namespace OpenTracker.Models.Locations
                 },
                 LocationID.PurpleChest => new List<IMapLocation>
                 {
-                    _factory(MapID.LightWorld, 680, 1805, location,
-                        _staticRequirements[AccessibilityLevel.Normal]),
-                    _factory(MapID.DarkWorld, 601, 1050, location,
-                        _staticRequirements[AccessibilityLevel.Normal])
+                    _factory(MapID.LightWorld, 680, 1805, location),
+                    _factory(MapID.DarkWorld, 601, 1050, location)
                 },
                 LocationID.HammerPegs => new List<IMapLocation>
                 {
@@ -472,8 +449,7 @@ namespace OpenTracker.Models.Locations
                 },
                 LocationID.LakeHyliaIsland => new List<IMapLocation>
                 {
-                    _factory(MapID.LightWorld, 1450, 1666, location,
-                        _staticRequirements[AccessibilityLevel.Normal]),
+                    _factory(MapID.LightWorld, 1450, 1666, location),
                     _factory(MapID.DarkWorld, 1450, 1666, location,
                         _worldStateRequirements[WorldState.StandardOpen])
                 },
@@ -551,8 +527,7 @@ namespace OpenTracker.Models.Locations
                 },
                 LocationID.EtherTablet => new List<IMapLocation>
                 {
-                    _factory(MapID.LightWorld, 844, 38, location,
-                        _staticRequirements[AccessibilityLevel.Normal])
+                    _factory(MapID.LightWorld, 844, 38, location)
                 },
                 LocationID.SpikeCave => new List<IMapLocation>
                 {
@@ -601,8 +576,7 @@ namespace OpenTracker.Models.Locations
                 },
                 LocationID.FloatingIsland => new List<IMapLocation>
                 {
-                    _factory(MapID.LightWorld, 1627, 40, location,
-                        _staticRequirements[AccessibilityLevel.Normal]),
+                    _factory(MapID.LightWorld, 1627, 40, location),
                     _factory(MapID.DarkWorld, 1627, 40, location,
                         _aggregateRequirements[new HashSet<IRequirement>
                         {

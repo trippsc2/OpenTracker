@@ -1,7 +1,7 @@
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Xaml.Interactions.DragAndDrop;
-using OpenTracker.Models.Locations;
+using OpenTracker.Models.Locations.Map;
 
 namespace OpenTracker.ViewModels.MapLocations
 {

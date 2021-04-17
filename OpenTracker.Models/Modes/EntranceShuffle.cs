@@ -1,7 +1,7 @@
 ﻿namespace OpenTracker.Models.Modes
 {
     /// <summary>
-    /// This enum type contains the entrance shuffle setting data.
+    ///     This enum type contains the entrance shuffle setting data.
     /// </summary>
     public enum EntranceShuffle
     {

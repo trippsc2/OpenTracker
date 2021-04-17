@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using OpenTracker.Models.Locations;
+using OpenTracker.Models.Locations.Map;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;

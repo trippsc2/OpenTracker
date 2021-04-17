@@ -5,6 +5,23 @@
     /// </summary>
     public interface ILocationFactory
     {
-        string GetLocationName(LocationID id);
+        /// <summary>
+        ///     A factory for creating the location factory.
+        /// </summary>
+        /// <returns>
+        ///     The location factory.
+        /// </returns>
+        delegate ILocationFactory Factory();
+        
+        /// <summary>
+        ///     Returns a new location for the specified ID.
+        /// </summary>
+        /// <param name="id">
+        ///     The location ID.
+        /// </param>
+        /// <returns>
+        ///     A new location.
+        /// </returns>
+        ILocation GetLocation(LocationID id);
     }
 }

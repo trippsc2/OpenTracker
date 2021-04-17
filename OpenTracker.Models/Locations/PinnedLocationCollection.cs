@@ -1,20 +1,21 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace OpenTracker.Models.Locations
 {
     /// <summary>
-    /// This class contains the collection container for pinned location data.
+    ///     This class contains the collection container for pinned location data.
     /// </summary>
     public class PinnedLocationCollection : ObservableCollection<ILocation>, IPinnedLocationCollection
     {
         private readonly ILocationDictionary _locations;
 
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="locations">
-        /// The location dictionary.
+        ///     The location dictionary.
         /// </param>
         public PinnedLocationCollection(ILocationDictionary locations)
         {
@@ -22,25 +23,18 @@ namespace OpenTracker.Models.Locations
         }
 
         /// <summary>
-        /// Returns a list of location IDs to save.
+        ///     Returns a list of location IDs to save.
         /// </summary>
         public IList<LocationID> Save()
         {
-            List<LocationID> pinnedLocations = new();
-
-            foreach (var pinnedLocation in this)
-            {
-                pinnedLocations.Add(pinnedLocation.ID);
-            }
-
-            return pinnedLocations;
+            return this.Select(pinnedLocation => pinnedLocation.ID).ToList();
         }
 
         /// <summary>
-        /// Loads a list of location IDs.
+        ///     Loads a list of location IDs.
         /// </summary>
         /// <param name="saveData">
-        /// A list of location IDs to pin.
+        ///     A list of location IDs to pin.
         /// </param>
         public void Load(IList<LocationID>? saveData)
         {

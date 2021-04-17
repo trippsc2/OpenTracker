@@ -13,10 +13,9 @@ namespace OpenTracker.Models.AutoTracking.Values.Multiple
         private readonly IAutoTrackValue _value2;
 
         public int? CurrentValue =>
-            _value1.CurrentValue.HasValue ?
-                (int?) (_value2.CurrentValue.HasValue ?
-                    Math.Max(0, _value1.CurrentValue.Value - _value2.CurrentValue.Value) :
-                    _value1.CurrentValue.Value) : null;
+            _value1.CurrentValue.HasValue ? _value2.CurrentValue.HasValue
+                ? Math.Max(0, _value1.CurrentValue.Value - _value2.CurrentValue.Value)
+                : _value1.CurrentValue.Value : null;
         
         /// <summary>
         ///     Constructor
