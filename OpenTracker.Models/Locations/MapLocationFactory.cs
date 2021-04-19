@@ -1342,7 +1342,7 @@ namespace OpenTracker.Models.Locations
                 },
                 LocationID.DarkLakeHyliaShop => new List<IMapLocation>
                 {
-                    _factory(MapID.DarkWorld, 1460, 1540, location,
+                    _factory(MapID.DarkWorld, 1300, 1618, location,
                         _requirements[RequirementType.TakeAnyLocationsOrShopShuffleEntranceShuffleNoneDungeon])
                 },
                 LocationID.DarkPotionShop => new List<IMapLocation>
