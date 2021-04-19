@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Avalonia.Media;
 using Avalonia.Threading;
 using OpenTracker.Models.Accessibility;
-using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Sections;
 using OpenTracker.Models.Settings;
 using OpenTracker.Utils;
@@ -21,7 +20,7 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
         private readonly ISection _section;
 
         public Color FontColor => Color.Parse(_colorSettings.AccessibilityColors[_section.Accessibility]);
-        public bool Visible => _section.Requirement is null || _section.Requirement.Met;
+        public bool Visible => _section.IsActive;
         public string Name => _section.Name;
         public bool NormalAccessibility => _section.Accessibility == AccessibilityLevel.Normal;
 
@@ -47,11 +46,6 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
 
             _colorSettings.AccessibilityColors.PropertyChanged += OnColorChanged;
             _section.PropertyChanged += OnSectionChanged;
-
-            if (_section.Requirement is not null)
-            {
-                _section.Requirement.PropertyChanged += OnRequirementChanged;
-            }
         }
 
         /// <summary>
@@ -79,26 +73,14 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
         /// </param>
         private async void OnSectionChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(ISection.Accessibility))
+            switch (e.PropertyName)
             {
-                await UpdateTextColor();
-            }
-        }
-
-        /// <summary>
-        /// Subscribes to the PropertyChanged event on the IRequirement class.
-        /// </summary>
-        /// <param name="sender">
-        /// The sending object of the event.
-        /// </param>
-        /// <param name="e">
-        /// The arguments of the PropertyChanged event.
-        /// </param>
-        private async void OnRequirementChanged(object? sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(IRequirement.Accessibility))
-            {
-                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Visible)));
+                case nameof(ISection.Accessibility):
+                    await UpdateTextColor();
+                    break;
+                case nameof(ISection.IsActive):
+                    await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Visible)));
+                    break;
             }
         }
 

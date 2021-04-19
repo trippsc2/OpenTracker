@@ -8,6 +8,9 @@ using OpenTracker.Models.Locations.Map;
 using OpenTracker.Models.Markings;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.Sections;
+using OpenTracker.Models.Sections.Entrance;
+using OpenTracker.Models.Sections.Factories;
+using OpenTracker.Models.Sections.Item;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Models.UndoRedo.Locations;
 using OpenTracker.Models.UndoRedo.Notes;
@@ -311,7 +314,7 @@ namespace OpenTracker.Models.Locations
 
             foreach (var section in Sections)
             {
-                if (!section.IsAvailable() || section.Requirement is not null && !section.Requirement.Met)
+                if (!section.IsActive || !section.IsAvailable())
                 {
                     continue;
                 }

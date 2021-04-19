@@ -3,6 +3,7 @@ using System.Reactive;
 using Avalonia.Input;
 using Avalonia.Threading;
 using OpenTracker.Models.Sections;
+using OpenTracker.Models.Sections.Boss;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
 using OpenTracker.ViewModels.BossSelect;

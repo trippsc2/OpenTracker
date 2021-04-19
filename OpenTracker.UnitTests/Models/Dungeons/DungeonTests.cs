@@ -37,7 +37,7 @@ namespace OpenTracker.UnitTests.Models.Dungeons
         private readonly List<KeyDoorID> _bigKeyDoors = new();
 
         private readonly List<DungeonNodeID> _nodes = new();
-        private readonly List<INode> _entryNodes = new();
+        private readonly List<IOverworldNode> _entryNodes = new();
 
         public DungeonTests()
         {

@@ -3,7 +3,7 @@
 namespace OpenTracker.Models.PrizePlacements
 {
     /// <summary>
-    /// This class contains the creation logic for prize placement data.
+    ///     This class contains the creation logic for prize placement data.
     /// </summary>
     public class PrizePlacementFactory : IPrizePlacementFactory
     {
@@ -11,13 +11,13 @@ namespace OpenTracker.Models.PrizePlacements
         private readonly IPrizePlacement.Factory _factory;
 
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="prizes">
-        /// The prize dictionary.
+        ///     The prize dictionary.
         /// </param>
         /// <param name="factory">
-        /// A factory that creates prize placements.
+        ///     A factory that creates prize placements.
         /// </param>
         public PrizePlacementFactory(IPrizeDictionary prizes, IPrizePlacement.Factory factory)
         {
@@ -26,13 +26,13 @@ namespace OpenTracker.Models.PrizePlacements
         }
 
         /// <summary>
-        /// Returns a new prize placement instance for the specified prize placement ID.
+        ///     Returns a new prize placement instance for the specified prize placement ID.
         /// </summary>
         /// <param name="id">
-        /// The prize placement ID.
+        ///     The prize placement ID.
         /// </param>
         /// <returns>
-        /// A new prize placement instance.
+        ///     A new prize placement instance.
         /// </returns>
         public IPrizePlacement GetPrizePlacement(PrizePlacementID id)
         {

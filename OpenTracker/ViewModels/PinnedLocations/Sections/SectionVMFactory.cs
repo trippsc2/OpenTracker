@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using OpenTracker.Models.Sections;
+using OpenTracker.Models.Sections.Boolean;
+using OpenTracker.Models.Sections.Boss;
+using OpenTracker.Models.Sections.Entrance;
+using OpenTracker.Models.Sections.Item;
 
 namespace OpenTracker.ViewModels.PinnedLocations.Sections
 {
@@ -95,24 +99,19 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
 
             switch (section)
             {
-                case IMarkableSection markableSection:
-                {
-                    icons.Add(_markingFactory(markableSection));
-                    icons.Add(_iconFactory(
-                        _imageFactory(section, GetImageSourceBase(section)), section,
-                        GetLabelVisible(section)));
-                }
-                    break;
                 case IPrizeSection prizeSection:
-                {
                     icons.Add(_prizeFactory(prizeSection));
                     icons.Add(_bossFactory(prizeSection.BossPlacement));
-                }
                     break;
                 case IBossSection bossSection:
                     icons.Add(_bossFactory(bossSection.BossPlacement));
                     break;
                 default:
+                    if (section.Marking is not null)
+                    {
+                        icons.Add(_markingFactory(section));
+                    }
+                    
                     icons.Add(_iconFactory(
                         _imageFactory(section, GetImageSourceBase(section)), section,
                         GetLabelVisible(section)));

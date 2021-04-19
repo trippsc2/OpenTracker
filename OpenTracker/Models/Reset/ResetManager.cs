@@ -1,9 +1,9 @@
 ﻿using OpenTracker.Models.AutoTracking;
 using OpenTracker.Models.BossPlacements;
-using OpenTracker.Models.Connections;
 using OpenTracker.Models.Dropdowns;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Locations;
+using OpenTracker.Models.Locations.Map.Connections;
 using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.UndoRedo;
 

@@ -1,21 +1,19 @@
-﻿using OpenTracker.Models.Items;
-using OpenTracker.Models.PrizePlacements;
+﻿using OpenTracker.Models.PrizePlacements;
 
 namespace OpenTracker.Models.UndoRedo.Prize
 {
     /// <summary>
-    /// This class contains undoable action data to change the dungeon prize.
+    ///     This class contains undoable action data to change the dungeon prize.
     /// </summary>
     public class ChangePrize : IChangePrize
     {
         private readonly IPrizePlacement _prizePlacement;
-        private IItem? _previousValue;
 
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="prizePlacement">
-        /// The boss section data for the dungeon.
+        ///     The prize placement to be changed.
         /// </param>
         public ChangePrize(IPrizePlacement prizePlacement)
         {
@@ -23,10 +21,10 @@ namespace OpenTracker.Models.UndoRedo.Prize
         }
 
         /// <summary>
-        /// Returns whether the action can be executed.
+        ///     Returns whether the action can be executed.
         /// </summary>
         /// <returns>
-        /// A boolean representing whether the action can be executed.
+        ///     A boolean representing whether the action can be executed.
         /// </returns>
         public bool CanExecute()
         {
@@ -34,20 +32,19 @@ namespace OpenTracker.Models.UndoRedo.Prize
         }
 
         /// <summary>
-        /// Executes the action.
+        ///     Executes the action.
         /// </summary>
         public void ExecuteDo()
         {
-            _previousValue = _prizePlacement.Prize;
             _prizePlacement.Cycle();
         }
 
         /// <summary>
-        /// Undoes the action.
+        ///     Undoes the action.
         /// </summary>
         public void ExecuteUndo()
         {
-            _prizePlacement.Prize = _previousValue;
+            _prizePlacement.Cycle(true);
         }
     }
 }

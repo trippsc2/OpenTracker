@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Dungeons.Mutable;
 using OpenTracker.Models.Dungeons.Nodes.Factories;
-using OpenTracker.Models.NodeConnections;
 using OpenTracker.Models.Nodes;
+using OpenTracker.Models.Nodes.Connections;
 using ReactiveUI;
 
 namespace OpenTracker.Models.Dungeons.Nodes
@@ -20,22 +19,11 @@ namespace OpenTracker.Models.Dungeons.Nodes
 
         public IList<INodeConnection> Connections { get; } = new List<INodeConnection>();
 
-        public event EventHandler? ChangePropagated;
-
         private AccessibilityLevel _accessibility;
         public AccessibilityLevel Accessibility
         {
             get => _accessibility;
-            private set
-            {
-                if (_accessibility == value)
-                {
-                    return;
-                }
-                
-                this.RaiseAndSetIfChanged(ref _accessibility, value);
-                ChangePropagated?.Invoke(this, EventArgs.Empty);
-            }
+            private set =>this.RaiseAndSetIfChanged(ref _accessibility, value);
         }
 
         /// <summary>

@@ -1,15 +1,18 @@
-using System;
 using System.Collections.Generic;
 using OpenTracker.Models.Accessibility;
 using ReactiveUI;
 
 namespace OpenTracker.Models.Nodes
 {
+    /// <summary>
+    ///     This interface contains the node data.
+    /// </summary>
     public interface INode : IReactiveObject
     {
+        /// <summary>
+        ///     The accessibility level of the node.
+        /// </summary>
         AccessibilityLevel Accessibility { get; }
-        
-        event EventHandler? ChangePropagated;
 
         /// <summary>
         ///     Returns the node accessibility.

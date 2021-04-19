@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Modes;
-using OpenTracker.Models.NodeConnections;
+using OpenTracker.Models.Nodes.Connections;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Requirements.Alternative;
 using OpenTracker.Models.Requirements.Item;

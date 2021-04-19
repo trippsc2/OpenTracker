@@ -6,7 +6,7 @@ namespace OpenTracker.ViewModels.Markings
 {
     public interface IMarkingSelectFactory
     {
-        IMarkingSelectVM GetMarkingSelectVM(IMarkableSection section);
+        IMarkingSelectVM GetMarkingSelectVM(ISection section);
         INoteMarkingSelectVM GetNoteMarkingSelectVM(IMarking marking, ILocation location);
     }
 }

@@ -8,6 +8,8 @@ using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Requirements.Alternative;
 using OpenTracker.Models.Requirements.Mode;
 using OpenTracker.Models.Sections;
+using OpenTracker.Models.Sections.Boolean;
+using OpenTracker.Models.Sections.Entrance;
 using OpenTracker.ViewModels.Tooltips;
 
 namespace OpenTracker.ViewModels.MapLocations
@@ -143,12 +145,9 @@ namespace OpenTracker.ViewModels.MapLocations
 
         private IMapLocationMarkingVM? GetMarking(ILocation location)
         {
-            if (location.Sections[0] is IMarkableSection section)
-            {
-                return _markingFactory(section);
-            }
-
-            return null;
+            var section = location.Sections[0];
+            
+            return location.Sections[0].Marking is not null ? _markingFactory(section) : null;
         }
 
         private static double GetOffsetX(Dock markingDock)

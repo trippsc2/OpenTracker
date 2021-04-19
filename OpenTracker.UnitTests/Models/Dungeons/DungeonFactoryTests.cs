@@ -25,7 +25,7 @@ namespace OpenTracker.UnitTests.Models.Dungeons
             (ICappedItem? map, ICappedItem? compass, ISmallKeyItem smallKey, IBigKeyItem? bigKey,
             IList<DungeonItemID> dungeonItems, IList<DungeonItemID> bosses, IList<DungeonItemID> smallKeyDrops,
             IList<DungeonItemID> bigKeyDrops, IList<KeyDoorID> smallKeyDoors, IList<KeyDoorID> bigKeyDoors,
-            IList<DungeonNodeID> nodes, IList<INode> entryNodes)? _factoryCall;
+            IList<DungeonNodeID> nodes, IList<IOverworldNode> entryNodes)? _factoryCall;
         
         private readonly DungeonFactory _sut;
 
@@ -99,7 +99,7 @@ namespace OpenTracker.UnitTests.Models.Dungeons
 
             static INode GetOverworldNode()
             {
-                return Substitute.For<INode>();
+                return Substitute.For<IOverworldNode>();
             }
             
             var overworldNodeFactory = Substitute.For<IOverworldNodeFactory>();
@@ -111,7 +111,7 @@ namespace OpenTracker.UnitTests.Models.Dungeons
                 DungeonID id, ICappedItem? map, ICappedItem? compass, ISmallKeyItem smallKey, IBigKeyItem? bigKey,
                 IList<DungeonItemID> dungeonItems, IList<DungeonItemID> bosses, IList<DungeonItemID> smallKeyDrops,
                 IList<DungeonItemID> bigKeyDrops, IList<KeyDoorID> smallKeyDoors, IList<KeyDoorID> bigKeyDoors,
-                IList<DungeonNodeID> nodes, IList<INode> entryNodes)
+                IList<DungeonNodeID> nodes, IList<IOverworldNode> entryNodes)
             {
                 _factoryCall = (map, compass, smallKey, bigKey, dungeonItems, bosses, smallKeyDrops, bigKeyDrops,
                     smallKeyDoors, bigKeyDoors, nodes, entryNodes);

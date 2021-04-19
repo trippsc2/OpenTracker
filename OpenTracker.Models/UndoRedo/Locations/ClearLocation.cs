@@ -55,8 +55,7 @@ namespace OpenTracker.Models.UndoRedo.Locations
             {
                 if (section.CanBeCleared(_force))
                 {
-                    _previousMarkings.Add(section is IMarkableSection markableSection
-                        ? markableSection.Marking.Mark : null);
+                    _previousMarkings.Add(section.Marking?.Mark);
 
                     _previousLocationCounts.Add(section.Available);
                     _previousUserManipulated.Add(section.UserManipulated);
@@ -83,12 +82,9 @@ namespace OpenTracker.Models.UndoRedo.Locations
                     _location.Sections[i].Available = _previousLocationCounts[i]!.Value;
                 }
 
-                if (_previousMarkings[i].HasValue)
+                if (_previousMarkings[i] is not null && _location.Sections[i].Marking is not null)
                 {
-                    if (_location.Sections[i] is IMarkableSection markableSection)
-                    {
-                        markableSection.Marking.Mark = _previousMarkings[i]!.Value;
-                    }
+                    _location.Sections[i].Marking!.Mark = _previousMarkings[i]!.Value; 
                 }
 
                 if (_previousUserManipulated[i].HasValue)

@@ -939,44 +939,68 @@ namespace OpenTracker.Models.Dungeons
         /// <returns>
         ///     A list of dungeon entry nodes.
         /// </returns>
-        private IList<INode> GetDungeonEntryNodes(DungeonID id)
+        private IList<IOverworldNode> GetDungeonEntryNodes(DungeonID id)
         {
             return id switch
             {
-                DungeonID.HyruleCastle => new List<INode>
+                DungeonID.HyruleCastle => new List<IOverworldNode>
                 {
-                    _overworldNodes[OverworldNodeID.HCSanctuaryEntry],
-                    _overworldNodes[OverworldNodeID.HCFrontEntry],
-                    _overworldNodes[OverworldNodeID.HCBackEntry]
+                    (IOverworldNode) _overworldNodes[OverworldNodeID.HCSanctuaryEntry],
+                    (IOverworldNode) _overworldNodes[OverworldNodeID.HCFrontEntry],
+                    (IOverworldNode) _overworldNodes[OverworldNodeID.HCBackEntry]
                 },
-                DungeonID.AgahnimTower => new List<INode> {_overworldNodes[OverworldNodeID.ATEntry]},
-                DungeonID.EasternPalace => new List<INode> {_overworldNodes[OverworldNodeID.EPEntry]},
-                DungeonID.DesertPalace => new List<INode>
+                DungeonID.AgahnimTower => new List<IOverworldNode>
                 {
-                    _overworldNodes[OverworldNodeID.DPFrontEntry],
-                    _overworldNodes[OverworldNodeID.DPLeftEntry],
-                    _overworldNodes[OverworldNodeID.DPBackEntry]
+                    (IOverworldNode) _overworldNodes[OverworldNodeID.ATEntry]
                 },
-                DungeonID.TowerOfHera => new List<INode> {_overworldNodes[OverworldNodeID.ToHEntry]},
-                DungeonID.PalaceOfDarkness => new List<INode> {_overworldNodes[OverworldNodeID.PoDEntry]},
-                DungeonID.SwampPalace => new List<INode> {_overworldNodes[OverworldNodeID.SPEntry]},
-                DungeonID.SkullWoods => new List<INode>
+                DungeonID.EasternPalace => new List<IOverworldNode>
                 {
-                    _overworldNodes[OverworldNodeID.SWFrontEntry],
-                    _overworldNodes[OverworldNodeID.SWBackEntry]
+                    (IOverworldNode) _overworldNodes[OverworldNodeID.EPEntry]
                 },
-                DungeonID.ThievesTown => new List<INode> {_overworldNodes[OverworldNodeID.TTEntry]},
-                DungeonID.IcePalace => new List<INode> {_overworldNodes[OverworldNodeID.IPEntry]},
-                DungeonID.MiseryMire => new List<INode> {_overworldNodes[OverworldNodeID.MMEntry]},
-                DungeonID.TurtleRock => new List<INode>
+                DungeonID.DesertPalace => new List<IOverworldNode>
                 {
-                    _overworldNodes[OverworldNodeID.TRFrontEntry],
-                    _overworldNodes[OverworldNodeID.TRMiddleEntry],
-                    _overworldNodes[OverworldNodeID.TRBackEntry]
+                    (IOverworldNode) _overworldNodes[OverworldNodeID.DPFrontEntry],
+                    (IOverworldNode) _overworldNodes[OverworldNodeID.DPLeftEntry],
+                    (IOverworldNode) _overworldNodes[OverworldNodeID.DPBackEntry]
                 },
-                DungeonID.GanonsTower => new List<INode>
+                DungeonID.TowerOfHera => new List<IOverworldNode>
                 {
-                    _overworldNodes[OverworldNodeID.GTEntry]
+                    (IOverworldNode) _overworldNodes[OverworldNodeID.ToHEntry]
+                },
+                DungeonID.PalaceOfDarkness => new List<IOverworldNode>
+                {
+                    (IOverworldNode) _overworldNodes[OverworldNodeID.PoDEntry]
+                },
+                DungeonID.SwampPalace => new List<IOverworldNode>
+                {
+                    (IOverworldNode) _overworldNodes[OverworldNodeID.SPEntry]
+                },
+                DungeonID.SkullWoods => new List<IOverworldNode>
+                {
+                    (IOverworldNode) _overworldNodes[OverworldNodeID.SWFrontEntry],
+                    (IOverworldNode) _overworldNodes[OverworldNodeID.SWBackEntry]
+                },
+                DungeonID.ThievesTown => new List<IOverworldNode>
+                {
+                    (IOverworldNode) _overworldNodes[OverworldNodeID.TTEntry]
+                },
+                DungeonID.IcePalace => new List<IOverworldNode>
+                {
+                    (IOverworldNode) _overworldNodes[OverworldNodeID.IPEntry]
+                },
+                DungeonID.MiseryMire => new List<IOverworldNode>
+                {
+                    (IOverworldNode) _overworldNodes[OverworldNodeID.MMEntry]
+                },
+                DungeonID.TurtleRock => new List<IOverworldNode>
+                {
+                    (IOverworldNode) _overworldNodes[OverworldNodeID.TRFrontEntry],
+                    (IOverworldNode) _overworldNodes[OverworldNodeID.TRMiddleEntry],
+                    (IOverworldNode) _overworldNodes[OverworldNodeID.TRBackEntry]
+                },
+                DungeonID.GanonsTower => new List<IOverworldNode>
+                {
+                    (IOverworldNode) _overworldNodes[OverworldNodeID.GTEntry]
                 },
                 _ => throw new ArgumentOutOfRangeException(nameof(id))
             };

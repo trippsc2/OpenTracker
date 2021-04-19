@@ -19,32 +19,32 @@ namespace OpenTracker.UnitTests.Models.Dungeons.KeyLayouts.Factories
 {
     public class SWKeyLayoutFactoryTests
     {
-        private static readonly IAggregateRequirementDictionary _aggregateRequirements =
+        private static readonly IAggregateRequirementDictionary AggregateRequirements =
             new AggregateRequirementDictionary(requirements =>
                 new AggregateRequirement(requirements));
-        private static readonly IBigKeyShuffleRequirementDictionary _bigKeyShuffleRequirements =
+        private static readonly IBigKeyShuffleRequirementDictionary BigKeyShuffleRequirements =
             Substitute.For<IBigKeyShuffleRequirementDictionary>();
-        private static readonly IGuaranteedBossItemsRequirementDictionary _guaranteedBossItemsRequirements =
+        private static readonly IGuaranteedBossItemsRequirementDictionary GuaranteedBossItemsRequirements =
             Substitute.For<IGuaranteedBossItemsRequirementDictionary>();
-        private static readonly IItemPlacementRequirementDictionary _itemPlacementRequirements =
+        private static readonly IItemPlacementRequirementDictionary ItemPlacementRequirements =
             Substitute.For<IItemPlacementRequirementDictionary>();
-        private static readonly IKeyDropShuffleRequirementDictionary _keyDropShuffleRequirements =
+        private static readonly IKeyDropShuffleRequirementDictionary KeyDropShuffleRequirements =
             Substitute.For<IKeyDropShuffleRequirementDictionary>();
-        private static readonly ISmallKeyShuffleRequirementDictionary _smallKeyShuffleRequirements =
+        private static readonly ISmallKeyShuffleRequirementDictionary SmallKeyShuffleRequirements =
             Substitute.For<ISmallKeyShuffleRequirementDictionary>();
 
-        private static readonly IBigKeyLayout.Factory _bigKeyFactory = (bigKeyLocations, children, requirement) =>
+        private static readonly IBigKeyLayout.Factory BigKeyFactory = (bigKeyLocations, children, requirement) =>
             new BigKeyLayout(bigKeyLocations, children, requirement);
-        private static readonly IEndKeyLayout.Factory _endFactory = requirement => new EndKeyLayout(requirement);
-        private static readonly ISmallKeyLayout.Factory _smallKeyFactory =
+        private static readonly IEndKeyLayout.Factory EndFactory = requirement => new EndKeyLayout(requirement);
+        private static readonly ISmallKeyLayout.Factory SmallKeyFactory =
             (count, smallKeyLocations, bigKeyInLocations, children, dungeon, requirement) => new SmallKeyLayout(
                 count, smallKeyLocations, bigKeyInLocations, children, dungeon, requirement);
 
         private readonly SWKeyLayoutFactory _sut = new(
-            _aggregateRequirements, _bigKeyShuffleRequirements, _guaranteedBossItemsRequirements,
-            _itemPlacementRequirements, _keyDropShuffleRequirements,
-            _smallKeyShuffleRequirements, _bigKeyFactory, _endFactory,
-            _smallKeyFactory);
+            AggregateRequirements, BigKeyShuffleRequirements, GuaranteedBossItemsRequirements,
+            ItemPlacementRequirements, KeyDropShuffleRequirements,
+            SmallKeyShuffleRequirements, BigKeyFactory, EndFactory,
+            SmallKeyFactory);
 
         [Fact]
         public void GetDungeonKeyLayouts_ShouldReturnExpected()
@@ -53,12 +53,12 @@ namespace OpenTracker.UnitTests.Models.Dungeons.KeyLayouts.Factories
             
             var expected = (new List<IKeyLayout>
             {
-                _endFactory(_aggregateRequirements[new HashSet<IRequirement>
+                EndFactory(AggregateRequirements[new HashSet<IRequirement>
                 {
-                    _bigKeyShuffleRequirements[true],
-                    _smallKeyShuffleRequirements[true]
+                    BigKeyShuffleRequirements[true],
+                    SmallKeyShuffleRequirements[true]
                 }]),
-                _smallKeyFactory(
+                SmallKeyFactory(
                     3, new List<DungeonItemID>
                     {
                         DungeonItemID.SWBigKeyChest,
@@ -69,18 +69,18 @@ namespace OpenTracker.UnitTests.Models.Dungeons.KeyLayouts.Factories
                         DungeonItemID.SWPinballRoom,
                         DungeonItemID.SWBridgeRoom
                     },
-                    false, new List<IKeyLayout> {_endFactory()}, dungeon,
-                    _aggregateRequirements[new HashSet<IRequirement>
+                    false, new List<IKeyLayout> {EndFactory()}, dungeon,
+                    AggregateRequirements[new HashSet<IRequirement>
                     {
-                        _bigKeyShuffleRequirements[true],
-                        _itemPlacementRequirements[ItemPlacement.Advanced],
-                        _keyDropShuffleRequirements[false],
+                        BigKeyShuffleRequirements[true],
+                        ItemPlacementRequirements[ItemPlacement.Advanced],
+                        KeyDropShuffleRequirements[false],
                     }]),
-                _smallKeyFactory(
+                SmallKeyFactory(
                     1, new List<DungeonItemID> {DungeonItemID.SWPinballRoom}, false,
                     new List<IKeyLayout>
                     {
-                        _smallKeyFactory(
+                        SmallKeyFactory(
                             3, new List<DungeonItemID>
                             {
                                 DungeonItemID.SWBigKeyChest,
@@ -91,15 +91,15 @@ namespace OpenTracker.UnitTests.Models.Dungeons.KeyLayouts.Factories
                                 DungeonItemID.SWPinballRoom,
                                 DungeonItemID.SWBridgeRoom
                             },
-                            false, new List<IKeyLayout> {_endFactory()}, dungeon)
+                            false, new List<IKeyLayout> {EndFactory()}, dungeon)
                     },
-                    dungeon, _aggregateRequirements[new HashSet<IRequirement>
+                    dungeon, AggregateRequirements[new HashSet<IRequirement>
                     {
-                        _bigKeyShuffleRequirements[true],
-                        _itemPlacementRequirements[ItemPlacement.Basic],
-                        _keyDropShuffleRequirements[false]
+                        BigKeyShuffleRequirements[true],
+                        ItemPlacementRequirements[ItemPlacement.Basic],
+                        KeyDropShuffleRequirements[false]
                     }]),
-                _bigKeyFactory(
+                BigKeyFactory(
                     new List<DungeonItemID>
                     {
                         DungeonItemID.SWBigKeyChest,
@@ -112,8 +112,8 @@ namespace OpenTracker.UnitTests.Models.Dungeons.KeyLayouts.Factories
                     },
                     new List<IKeyLayout>
                     {
-                        _endFactory(_smallKeyShuffleRequirements[true]),
-                        _smallKeyFactory(
+                        EndFactory(SmallKeyShuffleRequirements[true]),
+                        SmallKeyFactory(
                             3, new List<DungeonItemID>
                             {
                                 DungeonItemID.SWBigKeyChest,
@@ -124,15 +124,15 @@ namespace OpenTracker.UnitTests.Models.Dungeons.KeyLayouts.Factories
                                 DungeonItemID.SWPinballRoom,
                                 DungeonItemID.SWBridgeRoom
                             },
-                            true, new List<IKeyLayout> {_endFactory()}, dungeon)
+                            true, new List<IKeyLayout> {EndFactory()}, dungeon)
                     },
-                    _aggregateRequirements[new HashSet<IRequirement>
+                    AggregateRequirements[new HashSet<IRequirement>
                     {
-                        _bigKeyShuffleRequirements[false],
-                        _itemPlacementRequirements[ItemPlacement.Advanced],
-                        _keyDropShuffleRequirements[false]
+                        BigKeyShuffleRequirements[false],
+                        ItemPlacementRequirements[ItemPlacement.Advanced],
+                        KeyDropShuffleRequirements[false]
                     }]),
-                _bigKeyFactory(
+                BigKeyFactory(
                     new List<DungeonItemID>
                     {
                         DungeonItemID.SWBigKeyChest,
@@ -144,12 +144,12 @@ namespace OpenTracker.UnitTests.Models.Dungeons.KeyLayouts.Factories
                     },
                     new List<IKeyLayout>
                     {
-                        _endFactory(_smallKeyShuffleRequirements[true]),
-                        _smallKeyFactory(
+                        EndFactory(SmallKeyShuffleRequirements[true]),
+                        SmallKeyFactory(
                             1, new List<DungeonItemID> {DungeonItemID.SWPinballRoom},
                             false, new List<IKeyLayout>
                             {
-                                _smallKeyFactory(
+                                SmallKeyFactory(
                                     3, new List<DungeonItemID>
                                     {
                                         DungeonItemID.SWBigKeyChest,
@@ -160,20 +160,20 @@ namespace OpenTracker.UnitTests.Models.Dungeons.KeyLayouts.Factories
                                         DungeonItemID.SWPinballRoom,
                                         DungeonItemID.SWBridgeRoom
                                     },
-                                    true, new List<IKeyLayout> {_endFactory()}, dungeon)
+                                    true, new List<IKeyLayout> {EndFactory()}, dungeon)
                             }, dungeon)
                     },
-                    _aggregateRequirements[new HashSet<IRequirement>
+                    AggregateRequirements[new HashSet<IRequirement>
                     {
-                        _bigKeyShuffleRequirements[false],
-                        _itemPlacementRequirements[ItemPlacement.Basic],
-                        _keyDropShuffleRequirements[false]
+                        BigKeyShuffleRequirements[false],
+                        ItemPlacementRequirements[ItemPlacement.Basic],
+                        KeyDropShuffleRequirements[false]
                     }]),
-                _bigKeyFactory(
+                BigKeyFactory(
                     new List<DungeonItemID> {DungeonItemID.SWBoss}, new List<IKeyLayout>
                     {
-                        _endFactory(_smallKeyShuffleRequirements[true]),
-                        _smallKeyFactory(
+                        EndFactory(SmallKeyShuffleRequirements[true]),
+                        SmallKeyFactory(
                             3, new List<DungeonItemID>
                             {
                                 DungeonItemID.SWBigKeyChest,
@@ -183,13 +183,13 @@ namespace OpenTracker.UnitTests.Models.Dungeons.KeyLayouts.Factories
                                 DungeonItemID.SWPinballRoom,
                                 DungeonItemID.SWBridgeRoom
                             },
-                            false, new List<IKeyLayout> {_endFactory()}, dungeon,
-                            _itemPlacementRequirements[ItemPlacement.Advanced]),
-                        _smallKeyFactory(
+                            false, new List<IKeyLayout> {EndFactory()}, dungeon,
+                            ItemPlacementRequirements[ItemPlacement.Advanced]),
+                        SmallKeyFactory(
                             1, new List<DungeonItemID> {DungeonItemID.SWPinballRoom},
                             false, new List<IKeyLayout>
                             {
-                                _smallKeyFactory(
+                                SmallKeyFactory(
                                     3, new List<DungeonItemID>
                                     {
                                         DungeonItemID.SWBigKeyChest,
@@ -199,17 +199,17 @@ namespace OpenTracker.UnitTests.Models.Dungeons.KeyLayouts.Factories
                                         DungeonItemID.SWPinballRoom,
                                         DungeonItemID.SWBridgeRoom
                                     },
-                                    false, new List<IKeyLayout> {_endFactory()}, dungeon)
+                                    false, new List<IKeyLayout> {EndFactory()}, dungeon)
                             },
-                            dungeon, _itemPlacementRequirements[ItemPlacement.Basic])
+                            dungeon, ItemPlacementRequirements[ItemPlacement.Basic])
                     },
-                    _aggregateRequirements[new HashSet<IRequirement>
+                    AggregateRequirements[new HashSet<IRequirement>
                     {
-                        _bigKeyShuffleRequirements[false],
-                        _guaranteedBossItemsRequirements[false],
-                        _keyDropShuffleRequirements[false]
+                        BigKeyShuffleRequirements[false],
+                        GuaranteedBossItemsRequirements[false],
+                        KeyDropShuffleRequirements[false]
                     }]),
-                _smallKeyFactory(
+                SmallKeyFactory(
                     4, new List<DungeonItemID>
                     {
                         DungeonItemID.SWBigKeyChest,
@@ -223,7 +223,7 @@ namespace OpenTracker.UnitTests.Models.Dungeons.KeyLayouts.Factories
                     },
                     false, new List<IKeyLayout>
                     {
-                        _smallKeyFactory(
+                        SmallKeyFactory(
                             5, new List<DungeonItemID>
                             {
                                 DungeonItemID.SWBigKeyChest,
@@ -236,20 +236,20 @@ namespace OpenTracker.UnitTests.Models.Dungeons.KeyLayouts.Factories
                                 DungeonItemID.SWWestLobbyPot,
                                 DungeonItemID.SWSpikeCornerDrop
                             },
-                            false, new List<IKeyLayout> {_endFactory()}, dungeon)
+                            false, new List<IKeyLayout> {EndFactory()}, dungeon)
                     },
                     dungeon,
-                    _aggregateRequirements[new HashSet<IRequirement>
+                    AggregateRequirements[new HashSet<IRequirement>
                     {
-                        _bigKeyShuffleRequirements[true],
-                        _itemPlacementRequirements[ItemPlacement.Advanced],
-                        _keyDropShuffleRequirements[true]
+                        BigKeyShuffleRequirements[true],
+                        ItemPlacementRequirements[ItemPlacement.Advanced],
+                        KeyDropShuffleRequirements[true]
                     }]),
-                _smallKeyFactory(
+                SmallKeyFactory(
                     1, new List<DungeonItemID> {DungeonItemID.SWPinballRoom}, false,
                     new List<IKeyLayout>
                     {
-                        _smallKeyFactory(
+                        SmallKeyFactory(
                             4, new List<DungeonItemID>
                             {
                                 DungeonItemID.SWBigKeyChest,
@@ -263,7 +263,7 @@ namespace OpenTracker.UnitTests.Models.Dungeons.KeyLayouts.Factories
                             },
                             false, new List<IKeyLayout>
                             {
-                                _smallKeyFactory(
+                                SmallKeyFactory(
                                     5, new List<DungeonItemID>
                                     {
                                         DungeonItemID.SWBigKeyChest,
@@ -276,17 +276,17 @@ namespace OpenTracker.UnitTests.Models.Dungeons.KeyLayouts.Factories
                                         DungeonItemID.SWWestLobbyPot,
                                         DungeonItemID.SWSpikeCornerDrop
                                     },
-                                    false, new List<IKeyLayout> {_endFactory()}, dungeon)
+                                    false, new List<IKeyLayout> {EndFactory()}, dungeon)
                             },
                             dungeon)
                     },
-                    dungeon, _aggregateRequirements[new HashSet<IRequirement>
+                    dungeon, AggregateRequirements[new HashSet<IRequirement>
                     {
-                        _bigKeyShuffleRequirements[true],
-                        _itemPlacementRequirements[ItemPlacement.Basic],
-                        _keyDropShuffleRequirements[true]
+                        BigKeyShuffleRequirements[true],
+                        ItemPlacementRequirements[ItemPlacement.Basic],
+                        KeyDropShuffleRequirements[true]
                     }]),
-                _bigKeyFactory(
+                BigKeyFactory(
                     new List<DungeonItemID>
                     {
                         DungeonItemID.SWBigKeyChest,
@@ -300,14 +300,14 @@ namespace OpenTracker.UnitTests.Models.Dungeons.KeyLayouts.Factories
                         DungeonItemID.SWWestLobbyPot,
                         DungeonItemID.SWSpikeCornerDrop
                     },
-                    new List<IKeyLayout> {_endFactory()}, _aggregateRequirements[new HashSet<IRequirement>
+                    new List<IKeyLayout> {EndFactory()}, AggregateRequirements[new HashSet<IRequirement>
                     {
-                        _bigKeyShuffleRequirements[false],
-                        _guaranteedBossItemsRequirements[false],
-                        _keyDropShuffleRequirements[true],
-                        _smallKeyShuffleRequirements[true]
+                        BigKeyShuffleRequirements[false],
+                        GuaranteedBossItemsRequirements[false],
+                        KeyDropShuffleRequirements[true],
+                        SmallKeyShuffleRequirements[true]
                     }]),
-                _bigKeyFactory(
+                BigKeyFactory(
                     new List<DungeonItemID>
                     {
                         DungeonItemID.SWBigKeyChest,
@@ -320,14 +320,14 @@ namespace OpenTracker.UnitTests.Models.Dungeons.KeyLayouts.Factories
                         DungeonItemID.SWWestLobbyPot,
                         DungeonItemID.SWSpikeCornerDrop
                     },
-                    new List<IKeyLayout> {_endFactory()}, _aggregateRequirements[new HashSet<IRequirement>
+                    new List<IKeyLayout> {EndFactory()}, AggregateRequirements[new HashSet<IRequirement>
                     {
-                        _bigKeyShuffleRequirements[false],
-                        _guaranteedBossItemsRequirements[true],
-                        _keyDropShuffleRequirements[true],
-                        _smallKeyShuffleRequirements[true]
+                        BigKeyShuffleRequirements[false],
+                        GuaranteedBossItemsRequirements[true],
+                        KeyDropShuffleRequirements[true],
+                        SmallKeyShuffleRequirements[true]
                     }]),
-                _bigKeyFactory(
+                BigKeyFactory(
                     new List<DungeonItemID>
                     {
                         DungeonItemID.SWBigKeyChest,
@@ -341,8 +341,8 @@ namespace OpenTracker.UnitTests.Models.Dungeons.KeyLayouts.Factories
                     },
                     new List<IKeyLayout>
                     {
-                        _endFactory(_smallKeyShuffleRequirements[true]),
-                        _smallKeyFactory(
+                        EndFactory(SmallKeyShuffleRequirements[true]),
+                        SmallKeyFactory(
                             4, new List<DungeonItemID>
                             {
                                 DungeonItemID.SWBigKeyChest,
@@ -356,7 +356,7 @@ namespace OpenTracker.UnitTests.Models.Dungeons.KeyLayouts.Factories
                             },
                             true, new List<IKeyLayout>
                             {
-                                _smallKeyFactory(
+                                SmallKeyFactory(
                                     5, new List<DungeonItemID>
                                     {
                                         DungeonItemID.SWBigKeyChest,
@@ -369,17 +369,17 @@ namespace OpenTracker.UnitTests.Models.Dungeons.KeyLayouts.Factories
                                         DungeonItemID.SWWestLobbyPot,
                                         DungeonItemID.SWSpikeCornerDrop
                                     },
-                                    true, new List<IKeyLayout> {_endFactory()}, dungeon)
+                                    true, new List<IKeyLayout> {EndFactory()}, dungeon)
                             },
                             dungeon)
                     },
-                    _aggregateRequirements[new HashSet<IRequirement>
+                    AggregateRequirements[new HashSet<IRequirement>
                     {
-                        _bigKeyShuffleRequirements[false],
-                        _itemPlacementRequirements[ItemPlacement.Advanced],
-                        _keyDropShuffleRequirements[true]
+                        BigKeyShuffleRequirements[false],
+                        ItemPlacementRequirements[ItemPlacement.Advanced],
+                        KeyDropShuffleRequirements[true]
                     }]),
-                _bigKeyFactory(
+                BigKeyFactory(
                     new List<DungeonItemID>
                     {
                         DungeonItemID.SWBigKeyChest,
@@ -392,12 +392,12 @@ namespace OpenTracker.UnitTests.Models.Dungeons.KeyLayouts.Factories
                     },
                     new List<IKeyLayout>
                     {
-                        _endFactory(_smallKeyShuffleRequirements[true]),
-                        _smallKeyFactory(
+                        EndFactory(SmallKeyShuffleRequirements[true]),
+                        SmallKeyFactory(
                             1, new List<DungeonItemID> {DungeonItemID.SWPinballRoom},
                             false, new List<IKeyLayout>
                             {
-                                _smallKeyFactory(
+                                SmallKeyFactory(
                                     4, new List<DungeonItemID>
                                     {
                                         DungeonItemID.SWBigKeyChest,
@@ -411,7 +411,7 @@ namespace OpenTracker.UnitTests.Models.Dungeons.KeyLayouts.Factories
                                     },
                                     true, new List<IKeyLayout>
                                     {
-                                        _smallKeyFactory(
+                                        SmallKeyFactory(
                                             5, new List<DungeonItemID>
                                             {
                                                 DungeonItemID.SWBigKeyChest,
@@ -424,23 +424,23 @@ namespace OpenTracker.UnitTests.Models.Dungeons.KeyLayouts.Factories
                                                 DungeonItemID.SWWestLobbyPot,
                                                 DungeonItemID.SWSpikeCornerDrop
                                             },
-                                            true, new List<IKeyLayout> {_endFactory()}, dungeon)
+                                            true, new List<IKeyLayout> {EndFactory()}, dungeon)
                                     },
                                     dungeon)
                             },
                             dungeon)
                     },
-                    _aggregateRequirements[new HashSet<IRequirement>
+                    AggregateRequirements[new HashSet<IRequirement>
                     {
-                        _bigKeyShuffleRequirements[false],
-                        _itemPlacementRequirements[ItemPlacement.Basic],
-                        _keyDropShuffleRequirements[true]
+                        BigKeyShuffleRequirements[false],
+                        ItemPlacementRequirements[ItemPlacement.Basic],
+                        KeyDropShuffleRequirements[true]
                     }]),
-                _bigKeyFactory(
+                BigKeyFactory(
                     new List<DungeonItemID> {DungeonItemID.SWSpikeCornerDrop}, new List<IKeyLayout>
                     {
-                        _endFactory(_smallKeyShuffleRequirements[true]),
-                        _smallKeyFactory(
+                        EndFactory(SmallKeyShuffleRequirements[true]),
+                        SmallKeyFactory(
                             5, new List<DungeonItemID>
                             {
                                 DungeonItemID.SWBigKeyChest,
@@ -452,13 +452,13 @@ namespace OpenTracker.UnitTests.Models.Dungeons.KeyLayouts.Factories
                                 DungeonItemID.SWBridgeRoom,
                                 DungeonItemID.SWWestLobbyPot
                             },
-                            false, new List<IKeyLayout> {_endFactory()}, dungeon,
-                            _itemPlacementRequirements[ItemPlacement.Advanced]),
-                        _smallKeyFactory(
+                            false, new List<IKeyLayout> {EndFactory()}, dungeon,
+                            ItemPlacementRequirements[ItemPlacement.Advanced]),
+                        SmallKeyFactory(
                             1, new List<DungeonItemID> {DungeonItemID.SWPinballRoom},
                             false, new List<IKeyLayout>
                             {
-                                _smallKeyFactory(
+                                SmallKeyFactory(
                                     5, new List<DungeonItemID>
                                     {
                                         DungeonItemID.SWBigKeyChest,
@@ -470,20 +470,20 @@ namespace OpenTracker.UnitTests.Models.Dungeons.KeyLayouts.Factories
                                         DungeonItemID.SWBridgeRoom,
                                         DungeonItemID.SWWestLobbyPot
                                     },
-                                    false, new List<IKeyLayout> {_endFactory()}, dungeon)
+                                    false, new List<IKeyLayout> {EndFactory()}, dungeon)
                             },
-                            dungeon, _itemPlacementRequirements[ItemPlacement.Basic])
+                            dungeon, ItemPlacementRequirements[ItemPlacement.Basic])
                     },
-                    _aggregateRequirements[new HashSet<IRequirement>
+                    AggregateRequirements[new HashSet<IRequirement>
                     {
-                        _bigKeyShuffleRequirements[false],
-                        _keyDropShuffleRequirements[true]
+                        BigKeyShuffleRequirements[false],
+                        KeyDropShuffleRequirements[true]
                     }]),
-                _bigKeyFactory(
+                BigKeyFactory(
                     new List<DungeonItemID> {DungeonItemID.SWBoss}, new List<IKeyLayout>
                     {
-                        _endFactory(_smallKeyShuffleRequirements[true]),
-                        _smallKeyFactory(
+                        EndFactory(SmallKeyShuffleRequirements[true]),
+                        SmallKeyFactory(
                             4, new List<DungeonItemID>
                             {
                                 DungeonItemID.SWBigKeyChest,
@@ -496,7 +496,7 @@ namespace OpenTracker.UnitTests.Models.Dungeons.KeyLayouts.Factories
                             },
                             false, new List<IKeyLayout>
                             {
-                                _smallKeyFactory(
+                                SmallKeyFactory(
                                     5, new List<DungeonItemID>
                                     {
                                         DungeonItemID.SWBigKeyChest,
@@ -508,14 +508,14 @@ namespace OpenTracker.UnitTests.Models.Dungeons.KeyLayouts.Factories
                                         DungeonItemID.SWWestLobbyPot,
                                         DungeonItemID.SWSpikeCornerDrop
                                     },
-                                    false, new List<IKeyLayout> {_endFactory()}, dungeon)
+                                    false, new List<IKeyLayout> {EndFactory()}, dungeon)
                             },
-                            dungeon, _itemPlacementRequirements[ItemPlacement.Advanced]),
-                        _smallKeyFactory(
+                            dungeon, ItemPlacementRequirements[ItemPlacement.Advanced]),
+                        SmallKeyFactory(
                             1, new List<DungeonItemID> {DungeonItemID.SWPinballRoom},
                             false, new List<IKeyLayout>
                             {
-                                _smallKeyFactory(
+                                SmallKeyFactory(
                                     4, new List<DungeonItemID>
                                     {
                                         DungeonItemID.SWBigKeyChest,
@@ -528,7 +528,7 @@ namespace OpenTracker.UnitTests.Models.Dungeons.KeyLayouts.Factories
                                     },
                                     false, new List<IKeyLayout>
                                     {
-                                        _smallKeyFactory(
+                                        SmallKeyFactory(
                                             5, new List<DungeonItemID>
                                             {
                                                 DungeonItemID.SWBigKeyChest,
@@ -540,17 +540,17 @@ namespace OpenTracker.UnitTests.Models.Dungeons.KeyLayouts.Factories
                                                 DungeonItemID.SWWestLobbyPot,
                                                 DungeonItemID.SWSpikeCornerDrop
                                             },
-                                            false, new List<IKeyLayout> {_endFactory()}, dungeon)
+                                            false, new List<IKeyLayout> {EndFactory()}, dungeon)
                                     },
                                     dungeon)
                             },
-                            dungeon, _itemPlacementRequirements[ItemPlacement.Basic])
+                            dungeon, ItemPlacementRequirements[ItemPlacement.Basic])
                     },
-                    _aggregateRequirements[new HashSet<IRequirement>
+                    AggregateRequirements[new HashSet<IRequirement>
                     {
-                        _bigKeyShuffleRequirements[false],
-                        _guaranteedBossItemsRequirements[false],
-                        _keyDropShuffleRequirements[true]
+                        BigKeyShuffleRequirements[false],
+                        GuaranteedBossItemsRequirements[false],
+                        KeyDropShuffleRequirements[true]
                     }])
             }).ToExpectedObject();
             

@@ -9,7 +9,6 @@ using OpenTracker.Models.AutoTracking.Memory;
 using OpenTracker.Models.AutoTracking.SNESConnectors;
 using OpenTracker.Models.AutoTracking.Values;
 using OpenTracker.Models.BossPlacements;
-using OpenTracker.Models.Connections;
 using OpenTracker.Models.Dropdowns;
 using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.Dungeons.Items;
@@ -20,6 +19,7 @@ using OpenTracker.Models.Items;
 using OpenTracker.Models.Items.Factories;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Locations.Map;
+using OpenTracker.Models.Locations.Map.Connections;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.Nodes;
 using OpenTracker.Models.Nodes.Factories;
@@ -53,10 +53,10 @@ using OpenTracker.Models.Requirements.ShopShuffle;
 using OpenTracker.Models.Requirements.SmallKeyShuffle;
 using OpenTracker.Models.Requirements.TakeAnyLocations;
 using OpenTracker.Models.SaveLoad;
-using OpenTracker.Models.Sections;
 using OpenTracker.Models.SequenceBreaks;
 using OpenTracker.Models.Settings;
 using OpenTracker.Models.Reset;
+using OpenTracker.Models.Sections.Factories;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
 using OpenTracker.Utils.Dialog;
@@ -113,21 +113,7 @@ namespace OpenTracker
             nameof(BooleanRequirement)
         };
 
-        private static List<string> ModelsSelfTypes => new()
-        {
-            nameof(BossSection),
-            nameof(DropdownSection),
-            nameof(DungeonEntranceSection),
-            nameof(DungeonItemSection),
-            nameof(EntranceSection),
-            nameof(InsanityEntranceSection),
-            nameof(ItemSection),
-            nameof(MarkableDungeonItemSection),
-            nameof(PrizeSection),
-            nameof(ShopSection),
-            nameof(TakeAnySection),
-            nameof(VisibleItemSection)
-        };
+        private static List<string> ModelsSelfTypes => new();
 
         private static List<string> ModelsSingleInstanceTypes => new()
         {

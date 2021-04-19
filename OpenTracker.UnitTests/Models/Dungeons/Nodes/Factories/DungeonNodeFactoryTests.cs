@@ -6,8 +6,8 @@ using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.Dungeons.Mutable;
 using OpenTracker.Models.Dungeons.Nodes;
 using OpenTracker.Models.Dungeons.Nodes.Factories;
-using OpenTracker.Models.NodeConnections;
 using OpenTracker.Models.Nodes;
+using OpenTracker.Models.Nodes.Connections;
 using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories

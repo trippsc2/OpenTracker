@@ -4,6 +4,7 @@ using OpenTracker.Models.Items;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Requirements.GenericKeys;
 using OpenTracker.Models.Sections;
+using OpenTracker.Models.Sections.Boss;
 using OpenTracker.ViewModels.Items.Adapters;
 
 namespace OpenTracker.ViewModels.Items

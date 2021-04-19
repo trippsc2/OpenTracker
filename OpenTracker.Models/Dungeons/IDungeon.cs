@@ -83,7 +83,7 @@ namespace OpenTracker.Models.Dungeons
         /// <summary>
         ///     A list of overworld nodes that allow entry to the dungeon.
         /// </summary>
-        IList<INode> EntryNodes { get; }
+        IList<IOverworldNode> EntryNodes { get; }
 
         /// <summary>
         ///     A 32-bit signed integer representing the total item checks in the dungeon.
@@ -145,6 +145,6 @@ namespace OpenTracker.Models.Dungeons
             DungeonID id, ICappedItem? map, ICappedItem? compass, ISmallKeyItem smallKey, IBigKeyItem? bigKey,
             IList<DungeonItemID> dungeonItems, IList<DungeonItemID> bosses, IList<DungeonItemID> smallKeyDrops,
             IList<DungeonItemID> bigKeyDrops, IList<KeyDoorID> smallKeyDoors, IList<KeyDoorID> bigKeyDoors,
-            IList<DungeonNodeID> nodes, IList<INode> entryNodes);
+            IList<DungeonNodeID> nodes, IList<IOverworldNode> entryNodes);
     }
 }

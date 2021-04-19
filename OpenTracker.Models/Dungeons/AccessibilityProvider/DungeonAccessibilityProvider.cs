@@ -105,7 +105,7 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
 
             foreach (var node in EntryNodes)
             {
-                node.PropertyChanged += OnNodeChanged;
+                ((IOverworldNode) node).ChangePropagated += OnNodeChanged;
             }
             
             SubscribeToConnectionRequirements();
@@ -181,20 +181,17 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         }
 
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on the IRequirementNode interface.
+        ///     Subscribes to the ChangePropagated event on the IRequirementNode interface.
         /// </summary>
         /// <param name="sender">
         ///     The sending object of the event.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The arguments of the ChangePropagated event.
         /// </param>
-        private void OnNodeChanged(object? sender, PropertyChangedEventArgs e)
+        private void OnNodeChanged(object? sender, EventArgs e)
         {
-            if (e.PropertyName == nameof(IOverworldNode.Accessibility))
-            {
-                UpdateValues();
-            }
+            UpdateValues();
         }
 
         /// <summary>

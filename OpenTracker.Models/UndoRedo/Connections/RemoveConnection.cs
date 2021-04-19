@@ -1,4 +1,4 @@
-﻿using OpenTracker.Models.Connections;
+﻿using OpenTracker.Models.Locations.Map.Connections;
 
 namespace OpenTracker.Models.UndoRedo.Connections
 {

@@ -32,7 +32,7 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
         
         public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
 
-        public delegate MarkingSectionIconVM Factory(IMarkableSection section);
+        public delegate MarkingSectionIconVM Factory(ISection section);
 
         /// <summary>
         /// Constructor
@@ -47,10 +47,10 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
         /// The marking to be represented.
         /// </param>
         public MarkingSectionIconVM(
-            IMarkingImageDictionary markingImages, IMarkingSelectFactory markingSelectFactory, IMarkableSection section)
+            IMarkingImageDictionary markingImages, IMarkingSelectFactory markingSelectFactory, ISection section)
         {
             _markingImages = markingImages;
-            _marking = section.Marking;
+            _marking = section.Marking!;
 
             MarkingSelect = markingSelectFactory.GetMarkingSelectVM(section);
             

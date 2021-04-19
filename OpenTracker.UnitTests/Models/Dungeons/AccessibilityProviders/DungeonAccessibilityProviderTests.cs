@@ -16,8 +16,8 @@ using OpenTracker.Models.Dungeons.Result;
 using OpenTracker.Models.Dungeons.State;
 using OpenTracker.Models.Items.Keys;
 using OpenTracker.Models.Modes;
-using OpenTracker.Models.NodeConnections;
 using OpenTracker.Models.Nodes;
+using OpenTracker.Models.Nodes.Connections;
 using OpenTracker.Models.Requirements;
 using Xunit;
 
@@ -46,7 +46,7 @@ namespace OpenTracker.UnitTests.Models.Dungeons.AccessibilityProviders
         private readonly List<KeyDoorID> _bigKeyDoors = new();
         private readonly List<IKeyLayout> _keyLayouts = new();
         private readonly List<DungeonNodeID> _nodes = new();
-        private readonly List<INode> _entryNodes = new()
+        private readonly List<IOverworldNode> _entryNodes = new()
         {
             Substitute.For<IOverworldNode>()
         };
@@ -308,8 +308,7 @@ namespace OpenTracker.UnitTests.Models.Dungeons.AccessibilityProviders
             _result.Accessible.Returns(1);
             
             Assert.PropertyChanged(sut, nameof(IDungeonAccessibilityProvider.Accessible), () =>
-                _entryNodes[0].PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
-                    _mode, new PropertyChangedEventArgs(nameof(IOverworldNode.Accessibility))));
+                _entryNodes[0].ChangePropagated += Raise.Event<EventHandler>(_mode, EventArgs.Empty));
         }
 
         [Fact]

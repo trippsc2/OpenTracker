@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using OpenTracker.Models.NodeConnections;
+using OpenTracker.Models.Nodes.Connections;
 
 namespace OpenTracker.Models.Nodes.Factories
 {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using OpenTracker.Models.Dungeons.Mutable;
-using OpenTracker.Models.NodeConnections;
 using OpenTracker.Models.Nodes;
+using OpenTracker.Models.Nodes.Connections;
 
 namespace OpenTracker.Models.Dungeons.Nodes
 {

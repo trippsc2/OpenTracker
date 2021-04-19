@@ -42,11 +42,11 @@ namespace OpenTracker.ViewModels.MapLocations
         /// The section marking to be represented.
         /// </param>
         public MapLocationMarkingVM(
-            IMarkingImageDictionary markingImages, IMarkingSelectFactory markingSelectFactory, IMarkableSection section)
+            IMarkingImageDictionary markingImages, IMarkingSelectFactory markingSelectFactory, ISection section)
         {
             _markingImages = markingImages;
 
-            _marking = section.Marking;
+            _marking = section.Marking!;
 
             MarkingSelect = markingSelectFactory.GetMarkingSelectVM(section);
             

@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.Dungeons.KeyDoors;
 using OpenTracker.Models.Dungeons.Mutable;
-using OpenTracker.Models.NodeConnections;
 using OpenTracker.Models.Nodes;
+using OpenTracker.Models.Nodes.Connections;
 using OpenTracker.Models.Requirements.Boss;
 using OpenTracker.Models.Requirements.Complex;
 

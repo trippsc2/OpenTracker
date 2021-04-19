@@ -1,7 +1,5 @@
 using Autofac;
 using NSubstitute;
-using NSubstitute.ReturnsExtensions;
-using OpenTracker.Models.Items;
 using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.UndoRedo.Prize;
 using Xunit;
@@ -12,7 +10,6 @@ namespace OpenTracker.UnitTests.Models.UndoRedo.Prize
     {
         private readonly IPrizePlacement _prizePlacement = Substitute.For<IPrizePlacement>();
         private readonly ChangePrize _sut;
-        private readonly IItem _previousValue = Substitute.For<IItem>();
 
         public ChangePrizeTests()
         {
@@ -46,14 +43,11 @@ namespace OpenTracker.UnitTests.Models.UndoRedo.Prize
         }
 
         [Fact]
-        public void ExecuteUndo_ShouldSetPrizeToPreviousValue()
+        public void ExecuteUndo_ShouldCallCycle()
         {
-            _prizePlacement.Prize.Returns(_previousValue);
-            _sut.ExecuteDo();
-            _prizePlacement.Prize.ReturnsNull();
             _sut.ExecuteUndo();
-            
-            Assert.Equal(_previousValue, _prizePlacement.Prize);
+
+            _prizePlacement.Received().Cycle(true);
         }
 
         [Fact]

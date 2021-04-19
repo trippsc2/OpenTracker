@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Markings;
 using OpenTracker.Models.Sections;
+using OpenTracker.Models.Sections.Entrance;
 
 namespace OpenTracker.ViewModels.Markings
 {
@@ -139,14 +140,14 @@ namespace OpenTracker.ViewModels.Markings
         /// <returns>
         /// A new marking select popup control ViewModel instance.
         /// </returns>
-        public IMarkingSelectVM GetMarkingSelectVM(IMarkableSection section)
+        public IMarkingSelectVM GetMarkingSelectVM(ISection section)
         {
             if (section is IEntranceSection)
             {
-                return GetEntranceMarkingSelectPopupVM(section.Marking);
+                return GetEntranceMarkingSelectPopupVM(section.Marking!);
             }
 
-            return GetNonEntranceMarkingSelectPopupVM(section.Marking);
+            return GetNonEntranceMarkingSelectPopupVM(section.Marking!);
         }
 
         /// <summary>

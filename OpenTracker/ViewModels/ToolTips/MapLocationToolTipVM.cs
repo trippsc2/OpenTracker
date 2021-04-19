@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
 using Avalonia.Threading;
 using OpenTracker.Models.Locations;
-using OpenTracker.Models.Sections;
 using OpenTracker.Models.Settings;
 using OpenTracker.Utils;
 using ReactiveUI;
@@ -44,9 +43,11 @@ namespace OpenTracker.ViewModels.Tooltips
             _layoutSettings = layoutSettings;
             _location = location;
 
-            if (_location.Sections[0] is IMarkableSection markableSection)
+            var section = _location.Sections[0];
+            
+            if (section.Marking is not null)
             {
-                SectionMarking = markingFactory(markableSection.Marking);
+                SectionMarking = markingFactory(section.Marking);
             }
 
             Notes = notesFactory(_location);
