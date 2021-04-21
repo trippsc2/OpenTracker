@@ -13,7 +13,7 @@ namespace OpenTracker.UnitTests.Models.UndoRedo.Locations
     {
         private readonly List<ISection> _sections = new()
         {
-            Substitute.For<IMarkableSection>(),
+            Substitute.For<ISection>(),
             Substitute.For<ISection>(),
             Substitute.For<ISection>()
         };
@@ -82,10 +82,9 @@ namespace OpenTracker.UnitTests.Models.UndoRedo.Locations
         public void ExecuteUndo_ShouldRestorePreviousMarking()
         {
             var sut = new ClearLocation(_location);
-            var markableSection = (IMarkableSection)_sections[0];
-            markableSection.CanBeCleared(Arg.Any<bool>()).Returns(true);
+            _sections[0].CanBeCleared(Arg.Any<bool>()).Returns(true);
             var marking = Substitute.For<IMarking>();
-            markableSection.Marking.Returns(marking);
+            _sections[0].Marking.Returns(marking);
             marking.Mark.Returns(MarkType.HCLeft);
             sut.ExecuteDo();
             marking.Mark.Returns(MarkType.Unknown);

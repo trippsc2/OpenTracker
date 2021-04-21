@@ -2,7 +2,6 @@
 using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.Dungeons.AccessibilityProvider;
 using OpenTracker.Models.PrizePlacements;
-using OpenTracker.Models.Requirements;
 using OpenTracker.Models.UndoRedo;
 
 namespace OpenTracker.Models.Sections.Boss
@@ -35,15 +34,12 @@ namespace OpenTracker.Models.Sections.Boss
         /// <param name="autoTrackValue">
         ///     The section auto-track value.
         /// </param>
-        /// <param name="requirement">
-        ///     The requirement for the section to be active.
-        /// </param>
         /// <returns>
         ///     A prize section.
         /// </returns>
         delegate IPrizeSection Factory(
             IBossAccessibilityProvider accessibilityProvider, string name, IBossPlacement bossPlacement,
-            IPrizePlacement prizePlacement, IAutoTrackValue autoTrackValue, IRequirement? requirement = null);
+            IPrizePlacement prizePlacement, IAutoTrackValue? autoTrackValue = null);
 
         /// <summary>
         ///     Returns a new undoable action to toggle the prize.

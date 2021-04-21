@@ -2,7 +2,6 @@ using OpenTracker.Models.AutoTracking.Values;
 using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.Dungeons.AccessibilityProvider;
 using OpenTracker.Models.PrizePlacements;
-using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Models.UndoRedo.Sections;
@@ -48,16 +47,13 @@ namespace OpenTracker.Models.Sections.Boss
         /// <param name="autoTrackValue">
         ///     The section auto-track value.
         /// </param>
-        /// <param name="requirement">
-        ///     The requirement for the section to be active.
-        /// </param>
         public PrizeSection(
             ISaveLoadManager saveLoadManager, ICollectSection.Factory collectSectionFactory, IUncollectSection.Factory uncollectSectionFactory,
             ITogglePrizeSection.Factory togglePrizeSectionFactory, IBossAccessibilityProvider accessibilityProvider,
-            string name, IBossPlacement bossPlacement, IPrizePlacement prizePlacement, IAutoTrackValue autoTrackValue,
-            IRequirement? requirement = null)
+            string name, IBossPlacement bossPlacement, IPrizePlacement prizePlacement,
+            IAutoTrackValue? autoTrackValue = null)
             : base(saveLoadManager, collectSectionFactory, uncollectSectionFactory, accessibilityProvider, name,
-                bossPlacement, autoTrackValue, requirement)
+                bossPlacement, autoTrackValue)
         {
             _togglePrizeSectionFactory = togglePrizeSectionFactory;
 

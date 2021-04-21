@@ -43,16 +43,13 @@ namespace OpenTracker.Models.Sections.Entrance
         /// <param name="holeNode">
         ///     The node to which the hole belongs.
         /// </param>
-        /// <param name="name">
-        ///     A string representing the name of the section.
-        /// </param>
         /// <param name="requirement">
         ///     The requirement for the section to be active.
         /// </param>
         public DropdownSection(ISaveLoadManager saveLoadManager, IMode mode,
             ICollectSection.Factory collectSectionFactory, IUncollectSection.Factory uncollectSectionFactory,
-            IMarking.Factory markingFactory, INode exitNode, INode holeNode, string name, IRequirement requirement)
-            : base(saveLoadManager, collectSectionFactory, uncollectSectionFactory, markingFactory, name,
+            IMarking.Factory markingFactory, INode exitNode, INode holeNode, IRequirement requirement)
+            : base(saveLoadManager, collectSectionFactory, uncollectSectionFactory, markingFactory, "Dropdown",
                 EntranceShuffle.None, requirement)
         {
             _mode = mode;

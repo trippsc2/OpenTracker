@@ -9,7 +9,6 @@ namespace OpenTracker.UnitTests.Models.UndoRedo.Sections
 {
     public class CollectSectionTests
     {
-        private readonly IMarkableSection _markableSection = Substitute.For<IMarkableSection>();
         private readonly ISection _section = Substitute.For<ISection>();
 
         [Theory]
@@ -60,8 +59,8 @@ namespace OpenTracker.UnitTests.Models.UndoRedo.Sections
         public void ExecuteUndo_ShouldRestoreMarkingToPreviousValue()
         {
             var marking = Substitute.For<IMarking>();
-            _markableSection.Marking.Returns(marking);
-            var sut = new CollectSection(_markableSection, false);
+            _section.Marking.Returns(marking);
+            var sut = new CollectSection(_section, false);
             marking.Mark = MarkType.HCLeft;
             
             sut.ExecuteDo();
