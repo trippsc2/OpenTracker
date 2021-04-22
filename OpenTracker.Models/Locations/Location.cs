@@ -124,6 +124,7 @@ namespace OpenTracker.Models.Locations
 
             ID = id;
             Name = name;
+            
             MapLocations = mapLocationFactory.GetMapLocations(this);
             Sections = sectionFactory.GetSections(ID);
             Notes = notes;
@@ -382,7 +383,7 @@ namespace OpenTracker.Models.Locations
         {
             var available = 0;
 
-            foreach (ISection section in Sections)
+            foreach (var section in Sections)
             {
                 if (section is IItemSection itemSection)
                 {
@@ -400,7 +401,7 @@ namespace OpenTracker.Models.Locations
         {
             var total = 0;
 
-            foreach (ISection section in Sections)
+            foreach (var section in Sections)
             {
                 if (section is IItemSection itemSection)
                 {

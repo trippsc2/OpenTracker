@@ -115,10 +115,10 @@ namespace OpenTracker.UnitTests.Models.Locations
         {
             _sections[0].Available.Returns(1);
             _sections[0].IsAvailable().Returns(true);
-            _sections[0].Requirement!.Met.Returns(true);
+            _sections[0].IsActive.Returns(true);
             _sections[1].Available.Returns(1);
             _sections[1].IsAvailable().Returns(true);
-            _sections[1].Requirement!.Met.Returns(true);
+            _sections[1].IsActive.Returns(true);
 
             ((IItemSection) _sections[1]).Accessible.Returns(1);
             ((IItemSection) _sections[1]).Total.Returns(1);
@@ -207,13 +207,13 @@ namespace OpenTracker.UnitTests.Models.Locations
             if (section1Available)
             {
                 _sections[0].IsAvailable().Returns(true);
-                _sections[0].Requirement!.Met.Returns(true);
+                _sections[0].IsActive.Returns(true);
             }
             
             if (section2Available)
             {
                 _sections[1].IsAvailable().Returns(true);
-                _sections[1].Requirement!.Met.Returns(true);
+                _sections[1].IsActive.Returns(true);
             }
 
             ((IItemSection) _sections[1]).Accessible.Returns(1);
@@ -237,11 +237,11 @@ namespace OpenTracker.UnitTests.Models.Locations
         {
             _sections[0].Available.Returns(1);
             _sections[0].IsAvailable().Returns(true);
-            _sections[0].Requirement!.Met.Returns(true);
+            _sections[0].IsActive.Returns(true);
 
             _sections[1].Available.Returns(1);
             _sections[1].IsAvailable().Returns(true);
-            _sections[1].Requirement!.Met.Returns(true);
+            _sections[1].IsActive.Returns(true);
 
             ((IItemSection) _sections[1]).Accessible.Returns(1);
             ((IItemSection) _sections[1]).Total.Returns(1);
@@ -262,10 +262,10 @@ namespace OpenTracker.UnitTests.Models.Locations
         {
             _sections[0].Available.Returns(1);
             _sections[0].IsAvailable().Returns(true);
-            _sections[0].Requirement!.Met.Returns(true);
+            _sections[0].IsActive.Returns(true);
             _sections[1].Available.Returns(1);
             _sections[1].IsAvailable().Returns(true);
-            _sections[1].Requirement!.Met.Returns(true);
+            _sections[1].IsActive.Returns(true);
 
             ((IItemSection) _sections[1]).Total.Returns(1);
             
@@ -291,10 +291,10 @@ namespace OpenTracker.UnitTests.Models.Locations
         {
             _sections[0].Available.Returns(1);
             _sections[0].IsAvailable().Returns(true);
-            _sections[0].Requirement!.Met.Returns(true);
+            _sections[0].IsActive.Returns(true);
             _sections[1].Available.Returns(1);
             _sections[1].IsAvailable().Returns(true);
-            _sections[1].Requirement!.Met.Returns(true);
+            _sections[1].IsActive.Returns(true);
 
             ((IItemSection) _sections[1]).Total.Returns(1);
             ((IItemSection) _sections[1]).Accessible.Returns(accessible);
@@ -314,10 +314,10 @@ namespace OpenTracker.UnitTests.Models.Locations
         {
             _sections[0].Available.Returns(1);
             _sections[0].IsAvailable().Returns(true);
-            _sections[0].Requirement!.Met.Returns(true);
+            _sections[0].IsActive.Returns(true);
             _sections[1].Available.Returns(1);
             _sections[1].IsAvailable().Returns(true);
-            _sections[1].Requirement!.Met.Returns(true);
+            _sections[1].IsActive.Returns(true);
 
             ((IItemSection) _sections[1]).Accessible.Returns(1);
             
@@ -343,10 +343,10 @@ namespace OpenTracker.UnitTests.Models.Locations
         {
             _sections[0].Available.Returns(1);
             _sections[0].IsAvailable().Returns(true);
-            _sections[0].Requirement!.Met.Returns(true);
+            _sections[0].IsActive.Returns(true);
             _sections[1].Available.Returns(1);
             _sections[1].IsAvailable().Returns(true);
-            _sections[1].Requirement!.Met.Returns(true);
+            _sections[1].IsActive.Returns(true);
 
             ((IItemSection) _sections[1]).Available.Returns(total);
             ((IItemSection) _sections[1]).Total.Returns(total);
@@ -366,10 +366,10 @@ namespace OpenTracker.UnitTests.Models.Locations
         {
             _sections[0].Available.Returns(1);
             _sections[0].IsAvailable().Returns(true);
-            _sections[0].Requirement!.Met.Returns(true);
+            _sections[0].IsActive.Returns(true);
             _sections[1].Available.Returns(1);
             _sections[1].IsAvailable().Returns(true);
-            _sections[1].Requirement!.Met.Returns(true);
+            _sections[1].IsActive.Returns(true);
 
             ((IItemSection) _sections[1]).Accessible.Returns(1);
             ((IItemSection) _sections[1]).Total.Returns(1);
@@ -402,13 +402,13 @@ namespace OpenTracker.UnitTests.Models.Locations
             if (section1Available)
             {
                 _sections[0].IsAvailable().Returns(true);
-                _sections[0].Requirement!.Met.Returns(true);
+                _sections[0].IsActive.Returns(true);
             }
             
             if (section2Available)
             {
                 _sections[1].IsAvailable().Returns(true);
-                _sections[1].Requirement!.Met.Returns(true);
+                _sections[1].IsActive.Returns(true);
             }
 
             ((IItemSection) _sections[1]).Accessible.Returns(1);
@@ -432,10 +432,10 @@ namespace OpenTracker.UnitTests.Models.Locations
         {
             _sections[0].Available.Returns(1);
             _sections[0].IsAvailable().Returns(true);
-            _sections[0].Requirement!.Met.Returns(true);
+            _sections[0].IsActive.Returns(true);
             _sections[1].Available.Returns(1);
             _sections[1].IsAvailable().Returns(true);
-            _sections[1].Requirement!.Met.Returns(true);
+            _sections[1].IsActive.Returns(true);
 
             ((IItemSection) _sections[1]).Accessible.Returns(1);
             ((IItemSection) _sections[1]).Total.Returns(1);
@@ -460,10 +460,10 @@ namespace OpenTracker.UnitTests.Models.Locations
         {
             _sections[0].Available.Returns(1);
             _sections[0].IsAvailable().Returns(true);
-            _sections[0].Requirement!.Met.Returns(true);
+            _sections[0].IsActive.Returns(true);
             _sections[1].Available.Returns(1);
             _sections[1].IsAvailable().Returns(true);
-            _sections[1].Requirement!.Met.Returns(true);
+            _sections[1].IsActive.Returns(true);
 
             ((IItemSection) _sections[1]).Accessible.Returns(1);
             ((IItemSection) _sections[1]).Total.Returns(1);
@@ -488,10 +488,10 @@ namespace OpenTracker.UnitTests.Models.Locations
         {
             _sections[0].Available.Returns(1);
             _sections[0].IsAvailable().Returns(true);
-            _sections[0].Requirement!.Met.Returns(true);
+            _sections[0].IsActive.Returns(true);
             _sections[1].Available.Returns(1);
             _sections[1].IsAvailable().Returns(true);
-            _sections[1].Requirement!.Met.Returns(true);
+            _sections[1].IsActive.Returns(true);
 
             ((IItemSection) _sections[1]).Total.Returns(1);
             
@@ -514,10 +514,10 @@ namespace OpenTracker.UnitTests.Models.Locations
         public void SectionChanged_ShouldUpdateAvailable_WhenSectionAvailableChanged()
         {
             _sections[0].IsAvailable().Returns(true);
-            _sections[0].Requirement!.Met.Returns(true);
+            _sections[0].IsActive.Returns(true);
             _sections[1].Available.Returns(1);
             _sections[1].IsAvailable().Returns(true);
-            _sections[1].Requirement!.Met.Returns(true);
+            _sections[1].IsActive.Returns(true);
 
             ((IItemSection) _sections[1]).Accessible.Returns(1);
             ((IItemSection) _sections[1]).Total.Returns(1);
@@ -542,10 +542,10 @@ namespace OpenTracker.UnitTests.Models.Locations
         {
             _sections[0].Available.Returns(1);
             _sections[0].IsAvailable().Returns(true);
-            _sections[0].Requirement!.Met.Returns(true);
+            _sections[0].IsActive.Returns(true);
             _sections[1].Available.Returns(1);
             _sections[1].IsAvailable().Returns(true);
-            _sections[1].Requirement!.Met.Returns(true);
+            _sections[1].IsActive.Returns(true);
 
             ((IItemSection) _sections[1]).Accessible.Returns(1);
             
@@ -569,10 +569,10 @@ namespace OpenTracker.UnitTests.Models.Locations
         {
             _sections[0].Available.Returns(1);
             _sections[0].IsAvailable().Returns(true);
-            _sections[0].Requirement!.Met.Returns(true);
+            _sections[0].IsActive.Returns(true);
             _sections[1].Available.Returns(1);
             _sections[1].IsAvailable().Returns(true);
-            _sections[1].Requirement!.Met.Returns(true);
+            _sections[1].IsActive.Returns(true);
 
             ((IItemSection) _sections[1]).Accessible.Returns(1);
             ((IItemSection) _sections[1]).Total.Returns(1);
@@ -597,10 +597,10 @@ namespace OpenTracker.UnitTests.Models.Locations
         {
             _sections[0].Available.Returns(1);
             _sections[0].IsAvailable().Returns(true);
-            _sections[0].Requirement!.Met.Returns(true);
+            _sections[0].IsActive.Returns(true);
             _sections[1].Available.Returns(1);
             _sections[1].IsAvailable().Returns(true);
-            _sections[1].Requirement!.Met.Returns(true);
+            _sections[1].IsActive.Returns(true);
 
             ((IItemSection) _sections[1]).Accessible.Returns(1);
             ((IItemSection) _sections[1]).Total.Returns(1);
@@ -632,8 +632,8 @@ namespace OpenTracker.UnitTests.Models.Locations
 
             _ = sut.CanBeCleared(false);
 
-            _sections[0].Received().CanBeCleared(false);
-            _sections[1].Received().CanBeCleared(false);
+            _sections[0].Received().CanBeCleared();
+            _sections[1].Received().CanBeCleared();
         }
 
         [Theory]

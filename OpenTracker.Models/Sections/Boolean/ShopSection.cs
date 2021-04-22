@@ -8,7 +8,7 @@ namespace OpenTracker.Models.Sections.Boolean
     /// <summary>
     ///     This class contains shop section data.
     /// </summary>
-    public class ShopShuffle : BooleanSectionBase, IShopSection
+    public class ShopSection : BooleanSectionBase, IShopSection
     {
         /// <summary>
         ///     Constructor
@@ -28,7 +28,7 @@ namespace OpenTracker.Models.Sections.Boolean
         /// <param name="requirement">
         ///     The requirement for this section to be active.
         /// </param>
-        public ShopShuffle(
+        public ShopSection(
             ISaveLoadManager saveLoadManager, ICollectSection.Factory collectSectionFactory,
             IUncollectSection.Factory uncollectSectionFactory, INode node, IRequirement requirement)
             : base(saveLoadManager, collectSectionFactory, uncollectSectionFactory, "Shop", node, requirement)
