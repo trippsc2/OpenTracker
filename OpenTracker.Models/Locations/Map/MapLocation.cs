@@ -16,8 +16,14 @@ namespace OpenTracker.Models.Locations.Map
         public double X { get; }
         public double Y { get; }
 
-        public bool RequirementMet => _requirement is null || _requirement.Met;
-        public bool Visible => Location.Visible;
+        private bool _isActive;
+        public bool IsActive
+        {
+            get => _isActive;
+            private set => this.RaiseAndSetIfChanged(ref _isActive, value);
+        }
+        
+        public bool ShouldBeDisplayed => Location.ShouldBeDisplayed;
 
         /// <summary>
         ///     Constructor
@@ -51,6 +57,8 @@ namespace OpenTracker.Models.Locations.Map
             {
                 _requirement.PropertyChanged += OnRequirementChanged;
             }
+            
+            UpdateIsActive();
         }
 
         /// <summary>
@@ -64,9 +72,14 @@ namespace OpenTracker.Models.Locations.Map
         /// </param>
         private void OnLocationChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(ILocation.Visible))
+            switch (e.PropertyName)
             {
-                this.RaisePropertyChanged(nameof(Visible));
+                case nameof(ILocation.ShouldBeDisplayed):
+                    this.RaisePropertyChanged(nameof(ShouldBeDisplayed));
+                    break;
+                case nameof(ILocation.IsActive):
+                    UpdateIsActive();
+                    break;
             }
         }
 
@@ -83,8 +96,16 @@ namespace OpenTracker.Models.Locations.Map
         {
             if (e.PropertyName == nameof(IRequirement.Met))
             {
-                this.RaisePropertyChanged(nameof(RequirementMet));
+                UpdateIsActive();
             }
+        }
+
+        /// <summary>
+        ///     Updates the value of the IsActive property.
+        /// </summary>
+        private void UpdateIsActive()
+        {
+            IsActive = (_requirement is null || _requirement.Met) && Location.IsActive;
         }
     }
 }

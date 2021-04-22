@@ -60,6 +60,8 @@ namespace OpenTracker.Models.Sections.Entrance
             _mode.PropertyChanged += OnModeChanged;
             _exitNode.PropertyChanged += OnNodeChanged;
             _holeNode.PropertyChanged += OnNodeChanged;
+            
+            UpdateAccessibility();
         }
 
         /// <summary>

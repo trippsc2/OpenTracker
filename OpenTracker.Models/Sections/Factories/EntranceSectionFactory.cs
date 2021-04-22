@@ -314,6 +314,12 @@ namespace OpenTracker.Models.Sections.Factories
                 case LocationID.TRLedgeRight:
                 case LocationID.TRSafetyDoor:
                     return EntranceShuffle.Dungeon;
+                case LocationID.LumberjackCaveExit:
+                case LocationID.TheWellExit:
+                case LocationID.MagicBatExit:
+                case LocationID.ForestHideoutExit:
+                case LocationID.CastleSecretExit:
+                case LocationID.HoulihanHoleExit:
                 case LocationID.Sanctuary:
                 case LocationID.GanonHoleExit:
                 case LocationID.SkullWoodsWestEntrance:
@@ -343,17 +349,24 @@ namespace OpenTracker.Models.Sections.Factories
         /// </returns>
         private IRequirement GetRequirement(LocationID id, EntranceShuffle entranceShuffleLevel)
         {
-            if (id == LocationID.LinksHouseEntrance)
+            switch (id)
             {
-                return _aggregateRequirements[new HashSet<IRequirement>
-                {
-                    _alternativeRequirements[new HashSet<IRequirement>
+                case LocationID.LinksHouseEntrance:
+                    return _aggregateRequirements[new HashSet<IRequirement>
                     {
-                        _entranceShuffleRequirements[EntranceShuffle.All],
-                        _entranceShuffleRequirements[EntranceShuffle.Insanity]
-                    }],
-                    _worldStateRequirements[WorldState.Inverted]
-                }];
+                        _alternativeRequirements[new HashSet<IRequirement>
+                        {
+                            _entranceShuffleRequirements[EntranceShuffle.All],
+                            _entranceShuffleRequirements[EntranceShuffle.Insanity]
+                        }],
+                        _worldStateRequirements[WorldState.Inverted]
+                    }];
+                case LocationID.GanonHoleExit:
+                    return _aggregateRequirements[new HashSet<IRequirement>
+                    {
+                        _entranceShuffleRequirements[EntranceShuffle.Insanity],
+                        _worldStateRequirements[WorldState.Inverted]
+                    }];
             }
 
             switch (entranceShuffleLevel)

@@ -43,7 +43,12 @@ namespace OpenTracker.Models.Sections.Boolean
         {
             _node = node;
 
+            Total = 1;
+            Available = 1;
+
             _node.PropertyChanged += OnNodeChanged;
+            
+            UpdateAccessibility();
         }
 
         public override bool CanBeCleared(bool force = false)

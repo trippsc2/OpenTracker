@@ -58,10 +58,9 @@ namespace OpenTracker.Models.Sections.Boss
 
             BossPlacement = bossPlacement;
 
-            Total = 1;
-            Available = 1;
-
             _accessibilityProvider.PropertyChanged += OnAccessibilityProviderChanged;
+            
+            UpdateAccessibility();
         }
 
         public override bool CanBeCleared(bool force = false)
@@ -87,8 +86,16 @@ namespace OpenTracker.Models.Sections.Boss
         {
             if (e.PropertyName == nameof(IBossAccessibilityProvider.Accessibility))
             {
-                Accessibility = _accessibilityProvider.Accessibility;
+                UpdateAccessibility();
             }
+        }
+
+        /// <summary>
+        ///     Updates the value of the Accessibility property.
+        /// </summary>
+        private void UpdateAccessibility()
+        {
+            Accessibility = _accessibilityProvider.Accessibility;
         }
     }
 }

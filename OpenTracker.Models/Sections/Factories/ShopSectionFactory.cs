@@ -132,11 +132,7 @@ namespace OpenTracker.Models.Sections.Factories
                         _entranceShuffleRequirements[EntranceShuffle.None],
                         _entranceShuffleRequirements[EntranceShuffle.Dungeon]
                     }],
-                    _alternativeRequirements[new HashSet<IRequirement>
-                    {
-                        _shopShuffleRequirements[true],
-                        _takeAnyLocationsRequirements[true]
-                    }]
+                    _shopShuffleRequirements[true]
                 }];
             }
 
@@ -147,7 +143,11 @@ namespace OpenTracker.Models.Sections.Factories
                     _entranceShuffleRequirements[EntranceShuffle.None],
                     _entranceShuffleRequirements[EntranceShuffle.Dungeon]
                 }],
-                _shopShuffleRequirements[true]
+                _alternativeRequirements[new HashSet<IRequirement>
+                {
+                    _shopShuffleRequirements[true],
+                    _takeAnyLocationsRequirements[true]
+                }]
             }];
         }
     }

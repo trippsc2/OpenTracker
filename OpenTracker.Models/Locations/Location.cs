@@ -8,7 +8,6 @@ using OpenTracker.Models.Locations.Map;
 using OpenTracker.Models.Markings;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.Sections;
-using OpenTracker.Models.Sections.Entrance;
 using OpenTracker.Models.Sections.Factories;
 using OpenTracker.Models.Sections.Item;
 using OpenTracker.Models.UndoRedo;
@@ -65,11 +64,18 @@ namespace OpenTracker.Models.Locations
             private set => this.RaiseAndSetIfChanged(ref _total, value);
         }
 
-        private bool _visible;
-        public bool Visible
+        private bool _isActive;
+        public bool IsActive
         {
-            get => _visible;
-            private set => this.RaiseAndSetIfChanged(ref _visible, value);
+            get => _isActive;
+            private set => this.RaiseAndSetIfChanged(ref _isActive, value);
+        }
+
+        private bool _shouldBeDisplayed;
+        public bool ShouldBeDisplayed
+        {
+            get => _shouldBeDisplayed;
+            private set => this.RaiseAndSetIfChanged(ref _shouldBeDisplayed, value);
         }
 
         /// <summary>
@@ -129,8 +135,6 @@ namespace OpenTracker.Models.Locations
             Sections = sectionFactory.GetSections(ID);
             Notes = notes;
 
-            PropertyChanged += OnPropertyChanged;
-
             foreach (ISection section in Sections)
             {
                 section.PropertyChanged += OnSectionChanged;
@@ -140,7 +144,8 @@ namespace OpenTracker.Models.Locations
             UpdateAccessible();
             UpdateAvailable();
             UpdateTotal();
-            UpdateVisible();
+            UpdateIsActive();
+            UpdateShouldBeDisplayed();
         }
 
         public bool CanBeCleared(bool force)
@@ -258,23 +263,6 @@ namespace OpenTracker.Models.Locations
         }
 
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on this object.
-        /// </summary>
-        /// <param name="sender">
-        ///     The sending object of the event.
-        /// </param>
-        /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
-        /// </param>
-        private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(Accessibility))
-            {
-                UpdateVisible();
-            }
-        }
-
-        /// <summary>
         ///     Subscribes to the PropertyChanged event on the ISection interface.
         /// </summary>
         /// <param name="sender">
@@ -297,14 +285,21 @@ namespace OpenTracker.Models.Locations
                 case nameof(IItemSection.Accessible):
                     UpdateAccessible();
                     break;
-                case nameof(IItemSection.Total):
+                case nameof(ISection.Total):
                     UpdateTotal();
+                    break;
+                case nameof(ISection.IsActive):
+                    UpdateIsActive();
+                    UpdateAccessibility();
+                    break;
+                case nameof(ISection.ShouldBeDisplayed):
+                    UpdateShouldBeDisplayed();
                     break;
             }
         }
 
         /// <summary>
-        ///     Updates the accessibility of the location.
+        ///     Updates the value of the Accessibility property.
         /// </summary>
         private void UpdateAccessibility()
         {
@@ -359,7 +354,7 @@ namespace OpenTracker.Models.Locations
         }
 
         /// <summary>
-        ///     Updates the accessible count of the location.
+        ///     Updates the value of the Accessible property.
         /// </summary>
         private void UpdateAccessible()
         {
@@ -377,7 +372,7 @@ namespace OpenTracker.Models.Locations
         }
 
         /// <summary>
-        ///     Updates the available count of the location.
+        ///     Updates the value of the Available property.
         /// </summary>
         private void UpdateAvailable()
         {
@@ -395,7 +390,7 @@ namespace OpenTracker.Models.Locations
         }
 
         /// <summary>
-        ///     Updates the total count of the location.
+        ///     Updates the value of the Total property.
         /// </summary>
         private void UpdateTotal()
         {
@@ -413,16 +408,19 @@ namespace OpenTracker.Models.Locations
         }
 
         /// <summary>
-        ///     Updates whether the location is currently visible.
+        ///     Updates the value of the IsActive property.
         /// </summary>
-        private void UpdateVisible()
+        private void UpdateIsActive()
         {
-            Visible = Accessibility switch
-            {
-                AccessibilityLevel.None => Sections[0] is IEntranceSection,
-                AccessibilityLevel.Cleared => false,
-                _ => true
-            };
+            IsActive = Sections.Any(section => section.IsActive);
+        }
+
+        /// <summary>
+        ///     Updates the value of the ShouldBeDisplayed property.
+        /// </summary>
+        private void UpdateShouldBeDisplayed()
+        {
+            ShouldBeDisplayed = Sections.Any(section => section.ShouldBeDisplayed);
         }
     }
 }

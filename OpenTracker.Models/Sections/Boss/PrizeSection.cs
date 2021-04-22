@@ -58,6 +58,9 @@ namespace OpenTracker.Models.Sections.Boss
             _togglePrizeSectionFactory = togglePrizeSectionFactory;
 
             PrizePlacement = prizePlacement;
+            
+            Total = 1;
+            Available = 1;
         }
 
         public IUndoable CreateTogglePrizeSectionAction(bool force)

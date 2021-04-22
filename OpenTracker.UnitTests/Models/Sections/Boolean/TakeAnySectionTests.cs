@@ -5,18 +5,18 @@ using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Sections.Boolean;
 using Xunit;
 
-namespace OpenTracker.UnitTests.Models.Sections
+namespace OpenTracker.UnitTests.Models.Sections.Boolean
 {
-    public class ShopSectionTests
+    public class TakeAnySectionTests
     {
         [Fact]
         public void AutofacTest()
         {
             using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-            var factory = scope.Resolve<IShopSection.Factory>();
+            var factory = scope.Resolve<ITakeAnySection.Factory>();
             var sut = factory(Substitute.For<INode>(), Substitute.For<IRequirement>());
             
-            Assert.NotNull(sut as ShopSection);
+            Assert.NotNull(sut as TakeAnySection);
         }
     }
 }

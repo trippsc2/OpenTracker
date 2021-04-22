@@ -362,18 +362,8 @@ namespace OpenTracker.UnitTests.Models.Locations
         }
         
         [Fact]
-        public void Visible_ShouldRaisePropertyChanged()
+        public void ShouldBeDisplayed_ShouldRaisePropertyChanged()
         {
-            _sections[0].Available.Returns(1);
-            _sections[0].IsAvailable().Returns(true);
-            _sections[0].IsActive.Returns(true);
-            _sections[1].Available.Returns(1);
-            _sections[1].IsAvailable().Returns(true);
-            _sections[1].IsActive.Returns(true);
-
-            ((IItemSection) _sections[1]).Accessible.Returns(1);
-            ((IItemSection) _sections[1]).Total.Returns(1);
-            
             var sut = new Location(
                 _mapLocationFactory, _sectionFactory, () => Substitute.For<IMarking>(),
                 (_, _) => Substitute.For<IClearLocation>(),
@@ -381,42 +371,25 @@ namespace OpenTracker.UnitTests.Models.Locations
                 _ => Substitute.For<IUnpinLocation>(), _ => Substitute.For<IAddNote>(),
                 (_, _) => Substitute.For<IRemoveNote>(), _notes, LocationID.Pedestal, Name);
 
-            _sections[0].Accessibility.Returns(AccessibilityLevel.Normal);
+            _sections[0].ShouldBeDisplayed.Returns(true);
+            _sections[1].ShouldBeDisplayed.Returns(true);
 
-            Assert.PropertyChanged(sut, nameof(ILocation.Accessibility), () => 
+            Assert.PropertyChanged(sut, nameof(ILocation.ShouldBeDisplayed), () => 
                 _sections[0].PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
-                    _sections[0], new PropertyChangedEventArgs(nameof(ISection.Accessibility))));
+                    _sections[0], new PropertyChangedEventArgs(nameof(ISection.ShouldBeDisplayed))));
         }
         
         [Theory]
-        [InlineData(false, false, false, AccessibilityLevel.None, AccessibilityLevel.None)]
-        [InlineData(true, true, true, AccessibilityLevel.None, AccessibilityLevel.None)]
-        [InlineData(true, true, true, AccessibilityLevel.Normal, AccessibilityLevel.Normal)]
-        public void Visible_ShouldMatchExpected(
-            bool expected, bool section1Available, bool section2Available, AccessibilityLevel section1,
-            AccessibilityLevel section2)
+        [InlineData(false, false, false)]
+        [InlineData(true, false, true)]
+        [InlineData(true, true, false)]
+        [InlineData(true, true, true)]
+        public void ShouldBeDisplayed_ShouldMatchExpected(
+            bool expected, bool section1ShouldBeDisplayed, bool section2ShouldBeDisplayed)
         {
-            _sections[0].Available.Returns(1);
-            _sections[1].Available.Returns(1);
+            _sections[0].ShouldBeDisplayed.Returns(section1ShouldBeDisplayed);
+            _sections[1].ShouldBeDisplayed.Returns(section2ShouldBeDisplayed);
 
-            if (section1Available)
-            {
-                _sections[0].IsAvailable().Returns(true);
-                _sections[0].IsActive.Returns(true);
-            }
-            
-            if (section2Available)
-            {
-                _sections[1].IsAvailable().Returns(true);
-                _sections[1].IsActive.Returns(true);
-            }
-
-            ((IItemSection) _sections[1]).Accessible.Returns(1);
-            ((IItemSection) _sections[1]).Total.Returns(1);
-            
-            _sections[0].Accessibility.Returns(section1);
-            _sections[1].Accessibility.Returns(section2);
-            
             var sut = new Location(
                 _mapLocationFactory, _sectionFactory, () => Substitute.For<IMarking>(),
                 (_, _) => Substitute.For<IClearLocation>(),
@@ -424,7 +397,46 @@ namespace OpenTracker.UnitTests.Models.Locations
                 _ => Substitute.For<IUnpinLocation>(), _ => Substitute.For<IAddNote>(),
                 (_, _) => Substitute.For<IRemoveNote>(), _notes, LocationID.Pedestal, Name);
             
-            Assert.Equal(expected, sut.Visible);
+            Assert.Equal(expected, sut.ShouldBeDisplayed);
+        }
+        
+        [Fact]
+        public void IsActive_ShouldRaisePropertyChanged()
+        {
+            var sut = new Location(
+                _mapLocationFactory, _sectionFactory, () => Substitute.For<IMarking>(),
+                (_, _) => Substitute.For<IClearLocation>(),
+                _ => Substitute.For<IPinLocation>(),
+                _ => Substitute.For<IUnpinLocation>(), _ => Substitute.For<IAddNote>(),
+                (_, _) => Substitute.For<IRemoveNote>(), _notes, LocationID.Pedestal, Name);
+
+            _sections[0].IsActive.Returns(true);
+            _sections[1].IsActive.Returns(true);
+
+            Assert.PropertyChanged(sut, nameof(ILocation.IsActive), () => 
+                _sections[0].PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                    _sections[0], new PropertyChangedEventArgs(nameof(ISection.IsActive))));
+        }
+        
+        [Theory]
+        [InlineData(false, false, false)]
+        [InlineData(true, false, true)]
+        [InlineData(true, true, false)]
+        [InlineData(true, true, true)]
+        public void IsActive_ShouldMatchExpected(
+            bool expected, bool section1ShouldBeDisplayed, bool section2ShouldBeDisplayed)
+        {
+            _sections[0].IsActive.Returns(section1ShouldBeDisplayed);
+            _sections[1].IsActive.Returns(section2ShouldBeDisplayed);
+
+            var sut = new Location(
+                _mapLocationFactory, _sectionFactory, () => Substitute.For<IMarking>(),
+                (_, _) => Substitute.For<IClearLocation>(),
+                _ => Substitute.For<IPinLocation>(),
+                _ => Substitute.For<IUnpinLocation>(), _ => Substitute.For<IAddNote>(),
+                (_, _) => Substitute.For<IRemoveNote>(), _notes, LocationID.Pedestal, Name);
+            
+            Assert.Equal(expected, sut.IsActive);
         }
 
         [Fact]
@@ -565,18 +577,8 @@ namespace OpenTracker.UnitTests.Models.Locations
         }
         
         [Fact]
-        public void SectionChanged_ShouldUpdateVisible_WhenSectionAccessibilityChanged()
-        {
-            _sections[0].Available.Returns(1);
-            _sections[0].IsAvailable().Returns(true);
-            _sections[0].IsActive.Returns(true);
-            _sections[1].Available.Returns(1);
-            _sections[1].IsAvailable().Returns(true);
-            _sections[1].IsActive.Returns(true);
-
-            ((IItemSection) _sections[1]).Accessible.Returns(1);
-            ((IItemSection) _sections[1]).Total.Returns(1);
-            
+        public void SectionChanged_ShouldUpdateShouldBeDisplayed_WhenSectionShouldBeDisplayedChanged()
+        { 
             var sut = new Location(
                 _mapLocationFactory, _sectionFactory, () => Substitute.For<IMarking>(),
                 (_, _) => Substitute.For<IClearLocation>(),
@@ -584,27 +586,17 @@ namespace OpenTracker.UnitTests.Models.Locations
                 _ => Substitute.For<IUnpinLocation>(), _ => Substitute.For<IAddNote>(),
                 (_, _) => Substitute.For<IRemoveNote>(), _notes, LocationID.Pedestal, Name);
 
-            _sections[0].Accessibility.Returns(AccessibilityLevel.Normal);
+            _sections[0].ShouldBeDisplayed.Returns(true);
 
             _sections[0].PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
-                _sections[0], new PropertyChangedEventArgs(nameof(ISection.Accessibility)));
+                _sections[0], new PropertyChangedEventArgs(nameof(ISection.ShouldBeDisplayed)));
             
-            Assert.True(sut.Visible);
+            Assert.True(sut.ShouldBeDisplayed);
         }
-
+        
         [Fact]
-        public void SectionChanged_ShouldUpdateVisible_WhenSectionAvailableChanged()
-        {
-            _sections[0].Available.Returns(1);
-            _sections[0].IsAvailable().Returns(true);
-            _sections[0].IsActive.Returns(true);
-            _sections[1].Available.Returns(1);
-            _sections[1].IsAvailable().Returns(true);
-            _sections[1].IsActive.Returns(true);
-
-            ((IItemSection) _sections[1]).Accessible.Returns(1);
-            ((IItemSection) _sections[1]).Total.Returns(1);
-            
+        public void SectionChanged_ShouldUpdateIsActive_WhenSectionIsActiveChanged()
+        { 
             var sut = new Location(
                 _mapLocationFactory, _sectionFactory, () => Substitute.For<IMarking>(),
                 (_, _) => Substitute.For<IClearLocation>(),
@@ -612,12 +604,12 @@ namespace OpenTracker.UnitTests.Models.Locations
                 _ => Substitute.For<IUnpinLocation>(), _ => Substitute.For<IAddNote>(),
                 (_, _) => Substitute.For<IRemoveNote>(), _notes, LocationID.Pedestal, Name);
 
-            _sections[0].Accessibility.Returns(AccessibilityLevel.Normal);
+            _sections[0].IsActive.Returns(true);
 
             _sections[0].PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
-                _sections[0], new PropertyChangedEventArgs(nameof(ISection.Available)));
+                _sections[0], new PropertyChangedEventArgs(nameof(ISection.IsActive)));
             
-            Assert.True(sut.Visible);
+            Assert.True(sut.IsActive);
         }
 
         [Fact]

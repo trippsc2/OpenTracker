@@ -48,6 +48,14 @@ namespace OpenTracker.UnitTests.Models.Dropdowns
         }
 
         [Fact]
+        public void Load_ShouldDoNothing_WhenSaveDataIsNull()
+        {
+            _sut.Load(null);
+            
+            _dropdown.DidNotReceive().Load(Arg.Any<DropdownSaveData?>());
+        }
+
+        [Fact]
         public void Load_ShouldCallLoadOnMembers()
         {
             var saveData = new Dictionary<DropdownID, DropdownSaveData>

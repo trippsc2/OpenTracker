@@ -12,8 +12,8 @@ namespace OpenTracker.Models.Locations.Map
         MapID Map { get; }
         double X { get; }
         double Y { get; }
-        bool RequirementMet { get; }
-        bool Visible { get; }
+        bool IsActive { get; }
+        bool ShouldBeDisplayed { get; }
 
         delegate IMapLocation Factory(
             MapID map, double x, double y, ILocation location, IRequirement? requirement = null);

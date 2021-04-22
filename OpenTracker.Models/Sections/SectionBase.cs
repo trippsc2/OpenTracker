@@ -21,11 +21,11 @@ namespace OpenTracker.Models.Sections
         private readonly IUncollectSection.Factory _uncollectSectionFactory;
         
         private readonly IAutoTrackValue? _autoTrackValue;
+        private readonly IRequirement? _requirement;
 
         public string Name { get; }
         public bool UserManipulated { get; set; }
         public IMarking? Marking { get; }
-        public IRequirement? Requirement { get; }
         
         private AccessibilityLevel _accessibility;
         public AccessibilityLevel Accessibility
@@ -97,16 +97,16 @@ namespace OpenTracker.Models.Sections
             _uncollectSectionFactory = uncollectSectionFactory;
             
             _autoTrackValue = autoTrackValue;
+            _requirement = requirement;
 
             Name = name;
             Marking = marking;
-            Requirement = requirement;
             
             PropertyChanged += OnPropertyChanged;
 
-            if (Requirement is not null)
+            if (_requirement is not null)
             {
-                Requirement.PropertyChanged += OnRequirementChanged;
+                _requirement.PropertyChanged += OnRequirementChanged;
             }
 
             if (_autoTrackValue is not null)
@@ -229,7 +229,7 @@ namespace OpenTracker.Models.Sections
         /// </summary>
         private void UpdateIsActive()
         {
-            IsActive = Requirement is null || Requirement.Met;
+            IsActive = _requirement is null || _requirement.Met;
         }
 
         /// <summary>

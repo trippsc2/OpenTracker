@@ -9,7 +9,6 @@ using Avalonia.Threading;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Locations.Map;
 using OpenTracker.Models.Modes;
-using OpenTracker.Models.Sections;
 using OpenTracker.Models.Sections.Item;
 using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
@@ -79,7 +78,7 @@ namespace OpenTracker.ViewModels.MapLocations
             }
         }
 
-        public bool LabelVisible => _trackerSettings.ShowItemCountsOnMap && Size > 70.0 && !(Label is null);
+        public bool LabelVisible => _trackerSettings.ShowItemCountsOnMap && Size > 70.0 && Label is not null;
         
         public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
         public ReactiveCommand<RoutedEventArgs, Unit> HandleDoubleClick { get; }
@@ -177,14 +176,11 @@ namespace OpenTracker.ViewModels.MapLocations
             {
                 case nameof(IMapLocationColorProvider.BorderColor):
                     await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(BorderColor)));
+                    await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(LabelVisible)));
                     break;
                 case nameof(IMapLocationColorProvider.Color):
                     await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Color)));
                     break;
-            }
-            if (e.PropertyName == nameof(IMapLocationColorProvider.BorderColor))
-            {
-                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(LabelVisible)));
             }
         }
 

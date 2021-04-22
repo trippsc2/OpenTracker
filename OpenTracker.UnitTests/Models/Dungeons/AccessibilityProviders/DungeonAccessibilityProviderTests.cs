@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using Autofac;
 using NSubstitute;
+using NSubstitute.ReturnsExtensions;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.Dungeons.AccessibilityProvider;
@@ -201,7 +202,7 @@ namespace OpenTracker.UnitTests.Models.Dungeons.AccessibilityProviders
         }
 
         [Fact]
-        public void ModeChanged_ShouldUpdateValues_WhenMapShuffleChanged()
+        public void ModeChanged_ShouldUpdateValues_WhenMapShuffleChangedAndMapIsNotNull()
         {
             _result.Accessible.Returns(0);
             var sut = new DungeonAccessibilityProvider(_mode, _bossProviderFactory,
@@ -209,27 +210,31 @@ namespace OpenTracker.UnitTests.Models.Dungeons.AccessibilityProviders
                 (_, _) => _resultAggregator);
             _result.Accessible.Returns(1);
             
-            Assert.PropertyChanged(sut, nameof(IDungeonAccessibilityProvider.Accessible), () =>
-                _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
-                    _mode, new PropertyChangedEventArgs(nameof(IMode.MapShuffle))));
+            _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                _mode, new PropertyChangedEventArgs(nameof(IMode.MapShuffle)));
+            
+            Assert.Equal(1, sut.Accessible);
         }
 
         [Fact]
-        public void ModeChanged_ShouldUpdateValues_WhenCompassShuffleChanged()
+        public void ModeChanged_ShouldDoNothing_WhenMapShuffleChangedAndMapIsNull()
         {
+            _dungeon.Map.ReturnsNull();
+            
             _result.Accessible.Returns(0);
             var sut = new DungeonAccessibilityProvider(_mode, _bossProviderFactory,
                 _ => _mutableDungeonQueue, _dungeon, (_, _) => _keyDoorIterator,
                 (_, _) => _resultAggregator);
             _result.Accessible.Returns(1);
             
-            Assert.PropertyChanged(sut, nameof(IDungeonAccessibilityProvider.Accessible), () =>
-                _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
-                    _mode, new PropertyChangedEventArgs(nameof(IMode.CompassShuffle))));
+            _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                _mode, new PropertyChangedEventArgs(nameof(IMode.MapShuffle)));
+            
+            Assert.Equal(0, sut.Accessible);
         }
 
         [Fact]
-        public void ModeChanged_ShouldUpdateValues_WhenSmallKeyShuffleChanged()
+        public void ModeChanged_ShouldUpdateValues_WhenCompassShuffleChangedAndCompassIsNotNull()
         {
             _result.Accessible.Returns(0);
             var sut = new DungeonAccessibilityProvider(_mode, _bossProviderFactory,
@@ -237,27 +242,31 @@ namespace OpenTracker.UnitTests.Models.Dungeons.AccessibilityProviders
                 (_, _) => _resultAggregator);
             _result.Accessible.Returns(1);
             
-            Assert.PropertyChanged(sut, nameof(IDungeonAccessibilityProvider.Accessible), () =>
-                _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
-                    _mode, new PropertyChangedEventArgs(nameof(IMode.SmallKeyShuffle))));
+            _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                _mode, new PropertyChangedEventArgs(nameof(IMode.CompassShuffle)));
+            
+            Assert.Equal(1, sut.Accessible);
         }
 
         [Fact]
-        public void ModeChanged_ShouldUpdateValues_WhenBigKeyShuffleChanged()
+        public void ModeChanged_ShouldDoNothing_WhenCompassShuffleChangedAndCompassIsNull()
         {
+            _dungeon.Compass.ReturnsNull();
+            
             _result.Accessible.Returns(0);
             var sut = new DungeonAccessibilityProvider(_mode, _bossProviderFactory,
                 _ => _mutableDungeonQueue, _dungeon, (_, _) => _keyDoorIterator,
                 (_, _) => _resultAggregator);
             _result.Accessible.Returns(1);
             
-            Assert.PropertyChanged(sut, nameof(IDungeonAccessibilityProvider.Accessible), () =>
-                _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
-                    _mode, new PropertyChangedEventArgs(nameof(IMode.BigKeyShuffle))));
+            _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                _mode, new PropertyChangedEventArgs(nameof(IMode.CompassShuffle)));
+            
+            Assert.Equal(0, sut.Accessible);
         }
 
         [Fact]
-        public void ModeChanged_ShouldUpdateValues_WhenKeyDropShuffleChanged()
+        public void ModeChanged_ShouldUpdateValues_WhenSmallShuffleChanged()
         {
             _result.Accessible.Returns(0);
             var sut = new DungeonAccessibilityProvider(_mode, _bossProviderFactory,
@@ -265,9 +274,91 @@ namespace OpenTracker.UnitTests.Models.Dungeons.AccessibilityProviders
                 (_, _) => _resultAggregator);
             _result.Accessible.Returns(1);
             
-            Assert.PropertyChanged(sut, nameof(IDungeonAccessibilityProvider.Accessible), () =>
-                _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
-                    _mode, new PropertyChangedEventArgs(nameof(IMode.KeyDropShuffle))));
+            _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                _mode, new PropertyChangedEventArgs(nameof(IMode.SmallKeyShuffle)));
+            
+            Assert.Equal(1, sut.Accessible);
+        }
+
+        [Fact]
+        public void ModeChanged_ShouldUpdateValues_WhenBigKeyShuffleChangedAndBigKeyIsNotNull()
+        {
+            _result.Accessible.Returns(0);
+            var sut = new DungeonAccessibilityProvider(_mode, _bossProviderFactory,
+                _ => _mutableDungeonQueue, _dungeon, (_, _) => _keyDoorIterator,
+                (_, _) => _resultAggregator);
+            _result.Accessible.Returns(1);
+            
+            _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                _mode, new PropertyChangedEventArgs(nameof(IMode.BigKeyShuffle)));
+            
+            Assert.Equal(1, sut.Accessible);
+        }
+
+        [Fact]
+        public void ModeChanged_ShouldDoNothing_WhenBigKeyShuffleChangedAndBigKeyIsNull()
+        {
+            _dungeon.BigKey.ReturnsNull();
+            
+            _result.Accessible.Returns(0);
+            var sut = new DungeonAccessibilityProvider(_mode, _bossProviderFactory,
+                _ => _mutableDungeonQueue, _dungeon, (_, _) => _keyDoorIterator,
+                (_, _) => _resultAggregator);
+            _result.Accessible.Returns(1);
+            
+            _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                _mode, new PropertyChangedEventArgs(nameof(IMode.BigKeyShuffle)));
+            
+            Assert.Equal(0, sut.Accessible);
+        }
+
+        [Fact]
+        public void ModeChanged_ShouldUpdateValues_WhenKeyDropShuffleChangedAndSmallKeyDropsExist()
+        {
+            _dungeon.SmallKeyDrops.Add(DungeonItemID.ATBoss);
+            
+            _result.Accessible.Returns(0);
+            var sut = new DungeonAccessibilityProvider(_mode, _bossProviderFactory,
+                _ => _mutableDungeonQueue, _dungeon, (_, _) => _keyDoorIterator,
+                (_, _) => _resultAggregator);
+            _result.Accessible.Returns(1);
+            
+            _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                _mode, new PropertyChangedEventArgs(nameof(IMode.KeyDropShuffle)));
+            
+            Assert.Equal(1, sut.Accessible);
+        }
+
+        [Fact]
+        public void ModeChanged_ShouldUpdateValues_WhenKeyDropShuffleChangedAndBigKeyDropsExist()
+        {
+            _dungeon.BigKeyDrops.Add(DungeonItemID.ATBoss);
+            
+            _result.Accessible.Returns(0);
+            var sut = new DungeonAccessibilityProvider(_mode, _bossProviderFactory,
+                _ => _mutableDungeonQueue, _dungeon, (_, _) => _keyDoorIterator,
+                (_, _) => _resultAggregator);
+            _result.Accessible.Returns(1);
+            
+            _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                _mode, new PropertyChangedEventArgs(nameof(IMode.KeyDropShuffle)));
+            
+            Assert.Equal(1, sut.Accessible);
+        }
+
+        [Fact]
+        public void ModeChanged_ShouldDoNothing_WhenKeyDropShuffleChangedAndNoKeyDropsExist()
+        {
+            _result.Accessible.Returns(0);
+            var sut = new DungeonAccessibilityProvider(_mode, _bossProviderFactory,
+                _ => _mutableDungeonQueue, _dungeon, (_, _) => _keyDoorIterator,
+                (_, _) => _resultAggregator);
+            _result.Accessible.Returns(1);
+            
+            _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                _mode, new PropertyChangedEventArgs(nameof(IMode.KeyDropShuffle)));
+            
+            Assert.Equal(0, sut.Accessible);
         }
 
         [Fact]
@@ -279,13 +370,31 @@ namespace OpenTracker.UnitTests.Models.Dungeons.AccessibilityProviders
                 (_, _) => _resultAggregator);
             _result.Accessible.Returns(1);
             
-            Assert.PropertyChanged(sut, nameof(IDungeonAccessibilityProvider.Accessible), () =>
-                _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
-                    _mode, new PropertyChangedEventArgs(nameof(IMode.GenericKeys))));
+            _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                _mode, new PropertyChangedEventArgs(nameof(IMode.GenericKeys)));
+            
+            Assert.Equal(1, sut.Accessible);
         }
 
         [Fact]
-        public void ModeChanged_ShouldUpdateValues_WhenGuaranteedBossItemsChanged()
+        public void ModeChanged_ShouldUpdateValues_WhenGuaranteedBossItemsChangedAndBossesExist()
+        {
+            _dungeon.Bosses.Add(DungeonItemID.ATBoss);
+            
+            _result.Accessible.Returns(0);
+            var sut = new DungeonAccessibilityProvider(_mode, _bossProviderFactory,
+                _ => _mutableDungeonQueue, _dungeon, (_, _) => _keyDoorIterator,
+                (_, _) => _resultAggregator);
+            _result.Accessible.Returns(1);
+            
+            _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                _mode, new PropertyChangedEventArgs(nameof(IMode.GuaranteedBossItems)));
+            
+            Assert.Equal(1, sut.Accessible);
+        }
+
+        [Fact]
+        public void ModeChanged_ShouldDoNothing_WhenGuaranteedBossItemsChangedAndNoBossesExist()
         {
             _result.Accessible.Returns(0);
             var sut = new DungeonAccessibilityProvider(_mode, _bossProviderFactory,
@@ -293,9 +402,10 @@ namespace OpenTracker.UnitTests.Models.Dungeons.AccessibilityProviders
                 (_, _) => _resultAggregator);
             _result.Accessible.Returns(1);
             
-            Assert.PropertyChanged(sut, nameof(IDungeonAccessibilityProvider.Accessible), () =>
-                _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
-                    _mode, new PropertyChangedEventArgs(nameof(IMode.GuaranteedBossItems))));
+            _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                _mode, new PropertyChangedEventArgs(nameof(IMode.GuaranteedBossItems)));
+            
+            Assert.Equal(0, sut.Accessible);
         }
 
         [Fact]

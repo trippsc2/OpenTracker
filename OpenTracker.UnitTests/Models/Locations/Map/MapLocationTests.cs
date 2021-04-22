@@ -52,53 +52,63 @@ namespace OpenTracker.UnitTests.Models.Locations.Map
         }
 
         [Fact]
-        public void RequirementMet_ShouldRaisePropertyChanged()
+        public void IsActive_ShouldRaisePropertyChanged()
         {
             var sut = new MapLocation(MapID.LightWorld, 0.0, 0.0, _location, _requirement);
 
-            Assert.PropertyChanged(sut, nameof(IMapLocation.RequirementMet), () =>
+            _requirement.Met.Returns(true);
+            _location.IsActive.Returns(true);
+
+            Assert.PropertyChanged(sut, nameof(IMapLocation.IsActive), () =>
                 _requirement.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
                     _requirement, new PropertyChangedEventArgs(nameof(IRequirement.Met))));
         }
 
-        [Fact]
-        public void RequirementMet_ShouldAlwaysReturnTrue_WhenRequirementIsNull()
-        {
-            var sut = new MapLocation(MapID.LightWorld, 0.0, 0.0, _location);
-            
-            Assert.True(sut.RequirementMet);
-        }
-
         [Theory]
         [InlineData(false, false)]
         [InlineData(true, true)]
-        public void RequirementMet_ShouldReturnExpected(bool expected, bool met)
+        public void IsActive_ShouldReturnExpected_WhenRequirementIsNull(bool expected, bool locationIsActive)
         {
-            _requirement.Met.Returns(met);
+            _location.IsActive.Returns(locationIsActive);
+            
+            var sut = new MapLocation(MapID.LightWorld, 0.0, 0.0, _location);
+
+            Assert.Equal(expected, sut.IsActive);
+        }
+
+        [Theory]
+        [InlineData(false, false, false)]
+        [InlineData(false, false, true)]
+        [InlineData(false, true, false)]
+        [InlineData(true, true, true)]
+        public void IsActive_ShouldReturnExpected(bool expected, bool metRequirement, bool locationIsActive)
+        {
+            _location.IsActive.Returns(locationIsActive);
+            _requirement.Met.Returns(metRequirement);
             var sut = new MapLocation(MapID.LightWorld, 0.0, 0.0, _location, _requirement);
             
-            Assert.Equal(expected, sut.RequirementMet);
+            Assert.Equal(expected, sut.IsActive);
         }
 
         [Fact]
-        public void Visible_ShouldRaisePropertyChanged()
+        public void ShouldBeDisplayed_ShouldRaisePropertyChanged()
         {
             var sut = new MapLocation(MapID.LightWorld, 0.0, 0.0, _location, _requirement);
 
-            Assert.PropertyChanged(sut, nameof(IMapLocation.Visible), () =>
+            Assert.PropertyChanged(sut, nameof(IMapLocation.ShouldBeDisplayed), () =>
                 _location.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
-                    _location, new PropertyChangedEventArgs(nameof(ILocation.Visible))));
+                    _location, new PropertyChangedEventArgs(nameof(ILocation.ShouldBeDisplayed))));
         }
 
         [Theory]
         [InlineData(false, false)]
         [InlineData(true, true)]
-        public void Visible_ShouldReturnExpected(bool expected, bool visible)
+        public void ShouldBeDisplayed_ShouldReturnExpected(bool expected, bool visible)
         {
-            _location.Visible.Returns(visible);
+            _location.ShouldBeDisplayed.Returns(visible);
             var sut = new MapLocation(MapID.LightWorld, 0.0, 0.0, _location);
             
-            Assert.Equal(expected, sut.Visible);
+            Assert.Equal(expected, sut.ShouldBeDisplayed);
         }
         
         [Fact]

@@ -42,8 +42,7 @@ namespace OpenTracker.UnitTests.Models.Locations.Map
         private static readonly Dictionary<LocationID, ExpectedObject> ExpectedValues = new();
 
         private readonly MapLocationFactory _sut = new MapLocationFactory(
-            AlternativeRequirements, AggregateRequirements, EntranceShuffleRequirements, ShopShuffleRequirements,
-            TakeAnyLocationsRequirements, WorldStateRequirements, Factory);
+            AlternativeRequirements, AggregateRequirements, EntranceShuffleRequirements, WorldStateRequirements, Factory);
 
         private static void PopulateExpectedValues()
         {

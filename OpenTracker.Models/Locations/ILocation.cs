@@ -62,7 +62,9 @@ namespace OpenTracker.Models.Locations
         /// <summary>
         ///     A boolean representing whether the location is visible in the UI.
         /// </summary>
-        bool Visible { get; }
+        bool ShouldBeDisplayed { get; }
+
+        bool IsActive { get; }
 
         /// <summary>
         ///     A factory for creating new locations.

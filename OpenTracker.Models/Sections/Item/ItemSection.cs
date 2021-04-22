@@ -69,6 +69,9 @@ namespace OpenTracker.Models.Sections.Item
             {
                 _visibleNode.PropertyChanged += OnNodeChanged;
             }
+            
+            UpdateAccessibility();
+            UpdateAccessible();
         }
 
         public override void Clear(bool force)
@@ -76,6 +79,19 @@ namespace OpenTracker.Models.Sections.Item
             if (CanBeCleared(force))
             {
                 Available = 0;
+            }
+        }
+
+        protected override void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            base.OnPropertyChanged(sender, e);
+
+            switch (e.PropertyName)
+            {
+                case nameof(Accessibility):
+                case nameof(Available):
+                    UpdateAccessible();
+                    break;
             }
         }
 
@@ -97,7 +113,7 @@ namespace OpenTracker.Models.Sections.Item
         }
 
         /// <summary>
-        ///     Updates values of the Accessible and Accessibility properties.
+        ///     Updates values of the Accessibility property.
         /// </summary>
         private void UpdateAccessibility()
         {
@@ -111,6 +127,14 @@ namespace OpenTracker.Models.Sections.Item
                 _visibleNode.Accessibility > AccessibilityLevel.Inspect
                     ? AccessibilityLevel.Inspect
                     : AccessibilityLevel.None);
+        }
+
+        /// <summary>
+        ///     Updates values of the Accessibility property.
+        /// </summary>
+        private void UpdateAccessible()
+        {
+            Accessible = Accessibility > AccessibilityLevel.Inspect ? Available : 0;
         }
     }
 }

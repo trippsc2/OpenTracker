@@ -362,7 +362,7 @@ namespace OpenTracker.Models.Sections.Factories
         }
 
         /// <summary>
-        ///     Returns the requirement node from which the specified section is visible.
+        ///     Returns the node from which the specified section is visible.
         /// </summary>
         /// <param name="id">
         ///     The location ID.
@@ -371,7 +371,7 @@ namespace OpenTracker.Models.Sections.Factories
         ///     The section index.
         /// </param>
         /// <returns>
-        ///     The requirement node from which the section is visible.
+        ///     The node from which the section is visible.
         /// </returns>
         private INode? GetVisibleNode(LocationID id, int index)
         {
@@ -450,6 +450,7 @@ namespace OpenTracker.Models.Sections.Factories
                 case LocationID.Blacksmith:
                 case LocationID.PurpleChest:
                 case LocationID.LakeHyliaIsland:
+                case LocationID.OldMan:
                 case LocationID.SpectacleRock when index == 0:
                 case LocationID.EtherTablet:
                 case LocationID.FloatingIsland:
@@ -485,7 +486,6 @@ namespace OpenTracker.Models.Sections.Factories
                 case LocationID.BumperCave:
                 case LocationID.MireShack:
                 case LocationID.CheckerboardCave:
-                case LocationID.OldMan:
                 case LocationID.SpectacleRock:
                 case LocationID.SpikeCave:
                 case LocationID.SpiralCave:

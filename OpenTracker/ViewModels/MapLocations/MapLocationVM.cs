@@ -27,7 +27,7 @@ namespace OpenTracker.ViewModels.MapLocations
         private readonly Dock _unmetDock;
 
         public bool Visible =>
-            _mapLocation.RequirementMet && (_appSettings.Tracker.DisplayAllLocations || _mapLocation.Visible);
+            _mapLocation.IsActive && (_appSettings.Tracker.DisplayAllLocations || _mapLocation.ShouldBeDisplayed);
         
         public IMapLocationMarkingVM? Marking { get; }
         public IShapedMapLocationVMBase Location { get; }
@@ -99,7 +99,7 @@ namespace OpenTracker.ViewModels.MapLocations
                     return -56.0;
                 }
                 
-                var offsetDifference = -28.0 - Location.OffsetX;
+                var offsetDifference = -28.0 - Location.OffsetY;
 
                 return offsetDifference >= 0 ? 0.0 : offsetDifference;
             }
@@ -233,8 +233,8 @@ namespace OpenTracker.ViewModels.MapLocations
         /// </param>
         private async void OnMapLocationChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(IMapLocation.RequirementMet) ||
-                e.PropertyName == nameof(IMapLocation.Visible))
+            if (e.PropertyName == nameof(IMapLocation.IsActive) ||
+                e.PropertyName == nameof(IMapLocation.ShouldBeDisplayed))
             {
                 await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Visible)));
             }

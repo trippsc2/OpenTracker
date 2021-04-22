@@ -46,7 +46,16 @@ namespace OpenTracker.Models.Nodes
         public AccessibilityLevel Accessibility
         {
             get => _accessibility;
-            private set => this.RaiseAndSetIfChanged(ref _accessibility, value);
+            private set
+            {
+                if (_accessibility == value)
+                {
+                    return;
+                }
+                
+                this.RaiseAndSetIfChanged(ref _accessibility, value);
+                ChangePropagated?.Invoke(this, EventArgs.Empty);
+            }
         }
 
         /// <summary>

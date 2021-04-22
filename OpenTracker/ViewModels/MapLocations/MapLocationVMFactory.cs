@@ -7,7 +7,6 @@ using OpenTracker.Models.Modes;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Requirements.Alternative;
 using OpenTracker.Models.Requirements.Mode;
-using OpenTracker.Models.Sections;
 using OpenTracker.Models.Sections.Boolean;
 using OpenTracker.Models.Sections.Entrance;
 using OpenTracker.ViewModels.Tooltips;

@@ -1,6 +1,5 @@
 ﻿using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Markings;
-using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.UndoRedo;
 using ReactiveUI;
@@ -27,8 +26,6 @@ namespace OpenTracker.Models.Sections
         /// </summary>
         IMarking? Marking { get; }
 
-        IRequirement? Requirement { get; }
-                
         /// <summary>
         ///     The accessibility level of the section.
         /// </summary>

@@ -16,7 +16,6 @@ using OpenTracker.Models.Requirements.ItemsPanelOrientation;
 using OpenTracker.Models.Requirements.KeyDropShuffle;
 using OpenTracker.Models.Requirements.MapShuffle;
 using OpenTracker.Models.Requirements.SmallKeyShuffle;
-using OpenTracker.Models.Sections;
 using OpenTracker.Models.Sections.Boss;
 using OpenTracker.Models.Sections.Item;
 using OpenTracker.ViewModels.Items;
