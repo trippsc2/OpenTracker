@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using Autofac;
 using NSubstitute;
+using NSubstitute.ReturnsExtensions;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.AutoTracking.Values;
 using OpenTracker.Models.BossPlacements;
@@ -115,6 +116,41 @@ namespace OpenTracker.UnitTests.Models.Sections.Boss
                 _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue);
 
             Assert.Equal(expected, sut.Accessibility);
+        }
+
+        [Fact]
+        public void Available_ShouldRaisePropertyChanged()
+        {
+            var sut = new PrizeSection(
+                _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
+                _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue);
+            Assert.PropertyChanged(sut, nameof(ISection.Available), () => sut.Available = 0);
+        }
+
+        [Fact]
+        public void Available_ShouldNotManipulatePrize_WhenPrizeIsNull()
+        {
+            var sut = new PrizeSection(
+                _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
+                _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue);
+            _prizePlacement.Prize.ReturnsNull();
+            sut.Available = 0;
+            
+            Assert.Null(sut.PrizePlacement.Prize);
+        }
+
+        [Theory]
+        [InlineData(0, 1)]
+        [InlineData(1, 0)]
+        public void Available_ShouldManipulatePrize_WhenPrizeIsNotNull(int expected, int available)
+        {
+            var sut = new PrizeSection(
+                _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
+                _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue) {Available = 0};
+            sut.Available = 1;
+            sut.Available = available;
+            
+            Assert.Equal(expected, _prizePlacement.Prize!.Current);
         }
 
         [Fact]

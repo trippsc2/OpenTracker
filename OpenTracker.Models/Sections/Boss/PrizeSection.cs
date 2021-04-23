@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using OpenTracker.Models.AutoTracking.Values;
 using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.Dungeons.AccessibilityProvider;
@@ -60,12 +61,69 @@ namespace OpenTracker.Models.Sections.Boss
             PrizePlacement = prizePlacement;
             
             Total = 1;
-            Available = 1;
+            _available = 1;
+            
+            UpdateShouldBeDisplayed();
+
+            PrizePlacement.PropertyChanging += OnPrizePlacementChanging;
+            PrizePlacement.PropertyChanged += OnPrizePlacementChanged;
         }
 
         public IUndoable CreateTogglePrizeSectionAction(bool force)
         {
             return _togglePrizeSectionFactory(this, force);
+        }
+
+        protected override void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            base.OnPropertyChanged(sender, e);
+
+            if (e.PropertyName != nameof(Available) || PrizePlacement.Prize is null)
+            {
+                return;
+            }
+            
+            if (IsAvailable())
+            {
+                PrizePlacement.Prize.Current--;
+                return;
+            }
+
+            PrizePlacement.Prize.Current++;
+        }
+
+        /// <summary>
+        ///     Subscribes to the PropertyChanging event on the IPrizePlacement interface.
+        /// </summary>
+        /// <param name="sender">
+        ///     The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        ///     The arguments of the PropertyChanging event.
+        /// </param>
+        private void OnPrizePlacementChanging(object? sender, PropertyChangingEventArgs e)
+        {
+            if (e.PropertyName == nameof(IPrizePlacement.Prize) && PrizePlacement.Prize is not null && !IsAvailable())
+            {
+                PrizePlacement.Prize.Current--;
+            }
+        }
+
+        /// <summary>
+        ///     Subscribes to the PropertyChanged event on the IPrizePlacement interface.
+        /// </summary>
+        /// <param name="sender">
+        ///     The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        ///     The arguments of the PropertyChanged event.
+        /// </param>
+        private void OnPrizePlacementChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(IPrizePlacement.Prize) && PrizePlacement.Prize is not null && !IsAvailable())
+            {
+                PrizePlacement.Prize.Current++;
+            }
         }
     }
 }
