@@ -70,21 +70,35 @@ namespace OpenTracker.Models.Sections.Factories
                             accessibilityProvider.BossAccessibilityProviders[0],
                             _autoTrackingFactory.GetAutoTrackValue(id, 1), id),
                         _bossSectionFactory.GetBossSection(
-                            accessibilityProvider.BossAccessibilityProviders[0],
+                            accessibilityProvider.BossAccessibilityProviders[1],
                             _autoTrackingFactory.GetAutoTrackValue(id, 2), id, 2),
                         _bossSectionFactory.GetBossSection(
-                            accessibilityProvider.BossAccessibilityProviders[0],
+                            accessibilityProvider.BossAccessibilityProviders[2],
                             _autoTrackingFactory.GetAutoTrackValue(id, 3), id, 3),
                         _bossSectionFactory.GetBossSection(
-                            accessibilityProvider.BossAccessibilityProviders[0],
+                            accessibilityProvider.BossAccessibilityProviders[3],
                             _autoTrackingFactory.GetAutoTrackValue(id, 4), id, 4)
                     };
-                default:
-                    return new List<ISection> {dungeonItemSection,
+                case LocationID.AgahnimTower:
+                case LocationID.EasternPalace:
+                case LocationID.DesertPalace:
+                case LocationID.TowerOfHera:
+                case LocationID.PalaceOfDarkness:
+                case LocationID.SwampPalace:
+                case LocationID.SkullWoods:
+                case LocationID.ThievesTown:
+                case LocationID.IcePalace:
+                case LocationID.MiseryMire:
+                case LocationID.TurtleRock:
+                    return new List<ISection>
+                    {
+                        dungeonItemSection,
                         _bossSectionFactory.GetBossSection(
                             accessibilityProvider.BossAccessibilityProviders[0],
                             _autoTrackingFactory.GetAutoTrackValue(id, 1), id),
                     };
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(id), id, null);
             }
         }
     }

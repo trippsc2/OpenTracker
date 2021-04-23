@@ -6,6 +6,7 @@ using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.AutoTracking.Values;
 using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.Dungeons.AccessibilityProvider;
+using OpenTracker.Models.Items;
 using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.Sections;
@@ -422,6 +423,28 @@ namespace OpenTracker.UnitTests.Models.Sections.Boss
                 _autoTrackValue, new PropertyChangedEventArgs(nameof(IAutoTrackValue.CurrentValue)));
             
             Assert.Equal(expected, sut.Available);
+        }
+
+        [Fact]
+        public void PrizePlacementChanged_ShouldTransferPrizeToNewPrize()
+        {
+            var prize1 = Substitute.For<IItem>();
+            _prizePlacement.Prize.Returns(prize1);
+            var unused = new PrizeSection(
+                _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
+                _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue)
+            {
+                Available = 0
+            };
+            var prize2 = Substitute.For<IItem>();
+            _prizePlacement.PropertyChanging += Raise.Event<PropertyChangingEventHandler>(
+                _prizePlacement, new PropertyChangingEventArgs(nameof(IPrizePlacement.Prize)));
+            _prizePlacement.Prize.Returns(prize2);
+            _prizePlacement.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                _prizePlacement, new PropertyChangedEventArgs(nameof(IPrizePlacement.Prize)));
+            
+            Assert.Equal(0, prize1.Current);
+            Assert.Equal(1, prize2.Current);
         }
 
         [Fact]
