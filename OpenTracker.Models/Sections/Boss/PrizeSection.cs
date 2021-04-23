@@ -48,10 +48,10 @@ namespace OpenTracker.Models.Sections.Boss
         ///     The section auto-track value.
         /// </param>
         public PrizeSection(
-            ISaveLoadManager saveLoadManager, ICollectSection.Factory collectSectionFactory, IUncollectSection.Factory uncollectSectionFactory,
-            ITogglePrizeSection.Factory togglePrizeSectionFactory, IBossAccessibilityProvider accessibilityProvider,
-            string name, IBossPlacement bossPlacement, IPrizePlacement prizePlacement,
-            IAutoTrackValue? autoTrackValue = null)
+            ISaveLoadManager saveLoadManager, ICollectSection.Factory collectSectionFactory,
+            IUncollectSection.Factory uncollectSectionFactory, ITogglePrizeSection.Factory togglePrizeSectionFactory,
+            IBossAccessibilityProvider accessibilityProvider, string name, IBossPlacement bossPlacement,
+            IPrizePlacement prizePlacement, IAutoTrackValue? autoTrackValue = null)
             : base(saveLoadManager, collectSectionFactory, uncollectSectionFactory, accessibilityProvider, name,
                 bossPlacement, autoTrackValue)
         {

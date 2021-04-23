@@ -45,7 +45,8 @@ namespace OpenTracker.Models.Sections.Entrance
         /// <param name="exitProvided">
         ///     The overworld node exit that this section provides.
         /// </param>
-        public EntranceSection(ISaveLoadManager saveLoadManager, ICollectSection.Factory collectSectionFactory,
+        public EntranceSection(
+            ISaveLoadManager saveLoadManager, ICollectSection.Factory collectSectionFactory,
             IUncollectSection.Factory uncollectSectionFactory, IMarking.Factory markingFactory, string name,
             EntranceShuffle entranceShuffleLevel, IRequirement requirement, INode node,
             IOverworldNode? exitProvided = null)

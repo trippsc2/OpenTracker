@@ -119,12 +119,18 @@ namespace OpenTracker.UnitTests.Models.Sections.Boolean
         }
 
         [Theory]
-        [InlineData(false, AccessibilityLevel.None)]
-        [InlineData(false, AccessibilityLevel.Inspect)]
-        [InlineData(true, AccessibilityLevel.SequenceBreak)]
-        [InlineData(true, AccessibilityLevel.Normal)]
-        public void ShouldBeDisplayed_ShouldEqualExpected(bool expected, AccessibilityLevel nodeAccessibility)
+        [InlineData(false, AccessibilityLevel.None, 0)]
+        [InlineData(false, AccessibilityLevel.None, 1)]
+        [InlineData(false, AccessibilityLevel.Inspect, 0)]
+        [InlineData(true, AccessibilityLevel.Inspect, 1)]
+        [InlineData(false, AccessibilityLevel.SequenceBreak, 0)]
+        [InlineData(true, AccessibilityLevel.SequenceBreak, 1)]
+        [InlineData(false, AccessibilityLevel.Normal, 0)]
+        [InlineData(true, AccessibilityLevel.Normal, 1)]
+        public void ShouldBeDisplayed_ShouldEqualExpected(
+            bool expected, AccessibilityLevel nodeAccessibility, int available)
         {
+            _sut.Available = available;
             _node.Accessibility.Returns(nodeAccessibility);
             _node.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
                 _node, new PropertyChangedEventArgs(nameof(INode.Accessibility)));

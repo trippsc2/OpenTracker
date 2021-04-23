@@ -54,7 +54,9 @@ namespace OpenTracker.Models.Sections.Entrance
             _exitProvided = exitProvided;
 
             Total = 1;
-            Available = 1;
+            _available = 1;
+
+            UpdateShouldBeDisplayed();
         }
 
         public override bool CanBeCleared(bool force = false)

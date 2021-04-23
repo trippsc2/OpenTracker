@@ -13,6 +13,7 @@ namespace OpenTracker.Models.SaveLoad
     /// </summary>
     public class SaveData
     {
+        // ReSharper disable once UnusedAutoPropertyAccessor.Global
         public Version? Version { get; set; }
         public ModeSaveData? Mode { get; set; }
         public IDictionary<ItemType, ItemSaveData>? Items { get; set; }

@@ -45,6 +45,16 @@ namespace OpenTracker.UnitTests.Models.Sections.Boss
         }
 
         [Fact]
+        public void Ctor_ShouldAlwaysSetMarkingToNull()
+        {
+            var sut = new BossSection(
+                _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _accessibilityProvider, "Test",
+                _bossPlacement, _autoTrackValue, _requirement);
+
+            Assert.Null(sut.Marking);
+        }
+
+        [Fact]
         public void Ctor_ShouldSetBossPlacementToExpected()
         {
             var sut = new BossSection(
@@ -86,6 +96,54 @@ namespace OpenTracker.UnitTests.Models.Sections.Boss
         }
 
         [Fact]
+        public void IsActive_ShouldRaisePropertyChanged()
+        {
+            var sut = new BossSection(
+                _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _accessibilityProvider, "Test",
+                _bossPlacement, _autoTrackValue, _requirement);
+            _requirement.Met.Returns(true);
+            
+            Assert.PropertyChanged(sut, nameof(ISection.IsActive), () =>
+                _requirement.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                    _requirement, new PropertyChangedEventArgs(nameof(IRequirement.Met))));
+        }
+
+        [Theory]
+        [InlineData(false, false)]
+        [InlineData(true, true)]
+        public void IsActive_ShouldReturnExpected(bool expected, bool requirementMet)
+        {
+            var sut = new BossSection(
+                _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _accessibilityProvider, "Test",
+                _bossPlacement, _autoTrackValue, _requirement);
+            _requirement.Met.Returns(requirementMet);
+            _requirement.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                _requirement, new PropertyChangedEventArgs(nameof(IRequirement.Met)));
+            
+            Assert.Equal(expected, sut.IsActive);
+        }
+
+        [Fact]
+        public void IsAvailable_ShouldAlwaysReturnFalse()
+        {
+            var sut = new BossSection(
+                _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _accessibilityProvider, "Test",
+                _bossPlacement, _autoTrackValue, _requirement);
+            
+            Assert.False(sut.IsAvailable());
+        }
+
+        [Fact]
+        public void ShouldBeDisplayed_ShouldAlwaysReturnFalse()
+        {
+            var sut = new BossSection(
+                _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _accessibilityProvider, "Test",
+                _bossPlacement, _autoTrackValue, _requirement);
+            
+            Assert.False(sut.ShouldBeDisplayed);
+        }
+
+        [Fact]
         public void CanBeCleared_ShouldAlwaysReturnFalse()
         {
             var sut = new BossSection(
@@ -93,6 +151,88 @@ namespace OpenTracker.UnitTests.Models.Sections.Boss
                 _bossPlacement, _autoTrackValue, _requirement);
 
             Assert.False(sut.CanBeCleared());
+        }
+
+        [Fact]
+        public void CreateCollectSectionAction_ShouldReturnNewAction()
+        {
+            var sut = new BossSection(
+                _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _accessibilityProvider, "Test",
+                _bossPlacement, _autoTrackValue, _requirement);
+            var action = sut.CreateCollectSectionAction(false);
+            
+            Assert.NotNull(action as CollectSection);
+        }
+
+        [Fact]
+        public void CanBeUncleared_ShouldAlwaysReturnFalse()
+        {
+            var sut = new BossSection(
+                _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _accessibilityProvider, "Test",
+                _bossPlacement, _autoTrackValue, _requirement);
+
+            Assert.False(sut.CanBeUncleared());
+        }
+
+        [Fact]
+        public void CreateUncollectSectionAction_ShouldReturnNewAction()
+        {
+            var sut = new BossSection(
+                _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _accessibilityProvider, "Test",
+                _bossPlacement, _autoTrackValue, _requirement);
+            var action = sut.CreateUncollectSectionAction();
+            
+            Assert.NotNull(action as UncollectSection);
+        }
+
+        [Fact]
+        public void Reset_ShouldSetUserManipulatedToFalse()
+        {
+            var sut = new BossSection(
+                _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _accessibilityProvider, "Test",
+                _bossPlacement, _autoTrackValue, _requirement) {UserManipulated = true};
+            sut.Reset();
+            
+            Assert.False(sut.UserManipulated);
+        }
+
+        [Theory]
+        [InlineData(false, false)]
+        [InlineData(true, true)]
+        public void Save_ShouldSetSaveDataUserManipulatedToExpected(bool expected, bool userManipulated)
+        {
+            var sut = new BossSection(
+                _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _accessibilityProvider, "Test",
+                _bossPlacement, _autoTrackValue, _requirement) {UserManipulated = true};
+            sut.UserManipulated = userManipulated;
+            var saveData = sut.Save();
+            
+            Assert.Equal(expected, saveData.UserManipulated);
+        }
+
+        [Fact]
+        public void Load_ShouldDoNothing_WhenSaveDataIsNull()
+        {
+            var sut = new BossSection(
+                _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _accessibilityProvider, "Test",
+                _bossPlacement, _autoTrackValue, _requirement) {UserManipulated = true};
+            sut.Load(null);
+            
+            Assert.True(sut.UserManipulated);
+        }
+        
+        [Theory]
+        [InlineData(false, false)]
+        [InlineData(true, true)]
+        public void Load_ShouldSetUserManipulatedToExpected(bool expected, bool userManipulated)
+        {
+            var sut = new BossSection(
+                _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _accessibilityProvider, "Test",
+                _bossPlacement, _autoTrackValue, _requirement) {UserManipulated = true};
+            var saveData = new SectionSaveData {UserManipulated = userManipulated};
+            sut.Load(saveData);
+            
+            Assert.Equal(expected, sut.UserManipulated);
         }
 
         [Fact]

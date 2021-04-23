@@ -34,7 +34,8 @@ namespace OpenTracker.Models.Sections
             protected set => this.RaiseAndSetIfChanged(ref _accessibility, value);
         }
 
-        private int _available;
+        // ReSharper disable once InconsistentNaming
+        protected int _available;
         public int Available
         {
             get => _available;
@@ -235,9 +236,9 @@ namespace OpenTracker.Models.Sections
         /// <summary>
         ///     Updates the value of the ShouldBeDisplayed property.
         /// </summary>
-        private void UpdateShouldBeDisplayed()
+        protected void UpdateShouldBeDisplayed()
         {
-            ShouldBeDisplayed = CanBeCleared();
+            ShouldBeDisplayed = (IsAvailable() && Accessibility >= AccessibilityLevel.Inspect) || CanBeCleared();
         }
 
         /// <summary>

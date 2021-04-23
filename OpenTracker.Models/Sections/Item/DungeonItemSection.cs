@@ -75,6 +75,16 @@ namespace OpenTracker.Models.Sections.Item
             Available -= Accessible;
         }
 
+        protected override void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            base.OnPropertyChanged(sender, e);
+
+            if (e.PropertyName == nameof(Available))
+            {
+                UpdateAccessibility();
+            }
+        }
+
         /// <summary>
         ///     Subscribes to the PropertyChanged event on the IDungeon interface.
         /// </summary>
@@ -131,10 +141,11 @@ namespace OpenTracker.Models.Sections.Item
         private void UpdateAccessibility()
         {
             var unavailable = Total - Available;
+            var accessible = _accessibilityProvider.Accessible - unavailable;
             
-            Accessible = _accessibilityProvider.Accessible - unavailable;
+            Accessible = Math.Max(0, accessible);
 
-            if (Accessible >= Available)
+            if (accessible >= Available)
             {
                 Accessibility = _accessibilityProvider.SequenceBreak
                     ? AccessibilityLevel.SequenceBreak
@@ -142,7 +153,7 @@ namespace OpenTracker.Models.Sections.Item
                 return;
             }
 
-            if (Accessible > 0)
+            if (accessible > 0)
             {
                 Accessibility = AccessibilityLevel.Partial;
                 return;

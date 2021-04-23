@@ -89,7 +89,10 @@ namespace OpenTracker.Models.Sections.Item
             switch (e.PropertyName)
             {
                 case nameof(Accessibility):
+                    UpdateAccessible();
+                    break;
                 case nameof(Available):
+                    UpdateAccessibility();
                     UpdateAccessible();
                     break;
             }
