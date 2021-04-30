@@ -3,10 +3,16 @@ using System.Linq;
 using System.Windows.Input;
 using Avalonia.Controls;
 using Avalonia.Layout;
-using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Requirements.AlwaysDisplayDungeonItems;
 using OpenTracker.Models.Requirements.DisplayAllLocations;
 using OpenTracker.Models.Requirements.DisplaysMapsCompasses;
+using OpenTracker.Models.Requirements.ItemsPanelPlacement;
+using OpenTracker.Models.Requirements.LayoutOrientation;
+using OpenTracker.Models.Requirements.MapOrientation;
+using OpenTracker.Models.Requirements.ShowItemCountsOnMap;
+using OpenTracker.Models.Requirements.ThemeSelected;
+using OpenTracker.Models.Requirements.UIPanelPlacement;
+using OpenTracker.Models.Requirements.UIScale;
 using OpenTracker.Utils.Themes;
 
 namespace OpenTracker.ViewModels.Menus
@@ -24,30 +30,30 @@ namespace OpenTracker.ViewModels.Menus
 
         private readonly IMenuItemVM.Factory _itemFactory;
 
-        private readonly ThemeSelectedRequirement.Factory _themeSelectedFactory;
+        private readonly IThemeSelectedRequirement.Factory _themeSelectedFactory;
         private readonly IDisplayAllLocationsRequirement.Factory _displayAllLocationsFactory;
-        private readonly ShowItemCountsOnMapRequirement.Factory _showItemCountsOnMapFactory;
-        private readonly LayoutOrientationRequirement.Factory _layoutOrientationFactory;
-        private readonly HorizontalUIPanelPlacementRequirement.Factory _horizontalUIPanelPlacementFactory;
-        private readonly HorizontalItemsPanelPlacementRequirement.Factory _horizontalItemsPanelPlacementFactory;
-        private readonly VerticalUIPanelPlacementRequirement.Factory _verticalUIPanelPlacementFactory;
-        private readonly VerticalItemsPanelPlacementRequirement.Factory _verticalItemsPanelPlacementFactory;
-        private readonly MapOrientationRequirement.Factory _mapOrientationFactory;
-        private readonly UIScaleRequirement.Factory _uiScaleFactory;
+        private readonly IShowItemCountsOnMapRequirement.Factory _showItemCountsOnMapFactory;
+        private readonly ILayoutOrientationRequirement.Factory _layoutOrientationFactory;
+        private readonly IHorizontalUIPanelPlacementRequirement.Factory _horizontalUIPanelPlacementFactory;
+        private readonly IHorizontalItemsPanelPlacementRequirement.Factory _horizontalItemsPanelPlacementFactory;
+        private readonly IVerticalUIPanelPlacementRequirement.Factory _verticalUIPanelPlacementFactory;
+        private readonly IVerticalItemsPanelPlacementRequirement.Factory _verticalItemsPanelPlacementFactory;
+        private readonly IMapOrientationRequirement.Factory _mapOrientationFactory;
+        private readonly IUIScaleRequirement.Factory _uiScaleFactory;
 
         public MenuItemFactory(
             ICaptureWindowMenuCollection captureWindowMenuItems, IThemeManager themeManager,
             IAlwaysDisplayDungeonItemsRequirementDictionary alwaysDisplayDungeonItemsRequirements,
             IDisplayMapsCompassesRequirementDictionary displayMapsCompassesRequirements,
-            IMenuItemVM.Factory itemFactory, ThemeSelectedRequirement.Factory themeSelectedFactory,
+            IMenuItemVM.Factory itemFactory, IThemeSelectedRequirement.Factory themeSelectedFactory,
             IDisplayAllLocationsRequirement.Factory displayAllLocationsFactory,
-            ShowItemCountsOnMapRequirement.Factory showItemCountsOnMapFactory,
-            LayoutOrientationRequirement.Factory layoutOrientationFactory,
-            HorizontalUIPanelPlacementRequirement.Factory horizontalUIPanelPlacementFactory,
-            HorizontalItemsPanelPlacementRequirement.Factory horizontalItemsPanelPlacementFactory,
-            VerticalUIPanelPlacementRequirement.Factory verticalUIPanelPlacementFactory,
-            VerticalItemsPanelPlacementRequirement.Factory verticalItemsPanelPlacementFactory,
-            MapOrientationRequirement.Factory mapOrientationFactory, UIScaleRequirement.Factory uiScaleFactory)
+            IShowItemCountsOnMapRequirement.Factory showItemCountsOnMapFactory,
+            ILayoutOrientationRequirement.Factory layoutOrientationFactory,
+            IHorizontalUIPanelPlacementRequirement.Factory horizontalUIPanelPlacementFactory,
+            IHorizontalItemsPanelPlacementRequirement.Factory horizontalItemsPanelPlacementFactory,
+            IVerticalUIPanelPlacementRequirement.Factory verticalUIPanelPlacementFactory,
+            IVerticalItemsPanelPlacementRequirement.Factory verticalItemsPanelPlacementFactory,
+            IMapOrientationRequirement.Factory mapOrientationFactory, IUIScaleRequirement.Factory uiScaleFactory)
         {
             _themeManager = themeManager;
             _captureWindowMenuItems = captureWindowMenuItems;

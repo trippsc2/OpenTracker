@@ -1,7 +1,7 @@
 using Avalonia.Controls;
 using OpenTracker.Models.Locations.Map;
 using OpenTracker.Models.Requirements;
-using OpenTracker.ViewModels.Tooltips;
+using OpenTracker.ViewModels.ToolTips;
 
 namespace OpenTracker.ViewModels.MapLocations
 {

@@ -4,6 +4,6 @@ namespace OpenTracker.ViewModels.Menus
 {
     public interface ICaptureWindowMenuItemVM : IMenuItemVM
     {
-         delegate ICaptureWindowMenuItemVM Factory(ICaptureWindowVM captureWindow);
+         new delegate ICaptureWindowMenuItemVM Factory(ICaptureWindowVM captureWindow);
     }
 }

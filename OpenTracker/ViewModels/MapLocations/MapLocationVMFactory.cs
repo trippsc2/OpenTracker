@@ -9,7 +9,7 @@ using OpenTracker.Models.Requirements.Alternative;
 using OpenTracker.Models.Requirements.Mode;
 using OpenTracker.Models.Sections.Boolean;
 using OpenTracker.Models.Sections.Entrance;
-using OpenTracker.ViewModels.Tooltips;
+using OpenTracker.ViewModels.ToolTips;
 
 namespace OpenTracker.ViewModels.MapLocations
 {

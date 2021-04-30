@@ -2,26 +2,24 @@ using System.ComponentModel;
 using Avalonia.Controls;
 using OpenTracker.Models.Settings;
 
-namespace OpenTracker.Models.Requirements
+namespace OpenTracker.Models.Requirements.UIPanelPlacement
 {
     /// <summary>
-    /// This class contains horizontal UI panel placement requirement data.
+    ///     This class contains horizontal UI panel placement requirement data.
     /// </summary>
-    public class HorizontalUIPanelPlacementRequirement : BooleanRequirement
+    public class HorizontalUIPanelPlacementRequirement : BooleanRequirement, IHorizontalUIPanelPlacementRequirement
     {
         private readonly ILayoutSettings _layoutSettings;
         private readonly Dock _expectedValue;
-
-        public delegate HorizontalUIPanelPlacementRequirement Factory(Dock expectedValue);
         
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="layoutSettings">
-        /// The layout settings data.
+        ///     The layout settings data.
         /// </param>
         /// <param name="expectedValue">
-        /// The expected dock value.
+        ///     The expected dock value.
         /// </param>
         public HorizontalUIPanelPlacementRequirement(ILayoutSettings layoutSettings, Dock expectedValue)
         {

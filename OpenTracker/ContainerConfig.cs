@@ -33,10 +33,8 @@ using OpenTracker.Models.Requirements.AutoTracking;
 using OpenTracker.Models.Requirements.BigKeyShuffle;
 using OpenTracker.Models.Requirements.Boss;
 using OpenTracker.Models.Requirements.BossShuffle;
-using OpenTracker.Models.Requirements.CaptureWindowOpen;
 using OpenTracker.Models.Requirements.CompassShuffle;
 using OpenTracker.Models.Requirements.Complex;
-using OpenTracker.Models.Requirements.DisplayAllLocations;
 using OpenTracker.Models.Requirements.DisplaysMapsCompasses;
 using OpenTracker.Models.Requirements.EnemyShuffle;
 using OpenTracker.Models.Requirements.GenericKeys;
@@ -193,17 +191,6 @@ namespace OpenTracker
 
         private static List<string> GUISelfTypes => new()
         {
-            nameof(CaptureWindowOpenRequirement),
-            nameof(DisplayAllLocationsRequirement),
-            nameof(HorizontalItemsPanelPlacementRequirement),
-            nameof(HorizontalUIPanelPlacementRequirement),
-            nameof(LayoutOrientationRequirement),
-            nameof(MapOrientationRequirement),
-            nameof(ShowItemCountsOnMapRequirement),
-            nameof(ThemeSelectedRequirement),
-            nameof(UIScaleRequirement),
-            nameof(VerticalItemsPanelPlacementRequirement),
-            nameof(VerticalUIPanelPlacementRequirement),
             nameof(BossAdapter),
             nameof(CrystalRequirementAdapter),
             nameof(DropdownAdapter),

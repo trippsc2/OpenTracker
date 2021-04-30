@@ -6,7 +6,7 @@ using OpenTracker.Utils;
 using OpenTracker.ViewModels.Markings.Images;
 using ReactiveUI;
 
-namespace OpenTracker.ViewModels.Tooltips
+namespace OpenTracker.ViewModels.ToolTips
 {
     /// <summary>
     /// This class contains the map location tooltip marking control ViewModel data.

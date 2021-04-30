@@ -14,6 +14,6 @@ namespace OpenTracker.Models.Nodes.Connections
         /// <returns>
         ///     A new entry node connection.
         /// </returns>
-        delegate IEntryNodeConnection Factory(INode fromNode);
+        new delegate IEntryNodeConnection Factory(INode fromNode);
     }
 }

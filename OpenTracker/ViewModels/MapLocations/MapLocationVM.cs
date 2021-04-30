@@ -9,7 +9,7 @@ using OpenTracker.Models.Locations.Map;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Settings;
 using OpenTracker.Utils;
-using OpenTracker.ViewModels.Tooltips;
+using OpenTracker.ViewModels.ToolTips;
 using ReactiveUI;
 
 namespace OpenTracker.ViewModels.MapLocations

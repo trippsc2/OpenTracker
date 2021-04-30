@@ -1,6 +1,6 @@
 ﻿using OpenTracker.Models.Locations;
 
-namespace OpenTracker.ViewModels.Tooltips
+namespace OpenTracker.ViewModels.ToolTips
 {
     public interface IMapLocationToolTipVM
     {

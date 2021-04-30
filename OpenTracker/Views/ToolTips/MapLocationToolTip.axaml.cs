@@ -1,7 +1,7 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
-namespace OpenTracker.Views.Tooltips
+namespace OpenTracker.Views.ToolTips
 {
     public class MapLocationToolTip : UserControl
     {

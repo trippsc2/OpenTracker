@@ -1,50 +1,48 @@
 using System.ComponentModel;
-using Avalonia.Controls;
+using Avalonia.Layout;
 using OpenTracker.Models.Settings;
 
-namespace OpenTracker.Models.Requirements
+namespace OpenTracker.Models.Requirements.LayoutOrientation
 {
     /// <summary>
-    /// This class contains horizontal items panel placement requirement data.
+    ///     This class contains layout orientation setting requirement data.
     /// </summary>
-    public class HorizontalItemsPanelPlacementRequirement : BooleanRequirement
+    public class LayoutOrientationRequirement : BooleanRequirement, ILayoutOrientationRequirement
     {
         private readonly ILayoutSettings _layoutSettings;
-        private readonly Dock _expectedValue;
-
-        public delegate HorizontalItemsPanelPlacementRequirement Factory(Dock expectedValue);
+        private readonly Orientation? _expectedValue;
         
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="layoutSettings">
-        /// The layout settings data.
+        ///     The layout settings data.
         /// </param>
         /// <param name="expectedValue">
-        /// The expected dock value.
+        ///     The expected orientation value.
         /// </param>
-        public HorizontalItemsPanelPlacementRequirement(ILayoutSettings layoutSettings, Dock expectedValue)
+        public LayoutOrientationRequirement(ILayoutSettings layoutSettings, Orientation? expectedValue)
         {
             _layoutSettings = layoutSettings;
             _expectedValue = expectedValue;
 
             _layoutSettings.PropertyChanged += OnLayoutSettingsChanged;
-                        
+            
             UpdateValue();
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the ILayoutSettings interface.
+        ///     Subscribes to the PropertyChanged event on the ILayoutSettings interface.
         /// </summary>
         /// <param name="sender">
-        /// The sending object of the event.
+        ///     The sending object of the event.
         /// </param>
         /// <param name="e">
-        /// The arguments of the PropertyChanged event.
+        ///     The arguments of the PropertyChanged event.
         /// </param>
         private void OnLayoutSettingsChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(ILayoutSettings.HorizontalItemsPlacement))
+            if (e.PropertyName == nameof(ILayoutSettings.LayoutOrientation))
             {
                 UpdateValue();
             }
@@ -52,7 +50,7 @@ namespace OpenTracker.Models.Requirements
         
         protected override bool ConditionMet()
         {
-            return _layoutSettings.HorizontalItemsPlacement == _expectedValue;
+            return _layoutSettings.LayoutOrientation == _expectedValue;
         }
     }
 }

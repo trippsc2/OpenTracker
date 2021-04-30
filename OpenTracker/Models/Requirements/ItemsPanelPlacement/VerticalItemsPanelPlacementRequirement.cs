@@ -2,28 +2,26 @@ using System.ComponentModel;
 using Avalonia.Controls;
 using OpenTracker.Models.Settings;
 
-namespace OpenTracker.Models.Requirements
+namespace OpenTracker.Models.Requirements.ItemsPanelPlacement
 {
     /// <summary>
-    /// This class contains vertical UI panel placement requirement data.
+    ///     This class contains vertical items panel placement requirement data.
     /// </summary>
-    public class VerticalUIPanelPlacementRequirement : BooleanRequirement
+    public class VerticalItemsPanelPlacementRequirement : BooleanRequirement, IVerticalItemsPanelPlacementRequirement
     {
         private readonly ILayoutSettings _layoutSettings;
         private readonly Dock _expectedValue;
-
-        public delegate VerticalUIPanelPlacementRequirement Factory(Dock expectedValue);
         
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="layoutSettings">
-        /// The layout settings data.
+        ///     The layout settings data.
         /// </param>
         /// <param name="expectedValue">
-        /// The expected dock value.
+        ///     The expected dock value.
         /// </param>
-        public VerticalUIPanelPlacementRequirement(ILayoutSettings layoutSettings, Dock expectedValue)
+        public VerticalItemsPanelPlacementRequirement(ILayoutSettings layoutSettings, Dock expectedValue)
         {
             _layoutSettings = layoutSettings;
             _expectedValue = expectedValue;
@@ -34,17 +32,17 @@ namespace OpenTracker.Models.Requirements
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the ILayoutSettings interface.
+        ///     Subscribes to the PropertyChanged event on the ILayoutSettings interface.
         /// </summary>
         /// <param name="sender">
-        /// The sending object of the event.
+        ///     The sending object of the event.
         /// </param>
         /// <param name="e">
-        /// The arguments of the PropertyChanged event.
+        ///     The arguments of the PropertyChanged event.
         /// </param>
         private void OnLayoutSettingsChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(ILayoutSettings.VerticalUIPanelPlacement))
+            if (e.PropertyName == nameof(ILayoutSettings.VerticalItemsPlacement))
             {
                 UpdateValue();
             }
@@ -52,7 +50,7 @@ namespace OpenTracker.Models.Requirements
         
         protected override bool ConditionMet()
         {
-            return _layoutSettings.VerticalUIPanelPlacement == _expectedValue;
+            return _layoutSettings.VerticalItemsPlacement == _expectedValue;
         }
     }
 }

@@ -1,26 +1,24 @@
 using System.ComponentModel;
 using OpenTracker.Utils.Themes;
 
-namespace OpenTracker.Models.Requirements
+namespace OpenTracker.Models.Requirements.ThemeSelected
 {
     /// <summary>
-    /// This class contains theme selected requirement data.
+    ///     This class contains theme selected requirement data.
     /// </summary>
-    public class ThemeSelectedRequirement : BooleanRequirement
+    public class ThemeSelectedRequirement : BooleanRequirement, IThemeSelectedRequirement
     {
         private readonly IThemeManager _themeManager;
         private readonly ITheme _expectedValue;
-
-        public delegate ThemeSelectedRequirement Factory(ITheme expectedValue);
-
+        
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="themeManager">
-        /// The theme manager.
+        ///     The theme manager.
         /// </param>
         /// <param name="expectedValue">
-        /// The expected theme value.
+        ///     The expected theme value.
         /// </param>
         public ThemeSelectedRequirement(IThemeManager themeManager, ITheme expectedValue)
         {
@@ -33,13 +31,13 @@ namespace OpenTracker.Models.Requirements
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the IThemeManager interface.
+        ///     Subscribes to the PropertyChanged event on the IThemeManager interface.
         /// </summary>
         /// <param name="sender">
-        /// The sending object of the event.
+        ///     The sending object of the event.
         /// </param>
         /// <param name="e">
-        /// The arguments of the PropertyChanged event.
+        ///     The arguments of the PropertyChanged event.
         /// </param>
         private void OnThemeManagerChanged(object? sender, PropertyChangedEventArgs e)
         {
