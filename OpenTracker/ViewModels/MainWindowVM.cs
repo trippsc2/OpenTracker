@@ -22,6 +22,7 @@ namespace OpenTracker.ViewModels
     {
         private readonly IAppSettings _appSettings;
         private readonly IBoundsSettings _boundsSettings;
+        private readonly IJsonConverter _jsonConverter;
         private readonly ILayoutSettings _layoutSettings;
         private readonly ISaveLoadManager _saveLoadManager;
 
@@ -99,6 +100,9 @@ namespace OpenTracker.ViewModels
         /// <param name="layoutSettings">
         /// The layout settings data.
         /// </param>
+        /// <param name="jsonConverter">
+        ///     The JSON converter.
+        /// </param>
         /// <param name="saveLoadManager">
         /// The save/load manager.
         /// </param>
@@ -116,8 +120,8 @@ namespace OpenTracker.ViewModels
         /// </param>
         public MainWindowVM(
             IAppSettings appSettings, IBoundsSettings boundsSettings, ILayoutSettings layoutSettings,
-            ISaveLoadManager saveLoadManager, ITopMenuVM.Factory topMenu, IStatusBarVM statusBar,
-            IUIPanelAreaVM uiPanel, IMapAreaVM mapArea)
+            IJsonConverter jsonConverter, ISaveLoadManager saveLoadManager, ITopMenuVM.Factory topMenu,
+            IStatusBarVM statusBar, IUIPanelAreaVM uiPanel, IMapAreaVM mapArea)
         {
             _appSettings = appSettings;
             _boundsSettings = boundsSettings;
@@ -128,6 +132,7 @@ namespace OpenTracker.ViewModels
             StatusBar = statusBar;
             UIPanel = uiPanel;
             MapArea = mapArea;
+            _jsonConverter = jsonConverter;
 
             Open = TopMenu.Open;
             Save = TopMenu.Save;
@@ -227,7 +232,7 @@ namespace OpenTracker.ViewModels
             _boundsSettings.Width = bounds.Width;
             _boundsSettings.Height = bounds.Height;
 
-            JsonConversion.Save(_appSettings.Save(), AppPath.AppSettingsFilePath);
+            _jsonConverter.Save(_appSettings.Save(), AppPath.AppSettingsFilePath);
         }
     }
 }

@@ -14,14 +14,14 @@ namespace OpenTracker.Models.SaveLoad
     public class SaveData
     {
         // ReSharper disable once UnusedAutoPropertyAccessor.Global
-        public Version? Version { get; set; }
-        public ModeSaveData? Mode { get; set; }
-        public IDictionary<ItemType, ItemSaveData>? Items { get; set; }
-        public IDictionary<LocationID, LocationSaveData>? Locations { get; set; }
-        public IDictionary<BossPlacementID, BossPlacementSaveData>? BossPlacements { get; set; }
-        public IDictionary<PrizePlacementID, PrizePlacementSaveData>? PrizePlacements { get; set; }
-        public IList<ConnectionSaveData>? Connections { get; set; }
-        public IDictionary<DropdownID, DropdownSaveData>? Dropdowns { get; set; }
-        public IList<LocationID>? PinnedLocations { get; set; }
+        public Version? Version { get; init; }
+        public ModeSaveData? Mode { get; init; }
+        public IDictionary<ItemType, ItemSaveData>? Items { get; init; }
+        public IDictionary<LocationID, LocationSaveData>? Locations { get; init; }
+        public IDictionary<BossPlacementID, BossPlacementSaveData>? BossPlacements { get; init; }
+        public IDictionary<PrizePlacementID, PrizePlacementSaveData>? PrizePlacements { get; init; }
+        public IList<ConnectionSaveData>? Connections { get; init; }
+        public IDictionary<DropdownID, DropdownSaveData>? Dropdowns { get; init; }
+        public IList<LocationID>? PinnedLocations { get; init; }
     }
 }

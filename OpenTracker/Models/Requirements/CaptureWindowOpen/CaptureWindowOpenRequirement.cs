@@ -1,22 +1,20 @@
 using System.ComponentModel;
 using OpenTracker.ViewModels.Capture;
 
-namespace OpenTracker.Models.Requirements
+namespace OpenTracker.Models.Requirements.CaptureWindowOpen
 {
     /// <summary>
-    /// This class contains capture window open requirement data.
+    ///     This class contains capture window open requirement data.
     /// </summary>
-    public class CaptureWindowOpenRequirement : BooleanRequirement
+    public class CaptureWindowOpenRequirement : BooleanRequirement, ICaptureWindowOpenRequirement
     {
         private readonly ICaptureWindowVM _captureWindow;
 
-        public delegate CaptureWindowOpenRequirement Factory(ICaptureWindowVM captureWindow);
-
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="captureWindow">
-        /// The capture window data.
+        ///     The capture window data.
         /// </param>
         public CaptureWindowOpenRequirement(ICaptureWindowVM captureWindow)
         {
@@ -26,13 +24,13 @@ namespace OpenTracker.Models.Requirements
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the ICaptureWindow interface.
+        ///     Subscribes to the PropertyChanged event on the ICaptureWindow interface.
         /// </summary>
         /// <param name="sender">
-        /// The sending object of the event.
+        ///     The sending object of the event.
         /// </param>
         /// <param name="e">
-        /// The arguments of the PropertyChanged event.
+        ///     The arguments of the PropertyChanged event.
         /// </param>
         private void OnCaptureWindowChanged(object? sender, PropertyChangedEventArgs e)
         {

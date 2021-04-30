@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using OpenTracker.Models.Settings;
 
-namespace OpenTracker.Models.Requirements.AlwaysDisplay
+namespace OpenTracker.Models.Requirements.AlwaysDisplayDungeonItems
 {
     /// <summary>
     ///     This class contains always display dungeon items setting requirement data.

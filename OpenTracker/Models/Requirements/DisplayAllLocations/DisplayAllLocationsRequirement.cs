@@ -1,26 +1,24 @@
 using System.ComponentModel;
 using OpenTracker.Models.Settings;
 
-namespace OpenTracker.Models.Requirements
+namespace OpenTracker.Models.Requirements.DisplayAllLocations
 {
     /// <summary>
-    /// This class contains display all locations setting requirement data.
+    ///     This class contains display all locations setting requirement data.
     /// </summary>
-    public class DisplayAllLocationsRequirement : BooleanRequirement
+    public class DisplayAllLocationsRequirement : BooleanRequirement, IDisplayAllLocationsRequirement
     {
         private readonly ITrackerSettings _trackerSettings;
         private readonly bool _expectedValue;
-
-        public delegate DisplayAllLocationsRequirement Factory(bool expectedValue);
         
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="trackerSettings">
-        /// The tracker settings data.
+        ///     The tracker settings data.
         /// </param>
         /// <param name="expectedValue">
-        /// A boolean representing the expected value.
+        ///     A boolean representing the expected value.
         /// </param>
         public DisplayAllLocationsRequirement(ITrackerSettings trackerSettings, bool expectedValue)
         {
@@ -33,13 +31,13 @@ namespace OpenTracker.Models.Requirements
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the ITrackerSettings interface.
+        ///     Subscribes to the PropertyChanged event on the ITrackerSettings interface.
         /// </summary>
         /// <param name="sender">
-        /// The sending object of the event.
+        ///     The sending object of the event.
         /// </param>
         /// <param name="e">
-        /// The arguments of the PropertyChanged event.
+        ///     The arguments of the PropertyChanged event.
         /// </param>
         private void OnTrackerSettingsChanged(object? sender, PropertyChangedEventArgs e)
         {

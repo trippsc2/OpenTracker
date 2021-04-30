@@ -4,7 +4,8 @@ using System.Windows.Input;
 using Avalonia.Controls;
 using Avalonia.Layout;
 using OpenTracker.Models.Requirements;
-using OpenTracker.Models.Requirements.AlwaysDisplay;
+using OpenTracker.Models.Requirements.AlwaysDisplayDungeonItems;
+using OpenTracker.Models.Requirements.DisplayAllLocations;
 using OpenTracker.Models.Requirements.DisplaysMapsCompasses;
 using OpenTracker.Utils.Themes;
 

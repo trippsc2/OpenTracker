@@ -7,7 +7,7 @@ using OpenTracker.Models.Locations;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Requirements.Aggregate;
 using OpenTracker.Models.Requirements.Alternative;
-using OpenTracker.Models.Requirements.AlwaysDisplay;
+using OpenTracker.Models.Requirements.AlwaysDisplayDungeonItems;
 using OpenTracker.Models.Requirements.BigKeyShuffle;
 using OpenTracker.Models.Requirements.BossShuffle;
 using OpenTracker.Models.Requirements.CompassShuffle;

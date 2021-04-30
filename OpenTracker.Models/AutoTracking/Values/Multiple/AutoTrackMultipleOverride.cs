@@ -7,7 +7,7 @@ namespace OpenTracker.Models.AutoTracking.Values.Multiple
     /// <summary>
     ///     This class contains the auto-tracking result value of an ordered priority list of results.
     /// </summary>
-    public class AutoTrackMultipleOverride : AutoTrackValue, IAutoTrackMultipleOverride
+    public class AutoTrackMultipleOverride : AutoTrackValueBase, IAutoTrackMultipleOverride
     {
         private readonly IList<IAutoTrackValue> _values;
         

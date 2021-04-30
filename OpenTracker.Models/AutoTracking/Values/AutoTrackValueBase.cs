@@ -5,7 +5,7 @@ namespace OpenTracker.Models.AutoTracking.Values
     /// <summary>
     ///     This base class contains the auto-tracking result value data.
     /// </summary>
-    public abstract class AutoTrackValue : ReactiveObject, IAutoTrackValue
+    public abstract class AutoTrackValueBase : ReactiveObject, IAutoTrackValue
     {
         private int? _currentValue;
         public int? CurrentValue

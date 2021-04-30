@@ -1,4 +1,4 @@
-namespace OpenTracker.Models.Requirements.AlwaysDisplay
+namespace OpenTracker.Models.Requirements.AlwaysDisplayDungeonItems
 {
     /// <summary>
     ///     This interface contains always display dungeon items setting requirement data.

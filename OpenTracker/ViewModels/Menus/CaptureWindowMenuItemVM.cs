@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Input;
 using Avalonia.Threading;
-using OpenTracker.Models.Requirements;
+using OpenTracker.Models.Requirements.CaptureWindowOpen;
 using OpenTracker.Utils;
 using OpenTracker.ViewModels.Capture;
 using ReactiveUI;
@@ -23,7 +23,7 @@ namespace OpenTracker.ViewModels.Menus
 
         public CaptureWindowMenuItemVM(
             ICaptureManager captureManager, MenuItemCheckBoxVM.Factory iconFactory,
-            CaptureWindowOpenRequirement.Factory captureWindowOpenFactory, ICaptureWindowVM captureWindow)
+            ICaptureWindowOpenRequirement.Factory captureWindowOpenFactory, ICaptureWindowVM captureWindow)
         {
             _captureWindow = captureWindow;
             

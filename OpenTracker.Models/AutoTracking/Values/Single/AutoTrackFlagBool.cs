@@ -6,7 +6,7 @@ namespace OpenTracker.Models.AutoTracking.Values.Single
     /// <summary>
     ///     This class contains the auto-tracking result value of a memory flag.
     /// </summary>
-    public class AutoTrackFlagBool : AutoTrackValue, IAutoTrackFlagBool
+    public class AutoTrackFlagBool : AutoTrackValueBase, IAutoTrackFlagBool
     {
         private readonly IMemoryFlag _flag;
         private readonly int _trueValue;

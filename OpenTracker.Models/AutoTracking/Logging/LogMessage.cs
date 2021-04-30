@@ -5,7 +5,14 @@
     /// </summary>
     public class LogMessage : ILogMessage
     {
+        /// <summary>
+        ///     The log level of the message.
+        /// </summary>
         public LogLevel Level { get; }
+        
+        /// <summary>
+        ///     A string representing the message.
+        /// </summary>
         public string Message { get; }
 
         /// <summary>

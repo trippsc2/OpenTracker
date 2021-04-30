@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using OpenTracker.Utils;
 
-namespace OpenTracker.Models.Requirements.AlwaysDisplay
+namespace OpenTracker.Models.Requirements.AlwaysDisplayDungeonItems
 {
     /// <summary>
     ///     This class contains the dictionary container for always display dungeon items requirements.

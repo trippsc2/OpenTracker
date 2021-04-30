@@ -6,7 +6,7 @@ namespace OpenTracker.Models.AutoTracking.Values.Single
     /// <summary>
     ///     This class contains the auto-tracking result value of a memory address bitwise integer.
     /// </summary>
-    public class AutoTrackBitwiseIntegerValue : AutoTrackValue, IAutoTrackBitwiseIntegerValue
+    public class AutoTrackBitwiseIntegerValue : AutoTrackValueBase, IAutoTrackBitwiseIntegerValue
     {
         private readonly IMemoryAddress _address;
         private readonly byte _mask;

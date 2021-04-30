@@ -19,6 +19,9 @@ namespace OpenTracker.Models.Settings
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="jsonConverter">
+        ///     The JSON converter.
+        /// </param>
         /// <param name="bounds">
         /// The bounds settings.
         /// </param>
@@ -32,14 +35,15 @@ namespace OpenTracker.Models.Settings
         /// The color settings.
         /// </param>
         public AppSettings(
-            IBoundsSettings bounds, ITrackerSettings tracker, ILayoutSettings layout, IColorSettings colors)
+            IJsonConverter jsonConverter, IBoundsSettings bounds, ITrackerSettings tracker, ILayoutSettings layout,
+            IColorSettings colors)
         {
             Bounds = bounds;
             Tracker = tracker;
             Layout = layout;
             Colors = colors;
 
-            var saveData = JsonConversion.Load<AppSettingsSaveData?>(AppPath.AppSettingsFilePath);
+            var saveData = jsonConverter.Load<AppSettingsSaveData?>(AppPath.AppSettingsFilePath);
 
             if (saveData is null)
             {

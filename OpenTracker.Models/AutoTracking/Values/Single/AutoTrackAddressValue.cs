@@ -6,7 +6,7 @@ namespace OpenTracker.Models.AutoTracking.Values.Single
     /// <summary>
     ///     This class contains the auto-tracking result value of a memory address value.
     /// </summary>
-    public class AutoTrackAddressValue : AutoTrackValue, IAutoTrackAddressValue
+    public class AutoTrackAddressValue : AutoTrackValueBase, IAutoTrackAddressValue
     {
         private readonly IMemoryAddress _address;
         private readonly byte _maximum;

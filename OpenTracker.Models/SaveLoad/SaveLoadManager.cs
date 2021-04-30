@@ -17,10 +17,12 @@ using ReactiveUI;
 namespace OpenTracker.Models.SaveLoad
 {
     /// <summary>
-    /// This class contains logic managing saving and loading game data.
+    ///     This class contains logic managing saving and loading game data.
     /// </summary>
     public class SaveLoadManager : ReactiveObject, ISaveLoadManager
     {
+        private readonly IJsonConverter _jsonConverter;
+        
         private readonly IMode _mode;
         private readonly IItemDictionary _items;
         private readonly ILocationDictionary _locations;
@@ -46,40 +48,43 @@ namespace OpenTracker.Models.SaveLoad
         }
 
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
+        /// <param name="jsonConversion">
+        ///     The JSON converter.
+        /// </param>
         /// <param name="mode">
-        /// The mode settings.
+        ///     The mode settings.
         /// </param>
         /// <param name="items">
-        /// The item dictionary.
+        ///     The item dictionary.
         /// </param>
         /// <param name="locations">
-        /// The location dictionary.
+        ///     The location dictionary.
         /// </param>
         /// <param name="bossPlacements">
-        /// The boss placement dictionary.
+        ///     The boss placement dictionary.
         /// </param>
         /// <param name="prizePlacements">
-        /// The prize placement dictionary.
+        ///     The prize placement dictionary.
         /// </param>
         /// <param name="connections">
-        /// The connection collection.
+        ///     The connection collection.
         /// </param>
         /// <param name="dropdowns">
-        /// The dropdown dictionary.
+        ///     The dropdown dictionary.
         /// </param>
         /// <param name="pinnedLocations">
-        /// The pinned location collection.
+        ///     The pinned location collection.
         /// </param>
         /// <param name="sequenceBreaks">
-        /// The sequence break dictionary.
+        ///     The sequence break dictionary.
         /// </param>
         public SaveLoadManager(
-            IMode mode, IItemDictionary items, ILocationDictionary locations, IBossPlacementDictionary bossPlacements,
-            IPrizePlacementDictionary prizePlacements, IConnectionCollection.Factory connections,
-            IDropdownDictionary dropdowns, IPinnedLocationCollection pinnedLocations,
-            ISequenceBreakDictionary sequenceBreaks)
+            IJsonConverter jsonConversion, IMode mode, IItemDictionary items, ILocationDictionary locations,
+            IBossPlacementDictionary bossPlacements, IPrizePlacementDictionary prizePlacements,
+            IConnectionCollection.Factory connections, IDropdownDictionary dropdowns,
+            IPinnedLocationCollection pinnedLocations, ISequenceBreakDictionary sequenceBreaks)
         {
             _mode = mode;
             _items = items;
@@ -90,18 +95,45 @@ namespace OpenTracker.Models.SaveLoad
             _dropdowns = dropdowns;
             _pinnedLocations = pinnedLocations;
             _sequenceBreaks = sequenceBreaks;
+            _jsonConverter = jsonConversion;
 
             PropertyChanged += OnPropertyChanged;
         }
 
+        public void Open(string path)
+        {
+            var saveData = _jsonConverter.Load<SaveData>(path) ?? throw new NullReferenceException();
+            LoadSaveData(saveData);
+
+            CurrentFilePath = path;
+        }
+
+        public void Save(string path)
+        {
+            var saveData = GetSaveData();
+            _jsonConverter.Save(saveData, path);
+
+            CurrentFilePath = path;
+        }
+
+        public void OpenSequenceBreaks(string path)
+        {
+            _sequenceBreaks.Load(_jsonConverter.Load<Dictionary<SequenceBreakType, SequenceBreakSaveData>>(path));
+        }
+
+        public void SaveSequenceBreaks(string path)
+        {
+            _jsonConverter.Save(_sequenceBreaks.Save(), path);
+        }
+
         /// <summary>
-        /// Subscribes to the PropertyChanged event on this object.
+        ///     Subscribes to the PropertyChanged event on this object.
         /// </summary>
         /// <param name="sender">
-        /// The sending object of the event.
+        ///     The sending object of the event.
         /// </param>
         /// <param name="e">
-        /// The arguments of the PropertyChanged event.
+        ///     The arguments of the PropertyChanged event.
         /// </param>
         private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -112,10 +144,10 @@ namespace OpenTracker.Models.SaveLoad
         }
 
         /// <summary>
-        /// Gets saved data from the tracker.
+        ///     Gets saved data from the tracker.
         /// </summary>
         /// <returns>
-        /// Saved data from the tracker.
+        ///     Saved data from the tracker.
         /// </returns>
         private SaveData GetSaveData()
         {
@@ -134,73 +166,23 @@ namespace OpenTracker.Models.SaveLoad
         }
 
         /// <summary>
-        /// Loads save data into the tracker.
+        ///     Loads save data into the tracker.
         /// </summary>
         /// <param name="saveData">
-        /// The save data to be loaded.
+        ///     The save data to be loaded.
         /// </param>
         private void LoadSaveData(SaveData saveData)
         {
             saveData = SaveDataConverter.ConvertSaveData(saveData);
 
             _mode.Load(saveData.Mode);
-            _items.Load(saveData.Items!);
-            _locations.Load(saveData.Locations!);
-            _bossPlacements.Load(saveData.BossPlacements!);
-            _prizePlacements.Load(saveData.PrizePlacements!);
-            _connections.Value.Load(saveData.Connections!);
-            _dropdowns.Load(saveData.Dropdowns!);
-            _pinnedLocations.Load(saveData.PinnedLocations!);
-        }
-
-        /// <summary>
-        /// Loads the game data from the specified file path.
-        /// </summary>
-        /// <param name="path">
-        /// A string representing the file path.
-        /// </param>
-        public void Open(string path)
-        {
-            var saveData = JsonConversion.Load<SaveData>(path) ?? throw new NullReferenceException();
-            LoadSaveData(saveData);
-
-            CurrentFilePath = path;
-        }
-
-        /// <summary>
-        /// Saves the game data to the specified file path.
-        /// </summary>
-        /// <param name="path">
-        /// A string representing the file path.
-        /// </param>
-        public void Save(string path)
-        {
-            var saveData = GetSaveData();
-            JsonConversion.Save(saveData, path);
-
-            CurrentFilePath = path;
-        }
-
-        /// <summary>
-        /// Loads the sequence break data from the specified file path.
-        /// </summary>
-        /// <param name="path">
-        /// A string representing the file path.
-        /// </param>
-        public void OpenSequenceBreaks(string path)
-        {
-            _sequenceBreaks.Load(JsonConversion.Load<Dictionary<SequenceBreakType, SequenceBreakSaveData>>(path));
-        }
-
-        /// <summary>
-        /// Saves the sequence break data to the specified file path.
-        /// </summary>
-        /// <param name="path">
-        /// A string representing the file path.
-        /// </param>
-        public void SaveSequenceBreaks(string path)
-        {
-            JsonConversion.Save(_sequenceBreaks.Save(), path);
+            _items.Load(saveData.Items);
+            _locations.Load(saveData.Locations);
+            _bossPlacements.Load(saveData.BossPlacements);
+            _prizePlacements.Load(saveData.PrizePlacements);
+            _connections.Value.Load(saveData.Connections);
+            _dropdowns.Load(saveData.Dropdowns);
+            _pinnedLocations.Load(saveData.PinnedLocations);
         }
     }
 }

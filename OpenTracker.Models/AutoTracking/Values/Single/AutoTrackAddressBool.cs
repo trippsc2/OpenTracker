@@ -7,7 +7,7 @@ namespace OpenTracker.Models.AutoTracking.Values.Single
     ///     This class contains the auto-tracking result value of a comparison of a SNES memory address to a given
     ///         value.
     /// </summary>
-    public class AutoTrackAddressBool : AutoTrackValue, IAutoTrackAddressBool
+    public class AutoTrackAddressBool : AutoTrackValueBase, IAutoTrackAddressBool
     {
         private readonly IMemoryAddress _address;
         private readonly byte _comparison;

@@ -66,13 +66,13 @@ namespace OpenTracker.Models.AutoTracking.Values.Multiple
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the IAutoTrackValue interface.
+        ///     Subscribes to the PropertyChanged event on the IAutoTrackValue interface.
         /// </summary>
         /// <param name="sender">
-        /// The sending object of the event.
+        ///     The sending object of the event.
         /// </param>
         /// <param name="e">
-        /// The arguments of the PropertyChanged event.
+        ///     The arguments of the PropertyChanged event.
         /// </param>
         private void OnValueChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -83,7 +83,7 @@ namespace OpenTracker.Models.AutoTracking.Values.Multiple
         }
 
         /// <summary>
-        /// Updates the value presented.
+        ///     Updates the value presented.
         /// </summary>
         private void UpdateValue()
         {

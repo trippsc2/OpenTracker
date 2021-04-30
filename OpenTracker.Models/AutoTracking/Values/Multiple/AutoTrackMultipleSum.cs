@@ -7,7 +7,7 @@ namespace OpenTracker.Models.AutoTracking.Values.Multiple
     /// <summary>
     ///     This class contains the auto-tracking result value of a list of results to be summed.
     /// </summary>
-    public class AutoTrackMultipleSum : AutoTrackValue, IAutoTrackMultipleSum
+    public class AutoTrackMultipleSum : AutoTrackValueBase, IAutoTrackMultipleSum
     {
         private readonly IList<IAutoTrackValue> _values;
         

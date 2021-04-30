@@ -1,7 +1,7 @@
 ﻿namespace OpenTracker.Models.AutoTracking.Logging
 {
     /// <summary>
-    /// This is the interface for log messages for auto-tracking.
+    ///     This is the interface for log messages for auto-tracking.
     /// </summary>
     public interface ILogMessage
     {

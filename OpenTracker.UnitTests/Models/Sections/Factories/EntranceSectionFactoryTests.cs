@@ -1,86 +1,218 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Autofac;
+using ExpectedObjects;
+using NSubstitute;
 using OpenTracker.Models.Locations;
+using OpenTracker.Models.Markings;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.Nodes;
+using OpenTracker.Models.Nodes.Factories;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Requirements.Aggregate;
 using OpenTracker.Models.Requirements.Alternative;
 using OpenTracker.Models.Requirements.Mode;
+using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.Sections.Entrance;
+using OpenTracker.Models.Sections.Factories;
+using OpenTracker.Models.UndoRedo.Sections;
+using Xunit;
 
-namespace OpenTracker.Models.Sections.Factories
+namespace OpenTracker.UnitTests.Models.Sections.Factories
 {
-    /// <summary>
-    ///     This class contains the creation logic for entrance sections.
-    /// </summary>
-    public class EntranceSectionFactory : IEntranceSectionFactory
+    public class EntranceSectionFactoryTests
     {
-        private readonly IAggregateRequirementDictionary _aggregateRequirements;
-        private readonly IAlternativeRequirementDictionary _alternativeRequirements;
-        private readonly IEntranceShuffleRequirementDictionary _entranceShuffleRequirements;
-        private readonly IWorldStateRequirementDictionary _worldStateRequirements;
+        private static readonly IAggregateRequirementDictionary AggregateRequirements = 
+            new AggregateRequirementDictionary(requirements => 
+                new AggregateRequirement(requirements));
+        private static readonly IAlternativeRequirementDictionary AlternativeRequirements =
+            new AlternativeRequirementDictionary(requirements => 
+                new AlternativeRequirement(requirements));
+        private static readonly IEntranceShuffleRequirementDictionary EntranceShuffleRequirements =
+            new EntranceShuffleRequirementDictionary(_ => Substitute.For<IEntranceShuffleRequirement>());
+        private static readonly IWorldStateRequirementDictionary WorldStateRequirements =
+            new WorldStateRequirementDictionary(_ => Substitute.For<IWorldStateRequirement>());
 
-        private readonly IOverworldNodeDictionary _overworldNodes;
+        private static readonly IOverworldNodeFactory OverworldNodeFactory = Substitute.For<IOverworldNodeFactory>();
+        private static readonly IOverworldNodeDictionary OverworldNodes = new OverworldNodeDictionary(() =>
+            OverworldNodeFactory);
+
+        private static readonly ISaveLoadManager SaveLoadManager = Substitute.For<ISaveLoadManager>();
+
+        private static readonly ICollectSection.Factory CollectSectionFactory =
+            (_, _) => Substitute.For<ICollectSection>();
+        private static readonly IUncollectSection.Factory UncollectSectionFactory =
+            _ => Substitute.For<IUncollectSection>();
+
+        private static readonly IMarking.Factory MarkingFactory = () => Substitute.For<IMarking>();
         
-        private readonly IEntranceSection.Factory _factory;
+        private static readonly IEntranceSection.Factory Factory =
+            (name, entranceShuffleLevel, requirement, node, exitProvided) => new EntranceSection(
+                SaveLoadManager, CollectSectionFactory, UncollectSectionFactory, MarkingFactory, name,
+                entranceShuffleLevel, requirement, node, exitProvided);
 
-        /// <summary>
-        ///     Constructor
-        /// </summary>
-        /// <param name="aggregateRequirements">
-        ///     The aggregate requirement dictionary.
-        /// </param>
-        /// <param name="alternativeRequirements">
-        ///     The alternative requirement dictionary.
-        /// </param>
-        /// <param name="entranceShuffleRequirements">
-        ///     The entrance shuffle requirement.
-        /// </param>
-        /// <param name="worldStateRequirements">
-        ///     The world state requirement.
-        /// </param>
-        /// <param name="overworldNodes">
-        ///     The overworld node dictionary.
-        /// </param>
-        /// <param name="factory">
-        ///     An Autofac factory for creating new entrance sections.
-        /// </param>
-        public EntranceSectionFactory(
-            IAggregateRequirementDictionary aggregateRequirements,
-            IAlternativeRequirementDictionary alternativeRequirements,
-            IEntranceShuffleRequirementDictionary entranceShuffleRequirements,
-            IWorldStateRequirementDictionary worldStateRequirements, IOverworldNodeDictionary overworldNodes,
-            IEntranceSection.Factory factory)
+        private static readonly Dictionary<LocationID, ExpectedObject> ExpectedValues = new();
+
+        private readonly EntranceSectionFactory _sut = new EntranceSectionFactory(
+            AggregateRequirements, AlternativeRequirements, EntranceShuffleRequirements, WorldStateRequirements,
+            OverworldNodes, Factory);
+
+        static EntranceSectionFactoryTests()
         {
-            _aggregateRequirements = aggregateRequirements;
-            _alternativeRequirements = alternativeRequirements;
-            _entranceShuffleRequirements = entranceShuffleRequirements;
-            _worldStateRequirements = worldStateRequirements;
-            
-            _overworldNodes = overworldNodes;
-            
-            _factory = factory;
+            OverworldNodeFactory.GetOverworldNode(Arg.Any<OverworldNodeID>())
+                .Returns(_ => Substitute.For<IOverworldNode>());
         }
-
-        public IEntranceSection GetEntranceSection(LocationID id)
+        
+        // TODO - Switch this method to using explicit expected objects.
+        private static void PopulateExpectedValues()
         {
-            var entranceShuffleLevel = GetEntranceShuffleLevel(id);
+            ExpectedValues.Clear();
 
-            return _factory(
-                GetName(id), entranceShuffleLevel, GetRequirement(id, entranceShuffleLevel), GetNode(id),
-                GetExitProvided(id));
+            foreach (LocationID id in Enum.GetValues(typeof(LocationID)))
+            {
+                var entranceShuffleLevel = GetEntranceShuffleLevel(id);
+                
+                switch (id)
+                {
+                    case LocationID.LumberjackHouseEntrance:
+                    case LocationID.DeathMountainEntryCave:
+                    case LocationID.DeathMountainExitCave:
+                    case LocationID.KakarikoFortuneTellerEntrance:
+                    case LocationID.WomanLeftDoor:
+                    case LocationID.WomanRightDoor:
+                    case LocationID.LeftSnitchHouseEntrance:
+                    case LocationID.RightSnitchHouseEntrance:
+                    case LocationID.BlindsHouseEntrance:
+                    case LocationID.ChickenHouseEntrance:
+                    case LocationID.GrassHouseEntrance:
+                    case LocationID.TavernFront:
+                    case LocationID.KakarikoShopEntrance:
+                    case LocationID.BombHutEntrance:
+                    case LocationID.SickKidEntrance:
+                    case LocationID.BlacksmithHouse:
+                    case LocationID.ChestGameEntrance:
+                    case LocationID.RaceHouseLeft:
+                    case LocationID.RaceHouseRight:
+                    case LocationID.LibraryEntrance:
+                    case LocationID.ForestChestGameEntrance:
+                    case LocationID.CastleMainEntrance:
+                    case LocationID.CastleLeftEntrance:
+                    case LocationID.CastleRightEntrance:
+                    case LocationID.CastleTowerEntrance:
+                    case LocationID.DamEntrance:
+                    case LocationID.CentralBonkRocksEntrance:
+                    case LocationID.WitchsHutEntrance:
+                    case LocationID.WaterfallFairyEntrance:
+                    case LocationID.SahasrahlasHutEntrance:
+                    case LocationID.TreesFairyCaveEntrance:
+                    case LocationID.PegsFairyCaveEntrance:
+                    case LocationID.EasternPalaceEntrance:
+                    case LocationID.NorthBonkRocks:
+                    case LocationID.KingsTombEntrance:
+                    case LocationID.GraveyardLedgeEntrance:
+                    case LocationID.DesertLeftEntrance:
+                    case LocationID.DesertBackEntrance:
+                    case LocationID.DesertRightEntrance:
+                    case LocationID.DesertFrontEntrance:
+                    case LocationID.AginahsCaveEntrance:
+                    case LocationID.ThiefCaveEntrance:
+                    case LocationID.RupeeCaveEntrance:
+                    case LocationID.SkullWoodsBack:
+                    case LocationID.ThievesTownEntrance:
+                    case LocationID.CShapedHouseEntrance:
+                    case LocationID.HammerHouse:
+                    case LocationID.DarkVillageFortuneTellerEntrance:
+                    case LocationID.DarkChapelEntrance:
+                    case LocationID.ShieldShop:
+                    case LocationID.DarkLumberjack:
+                    case LocationID.TreasureGameEntrance:
+                    case LocationID.BombableShackEntrance:
+                    case LocationID.HammerPegsEntrance:
+                    case LocationID.BumperCaveExit:
+                    case LocationID.BumperCaveEntrance:
+                    case LocationID.HypeCaveEntrance:
+                    case LocationID.SwampPalaceEntrance:
+                    case LocationID.DarkCentralBonkRocksEntrance:
+                    case LocationID.SouthOfGroveEntrance:
+                    case LocationID.BombShop:
+                    case LocationID.ArrowGameEntrance:
+                    case LocationID.DarkHyliaFortuneTeller:
+                    case LocationID.DarkTreesFairyCaveEntrance:
+                    case LocationID.DarkSahasrahlaEntrance:
+                    case LocationID.PalaceOfDarknessEntrance:
+                    case LocationID.DarkWitchsHut:
+                    case LocationID.DarkFluteSpotFiveEntrance:
+                    case LocationID.FatFairyEntrance:
+                    case LocationID.DarkIceRodCaveEntrance:
+                    case LocationID.DarkFakeIceRodCaveEntrance:
+                    case LocationID.DarkIceRodRockEntrance:
+                    case LocationID.HypeFairyCaveEntrance:
+                    case LocationID.FortuneTellerEntrance:
+                    case LocationID.LakeShop:
+                    case LocationID.UpgradeFairy:
+                    case LocationID.MiniMoldormCaveEntrance:
+                    case LocationID.IceRodCaveEntrance:
+                    case LocationID.IceBeeCaveEntrance:
+                    case LocationID.IceFairyCaveEntrance:
+                    case LocationID.IcePalaceEntrance:
+                    case LocationID.MiseryMireEntrance:
+                    case LocationID.MireRightShackEntrance:
+                    case LocationID.MireCaveEntrance:
+                    case LocationID.CheckerboardCaveEntrance:
+                    case LocationID.DeathMountainEntranceBack:
+                    case LocationID.OldManResidence:
+                    case LocationID.OldManBackResidence:
+                    case LocationID.DeathMountainExitFront:
+                    case LocationID.SpectacleRockLeft:
+                    case LocationID.SpectacleRockRight:
+                    case LocationID.SpectacleRockTop:
+                    case LocationID.SpikeCaveEntrance:
+                    case LocationID.DarkMountainFairyEntrance:
+                    case LocationID.TowerOfHeraEntrance:
+                    case LocationID.SpiralCaveBottom:
+                    case LocationID.EDMFairyCaveEntrance:
+                    case LocationID.ParadoxCaveMiddle:
+                    case LocationID.ParadoxCaveBottom:
+                    case LocationID.EDMConnectorBottom:
+                    case LocationID.SpiralCaveTop:
+                    case LocationID.MimicCaveEntrance:
+                    case LocationID.EDMConnectorTop:
+                    case LocationID.ParadoxCaveTop:
+                    case LocationID.SuperBunnyCaveBottom:
+                    case LocationID.DeathMountainShopEntrance:
+                    case LocationID.SuperBunnyCaveTop:
+                    case LocationID.HookshotCaveEntrance:
+                    case LocationID.TurtleRockEntrance:
+                    case LocationID.GanonsTowerEntrance:
+                    case LocationID.TRLedgeLeft:
+                    case LocationID.TRLedgeRight:
+                    case LocationID.TRSafetyDoor:
+                    case LocationID.HookshotCaveTop:
+                    case LocationID.LinksHouseEntrance:
+                    case LocationID.LumberjackCaveExit:
+                    case LocationID.TheWellExit:
+                    case LocationID.MagicBatExit:
+                    case LocationID.ForestHideoutExit:
+                    case LocationID.CastleSecretExit:
+                    case LocationID.HoulihanHoleExit:
+                    case LocationID.Sanctuary:
+                    case LocationID.GanonHoleExit:
+                    case LocationID.SkullWoodsWestEntrance:
+                    case LocationID.SkullWoodsCenterEntrance:
+                    case LocationID.SkullWoodsEastEntrance:
+                    case LocationID.SkullWoodsNWHole:
+                    case LocationID.SkullWoodsSWHole:
+                    case LocationID.SkullWoodsSEHole:
+                    case LocationID.SkullWoodsNEHole:
+                        ExpectedValues.Add(id, Factory(
+                            GetName(id), entranceShuffleLevel, GetRequirement(id, entranceShuffleLevel), GetNode(id),
+                            GetExitProvided(id)).ToExpectedObject());
+                        break;
+                }
+            }
         }
-
-        /// <summary>
-        ///     Returns the section name.
-        /// </summary>
-        /// <param name="id">
-        ///     The location ID.
-        /// </param>
-        /// <returns>
-        ///     A string representing the section name.
-        /// </returns>
+        
         private static string GetName(LocationID id)
         {
             switch (id)
@@ -183,15 +315,6 @@ namespace OpenTracker.Models.Sections.Factories
             }
         }
 
-        /// <summary>
-        ///     Returns the entrance shuffle level of the section.
-        /// </summary>
-        /// <param name="id">
-        ///     The location ID.
-        /// </param>
-        /// <returns>
-        ///     The entrance shuffle level of the section.
-        /// </returns>
         private static EntranceShuffle GetEntranceShuffleLevel(LocationID id)
         {
             switch (id)
@@ -335,118 +458,97 @@ namespace OpenTracker.Models.Sections.Factories
             }
         }
 
-        /// <summary>
-        ///     Returns the requirement of the section.
-        /// </summary>
-        /// <param name="id">
-        ///     The location ID.
-        /// </param>
-        /// <param name="entranceShuffleLevel">
-        ///     The entrance shuffle level.
-        /// </param>
-        /// <returns>
-        ///     The requirement.
-        /// </returns>
-        private IRequirement GetRequirement(LocationID id, EntranceShuffle entranceShuffleLevel)
+        private static IRequirement GetRequirement(LocationID id, EntranceShuffle entranceShuffleLevel)
         {
             switch (id)
             {
                 case LocationID.LinksHouseEntrance:
-                    return _aggregateRequirements[new HashSet<IRequirement>
+                    return AggregateRequirements[new HashSet<IRequirement>
                     {
-                        _alternativeRequirements[new HashSet<IRequirement>
+                        AlternativeRequirements[new HashSet<IRequirement>
                         {
-                            _entranceShuffleRequirements[EntranceShuffle.All],
-                            _entranceShuffleRequirements[EntranceShuffle.Insanity]
+                            EntranceShuffleRequirements[EntranceShuffle.All],
+                            EntranceShuffleRequirements[EntranceShuffle.Insanity]
                         }],
-                        _worldStateRequirements[WorldState.Inverted]
+                        WorldStateRequirements[WorldState.Inverted]
                     }];
                 case LocationID.GanonHoleExit:
-                    return _aggregateRequirements[new HashSet<IRequirement>
+                    return AggregateRequirements[new HashSet<IRequirement>
                     {
-                        _entranceShuffleRequirements[EntranceShuffle.Insanity],
-                        _worldStateRequirements[WorldState.Inverted]
+                        EntranceShuffleRequirements[EntranceShuffle.Insanity],
+                        WorldStateRequirements[WorldState.Inverted]
                     }];
             }
 
             switch (entranceShuffleLevel)
             {
                 case EntranceShuffle.Dungeon:
-                    return _alternativeRequirements[new HashSet<IRequirement>
+                    return AlternativeRequirements[new HashSet<IRequirement>
                     {
-                        _entranceShuffleRequirements[EntranceShuffle.Dungeon],
-                        _entranceShuffleRequirements[EntranceShuffle.All],
-                        _entranceShuffleRequirements[EntranceShuffle.Insanity]
+                        EntranceShuffleRequirements[EntranceShuffle.Dungeon],
+                        EntranceShuffleRequirements[EntranceShuffle.All],
+                        EntranceShuffleRequirements[EntranceShuffle.Insanity]
                     }];
                 case EntranceShuffle.All:
-                    return _alternativeRequirements[new HashSet<IRequirement>
+                    return AlternativeRequirements[new HashSet<IRequirement>
                     {
-                        _entranceShuffleRequirements[EntranceShuffle.All],
-                        _entranceShuffleRequirements[EntranceShuffle.Insanity]
+                        EntranceShuffleRequirements[EntranceShuffle.All],
+                        EntranceShuffleRequirements[EntranceShuffle.Insanity]
                     }];
                 case EntranceShuffle.Insanity:
-                    return _entranceShuffleRequirements[EntranceShuffle.Insanity];
+                    return EntranceShuffleRequirements[EntranceShuffle.Insanity];
                 default:
                     throw new ArgumentOutOfRangeException(nameof(entranceShuffleLevel), entranceShuffleLevel, null);
             }
         }
 
-        /// <summary>
-        ///     Returns the node to which the section belongs.
-        /// </summary>
-        /// <param name="id">
-        ///     The location ID.
-        /// </param>
-        /// <returns>
-        ///     The node to which the section belongs.
-        /// </returns>
-        private INode GetNode(LocationID id)
+        private static INode GetNode(LocationID id)
         {
             switch (id)
             {
                 case LocationID.DeathMountainEntryCave:
-                    return _overworldNodes[OverworldNodeID.DeathMountainEntry];
+                    return OverworldNodes[OverworldNodeID.DeathMountainEntry];
                 case LocationID.DeathMountainExitCave:
-                    return _overworldNodes[OverworldNodeID.DeathMountainExit];
+                    return OverworldNodes[OverworldNodeID.DeathMountainExit];
                 case LocationID.GrassHouseEntrance:
-                    return _overworldNodes[OverworldNodeID.GrassHouse];
+                    return OverworldNodes[OverworldNodeID.GrassHouse];
                 case LocationID.BombHutEntrance:
-                    return _overworldNodes[OverworldNodeID.BombHut];
+                    return OverworldNodes[OverworldNodeID.BombHut];
                 case LocationID.RaceHouseLeft:
-                    return _overworldNodes[OverworldNodeID.RaceGameLedge];
+                    return OverworldNodes[OverworldNodeID.RaceGameLedge];
                 case LocationID.CastleLeftEntrance:
                 case LocationID.CastleRightEntrance:
-                    return _overworldNodes[OverworldNodeID.HyruleCastleTop];
+                    return OverworldNodes[OverworldNodeID.HyruleCastleTop];
                 case LocationID.CastleTowerEntrance:
-                    return _overworldNodes[OverworldNodeID.AgahnimTowerEntrance];
+                    return OverworldNodes[OverworldNodeID.AgahnimTowerEntrance];
                 case LocationID.CentralBonkRocksEntrance:
                 case LocationID.NorthBonkRocks:
-                    return _overworldNodes[OverworldNodeID.LightWorldDash];
+                    return OverworldNodes[OverworldNodeID.LightWorldDash];
                 case LocationID.WitchsHutEntrance:
-                    return _overworldNodes[OverworldNodeID.LWWitchArea];
+                    return OverworldNodes[OverworldNodeID.LWWitchArea];
                 case LocationID.WaterfallFairyEntrance:
-                    return _overworldNodes[OverworldNodeID.WaterfallFairy];
+                    return OverworldNodes[OverworldNodeID.WaterfallFairy];
                 case LocationID.KingsTombEntrance:
-                    return _overworldNodes[OverworldNodeID.KingsTombGrave];
+                    return OverworldNodes[OverworldNodeID.KingsTombGrave];
                 case LocationID.GraveyardLedgeEntrance:
-                    return _overworldNodes[OverworldNodeID.LWGraveyardLedge];
+                    return OverworldNodes[OverworldNodeID.LWGraveyardLedge];
                 case LocationID.DesertLeftEntrance:
-                    return _overworldNodes[OverworldNodeID.DesertLedge];
+                    return OverworldNodes[OverworldNodeID.DesertLedge];
                 case LocationID.DesertBackEntrance:
-                    return _overworldNodes[OverworldNodeID.DesertBack];
+                    return OverworldNodes[OverworldNodeID.DesertBack];
                 case LocationID.DesertRightEntrance:
-                    return _overworldNodes[OverworldNodeID.Inaccessible];
+                    return OverworldNodes[OverworldNodeID.Inaccessible];
                 case LocationID.DesertFrontEntrance:
-                    return _overworldNodes[OverworldNodeID.DesertPalaceFrontEntrance];
+                    return OverworldNodes[OverworldNodeID.DesertPalaceFrontEntrance];
                 case LocationID.RupeeCaveEntrance:
                 case LocationID.IceFairyCaveEntrance:
-                    return _overworldNodes[OverworldNodeID.LightWorldLift1];
+                    return OverworldNodes[OverworldNodeID.LightWorldLift1];
                 case LocationID.SkullWoodsBack:
-                    return _overworldNodes[OverworldNodeID.SkullWoodsBack];
+                    return OverworldNodes[OverworldNodeID.SkullWoodsBack];
                 case LocationID.ThievesTownEntrance:
                 case LocationID.BombableShackEntrance:
                 case LocationID.SkullWoodsNEHole:
-                    return _overworldNodes[OverworldNodeID.DarkWorldWestNotBunny];
+                    return OverworldNodes[OverworldNodeID.DarkWorldWestNotBunny];
                 case LocationID.CShapedHouseEntrance:
                 case LocationID.DarkVillageFortuneTellerEntrance:
                 case LocationID.DarkChapelEntrance:
@@ -457,58 +559,60 @@ namespace OpenTracker.Models.Sections.Factories
                 case LocationID.SkullWoodsEastEntrance:
                 case LocationID.SkullWoodsSWHole:
                 case LocationID.SkullWoodsSEHole:
-                    return _overworldNodes[OverworldNodeID.DarkWorldWest];
+                    return OverworldNodes[OverworldNodeID.DarkWorldWest];
                 case LocationID.HammerHouse:
-                    return _overworldNodes[OverworldNodeID.HammerHouse];
+                    return OverworldNodes[OverworldNodeID.HammerHouse];
                 case LocationID.HammerPegsEntrance:
-                    return _overworldNodes[OverworldNodeID.HammerPegs];
+                    return OverworldNodes[OverworldNodeID.HammerPegs];
                 case LocationID.BumperCaveExit:
-                    return _overworldNodes[OverworldNodeID.BumperCaveTop];
+                    return OverworldNodes[OverworldNodeID.BumperCaveTop];
                 case LocationID.BumperCaveEntrance:
-                    return _overworldNodes[OverworldNodeID.BumperCaveEntry];
+                    return OverworldNodes[OverworldNodeID.BumperCaveEntry];
                 case LocationID.HypeCaveEntrance:
-                    return _overworldNodes[OverworldNodeID.DarkWorldSouthNotBunny];
+                    return OverworldNodes[OverworldNodeID.DarkWorldSouthNotBunny];
                 case LocationID.SwampPalaceEntrance:
                 case LocationID.BombShop:
                 case LocationID.ArrowGameEntrance:
                 case LocationID.DarkHyliaFortuneTeller:
-                    return _overworldNodes[OverworldNodeID.DarkWorldSouth];
+                    return OverworldNodes[OverworldNodeID.DarkWorldSouth];
                 case LocationID.DarkCentralBonkRocksEntrance:
-                    return _overworldNodes[OverworldNodeID.DarkWorldSouthDash];
+                    return OverworldNodes[OverworldNodeID.DarkWorldSouthDash];
                 case LocationID.SouthOfGroveEntrance:
-                    return _overworldNodes[OverworldNodeID.SouthOfGroveLedge];
+                    return OverworldNodes[OverworldNodeID.SouthOfGroveLedge];
                 case LocationID.DarkTreesFairyCaveEntrance:
                 case LocationID.DarkSahasrahlaEntrance:
                 case LocationID.DarkFluteSpotFiveEntrance:
-                    return _overworldNodes[OverworldNodeID.DarkWorldEast];
+                    return OverworldNodes[OverworldNodeID.DarkWorldEast];
                 case LocationID.PalaceOfDarknessEntrance:
-                    return _overworldNodes[OverworldNodeID.DarkWorldEastNotBunny];
+                    return OverworldNodes[OverworldNodeID.DarkWorldEastNotBunny];
                 case LocationID.DarkWitchsHut:
-                    return _overworldNodes[OverworldNodeID.DWWitchArea];
+                    return OverworldNodes[OverworldNodeID.DWWitchArea];
                 case LocationID.FatFairyEntrance:
-                    return _overworldNodes[OverworldNodeID.FatFairyEntrance];
+                    return OverworldNodes[OverworldNodeID.FatFairyEntrance];
+                case LocationID.GanonHole:
+                    return OverworldNodes[OverworldNodeID.GanonHole];
                 case LocationID.DarkIceRodCaveEntrance:
-                    return _overworldNodes[OverworldNodeID.DarkWorldSouthEastNotBunny];
+                    return OverworldNodes[OverworldNodeID.DarkWorldSouthEastNotBunny];
                 case LocationID.DarkFakeIceRodCaveEntrance:
-                    return _overworldNodes[OverworldNodeID.DarkWorldSouthEast];
+                    return OverworldNodes[OverworldNodeID.DarkWorldSouthEast];
                 case LocationID.DarkIceRodRockEntrance:
-                    return _overworldNodes[OverworldNodeID.DarkWorldSouthEastLift1];
+                    return OverworldNodes[OverworldNodeID.DarkWorldSouthEastLift1];
                 case LocationID.HypeFairyCaveEntrance:
                 case LocationID.MiniMoldormCaveEntrance:
                 case LocationID.IceRodCaveEntrance:
-                    return _overworldNodes[OverworldNodeID.LightWorldNotBunny];
+                    return OverworldNodes[OverworldNodeID.LightWorldNotBunny];
                 case LocationID.UpgradeFairy:
-                    return _overworldNodes[OverworldNodeID.LakeHyliaFairyIsland];
+                    return OverworldNodes[OverworldNodeID.LakeHyliaFairyIsland];
                 case LocationID.IcePalaceEntrance:
-                    return _overworldNodes[OverworldNodeID.IcePalaceIsland];
+                    return OverworldNodes[OverworldNodeID.IcePalaceIsland];
                 case LocationID.MiseryMireEntrance:
-                    return _overworldNodes[OverworldNodeID.MiseryMireEntrance];
+                    return OverworldNodes[OverworldNodeID.MiseryMireEntrance];
                 case LocationID.MireShackEntrance:
                 case LocationID.MireRightShackEntrance:
                 case LocationID.MireCaveEntrance:
-                    return _overworldNodes[OverworldNodeID.MireArea];
+                    return OverworldNodes[OverworldNodeID.MireArea];
                 case LocationID.CheckerboardCaveEntrance:
-                    return _overworldNodes[OverworldNodeID.CheckerboardCave];
+                    return OverworldNodes[OverworldNodeID.CheckerboardCave];
                 case LocationID.DeathMountainEntranceBack:
                 case LocationID.OldManResidence:
                 case LocationID.OldManBackResidence:
@@ -516,65 +620,56 @@ namespace OpenTracker.Models.Sections.Factories
                 case LocationID.SpectacleRockLeft:
                 case LocationID.SpectacleRockRight:
                 case LocationID.SpectacleRockTop:
-                    return _overworldNodes[OverworldNodeID.DeathMountainWestBottom];
+                    return OverworldNodes[OverworldNodeID.DeathMountainWestBottom];
                 case LocationID.SpikeCaveEntrance:
                 case LocationID.DarkMountainFairyEntrance:
-                    return _overworldNodes[OverworldNodeID.DarkDeathMountainWestBottom];
+                    return OverworldNodes[OverworldNodeID.DarkDeathMountainWestBottom];
                 case LocationID.TowerOfHeraEntrance:
-                    return _overworldNodes[OverworldNodeID.DeathMountainWestTop];
+                    return OverworldNodes[OverworldNodeID.DeathMountainWestTop];
                 case LocationID.SpiralCaveBottom:
                 case LocationID.EDMFairyCaveEntrance:
                 case LocationID.ParadoxCaveMiddle:
                 case LocationID.ParadoxCaveBottom:
-                    return _overworldNodes[OverworldNodeID.DeathMountainEastBottom];
+                    return OverworldNodes[OverworldNodeID.DeathMountainEastBottom];
                 case LocationID.EDMConnectorBottom:
-                    return _overworldNodes[OverworldNodeID.DeathMountainEastBottomConnector];
+                    return OverworldNodes[OverworldNodeID.DeathMountainEastBottomConnector];
                 case LocationID.SpiralCaveTop:
-                    return _overworldNodes[OverworldNodeID.SpiralCaveLedge];
+                    return OverworldNodes[OverworldNodeID.SpiralCaveLedge];
                 case LocationID.MimicCaveEntrance:
-                    return _overworldNodes[OverworldNodeID.MimicCaveLedge];
+                    return OverworldNodes[OverworldNodeID.MimicCaveLedge];
                 case LocationID.EDMConnectorTop:
-                    return _overworldNodes[OverworldNodeID.DeathMountainEastTopConnector];
+                    return OverworldNodes[OverworldNodeID.DeathMountainEastTopConnector];
                 case LocationID.ParadoxCaveTop:
-                    return _overworldNodes[OverworldNodeID.DeathMountainEastTop];
+                    return OverworldNodes[OverworldNodeID.DeathMountainEastTop];
                 case LocationID.SuperBunnyCaveBottom:
                 case LocationID.DeathMountainShopEntrance:
-                    return _overworldNodes[OverworldNodeID.DarkDeathMountainEastBottom];
+                    return OverworldNodes[OverworldNodeID.DarkDeathMountainEastBottom];
                 case LocationID.SuperBunnyCaveTop:
-                    return _overworldNodes[OverworldNodeID.DarkDeathMountainTop];
+                    return OverworldNodes[OverworldNodeID.DarkDeathMountainTop];
                 case LocationID.HookshotCaveEntrance:
-                    return _overworldNodes[OverworldNodeID.HookshotCaveEntrance];
+                    return OverworldNodes[OverworldNodeID.HookshotCaveEntrance];
                 case LocationID.TurtleRockEntrance:
-                    return _overworldNodes[OverworldNodeID.TurtleRockFrontEntrance];
+                    return OverworldNodes[OverworldNodeID.TurtleRockFrontEntrance];
                 case LocationID.GanonsTowerEntrance:
-                    return _overworldNodes[OverworldNodeID.GanonsTowerEntrance];
+                    return OverworldNodes[OverworldNodeID.GanonsTowerEntrance];
                 case LocationID.TRLedgeLeft:
                 case LocationID.TRLedgeRight:
-                    return _overworldNodes[OverworldNodeID.TurtleRockTunnel];
+                    return OverworldNodes[OverworldNodeID.TurtleRockTunnel];
                 case LocationID.TRSafetyDoor:
-                    return _overworldNodes[OverworldNodeID.TurtleRockSafetyDoor];
+                    return OverworldNodes[OverworldNodeID.TurtleRockSafetyDoor];
                 case LocationID.HookshotCaveTop:
-                    return _overworldNodes[OverworldNodeID.DWFloatingIsland];
+                    return OverworldNodes[OverworldNodeID.DWFloatingIsland];
                 case LocationID.GanonHoleExit:
-                    return _overworldNodes[OverworldNodeID.LightWorldInverted];
+                    return OverworldNodes[OverworldNodeID.LightWorldInverted];
                 case LocationID.SkullWoodsWestEntrance:
                 case LocationID.SkullWoodsNWHole:
-                    return _overworldNodes[OverworldNodeID.SkullWoodsBackArea];
+                    return OverworldNodes[OverworldNodeID.SkullWoodsBackArea];
                 default:
-                    return _overworldNodes[OverworldNodeID.LightWorld];
+                    return OverworldNodes[OverworldNodeID.LightWorld];
             }
         }
 
-        /// <summary>
-        ///     Returns the node to which this section provides access.
-        /// </summary>
-        /// <param name="id">
-        ///     The location ID.
-        /// </param>
-        /// <returns>
-        ///     The node to which this section provides access.
-        /// </returns>
-        private IOverworldNode? GetExitProvided(LocationID id)
+        private static IOverworldNode? GetExitProvided(LocationID id)
         {
             switch (id)
             {
@@ -621,38 +716,38 @@ namespace OpenTracker.Models.Sections.Factories
                 case LocationID.HoulihanHoleExit:
                 case LocationID.Sanctuary:
                 case LocationID.GanonHoleExit:
-                    return (IOverworldNode)_overworldNodes[OverworldNodeID.LightWorld];
+                    return (IOverworldNode)OverworldNodes[OverworldNodeID.LightWorld];
                 case LocationID.DeathMountainEntryCave:
-                    return (IOverworldNode)_overworldNodes[OverworldNodeID.DeathMountainEntry];
+                    return (IOverworldNode)OverworldNodes[OverworldNodeID.DeathMountainEntry];
                 case LocationID.DeathMountainExitCave:
-                    return (IOverworldNode)_overworldNodes[OverworldNodeID.DeathMountainExit];
+                    return (IOverworldNode)OverworldNodes[OverworldNodeID.DeathMountainExit];
                 case LocationID.GrassHouseEntrance:
-                    return (IOverworldNode)_overworldNodes[OverworldNodeID.GrassHouse];
+                    return (IOverworldNode)OverworldNodes[OverworldNodeID.GrassHouse];
                 case LocationID.BombHutEntrance:
-                    return (IOverworldNode)_overworldNodes[OverworldNodeID.BombHut];
+                    return (IOverworldNode)OverworldNodes[OverworldNodeID.BombHut];
                 case LocationID.RaceHouseLeft:
-                    return (IOverworldNode)_overworldNodes[OverworldNodeID.RaceGameLedge];
+                    return (IOverworldNode)OverworldNodes[OverworldNodeID.RaceGameLedge];
                 case LocationID.CastleLeftEntrance:
                 case LocationID.CastleRightEntrance:
                 case LocationID.CastleTowerEntrance:
-                    return (IOverworldNode)_overworldNodes[OverworldNodeID.HyruleCastleTop];
+                    return (IOverworldNode)OverworldNodes[OverworldNodeID.HyruleCastleTop];
                 case LocationID.WitchsHutEntrance:
-                    return (IOverworldNode)_overworldNodes[OverworldNodeID.LWWitchArea];
+                    return (IOverworldNode)OverworldNodes[OverworldNodeID.LWWitchArea];
                 case LocationID.WaterfallFairyEntrance:
-                    return (IOverworldNode)_overworldNodes[OverworldNodeID.WaterfallFairy];
+                    return (IOverworldNode)OverworldNodes[OverworldNodeID.WaterfallFairy];
                 case LocationID.KingsTombEntrance:
-                    return (IOverworldNode)_overworldNodes[OverworldNodeID.KingsTomb];
+                    return (IOverworldNode)OverworldNodes[OverworldNodeID.KingsTomb];
                 case LocationID.GraveyardLedgeEntrance:
-                    return (IOverworldNode)_overworldNodes[OverworldNodeID.LWGraveyardLedge];
+                    return (IOverworldNode)OverworldNodes[OverworldNodeID.LWGraveyardLedge];
                 case LocationID.DesertLeftEntrance:
-                    return (IOverworldNode)_overworldNodes[OverworldNodeID.DesertLedge];
+                    return (IOverworldNode)OverworldNodes[OverworldNodeID.DesertLedge];
                 case LocationID.DesertBackEntrance:
-                    return (IOverworldNode)_overworldNodes[OverworldNodeID.DesertBack];
+                    return (IOverworldNode)OverworldNodes[OverworldNodeID.DesertBack];
                 case LocationID.SkullWoodsBack:
                 case LocationID.SkullWoodsWestEntrance:
-                    return (IOverworldNode)_overworldNodes[OverworldNodeID.SkullWoodsBackArea];
+                    return (IOverworldNode)OverworldNodes[OverworldNodeID.SkullWoodsBackArea];
                 case LocationID.HammerHouse:
-                    return (IOverworldNode)_overworldNodes[OverworldNodeID.HammerHouse];
+                    return (IOverworldNode)OverworldNodes[OverworldNodeID.HammerHouse];
                 case LocationID.ThievesTownEntrance:
                 case LocationID.CShapedHouseEntrance:
                 case LocationID.DarkVillageFortuneTellerEntrance:
@@ -663,45 +758,45 @@ namespace OpenTracker.Models.Sections.Factories
                 case LocationID.BombableShackEntrance:
                 case LocationID.SkullWoodsCenterEntrance:
                 case LocationID.SkullWoodsEastEntrance:
-                    return (IOverworldNode)_overworldNodes[OverworldNodeID.DarkWorldWest];
+                    return (IOverworldNode)OverworldNodes[OverworldNodeID.DarkWorldWest];
                 case LocationID.HammerPegsEntrance:
-                    return (IOverworldNode)_overworldNodes[OverworldNodeID.HammerPegsArea];
+                    return (IOverworldNode)OverworldNodes[OverworldNodeID.HammerPegsArea];
                 case LocationID.BumperCaveExit:
-                    return (IOverworldNode)_overworldNodes[OverworldNodeID.BumperCaveTop];
+                    return (IOverworldNode)OverworldNodes[OverworldNodeID.BumperCaveTop];
                 case LocationID.BumperCaveEntrance:
-                    return (IOverworldNode)_overworldNodes[OverworldNodeID.BumperCaveEntry];
+                    return (IOverworldNode)OverworldNodes[OverworldNodeID.BumperCaveEntry];
                 case LocationID.HypeCaveEntrance:
                 case LocationID.SwampPalaceEntrance:
                 case LocationID.DarkCentralBonkRocksEntrance:
                 case LocationID.BombShop:
                 case LocationID.ArrowGameEntrance:
                 case LocationID.DarkHyliaFortuneTeller:
-                    return (IOverworldNode)_overworldNodes[OverworldNodeID.DarkWorldSouth];
+                    return (IOverworldNode)OverworldNodes[OverworldNodeID.DarkWorldSouth];
                 case LocationID.SouthOfGroveEntrance:
-                    return (IOverworldNode)_overworldNodes[OverworldNodeID.SouthOfGroveLedge];
+                    return (IOverworldNode)OverworldNodes[OverworldNodeID.SouthOfGroveLedge];
                 case LocationID.DarkTreesFairyCaveEntrance:
                 case LocationID.DarkSahasrahlaEntrance:
                 case LocationID.PalaceOfDarknessEntrance:
                 case LocationID.DarkFluteSpotFiveEntrance:
                 case LocationID.FatFairyEntrance:
-                    return (IOverworldNode)_overworldNodes[OverworldNodeID.DarkWorldEast];
+                    return (IOverworldNode)OverworldNodes[OverworldNodeID.DarkWorldEast];
                 case LocationID.DarkWitchsHut:
-                    return (IOverworldNode)_overworldNodes[OverworldNodeID.DWWitchArea];
+                    return (IOverworldNode)OverworldNodes[OverworldNodeID.DWWitchArea];
                 case LocationID.DarkIceRodCaveEntrance:
                 case LocationID.DarkFakeIceRodCaveEntrance:
                 case LocationID.DarkIceRodRockEntrance:
-                    return (IOverworldNode)_overworldNodes[OverworldNodeID.DarkWorldSouthEast];
+                    return (IOverworldNode)OverworldNodes[OverworldNodeID.DarkWorldSouthEast];
                 case LocationID.UpgradeFairy:
-                    return (IOverworldNode)_overworldNodes[OverworldNodeID.LakeHyliaFairyIsland];
+                    return (IOverworldNode)OverworldNodes[OverworldNodeID.LakeHyliaFairyIsland];
                 case LocationID.IcePalaceEntrance:
-                    return (IOverworldNode)_overworldNodes[OverworldNodeID.IcePalaceIsland];
+                    return (IOverworldNode)OverworldNodes[OverworldNodeID.IcePalaceIsland];
                 case LocationID.MiseryMireEntrance:
                 case LocationID.MireShackEntrance:
                 case LocationID.MireRightShackEntrance:
                 case LocationID.MireCaveEntrance:
-                    return (IOverworldNode)_overworldNodes[OverworldNodeID.MireArea];
+                    return (IOverworldNode)OverworldNodes[OverworldNodeID.MireArea];
                 case LocationID.CheckerboardCaveEntrance:
-                    return (IOverworldNode)_overworldNodes[OverworldNodeID.CheckerboardLedge];
+                    return (IOverworldNode)OverworldNodes[OverworldNodeID.CheckerboardLedge];
                 case LocationID.DeathMountainEntranceBack:
                 case LocationID.OldManResidence:
                 case LocationID.OldManBackResidence:
@@ -709,47 +804,77 @@ namespace OpenTracker.Models.Sections.Factories
                 case LocationID.SpectacleRockLeft:
                 case LocationID.SpectacleRockRight:
                 case LocationID.SpectacleRockTop:
-                    return (IOverworldNode)_overworldNodes[OverworldNodeID.DeathMountainWestBottom];
+                    return (IOverworldNode)OverworldNodes[OverworldNodeID.DeathMountainWestBottom];
                 case LocationID.SpikeCaveEntrance:
                 case LocationID.DarkMountainFairyEntrance:
-                    return (IOverworldNode)_overworldNodes[OverworldNodeID.DarkDeathMountainWestBottom];
+                    return (IOverworldNode)OverworldNodes[OverworldNodeID.DarkDeathMountainWestBottom];
                 case LocationID.TowerOfHeraEntrance:
-                    return (IOverworldNode)_overworldNodes[OverworldNodeID.DeathMountainWestTop];
+                    return (IOverworldNode)OverworldNodes[OverworldNodeID.DeathMountainWestTop];
                 case LocationID.SpiralCaveBottom:
                 case LocationID.EDMFairyCaveEntrance:
                 case LocationID.ParadoxCaveMiddle:
                 case LocationID.ParadoxCaveBottom:
-                    return (IOverworldNode)_overworldNodes[OverworldNodeID.DeathMountainEastBottom];
+                    return (IOverworldNode)OverworldNodes[OverworldNodeID.DeathMountainEastBottom];
                 case LocationID.EDMConnectorBottom:
-                    return (IOverworldNode)_overworldNodes[OverworldNodeID.DeathMountainEastBottomConnector];
+                    return (IOverworldNode)OverworldNodes[OverworldNodeID.DeathMountainEastBottomConnector];
                 case LocationID.SpiralCaveTop:
-                    return (IOverworldNode)_overworldNodes[OverworldNodeID.SpiralCaveLedge];
+                    return (IOverworldNode)OverworldNodes[OverworldNodeID.SpiralCaveLedge];
                 case LocationID.MimicCaveEntrance:
-                    return (IOverworldNode)_overworldNodes[OverworldNodeID.MimicCaveLedge];
+                    return (IOverworldNode)OverworldNodes[OverworldNodeID.MimicCaveLedge];
                 case LocationID.EDMConnectorTop:
-                    return (IOverworldNode)_overworldNodes[OverworldNodeID.DeathMountainEastTopConnector];
+                    return (IOverworldNode)OverworldNodes[OverworldNodeID.DeathMountainEastTopConnector];
                 case LocationID.ParadoxCaveTop:
-                    return (IOverworldNode)_overworldNodes[OverworldNodeID.DeathMountainEastTop];
+                    return (IOverworldNode)OverworldNodes[OverworldNodeID.DeathMountainEastTop];
                 case LocationID.SuperBunnyCaveBottom:
                 case LocationID.DeathMountainShopEntrance:
-                    return (IOverworldNode)_overworldNodes[OverworldNodeID.DarkDeathMountainEastBottom];
+                    return (IOverworldNode)OverworldNodes[OverworldNodeID.DarkDeathMountainEastBottom];
                 case LocationID.SuperBunnyCaveTop:
                 case LocationID.HookshotCaveEntrance:
                 case LocationID.TurtleRockEntrance:
                 case LocationID.GanonsTowerEntrance:
-                    return (IOverworldNode)_overworldNodes[OverworldNodeID.DarkDeathMountainTop];
+                    return (IOverworldNode)OverworldNodes[OverworldNodeID.DarkDeathMountainTop];
                 case LocationID.TRLedgeLeft:
                 case LocationID.TRLedgeRight:
-                    return (IOverworldNode)_overworldNodes[OverworldNodeID.TurtleRockTunnel];
+                    return (IOverworldNode)OverworldNodes[OverworldNodeID.TurtleRockTunnel];
                 case LocationID.TRSafetyDoor:
-                    return (IOverworldNode)_overworldNodes[OverworldNodeID.TurtleRockSafetyDoor];
+                    return (IOverworldNode)OverworldNodes[OverworldNodeID.TurtleRockSafetyDoor];
                 case LocationID.HookshotCaveTop:
-                    return (IOverworldNode)_overworldNodes[OverworldNodeID.DWFloatingIsland];
+                    return (IOverworldNode)OverworldNodes[OverworldNodeID.DWFloatingIsland];
                 case LocationID.CastleSecretExit:
-                    return (IOverworldNode)_overworldNodes[OverworldNodeID.CastleSecretExitArea];
+                    return (IOverworldNode)OverworldNodes[OverworldNodeID.CastleSecretExitArea];
                 default:
                     return null;
             }
+        }
+
+        [Fact]
+        public void GetEntranceSection_ShouldThrowException_WhenIDIsUnexpected()
+        {
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+                _ = _sut.GetEntranceSection((LocationID) int.MaxValue));
+        }
+
+        [Theory]
+        [MemberData(nameof(GetEntranceSection_ShouldReturnExpectedData))]
+        public void GetEntranceSection_ShouldReturnExpected(ExpectedObject expected, LocationID id)
+        {
+            expected.ShouldEqual(_sut.GetEntranceSection(id));
+        }
+
+        public static IEnumerable<object[]> GetEntranceSection_ShouldReturnExpectedData()
+        {
+            PopulateExpectedValues();
+
+            return ExpectedValues.Keys.Select(id => new object[] {ExpectedValues[id], id}).ToList();
+        }
+
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var sut = scope.Resolve<IEntranceSectionFactory>();
+            
+            Assert.NotNull(sut as EntranceSectionFactory);
         }
     }
 }

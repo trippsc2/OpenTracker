@@ -28,13 +28,15 @@ using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.Prizes;
 using OpenTracker.Models.Requirements.Aggregate;
 using OpenTracker.Models.Requirements.Alternative;
-using OpenTracker.Models.Requirements.AlwaysDisplay;
+using OpenTracker.Models.Requirements.AlwaysDisplayDungeonItems;
 using OpenTracker.Models.Requirements.AutoTracking;
 using OpenTracker.Models.Requirements.BigKeyShuffle;
 using OpenTracker.Models.Requirements.Boss;
 using OpenTracker.Models.Requirements.BossShuffle;
+using OpenTracker.Models.Requirements.CaptureWindowOpen;
 using OpenTracker.Models.Requirements.CompassShuffle;
 using OpenTracker.Models.Requirements.Complex;
+using OpenTracker.Models.Requirements.DisplayAllLocations;
 using OpenTracker.Models.Requirements.DisplaysMapsCompasses;
 using OpenTracker.Models.Requirements.EnemyShuffle;
 using OpenTracker.Models.Requirements.GenericKeys;
@@ -102,13 +104,14 @@ namespace OpenTracker
             nameof(ConstrainedTaskScheduler),
             nameof(DialogService),
             nameof(FileDialogService),
+            nameof(JsonConverter),
             nameof(ThemeManager),
             nameof(MainWindowProvider)
         };
 
         private static List<string> ModelsSkipTypes => new()
         {
-            nameof(AutoTrackValue),
+            nameof(AutoTrackValueBase),
             nameof(AccessibilityRequirement),
             nameof(BooleanRequirement)
         };

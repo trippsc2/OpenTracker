@@ -3,7 +3,7 @@
 namespace OpenTracker.Models.AutoTracking.Logging
 {
     /// <summary>
-    /// This interface handles logging the auto-tracker.
+    ///     This interface handles logging the auto-tracker.
     /// </summary>
     public interface IAutoTrackerLogService
     {

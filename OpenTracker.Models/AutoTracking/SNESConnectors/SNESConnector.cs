@@ -11,7 +11,7 @@ using LogLevel = OpenTracker.Models.AutoTracking.Logging.LogLevel;
 namespace OpenTracker.Models.AutoTracking.SNESConnectors
 {
     /// <summary>
-    /// This class contains logic for the SNES connector using WebSocketSharp to connect to (Q)USB2SNES.
+    ///     This class contains logic for the SNES connector using WebSocketSharp to connect to (Q)USB2SNES.
     /// </summary>
     public class SNESConnector : ISNESConnector
     {
