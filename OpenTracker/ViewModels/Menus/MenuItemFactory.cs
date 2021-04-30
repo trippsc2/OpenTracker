@@ -25,7 +25,7 @@ namespace OpenTracker.ViewModels.Menus
         private readonly IMenuItemVM.Factory _itemFactory;
 
         private readonly ThemeSelectedRequirement.Factory _themeSelectedFactory;
-        private readonly DisplayAllLocationsRequirement.Factory _displayAllLocationsFactory;
+        private readonly IDisplayAllLocationsRequirement.Factory _displayAllLocationsFactory;
         private readonly ShowItemCountsOnMapRequirement.Factory _showItemCountsOnMapFactory;
         private readonly LayoutOrientationRequirement.Factory _layoutOrientationFactory;
         private readonly HorizontalUIPanelPlacementRequirement.Factory _horizontalUIPanelPlacementFactory;
@@ -40,7 +40,7 @@ namespace OpenTracker.ViewModels.Menus
             IAlwaysDisplayDungeonItemsRequirementDictionary alwaysDisplayDungeonItemsRequirements,
             IDisplayMapsCompassesRequirementDictionary displayMapsCompassesRequirements,
             IMenuItemVM.Factory itemFactory, ThemeSelectedRequirement.Factory themeSelectedFactory,
-            DisplayAllLocationsRequirement.Factory displayAllLocationsFactory,
+            IDisplayAllLocationsRequirement.Factory displayAllLocationsFactory,
             ShowItemCountsOnMapRequirement.Factory showItemCountsOnMapFactory,
             LayoutOrientationRequirement.Factory layoutOrientationFactory,
             HorizontalUIPanelPlacementRequirement.Factory horizontalUIPanelPlacementFactory,
