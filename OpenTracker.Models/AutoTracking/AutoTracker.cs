@@ -8,7 +8,7 @@ using ReactiveUI;
 namespace OpenTracker.Models.AutoTracking
 {
     /// <summary>
-    ///     This class contains auto-tracking logic and data.
+    /// This class contains auto-tracking logic and data.
     /// </summary>
     public class AutoTracker : ReactiveObject, IAutoTracker
     {
@@ -55,13 +55,13 @@ namespace OpenTracker.Models.AutoTracking
         }
 
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="memoryAddressProvider">
-        /// The memory address provider.
+        ///     The memory address provider.
         /// </param>
         /// <param name="snesConnector">
-        /// The SNES connector factory.
+        ///     The SNES connector factory.
         /// </param>
         public AutoTracker(IMemoryAddressProvider memoryAddressProvider, ISNESConnector snesConnector)
         {
@@ -81,7 +81,7 @@ namespace OpenTracker.Models.AutoTracking
         public async Task Connect(string uriString)
         {
             _snesConnector.SetUri(uriString);
-            await _snesConnector.Connect();
+            await _snesConnector.ConnectAsync();
         }
 
         public bool CanGetDevices()
@@ -101,7 +101,7 @@ namespace OpenTracker.Models.AutoTracking
 
         public async Task Disconnect()
         { 
-            await _snesConnector.Disconnect();
+            await _snesConnector.DisconnectAsync();
             _memoryAddressProvider.Reset();
         }
 
@@ -112,7 +112,7 @@ namespace OpenTracker.Models.AutoTracking
 
         public async Task Start(string device)
         {
-            await _snesConnector.SetDevice(device);
+            await _snesConnector.SetDeviceAsync(device);
         }
 
         public async Task InGameCheck()
@@ -122,7 +122,7 @@ namespace OpenTracker.Models.AutoTracking
                 return;
             }
 
-            var result = await _snesConnector.Read(0x7e0010);
+            var result = await _snesConnector.ReadMemoryAsync(0x7e0010);
 
             if (result is null)
             {
@@ -146,13 +146,13 @@ namespace OpenTracker.Models.AutoTracking
         }
 
         /// <summary>
-        ///     Subscribes to the StatusChanged event on the ISNESConnector interface.
+        /// Subscribes to the <see cref="ISNESConnector.StatusChanged"/> event.
         /// </summary>
         /// <param name="sender">
         ///     The sending object of the event.
         /// </param>
         /// <param name="status">
-        ///     The arguments of the StatusChanged event.
+        ///     The event args.
         /// </param>
         private void OnStatusChanged(object? sender, ConnectionStatus status)
         {
@@ -160,20 +160,20 @@ namespace OpenTracker.Models.AutoTracking
         }
 
         /// <summary>
-        ///     Returns the list of devices provided by the SNES connector.
+        /// Returns the <see cref="IList{T}"/> of devices provided by the SNES connector.
         /// </summary>
         /// <returns>
-        ///     A list of strings representing the devices.
+        ///     A <see cref="IList{T}"/> of <see cref="string"/> representing the devices.
         /// </returns>
         private async Task<IList<string>> GetDevicesFromConnector()
         {
-            var devices = await _snesConnector.GetDevices();
+            var devices = await _snesConnector.GetDevicesAsync();
 
             return devices is null ? new List<string>() : new List<string>(devices);
         }
         
         /// <summary>
-        ///     Updates cached values of a memory segment.
+        /// Updates cached values of a memory segment.
         /// </summary>
         /// <param name="segment">
         ///     The segment to be updated.
@@ -182,7 +182,7 @@ namespace OpenTracker.Models.AutoTracking
         {
             var memorySegment = _memoryAddressProvider.MemorySegments[segment];
             var startAddress = _memoryAddressProvider.GetMemorySegmentStart(segment);
-            var buffer = await _snesConnector.Read(startAddress, memorySegment.Count);
+            var buffer = await _snesConnector.ReadMemoryAsync(startAddress, memorySegment.Count);
 
             if (buffer is not null)
             {

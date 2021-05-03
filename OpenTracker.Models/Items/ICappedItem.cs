@@ -28,7 +28,7 @@ namespace OpenTracker.Models.Items
         /// <returns>
         ///     A new item with a maximum value.
         /// </returns>
-        delegate ICappedItem Factory(int starting, int maximum, IAutoTrackValue? autoTrackValue);
+        new delegate ICappedItem Factory(int starting, int maximum, IAutoTrackValue? autoTrackValue);
 
         /// <summary>
         ///     Returns a new undoable action to cycle the item.

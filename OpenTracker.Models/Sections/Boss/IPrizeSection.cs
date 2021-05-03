@@ -37,7 +37,7 @@ namespace OpenTracker.Models.Sections.Boss
         /// <returns>
         ///     A prize section.
         /// </returns>
-        delegate IPrizeSection Factory(
+        new delegate IPrizeSection Factory(
             IBossAccessibilityProvider accessibilityProvider, string name, IBossPlacement bossPlacement,
             IPrizePlacement prizePlacement, IAutoTrackValue? autoTrackValue = null);
 

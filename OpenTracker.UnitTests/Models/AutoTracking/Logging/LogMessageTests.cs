@@ -20,7 +20,7 @@ namespace OpenTracker.UnitTests.Models.AutoTracking.Logging
         [Fact]
         public void Ctor_ShouldSetMessageToExpected()
         {
-            Assert.Equal(Message, _sut.Message);
+            Assert.Equal(Message, _sut.Content);
         }
 
         [Fact]

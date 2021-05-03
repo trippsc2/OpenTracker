@@ -31,7 +31,7 @@ namespace OpenTracker.Models.Items.Keys
         /// <returns>
         ///     A new small key item.
         /// </returns>
-        delegate ISmallKeyItem Factory(
+        new delegate ISmallKeyItem Factory(
             IItem genericKey, int nonKeyDropMaximum, int keyDropMaximum, IAutoTrackValue? autoTrackValue);
         
         /// <summary>

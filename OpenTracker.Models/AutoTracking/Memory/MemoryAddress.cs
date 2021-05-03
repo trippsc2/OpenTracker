@@ -3,7 +3,7 @@
 namespace OpenTracker.Models.AutoTracking.Memory
 {
     /// <summary>
-    ///     This class contains SNES memory address data.
+    /// This class contains SNES memory address data.
     /// </summary>
     public class MemoryAddress : ReactiveObject, IMemoryAddress
     {

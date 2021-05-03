@@ -5,7 +5,7 @@ using System.Linq;
 namespace OpenTracker.Models.AutoTracking.Memory
 {
     /// <summary>
-    ///     This class provides the memory address data.
+    /// This class contains the memory address data provider.
     /// </summary>
     public class MemoryAddressProvider : IMemoryAddressProvider
     {

@@ -3,82 +3,72 @@
 namespace OpenTracker.Models.Accessibility
 {
     /// <summary>
-    ///     This class contains methods for getting the maximum or minimum AccessibilityLevel.
+    /// This class contains methods for getting the maximum or minimum <see cref="AccessibilityLevel"/> value.
     /// </summary>
     public static class AccessibilityLevelMethods
     {
         /// <summary>
-        ///     Returns the highest of AccessibilityLevel value provided.
+        /// Returns the greatest <see cref="AccessibilityLevel"/> value provided.
         /// </summary>
-        /// <param name="a1">
-        ///     An AccessibilityLevel value to be compared.
-        /// </param>
-        /// <param name="a2">
-        ///     An AccessibilityLevel value to be compared.
+        /// <param name="values">
+        ///     A list of <see cref="AccessibilityLevel"/> values to be compared.    
         /// </param>
         /// <returns>
-        ///     Returns the highest of AccessibilityLevel value provided.
+        ///     The greatest <see cref="AccessibilityLevel"/> value.
         /// </returns>
-        public static AccessibilityLevel Max(AccessibilityLevel a1, AccessibilityLevel a2)
+        /// <exception cref="ArgumentOutOfRangeException">
+        ///     Thrown when no values are provided.
+        /// </exception>
+        public static AccessibilityLevel Max(params AccessibilityLevel[] values)
         {
-            return (AccessibilityLevel)Math.Max((int)a1, (int)a2);
+            if (values.Length == 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(values));
+            }
+
+            AccessibilityLevel maximum = default;
+
+            foreach (var value in values)
+            {
+                if (value > maximum)
+                {
+                    maximum = value;
+                }
+            }
+
+            return maximum;
         }
 
         /// <summary>
-        ///     Returns the highest of AccessibilityLevel value provided.
+        /// Returns the least <see cref="AccessibilityLevel"/> value provided.
         /// </summary>
-        /// <param name="a1">
-        ///     An AccessibilityLevel value to be compared.
-        /// </param>
-        /// <param name="a2">
-        ///     An AccessibilityLevel value to be compared.
-        /// </param>
-        /// <param name="a3">
-        ///     An AccessibilityLevel value to be compared.
+        /// <param name="values">
+        ///     A list of <see cref="AccessibilityLevel"/> values to be compared.    
         /// </param>
         /// <returns>
-        ///     Returns the highest of AccessibilityLevel value provided.
+        ///     The least <see cref="AccessibilityLevel"/> value.
         /// </returns>
-        public static AccessibilityLevel Max(AccessibilityLevel a1, AccessibilityLevel a2, AccessibilityLevel a3)
+        /// <exception cref="ArgumentOutOfRangeException">
+        ///     Thrown when no values are provided.
+        /// </exception>
+        public static AccessibilityLevel Min(params AccessibilityLevel[] values)
         {
-            return Max(Max(a1, a2), a3);
-        }
+            if (values.Length == 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(values));
+            }
 
-        /// <summary>
-        ///     Returns the lowest of AccessibilityLevel value provided.
-        /// </summary>
-        /// <param name="a1">
-        ///     An AccessibilityLevel value to be compared.
-        /// </param>
-        /// <param name="a2">
-        ///     An AccessibilityLevel value to be compared.
-        /// </param>
-        /// <returns>
-        ///     Returns the lowest of AccessibilityLevel value provided.
-        /// </returns>
-        public static AccessibilityLevel Min(AccessibilityLevel a1, AccessibilityLevel a2)
-        {
-            return (AccessibilityLevel)Math.Min((int)a1, (int)a2);
-        }
+            var minimum = (AccessibilityLevel) int.MaxValue;
 
-        /// <summary>
-        ///     Returns the lowest of AccessibilityLevel value provided.
-        /// </summary>
-        /// <param name="a1">
-        ///     An AccessibilityLevel value to be compared.
-        /// </param>
-        /// <param name="a2">
-        ///     An AccessibilityLevel value to be compared.
-        /// </param>
-        /// <param name="a3">
-        ///     An AccessibilityLevel value to be compared.
-        /// </param>
-        /// <returns>
-        ///     Returns the lowest of AccessibilityLevel value provided.
-        /// </returns>
-        public static AccessibilityLevel Min(AccessibilityLevel a1, AccessibilityLevel a2, AccessibilityLevel a3)
-        {
-            return Min(Min(a1, a2), a3);
+            foreach (var value in values)
+            {
+                if (value < minimum)
+                {
+                    minimum = value;
+                }
+            }
+
+            return minimum;
         }
     }
 }

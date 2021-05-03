@@ -1,7 +1,7 @@
 ﻿namespace OpenTracker.Models.Accessibility
 {
     /// <summary>
-    ///     This is the enum type for accessibility levels.
+    /// This enum type defines the accessibility level values.
     /// </summary>
     public enum AccessibilityLevel
     {

@@ -16,6 +16,6 @@
         /// <returns>
         ///     A new crystal requirement.
         /// </returns>
-        delegate ICrystalRequirementItem Factory();
+        new delegate ICrystalRequirementItem Factory();
     }
 }

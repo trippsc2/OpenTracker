@@ -96,19 +96,19 @@ namespace OpenTracker.ViewModels.Dialogs
         private bool IsStarting => _isStarting.Value;
 
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="autoTracker">
-        /// The auto-tracker data.
+        ///     The auto-tracker data.
         /// </param>
         /// <param name="logService">
-        /// The auto-tracker log service.
+        ///     The auto-tracker log service.
         /// </param>
         /// <param name="status">
-        /// The auto-tracker status control ViewModel.
+        ///     The auto-tracker status control ViewModel.
         /// </param>
         /// <param name="log">
-        /// The auto-tracker log control ViewModel.
+        ///     The auto-tracker log control ViewModel.
         /// </param>
         public AutoTrackerDialogVM(
             IAutoTracker autoTracker, IAutoTrackerLogService logService, IAutoTrackerStatusVM status,
@@ -163,13 +163,13 @@ namespace OpenTracker.ViewModels.Dialogs
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on itself.
+        ///     Subscribes to the PropertyChanged event on itself.
         /// </summary>
         /// <param name="sender">
-        /// The sending object of the event.
+        ///     The sending object of the event.
         /// </param>
         /// <param name="e">
-        /// The arguments of the PropertyChanged event.
+        ///     The arguments of the PropertyChanged event.
         /// </param>
         private async void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {

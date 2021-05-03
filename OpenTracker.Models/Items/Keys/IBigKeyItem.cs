@@ -23,7 +23,7 @@ namespace OpenTracker.Models.Items.Keys
         /// <returns>
         ///     A new big key item.
         /// </returns>
-        delegate IBigKeyItem Factory(int nonKeyDropMaximum, int keyDropMaximum, IAutoTrackValue? autoTrackValue);
+        new delegate IBigKeyItem Factory(int nonKeyDropMaximum, int keyDropMaximum, IAutoTrackValue? autoTrackValue);
         
         /// <summary>
         ///     Returns a list of possible key values.

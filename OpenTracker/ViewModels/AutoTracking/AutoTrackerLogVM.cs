@@ -162,7 +162,7 @@ namespace OpenTracker.ViewModels.AutoTracking
             {
                 LogText.AppendLine(
                     $"{message.Level.ToString().ToUpper(CultureInfo.CurrentCulture)}:" +
-                    message.Message);
+                    message.Content);
             });
         }
 
@@ -244,7 +244,7 @@ namespace OpenTracker.ViewModels.AutoTracking
                 {
                     await file.WriteLineAsync(
                         $"{message.Level.ToString().ToUpper(CultureInfo.CurrentCulture)}: " +
-                        message.Message);
+                        message.Content);
                 }
             }
             catch (Exception ex)

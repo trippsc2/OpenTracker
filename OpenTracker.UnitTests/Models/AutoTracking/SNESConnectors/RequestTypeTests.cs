@@ -15,7 +15,7 @@ namespace OpenTracker.UnitTests.Models.AutoTracking.SNESConnectors
         [InlineData("GetAddress","GetAddress")]
         public void Ctor_ShouldSetOpcodeToExpected(string expected, string opcode)
         {
-            var sut = new RequestType(opcode);
+            var sut = new Request(opcode);
             
             Assert.Equal(expected, sut.Opcode);
         }
@@ -24,7 +24,7 @@ namespace OpenTracker.UnitTests.Models.AutoTracking.SNESConnectors
         public void Ctor_ShouldSetSpaceToExpected()
         {
             const string testSpace = "TestSpace";
-            var sut = new RequestType("Test", testSpace);
+            var sut = new Request("Test", testSpace);
             
             Assert.Equal(testSpace, sut.Space);
         }
@@ -32,7 +32,7 @@ namespace OpenTracker.UnitTests.Models.AutoTracking.SNESConnectors
         [Fact]
         public void Ctor_ShouldSetFlagsToEmptyList_WhenParameterIsNull()
         {
-            var sut = new RequestType("Test", flags: null);
+            var sut = new Request("Test", flags: null);
 
             Assert.Empty(sut.Flags);
         }
@@ -40,7 +40,7 @@ namespace OpenTracker.UnitTests.Models.AutoTracking.SNESConnectors
         [Fact]
         public void Ctor_ShouldSetOperandsToEmptyList_WhenParameterIsNull()
         {
-            var sut = new RequestType("Test");
+            var sut = new Request("Test");
             
             Assert.Empty(sut.Operands);
         }
@@ -48,7 +48,7 @@ namespace OpenTracker.UnitTests.Models.AutoTracking.SNESConnectors
         [Fact]
         public void Ctor_ShouldSetOperandsToExpected()
         {
-            var sut = new RequestType(
+            var sut = new Request(
                 OpcodeType.GetAddress.ToString(),
                 operands: new List<string>(2)
                 {
@@ -63,10 +63,10 @@ namespace OpenTracker.UnitTests.Models.AutoTracking.SNESConnectors
         public void AutofacTest()
         {
             using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-            var factory = scope.Resolve<IRequestType.Factory>();
+            var factory = scope.Resolve<IRequest.Factory>();
             var sut = factory("Test");
             
-            Assert.NotNull(sut as RequestType);
+            Assert.NotNull(sut as Request);
         }
     }
 }

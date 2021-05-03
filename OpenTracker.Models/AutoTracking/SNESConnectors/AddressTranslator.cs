@@ -1,21 +1,21 @@
 ﻿namespace OpenTracker.Models.AutoTracking.SNESConnectors
 {
 	/// <summary>
-	///		This class contains the logic to translate SNES memory addresses to be used by the USB2SNES connector.
+	///	This class contains the logic to translate raw SNES memory addresses to be used by the USB2SNES connector.
 	/// </summary>
     public static class AddressTranslator
     {
 		/// <summary>
-		///		Translates an input address to the SD2SNES address space.
+		///	Translates an input address to the SD2SNES address space.
 		/// </summary>
 		/// <param name="address">
-		///		A 32-bit unsigned integer representing the untranslated address.
+		///		A <see cref="int"/> representing the untranslated address.
 		/// </param>
 		/// <param name="mode">
-		///		The translation mode.
+		///		The <see cref="TranslationMode"/>.
 		/// </param>
 		/// <returns>
-		///		A 32-bit unsigned integer representing the translated address.
+		///		A <see cref="uint"/> representing the translated address.
 		/// </returns>
 		public static uint TranslateAddress(uint address, TranslationMode mode)
 		{
@@ -55,28 +55,28 @@
 		}
 
 	    /// <summary>
-		///		Translates a memory address from one range of addresses to another.
+		///	Translates a memory address from one range of addresses to another.
 		/// </summary>
 		/// <param name="address">
-		///		An unsigned 32-bit integer representing the untranslated memory address.
+		///		A <see cref="uint"/> representing the untranslated memory address.
 		/// </param>
 		/// <param name="sourceRangeBegin">
-		///		A 32-bit unsigned integer representing the start of the memory address range in which the untranslated
-		///			address resides.
+		///		A <see cref="uint"/> representing the start of the memory address range in which the untranslated
+		///		address resides.
 		/// </param>
 		/// <param name="sourceRangeEnd">
-		///		A 32-bit unsigned integer representing the end of the memory address range in which the untranslated
-		///			address resides.
+		///		A <see cref="uint"/> representing the end of the memory address range in which the untranslated address
+		///		resides.
 		/// </param>
 		/// <param name="destinationRangeBegin">
-		///		A 32-bit unsigned integer representing the start of the memory address range in which the translated
-		///			address will reside.
+		///		A <see cref="uint"/> representing the start of the memory address range in which the translated
+		///		address will reside.
 		/// </param>
 		/// <param name="mappedAddress">
-		///		A 32-bit unsigned integer representing the output of the translated memory address.
+		///		A <see cref="uint"/> representing the output of the translated memory address.
 		/// </param>
 		/// <returns>
-		///		A boolean representing whether the memory address was successfully translated.
+		///		A <see cref="bool"/> representing whether the memory address was successfully translated.
 		/// </returns>
 		private static bool MapAddressInRange(
 			uint address, uint sourceRangeBegin, uint sourceRangeEnd, uint destinationRangeBegin,

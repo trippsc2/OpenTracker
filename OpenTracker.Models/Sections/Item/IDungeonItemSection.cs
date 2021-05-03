@@ -32,7 +32,7 @@ namespace OpenTracker.Models.Sections.Item
         /// <returns>
         ///     A new dungeon item section.
         /// </returns>
-        delegate IDungeonItemSection Factory(
+        new delegate IDungeonItemSection Factory(
             IDungeon dungeon, IDungeonAccessibilityProvider accessibilityProvider,
             IAutoTrackValue? autoTrackValue = null, IMarking? marking = null, IRequirement? requirement = null);
     }

@@ -130,8 +130,7 @@ namespace OpenTracker.Models
 
             while ((visual = visual.Parent) is not null)
             {
-                visualString = visual.ToString() ??
-                               throw new NullReferenceException();
+                visualString = visual.ToString() ?? throw new NullReferenceException();
 
                 hierarchy.Insert(0, visualString);
             }

@@ -1,10 +1,17 @@
-﻿using OpenTracker.Models.Accessibility;
+﻿using System;
+using OpenTracker.Models.Accessibility;
 using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Accessibility
 {
     public class AccessibilityLevelTests
     {
+        [Fact]
+        public void Min_ShouldThrowException_WhenProvidingNoValues()
+        {
+            Assert.Throws<ArgumentOutOfRangeException>(() => AccessibilityLevelMethods.Min());
+        }
+        
         [Theory]
         [InlineData(AccessibilityLevel.None, AccessibilityLevel.None, AccessibilityLevel.None)]
         [InlineData(AccessibilityLevel.None, AccessibilityLevel.Inspect, AccessibilityLevel.None)]
@@ -55,6 +62,12 @@ namespace OpenTracker.UnitTests.Models.Accessibility
             Assert.Equal(expected, AccessibilityLevelMethods.Min(a1, a2, a3));
         }
 
+        [Fact]
+        public void Max_ShouldThrowException_WhenProvidingNoValues()
+        {
+            Assert.Throws<ArgumentOutOfRangeException>(() => AccessibilityLevelMethods.Max());
+        }
+        
         [Theory]
         [InlineData(AccessibilityLevel.None, AccessibilityLevel.None, AccessibilityLevel.None)]
         [InlineData(AccessibilityLevel.Inspect, AccessibilityLevel.Inspect, AccessibilityLevel.None)]

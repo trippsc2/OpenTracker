@@ -3,9 +3,9 @@
 namespace OpenTracker.Models.AutoTracking.SNESConnectors
 {
     /// <summary>
-    ///     This class contains auto-tracking request data.
+    /// This class contains auto-tracking request data.
     /// </summary>
-    public class RequestType : IRequestType
+    public class Request : IRequest
     {
         public string Opcode { get; }
         public string Space { get; }
@@ -13,21 +13,24 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         public IList<string> Operands { get; }
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="opcode">
-        ///     A string representing opcode of the request.
+        ///     A <see cref="string"/> representing opcode of the request.
         /// </param>
         /// <param name="space">
-        ///     A string representing the device space against which the request is made. This defaults to "SNES".
+        ///     A <see cref="string"/> representing the device space against which the request is made.
+        ///     This defaults to "SNES".
         /// </param>
         /// <param name="flags">
-        ///     A list of strings representing the flags to be added to the request. This defaults to an empty list.
+        ///     A <see cref="IList{T}"/> of <see cref="string"/> representing the flags to be added to the request.
+        ///     This defaults to an empty list.
         /// </param>
         /// <param name="operands">
-        ///     A list of strings representing the operands of the request. This defaults to an empty list.
+        ///     A <see cref="IList{T}"/> of <see cref="string"/> representing the operands of the request.
+        ///     This defaults to an empty list.
         /// </param>
-        public RequestType(
+        public Request(
             string opcode, string space = "SNES", IList<string>? flags = null, IList<string>? operands = null)
         {
             Opcode = opcode;
