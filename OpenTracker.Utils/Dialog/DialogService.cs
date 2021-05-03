@@ -88,11 +88,13 @@ namespace OpenTracker.Utils.Dialog
         /// <param name="viewModel">
         /// The ViewModel.
         /// </param>
+        /// <param name="locking">
+        /// A boolean representing whether the dialog window should lock the parent window.
+        /// </param>
         /// <returns>
         /// A task returning the result of the dialog.
         /// </returns>
-        public async Task<TResult> ShowDialogAsync<TResult>(
-            object viewModel, bool locking = true)
+        public async Task<TResult> ShowDialogAsync<TResult>(object viewModel, bool locking = true)
         {
             if (((DialogViewModelBase<TResult>)viewModel).IsOpen)
             {
@@ -114,15 +116,17 @@ namespace OpenTracker.Utils.Dialog
         /// <param name="window">
         /// The window to be shown.
         /// </param>
+        /// <param name="locking">
+        /// A boolean representing whether the dialog window should lock the parent window.
+        /// </param>
         /// <returns>
         /// A task returning the result of the dialog window.
         /// </returns>
-        private async Task<TResult> ShowDialogAsync<TResult>(
-            DialogWindowBase<TResult> window, bool locking)
+        private async Task<TResult> ShowDialogAsync<TResult>(DialogWindowBase<TResult> window, bool locking)
         {
             var mainWindow = _mainWindowProvider.GetMainWindow();
 
-            TResult result = default;
+            TResult result = default!;
 
             if (locking)
             {
@@ -133,20 +137,17 @@ namespace OpenTracker.Utils.Dialog
                 window.Show(mainWindow);
             }
 
-            if (window is IDisposable disposable)
-            {
-                disposable.Dispose();
-            }
-
             return result!;
         }
 
         /// <summary>
-        /// Asynchronously show a dialog window for the specified ViewModel without returning a
-        /// result.
+        /// Asynchronously show a dialog window for the specified ViewModel without returning a result.
         /// </summary>
         /// <param name="viewModel">
         /// The ViewModel.
+        /// </param>
+        /// <param name="locking">
+        /// A boolean representing whether the dialog window should lock the parent window.
         /// </param>
         /// <returns>
         /// A task for asynchronous operation.

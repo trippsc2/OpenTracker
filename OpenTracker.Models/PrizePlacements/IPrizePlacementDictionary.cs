@@ -1,15 +1,17 @@
-﻿using OpenTracker.Models.SaveLoad;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using OpenTracker.Models.SaveLoad;
 
 namespace OpenTracker.Models.PrizePlacements
 {
     /// <summary>
-    /// This interface contains the dictionary container for prize placement data.
+    ///     This interface contains the dictionary container for prize placement data.
     /// </summary>
     public interface IPrizePlacementDictionary : IDictionary<PrizePlacementID, IPrizePlacement>,
-        ICollection<KeyValuePair<PrizePlacementID, IPrizePlacement>>,
-        ISaveable<Dictionary<PrizePlacementID, PrizePlacementSaveData>>
+        ISaveable<IDictionary<PrizePlacementID, PrizePlacementSaveData>>
     {
+        /// <summary>
+        ///     Resets the contained boss placements to their starting values.
+        /// </summary>
         void Reset();
     }
 }

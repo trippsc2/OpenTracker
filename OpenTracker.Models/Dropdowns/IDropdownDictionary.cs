@@ -1,15 +1,17 @@
-﻿using OpenTracker.Models.SaveLoad;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using OpenTracker.Models.SaveLoad;
 
 namespace OpenTracker.Models.Dropdowns
 {
     /// <summary>
-    /// This is the interface for the dictionary container of dropdowns.
+    ///     This interface contains the dictionary container of dropdowns.
     /// </summary>
     public interface IDropdownDictionary : IDictionary<DropdownID, IDropdown>,
-        ICollection<KeyValuePair<DropdownID, IDropdown>>,
-        ISaveable<Dictionary<DropdownID, DropdownSaveData>>
+        ISaveable<IDictionary<DropdownID, DropdownSaveData>>
     {
+        /// <summary>
+        ///     Resets all dropdowns.
+        /// </summary>
         void Reset();
     }
 }

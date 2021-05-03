@@ -1,15 +1,32 @@
-﻿using WebSocketSharp;
-
-namespace OpenTracker.Models.AutoTracking.Logging
+﻿namespace OpenTracker.Models.AutoTracking.Logging
 {
     /// <summary>
-    /// This is the interface for log messages for autotracking.
+    /// This interface contains auto-tracking log message data.
     /// </summary>
     public interface ILogMessage
     {
-        LogLevel LogLevel { get; }
-        string Message { get; }
+        /// <summary>
+        /// The <see cref="LogLevel"/> of the log message.
+        /// </summary>
+        LogLevel Level { get; }
+        
+        /// <summary>
+        /// A <see cref="string"/> representing the content of the log message.
+        /// </summary>
+        string Content { get; }
 
-        delegate ILogMessage Factory(LogLevel logLevel, string message);
+        /// <summary>
+        /// A factory for creating a new <see cref="ILogMessage"/> objects.
+        /// </summary>
+        /// <param name="level">
+        ///     The <see cref="LogLevel"/> of the log message.
+        /// </param>
+        /// <param name="message">
+        ///     A <see cref="string"/> representing the content of the log message.
+        /// </param>
+        /// <returns>
+        ///     A new <see cref="ILogMessage"/> object.
+        /// </returns>
+        delegate ILogMessage Factory(LogLevel level, string message);
     }
 }

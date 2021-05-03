@@ -1,8 +1,8 @@
-﻿using OpenTracker.Models.AccessibilityLevels;
+﻿using System.Collections.Generic;
+using System.Reflection;
+using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Utils;
-using System.Collections.Generic;
-using System.Reflection;
 
 namespace OpenTracker.Models.Settings
 {
@@ -19,6 +19,9 @@ namespace OpenTracker.Models.Settings
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="jsonConverter">
+        ///     The JSON converter.
+        /// </param>
         /// <param name="bounds">
         /// The bounds settings.
         /// </param>
@@ -32,7 +35,7 @@ namespace OpenTracker.Models.Settings
         /// The color settings.
         /// </param>
         public AppSettings(
-            IBoundsSettings bounds, ITrackerSettings tracker, ILayoutSettings layout,
+            IJsonConverter jsonConverter, IBoundsSettings bounds, ITrackerSettings tracker, ILayoutSettings layout,
             IColorSettings colors)
         {
             Bounds = bounds;
@@ -40,12 +43,14 @@ namespace OpenTracker.Models.Settings
             Layout = layout;
             Colors = colors;
 
-            var saveData = JsonConversion.Load<AppSettingsSaveData>(AppPath.AppSettingsFilePath);
+            var saveData = jsonConverter.Load<AppSettingsSaveData?>(AppPath.AppSettingsFilePath);
 
-            if (saveData != null)
+            if (saveData is null)
             {
-                Load(saveData);
+                return;
             }
+            
+            Load(saveData);
         }
 
         /// <summary>
@@ -56,7 +61,7 @@ namespace OpenTracker.Models.Settings
         /// </returns>
         public AppSettingsSaveData Save()
         {
-            return new AppSettingsSaveData()
+            return new()
             {
                 Version = Assembly.GetExecutingAssembly().GetName().Version!,
                 Maximized = Bounds.Maximized,
@@ -85,8 +90,13 @@ namespace OpenTracker.Models.Settings
         /// <summary>
         /// Loads app settings save data.
         /// </summary>
-        public void Load(AppSettingsSaveData saveData)
+        public void Load(AppSettingsSaveData? saveData)
         {
+            if (saveData is null)
+            {
+                return;
+            }
+            
             Bounds.Maximized = saveData.Maximized;
             Bounds.X = saveData.X;
             Bounds.Y = saveData.Y;

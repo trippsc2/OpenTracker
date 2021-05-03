@@ -1,451 +1,197 @@
-﻿using OpenTracker.Models.DungeonItems;
-using OpenTracker.Models.DungeonNodes;
-using OpenTracker.Models.Items;
-using OpenTracker.Models.KeyDoors;
-using OpenTracker.Models.KeyLayouts;
-using OpenTracker.Models.Locations;
-using OpenTracker.Models.RequirementNodes;
-using OpenTracker.Models.Sections;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using OpenTracker.Models.Dungeons.Items;
+using OpenTracker.Models.Dungeons.KeyDoors;
+using OpenTracker.Models.Dungeons.Nodes;
+using OpenTracker.Models.Items;
+using OpenTracker.Models.Items.Keys;
+using OpenTracker.Models.Nodes;
 
 namespace OpenTracker.Models.Dungeons
 {
     /// <summary>
-    /// This is class contains creation logic for dungeons.
+    ///     This class contains the creation logic for dungeons.
     /// </summary>
     public class DungeonFactory : IDungeonFactory
     {
         private readonly IItemDictionary _items;
-        private readonly IRequirementNodeDictionary _requirementNodes;
+        private readonly IOverworldNodeDictionary _overworldNodes;
+
+        private readonly IDungeon.Factory _factory;
 
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="items">
-        /// The item dictionary.
+        ///     The item dictionary.
         /// </param>
-        /// <param name="requirementNodes">
-        /// The requirement node dictionary.
+        /// <param name="overworldNodes">
+        ///     The requirement node dictionary.
+        /// </param>
+        /// <param name="factory">
+        ///     An Autofac factory for creating dungeons.
         /// </param>
         public DungeonFactory(
-            IItemDictionary items, IRequirementNodeDictionary requirementNodes)
+            IItemDictionary items, IOverworldNodeDictionary overworldNodes, IDungeon.Factory factory)
         {
             _items = items;
-            _requirementNodes = requirementNodes;
+            _overworldNodes = overworldNodes;
+
+            _factory = factory;
+        }
+
+        public IDungeon GetDungeon(DungeonID id)
+        {
+            return _factory(
+                id, GetDungeonMapItem(id), GetDungeonCompassItem(id), GetDungeonSmallKeyItem(id),
+                GetDungeonBigKeyItem(id), GetDungeonItems(id), GetDungeonBosses(id),
+                GetDungeonSmallKeyDrops(id), GetDungeonBigKeyDrops(id),
+                GetDungeonSmallKeyDoors(id), GetDungeonBigKeyDoors(id), GetDungeonNodes(id),
+                GetDungeonEntryNodes(id));
         }
 
         /// <summary>
-        /// Returns the number of maps in the specified dungeon.
+        ///     Returns the map item for the specified dungeon.
         /// </summary>
         /// <param name="id">
-        /// The dungeon ID.
+        ///     The dungeon ID.
         /// </param>
         /// <returns>
-        /// A 32-bit signed integer representing the number of maps.
+        ///     The map item.
         /// </returns>
-        public int GetDungeonMapCount(LocationID id)
+        private ICappedItem? GetDungeonMapItem(DungeonID id)
         {
-            switch (id)
+            var item = id switch
             {
-                case LocationID.HyruleCastle:
-                case LocationID.EasternPalace:
-                case LocationID.DesertPalace:
-                case LocationID.TowerOfHera:
-                case LocationID.PalaceOfDarkness:
-                case LocationID.SwampPalace:
-                case LocationID.SkullWoods:
-                case LocationID.ThievesTown:
-                case LocationID.IcePalace:
-                case LocationID.MiseryMire:
-                case LocationID.TurtleRock:
-                case LocationID.GanonsTower:
-                    {
-                        return 1;
-                    }
-                case LocationID.AgahnimTower:
-                    {
-                        return 0;
-                    }
-            }
-
-            throw new ArgumentOutOfRangeException(nameof(id));
-        }
-
-        /// <summary>
-        /// Returns the number of compasses in the specified dungeon.
-        /// </summary>
-        /// <param name="id">
-        /// The dungeon ID.
-        /// </param>
-        /// <returns>
-        /// A 32-bit signed integer representing the number of compasses.
-        /// </returns>
-        public int GetDungeonCompassCount(LocationID id)
-        {
-            switch (id)
-            {
-                case LocationID.HyruleCastle:
-                case LocationID.AgahnimTower:
-                    {
-                        return 0;
-                    }
-                case LocationID.EasternPalace:
-                case LocationID.DesertPalace:
-                case LocationID.TowerOfHera:
-                case LocationID.PalaceOfDarkness:
-                case LocationID.SwampPalace:
-                case LocationID.SkullWoods:
-                case LocationID.ThievesTown:
-                case LocationID.IcePalace:
-                case LocationID.MiseryMire:
-                case LocationID.TurtleRock:
-                case LocationID.GanonsTower:
-                    {
-                        return 1;
-                    }
-            }
-
-            throw new ArgumentOutOfRangeException(nameof(id));
-        }
-
-        /// <summary>
-        /// Returns the number of small keys in the specified dungeon.
-        /// </summary>
-        /// <param name="id">
-        /// The dungeon ID.
-        /// </param>
-        /// <returns>
-        /// A 32-bit signed integer representing the number of small keys.
-        /// </returns>
-        public int GetDungeonSmallKeyCount(LocationID id)
-        {
-            switch (id)
-            {
-                case LocationID.HyruleCastle:
-                case LocationID.DesertPalace:
-                case LocationID.TowerOfHera:
-                case LocationID.SwampPalace:
-                case LocationID.ThievesTown:
-                    {
-                        return 1;
-                    }
-                case LocationID.AgahnimTower:
-                case LocationID.IcePalace:
-                    {
-                        return 2;
-                    }
-                case LocationID.EasternPalace:
-                    {
-                        return 0;
-                    }
-                case LocationID.PalaceOfDarkness:
-                    {
-                        return 6;
-                    }
-                case LocationID.SkullWoods:
-                case LocationID.MiseryMire:
-                    {
-                        return 3;
-                    }
-                case LocationID.TurtleRock:
-                case LocationID.GanonsTower:
-                    {
-                        return 4;
-                    }
-            }
-
-            throw new ArgumentOutOfRangeException(nameof(id));
-        }
-
-        /// <summary>
-        /// Returns the number of big keys in the specified dungeon.
-        /// </summary>
-        /// <param name="id">
-        /// The dungeon ID.
-        /// </param>
-        /// <returns>
-        /// A 32-bit signed integer representing the number of big keys.
-        /// </returns>
-        public int GetDungeonBigKeyCount(LocationID id)
-        {
-            switch (id)
-            {
-                case LocationID.HyruleCastle:
-                case LocationID.AgahnimTower:
-                    {
-                        return 0;
-                    }
-                case LocationID.EasternPalace:
-                case LocationID.DesertPalace:
-                case LocationID.TowerOfHera:
-                case LocationID.PalaceOfDarkness:
-                case LocationID.SwampPalace:
-                case LocationID.SkullWoods:
-                case LocationID.ThievesTown:
-                case LocationID.IcePalace:
-                case LocationID.MiseryMire:
-                case LocationID.TurtleRock:
-                case LocationID.GanonsTower:
-                    {
-                        return 1;
-                    }
-            }
-
-            throw new ArgumentOutOfRangeException(nameof(id));
-        }
-
-        /// <summary>
-        /// Returns the map item for the specified dungeon.
-        /// </summary>
-        /// <param name="id">
-        /// The dungeon ID.
-        /// </param>
-        /// <returns>
-        /// The map item.
-        /// </returns>
-        public IItem? GetDungeonMapItem(LocationID id)
-        {
-            return id switch
-            {
-                LocationID.HyruleCastle => _items[ItemType.HCMap],
-                LocationID.AgahnimTower => null,
-                LocationID.EasternPalace => _items[ItemType.EPMap],
-                LocationID.DesertPalace => _items[ItemType.DPMap],
-                LocationID.TowerOfHera => _items[ItemType.ToHMap],
-                LocationID.PalaceOfDarkness => _items[ItemType.PoDMap],
-                LocationID.SwampPalace => _items[ItemType.SPMap],
-                LocationID.SkullWoods => _items[ItemType.SWMap],
-                LocationID.ThievesTown => _items[ItemType.TTMap],
-                LocationID.IcePalace => _items[ItemType.IPMap],
-                LocationID.MiseryMire => _items[ItemType.MMMap],
-                LocationID.TurtleRock => _items[ItemType.TRMap],
-                LocationID.GanonsTower => _items[ItemType.GTMap],
+                DungeonID.HyruleCastle => _items[ItemType.HCMap],
+                DungeonID.AgahnimTower => null,
+                DungeonID.EasternPalace => _items[ItemType.EPMap],
+                DungeonID.DesertPalace => _items[ItemType.DPMap],
+                DungeonID.TowerOfHera => _items[ItemType.ToHMap],
+                DungeonID.PalaceOfDarkness => _items[ItemType.PoDMap],
+                DungeonID.SwampPalace => _items[ItemType.SPMap],
+                DungeonID.SkullWoods => _items[ItemType.SWMap],
+                DungeonID.ThievesTown => _items[ItemType.TTMap],
+                DungeonID.IcePalace => _items[ItemType.IPMap],
+                DungeonID.MiseryMire => _items[ItemType.MMMap],
+                DungeonID.TurtleRock => _items[ItemType.TRMap],
+                DungeonID.GanonsTower => _items[ItemType.GTMap],
                 _ => throw new ArgumentOutOfRangeException(nameof(id))
             };
+
+            return item as ICappedItem;
         }
 
         /// <summary>
-        /// Returns the compass item for the specified dungeon.
+        ///     Returns the compass item for the specified dungeon.
         /// </summary>
         /// <param name="id">
-        /// The dungeon ID.
+        ///     The dungeon ID.
         /// </param>
         /// <returns>
-        /// The compass item.
+        ///     The compass item.
         /// </returns>
-        public IItem? GetDungeonCompassItem(LocationID id)
+        private ICappedItem? GetDungeonCompassItem(DungeonID id)
         {
-            switch (id)
+            var item = id switch
             {
-                case LocationID.HyruleCastle:
-                case LocationID.AgahnimTower:
-                    {
-                        return null;
-                    }
-                case LocationID.EasternPalace:
-                    {
-                        return _items[ItemType.EPCompass];
-                    }
-                case LocationID.DesertPalace:
-                    {
-                        return _items[ItemType.DPCompass];
-                    }
-                case LocationID.TowerOfHera:
-                    {
-                        return _items[ItemType.ToHCompass];
-                    }
-                case LocationID.PalaceOfDarkness:
-                    {
-                        return _items[ItemType.PoDCompass];
-                    }
-                case LocationID.SwampPalace:
-                    {
-                        return _items[ItemType.SPCompass];
-                    }
-                case LocationID.SkullWoods:
-                    {
-                        return _items[ItemType.SWCompass];
-                    }
-                case LocationID.ThievesTown:
-                    {
-                        return _items[ItemType.TTCompass];
-                    }
-                case LocationID.IcePalace:
-                    {
-                        return _items[ItemType.IPCompass];
-                    }
-                case LocationID.MiseryMire:
-                    {
-                        return _items[ItemType.MMCompass];
-                    }
-                case LocationID.TurtleRock:
-                    {
-                        return _items[ItemType.TRCompass];
-                    }
-                case LocationID.GanonsTower:
-                    {
-                        return _items[ItemType.GTCompass];
-                    }
-            }
+                DungeonID.HyruleCastle => null,
+                DungeonID.AgahnimTower => null,
+                DungeonID.EasternPalace => _items[ItemType.EPCompass],
+                DungeonID.DesertPalace => _items[ItemType.DPCompass],
+                DungeonID.TowerOfHera => _items[ItemType.ToHCompass],
+                DungeonID.PalaceOfDarkness => _items[ItemType.PoDCompass],
+                DungeonID.SwampPalace => _items[ItemType.SPCompass],
+                DungeonID.SkullWoods => _items[ItemType.SWCompass],
+                DungeonID.ThievesTown => _items[ItemType.TTCompass],
+                DungeonID.IcePalace => _items[ItemType.IPCompass],
+                DungeonID.MiseryMire => _items[ItemType.MMCompass],
+                DungeonID.TurtleRock => _items[ItemType.TRCompass],
+                DungeonID.GanonsTower => _items[ItemType.GTCompass],
+                _ => throw new ArgumentOutOfRangeException(nameof(id))
+            };
 
-            throw new ArgumentOutOfRangeException(nameof(id));
+            return item as ICappedItem;
         }
 
         /// <summary>
-        /// Returns the small key item for the specified dungeon.
+        ///     Returns the small key item for the specified dungeon.
         /// </summary>
         /// <param name="id">
-        /// The dungeon ID.
+        ///     The dungeon ID.
         /// </param>
         /// <returns>
-        /// The small key item.
+        ///     The small key item.
         /// </returns>
-        public IItem GetDungeonSmallKeyItem(LocationID id)
+        private ISmallKeyItem GetDungeonSmallKeyItem(DungeonID id)
         {
-            switch (id)
+            var item = id switch
             {
-                case LocationID.HyruleCastle:
-                    {
-                        return _items[ItemType.HCSmallKey];
-                    }
-                case LocationID.AgahnimTower:
-                    {
-                        return _items[ItemType.ATSmallKey];
-                    }
-                case LocationID.EasternPalace:
-                    {
-                        return _items[ItemType.EPSmallKey];
-                    }
-                case LocationID.DesertPalace:
-                    {
-                        return _items[ItemType.DPSmallKey];
-                    }
-                case LocationID.TowerOfHera:
-                    {
-                        return _items[ItemType.ToHSmallKey];
-                    }
-                case LocationID.PalaceOfDarkness:
-                    {
-                        return _items[ItemType.PoDSmallKey];
-                    }
-                case LocationID.SwampPalace:
-                    {
-                        return _items[ItemType.SPSmallKey];
-                    }
-                case LocationID.SkullWoods:
-                    {
-                        return _items[ItemType.SWSmallKey];
-                    }
-                case LocationID.ThievesTown:
-                    {
-                        return _items[ItemType.TTSmallKey];
-                    }
-                case LocationID.IcePalace:
-                    {
-                        return _items[ItemType.IPSmallKey];
-                    }
-                case LocationID.MiseryMire:
-                    {
-                        return _items[ItemType.MMSmallKey];
-                    }
-                case LocationID.TurtleRock:
-                    {
-                        return _items[ItemType.TRSmallKey];
-                    }
-                case LocationID.GanonsTower:
-                    {
-                        return _items[ItemType.GTSmallKey];
-                    }
-            }
+                DungeonID.HyruleCastle => _items[ItemType.HCSmallKey],
+                DungeonID.AgahnimTower => _items[ItemType.ATSmallKey],
+                DungeonID.EasternPalace => _items[ItemType.EPSmallKey],
+                DungeonID.DesertPalace => _items[ItemType.DPSmallKey],
+                DungeonID.TowerOfHera => _items[ItemType.ToHSmallKey],
+                DungeonID.PalaceOfDarkness => _items[ItemType.PoDSmallKey],
+                DungeonID.SwampPalace => _items[ItemType.SPSmallKey],
+                DungeonID.SkullWoods => _items[ItemType.SWSmallKey],
+                DungeonID.ThievesTown => _items[ItemType.TTSmallKey],
+                DungeonID.IcePalace => _items[ItemType.IPSmallKey],
+                DungeonID.MiseryMire => _items[ItemType.MMSmallKey],
+                DungeonID.TurtleRock => _items[ItemType.TRSmallKey],
+                DungeonID.GanonsTower => _items[ItemType.GTSmallKey],
+                _ => throw new ArgumentOutOfRangeException(nameof(id))
+            };
 
-            throw new ArgumentOutOfRangeException(nameof(id));
+            return (ISmallKeyItem)item;
         }
 
         /// <summary>
-        /// Returns the big key item for the specified dungeon.
+        ///     Returns the big key item for the specified dungeon.
         /// </summary>
         /// <param name="id">
-        /// The dungeon ID.
+        ///     The dungeon ID.
         /// </param>
         /// <returns>
-        /// The big key item.
+        ///     The big key item.
         /// </returns>
-        public IItem? GetDungeonBigKeyItem(LocationID id)
+        private IBigKeyItem? GetDungeonBigKeyItem(DungeonID id)
         {
-            switch (id)
+            var item = id switch
             {
-                case LocationID.HyruleCastle:
-                    {
-                        return _items[ItemType.HCBigKey];
-                    }
-                case LocationID.AgahnimTower:
-                    {
-                        return null;
-                    }
-                case LocationID.EasternPalace:
-                    {
-                        return _items[ItemType.EPBigKey];
-                    }
-                case LocationID.DesertPalace:
-                    {
-                        return _items[ItemType.DPBigKey];
-                    }
-                case LocationID.TowerOfHera:
-                    {
-                        return _items[ItemType.ToHBigKey];
-                    }
-                case LocationID.PalaceOfDarkness:
-                    {
-                        return _items[ItemType.PoDBigKey];
-                    }
-                case LocationID.SwampPalace:
-                    {
-                        return _items[ItemType.SPBigKey];
-                    }
-                case LocationID.SkullWoods:
-                    {
-                        return _items[ItemType.SWBigKey];
-                    }
-                case LocationID.ThievesTown:
-                    {
-                        return _items[ItemType.TTBigKey];
-                    }
-                case LocationID.IcePalace:
-                    {
-                        return _items[ItemType.IPBigKey];
-                    }
-                case LocationID.MiseryMire:
-                    {
-                        return _items[ItemType.MMBigKey];
-                    }
-                case LocationID.TurtleRock:
-                    {
-                        return _items[ItemType.TRBigKey];
-                    }
-                case LocationID.GanonsTower:
-                    {
-                        return _items[ItemType.GTBigKey];
-                    }
-            }
+                DungeonID.HyruleCastle => _items[ItemType.HCBigKey],
+                DungeonID.AgahnimTower => null,
+                DungeonID.EasternPalace => _items[ItemType.EPBigKey],
+                DungeonID.DesertPalace => _items[ItemType.DPBigKey],
+                DungeonID.TowerOfHera => _items[ItemType.ToHBigKey],
+                DungeonID.PalaceOfDarkness => _items[ItemType.PoDBigKey],
+                DungeonID.SwampPalace => _items[ItemType.SPBigKey],
+                DungeonID.SkullWoods => _items[ItemType.SWBigKey],
+                DungeonID.ThievesTown => _items[ItemType.TTBigKey],
+                DungeonID.IcePalace => _items[ItemType.IPBigKey],
+                DungeonID.MiseryMire => _items[ItemType.MMBigKey],
+                DungeonID.TurtleRock => _items[ItemType.TRBigKey],
+                DungeonID.GanonsTower => _items[ItemType.GTBigKey],
+                _ => throw new ArgumentOutOfRangeException(nameof(id))
+            };
 
-            throw new ArgumentOutOfRangeException(nameof(id));
+            return item as IBigKeyItem;
         }
 
         /// <summary>
-        /// Returns a list of dungeon node IDs for the specified dungeon.
+        ///     Returns a list of dungeon node IDs for the specified dungeon.
         /// </summary>
         /// <param name="id">
-        /// The dungeon ID.
+        ///     The dungeon ID.
         /// </param>
         /// <returns>
-        /// A list of dungeon node IDs.
+        ///     A list of dungeon node IDs.
         /// </returns>
-        public List<DungeonNodeID> GetDungeonNodes(LocationID id)
+        private static IList<DungeonNodeID> GetDungeonNodes(DungeonID id)
         {
             return id switch
             {
-                LocationID.HyruleCastle => new List<DungeonNodeID>
+                DungeonID.HyruleCastle => new List<DungeonNodeID>
                 {
                     DungeonNodeID.HCSanctuary,
                     DungeonNodeID.HCFront,
@@ -461,7 +207,7 @@ namespace OpenTracker.Models.Dungeons
                     DungeonNodeID.HCDarkRoomBack,
                     DungeonNodeID.HCBack
                 },
-                LocationID.AgahnimTower => new List<DungeonNodeID>
+                DungeonID.AgahnimTower => new List<DungeonNodeID>
                 {
                     DungeonNodeID.AT,
                     DungeonNodeID.ATDarkMaze,
@@ -474,7 +220,7 @@ namespace OpenTracker.Models.Dungeons
                     DungeonNodeID.ATBossRoom,
                     DungeonNodeID.ATBoss
                 },
-                LocationID.EasternPalace => new List<DungeonNodeID>
+                DungeonID.EasternPalace => new List<DungeonNodeID>
                 {
                     DungeonNodeID.EP,
                     DungeonNodeID.EPBigChest,
@@ -488,7 +234,7 @@ namespace OpenTracker.Models.Dungeons
                     DungeonNodeID.EPBossRoom,
                     DungeonNodeID.EPBoss
                 },
-                LocationID.DesertPalace => new List<DungeonNodeID>
+                DungeonID.DesertPalace => new List<DungeonNodeID>
                 {
                     DungeonNodeID.DPFront,
                     DungeonNodeID.DPTorch,
@@ -505,7 +251,7 @@ namespace OpenTracker.Models.Dungeons
                     DungeonNodeID.DPBossRoom,
                     DungeonNodeID.DPBoss
                 },
-                LocationID.TowerOfHera => new List<DungeonNodeID>
+                DungeonID.TowerOfHera => new List<DungeonNodeID>
                 {
                     DungeonNodeID.ToH,
                     DungeonNodeID.ToHPastKeyDoor,
@@ -514,7 +260,7 @@ namespace OpenTracker.Models.Dungeons
                     DungeonNodeID.ToHBigChest,
                     DungeonNodeID.ToHBoss
                 },
-                LocationID.PalaceOfDarkness => new List<DungeonNodeID>
+                DungeonID.PalaceOfDarkness => new List<DungeonNodeID>
                 {
                     DungeonNodeID.PoD,
                     DungeonNodeID.PoDPastFirstRedGoriyaRoom,
@@ -540,7 +286,7 @@ namespace OpenTracker.Models.Dungeons
                     DungeonNodeID.PoDBossRoom,
                     DungeonNodeID.PoDBoss
                 },
-                LocationID.SwampPalace => new List<DungeonNodeID>
+                DungeonID.SwampPalace => new List<DungeonNodeID>
                 {
                     DungeonNodeID.SP,
                     DungeonNodeID.SPAfterRiver,
@@ -556,7 +302,7 @@ namespace OpenTracker.Models.Dungeons
                     DungeonNodeID.SPBossRoom,
                     DungeonNodeID.SPBoss
                 },
-                LocationID.SkullWoods => new List<DungeonNodeID>
+                DungeonID.SkullWoods => new List<DungeonNodeID>
                 {
                     DungeonNodeID.SWBigChestAreaBottom,
                     DungeonNodeID.SWBigChestAreaTop,
@@ -572,7 +318,7 @@ namespace OpenTracker.Models.Dungeons
                     DungeonNodeID.SWBossRoom,
                     DungeonNodeID.SWBoss
                 },
-                LocationID.ThievesTown => new List<DungeonNodeID>
+                DungeonID.ThievesTown => new List<DungeonNodeID>
                 {
                     DungeonNodeID.TT,
                     DungeonNodeID.TTPastBigKeyDoor,
@@ -584,7 +330,7 @@ namespace OpenTracker.Models.Dungeons
                     DungeonNodeID.TTBossRoom,
                     DungeonNodeID.TTBoss
                 },
-                LocationID.IcePalace => new List<DungeonNodeID>
+                DungeonID.IcePalace => new List<DungeonNodeID>
                 {
                     DungeonNodeID.IP,
                     DungeonNodeID.IPPastEntranceFreezorRoom,
@@ -611,7 +357,7 @@ namespace OpenTracker.Models.Dungeons
                     DungeonNodeID.IPB6PastLiftBlock,
                     DungeonNodeID.IPBoss
                 },
-                LocationID.MiseryMire => new List<DungeonNodeID>
+                DungeonID.MiseryMire => new List<DungeonNodeID>
                 {
                     DungeonNodeID.MM,
                     DungeonNodeID.MMPastEntranceGap,
@@ -631,7 +377,7 @@ namespace OpenTracker.Models.Dungeons
                     DungeonNodeID.MMBossRoom,
                     DungeonNodeID.MMBoss
                 },
-                LocationID.TurtleRock => new List<DungeonNodeID>
+                DungeonID.TurtleRock => new List<DungeonNodeID>
                 {
                     DungeonNodeID.TRFront,
                     DungeonNodeID.TRF1SomariaTrack,
@@ -647,7 +393,7 @@ namespace OpenTracker.Models.Dungeons
                     DungeonNodeID.TRB1BigChestArea,
                     DungeonNodeID.TRBigChest,
                     DungeonNodeID.TRB1RightSide,
-                    DungeonNodeID.TRPastB1toB2KeyDoor,
+                    DungeonNodeID.TRPastB1ToB2KeyDoor,
                     DungeonNodeID.TRB2DarkRoomTop,
                     DungeonNodeID.TRB2DarkRoomBottom,
                     DungeonNodeID.TRB2PastDarkMaze,
@@ -658,7 +404,7 @@ namespace OpenTracker.Models.Dungeons
                     DungeonNodeID.TRBossRoom,
                     DungeonNodeID.TRBoss
                 },
-                LocationID.GanonsTower => new List<DungeonNodeID>
+                DungeonID.GanonsTower => new List<DungeonNodeID>
                 {
                     DungeonNodeID.GT,
                     DungeonNodeID.GTBobsTorch,
@@ -700,841 +446,561 @@ namespace OpenTracker.Models.Dungeons
         }
 
         /// <summary>
-        /// Returns a list of dungeon item IDs for the specified dungeon.
+        ///     Returns a list of dungeon item IDs for the specified dungeon.
         /// </summary>
         /// <param name="id">
-        /// The dungeon ID.
+        ///     The dungeon ID.
         /// </param>
         /// <returns>
-        /// A list of dungeon item IDs.
+        ///     A list of dungeon item IDs.
         /// </returns>
-        public List<DungeonItemID> GetDungeonItems(LocationID id)
-        {
-            switch (id)
-            {
-                case LocationID.HyruleCastle:
-                    {
-                        return new List<DungeonItemID>
-                        {
-                            DungeonItemID.HCSanctuary,
-                            DungeonItemID.HCMapChest,
-                            DungeonItemID.HCBoomerangChest,
-                            DungeonItemID.HCZeldasCell,
-                            DungeonItemID.HCDarkCross,
-                            DungeonItemID.HCSecretRoomLeft,
-                            DungeonItemID.HCSecretRoomMiddle,
-                            DungeonItemID.HCSecretRoomRight
-                        };
-                    }
-                case LocationID.AgahnimTower:
-                    {
-                        return new List<DungeonItemID>
-                        {
-                            DungeonItemID.ATRoom03,
-                            DungeonItemID.ATDarkMaze
-                        };
-                    }
-                case LocationID.EasternPalace:
-                    {
-                        return new List<DungeonItemID>
-                        {
-                            DungeonItemID.EPCannonballChest,
-                            DungeonItemID.EPMapChest,
-                            DungeonItemID.EPCompassChest,
-                            DungeonItemID.EPBigChest,
-                            DungeonItemID.EPBigKeyChest,
-                            DungeonItemID.EPBoss
-                        };
-                    }
-                case LocationID.DesertPalace:
-                    {
-                        return new List<DungeonItemID>
-                        {
-                            DungeonItemID.DPMapChest,
-                            DungeonItemID.DPTorch,
-                            DungeonItemID.DPBigChest,
-                            DungeonItemID.DPCompassChest,
-                            DungeonItemID.DPBigKeyChest,
-                            DungeonItemID.DPBoss
-                        };
-                    }
-                case LocationID.TowerOfHera:
-                    {
-                        return new List<DungeonItemID>
-                        {
-                            DungeonItemID.ToHBasementCage,
-                            DungeonItemID.ToHMapChest,
-                            DungeonItemID.ToHBigKeyChest,
-                            DungeonItemID.ToHCompassChest,
-                            DungeonItemID.ToHBigChest,
-                            DungeonItemID.ToHBoss
-                        };
-                    }
-                case LocationID.PalaceOfDarkness:
-                    {
-                        return new List<DungeonItemID>
-                        {
-                            DungeonItemID.PoDShooterRoom,
-                            DungeonItemID.PoDMapChest,
-                            DungeonItemID.PoDArenaLedge,
-                            DungeonItemID.PoDBigKeyChest,
-                            DungeonItemID.PoDStalfosBasement,
-                            DungeonItemID.PoDArenaBridge,
-                            DungeonItemID.PoDCompassChest,
-                            DungeonItemID.PoDDarkBasementLeft,
-                            DungeonItemID.PoDDarkBasementRight,
-                            DungeonItemID.PoDHarmlessHellway,
-                            DungeonItemID.PoDDarkMazeTop,
-                            DungeonItemID.PoDDarkMazeBottom,
-                            DungeonItemID.PoDBigChest,
-                            DungeonItemID.PoDBoss
-                        };
-                    }
-                case LocationID.SwampPalace:
-                    {
-                        return new List<DungeonItemID>
-                        {
-                            DungeonItemID.SPEntrance,
-                            DungeonItemID.SPMapChest,
-                            DungeonItemID.SPBigChest,
-                            DungeonItemID.SPCompassChest,
-                            DungeonItemID.SPWestChest,
-                            DungeonItemID.SPBigKeyChest,
-                            DungeonItemID.SPFloodedRoomLeft,
-                            DungeonItemID.SPFloodedRoomRight,
-                            DungeonItemID.SPWaterfallRoom,
-                            DungeonItemID.SPBoss
-                        };
-                    }
-                case LocationID.SkullWoods:
-                    {
-                        return new List<DungeonItemID>
-                        {
-                            DungeonItemID.SWBigKeyChest,
-                            DungeonItemID.SWMapChest,
-                            DungeonItemID.SWBigChest,
-                            DungeonItemID.SWPotPrison,
-                            DungeonItemID.SWCompassChest,
-                            DungeonItemID.SWPinballRoom,
-                            DungeonItemID.SWBridgeRoom,
-                            DungeonItemID.SWBoss
-                        };
-                    }
-                case LocationID.ThievesTown:
-                    {
-                        return new List<DungeonItemID>
-                        {
-                            DungeonItemID.TTMapChest,
-                            DungeonItemID.TTAmbushChest,
-                            DungeonItemID.TTCompassChest,
-                            DungeonItemID.TTBigKeyChest,
-                            DungeonItemID.TTAttic,
-                            DungeonItemID.TTBlindsCell,
-                            DungeonItemID.TTBigChest,
-                            DungeonItemID.TTBoss
-                        };
-                    }
-                case LocationID.IcePalace:
-                    {
-                        return new List<DungeonItemID>
-                        {
-                            DungeonItemID.IPCompassChest,
-                            DungeonItemID.IPSpikeRoom,
-                            DungeonItemID.IPMapChest,
-                            DungeonItemID.IPBigKeyChest,
-                            DungeonItemID.IPFreezorChest,
-                            DungeonItemID.IPBigChest,
-                            DungeonItemID.IPIcedTRoom,
-                            DungeonItemID.IPBoss
-                        };
-                    }
-                case LocationID.MiseryMire:
-                    {
-                        return new List<DungeonItemID>
-                        {
-                            DungeonItemID.MMBridgeChest,
-                            DungeonItemID.MMSpikeChest,
-                            DungeonItemID.MMMainLobby,
-                            DungeonItemID.MMCompassChest,
-                            DungeonItemID.MMBigKeyChest,
-                            DungeonItemID.MMBigChest,
-                            DungeonItemID.MMMapChest,
-                            DungeonItemID.MMBoss
-                        };
-                    }
-                case LocationID.TurtleRock:
-                    {
-                        return new List<DungeonItemID>
-                        {
-                            DungeonItemID.TRCompassChest,
-                            DungeonItemID.TRRollerRoomLeft,
-                            DungeonItemID.TRRollerRoomRight,
-                            DungeonItemID.TRChainChomps,
-                            DungeonItemID.TRBigKeyChest,
-                            DungeonItemID.TRBigChest,
-                            DungeonItemID.TRCrystarollerRoom,
-                            DungeonItemID.TRLaserBridgeTopLeft,
-                            DungeonItemID.TRLaserBridgeTopRight,
-                            DungeonItemID.TRLaserBridgeBottomLeft,
-                            DungeonItemID.TRLaserBrdigeBottomRight,
-                            DungeonItemID.TRBoss
-                        };
-                    }
-                case LocationID.GanonsTower:
-                    {
-                        return new List<DungeonItemID>
-                        {
-                            DungeonItemID.GTHopeRoomLeft,
-                            DungeonItemID.GTHopeRoomRight,
-                            DungeonItemID.GTBobsTorch,
-                            DungeonItemID.GTDMsRoomTopLeft,
-                            DungeonItemID.GTDMsRoomTopRight,
-                            DungeonItemID.GTDMsRoomBottomLeft,
-                            DungeonItemID.GTDMsRoomBottomRight,
-                            DungeonItemID.GTMapChest,
-                            DungeonItemID.GTFiresnakeRoom,
-                            DungeonItemID.GTRandomizerRoomTopLeft,
-                            DungeonItemID.GTRandomizerRoomTopRight,
-                            DungeonItemID.GTRandomizerRoomBottomLeft,
-                            DungeonItemID.GTRandomizerRoomBottomRight,
-                            DungeonItemID.GTTileRoom,
-                            DungeonItemID.GTCompassRoomTopLeft,
-                            DungeonItemID.GTCompassRoomTopRight,
-                            DungeonItemID.GTCompassRoomBottomLeft,
-                            DungeonItemID.GTCompassRoomBottomRight,
-                            DungeonItemID.GTBobsChest,
-                            DungeonItemID.GTBigKeyRoomTopLeft,
-                            DungeonItemID.GTBigKeyRoomTopRight,
-                            DungeonItemID.GTBigKeyChest,
-                            DungeonItemID.GTBigChest,
-                            DungeonItemID.GTMiniHelmasaurRoomLeft,
-                            DungeonItemID.GTMiniHelmasaurRoomRight,
-                            DungeonItemID.GTPreMoldormChest,
-                            DungeonItemID.GTMoldormChest
-                        };
-                    }
-            }
-
-            throw new ArgumentOutOfRangeException(nameof(id));
-        }
-
-        /// <summary>
-        /// Returns a list of dungeon boss item IDs for the specified dungeon.
-        /// </summary>
-        /// <param name="id">
-        /// The dungeon ID.
-        /// </param>
-        /// <returns>
-        /// A list of dungeon boss item IDs.
-        /// </returns>
-        public List<DungeonItemID> GetDungeonBosses(LocationID id)
-        {
-            switch (id)
-            {
-                case LocationID.HyruleCastle:
-                    {
-                        return new List<DungeonItemID>(0);
-                    }
-                case LocationID.AgahnimTower:
-                    {
-                        return new List<DungeonItemID>
-                        {
-                            DungeonItemID.ATBoss
-                        };
-                    }
-                case LocationID.EasternPalace:
-                    {
-                        return new List<DungeonItemID>
-                        {
-                            DungeonItemID.EPBoss
-                        };
-                    }
-                case LocationID.DesertPalace:
-                    {
-                        return new List<DungeonItemID>
-                        {
-                            DungeonItemID.DPBoss
-                        };
-                    }
-                case LocationID.TowerOfHera:
-                    {
-                        return new List<DungeonItemID>
-                        {
-                            DungeonItemID.ToHBoss
-                        };
-                    }
-                case LocationID.PalaceOfDarkness:
-                    {
-                        return new List<DungeonItemID>
-                        {
-                            DungeonItemID.PoDBoss
-                        };
-                    }
-                case LocationID.SwampPalace:
-                    {
-                        return new List<DungeonItemID>
-                        {
-                            DungeonItemID.SPBoss
-                        };
-                    }
-                case LocationID.SkullWoods:
-                    {
-                        return new List<DungeonItemID>
-                        {
-                            DungeonItemID.SWBoss
-                        };
-                    }
-                case LocationID.ThievesTown:
-                    {
-                        return new List<DungeonItemID>
-                        {
-                            DungeonItemID.TTBoss
-                        };
-                    }
-                case LocationID.IcePalace:
-                    {
-                        return new List<DungeonItemID>
-                        {
-                            DungeonItemID.IPBoss
-                        };
-                    }
-                case LocationID.MiseryMire:
-                    {
-                        return new List<DungeonItemID>
-                        {
-                            DungeonItemID.MMBoss
-                        };
-                    }
-                case LocationID.TurtleRock:
-                    {
-                        return new List<DungeonItemID>
-                        {
-                            DungeonItemID.TRBoss
-                        };
-                    }
-                case LocationID.GanonsTower:
-                    {
-                        return new List<DungeonItemID>
-                        {
-                            DungeonItemID.GTBoss1,
-                            DungeonItemID.GTBoss2,
-                            DungeonItemID.GTBoss3,
-                            DungeonItemID.GTFinalBoss
-                        };
-                    }
-            }
-
-            throw new ArgumentOutOfRangeException(nameof(id));
-        }
-
-        /// <summary>
-        /// Returns a list of dungeon small key drop item IDs for the specified dungeon.
-        /// </summary>
-        /// <param name="id">
-        /// The dungeon ID.
-        /// </param>
-        /// <returns>
-        /// A list of dungeon small key drop item IDs.
-        /// </returns>
-        public List<DungeonItemID> GetDungeonSmallKeyDrops(LocationID id)
-        {
-            switch (id)
-            {
-                case LocationID.HyruleCastle:
-                    {
-                        return new List<DungeonItemID>
-                        {
-                            DungeonItemID.HCBoomerangGuardDrop,
-                            DungeonItemID.HCMapGuardDrop,
-                            DungeonItemID.HCKeyRatDrop
-                        };
-                    }
-                case LocationID.AgahnimTower:
-                    {
-                        return new List<DungeonItemID>
-                        {
-                            DungeonItemID.ATDarkArcherDrop,
-                            DungeonItemID.ATCircleOfPotsDrop
-                        };
-                    }
-                case LocationID.EasternPalace:
-                    {
-                        return new List<DungeonItemID>
-                        {
-                            DungeonItemID.EPDarkSquarePot,
-                            DungeonItemID.EPDarkEyegoreDrop
-                        };
-                    }
-                case LocationID.DesertPalace:
-                    {
-                        return new List<DungeonItemID>
-                        {
-                            DungeonItemID.DPTiles1Pot,
-                            DungeonItemID.DPBeamosHallPot,
-                            DungeonItemID.DPTiles2Pot
-                        };
-                    }
-                case LocationID.TowerOfHera:
-                case LocationID.PalaceOfDarkness:
-                    {
-                        return new List<DungeonItemID>(0);
-                    }
-                case LocationID.SwampPalace:
-                    {
-                        return new List<DungeonItemID>
-                        {
-                            DungeonItemID.SPPotRowPot,
-                            DungeonItemID.SPTrench1Pot,
-                            DungeonItemID.SPHookshotPot,
-                            DungeonItemID.SPTrench2Pot,
-                            DungeonItemID.SPWaterwayPot
-                        };
-                    }
-                case LocationID.SkullWoods:
-                    {
-                        return new List<DungeonItemID>
-                        {
-                            DungeonItemID.SWWestLobbyPot,
-                            DungeonItemID.SWSpikeCornerDrop
-                        };
-                    }
-                case LocationID.ThievesTown:
-                    {
-                        return new List<DungeonItemID>
-                        {
-                            DungeonItemID.TTHallwayPot,
-                            DungeonItemID.TTSpikeSwitchPot
-                        };
-                    }
-                case LocationID.IcePalace:
-                    {
-                        return new List<DungeonItemID>
-                        {
-                            DungeonItemID.IPJellyDrop,
-                            DungeonItemID.IPConveyerDrop,
-                            DungeonItemID.IPHammerBlockDrop,
-                            DungeonItemID.IPManyPotsPot
-                        };
-                    }
-                case LocationID.MiseryMire:
-                    {
-                        return new List<DungeonItemID>
-                        {
-                            DungeonItemID.MMSpikesPot,
-                            DungeonItemID.MMFishbonePot,
-                            DungeonItemID.MMConveyerCrystalDrop
-                        };
-                    }
-                case LocationID.TurtleRock:
-                    {
-                        return new List<DungeonItemID>
-                        {
-                            DungeonItemID.TRPokey1Drop,
-                            DungeonItemID.TRPokey2Drop
-                        };
-                    }
-                case LocationID.GanonsTower:
-                    {
-                        return new List<DungeonItemID>
-                        {
-                            DungeonItemID.GTConveyorCrossPot,
-                            DungeonItemID.GTDoubleSwitchPot,
-                            DungeonItemID.GTConveyorStarPitsPot,
-                            DungeonItemID.GTMiniHelmasaurDrop
-                        };
-                    }
-            }
-
-            throw new ArgumentOutOfRangeException(nameof(id));
-        }
-
-        /// <summary>
-        /// Returns a list of dungeon small key drop item IDs for the specified dungeon.
-        /// </summary>
-        /// <param name="id">
-        /// The dungeon ID.
-        /// </param>
-        /// <returns>
-        /// A list of dungeon small key drop item IDs.
-        /// </returns>
-        public List<DungeonItemID> GetDungeonBigKeyDrops(LocationID id)
-        {
-            switch (id)
-            {
-                case LocationID.HyruleCastle:
-                    {
-                        return new List<DungeonItemID>
-                        {
-                            DungeonItemID.HCBigKeyDrop
-                        };
-                    }
-                case LocationID.AgahnimTower:
-                case LocationID.EasternPalace:
-                case LocationID.DesertPalace:
-                case LocationID.TowerOfHera:
-                case LocationID.PalaceOfDarkness:
-                case LocationID.SwampPalace:
-                case LocationID.SkullWoods:
-                case LocationID.ThievesTown:
-                case LocationID.IcePalace:
-                case LocationID.MiseryMire:
-                case LocationID.TurtleRock:
-                case LocationID.GanonsTower:
-                    {
-                        return new List<DungeonItemID>(0);
-                    }
-            }
-
-            throw new ArgumentOutOfRangeException(nameof(id));
-        }
-
-        /// <summary>
-        /// Returns a list of small key door IDs for the specified dungeon.
-        /// </summary>
-        /// <param name="id">
-        /// The dungeon ID.
-        /// </param>
-        /// <returns>
-        /// A list of small key door IDs.
-        /// </returns>
-        public List<KeyDoorID> GetDungeonSmallKeyDoors(LocationID id)
-        {
-            switch (id)
-            {
-                case LocationID.HyruleCastle:
-                    {
-                        return new List<KeyDoorID>
-                        {
-                            KeyDoorID.HCEscapeFirstKeyDoor,
-                            KeyDoorID.HCEscapeSecondKeyDoor,
-                            KeyDoorID.HCDarkCrossKeyDoor,
-                            KeyDoorID.HCSewerRatRoomKeyDoor
-                        };
-                    }
-                case LocationID.AgahnimTower:
-                    {
-                        return new List<KeyDoorID>
-                        {
-                            KeyDoorID.ATFirstKeyDoor,
-                            KeyDoorID.ATSecondKeyDoor,
-                            KeyDoorID.ATThirdKeyDoor,
-                            KeyDoorID.ATFourthKeyDoor
-                        };
-                    }
-                case LocationID.EasternPalace:
-                    {
-                        return new List<KeyDoorID>
-                        {
-                            KeyDoorID.EPRightKeyDoor,
-                            KeyDoorID.EPBackKeyDoor
-                        };
-                    }
-                case LocationID.DesertPalace:
-                    {
-                        return new List<KeyDoorID>
-                        {
-                            KeyDoorID.DPRightKeyDoor,
-                            KeyDoorID.DP1FKeyDoor,
-                            KeyDoorID.DP2FFirstKeyDoor,
-                            KeyDoorID.DP2FSecondKeyDoor
-                        };
-                    }
-                case LocationID.TowerOfHera:
-                    {
-                        return new List<KeyDoorID>
-                        {
-                            KeyDoorID.ToHKeyDoor
-                        };
-                    }
-                case LocationID.PalaceOfDarkness:
-                    {
-                        return new List<KeyDoorID>
-                        {
-                            KeyDoorID.PoDFrontKeyDoor,
-                            KeyDoorID.PoDBigKeyChestKeyDoor,
-                            KeyDoorID.PoDCollapsingWalkwayKeyDoor,
-                            KeyDoorID.PoDDarkMazeKeyDoor,
-                            KeyDoorID.PoDHarmlessHellwayKeyDoor,
-                            KeyDoorID.PoDBossAreaKeyDoor
-                        };
-                    }
-                case LocationID.SwampPalace:
-                    {
-                        return new List<KeyDoorID>
-                        {
-                            KeyDoorID.SP1FKeyDoor,
-                            KeyDoorID.SPB1FirstRightKeyDoor,
-                            KeyDoorID.SPB1SecondRightKeyDoor,
-                            KeyDoorID.SPB1LeftKeyDoor,
-                            KeyDoorID.SPB1BackFirstKeyDoor,
-                            KeyDoorID.SPBossRoomKeyDoor
-                        };
-                    }
-                case LocationID.SkullWoods:
-                    {
-                        return new List<KeyDoorID>
-                        {
-                            KeyDoorID.SWFrontLeftKeyDoor,
-                            KeyDoorID.SWFrontRightKeyDoor,
-                            KeyDoorID.SWWorthlessKeyDoor,
-                            KeyDoorID.SWBackFirstKeyDoor,
-                            KeyDoorID.SWBackSecondKeyDoor
-                        };
-                    }
-                case LocationID.ThievesTown:
-                    {
-                        return new List<KeyDoorID>
-                        {
-                            KeyDoorID.TTFirstKeyDoor,
-                            KeyDoorID.TTSecondKeyDoor,
-                            KeyDoorID.TTBigChestKeyDoor
-                        };
-                    }
-                case LocationID.IcePalace:
-                    {
-                        return new List<KeyDoorID>
-                        {
-                            KeyDoorID.IP1FKeyDoor,
-                            KeyDoorID.IPB2KeyDoor,
-                            KeyDoorID.IPB3KeyDoor,
-                            KeyDoorID.IPB4KeyDoor,
-                            KeyDoorID.IPB5KeyDoor,
-                            KeyDoorID.IPB6KeyDoor
-                        };
-                    }
-                case LocationID.MiseryMire:
-                    {
-                        return new List<KeyDoorID>
-                        {
-                            KeyDoorID.MMB1TopRightKeyDoor,
-                            KeyDoorID.MMB1TopLeftKeyDoor,
-                            KeyDoorID.MMB1LeftSideFirstKeyDoor,
-                            KeyDoorID.MMB1LeftSideSecondKeyDoor,
-                            KeyDoorID.MMB1RightSideKeyDoor,
-                            KeyDoorID.MMB2WorthlessKeyDoor
-                        };
-                    }
-                case LocationID.TurtleRock:
-                    {
-                        return new List<KeyDoorID>
-                        {
-                            KeyDoorID.TR1FFirstKeyDoor,
-                            KeyDoorID.TR1FSecondKeyDoor,
-                            KeyDoorID.TR1FThirdKeyDoor,
-                            KeyDoorID.TRB1BigKeyChestKeyDoor,
-                            KeyDoorID.TRB1toB2KeyDoor,
-                            KeyDoorID.TRB2KeyDoor
-                        };
-                    }
-                case LocationID.GanonsTower:
-                    {
-                        return new List<KeyDoorID>
-                        {
-                            KeyDoorID.GT1FLeftToRightKeyDoor,
-                            KeyDoorID.GT1FMapChestRoomKeyDoor,
-                            KeyDoorID.GT1FSpikeTrapPortalRoomKeyDoor,
-                            KeyDoorID.GT1FFiresnakeRoomKeyDoor,
-                            KeyDoorID.GT1FTileRoomKeyDoor,
-                            KeyDoorID.GT1FCollapsingWalkwayKeyDoor,
-                            KeyDoorID.GT6FFirstKeyDoor,
-                            KeyDoorID.GT6FSecondKeyDoor
-                        };
-                    }
-            }
-
-            throw new ArgumentOutOfRangeException(nameof(id));
-        }
-
-        /// <summary>
-        /// Returns a list of big key door IDs for the specified dungeon.
-        /// </summary>
-        /// <param name="id">
-        /// The dungeon ID.
-        /// </param>
-        /// <returns>
-        /// A list of big key door IDs.
-        /// </returns>
-        public List<KeyDoorID> GetDungeonBigKeyDoors(LocationID id)
-        {
-            switch (id)
-            {
-                case LocationID.HyruleCastle:
-                    {
-                        return new List<KeyDoorID>
-                        {
-                            KeyDoorID.HCZeldasCellDoor
-                        };
-                    }
-                case LocationID.AgahnimTower:
-                    {
-                        return new List<KeyDoorID>(0);
-                    }
-                case LocationID.EasternPalace:
-                    {
-                        return new List<KeyDoorID>
-                        {
-                            KeyDoorID.EPBigChest,
-                            KeyDoorID.EPBigKeyDoor
-                        };
-                    }
-                case LocationID.DesertPalace:
-                    {
-                        return new List<KeyDoorID>
-                        {
-                            KeyDoorID.DPBigChest,
-                            KeyDoorID.DPBigKeyDoor
-                        };
-                    }
-                case LocationID.TowerOfHera:
-                    {
-                        return new List<KeyDoorID>
-                        {
-                            KeyDoorID.ToHBigKeyDoor,
-                            KeyDoorID.ToHBigChest
-                        };
-                    }
-                case LocationID.PalaceOfDarkness:
-                    {
-                        return new List<KeyDoorID>
-                        {
-                            KeyDoorID.PoDBigChest,
-                            KeyDoorID.PoDBigKeyDoor
-                        };
-                    }
-                case LocationID.SwampPalace:
-                    {
-                        return new List<KeyDoorID>
-                        {
-                            KeyDoorID.SPBigChest
-                        };
-                    }
-                case LocationID.SkullWoods:
-                    {
-                        return new List<KeyDoorID>
-                        {
-                            KeyDoorID.SWBigChest
-                        };
-                    }
-                case LocationID.ThievesTown:
-                    {
-                        return new List<KeyDoorID>
-                        {
-                            KeyDoorID.TTBigKeyDoor,
-                            KeyDoorID.TTBigChest
-                        };
-                    }
-                case LocationID.IcePalace:
-                    {
-                        return new List<KeyDoorID>
-                        {
-                            KeyDoorID.IPBigKeyDoor,
-                            KeyDoorID.IPBigChest
-                        };
-                    }
-                case LocationID.MiseryMire:
-                    {
-                        return new List<KeyDoorID>
-                        {
-                            KeyDoorID.MMBigChest,
-                            KeyDoorID.MMPortalBigKeyDoor,
-                            KeyDoorID.MMBridgeBigKeyDoor,
-                            KeyDoorID.MMBossRoomBigKeyDoor
-                        };
-                    }
-                case LocationID.TurtleRock:
-                    {
-                        return new List<KeyDoorID>
-                        {
-                            KeyDoorID.TRBigChest,
-                            KeyDoorID.TRB1BigKeyDoor,
-                            KeyDoorID.TRBossRoomBigKeyDoor
-                        };
-                    }
-                case LocationID.GanonsTower:
-                    {
-                        return new List<KeyDoorID>
-                        {
-                            KeyDoorID.GTBigChest,
-                            KeyDoorID.GT3FBigKeyDoor,
-                            KeyDoorID.GT7FBigKeyDoor
-                        };
-                    }
-            }
-
-            throw new ArgumentOutOfRangeException(nameof(id));
-        }
-
-        /// <summary>
-        /// Returns a list of dungeon entry nodes for the specified dungeon.
-        /// </summary>
-        /// <param name="id">
-        /// The location ID of the dungeon.
-        /// </param>
-        /// <returns>
-        /// A list of dungeon entry nodes.
-        /// </returns>
-        public List<IRequirementNode> GetDungeonEntryNodes(LocationID id)
+        private static IList<DungeonItemID> GetDungeonItems(DungeonID id)
         {
             return id switch
             {
-                LocationID.HyruleCastle => new List<IRequirementNode>
+                DungeonID.HyruleCastle => new List<DungeonItemID>
                 {
-                    _requirementNodes[RequirementNodeID.HCSanctuaryEntry],
-                    _requirementNodes[RequirementNodeID.HCFrontEntry],
-                    _requirementNodes[RequirementNodeID.HCBackEntry]
+                    DungeonItemID.HCSanctuary,
+                    DungeonItemID.HCMapChest,
+                    DungeonItemID.HCBoomerangChest,
+                    DungeonItemID.HCZeldasCell,
+                    DungeonItemID.HCDarkCross,
+                    DungeonItemID.HCSecretRoomLeft,
+                    DungeonItemID.HCSecretRoomMiddle,
+                    DungeonItemID.HCSecretRoomRight
                 },
-                LocationID.AgahnimTower => new List<IRequirementNode>
+                DungeonID.AgahnimTower => new List<DungeonItemID>
                 {
-                    _requirementNodes[RequirementNodeID.ATEntry]
+                    DungeonItemID.ATRoom03,
+                    DungeonItemID.ATDarkMaze
                 },
-                LocationID.EasternPalace => new List<IRequirementNode>
+                DungeonID.EasternPalace => new List<DungeonItemID>
                 {
-                    _requirementNodes[RequirementNodeID.EPEntry]
+                    DungeonItemID.EPCannonballChest,
+                    DungeonItemID.EPMapChest,
+                    DungeonItemID.EPCompassChest,
+                    DungeonItemID.EPBigChest,
+                    DungeonItemID.EPBigKeyChest,
+                    DungeonItemID.EPBoss
                 },
-                LocationID.DesertPalace => new List<IRequirementNode>
+                DungeonID.DesertPalace => new List<DungeonItemID>
                 {
-                    _requirementNodes[RequirementNodeID.DPFrontEntry],
-                    _requirementNodes[RequirementNodeID.DPLeftEntry],
-                    _requirementNodes[RequirementNodeID.DPBackEntry]
+                    DungeonItemID.DPMapChest,
+                    DungeonItemID.DPTorch,
+                    DungeonItemID.DPBigChest,
+                    DungeonItemID.DPCompassChest,
+                    DungeonItemID.DPBigKeyChest,
+                    DungeonItemID.DPBoss
                 },
-                LocationID.TowerOfHera => new List<IRequirementNode>
+                DungeonID.TowerOfHera => new List<DungeonItemID>
                 {
-                    _requirementNodes[RequirementNodeID.ToHEntry]
+                    DungeonItemID.ToHBasementCage,
+                    DungeonItemID.ToHMapChest,
+                    DungeonItemID.ToHBigKeyChest,
+                    DungeonItemID.ToHCompassChest,
+                    DungeonItemID.ToHBigChest,
+                    DungeonItemID.ToHBoss
                 },
-                LocationID.PalaceOfDarkness => new List<IRequirementNode>
+                DungeonID.PalaceOfDarkness => new List<DungeonItemID>
                 {
-                    _requirementNodes[RequirementNodeID.PoDEntry]
+                    DungeonItemID.PoDShooterRoom,
+                    DungeonItemID.PoDMapChest,
+                    DungeonItemID.PoDArenaLedge,
+                    DungeonItemID.PoDBigKeyChest,
+                    DungeonItemID.PoDStalfosBasement,
+                    DungeonItemID.PoDArenaBridge,
+                    DungeonItemID.PoDCompassChest,
+                    DungeonItemID.PoDDarkBasementLeft,
+                    DungeonItemID.PoDDarkBasementRight,
+                    DungeonItemID.PoDHarmlessHellway,
+                    DungeonItemID.PoDDarkMazeTop,
+                    DungeonItemID.PoDDarkMazeBottom,
+                    DungeonItemID.PoDBigChest,
+                    DungeonItemID.PoDBoss
                 },
-                LocationID.SwampPalace => new List<IRequirementNode>
+                DungeonID.SwampPalace => new List<DungeonItemID>
                 {
-                    _requirementNodes[RequirementNodeID.SPEntry]
+                    DungeonItemID.SPEntrance,
+                    DungeonItemID.SPMapChest,
+                    DungeonItemID.SPBigChest,
+                    DungeonItemID.SPCompassChest,
+                    DungeonItemID.SPWestChest,
+                    DungeonItemID.SPBigKeyChest,
+                    DungeonItemID.SPFloodedRoomLeft,
+                    DungeonItemID.SPFloodedRoomRight,
+                    DungeonItemID.SPWaterfallRoom,
+                    DungeonItemID.SPBoss
                 },
-                LocationID.SkullWoods => new List<IRequirementNode>
+                DungeonID.SkullWoods => new List<DungeonItemID>
                 {
-                    _requirementNodes[RequirementNodeID.SWFrontEntry],
-                    _requirementNodes[RequirementNodeID.SWBackEntry]
+                    DungeonItemID.SWBigKeyChest,
+                    DungeonItemID.SWMapChest,
+                    DungeonItemID.SWBigChest,
+                    DungeonItemID.SWPotPrison,
+                    DungeonItemID.SWCompassChest,
+                    DungeonItemID.SWPinballRoom,
+                    DungeonItemID.SWBridgeRoom,
+                    DungeonItemID.SWBoss
                 },
-                LocationID.ThievesTown => new List<IRequirementNode>
+                DungeonID.ThievesTown => new List<DungeonItemID>
                 {
-                    _requirementNodes[RequirementNodeID.TTEntry]
+                    DungeonItemID.TTMapChest,
+                    DungeonItemID.TTAmbushChest,
+                    DungeonItemID.TTCompassChest,
+                    DungeonItemID.TTBigKeyChest,
+                    DungeonItemID.TTAttic,
+                    DungeonItemID.TTBlindsCell,
+                    DungeonItemID.TTBigChest,
+                    DungeonItemID.TTBoss
                 },
-                LocationID.IcePalace => new List<IRequirementNode>
+                DungeonID.IcePalace => new List<DungeonItemID>
                 {
-                    _requirementNodes[RequirementNodeID.IPEntry]
+                    DungeonItemID.IPCompassChest,
+                    DungeonItemID.IPSpikeRoom,
+                    DungeonItemID.IPMapChest,
+                    DungeonItemID.IPBigKeyChest,
+                    DungeonItemID.IPFreezorChest,
+                    DungeonItemID.IPBigChest,
+                    DungeonItemID.IPIcedTRoom,
+                    DungeonItemID.IPBoss
                 },
-                LocationID.MiseryMire => new List<IRequirementNode>
+                DungeonID.MiseryMire => new List<DungeonItemID>
                 {
-                    _requirementNodes[RequirementNodeID.MMEntry]
+                    DungeonItemID.MMBridgeChest,
+                    DungeonItemID.MMSpikeChest,
+                    DungeonItemID.MMMainLobby,
+                    DungeonItemID.MMCompassChest,
+                    DungeonItemID.MMBigKeyChest,
+                    DungeonItemID.MMBigChest,
+                    DungeonItemID.MMMapChest,
+                    DungeonItemID.MMBoss
                 },
-                LocationID.TurtleRock => new List<IRequirementNode>
+                DungeonID.TurtleRock => new List<DungeonItemID>
                 {
-                    _requirementNodes[RequirementNodeID.TRFrontEntry],
-                    _requirementNodes[RequirementNodeID.TRMiddleEntry],
-                    _requirementNodes[RequirementNodeID.TRBackEntry]
+                    DungeonItemID.TRCompassChest,
+                    DungeonItemID.TRRollerRoomLeft,
+                    DungeonItemID.TRRollerRoomRight,
+                    DungeonItemID.TRChainChomps,
+                    DungeonItemID.TRBigKeyChest,
+                    DungeonItemID.TRBigChest,
+                    DungeonItemID.TRCrystarollerRoom,
+                    DungeonItemID.TRLaserBridgeTopLeft,
+                    DungeonItemID.TRLaserBridgeTopRight,
+                    DungeonItemID.TRLaserBridgeBottomLeft,
+                    DungeonItemID.TRLaserBridgeBottomRight,
+                    DungeonItemID.TRBoss
                 },
-                LocationID.GanonsTower => new List<IRequirementNode>
+                DungeonID.GanonsTower => new List<DungeonItemID>
                 {
-                    _requirementNodes[RequirementNodeID.GTEntry]
+                    DungeonItemID.GTHopeRoomLeft,
+                    DungeonItemID.GTHopeRoomRight,
+                    DungeonItemID.GTBobsTorch,
+                    DungeonItemID.GTDMsRoomTopLeft,
+                    DungeonItemID.GTDMsRoomTopRight,
+                    DungeonItemID.GTDMsRoomBottomLeft,
+                    DungeonItemID.GTDMsRoomBottomRight,
+                    DungeonItemID.GTMapChest,
+                    DungeonItemID.GTFiresnakeRoom,
+                    DungeonItemID.GTRandomizerRoomTopLeft,
+                    DungeonItemID.GTRandomizerRoomTopRight,
+                    DungeonItemID.GTRandomizerRoomBottomLeft,
+                    DungeonItemID.GTRandomizerRoomBottomRight,
+                    DungeonItemID.GTTileRoom,
+                    DungeonItemID.GTCompassRoomTopLeft,
+                    DungeonItemID.GTCompassRoomTopRight,
+                    DungeonItemID.GTCompassRoomBottomLeft,
+                    DungeonItemID.GTCompassRoomBottomRight,
+                    DungeonItemID.GTBobsChest,
+                    DungeonItemID.GTBigKeyRoomTopLeft,
+                    DungeonItemID.GTBigKeyRoomTopRight,
+                    DungeonItemID.GTBigKeyChest,
+                    DungeonItemID.GTBigChest,
+                    DungeonItemID.GTMiniHelmasaurRoomLeft,
+                    DungeonItemID.GTMiniHelmasaurRoomRight,
+                    DungeonItemID.GTPreMoldormChest,
+                    DungeonItemID.GTMoldormChest
+                },
+                _ => throw new ArgumentOutOfRangeException(nameof(id))
+            };
+        }
+
+        /// <summary>
+        ///     Returns a list of dungeon boss item IDs for the specified dungeon.
+        /// </summary>
+        /// <param name="id">
+        ///     The dungeon ID.
+        /// </param>
+        /// <returns>
+        ///     A list of dungeon boss item IDs.
+        /// </returns>
+        private static IList<DungeonItemID> GetDungeonBosses(DungeonID id)
+        {
+            return id switch
+            {
+                DungeonID.HyruleCastle => new List<DungeonItemID>(0),
+                DungeonID.AgahnimTower => new List<DungeonItemID> {DungeonItemID.ATBoss},
+                DungeonID.EasternPalace => new List<DungeonItemID> {DungeonItemID.EPBoss},
+                DungeonID.DesertPalace => new List<DungeonItemID> {DungeonItemID.DPBoss},
+                DungeonID.TowerOfHera => new List<DungeonItemID> {DungeonItemID.ToHBoss},
+                DungeonID.PalaceOfDarkness => new List<DungeonItemID> {DungeonItemID.PoDBoss},
+                DungeonID.SwampPalace => new List<DungeonItemID> {DungeonItemID.SPBoss},
+                DungeonID.SkullWoods => new List<DungeonItemID> {DungeonItemID.SWBoss},
+                DungeonID.ThievesTown => new List<DungeonItemID> {DungeonItemID.TTBoss},
+                DungeonID.IcePalace => new List<DungeonItemID> {DungeonItemID.IPBoss},
+                DungeonID.MiseryMire => new List<DungeonItemID> {DungeonItemID.MMBoss},
+                DungeonID.TurtleRock => new List<DungeonItemID> {DungeonItemID.TRBoss},
+                DungeonID.GanonsTower => new List<DungeonItemID>
+                {
+                    DungeonItemID.GTBoss1,
+                    DungeonItemID.GTBoss2,
+                    DungeonItemID.GTBoss3,
+                    DungeonItemID.GTFinalBoss
+                },
+                _ => throw new ArgumentOutOfRangeException(nameof(id))
+            };
+        }
+
+        /// <summary>
+        ///     Returns a list of dungeon small key drop item IDs for the specified dungeon.
+        /// </summary>
+        /// <param name="id">
+        ///     The dungeon ID.
+        /// </param>
+        /// <returns>
+        ///     A list of dungeon small key drop item IDs.
+        /// </returns>
+        private static IList<DungeonItemID> GetDungeonSmallKeyDrops(DungeonID id)
+        {
+            return id switch
+            {
+                DungeonID.HyruleCastle => new List<DungeonItemID>
+                {
+                    DungeonItemID.HCBoomerangGuardDrop,
+                    DungeonItemID.HCMapGuardDrop,
+                    DungeonItemID.HCKeyRatDrop
+                },
+                DungeonID.AgahnimTower => new List<DungeonItemID>
+                {
+                    DungeonItemID.ATDarkArcherDrop,
+                    DungeonItemID.ATCircleOfPotsDrop
+                },
+                DungeonID.EasternPalace => new List<DungeonItemID>
+                {
+                    DungeonItemID.EPDarkSquarePot,
+                    DungeonItemID.EPDarkEyegoreDrop
+                },
+                DungeonID.DesertPalace => new List<DungeonItemID>
+                {
+                    DungeonItemID.DPTiles1Pot,
+                    DungeonItemID.DPBeamosHallPot,
+                    DungeonItemID.DPTiles2Pot
+                },
+                DungeonID.TowerOfHera => new List<DungeonItemID>(0),
+                DungeonID.PalaceOfDarkness => new List<DungeonItemID>(0),
+                DungeonID.SwampPalace => new List<DungeonItemID>
+                {
+                    DungeonItemID.SPPotRowPot,
+                    DungeonItemID.SPTrench1Pot,
+                    DungeonItemID.SPHookshotPot,
+                    DungeonItemID.SPTrench2Pot,
+                    DungeonItemID.SPWaterwayPot
+                },
+                DungeonID.SkullWoods => new List<DungeonItemID>
+                {
+                    DungeonItemID.SWWestLobbyPot,
+                    DungeonItemID.SWSpikeCornerDrop
+                },
+                DungeonID.ThievesTown => new List<DungeonItemID>
+                {
+                    DungeonItemID.TTHallwayPot,
+                    DungeonItemID.TTSpikeSwitchPot
+                },
+                DungeonID.IcePalace => new List<DungeonItemID>
+                {
+                    DungeonItemID.IPJellyDrop,
+                    DungeonItemID.IPConveyerDrop,
+                    DungeonItemID.IPHammerBlockDrop,
+                    DungeonItemID.IPManyPotsPot
+                },
+                DungeonID.MiseryMire => new List<DungeonItemID>
+                {
+                    DungeonItemID.MMSpikesPot,
+                    DungeonItemID.MMFishbonePot,
+                    DungeonItemID.MMConveyerCrystalDrop
+                },
+                DungeonID.TurtleRock => new List<DungeonItemID>
+                {
+                    DungeonItemID.TRPokey1Drop,
+                    DungeonItemID.TRPokey2Drop
+                },
+                DungeonID.GanonsTower => new List<DungeonItemID>
+                {
+                    DungeonItemID.GTConveyorCrossPot,
+                    DungeonItemID.GTDoubleSwitchPot,
+                    DungeonItemID.GTConveyorStarPitsPot,
+                    DungeonItemID.GTMiniHelmasaurDrop
+                },
+                _ => throw new ArgumentOutOfRangeException(nameof(id))
+            };
+        }
+
+        /// <summary>
+        ///     Returns a list of dungeon small key drop item IDs for the specified dungeon.
+        /// </summary>
+        /// <param name="id">
+        ///     The dungeon ID.
+        /// </param>
+        /// <returns>
+        ///     A list of dungeon small key drop item IDs.
+        /// </returns>
+        private static IList<DungeonItemID> GetDungeonBigKeyDrops(DungeonID id)
+        {
+            return id switch
+            {
+                DungeonID.HyruleCastle => new List<DungeonItemID> {DungeonItemID.HCBigKeyDrop},
+                DungeonID.AgahnimTower => new List<DungeonItemID>(0),
+                DungeonID.EasternPalace => new List<DungeonItemID>(0),
+                DungeonID.DesertPalace => new List<DungeonItemID>(0),
+                DungeonID.TowerOfHera => new List<DungeonItemID>(0),
+                DungeonID.PalaceOfDarkness => new List<DungeonItemID>(0),
+                DungeonID.SwampPalace => new List<DungeonItemID>(0),
+                DungeonID.SkullWoods => new List<DungeonItemID>(0),
+                DungeonID.ThievesTown => new List<DungeonItemID>(0),
+                DungeonID.IcePalace => new List<DungeonItemID>(0),
+                DungeonID.MiseryMire => new List<DungeonItemID>(0),
+                DungeonID.TurtleRock => new List<DungeonItemID>(0),
+                DungeonID.GanonsTower => new List<DungeonItemID>(0),
+                _ => throw new ArgumentOutOfRangeException(nameof(id))
+            };
+        }
+
+        /// <summary>
+        ///     Returns a list of small key door IDs for the specified dungeon.
+        /// </summary>
+        /// <param name="id">
+        ///     The dungeon ID.
+        /// </param>
+        /// <returns>
+        ///     A list of small key door IDs.
+        /// </returns>
+        private static IList<KeyDoorID> GetDungeonSmallKeyDoors(DungeonID id)
+        {
+            return id switch
+            {
+                DungeonID.HyruleCastle => new List<KeyDoorID>
+                {
+                    KeyDoorID.HCEscapeFirstKeyDoor,
+                    KeyDoorID.HCEscapeSecondKeyDoor,
+                    KeyDoorID.HCDarkCrossKeyDoor,
+                    KeyDoorID.HCSewerRatRoomKeyDoor
+                },
+                DungeonID.AgahnimTower => new List<KeyDoorID>
+                {
+                    KeyDoorID.ATFirstKeyDoor,
+                    KeyDoorID.ATSecondKeyDoor,
+                    KeyDoorID.ATThirdKeyDoor,
+                    KeyDoorID.ATFourthKeyDoor
+                },
+                DungeonID.EasternPalace => new List<KeyDoorID> {KeyDoorID.EPRightKeyDoor, KeyDoorID.EPBackKeyDoor},
+                DungeonID.DesertPalace => new List<KeyDoorID>
+                {
+                    KeyDoorID.DPRightKeyDoor,
+                    KeyDoorID.DP1FKeyDoor,
+                    KeyDoorID.DP2FFirstKeyDoor,
+                    KeyDoorID.DP2FSecondKeyDoor
+                },
+                DungeonID.TowerOfHera => new List<KeyDoorID> {KeyDoorID.ToHKeyDoor},
+                DungeonID.PalaceOfDarkness => new List<KeyDoorID>
+                {
+                    KeyDoorID.PoDFrontKeyDoor,
+                    KeyDoorID.PoDBigKeyChestKeyDoor,
+                    KeyDoorID.PoDCollapsingWalkwayKeyDoor,
+                    KeyDoorID.PoDDarkMazeKeyDoor,
+                    KeyDoorID.PoDHarmlessHellwayKeyDoor,
+                    KeyDoorID.PoDBossAreaKeyDoor
+                },
+                DungeonID.SwampPalace => new List<KeyDoorID>
+                {
+                    KeyDoorID.SP1FKeyDoor,
+                    KeyDoorID.SPB1FirstRightKeyDoor,
+                    KeyDoorID.SPB1SecondRightKeyDoor,
+                    KeyDoorID.SPB1LeftKeyDoor,
+                    KeyDoorID.SPB1BackFirstKeyDoor,
+                    KeyDoorID.SPBossRoomKeyDoor
+                },
+                DungeonID.SkullWoods => new List<KeyDoorID>
+                {
+                    KeyDoorID.SWFrontLeftKeyDoor,
+                    KeyDoorID.SWFrontRightKeyDoor,
+                    KeyDoorID.SWWorthlessKeyDoor,
+                    KeyDoorID.SWBackFirstKeyDoor,
+                    KeyDoorID.SWBackSecondKeyDoor
+                },
+                DungeonID.ThievesTown => new List<KeyDoorID>
+                {
+                    KeyDoorID.TTFirstKeyDoor,
+                    KeyDoorID.TTSecondKeyDoor,
+                    KeyDoorID.TTBigChestKeyDoor
+                },
+                DungeonID.IcePalace => new List<KeyDoorID>
+                {
+                    KeyDoorID.IP1FKeyDoor,
+                    KeyDoorID.IPB2KeyDoor,
+                    KeyDoorID.IPB3KeyDoor,
+                    KeyDoorID.IPB4KeyDoor,
+                    KeyDoorID.IPB5KeyDoor,
+                    KeyDoorID.IPB6KeyDoor
+                },
+                DungeonID.MiseryMire => new List<KeyDoorID>
+                {
+                    KeyDoorID.MMB1TopRightKeyDoor,
+                    KeyDoorID.MMB1TopLeftKeyDoor,
+                    KeyDoorID.MMB1LeftSideFirstKeyDoor,
+                    KeyDoorID.MMB1LeftSideSecondKeyDoor,
+                    KeyDoorID.MMB1RightSideKeyDoor,
+                    KeyDoorID.MMB2WorthlessKeyDoor
+                },
+                DungeonID.TurtleRock => new List<KeyDoorID>
+                {
+                    KeyDoorID.TR1FFirstKeyDoor,
+                    KeyDoorID.TR1FSecondKeyDoor,
+                    KeyDoorID.TR1FThirdKeyDoor,
+                    KeyDoorID.TRB1BigKeyChestKeyDoor,
+                    KeyDoorID.TRB1ToB2KeyDoor,
+                    KeyDoorID.TRB2KeyDoor
+                },
+                DungeonID.GanonsTower => new List<KeyDoorID>
+                {
+                    KeyDoorID.GT1FLeftToRightKeyDoor,
+                    KeyDoorID.GT1FMapChestRoomKeyDoor,
+                    KeyDoorID.GT1FSpikeTrapPortalRoomKeyDoor,
+                    KeyDoorID.GT1FFiresnakeRoomKeyDoor,
+                    KeyDoorID.GT1FTileRoomKeyDoor,
+                    KeyDoorID.GT1FCollapsingWalkwayKeyDoor,
+                    KeyDoorID.GT6FFirstKeyDoor,
+                    KeyDoorID.GT6FSecondKeyDoor
+                },
+                _ => throw new ArgumentOutOfRangeException(nameof(id))
+            };
+        }
+
+        /// <summary>
+        ///     Returns a list of big key door IDs for the specified dungeon.
+        /// </summary>
+        /// <param name="id">
+        ///     The dungeon ID.
+        /// </param>
+        /// <returns>
+        ///     A list of big key door IDs.
+        /// </returns>
+        private static IList<KeyDoorID> GetDungeonBigKeyDoors(DungeonID id)
+        {
+            return id switch
+            {
+                DungeonID.HyruleCastle => new List<KeyDoorID> {KeyDoorID.HCZeldasCellDoor},
+                DungeonID.AgahnimTower => new List<KeyDoorID>(0),
+                DungeonID.EasternPalace => new List<KeyDoorID> {KeyDoorID.EPBigChest, KeyDoorID.EPBigKeyDoor},
+                DungeonID.DesertPalace => new List<KeyDoorID> {KeyDoorID.DPBigChest, KeyDoorID.DPBigKeyDoor},
+                DungeonID.TowerOfHera => new List<KeyDoorID> {KeyDoorID.ToHBigKeyDoor, KeyDoorID.ToHBigChest},
+                DungeonID.PalaceOfDarkness => new List<KeyDoorID> {KeyDoorID.PoDBigChest, KeyDoorID.PoDBigKeyDoor},
+                DungeonID.SwampPalace => new List<KeyDoorID> {KeyDoorID.SPBigChest},
+                DungeonID.SkullWoods => new List<KeyDoorID> {KeyDoorID.SWBigChest},
+                DungeonID.ThievesTown => new List<KeyDoorID> {KeyDoorID.TTBigKeyDoor, KeyDoorID.TTBigChest},
+                DungeonID.IcePalace => new List<KeyDoorID> {KeyDoorID.IPBigKeyDoor, KeyDoorID.IPBigChest},
+                DungeonID.MiseryMire => new List<KeyDoorID>
+                {
+                    KeyDoorID.MMBigChest,
+                    KeyDoorID.MMPortalBigKeyDoor,
+                    KeyDoorID.MMBridgeBigKeyDoor,
+                    KeyDoorID.MMBossRoomBigKeyDoor
+                },
+                DungeonID.TurtleRock => new List<KeyDoorID>
+                {
+                    KeyDoorID.TRBigChest,
+                    KeyDoorID.TRB1BigKeyDoor,
+                    KeyDoorID.TRBossRoomBigKeyDoor
+                },
+                DungeonID.GanonsTower => new List<KeyDoorID>
+                {
+                    KeyDoorID.GTBigChest,
+                    KeyDoorID.GT3FBigKeyDoor,
+                    KeyDoorID.GT7FBigKeyDoor
+                },
+                _ => throw new ArgumentOutOfRangeException(nameof(id))
+            };
+        }
+
+        /// <summary>
+        ///     Returns a list of dungeon entry nodes for the specified dungeon.
+        /// </summary>
+        /// <param name="id">
+        ///     The location ID of the dungeon.
+        /// </param>
+        /// <returns>
+        ///     A list of dungeon entry nodes.
+        /// </returns>
+        private IList<IOverworldNode> GetDungeonEntryNodes(DungeonID id)
+        {
+            return id switch
+            {
+                DungeonID.HyruleCastle => new List<IOverworldNode>
+                {
+                    (IOverworldNode) _overworldNodes[OverworldNodeID.HCSanctuaryEntry],
+                    (IOverworldNode) _overworldNodes[OverworldNodeID.HCFrontEntry],
+                    (IOverworldNode) _overworldNodes[OverworldNodeID.HCBackEntry]
+                },
+                DungeonID.AgahnimTower => new List<IOverworldNode>
+                {
+                    (IOverworldNode) _overworldNodes[OverworldNodeID.ATEntry]
+                },
+                DungeonID.EasternPalace => new List<IOverworldNode>
+                {
+                    (IOverworldNode) _overworldNodes[OverworldNodeID.EPEntry]
+                },
+                DungeonID.DesertPalace => new List<IOverworldNode>
+                {
+                    (IOverworldNode) _overworldNodes[OverworldNodeID.DPFrontEntry],
+                    (IOverworldNode) _overworldNodes[OverworldNodeID.DPLeftEntry],
+                    (IOverworldNode) _overworldNodes[OverworldNodeID.DPBackEntry]
+                },
+                DungeonID.TowerOfHera => new List<IOverworldNode>
+                {
+                    (IOverworldNode) _overworldNodes[OverworldNodeID.ToHEntry]
+                },
+                DungeonID.PalaceOfDarkness => new List<IOverworldNode>
+                {
+                    (IOverworldNode) _overworldNodes[OverworldNodeID.PoDEntry]
+                },
+                DungeonID.SwampPalace => new List<IOverworldNode>
+                {
+                    (IOverworldNode) _overworldNodes[OverworldNodeID.SPEntry]
+                },
+                DungeonID.SkullWoods => new List<IOverworldNode>
+                {
+                    (IOverworldNode) _overworldNodes[OverworldNodeID.SWFrontEntry],
+                    (IOverworldNode) _overworldNodes[OverworldNodeID.SWBackEntry]
+                },
+                DungeonID.ThievesTown => new List<IOverworldNode>
+                {
+                    (IOverworldNode) _overworldNodes[OverworldNodeID.TTEntry]
+                },
+                DungeonID.IcePalace => new List<IOverworldNode>
+                {
+                    (IOverworldNode) _overworldNodes[OverworldNodeID.IPEntry]
+                },
+                DungeonID.MiseryMire => new List<IOverworldNode>
+                {
+                    (IOverworldNode) _overworldNodes[OverworldNodeID.MMEntry]
+                },
+                DungeonID.TurtleRock => new List<IOverworldNode>
+                {
+                    (IOverworldNode) _overworldNodes[OverworldNodeID.TRFrontEntry],
+                    (IOverworldNode) _overworldNodes[OverworldNodeID.TRMiddleEntry],
+                    (IOverworldNode) _overworldNodes[OverworldNodeID.TRBackEntry]
+                },
+                DungeonID.GanonsTower => new List<IOverworldNode>
+                {
+                    (IOverworldNode) _overworldNodes[OverworldNodeID.GTEntry]
                 },
                 _ => throw new ArgumentOutOfRangeException(nameof(id))
             };

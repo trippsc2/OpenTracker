@@ -35,7 +35,7 @@ namespace OpenTracker.Utils.Dialog
                 AllowMultiple = false,
                 Filters = new List<FileDialogFilter>
                 {
-                    new FileDialogFilter() { Name = "JSON", Extensions = { "json" } }
+                    new() { Name = "JSON", Extensions = { "json" } }
                 }
             };
             var result = await dialog.ShowAsync(_mainWindowProvider.GetMainWindow());
@@ -60,7 +60,7 @@ namespace OpenTracker.Utils.Dialog
             {
                 Filters = new List<FileDialogFilter>
                 {
-                    new FileDialogFilter() { Name = "JSON", Extensions = { "json" } }
+                    new() { Name = "JSON", Extensions = { "json" } }
                 }
             };
 

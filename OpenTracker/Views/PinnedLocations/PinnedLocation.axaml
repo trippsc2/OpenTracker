@@ -18,28 +18,27 @@
                       ScaleY="{Binding Scale}" />
     </LayoutTransformControl.LayoutTransform>
 
-    <Border Classes="ControlBorder Location" Margin="1">
-      <Grid RowDefinitions="Auto Auto Auto Auto" Margin="4">
+    <Border Classes="ControlBorder PinnedLocation" Margin="1">
+      <StackPanel Margin="4">
 
-        <Grid Grid.Row="0" ColumnDefinitions="Auto * Auto" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+        <DockPanel HorizontalAlignment="Stretch" VerticalAlignment="Center">
           
-          <TextBlock Classes="LocationName" Grid.Column="0"
+          <TextBlock Classes="LocationName"
                      Text="{Binding Name}" />
           
-          <Image Name="image" Classes="Close" Source="avares://OpenTracker/Assets/Images/close.png" Grid.Column="2">
+          <Image DockPanel.Dock="Right" Classes="Close" Source="avares://OpenTracker/Assets/Images/close.png">
             <i:Interaction.Behaviors>
-              <ia:EventTriggerBehavior EventName="PointerReleased"
-                                       SourceObject="{Binding #image}">
+              <ia:EventTriggerBehavior EventName="PointerReleased">
                 <ia:InvokeCommandAction Command="{Binding HandleClick}" />
               </ia:EventTriggerBehavior>
             </i:Interaction.Behaviors>
           </Image>
           
-        </Grid>
+        </DockPanel>
 
-        <Border Classes="Separator" Grid.Row="1" Margin="0 2" />
+        <Border Classes="Separator" Margin="0 2" />
 
-        <ItemsControl Grid.Row="2" Items="{Binding Sections}">
+        <ItemsControl Items="{Binding Sections}">
           <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
               <StackPanel Margin="0 2" Orientation="Horizontal" />
@@ -47,9 +46,9 @@
           </ItemsControl.ItemsPanel>
         </ItemsControl>
 
-        <ContentControl Grid.Row="3" Content="{Binding Notes}" />
+        <ContentControl Content="{Binding Notes}" />
 
-      </Grid>
+      </StackPanel>
     </Border>
     
   </LayoutTransformControl>

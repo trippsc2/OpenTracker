@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <ApplicationIcon>triforce.ico</ApplicationIcon>
     <Win32Resource />
     <Version>1.8.2</Version>
@@ -21,6 +21,70 @@
     <Compile Remove="bin\**" />
     <EmbeddedResource Remove="bin\**" />
     <None Remove="bin\**" />
+    <Compile Update="Views\Sections\UIPanelSection.axaml.cs">
+      <DependentUpon>UIPanel.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Areas\MapArea.axaml.cs">
+      <DependentUpon>MapArea.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Dialogs\AboutDialog.axaml.cs">
+      <DependentUpon>AboutDialog.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Dialogs\ErrorBoxDialog.axaml.cs">
+      <DependentUpon>ErrorBoxDialog.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Dialogs\MessageBoxDialog.axaml.cs">
+      <DependentUpon>MessageBoxDialog.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Dialogs\AutoTrackerDialog.axaml.cs">
+      <DependentUpon>AutoTrackerDialog.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Items\LargeItem.axaml.cs">
+      <DependentUpon>LargeItem.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Dungeons\DungeonItemSection.axaml.cs">
+      <DependentUpon>DungeonItemSectionItem.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Dungeons\HorizontalDungeonPanel.axaml.cs">
+      <DependentUpon>HorizontalSmallItemPanel.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Dungeons\DungeonItem.axaml.cs">
+      <DependentUpon>SmallItem.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Dungeons\VerticalDungeonPanel.axaml.cs">
+      <DependentUpon>VerticalSmallItemPanel.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Dialogs\SequenceBreakDialog.axaml.cs">
+      <DependentUpon>SequenceBreakDialog.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Maps\MapConnection.axaml.cs">
+      <DependentUpon>MapConnection.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Tooltips\MapLocationToolTip.axaml.cs">
+      <DependentUpon>MapLocationToolTip.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Tooltips\MapLocationToolTipMarking.axaml.cs">
+      <DependentUpon>MapLocationToolTipMarking.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Menus\TopMenu.axaml.cs">
+      <DependentUpon>TopMenu.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Autofac" Version="6.1.0" />
@@ -59,7 +123,6 @@
     <PackageReference Include="Tmds.DBus" Version="0.9.1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Avalonia.ThemeManager\Avalonia.ThemeManager.csproj" />
     <ProjectReference Include="..\OpenTracker.Models\OpenTracker.Models.csproj" />
     <ProjectReference Include="..\OpenTracker.Utils\OpenTracker.Utils.csproj" />
   </ItemGroup>
@@ -75,5 +138,16 @@
     <None Update="triforce.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Dropdowns\Dropdown.axaml" />
+    <UpToDateCheckInput Remove="Views\Maps\Locations\DungeonMapLocation.axaml" />
+    <UpToDateCheckInput Remove="Views\Maps\Locations\EntranceMapLocation.axaml" />
+    <UpToDateCheckInput Remove="Views\Maps\Locations\MapLocation.axaml" />
+    <UpToDateCheckInput Remove="Views\Maps\Locations\MarkableDungeonMapLocation.axaml" />
+    <UpToDateCheckInput Remove="Views\Maps\Locations\MarkableMapLocation.axaml" />
+    <UpToDateCheckInput Remove="Views\Maps\Locations\MarkingMapLocation.axaml" />
+    <UpToDateCheckInput Remove="Views\Maps\Locations\ShopMapLocation.axaml" />
+    <UpToDateCheckInput Remove="Views\Maps\Locations\TakeAnyMapLocation.axaml" />
   </ItemGroup>
 </Project>

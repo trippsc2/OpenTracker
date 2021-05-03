@@ -1,233 +1,119 @@
-using System;
-using System.Collections.Generic;
+using System.ComponentModel;
 using Autofac;
+using NSubstitute;
 using OpenTracker.Models.Dropdowns;
-using OpenTracker.Models.Modes;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
+using OpenTracker.Models.UndoRedo.Dropdowns;
 using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Dropdowns
 {
     public class DropdownTests
     {
+        private readonly IRequirement _requirement = Substitute.For<IRequirement>();
+
+        private readonly ICheckDropdown.Factory _checkDropdownFactory = _ => Substitute.For<ICheckDropdown>();
+        private readonly IUncheckDropdown.Factory _uncheckDropdownFactory = _ => Substitute.For<IUncheckDropdown>();
+        
+        private readonly Dropdown _sut;
+
+        public DropdownTests()
+        {
+            _sut = new Dropdown(_checkDropdownFactory, _uncheckDropdownFactory, _requirement);
+        }
+        
+        [Fact]
+        public void Checked_ShouldRaisePropertyChanged()
+        {
+            Assert.PropertyChanged(_sut, nameof(IDropdown.Checked), () => _sut.Checked = true);
+        }
+
         [Theory]
-        [MemberData(nameof(RequirementData))]
-        public void Factory_Tests(
-            ModeSaveData modeData, DropdownID id, bool expected)
+        [InlineData(false, false)]
+        [InlineData(true, true)]
+        public void RequirementMet_ShouldReturnTrue_WhenRequirementIsMet(bool expected, bool met)
         {
-            var container = ContainerConfig.Configure();
-
-            using var scope = container.BeginLifetimeScope();
-            var mode = scope.Resolve<IMode>();
-            var factory = scope.Resolve<IDropdownFactory>();
-            var dropdown = factory.GetDropdown(id);
+            _requirement.Met.Returns(met);
             
-            mode.Load(modeData);
-            
-            Assert.Equal(expected, dropdown.RequirementMet);
-        }
-
-        [Theory]
-        [MemberData(nameof(RequirementData))]
-        public void Dictionary_Tests(
-            ModeSaveData modeData, DropdownID id, bool expected)
-        {
-            var container = ContainerConfig.Configure();
-
-            using var scope = container.BeginLifetimeScope();
-            var mode = scope.Resolve<IMode>();
-            var dropdowns = scope.Resolve<IDropdownDictionary>();
-            var dropdown = dropdowns[id];
-            
-            mode.Load(modeData);
-            
-            Assert.Equal(expected, dropdown.RequirementMet);
-        }
-
-        public static IEnumerable<object[]> RequirementData()
-        {
-            var result = new List<object[]>();
-            
-            foreach (DropdownID dropdown in Enum.GetValues(typeof(DropdownID)))
-            {
-                switch (dropdown)
-                {
-                    case DropdownID.LumberjackCave:
-                    case DropdownID.ForestHideout:
-                    case DropdownID.CastleSecret:
-                    case DropdownID.TheWell:
-                    case DropdownID.MagicBat:
-                    case DropdownID.SanctuaryGrave:
-                    case DropdownID.HoulihanHole:
-                    case DropdownID.GanonHole:
-                    {
-                        result.Add(new object[]
-                        {
-                            new ModeSaveData()
-                            {
-                                EntranceShuffle = EntranceShuffle.None
-                            },
-                            dropdown,
-                            false
-                        });
-                        result.Add(new object[]
-                        {
-                            new ModeSaveData()
-                            {
-                                EntranceShuffle = EntranceShuffle.Dungeon
-                            },
-                            dropdown,
-                            false
-                        });
-                        result.Add(new object[]
-                        {
-                            new ModeSaveData()
-                            {
-                                EntranceShuffle = EntranceShuffle.All
-                            },
-                            dropdown,
-                            true
-                        });
-                        result.Add(new object[]
-                        {
-                            new ModeSaveData()
-                            {
-                                EntranceShuffle = EntranceShuffle.Insanity
-                            },
-                            dropdown,
-                            true
-                        });
-                    }
-                        break;
-                    case DropdownID.SWNEHole:
-                    case DropdownID.SWNWHole:
-                    case DropdownID.SWSEHole:
-                    case DropdownID.SWSWHole:
-                    {
-                        result.Add(new object[]
-                        {
-                            new ModeSaveData()
-                            {
-                                EntranceShuffle = EntranceShuffle.None
-                            },
-                            dropdown,
-                            false
-                        });
-                        result.Add(new object[]
-                        {
-                            new ModeSaveData()
-                            {
-                                EntranceShuffle = EntranceShuffle.Dungeon
-                            },
-                            dropdown,
-                            false
-                        });
-                        result.Add(new object[]
-                        {
-                            new ModeSaveData()
-                            {
-                                EntranceShuffle = EntranceShuffle.All
-                            },
-                            dropdown,
-                            false
-                        });
-                        result.Add(new object[]
-                        {
-                            new ModeSaveData()
-                            {
-                                EntranceShuffle = EntranceShuffle.Insanity
-                            },
-                            dropdown,
-                            true
-                        });
-                    }
-                        break;
-                }
-            }
-
-            return result;
+            Assert.Equal(expected, _sut.RequirementMet);
         }
 
         [Fact]
-        public void PropertyChanged_Tests()
+        public void RequirementMet_ShouldRaisePropertyChanged()
         {
-            var container = ContainerConfig.Configure();
-
-            using var scope = container.BeginLifetimeScope();
-            var requirements = scope.Resolve<IRequirementDictionary>();
-            var factory = scope.Resolve<IDropdown.Factory>();
-            var dropdown = factory(requirements[RequirementType.NoRequirement]);
+            Assert.PropertyChanged(_sut, nameof(IDropdown.RequirementMet),
+                () => _requirement.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                    _requirement, new PropertyChangedEventArgs(nameof(IRequirement.Met))));
+        }
+        
+        [Fact]
+        public void CreateCheckDropdownAction_ShouldReturnNewAction()
+        {
+            var checkDropdown = _sut.CreateCheckDropdownAction();
             
-            Assert.PropertyChanged(
-                dropdown, nameof(IDropdown.Checked),
-                () => { dropdown.Checked = true; });
+            Assert.NotNull(checkDropdown);
         }
 
         [Fact]
-        public void Reset_Tests()
+        public void CreateUncheckDropdownAction_ShouldReturnNewAction()
         {
-            var container = ContainerConfig.Configure();
-
-            using var scope = container.BeginLifetimeScope();
-            var requirements = scope.Resolve<IRequirementDictionary>();
-            var factory = scope.Resolve<IDropdown.Factory>();
-            var dropdown = factory(requirements[RequirementType.NoRequirement]);
+            var uncheckDropdown = _sut.CreateUncheckDropdownAction();
             
-            Assert.False(dropdown.Checked);
-
-            dropdown.Checked = true;
+            Assert.NotNull(uncheckDropdown);
+        }
+        
+        [Fact]
+        public void Reset_ShouldChangeCheckedToFalse()
+        {
+            _sut.Checked = true;
             
-            Assert.True(dropdown.Checked);
+            _sut.Reset();
             
-            dropdown.Reset();
-            
-            Assert.False(dropdown.Checked);
+            Assert.False(_sut.Checked);
         }
 
         [Fact]
-        public void Load_Tests()
+        public void Load_ShouldDoNothing_WhenSaveDataIsNull()
         {
-            var container = ContainerConfig.Configure();
+            _sut.Checked = true;
 
-            using var scope = container.BeginLifetimeScope();
-            var requirements = scope.Resolve<IRequirementDictionary>();
-            var factory = scope.Resolve<IDropdown.Factory>();
-            var dropdown = factory(requirements[RequirementType.NoRequirement]);
-            
-            Assert.False(dropdown.Checked);
-            
-            dropdown.Load(null);
-            
-            Assert.False(dropdown.Checked);
+            _sut.Load(null);
 
+            Assert.True(_sut.Checked);
+        }
+
+        [Fact]
+        public void Load_ShouldSetCheckedToSaveDataValue_WhenSaveDataIsNotNull()
+        {
             var saveData = new DropdownSaveData()
             {
                 Checked = true
             };
-            dropdown.Load(saveData);
             
-            Assert.True(dropdown.Checked);
+            _sut.Load(saveData);
+            
+            Assert.True(_sut.Checked);
         }
 
         [Fact]
-        public void Save_Tests()
+        public void Save_ShouldSetSaveDataCheckedToTrue_WhenCheckedIsTrue()
         {
-            var container = ContainerConfig.Configure();
+            _sut.Checked = true;
+            
+            var saveData = _sut.Save();
+            
+            Assert.True(saveData.Checked);
+        }
 
-            using var scope = container.BeginLifetimeScope();
-            var requirements = scope.Resolve<IRequirementDictionary>();
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
             var factory = scope.Resolve<IDropdown.Factory>();
-            var dropdown = factory(requirements[RequirementType.NoRequirement]);
+            var sut = factory(_requirement);
             
-            var saveData = dropdown.Save();
-            
-            Assert.Equal(dropdown.Checked, saveData.Checked);
-            
-            dropdown.Checked = true;
-            saveData = dropdown.Save();
-            
-            Assert.Equal(dropdown.Checked, saveData.Checked);
+            Assert.NotNull((sut as Dropdown));
         }
     }
 }

@@ -1,138 +1,112 @@
-﻿using OpenTracker.Models.Items;
-using OpenTracker.Models.SaveLoad;
-using System;
-using System.ComponentModel;
+﻿using System;
+using System.Globalization;
 using System.Linq;
+using OpenTracker.Models.Items;
+using OpenTracker.Models.Prizes;
+using OpenTracker.Models.SaveLoad;
+using OpenTracker.Models.UndoRedo;
+using OpenTracker.Models.UndoRedo.Prize;
+using ReactiveUI;
 
 namespace OpenTracker.Models.PrizePlacements
 {
     /// <summary>
-    /// This class contains prize placement data.
+    ///     This class contains prize placement data.
     /// </summary>
-    public class PrizePlacement : IPrizePlacement
+    public class PrizePlacement : ReactiveObject, IPrizePlacement
     {
         private readonly IPrizeDictionary _prizes;
-        private readonly IItem? _startingPrize;
 
-        public event PropertyChangingEventHandler? PropertyChanging;
-        public event PropertyChangedEventHandler? PropertyChanged;
+        private readonly IChangePrize.Factory _changePrizeFactory;
+        
+        private readonly IItem? _startingPrize;
 
         private IItem? _prize;
         public IItem? Prize
         {
             get => _prize;
-            set
-            {
-                if (_prize != value)
-                {
-                    OnPropertyChanging(nameof(Prize));
-                    _prize = value;
-                    OnPropertyChanged(nameof(Prize));
-                }
-            }
+            private set => this.RaiseAndSetIfChanged(ref _prize, value);
         }
 
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="prizes">
-        /// The prize dictionary.
+        ///     The prize dictionary.
+        /// </param>
+        /// <param name="changePrizeFactory">
+        ///     An Autofac factory for creating undoable actions to change the prize.
         /// </param>
         /// <param name="startingPrize">
-        /// The starting prize item.
+        ///     The starting prize item.
         /// </param>
-        public PrizePlacement(IPrizeDictionary prizes, IItem? startingPrize = null)
+        public PrizePlacement(
+            IPrizeDictionary prizes, IChangePrize.Factory changePrizeFactory, IItem? startingPrize = null)
         {
             _prizes = prizes;
+            _changePrizeFactory = changePrizeFactory;
             _startingPrize = startingPrize;
 
             Prize = startingPrize;
         }
 
-        /// <summary>
-        /// Raises the PropertyChanging event for the specified property.
-        /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changing property.
-        /// </param>
-        private void OnPropertyChanging(string propertyName)
-        {
-            PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(propertyName));
-        }
-
-        /// <summary>
-        /// Raises the PropertyChanged event for the specified property.
-        /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changed property.
-        /// </param>
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        /// <summary>
-        /// Returns whether the prize can be cycled.
-        /// </summary>
-        /// <returns>
-        /// A boolean representing whether the prize can be cycled.
-        /// </returns>
         public bool CanCycle()
         {
             return _startingPrize == null;
         }
 
-        /// <summary>
-        /// Cycles the prize.
-        /// </summary>
-        public void Cycle()
+        public void Cycle(bool reverse = false)
         {
-            if (Prize == null)
+            if (Prize is null)
             {
+                if (reverse)
+                {
+                    Prize = _prizes[PrizeType.GreenPendant];
+                    return;
+                }
+                
                 Prize = _prizes[PrizeType.Crystal];
+                return;
             }
-            else
-            {
-                PrizeType type = _prizes.FirstOrDefault(
-                    x => x.Value == Prize).Key;
 
-                if (type == PrizeType.GreenPendant)
-                {
-                    Prize = null;
-                }
-                else
-                {
-                    Prize = _prizes[type + 1];
-                }
+            var type = _prizes.FirstOrDefault(x => x.Value == Prize).Key;
+
+            if (type is < PrizeType.Crystal or > PrizeType.GreenPendant)
+            {
+                throw new Exception(string.Format(
+                    CultureInfo.InvariantCulture,
+                    "Unexpected prize {0} to be cycled.", type.ToString()));
             }
+
+            if (reverse)
+            {
+                Prize = type == PrizeType.Crystal ? null : _prizes[type - 1];
+                return;
+            }
+            
+            Prize = type == PrizeType.GreenPendant ? null : _prizes[type + 1];
         }
 
-        /// <summary>
-        /// Resets the prize placement to its starting values.
-        /// </summary>
+        public IUndoable CreateChangePrizeAction()
+        {
+            return _changePrizeFactory(this);
+        }
+
         public void Reset()
         {
             Prize = _startingPrize;
         }
 
         /// <summary>
-        /// Returns a new prize placement save data instance for this prize placement.
+        ///     Returns a new prize placement save data instance for this prize placement.
         /// </summary>
         /// <returns>
-        /// A new prize placement save data instance.
+        ///     A new prize placement save data instance.
         /// </returns>
         public PrizePlacementSaveData Save()
         {
-            PrizeType? prize;
-
-            if (Prize == null)
-            {
-                prize = null;
-            }
-            else
-            {
-                prize = _prizes.FirstOrDefault(x => x.Value == Prize).Key;
-            }
+            var prize = Prize is null ? (PrizeType?) null
+                : _prizes.FirstOrDefault(x => x.Value == Prize).Key;
 
             return new PrizePlacementSaveData()
             {
@@ -141,23 +115,16 @@ namespace OpenTracker.Models.PrizePlacements
         }
 
         /// <summary>
-        /// Loads prize placement save data.
+        ///     Loads prize placement save data.
         /// </summary>
-        public void Load(PrizePlacementSaveData saveData)
+        public void Load(PrizePlacementSaveData? saveData)
         {
-            if (saveData == null)
+            if (saveData is null)
             {
-                throw new ArgumentNullException(nameof(saveData));
+                return;
             }
 
-            if (saveData.Prize == null)
-            {
-                Prize = null;
-            }
-            else
-            {
-                Prize = _prizes[saveData.Prize.Value];
-            }
+            Prize = saveData.Prize == null ? null : _prizes[saveData.Prize.Value];
         }
     }
 }

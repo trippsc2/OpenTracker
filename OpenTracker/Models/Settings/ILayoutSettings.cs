@@ -1,13 +1,13 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Layout;
-using System.ComponentModel;
+using ReactiveUI;
 
 namespace OpenTracker.Models.Settings
 {
     /// <summary>
     /// This interface contains GUI layout settings data.
     /// </summary>
-    public interface ILayoutSettings : INotifyPropertyChanged
+    public interface ILayoutSettings : IReactiveObject
     {
         bool AlwaysDisplayDungeonItems { get; set; }
         Orientation CurrentDynamicOrientation { get; set; }

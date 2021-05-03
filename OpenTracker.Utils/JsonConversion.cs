@@ -4,23 +4,11 @@ using System.IO;
 namespace OpenTracker.Utils
 {
     /// <summary>
-    /// This is the class for converting objects to JSON files.
+    ///     This class contains the logic for converting objects to and from JSON.
     /// </summary>
-    public static class JsonConversion
+    public class JsonConverter : IJsonConverter
     {
-        /// <summary>
-        /// Saves the provided save data as a JSON file at the specified file path.
-        /// </summary>
-        /// <typeparam name="T">
-        /// The type of the save data.
-        /// </typeparam>
-        /// <param name="saveData">
-        /// The save data to be saved.
-        /// </param>
-        /// <param name="path">
-        /// The file path to which the data is to be saved.
-        /// </param>
-        public static void Save<T>(T saveData, string path)
+        public void Save<T>(T saveData, string path)
         {
             if (File.Exists(path))
             {
@@ -31,19 +19,7 @@ namespace OpenTracker.Utils
             File.WriteAllText(path, json);
         }
 
-        /// <summary>
-        /// Returns save data from a JSON file at the specified file location.
-        /// </summary>
-        /// <typeparam name="T">
-        /// The type of the save data.
-        /// </typeparam>
-        /// <param name="path">
-        /// The file path to which the data is to be saved.
-        /// </param>
-        /// <returns>
-        /// The save data.
-        /// </returns>
-        public static T Load<T>(string path)
+        public T Load<T>(string path)
         {
             if (!File.Exists(path))
             {

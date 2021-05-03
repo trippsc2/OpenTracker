@@ -1,28 +1,26 @@
-﻿using WebSocketSharp;
-
-namespace OpenTracker.Models.AutoTracking.Logging
+﻿namespace OpenTracker.Models.AutoTracking.Logging
 {
     /// <summary>
-    /// This is the class for log messages for autotracking.
+    /// This class contains auto-tracking log message data.
     /// </summary>
     public class LogMessage : ILogMessage
     {
-        public LogLevel LogLevel { get; }
-        public string Message { get; }
+        public LogLevel Level { get; }
+        public string Content { get; }
 
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="logLevel">
-        /// The logging level of the log message.
+        /// <param name="level">
+        ///     The <see cref="LogLevel"/> of the log message.
         /// </param>
         /// <param name="message">
-        /// A string representing the message to be logged.
+        ///     A <see cref="string"/> representing the content of the log message.
         /// </param>
-        public LogMessage(LogLevel logLevel, string message)
+        public LogMessage(LogLevel level, string message)
         {
-            LogLevel = logLevel;
-            Message = message;
+            Level = level;
+            Content = message;
         }
     }
 }

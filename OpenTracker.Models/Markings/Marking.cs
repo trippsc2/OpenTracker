@@ -1,50 +1,37 @@
-﻿using System.ComponentModel;
+﻿using OpenTracker.Models.UndoRedo;
+using OpenTracker.Models.UndoRedo.Markings;
+using ReactiveUI;
 
 namespace OpenTracker.Models.Markings
 {
     /// <summary>
-    /// This class contains marking data.
+    ///     This class contains marking data.
     /// </summary>
-    public class Marking : IMarking
+    public class Marking : ReactiveObject, IMarking
     {
-        public event PropertyChangingEventHandler? PropertyChanging;
-        public event PropertyChangedEventHandler? PropertyChanged;
-
+        private readonly IChangeMarking.Factory _changeMarkingFactory;
+        
         private MarkType _mark;
         public MarkType Mark
         {
             get => _mark;
-            set
-            {
-                if (_mark != value)
-                {
-                    OnPropertyChanging(nameof(Mark));
-                    _mark = value;
-                    OnPropertyChanged(nameof(Mark));
-                }
-            }
+            set => this.RaiseAndSetIfChanged(ref _mark, value);
         }
 
         /// <summary>
-        /// Raises the PropertyChanging event for the specified property.
+        ///     Constructor
         /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changing property.
+        /// <param name="changeMarkingFactory">
+        ///     An Autofac factory for creating undoable actions to change the marking.
         /// </param>
-        private void OnPropertyChanging(string propertyName)
+        public Marking(IChangeMarking.Factory changeMarkingFactory)
         {
-            PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(propertyName));
+            _changeMarkingFactory = changeMarkingFactory;
         }
 
-        /// <summary>
-        /// Raises the PropertyChanged event for the specified property.
-        /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changed property.
-        /// </param>
-        private void OnPropertyChanged(string propertyName)
+        public IUndoable CreateChangeMarkingAction(MarkType newMarking)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            return _changeMarkingFactory(this, newMarking);
         }
     }
 }

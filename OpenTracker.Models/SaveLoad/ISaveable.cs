@@ -9,6 +9,6 @@
     public interface ISaveable<T>
     {
         T Save();
-        void Load(T saveData);
+        void Load(T? saveData);
     }
 }

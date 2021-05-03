@@ -1,18 +1,18 @@
-﻿using OpenTracker.Models.AccessibilityLevels;
-using System;
+﻿using System;
 using System.ComponentModel;
+using OpenTracker.Models.Accessibility;
+using ReactiveUI;
 
 namespace OpenTracker.Models.Requirements
 {
     /// <summary>
     /// This base class contains boolean requirement data.
     /// </summary>
-    public abstract class BooleanRequirement : IRequirement
+    public abstract class BooleanRequirement : ReactiveObject, IRequirement
     {
         private readonly AccessibilityLevel _metAccessibility;
 
         public event EventHandler? ChangePropagated;
-        public event PropertyChangedEventHandler? PropertyChanged;
 
         private bool _met;
         public bool Met
@@ -25,29 +25,12 @@ namespace OpenTracker.Models.Requirements
                     return;
                 }
                 
-                _met = value;
-                OnPropertyChanged();
+                this.RaiseAndSetIfChanged(ref _met, value);
+                ChangePropagated?.Invoke(this, EventArgs.Empty);
             }
         }
 
-        private bool _testing;
-        public bool Testing
-        {
-            get => _testing;
-            set
-            {
-                if (_testing == value)
-                {
-                    return;
-                }
-                
-                _testing = value;
-                UpdateValue();
-            }
-        }
-
-        public AccessibilityLevel Accessibility =>
-            Met ? _metAccessibility : AccessibilityLevel.None;
+        public AccessibilityLevel Accessibility => Met ? _metAccessibility : AccessibilityLevel.None;
 
         /// <summary>
         /// Constructor
@@ -55,20 +38,22 @@ namespace OpenTracker.Models.Requirements
         /// <param name="metAccessibility">
         /// The accessibility level when the condition is met.
         /// </param>
-        public BooleanRequirement(
-            AccessibilityLevel metAccessibility = AccessibilityLevel.Normal)
+        protected BooleanRequirement(AccessibilityLevel metAccessibility = AccessibilityLevel.Normal)
         {
             _metAccessibility = metAccessibility;
+
+            PropertyChanged += OnPropertyChanged;
         }
 
         /// <summary>
         /// Raises the PropertyChanged and ChangePropagated events for all properties.
         /// </summary>
-        private void OnPropertyChanged()
+        private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Met)));
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Accessibility)));
-            ChangePropagated?.Invoke(this, EventArgs.Empty);
+            if (e.PropertyName == nameof(Met))
+            {
+                this.RaisePropertyChanged(nameof(Accessibility));
+            }
         }
 
         /// <summary>
@@ -84,7 +69,7 @@ namespace OpenTracker.Models.Requirements
         /// </summary>
         protected void UpdateValue()
         {
-            Met = Testing || ConditionMet();
+            Met = ConditionMet();
         }
     }
 }

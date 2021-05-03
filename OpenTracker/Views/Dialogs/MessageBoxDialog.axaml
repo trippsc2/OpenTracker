@@ -1,0 +1,36 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:OpenTracker.ViewModels.Dialogs;assembly=OpenTracker"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" x:Class="OpenTracker.Views.Dialogs.MessageBoxDialog"
+        CanResize="False" MaxWidth="400" SizeToContent="Height" Padding="5" WindowStartupLocation="CenterOwner"
+        Icon="avares://OpenTracker/Assets/Images/triforce.png"
+        Title="{Binding Title}">
+	
+	<Design.DataContext>
+		<vm:MessageBoxDialogVM />
+	</Design.DataContext>
+
+	<Window.Styles>
+		<Style Selector="Button">
+			<Setter Property="Margin" Value="15 0 0 0" />
+			<Setter Property="MinHeight" Value="24" />
+			<Setter Property="MinWidth" Value="75" />
+		</Style>
+	</Window.Styles>
+
+	<StackPanel Orientation="Vertical">
+
+		<TextBlock Classes="MessageBox" Text="{Binding Path=Text}" />
+
+		<StackPanel Orientation="Horizontal" Margin="15" HorizontalAlignment="Right">
+			<Button Classes="MessageBox" Command="{Binding Path=YesCommand}"
+			        Content="Yes" />
+			<Button Classes="MessageBox" Command="{Binding Path=NoCommand}"
+			        Content="No" />
+		</StackPanel>
+
+	</StackPanel>
+
+</Window>

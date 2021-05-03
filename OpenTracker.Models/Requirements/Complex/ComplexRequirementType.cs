@@ -1,0 +1,56 @@
+namespace OpenTracker.Models.Requirements.Complex
+{
+    /// <summary>
+    ///     This enum type is for types of requirements that require a short-hand due to complexity.
+    /// </summary>
+    public enum ComplexRequirementType
+    {
+        AllMedallions,
+        ExtendMagic1,
+        ExtendMagic2,
+        FireRodDarkRoom,
+        UseMedallion,
+        MeltThings,
+        NotBunnyLW,
+        NotBunnyDW,
+        ATBarrier,
+        BombDuplicationAncillaOverload,
+        BombDuplicationMirror,
+        BonkOverLedge,
+        BumperCaveGap,
+        CameraUnlock,
+        Curtains,
+        DarkRoomDeathMountainEntry,
+        DarkRoomDeathMountainExit,
+        DarkRoomHC,
+        DarkRoomAT,
+        DarkRoomEPRight,
+        DarkRoomEPBack,
+        DarkRoomPoDDarkBasement,
+        DarkRoomPoDDarkMaze,
+        DarkRoomPoDBossArea,
+        DarkRoomMM,
+        DarkRoomTR,
+        FakeFlippersFairyRevival,
+        FakeFlippersSplashDeletion,
+        FireSource,
+        Hover,
+        LaserBridge,
+        MagicBat,
+        Pedestal,
+        RedEyegoreGoriya,
+        SpikeCave,
+        SuperBunnyMirror,
+        Tablet,
+        Torch,
+        ToHHerapot,
+        IPIceBreaker,
+        MMMedallion,
+        TRMedallion,
+        TRKeyDoorsToMiddleExit,
+        WaterWalk,
+        WaterWalkFromWaterfallCave,
+        LWMirror,
+        DWMirror
+    }
+}

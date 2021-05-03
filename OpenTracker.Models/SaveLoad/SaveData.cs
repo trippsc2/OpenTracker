@@ -1,10 +1,10 @@
-﻿using OpenTracker.Models.BossPlacements;
+﻿using System;
+using System.Collections.Generic;
+using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.Dropdowns;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.PrizePlacements;
-using System;
-using System.Collections.Generic;
 
 namespace OpenTracker.Models.SaveLoad
 {
@@ -13,14 +13,15 @@ namespace OpenTracker.Models.SaveLoad
     /// </summary>
     public class SaveData
     {
-        public Version? Version { get; set; }
-        public ModeSaveData? Mode { get; set; }
-        public Dictionary<ItemType, ItemSaveData>? Items { get; set; }
-        public Dictionary<LocationID, LocationSaveData>? Locations { get; set; }
-        public Dictionary<BossPlacementID, BossPlacementSaveData>? BossPlacements { get; set; }
-        public Dictionary<PrizePlacementID, PrizePlacementSaveData>? PrizePlacements { get; set; }
-        public List<ConnectionSaveData>? Connections { get; set; }
-        public Dictionary<DropdownID, DropdownSaveData>? Dropdowns { get; set; }
-        public List<LocationID>? PinnedLocations { get; set; }
+        // ReSharper disable once UnusedAutoPropertyAccessor.Global
+        public Version? Version { get; init; }
+        public ModeSaveData? Mode { get; init; }
+        public IDictionary<ItemType, ItemSaveData>? Items { get; init; }
+        public IDictionary<LocationID, LocationSaveData>? Locations { get; init; }
+        public IDictionary<BossPlacementID, BossPlacementSaveData>? BossPlacements { get; init; }
+        public IDictionary<PrizePlacementID, PrizePlacementSaveData>? PrizePlacements { get; init; }
+        public IList<ConnectionSaveData>? Connections { get; init; }
+        public IDictionary<DropdownID, DropdownSaveData>? Dropdowns { get; init; }
+        public IList<LocationID>? PinnedLocations { get; init; }
     }
 }

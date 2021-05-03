@@ -1,11 +1,11 @@
-﻿using System.ComponentModel;
+﻿using ReactiveUI;
 
 namespace OpenTracker.Models.Settings
 {
     /// <summary>
     /// This interface contains GUI tracking settings data.
     /// </summary>
-    public interface ITrackerSettings : INotifyPropertyChanged
+    public interface ITrackerSettings : IReactiveObject
     {
         bool DisplayAllLocations { get; set; }
         bool ShowItemCountsOnMap { get; set; }

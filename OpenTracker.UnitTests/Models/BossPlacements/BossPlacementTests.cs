@@ -1,302 +1,160 @@
 ﻿using Autofac;
+using NSubstitute;
 using OpenTracker.Models.BossPlacements;
-using System.Collections.Generic;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.SaveLoad;
+using OpenTracker.Models.UndoRedo.Boss;
 using Xunit;
 
 namespace OpenTracker.UnitTests.Models.BossPlacements
 {
     public class BossPlacementTests
     {
-        [Theory]
-        [MemberData(nameof(BossPlacementData))]
-        public void Factory_Tests(
-            BossPlacementID id, BossType? expectedDefaultBoss, BossType? expectedBoss)
+        private readonly IMode _mode = Substitute.For<IMode>();
+
+        private readonly IChangeBoss.Factory _changeBossFactory = (_, _) => Substitute.For<IChangeBoss>(); 
+
+        [Fact]
+        public void Boss_ShouldRaisePropertyChanged()
         {
-            var container = ContainerConfig.Configure();
-
-            using var scope = container.BeginLifetimeScope();
-            var factory = scope.Resolve<IBossPlacementFactory>();
-            var bossPlacement = factory.GetBossPlacement(id);
-                
-            Assert.Equal(expectedDefaultBoss, bossPlacement.DefaultBoss);
-            Assert.Equal(expectedBoss, bossPlacement.Boss);
-        }
-
-        [Theory]
-        [MemberData(nameof(BossPlacementData))]
-        public void Dictionary_Tests(
-            BossPlacementID id, BossType? expectedDefaultBoss, BossType? expectedBoss)
-        {
-            var container = ContainerConfig.Configure();
-
-            using var scope = container.BeginLifetimeScope();
-            var bossPlacementDictionary = scope.Resolve<IBossPlacementDictionary>();
-            var bossPlacement = bossPlacementDictionary[id];
-
-            Assert.Equal(expectedDefaultBoss, bossPlacement.DefaultBoss);
-            Assert.Equal(expectedBoss, bossPlacement.Boss);
-        }
-
-        public static IEnumerable<object[]> BossPlacementData =>
-            new List<object[]>
+            var sut = new BossPlacement(_mode, _changeBossFactory, BossType.Test)
             {
-                new object[]
-                {
-                    BossPlacementID.ATBoss,
-                    BossType.Aga,
-                    BossType.Aga
-                },
-                new object[]
-                {
-                    BossPlacementID.EPBoss,
-                    BossType.Armos,
-                    null
-                },
-                new object[]
-                {
-                    BossPlacementID.DPBoss,
-                    BossType.Lanmolas,
-                    null
-                },
-                new object[]
-                {
-                    BossPlacementID.ToHBoss,
-                    BossType.Moldorm,
-                    null
-                },
-                new object[]
-                {
-                    BossPlacementID.PoDBoss,
-                    BossType.HelmasaurKing,
-                    null
-                },
-                new object[]
-                {
-                    BossPlacementID.SPBoss,
-                    BossType.Arrghus,
-                    null
-                },
-                new object[]
-                {
-                    BossPlacementID.SWBoss,
-                    BossType.Mothula,
-                    null
-                },
-                new object[]
-                {
-                    BossPlacementID.TTBoss,
-                    BossType.Blind,
-                    null
-                },
-                new object[]
-                {
-                    BossPlacementID.IPBoss,
-                    BossType.Kholdstare,
-                    null
-                },
-                new object[]
-                {
-                    BossPlacementID.MMBoss,
-                    BossType.Vitreous,
-                    null
-                },
-                new object[]
-                {
-                    BossPlacementID.TRBoss,
-                    BossType.Trinexx,
-                    null
-                },
-                new object[]
-                {
-                    BossPlacementID.GTBoss1,
-                    BossType.Armos,
-                    null
-                },
-                new object[]
-                {
-                    BossPlacementID.GTBoss2,
-                    BossType.Lanmolas,
-                    null
-                },
-                new object[]
-                {
-                    BossPlacementID.GTBoss3,
-                    BossType.Moldorm,
-                    null
-                },
-                new object[]
-                {
-                    BossPlacementID.GTFinalBoss,
-                    BossType.Aga,
-                    BossType.Aga
-                }
+                Boss = null
             };
+            
+            Assert.PropertyChanged(sut, nameof(IBossPlacement.Boss), () => sut.Boss = BossType.Test);
+        }
+        
+        [Theory]
+        [InlineData(null)]
+        [InlineData(BossType.Armos)]
+        public void GetCurrentBoss_ShouldReturnDefaultBossProperty_WhenBossShuffleEqualsFalse(BossType? boss)
+        {
+            const BossType bossType = BossType.Test;
+            _mode.BossShuffle.Returns(false);
+            var sut = new BossPlacement(_mode, _changeBossFactory, bossType)
+            {
+                Boss = boss
+            };
+            
+            Assert.Equal(bossType, sut.GetCurrentBoss());
+        }
 
         [Theory]
-        [MemberData(nameof(GetCurrentBossData))]
-        public void GetCurrentBoss_Tests(
-            BossPlacementID id, BossType? expectedNoBossShuffle)
+        [InlineData(null, null)]
+        [InlineData(BossType.Test, BossType.Test)]
+        [InlineData(BossType.Armos, BossType.Armos)]
+        public void GetCurrentBoss_ShouldReturnBossProperty_WhenBossShuffleTrue(BossType? expected, BossType? boss)
         {
-            var container = ContainerConfig.Configure();
-
-            using var scope = container.BeginLifetimeScope();
-            var bossPlacementDictionary = scope.Resolve<IBossPlacementDictionary>();
-            var bossPlacement = bossPlacementDictionary[id];
-            var mode = scope.Resolve<IMode>();
-            
-            Assert.Equal(expectedNoBossShuffle, bossPlacement.GetCurrentBoss());
-
-            mode.BossShuffle = true;
-            
-            Assert.Null( bossPlacement.GetCurrentBoss());
-        }
-
-        public static IEnumerable<object[]> GetCurrentBossData =>
-            new List<object[]>
+            _mode.BossShuffle.Returns(true);
+            var sut = new BossPlacement(_mode, _changeBossFactory, BossType.Test)
             {
-                new object[]
-                {
-                    BossPlacementID.EPBoss,
-                    BossType.Armos
-                },
-                new object[]
-                {
-                    BossPlacementID.DPBoss,
-                    BossType.Lanmolas
-                },
-                new object[]
-                {
-                    BossPlacementID.ToHBoss,
-                    BossType.Moldorm
-                },
-                new object[]
-                {
-                    BossPlacementID.PoDBoss,
-                    BossType.HelmasaurKing
-                },
-                new object[]
-                {
-                    BossPlacementID.SPBoss,
-                    BossType.Arrghus
-                },
-                new object[]
-                {
-                    BossPlacementID.SWBoss,
-                    BossType.Mothula
-                },
-                new object[]
-                {
-                    BossPlacementID.TTBoss,
-                    BossType.Blind
-                },
-                new object[]
-                {
-                    BossPlacementID.IPBoss,
-                    BossType.Kholdstare
-                },
-                new object[]
-                {
-                    BossPlacementID.MMBoss,
-                    BossType.Vitreous
-                },
-                new object[]
-                {
-                    BossPlacementID.TRBoss,
-                    BossType.Trinexx
-                },
-                new object[]
-                {
-                    BossPlacementID.GTBoss1,
-                    BossType.Armos
-                },
-                new object[]
-                {
-                    BossPlacementID.GTBoss2,
-                    BossType.Lanmolas
-                },
-                new object[]
-                {
-                    BossPlacementID.GTBoss3,
-                    BossType.Moldorm
-                }
+                Boss = boss
             };
-
-        [Fact]
-        public void PropertyChanged_Tests()
-        {
-            var container = ContainerConfig.Configure();
-
-            using var scope = container.BeginLifetimeScope();
-            var factory = scope.Resolve<IBossPlacement.Factory>();
-            var bossPlacement = factory(BossType.Test);
             
-            Assert.PropertyChanged(
-                bossPlacement, nameof(IBossPlacement.Boss),
-                () => { bossPlacement.Boss = BossType.Armos; });
+            Assert.Equal(expected, sut.GetCurrentBoss());
         }
 
         [Fact]
-        public void Reset_Tests()
+        public void CreateChangeBossAction_ShouldReturnNewChangeBoss()
         {
-            var container = ContainerConfig.Configure();
-
-            using var scope = container.BeginLifetimeScope();
-            var factory = scope.Resolve<IBossPlacement.Factory>();
-            var bossPlacement = factory(BossType.Test);
-
-            bossPlacement.Boss = BossType.Test;
+            var sut = new BossPlacement(_mode, _changeBossFactory, BossType.Test);
+            var changeBoss = sut.CreateChangeBossAction(BossType.Test);
             
-            Assert.Equal(BossType.Test, bossPlacement.Boss);
-            
-            bossPlacement.Reset();
-            
-            Assert.Null(bossPlacement.Boss);
+            Assert.NotNull(changeBoss);
         }
 
         [Fact]
-        public void Load_Tests()
+        public void Reset_BossPropertyShouldEqualNullAfterReset_WhenDefaultBossNotAga()
         {
-            var container = ContainerConfig.Configure();
+            var sut = new BossPlacement(_mode, _changeBossFactory, BossType.Test)
+            {
+                Boss = BossType.Test
+            };
+            
+            sut.Reset();
+            
+            Assert.Null(sut.Boss);
+        }
 
-            using var scope = container.BeginLifetimeScope();
-            var factory = scope.Resolve<IBossPlacement.Factory>();
-            var bossPlacement = factory(BossType.Test);
+        [Fact]
+        public void Reset_BossPropertyShouldEqualAgaAfterReset_WhenDefaultBossAga()
+        {
+            var sut = new BossPlacement(_mode, _changeBossFactory, BossType.Aga)
+            {
+                Boss = BossType.Test
+            };
+            
+            sut.Reset();
+            
+            Assert.Equal(BossType.Aga, sut.Boss);
+        }
+
+        [Fact]
+        public void Load_BossPropertyShouldEqualSaveDataBossProperty()
+        {
+            var sut = new BossPlacement(_mode, _changeBossFactory, BossType.Test)
+            {
+                Boss = null
+            };
 
             var saveData = new BossPlacementSaveData()
             {
                 Boss = BossType.Test
             };
             
-            Assert.Null(bossPlacement.Boss);
+            sut.Load(saveData);
             
-            bossPlacement.Load(null);
-            
-            Assert.Null(bossPlacement.Boss);
-
-            bossPlacement.Load(saveData);
-            
-            Assert.Equal(BossType.Test, bossPlacement.Boss);
+            Assert.Equal(BossType.Test, sut.Boss);
         }
 
         [Fact]
-        public void Save_Tests()
+        public void Load_ShouldDoNothing_WhenSaveDataIsNull()
         {
-            var container = ContainerConfig.Configure();
+            var sut = new BossPlacement(_mode, _changeBossFactory, BossType.Test)
+            {
+                Boss = BossType.Test
+            };
 
-            using var scope = container.BeginLifetimeScope();
-            var factory = scope.Resolve<IBossPlacement.Factory>();
-            var bossPlacement = factory(BossType.Test);
-
-            var saveData = bossPlacement.Save();
+            sut.Load(null);
             
-            Assert.Null(saveData.Boss);
+            Assert.Equal(BossType.Test, sut.Boss);
+        }
 
-            bossPlacement.Boss = BossType.Test;
-            saveData = bossPlacement.Save();
+        [Fact]
+        public void Save_ShouldReturnSaveDataWithBossPropertyEqualToBossProperty()
+        {
+            var sut = new BossPlacement(_mode, _changeBossFactory, BossType.Test)
+            {
+                Boss = BossType.Test
+            };
+
+            var saveData = sut.Save();
             
             Assert.Equal(BossType.Test, saveData.Boss);
+        }
+
+        [Fact]
+        public void Save_ShouldReturnSaveDataWithNullBossProperty_WhenBossPropertyIsNull()
+        {
+            var sut = new BossPlacement(_mode, _changeBossFactory, BossType.Test)
+            {
+                Boss = null
+            };
+
+            var saveData = sut.Save();
+            
+            Assert.Null(saveData.Boss);
+        }
+
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var factory = scope.Resolve<IBossPlacement.Factory>();
+            var sut = factory(BossType.Test);
+            
+            Assert.NotNull(sut as BossPlacement);
         }
     }
 }

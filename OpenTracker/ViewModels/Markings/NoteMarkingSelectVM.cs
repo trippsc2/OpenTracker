@@ -1,13 +1,13 @@
-﻿using Avalonia.Threading;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
+using System.Reactive;
+using Avalonia.Threading;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Markings;
 using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
 using ReactiveUI;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Reactive;
 
 namespace OpenTracker.ViewModels.Markings
 {
@@ -18,7 +18,6 @@ namespace OpenTracker.ViewModels.Markings
     {
         private readonly ILayoutSettings _layoutSettings;
         private readonly IUndoRedoManager _undoRedoManager;
-        private readonly IUndoableFactory _undoableFactory;
 
         private readonly IMarking _marking;
         private readonly ILocation _location;
@@ -49,9 +48,6 @@ namespace OpenTracker.ViewModels.Markings
         /// <param name="undoRedoManager">
         /// The undo/redo manager.
         /// </param>
-        /// <param name="undoableFactory">
-        /// A factory for creating undoable actions.
-        /// </param>
         /// <param name="marking">
         /// The marking to be represented.
         /// </param>
@@ -62,12 +58,11 @@ namespace OpenTracker.ViewModels.Markings
         /// The location.
         /// </param>
         public NoteMarkingSelectVM(
-            ILayoutSettings layoutSettings, IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory,
-            IMarking marking, List<IMarkingSelectItemVMBase> buttons, ILocation location)
+            ILayoutSettings layoutSettings, IUndoRedoManager undoRedoManager, IMarking marking,
+            List<IMarkingSelectItemVMBase> buttons, ILocation location)
         {
             _layoutSettings = layoutSettings;
             _undoRedoManager = undoRedoManager;
-            _undoableFactory = undoableFactory;
 
             _marking = marking;
             _location = location;
@@ -102,7 +97,7 @@ namespace OpenTracker.ViewModels.Markings
         /// </summary>
         private void RemoveNoteImpl()
         {
-            _undoRedoManager.NewAction(_undoableFactory.GetRemoveNote(_marking, _location));
+            _undoRedoManager.NewAction(_location.CreateRemoveNoteAction(_marking));
             PopupOpen = false;
         }
 
@@ -119,7 +114,7 @@ namespace OpenTracker.ViewModels.Markings
                 return;
             }
 
-            _undoRedoManager.NewAction(_undoableFactory.GetSetMarking(_marking, marking.Value));
+            _undoRedoManager.NewAction(_marking.CreateChangeMarkingAction(marking.Value));
             PopupOpen = false;
         }
     }

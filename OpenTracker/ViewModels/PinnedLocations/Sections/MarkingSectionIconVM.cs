@@ -1,4 +1,7 @@
-﻿using Avalonia.Input;
+﻿using System.ComponentModel;
+using System.Reactive;
+using System.Threading.Tasks;
+using Avalonia.Input;
 using Avalonia.Threading;
 using OpenTracker.Models.Markings;
 using OpenTracker.Models.Sections;
@@ -6,16 +9,13 @@ using OpenTracker.Utils;
 using OpenTracker.ViewModels.Markings;
 using OpenTracker.ViewModels.Markings.Images;
 using ReactiveUI;
-using System.ComponentModel;
-using System.Reactive;
-using System.Threading.Tasks;
 
 namespace OpenTracker.ViewModels.PinnedLocations.Sections
 {
     /// <summary>
     /// This class contains the section marking icon control ViewModel data.
     /// </summary>
-    public class MarkingSectionIconVM : ViewModelBase, ISectionIconVMBase
+    public class MarkingSectionIconVM : ViewModelBase, ISectionIconVM
     {
         private readonly IMarkingImageDictionary _markingImages;
 
@@ -32,7 +32,7 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
         
         public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
 
-        public delegate MarkingSectionIconVM Factory(IMarkableSection section);
+        public delegate MarkingSectionIconVM Factory(ISection section);
 
         /// <summary>
         /// Constructor
@@ -47,10 +47,10 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
         /// The marking to be represented.
         /// </param>
         public MarkingSectionIconVM(
-            IMarkingImageDictionary markingImages, IMarkingSelectFactory markingSelectFactory, IMarkableSection section)
+            IMarkingImageDictionary markingImages, IMarkingSelectFactory markingSelectFactory, ISection section)
         {
             _markingImages = markingImages;
-            _marking = section.Marking;
+            _marking = section.Marking!;
 
             MarkingSelect = markingSelectFactory.GetMarkingSelectVM(section);
             
@@ -70,7 +70,7 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private async void OnMarkingChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnMarkingChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IMarking.Mark))
             {

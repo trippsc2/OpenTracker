@@ -1,103 +1,88 @@
-﻿using OpenTracker.Models.Requirements;
+﻿using System.ComponentModel;
+using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
-using System.ComponentModel;
+using OpenTracker.Models.UndoRedo;
+using OpenTracker.Models.UndoRedo.Dropdowns;
+using ReactiveUI;
 
 namespace OpenTracker.Models.Dropdowns
 {
     /// <summary>
-    /// This is the class for dropdown data.
+    ///     This class contains dropdown data.
     /// </summary>
-    public class Dropdown : IDropdown
+    public class Dropdown : ReactiveObject, IDropdown
     {
         private readonly IRequirement _requirement;
 
-        public bool RequirementMet =>
-            _requirement.Met;
+        private readonly ICheckDropdown.Factory _checkDropdownFactory;
+        private readonly IUncheckDropdown.Factory _uncheckDropdownFactory;
 
-        public event PropertyChangedEventHandler? PropertyChanged;
+        public bool RequirementMet => _requirement.Met;
 
         private bool _checked;
         public bool Checked
         {
             get => _checked;
-            set
-            {
-                if (_checked != value)
-                {
-                    _checked = value;
-                    OnPropertyChanged(nameof(Checked));
-                }
-            }
+            set => this.RaiseAndSetIfChanged(ref _checked, value);
         }
 
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
-        /// <param name="requirement">
-        /// The requirement for the dropdown to be relevant.
+        /// <param name="checkDropdownFactory">
+        ///     An Autofac factory for creating undoable actions to check the dropdown.
         /// </param>
-        public Dropdown(IRequirement requirement)
+        /// <param name="uncheckDropdownFactory">
+        ///     An Autofac factory for creating undoable actions to uncheck the dropdown.
+        /// </param>
+        /// <param name="requirement">
+        ///     The requirement for the dropdown to be relevant.
+        /// </param>
+        public Dropdown(
+            ICheckDropdown.Factory checkDropdownFactory, IUncheckDropdown.Factory uncheckDropdownFactory,
+            IRequirement requirement)
         {
             _requirement = requirement;
+            _checkDropdownFactory = checkDropdownFactory;
+            _uncheckDropdownFactory = uncheckDropdownFactory;
 
             _requirement.PropertyChanged += OnRequirementChanged;
         }
 
-        /// <summary>
-        /// Raises the PropertyChanged event for the specified property.
-        /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changed property.
-        /// </param>
-        private void OnPropertyChanged(string propertyName)
+        public IUndoable CreateCheckDropdownAction()
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            return _checkDropdownFactory(this);
         }
 
-        /// <summary>
-        /// Subscribes to the PropertyChanged event on the IRequirement interface.
-        /// </summary>
-        /// <param name="sender">
-        /// The sending object of the event.
-        /// </param>
-        /// <param name="e">
-        /// The arguments of the PropertyChanged event.
-        /// </param>
-        private void OnRequirementChanged(object? sender, PropertyChangedEventArgs e)
+        public IUndoable CreateUncheckDropdownAction()
         {
-            if (e.PropertyName == nameof(IRequirement.Accessibility))
-            {
-                OnPropertyChanged(nameof(RequirementMet));
-            }
+            return _uncheckDropdownFactory(this);
         }
 
-        /// <summary>
-        /// Resets the dropdown.
-        /// </summary>
         public void Reset()
         {
             Checked = false;
         }
 
         /// <summary>
-        /// Returns a new dropdown save data instance for this dropdown.
+        ///     Returns a new dropdown save data instance for this dropdown.
         /// </summary>
         /// <returns>
-        /// A new dropdown save data instance.
+        ///     A new dropdown save data instance.
         /// </returns>
         public DropdownSaveData Save()
         {
-            return new DropdownSaveData()
+            return new()
             {
                 Checked = Checked
             };
         }
 
         /// <summary>
-        /// Loads dropdown save data.
+        ///     Loads dropdown save data.
         /// </summary>
         /// <param name="saveData">
-        /// The dropdown save data to load.
+        ///     The dropdown save data to load.
         /// </param>
         public void Load(DropdownSaveData? saveData)
         {
@@ -107,6 +92,23 @@ namespace OpenTracker.Models.Dropdowns
             }
 
             Checked = saveData.Checked;
+        }
+
+        /// <summary>
+        ///     Subscribes to the PropertyChanged event on the IRequirement interface.
+        /// </summary>
+        /// <param name="sender">
+        ///     The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        ///     The arguments of the PropertyChanged event.
+        /// </param>
+        private void OnRequirementChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(IRequirement.Met))
+            {
+                this.RaisePropertyChanged(nameof(RequirementMet));
+            }
         }
     }
 }

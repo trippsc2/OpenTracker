@@ -1,15 +1,6 @@
-﻿using Avalonia;
-using Avalonia.Media;
-using Avalonia.Threading;
-using OpenTracker.Models.AccessibilityLevels;
-using OpenTracker.Models.Settings;
-using OpenTracker.Utils.Dialog;
-using ReactiveUI;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Threading.Tasks;
+using OpenTracker.Utils.Dialog;
 
 namespace OpenTracker.ViewModels.ColorSelect
 {
@@ -19,11 +10,11 @@ namespace OpenTracker.ViewModels.ColorSelect
     public class ColorSelectDialogVM : DialogViewModelBase, IColorSelectDialogVM
     {
         public ObservableCollection<IColorSelectControlVM> FontColors { get; } =
-            new ObservableCollection<IColorSelectControlVM>();
+            new();
         public ObservableCollection<IColorSelectControlVM> AccessibilityColors { get; } =
-            new ObservableCollection<IColorSelectControlVM>();
+            new();
         public ObservableCollection<IColorSelectControlVM> ConnectorColors { get; } =
-            new ObservableCollection<IColorSelectControlVM>();
+            new();
 
         /// <summary>
         /// Constructor
@@ -51,7 +42,7 @@ namespace OpenTracker.ViewModels.ColorSelect
                         ConnectorColors.Add(factory(type));
                         break;
                     default:
-                        throw new ArgumentOutOfRangeException(nameof(type));
+                        throw new Exception("This color type is not implemented.");
                 }
             }
         }

@@ -1,23 +1,21 @@
-﻿using Autofac;
+﻿using System.IO;
+using Autofac;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Logging;
 using Avalonia.Markup.Xaml;
-using Avalonia.ThemeManager;
 using OpenTracker.Models;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Themes;
 using OpenTracker.ViewModels;
 using OpenTracker.Views;
-using System.IO;
 
 namespace OpenTracker
 {
     public class App : Application
     {
-        public static IThemeSelector? Selector { get; private set; }
-
         private static void CopyDefaultThemesToAppData()
         {
             var themePath = AppPath.AppDataThemesPath;
@@ -41,40 +39,16 @@ namespace OpenTracker
             }
         }
 
-        private static void MakeDefaultThemeFirst()
-        {
-            foreach (var theme in Selector!.Themes!)
-            {
-                if (theme.Name != "Default")
-                {
-                    continue;
-                }
-                
-                Selector.Themes.Remove(theme);
-                Selector.Themes.Insert(0, theme);
-                break;
-            }
-        }
-
-        private void InitializeThemes()
-        {
-            CopyDefaultThemesToAppData();
-            Selector = ThemeSelector.Create(AppPath.AppDataThemesPath, this);
-            MakeDefaultThemeFirst();
-        }
-
-        private static void SetThemeToLastOrDefault()
+        private static void SetThemeToLastOrDefault(IThemeManager selector)
         {
             var lastThemeFilePath = AppPath.LastThemeFilePath;
 
-            if (File.Exists(lastThemeFilePath))
+            if (!File.Exists(lastThemeFilePath))
             {
-                Selector!.LoadSelectedTheme(lastThemeFilePath);
+                return;
             }
-            else
-            {
-                Selector!.ApplyTheme(Selector!.Themes![0]);
-            }
+            
+            selector.LoadSelectedTheme(lastThemeFilePath);
         }
 
         public override void Initialize()
@@ -89,12 +63,13 @@ namespace OpenTracker
         {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                InitializeThemes();
-
                 desktop.ShutdownMode = ShutdownMode.OnMainWindowClose;
+                CopyDefaultThemesToAppData();
 
                 using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-                
+
+                var themeManagerFactory = scope.Resolve<IThemeManager.Factory>();
+                var themeManager = themeManagerFactory(this, AppPath.AppDataThemesPath);
                 var saveLoadManager = scope.Resolve<ISaveLoadManager>();
                 saveLoadManager.OpenSequenceBreaks(AppPath.SequenceBreakPath);
                 desktop.MainWindow = new MainWindow()
@@ -102,12 +77,12 @@ namespace OpenTracker
                     DataContext = scope.Resolve<IMainWindowVM>()
                 };
                 
-                SetThemeToLastOrDefault();
+                SetThemeToLastOrDefault(themeManager);
 
-                desktop.Exit += (sender, e) =>
+                desktop.Exit += (_, _) =>
                 {
                     saveLoadManager.SaveSequenceBreaks(AppPath.SequenceBreakPath);
-                    Selector!.SaveSelectedTheme(AppPath.LastThemeFilePath);
+                    themeManager.SaveSelectedTheme(AppPath.LastThemeFilePath);
                 };
             }
 

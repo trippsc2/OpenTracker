@@ -1,65 +1,31 @@
-﻿using OpenTracker.Models.Dungeons;
+﻿using System;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Utils;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace OpenTracker.Models.Locations
 {
     /// <summary>
-    /// This class contains the dictionary container for location data.
+    ///     This class contains the dictionary container for location data.
     /// </summary>
-    public class LocationDictionary : LazyDictionary<LocationID, ILocation>,
-        ILocationDictionary
+    public class LocationDictionary : LazyDictionary<LocationID, ILocation>, ILocationDictionary
     {
-        private readonly ILocation.Factory _locationFactory;
-        private readonly IDungeon.Factory _dungeonFactory;
+        private readonly Lazy<ILocationFactory> _factory;
 
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
-        /// <param name="locationFactory">
-        /// The location factory.
+        /// <param name="factory">
+        ///     An Autofac factory for creating the location factory.
         /// </param>
-        /// <param name="dungeonFactory">
-        /// The dungeon factory.
-        /// </param>
-        public LocationDictionary(
-            ILocation.Factory locationFactory, IDungeon.Factory dungeonFactory)
-            : base(new Dictionary<LocationID, ILocation>())
+        public LocationDictionary(ILocationFactory.Factory factory) : base(new Dictionary<LocationID, ILocation>())
         {
-            _locationFactory = locationFactory;
-            _dungeonFactory = dungeonFactory;
-        }
-
-        protected override ILocation Create(LocationID key)
-        {
-            switch (key)
-            {
-                case LocationID.HyruleCastle:
-                case LocationID.AgahnimTower:
-                case LocationID.EasternPalace:
-                case LocationID.DesertPalace:
-                case LocationID.TowerOfHera:
-                case LocationID.PalaceOfDarkness:
-                case LocationID.SwampPalace:
-                case LocationID.SkullWoods:
-                case LocationID.ThievesTown:
-                case LocationID.IcePalace:
-                case LocationID.MiseryMire:
-                case LocationID.TurtleRock:
-                case LocationID.GanonsTower:
-                    {
-                        return _dungeonFactory(key);
-                    }
-                default:
-                    {
-                        return _locationFactory(key);
-                    }
-            }
+            _factory = new Lazy<ILocationFactory>(() => factory());
         }
 
         /// <summary>
-        /// Resets all locations to their starting values.
+        ///     Resets all locations to their starting values.
         /// </summary>
         public void Reset()
         {
@@ -70,28 +36,20 @@ namespace OpenTracker.Models.Locations
         }
 
         /// <summary>
-        /// Returns a dictionary of location save data.
+        ///     Returns a dictionary of location save data.
         /// </summary>
         /// <returns>
-        /// A dictionary of location save data.
+        ///     A dictionary of location save data.
         /// </returns>
-        public Dictionary<LocationID, LocationSaveData> Save()
+        public IDictionary<LocationID, LocationSaveData> Save()
         {
-            Dictionary<LocationID, LocationSaveData> locations =
-                new Dictionary<LocationID, LocationSaveData>();
-
-            foreach (var id in Keys)
-            {
-                locations.Add(id, this[id].Save());
-            }
-
-            return locations;
+            return Keys.ToDictionary(id => id, id => this[id].Save());
         }
 
         /// <summary>
-        /// Loads a dictionary of location save data.
+        ///     Loads a dictionary of location save data.
         /// </summary>
-        public void Load(Dictionary<LocationID, LocationSaveData>? saveData)
+        public void Load(IDictionary<LocationID, LocationSaveData>? saveData)
         {
             if (saveData == null)
             {
@@ -102,6 +60,11 @@ namespace OpenTracker.Models.Locations
             {
                 this[id].Load(saveData[id]);
             }
+        }
+
+        protected override ILocation Create(LocationID key)
+        { 
+            return _factory.Value.GetLocation(key);
         }
     }
 }

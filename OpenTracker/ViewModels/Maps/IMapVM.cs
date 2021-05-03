@@ -1,4 +1,4 @@
-﻿using OpenTracker.Models.Locations;
+﻿using OpenTracker.Models.Locations.Map;
 
 namespace OpenTracker.ViewModels.Maps
 {

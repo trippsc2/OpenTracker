@@ -5,4 +5,8 @@
 /contentModel.xml
 /modules.xml
 /projectSettingsUpdater.xml
+<<<<<<< HEAD
 /.idea.OpenTracker.iml 
+=======
+/.idea.OpenTracker.iml
+>>>>>>> stream-view-ui-rework

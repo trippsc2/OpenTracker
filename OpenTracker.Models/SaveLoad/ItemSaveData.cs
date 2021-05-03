@@ -6,5 +6,6 @@
     public class ItemSaveData
     {
         public int Current { get; set; }
+        public bool Known { get; set; }
     }
 }

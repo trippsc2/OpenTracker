@@ -1,39 +1,51 @@
-﻿using OpenTracker.Models.Requirements;
-using System;
+﻿using System;
+using System.Collections.Generic;
+using OpenTracker.Models.Modes;
+using OpenTracker.Models.Requirements;
+using OpenTracker.Models.Requirements.Aggregate;
+using OpenTracker.Models.Requirements.Mode;
 
 namespace OpenTracker.Models.Dropdowns
 {
     /// <summary>
-    /// This is the class contianing the creation logic for dropdowns.
+    ///     This class contains the creation logic for dropdowns.
     /// </summary>
     public class DropdownFactory : IDropdownFactory
     {
+        private readonly IAggregateRequirementDictionary _aggregateRequirements;
+        private readonly IEntranceShuffleRequirementDictionary _entranceShuffleRequirements;
+        
         private readonly IDropdown.Factory _factory;
-        private readonly IRequirementDictionary _requirements;
 
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
-        /// <param name="requirements">
-        /// The requirement dictionary.
+        /// <param name="aggregateRequirements">
+        ///     The aggregate requirement dictionary.
+        /// </param>
+        /// <param name="entranceShuffleRequirements">
+        ///     The entrance shuffle requirement dictionary.
         /// </param>
         /// <param name="factory">
-        /// The factory for creating new dropdowns.
+        ///     The factory for creating new dropdowns.
         /// </param>
-        public DropdownFactory(IRequirementDictionary requirements, IDropdown.Factory factory)
+        public DropdownFactory(
+            IAggregateRequirementDictionary aggregateRequirements,
+            IEntranceShuffleRequirementDictionary entranceShuffleRequirements, IDropdown.Factory factory)
         {
-            _requirements = requirements;
             _factory = factory;
+            _aggregateRequirements = aggregateRequirements;
+            _entranceShuffleRequirements = entranceShuffleRequirements;
         }
 
         /// <summary>
-        /// Returns the requirement for the specified dropdown to be relevant.
+        ///     Returns the requirement for the specified dropdown to be relevant.
         /// </summary>
         /// <param name="id">
-        /// The dropdown identity.
+        ///     The dropdown identity.
         /// </param>
         /// <returns>
-        /// The requirement for the specified dropdown to be relevant.
+        ///     The requirement for the specified dropdown to be relevant.
         /// </returns>
         private IRequirement GetRequirement(DropdownID id)
         {
@@ -47,30 +59,21 @@ namespace OpenTracker.Models.Dropdowns
                 case DropdownID.SanctuaryGrave:
                 case DropdownID.HoulihanHole:
                 case DropdownID.GanonHole:
+                    return _aggregateRequirements[new HashSet<IRequirement>
                     {
-                        return _requirements[RequirementType.EntranceShuffleAllInsanity];
-                    }
+                        _entranceShuffleRequirements[EntranceShuffle.All],
+                        _entranceShuffleRequirements[EntranceShuffle.Insanity]
+                    }];
                 case DropdownID.SWNEHole:
                 case DropdownID.SWNWHole:
                 case DropdownID.SWSEHole:
                 case DropdownID.SWSWHole:
-                    {
-                        return _requirements[RequirementType.EntranceShuffleInsanity];
-                    }
+                    return _entranceShuffleRequirements[EntranceShuffle.Insanity];
             }
 
             throw new ArgumentOutOfRangeException(nameof(id));
         }
 
-        /// <summary>
-        /// Returns a new dropdown for the given ID.
-        /// </summary>
-        /// <param name="id">
-        /// The dropdown ID
-        /// </param>
-        /// <returns>
-        /// A new dropdown.
-        /// </returns>
         public IDropdown GetDropdown(DropdownID id)
         {
             return _factory(GetRequirement(id));

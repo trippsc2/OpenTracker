@@ -1,6 +1,6 @@
-﻿using OpenTracker.Models.SaveLoad;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using OpenTracker.Models.SaveLoad;
 
 namespace OpenTracker.Models.Locations
 {
@@ -8,8 +8,7 @@ namespace OpenTracker.Models.Locations
     /// This interface contains the dictionary container for location data.
     /// </summary>
     public interface ILocationDictionary : IDictionary<LocationID, ILocation>,
-        ICollection<KeyValuePair<LocationID, ILocation>>,
-        ISaveable<Dictionary<LocationID, LocationSaveData>>
+        ISaveable<IDictionary<LocationID, LocationSaveData>>
     {
         event EventHandler<KeyValuePair<LocationID, ILocation>>? ItemCreated;
 

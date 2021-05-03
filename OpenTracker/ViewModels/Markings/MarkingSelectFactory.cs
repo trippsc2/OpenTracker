@@ -1,8 +1,9 @@
-﻿using OpenTracker.Models.Locations;
+﻿using System;
+using System.Collections.Generic;
+using OpenTracker.Models.Locations;
 using OpenTracker.Models.Markings;
 using OpenTracker.Models.Sections;
-using System;
-using System.Collections.Generic;
+using OpenTracker.Models.Sections.Entrance;
 
 namespace OpenTracker.ViewModels.Markings
 {
@@ -12,22 +13,19 @@ namespace OpenTracker.ViewModels.Markings
     public class MarkingSelectFactory : IMarkingSelectFactory
     {
         private readonly MarkingSelectButtonVM.Factory _buttonFactory;
-        private readonly MarkingSelectSpacerVM.Factory _spacerFactory;
         private readonly IMarkingSelectVM.Factory _selectFactory;
         private readonly INoteMarkingSelectVM.Factory _noteSelectFactory;
 
-        private List<IMarkingSelectItemVMBase> _nonEntranceMarkingSelect { get; } =
-            new List<IMarkingSelectItemVMBase>();
-        private List<IMarkingSelectItemVMBase> _entranceMarkingSelect { get; } =
-            new List<IMarkingSelectItemVMBase>();
+        private List<IMarkingSelectItemVMBase> NonEntranceMarkingSelect { get; } =
+            new();
+        private List<IMarkingSelectItemVMBase> EntranceMarkingSelect { get; } =
+            new();
 
         public MarkingSelectFactory(
-            MarkingSelectButtonVM.Factory buttonFactory,
-            MarkingSelectSpacerVM.Factory spacerFactory,
-            IMarkingSelectVM.Factory selectFactory, INoteMarkingSelectVM.Factory noteSelectFactory)
+            MarkingSelectButtonVM.Factory buttonFactory, IMarkingSelectVM.Factory selectFactory,
+            INoteMarkingSelectVM.Factory noteSelectFactory)
         {
             _buttonFactory = buttonFactory;
-            _spacerFactory = spacerFactory;
             _selectFactory = selectFactory;
             _noteSelectFactory = noteSelectFactory;
 
@@ -81,7 +79,7 @@ namespace OpenTracker.ViewModels.Markings
                     case MarkType.HalfMagic:
                     case MarkType.BigKey:
                         {
-                            _nonEntranceMarkingSelect.Add(_buttonFactory((MarkType)i));
+                            NonEntranceMarkingSelect.Add(_buttonFactory((MarkType)i));
                         }
                         break;
                 }
@@ -96,7 +94,7 @@ namespace OpenTracker.ViewModels.Markings
         {
             for (int i = 1; i < Enum.GetValues(typeof(MarkType)).Length; i++)
             {
-                _entranceMarkingSelect.Add(_buttonFactory((MarkType)i));
+                EntranceMarkingSelect.Add(_buttonFactory((MarkType)i));
             }
         }
 
@@ -113,7 +111,7 @@ namespace OpenTracker.ViewModels.Markings
         private IMarkingSelectVM GetNonEntranceMarkingSelectPopupVM(
             IMarking marking)
         {
-            return _selectFactory(marking, _nonEntranceMarkingSelect, 238.0, 200.0);
+            return _selectFactory(marking, NonEntranceMarkingSelect, 238.0, 200.0);
         }
 
         /// <summary>
@@ -129,7 +127,7 @@ namespace OpenTracker.ViewModels.Markings
         private IMarkingSelectVM GetEntranceMarkingSelectPopupVM(
             IMarking marking)
         {
-            return _selectFactory(marking, _entranceMarkingSelect, 374.0, 320.0);
+            return _selectFactory(marking, EntranceMarkingSelect, 374.0, 320.0);
         }
 
         /// <summary>
@@ -142,14 +140,14 @@ namespace OpenTracker.ViewModels.Markings
         /// <returns>
         /// A new marking select popup control ViewModel instance.
         /// </returns>
-        public IMarkingSelectVM GetMarkingSelectVM(IMarkableSection section)
+        public IMarkingSelectVM GetMarkingSelectVM(ISection section)
         {
             if (section is IEntranceSection)
             {
-                return GetEntranceMarkingSelectPopupVM(section.Marking);
+                return GetEntranceMarkingSelectPopupVM(section.Marking!);
             }
 
-            return GetNonEntranceMarkingSelectPopupVM(section.Marking);
+            return GetNonEntranceMarkingSelectPopupVM(section.Marking!);
         }
 
         /// <summary>
@@ -167,7 +165,7 @@ namespace OpenTracker.ViewModels.Markings
         public INoteMarkingSelectVM GetNoteMarkingSelectVM(
             IMarking marking, ILocation location)
         {
-            return _noteSelectFactory(marking, _nonEntranceMarkingSelect, location);
+            return _noteSelectFactory(marking, NonEntranceMarkingSelect, location);
         }
     }
 }

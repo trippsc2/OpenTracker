@@ -1,4 +1,7 @@
-﻿using Avalonia.Input;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
+using System.Reactive;
+using Avalonia.Input;
 using Avalonia.Threading;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Settings;
@@ -7,9 +10,6 @@ using OpenTracker.Utils;
 using OpenTracker.ViewModels.PinnedLocations.Notes;
 using OpenTracker.ViewModels.PinnedLocations.Sections;
 using ReactiveUI;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Reactive;
 
 namespace OpenTracker.ViewModels.PinnedLocations
 {
@@ -20,7 +20,6 @@ namespace OpenTracker.ViewModels.PinnedLocations
     {
         private readonly ILayoutSettings _layoutSettings;
         private readonly IUndoRedoManager _undoRedoManager;
-        private readonly IUndoableFactory _undoableFactory;
 
         private readonly ILocation _location;
 
@@ -42,9 +41,6 @@ namespace OpenTracker.ViewModels.PinnedLocations
         /// <param name="undoRedoManager">
         /// The undo/redo manager.
         /// </param>
-        /// <param name="undoableFactory">
-        /// A factory for creating undoable actions.
-        /// </param>
         /// <param name="location">
         /// The location to be represented.
         /// </param>
@@ -55,12 +51,11 @@ namespace OpenTracker.ViewModels.PinnedLocations
         /// The pinned location note area control.
         /// </param>
         public PinnedLocationVM(
-            ILayoutSettings layoutSettings, IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory,
-            ILocation location, List<ISectionVM> sections, IPinnedLocationNoteAreaVM notes)
+            ILayoutSettings layoutSettings, IUndoRedoManager undoRedoManager, ILocation location,
+            List<ISectionVM> sections, IPinnedLocationNoteAreaVM notes)
         {
             _layoutSettings = layoutSettings;
             _undoRedoManager = undoRedoManager;
-            _undoableFactory = undoableFactory;
 
             _location = location;
 
@@ -81,7 +76,7 @@ namespace OpenTracker.ViewModels.PinnedLocations
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private async void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnLayoutChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(LayoutSettings.UIScale))
             {
@@ -94,7 +89,7 @@ namespace OpenTracker.ViewModels.PinnedLocations
         /// </summary>
         private void UnpinLocation()
         {
-            _undoRedoManager.NewAction(_undoableFactory.GetUnpinLocation(_location));
+            _undoRedoManager.NewAction(_location.CreateUnpinLocationAction());
         }
 
         /// <summary>

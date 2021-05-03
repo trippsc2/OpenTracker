@@ -1,8 +1,4 @@
-﻿using Avalonia.Threading;
-using OpenTracker.Models.AutoTracking.Logging;
-using OpenTracker.Utils;
-using ReactiveUI;
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -10,7 +6,12 @@ using System.Globalization;
 using System.IO;
 using System.Reactive;
 using System.Threading.Tasks;
+using Avalonia.Threading;
+using OpenTracker.Models.AutoTracking.Logging;
+using OpenTracker.Utils;
 using OpenTracker.Utils.Dialog;
+using OpenTracker.ViewModels.Dialogs;
+using ReactiveUI;
 using LogLevel = OpenTracker.Models.AutoTracking.Logging.LogLevel;
 
 namespace OpenTracker.ViewModels.AutoTracking
@@ -28,9 +29,9 @@ namespace OpenTracker.ViewModels.AutoTracking
         private readonly IErrorBoxDialogVM.Factory _errorBoxFactory;
 
         public ObservableCollection<string> LogLevelOptions { get; } =
-            new ObservableCollection<string>();
+            new();
         public ObservableStringBuilder LogText { get; } =
-            new ObservableStringBuilder();
+            new();
 
         private LogLevel _logLevel = Models.AutoTracking.Logging.LogLevel.Info;
         public string LogLevel
@@ -50,13 +51,10 @@ namespace OpenTracker.ViewModels.AutoTracking
         public ReactiveCommand<Unit, Unit> SaveLogCommand { get; }
         
         private readonly ObservableAsPropertyHelper<bool> _isResettingLog;
-        public bool IsResettingLog =>
-            _isResettingLog.Value;
+        private bool IsResettingLog => _isResettingLog.Value;
 
         private readonly ObservableAsPropertyHelper<bool> _isSavingLog;
-        public bool IsSavingLog =>
-            _isSavingLog.Value;
-
+        private bool IsSavingLog => _isSavingLog.Value;
 
         /// <summary>
         /// Constructor
@@ -83,10 +81,10 @@ namespace OpenTracker.ViewModels.AutoTracking
             _fileDialogService = fileDialogService;
 
             _errorBoxFactory = errorBoxFactory;
-
-            foreach (LogLevel level in Enum.GetValues(typeof(LogLevel)))
+            
+            foreach (LogLevel logLevel in Enum.GetValues(typeof(LogLevel)))
             {
-                LogLevelOptions.Add(level.ToString());
+                LogLevelOptions.Add(logLevel.ToString());                
             }
 
             ResetLogCommand = ReactiveCommand.CreateFromTask(ResetLog);
@@ -141,10 +139,13 @@ namespace OpenTracker.ViewModels.AutoTracking
 
             foreach (var item in e.NewItems)
             {
-                if (item != null && item is ILogMessage message &&
-                    message.LogLevel >= _logLevel)
+                switch (item)
                 {
-                    await AddLog(message);
+                    case null:
+                        continue;
+                    case ILogMessage message when message.Level >= _logLevel:
+                        await AddLog(message);
+                        break;
                 }
             }
         }
@@ -160,8 +161,8 @@ namespace OpenTracker.ViewModels.AutoTracking
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
                 LogText.AppendLine(
-                    $"{message.LogLevel.ToString().ToUpper(CultureInfo.CurrentCulture)}:" +
-                    message.Message);
+                    $"{message.Level.ToString().ToUpper(CultureInfo.CurrentCulture)}:" +
+                    message.Content);
             });
         }
 
@@ -177,7 +178,7 @@ namespace OpenTracker.ViewModels.AutoTracking
 
             foreach (var message in _logService.LogCollection)
             {
-                if (message.LogLevel >= _logLevel)
+                if (message.Level >= _logLevel)
                 {
                     await AddLog(message);
                 }
@@ -219,7 +220,7 @@ namespace OpenTracker.ViewModels.AutoTracking
         /// </returns>
         private async Task<string?> OpenSaveFileDialog()
         {
-            return await Dispatcher.UIThread.InvokeAsync<string?>(async () =>
+            return await Dispatcher.UIThread.InvokeAsync(async () =>
                 await _fileDialogService.ShowSaveDialogAsync());
         }
 
@@ -231,39 +232,30 @@ namespace OpenTracker.ViewModels.AutoTracking
             var path = await OpenSaveFileDialog();
             
             if (path is null)
-                {
-                    return;
-                }
+            {
+                return;
+            }
 
             try
             {
-                await using StreamWriter file = new StreamWriter(path);
+                await using StreamWriter file = new(path);
 
                 foreach (var message in _logService.LogCollection)
                 {
                     await file.WriteLineAsync(
-                        $"{message.LogLevel.ToString().ToUpper(CultureInfo.CurrentCulture)}: " +
-                        message.Message);
+                        $"{message.Level.ToString().ToUpper(CultureInfo.CurrentCulture)}: " +
+                        message.Content);
                 }
             }
             catch (Exception ex)
             {
-                string message;
-
-                switch (ex)
+                string message = ex switch
                 {
-                    case UnauthorizedAccessException _:
-                    {
-                        message = "Unable to save to the selected directory.  Check the file permissions and try again.";
-                    }
-                        break;
-                    default:
-                    {
-                        message = ex.Message;
-                    }
-                        break;
-                } 
-                
+                    UnauthorizedAccessException _ =>
+                        "Unable to save to the selected directory.  Check the file permissions and try again.",
+                    _ => ex.Message
+                };
+
                 await OpenErrorBox(message);
             }
         }

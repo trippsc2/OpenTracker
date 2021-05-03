@@ -1,25 +1,33 @@
-﻿using OpenTracker.Models.SaveLoad;
-using OpenTracker.Utils;
-using System;
-using System.Collections.Specialized;
-using System.ComponentModel;
+﻿using System.Collections.Generic;
+using OpenTracker.Models.SaveLoad;
+using ReactiveUI;
 
 namespace OpenTracker.Models.UndoRedo
 {
     /// <summary>
     /// This class contains logic managing undo/redo actions.
     /// </summary>
-    public class UndoRedoManager : IUndoRedoManager
+    public class UndoRedoManager : ReactiveObject, IUndoRedoManager
     {
         private readonly ISaveLoadManager _saveLoadManager;
 
-        private readonly ObservableStack<IUndoable> _undoableActions = new ObservableStack<IUndoable>();
-        private readonly ObservableStack<IUndoable> _redoableActions = new ObservableStack<IUndoable>();
+        private readonly object _syncLock = new();
+        private readonly Stack<IUndoable> _undoableActions = new();
+        private readonly Stack<IUndoable> _redoableActions = new();
 
-        public event PropertyChangedEventHandler? PropertyChanged;
+        private bool _canUndo;
+        public bool CanUndo
+        {
+            get => _canUndo;
+            private set => this.RaiseAndSetIfChanged(ref _canUndo, value);
+        }
 
-        public bool CanUndo => _undoableActions.Count > 0;
-        public bool CanRedo => _redoableActions.Count > 0;
+        private bool _canRedo;
+        public bool CanRedo
+        {
+            get => _canRedo;
+            private set => this.RaiseAndSetIfChanged(ref _canRedo, value);
+        }
 
         /// <summary>
         /// Constructor
@@ -30,48 +38,6 @@ namespace OpenTracker.Models.UndoRedo
         public UndoRedoManager(ISaveLoadManager saveLoadManager)
         {
             _saveLoadManager = saveLoadManager;
-
-            _undoableActions.CollectionChanged += OnUndoChanged;
-            _redoableActions.CollectionChanged += OnRedoChanged;
-        }
-
-        /// <summary>
-        /// Raises the PropertyChanged event for the specified property.
-        /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changed property.
-        /// </param>
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        /// <summary>
-        /// Subscribes to the CollectionChanged event on the undoable actions observable stack.
-        /// </summary>
-        /// <param name="sender">
-        /// The sending object of the event.
-        /// </param>
-        /// <param name="e">
-        /// The arguments of the CollectionChanged event.
-        /// </param>
-        private void OnUndoChanged(object? sender, NotifyCollectionChangedEventArgs e)
-        {
-            OnPropertyChanged(nameof(CanUndo));
-        }
-
-        /// <summary>
-        /// Subscribes to the CollectionChanged event on the redoable actions observable stack.
-        /// </summary>
-        /// <param name="sender">
-        /// The sending object of the event.
-        /// </param>
-        /// <param name="e">
-        /// The arguments of the CollectionChanged event.
-        /// </param>
-        private void OnRedoChanged(object? sender, NotifyCollectionChangedEventArgs e)
-        {
-            OnPropertyChanged(nameof(CanRedo));
         }
 
         /// <summary>
@@ -82,20 +48,23 @@ namespace OpenTracker.Models.UndoRedo
         /// </param>
         public void NewAction(IUndoable action)
         {
-            if (action == null)
+            lock (_syncLock)
             {
-                throw new ArgumentNullException(nameof(action));
+                if (!action.CanExecute())
+                {
+                    return;
+                }
+                
+                action.ExecuteDo();
+                
+                _undoableActions.Push(action);
+                UpdateCanUndo();
+                
+                _redoableActions.Clear();
+                UpdateCanRedo();
+                
+                _saveLoadManager.Unsaved = true;
             }
-
-            if (!action.CanExecute())
-            {
-                return;
-            }
-            
-            action.ExecuteDo();
-            _undoableActions.Push(action);
-            _redoableActions.Clear();
-            _saveLoadManager.Unsaved = true;
         }
 
         /// <summary>
@@ -103,15 +72,23 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void Undo()
         {
-            if (_undoableActions.Count <= 0)
+            lock (_syncLock)
             {
-                return;
+                if (_undoableActions.Count <= 0)
+                {
+                    return;
+                }
+
+                IUndoable action = _undoableActions.Pop();
+                UpdateCanUndo();
+                
+                action.ExecuteUndo();
+                
+                _redoableActions.Push(action);
+                UpdateCanRedo();
+                
+                _saveLoadManager.Unsaved = true;
             }
-            
-            IUndoable action = _undoableActions.Pop();
-            action.ExecuteUndo();
-            _redoableActions.Push(action);
-            _saveLoadManager.Unsaved = true;
         }
 
         /// <summary>
@@ -119,15 +96,23 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void Redo()
         {
-            if (_redoableActions.Count <= 0)
+            lock (_syncLock)
             {
-                return;
+                if (_redoableActions.Count <= 0)
+                {
+                    return;
+                }
+
+                IUndoable action = _redoableActions.Pop();
+                UpdateCanRedo();
+                
+                action.ExecuteDo();
+                
+                _undoableActions.Push(action);
+                UpdateCanUndo();
+                
+                _saveLoadManager.Unsaved = true;
             }
-            
-            IUndoable action = _redoableActions.Pop();
-            action.ExecuteDo();
-            _undoableActions.Push(action);
-            _saveLoadManager.Unsaved = true;
         }
 
         /// <summary>
@@ -135,8 +120,30 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void Reset()
         {
-            _undoableActions.Clear();
-            _redoableActions.Clear();
+            lock (_syncLock)
+            {
+                _undoableActions.Clear();
+                UpdateCanUndo();
+                
+                _redoableActions.Clear();
+                UpdateCanRedo();
+            }
+        }
+
+        /// <summary>
+        /// Updates the CanUndo property value.
+        /// </summary>
+        private void UpdateCanUndo()
+        {
+            CanUndo = _undoableActions.Count > 0;
+        }
+
+        /// <summary>
+        /// Updates the CanRedo property value. 
+        /// </summary>
+        private void UpdateCanRedo()
+        {
+            CanRedo = _redoableActions.Count > 0;
         }
     }
 }

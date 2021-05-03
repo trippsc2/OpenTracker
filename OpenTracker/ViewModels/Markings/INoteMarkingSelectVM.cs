@@ -1,6 +1,6 @@
-﻿using OpenTracker.Models.Locations;
+﻿using System.Collections.Generic;
+using OpenTracker.Models.Locations;
 using OpenTracker.Models.Markings;
-using System.Collections.Generic;
 
 namespace OpenTracker.ViewModels.Markings
 {

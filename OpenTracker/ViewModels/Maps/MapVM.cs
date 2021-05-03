@@ -1,12 +1,12 @@
-﻿using Avalonia;
+﻿using System.ComponentModel;
+using Avalonia;
 using Avalonia.Layout;
-using OpenTracker.Models.Locations;
+using Avalonia.Threading;
+using OpenTracker.Models.Locations.Map;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.Settings;
 using OpenTracker.Utils;
 using ReactiveUI;
-using System.ComponentModel;
-using Avalonia.Threading;
 
 namespace OpenTracker.ViewModels.Maps
 {
@@ -42,6 +42,12 @@ namespace OpenTracker.ViewModels.Maps
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="layoutSettings">
+        /// The layout settings data.
+        /// </param>
+        /// <param name="mode">
+        /// The mode settings data.
+        /// </param>
         /// <param name="id">
         /// The map identity.
         /// </param>

@@ -7,8 +7,7 @@ namespace OpenTracker.Models.SaveLoad
     /// </summary>
     public class ModeSaveData
     {
-        public ItemPlacement ItemPlacement { get; set; } =
-            ItemPlacement.Advanced;
+        public ItemPlacement ItemPlacement { get; set; } = ItemPlacement.Advanced;
         public bool MapShuffle { get; set; }
         public bool CompassShuffle { get; set; }
         public bool SmallKeyShuffle { get; set; }

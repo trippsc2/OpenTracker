@@ -20,14 +20,14 @@ namespace OpenTracker.Utils.Dialog
         /// <param name="result">
         /// The result of the dialog window.
         /// </param>
-        protected void Close(TResult result = default)
+        protected void Close(TResult result = default!)
         {
             CloseRequested?.Invoke(this, new DialogResultEventArgs<TResult>(result!));
         }
     }
 
     /// <summary>
-    /// This is the base class for all dialgo window ViewModels that don't require a result.
+    /// This is the base class for all dialog window ViewModels that don't require a result.
     /// </summary>
     public class DialogViewModelBase : DialogViewModelBase<object>
     {

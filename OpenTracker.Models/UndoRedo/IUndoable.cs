@@ -1,6 +1,4 @@
-﻿using OpenTracker.Models.UndoRedo.Actions;
-
-namespace OpenTracker.Models.UndoRedo
+﻿namespace OpenTracker.Models.UndoRedo
 {
     /// <summary>
     /// This interface contains undoable action data.

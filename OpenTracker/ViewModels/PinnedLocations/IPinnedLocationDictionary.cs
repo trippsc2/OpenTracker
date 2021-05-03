@@ -1,10 +1,9 @@
-﻿using OpenTracker.Models.Locations;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using OpenTracker.Models.Locations;
 
 namespace OpenTracker.ViewModels.PinnedLocations
 {
-    public interface IPinnedLocationDictionary : IDictionary<LocationID, IPinnedLocationVM>,
-        ICollection<KeyValuePair<LocationID, IPinnedLocationVM>>
+    public interface IPinnedLocationDictionary : IDictionary<LocationID, IPinnedLocationVM>
     {
     }
 }

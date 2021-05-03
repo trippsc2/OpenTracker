@@ -30,8 +30,8 @@
             </ItemsControl.ItemsPanel>
           </ItemsControl>
 
-          <Border Classes="Separator" Grid.Row="1" Margin="0 2" />
-          <Button Classes="ClearMarking"
+          <Border Classes="Separator" Margin="0 2" />
+          <Button Classes="MarkingSelect"
                   Command="{Binding RemoveNote}">Remove</Button>
 
         </StackPanel>

@@ -1,110 +1,91 @@
 ﻿using OpenTracker.Models.Modes;
 using OpenTracker.Models.SaveLoad;
-using System.ComponentModel;
+using OpenTracker.Models.UndoRedo;
+using OpenTracker.Models.UndoRedo.Boss;
+using ReactiveUI;
 
 namespace OpenTracker.Models.BossPlacements
 {
     /// <summary>
-    /// This is the class for a boss placement.
+    ///     This class contains boss placement data.
     /// </summary>
-    public class BossPlacement : IBossPlacement
+    public class BossPlacement : ReactiveObject, IBossPlacement
     {
         private readonly IMode _mode;
 
-        public BossType DefaultBoss { get; }
+        private readonly IChangeBoss.Factory _changeBossFactory;
 
-        public event PropertyChangedEventHandler? PropertyChanged;
+        public BossType DefaultBoss { get; }
 
         private BossType? _boss;
         public BossType? Boss
         {
             get => _boss;
-            set
-            {
-                if (_boss != value)
-                {
-                    _boss = value;
-                    OnPropertyChanged(nameof(Boss));
-                }
-            }
+            set => this.RaiseAndSetIfChanged(ref _boss, value);
         }
 
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="mode">
-        /// The mode settings.
+        ///     The mode settings.
+        /// </param>
+        /// <param name="changeBossFactory">
+        ///     An Autofac factory for creating change boss undoable actions.
         /// </param>
         /// <param name="defaultBoss">
-        /// The default boss type for the boss placement.
+        ///     The default boss type for the boss placement.
         /// </param>
-        public BossPlacement(IMode mode, BossType defaultBoss)
+        public BossPlacement(IMode mode, IChangeBoss.Factory changeBossFactory, BossType defaultBoss)
         {
             _mode = mode;
 
             DefaultBoss = defaultBoss;
+            _changeBossFactory = changeBossFactory;
 
             if (DefaultBoss == BossType.Aga)
             {
                 Boss = BossType.Aga;
             }
-
         }
 
-        /// <summary>
-        /// Raises the PropertyChanged event for the specified property.
-        /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changed property.
-        /// </param>
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        /// <summary>
-        /// Returns the current boss type.
-        /// </summary>
-        /// <returns>
-        /// The current boss type for this boss placement.
-        /// </returns>
         public BossType? GetCurrentBoss()
         {
-            if (_mode.BossShuffle)
-            {
-                return Boss;
-            }
-
-            return DefaultBoss;
+            return _mode.BossShuffle ? Boss : DefaultBoss;
         }
 
-        /// <summary>
-        /// Resets the boss placement to its starting values.
-        /// </summary>
+        public IUndoable CreateChangeBossAction(BossType? boss)
+        {
+            return _changeBossFactory(this, boss);
+        }
+
         public void Reset()
         {
-            if (DefaultBoss != BossType.Aga)
+            if (DefaultBoss == BossType.Aga)
             {
-                Boss = null;
+                Boss = BossType.Aga;
+                return;
             }
+
+            Boss = null;
         }
 
         /// <summary>
-        /// Returns a new boss placement save data instance for this boss placement.
+        ///     Returns a new boss placement save data instance for this boss placement.
         /// </summary>
         /// <returns>
-        /// A new boss placement save data instance.
+        ///     A new boss placement save data instance.
         /// </returns>
         public BossPlacementSaveData Save()
         {
-            return new BossPlacementSaveData()
+            return new()
             {
                 Boss = Boss
             };
         }
 
         /// <summary>
-        /// Loads boss placement save data.
+        ///     Loads boss placement save data.
         /// </summary>
         public void Load(BossPlacementSaveData? saveData)
         {

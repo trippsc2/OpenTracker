@@ -50,14 +50,11 @@ namespace Avalonia.ThemeManager
                 foreach (var file in Directory.EnumerateFiles(path, "*.xaml"))
                 {
                     var theme = LoadTheme(file);
-
-                    if (theme != null)
-                    {
-                        _themes?.Add(theme);
-                    }
+                    
+                    _themes?.Add(theme);
                 }
             }
-            catch (Exception)
+            catch
             {
             }
 
@@ -79,14 +76,14 @@ namespace Avalonia.ThemeManager
 
             _selectedTheme = _themes?.FirstOrDefault();
 
-            if (_selectedTheme != null && _selectedTheme.Style != null)
+            if (_selectedTheme?.Style != null)
             {
                 App.Styles.Insert(0, _selectedTheme.Style);
             }
 
-            IDisposable disposable = this.WhenAnyValue(x => x.SelectedTheme).Where(x => x != null).Subscribe(x =>
+            var disposable = this.WhenAnyValue(x => x.SelectedTheme).Where(x => x != null).Subscribe(x =>
             {
-                if (x != null && x.Style != null)
+                if (x?.Style != null)
                 {
                     App.Styles[0] = x.Style;
                 }
@@ -106,32 +103,33 @@ namespace Avalonia.ThemeManager
 
         public void ApplyTheme(ITheme theme)
         {
-            if (theme != null)
-            {
-                SelectedTheme = theme;
-            }
+            SelectedTheme = theme;
         }
 
         public void LoadSelectedTheme(string file)
         {
             try
             {
-                if (File.Exists(file) == true)
+                if (!File.Exists(file))
                 {
-                    var name = File.ReadAllText(file);
+                    return;
+                }
+                
+                var name = File.ReadAllText(file);
 
-                    if (name != null)
-                    {
-                        var theme = _themes.FirstOrDefault(x => x.Name == name);
+                if (name == null)
+                {
+                    return;
+                }
+                
+                var theme = _themes!.FirstOrDefault(x => x.Name == name);
 
-                        if (theme != null)
-                        {
-                            SelectedTheme = theme;
-                        }
-                    }
+                if (theme != null)
+                {
+                    SelectedTheme = theme;
                 }
             }
-            catch (Exception)
+            catch
             {
             }
         }
@@ -142,7 +140,7 @@ namespace Avalonia.ThemeManager
             {
                 File.WriteAllText(file, _selectedTheme?.Name);
             }
-            catch (Exception)
+            catch
             {
             }
         }

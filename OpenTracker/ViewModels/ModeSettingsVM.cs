@@ -1,12 +1,12 @@
-﻿using Avalonia.Input;
+﻿using System;
+using System.ComponentModel;
+using System.Reactive;
+using Avalonia.Input;
 using Avalonia.Threading;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
 using ReactiveUI;
-using System;
-using System.ComponentModel;
-using System.Reactive;
 
 namespace OpenTracker.ViewModels
 {
@@ -17,7 +17,6 @@ namespace OpenTracker.ViewModels
     {
         private readonly IMode _mode;
         private readonly IUndoRedoManager _undoRedoManager;
-        private readonly IUndoableFactory _undoableFactory;
 
         private bool _popupOpen;
         public bool PopupOpen
@@ -78,14 +77,10 @@ namespace OpenTracker.ViewModels
         /// <param name="undoRedoManager">
         /// The undo/redo manager.
         /// </param>
-        /// <param name="undoableFactory">
-        /// A factory for creating undoable actions.
-        /// </param>
-        public ModeSettingsVM(IMode mode, IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory)
+        public ModeSettingsVM(IMode mode, IUndoRedoManager undoRedoManager)
         {
             _mode = mode;
             _undoRedoManager = undoRedoManager;
-            _undoableFactory = undoableFactory;
 
             HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
 
@@ -118,7 +113,7 @@ namespace OpenTracker.ViewModels
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private async void OnModeChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnModeChanged(object? sender, PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
@@ -211,11 +206,9 @@ namespace OpenTracker.ViewModels
         /// </param>
         private void ChangeItemPlacementImpl(string itemPlacementString)
         {
-            PopupOpen = false;
-            
             if (Enum.TryParse(itemPlacementString, out ItemPlacement itemPlacement))
             {
-                _undoRedoManager.NewAction(_undoableFactory.GetChangeItemPlacement(itemPlacement));
+                _undoRedoManager.NewAction(_mode.CreateChangeItemPlacementAction(itemPlacement));
             }
         }
 
@@ -227,11 +220,9 @@ namespace OpenTracker.ViewModels
         /// </param>
         private void ChangeWorldStateImpl(string worldStateString)
         {
-            PopupOpen = false;
-            
             if (Enum.TryParse(worldStateString, out WorldState worldState))
             {
-                _undoRedoManager.NewAction(_undoableFactory.GetChangeWorldState(worldState));
+                _undoRedoManager.NewAction(_mode.CreateChangeWorldStateAction(worldState));
             }
         }
 
@@ -240,11 +231,9 @@ namespace OpenTracker.ViewModels
         /// </summary>
         private void ChangeEntranceShuffleImpl(string entranceShuffleString)
         {
-            PopupOpen = false;
-            
             if (Enum.TryParse(entranceShuffleString, out EntranceShuffle entranceShuffle))
             {
-                _undoRedoManager.NewAction(_undoableFactory.GetChangeEntranceShuffle(entranceShuffle));
+                _undoRedoManager.NewAction(_mode.CreateChangeEntranceShuffleAction(entranceShuffle));
             }
         }
 
@@ -253,9 +242,7 @@ namespace OpenTracker.ViewModels
         /// </summary>
         private void ToggleMapShuffleImpl()
         {
-            PopupOpen = false;
-            
-            _undoRedoManager.NewAction(_undoableFactory.GetChangeMapShuffle(!_mode.MapShuffle));
+            _undoRedoManager.NewAction(_mode.CreateChangeMapShuffleAction(!_mode.MapShuffle));
         }
 
         /// <summary>
@@ -263,9 +250,7 @@ namespace OpenTracker.ViewModels
         /// </summary>
         private void ToggleCompassShuffleImpl()
         {
-            PopupOpen = false;
-            
-            _undoRedoManager.NewAction(_undoableFactory.GetChangeCompassShuffle(!_mode.CompassShuffle));
+            _undoRedoManager.NewAction(_mode.CreateChangeCompassShuffleAction(!_mode.CompassShuffle));
         }
 
         /// <summary>
@@ -273,9 +258,7 @@ namespace OpenTracker.ViewModels
         /// </summary>
         private void ToggleSmallKeyShuffleImpl()
         {
-            PopupOpen = false;
-            
-            _undoRedoManager.NewAction(_undoableFactory.GetChangeSmallKeyShuffle(!_mode.SmallKeyShuffle));
+            _undoRedoManager.NewAction(_mode.CreateChangeSmallKeyShuffleAction(!_mode.SmallKeyShuffle));
         }
 
         /// <summary>
@@ -283,9 +266,7 @@ namespace OpenTracker.ViewModels
         /// </summary>
         private void ToggleBigKeyShuffleImpl()
         {
-            PopupOpen = false;
-            
-            _undoRedoManager.NewAction(_undoableFactory.GetChangeBigKeyShuffle(!_mode.BigKeyShuffle));
+            _undoRedoManager.NewAction(_mode.CreateChangeBigKeyShuffleAction(!_mode.BigKeyShuffle));
         }
 
         /// <summary>
@@ -293,9 +274,7 @@ namespace OpenTracker.ViewModels
         /// </summary>
         private void ToggleBossShuffleImpl()
         {
-            PopupOpen = false;
-            
-            _undoRedoManager.NewAction(_undoableFactory.GetChangeBossShuffle(!_mode.BossShuffle));
+            _undoRedoManager.NewAction(_mode.CreateChangeBossShuffleAction(!_mode.BossShuffle));
         }
 
         /// <summary>
@@ -303,9 +282,7 @@ namespace OpenTracker.ViewModels
         /// </summary>
         private void ToggleEnemyShuffleImpl()
         {
-            PopupOpen = false;
-            
-            _undoRedoManager.NewAction(_undoableFactory.GetChangeEnemyShuffle(!_mode.EnemyShuffle));
+            _undoRedoManager.NewAction(_mode.CreateChangeEnemyShuffleAction(!_mode.EnemyShuffle));
         }
 
         /// <summary>
@@ -313,9 +290,7 @@ namespace OpenTracker.ViewModels
         /// </summary>
         private void ToggleGuaranteedBossItemsImpl()
         {
-            PopupOpen = false;
-            
-            _undoRedoManager.NewAction(_undoableFactory.GetChangeGuaranteedBossItems(!_mode.GuaranteedBossItems));
+            _undoRedoManager.NewAction(_mode.CreateChangeGuaranteedBossItemsAction(!_mode.GuaranteedBossItems));
         }
 
         /// <summary>
@@ -323,9 +298,7 @@ namespace OpenTracker.ViewModels
         /// </summary>
         private void ToggleShopShuffleImpl()
         {
-            PopupOpen = false;
-            
-            _undoRedoManager.NewAction(_undoableFactory.GetChangeShopShuffle(!_mode.ShopShuffle));
+            _undoRedoManager.NewAction(_mode.CreateChangeShopShuffleAction(!_mode.ShopShuffle));
         }
 
         /// <summary>
@@ -333,9 +306,7 @@ namespace OpenTracker.ViewModels
         /// </summary>
         private void ToggleGenericKeysImpl()
         {
-            PopupOpen = false;
-            
-            _undoRedoManager.NewAction(_undoableFactory.GetChangeGenericKeys(!_mode.GenericKeys));
+            _undoRedoManager.NewAction(_mode.CreateChangeGenericKeysAction(!_mode.GenericKeys));
         }
 
         /// <summary>
@@ -343,9 +314,7 @@ namespace OpenTracker.ViewModels
         /// </summary>
         private void ToggleTakeAnyLocationsImpl()
         {
-            PopupOpen = false;
-            
-            _undoRedoManager.NewAction(_undoableFactory.GetChangeTakeAnyLocations(!_mode.TakeAnyLocations));
+            _undoRedoManager.NewAction(_mode.CreateChangeTakeAnyLocationsAction(!_mode.TakeAnyLocations));
         }
 
         /// <summary>
@@ -353,9 +322,7 @@ namespace OpenTracker.ViewModels
         /// </summary>
         private void ToggleKeyDropShuffleImpl()
         {
-            PopupOpen = false;
-            
-            _undoRedoManager.NewAction(_undoableFactory.GetChangeKeyDropShuffle(!_mode.KeyDropShuffle));
+            _undoRedoManager.NewAction(_mode.CreateChangeKeyDropShuffleAction(!_mode.KeyDropShuffle));
         }
     }
 }

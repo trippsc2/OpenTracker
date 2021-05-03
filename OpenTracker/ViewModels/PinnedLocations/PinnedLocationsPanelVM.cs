@@ -1,9 +1,9 @@
-﻿using Avalonia.Layout;
+﻿using System.ComponentModel;
+using Avalonia.Layout;
 using Avalonia.Threading;
 using OpenTracker.Models.Settings;
 using OpenTracker.Utils;
 using ReactiveUI;
-using System.ComponentModel;
 
 namespace OpenTracker.ViewModels.PinnedLocations
 {
@@ -45,7 +45,7 @@ namespace OpenTracker.ViewModels.PinnedLocations
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private async void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnLayoutChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ILayoutSettings.CurrentLayoutOrientation))
             {

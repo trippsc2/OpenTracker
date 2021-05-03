@@ -1,13 +1,13 @@
-﻿using OpenTracker.Models.BossPlacements;
-using OpenTracker.Models.Settings;
-using OpenTracker.Models.UndoRedo;
-using OpenTracker.Utils;
-using ReactiveUI;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reactive;
 using System.Threading.Tasks;
 using Avalonia.Threading;
+using OpenTracker.Models.BossPlacements;
+using OpenTracker.Models.Settings;
+using OpenTracker.Models.UndoRedo;
+using OpenTracker.Utils;
+using ReactiveUI;
 
 namespace OpenTracker.ViewModels.BossSelect
 {
@@ -18,7 +18,6 @@ namespace OpenTracker.ViewModels.BossSelect
     {
         private readonly ILayoutSettings _layoutSettings;
         private readonly IUndoRedoManager _undoRedoManager;
-        private readonly IUndoableFactory _undoableFactory;
 
         private readonly IBossPlacement _bossPlacement;
 
@@ -32,7 +31,9 @@ namespace OpenTracker.ViewModels.BossSelect
             set => this.RaiseAndSetIfChanged(ref _popupOpen, value);
         }
 
+        // ReSharper disable MemberCanBePrivate.Global
         public ReactiveCommand<BossType?, Unit> ChangeBoss { get; }
+        // ReSharper restore MemberCanBePrivate.Global
 
         private readonly ObservableAsPropertyHelper<bool> _isChangingBoss;
         private bool IsChangingBoss => _isChangingBoss.Value;
@@ -46,9 +47,6 @@ namespace OpenTracker.ViewModels.BossSelect
         /// <param name="undoRedoManager">
         /// The undo/redo manager.
         /// </param>
-        /// <param name="undoableFactory">
-        /// A factory for creating undoable actions.
-        /// </param>
         /// <param name="factory">
         /// A factory for creating boss select controls.
         /// </param>
@@ -56,14 +54,13 @@ namespace OpenTracker.ViewModels.BossSelect
         /// The boss placement to be manipulated.
         /// </param>
         public BossSelectPopupVM(
-            ILayoutSettings layoutSettings, IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory,
-            IBossSelectFactory factory, IBossPlacement bossPlacement)
+            ILayoutSettings layoutSettings, IUndoRedoManager undoRedoManager, IBossSelectFactory factory,
+            IBossPlacement bossPlacement)
         {
             _layoutSettings = layoutSettings;
-            _undoRedoManager = undoRedoManager;
-            _undoableFactory = undoableFactory;
 
             _bossPlacement = bossPlacement;
+            _undoRedoManager = undoRedoManager;
 
             Buttons = factory.GetBossSelectButtonVMs(_bossPlacement);
 
@@ -83,7 +80,7 @@ namespace OpenTracker.ViewModels.BossSelect
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private async void OnAppSettingsChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnAppSettingsChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ILayoutSettings.UIScale))
             {
@@ -102,7 +99,7 @@ namespace OpenTracker.ViewModels.BossSelect
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
                 PopupOpen = false;
-                _undoRedoManager.NewAction(_undoableFactory.GetChangeBoss(_bossPlacement, boss));
+                _undoRedoManager.NewAction(_bossPlacement.CreateChangeBossAction(boss));
             });
         }
     }

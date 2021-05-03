@@ -9,32 +9,22 @@ namespace OpenTracker.Models.AutoTracking.Logging
     {
         private readonly ILogMessage.Factory _messageFactory;
         
-        public ObservableCollection<ILogMessage> LogCollection { get; } =
-            new ObservableCollection<ILogMessage>();
+        public ObservableCollection<ILogMessage> LogCollection { get; } = new();
         
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="messageFactory">
-        /// An Autofac factory for creating log messages.
+        ///     An Autofac factory for creating <see cref="ILogMessage"/> objects.
         /// </param>
         public AutoTrackerLogService(ILogMessage.Factory messageFactory)
         {
             _messageFactory = messageFactory;
         }
 
-        /// <summary>
-        /// Logs a new message.
-        /// </summary>
-        /// <param name="logLevel">
-        /// The log level of the message.
-        /// </param>
-        /// <param name="message">
-        /// A string representing the content of the log message.
-        /// </param>
-        public void Log(LogLevel logLevel, string message)
+        public void Log(LogLevel logLevel, string content)
         {
-            LogCollection.Add(_messageFactory(logLevel, message));
+            LogCollection.Add(_messageFactory(logLevel, content));
         }
     }
 }

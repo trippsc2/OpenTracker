@@ -1,115 +1,136 @@
-﻿using OpenTracker.Models.AccessibilityLevels;
-using OpenTracker.Models.Markings;
-using OpenTracker.Models.SaveLoad;
-using OpenTracker.Models.Sections;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
+using System.Linq;
+using OpenTracker.Models.Accessibility;
+using OpenTracker.Models.Locations.Map;
+using OpenTracker.Models.Markings;
+using OpenTracker.Models.SaveLoad;
+using OpenTracker.Models.Sections;
+using OpenTracker.Models.Sections.Factories;
+using OpenTracker.Models.Sections.Item;
+using OpenTracker.Models.UndoRedo;
+using OpenTracker.Models.UndoRedo.Locations;
+using OpenTracker.Models.UndoRedo.Notes;
+using ReactiveUI;
 
 namespace OpenTracker.Models.Locations
 {
     /// <summary>
-    /// This class contains location data.
+    ///     This class contains location data.
     /// </summary>
-    public class Location : ILocation
+    public class Location : ReactiveObject, ILocation
     {
         private readonly IMarking.Factory _markingFactory;
+        private readonly IClearLocation.Factory _clearLocationFactory;
+        private readonly IPinLocation.Factory _pinLocationFactory;
+        private readonly IUnpinLocation.Factory _unpinLocationFactory;
+        private readonly IAddNote.Factory _addNoteFactory;
+        private readonly IRemoveNote.Factory _removeNoteFactory;
 
         public LocationID ID { get; }
         public string Name { get; }
 
-        public List<IMapLocation> MapLocations { get; }
-        public List<ISection> Sections { get; }
+        public IList<IMapLocation> MapLocations { get; }
+        public IList<ISection> Sections { get; }
         public ILocationNoteCollection Notes { get; }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
 
         private AccessibilityLevel _accessibility;
         public AccessibilityLevel Accessibility
         {
             get => _accessibility;
-            private set
-            {
-                if (_accessibility != value)
-                {
-                    _accessibility = value;
-                    OnPropertyChanged(nameof(Accessibility));
-                }
-            }
-        }
-
-        private int _available;
-        public int Available
-        {
-            get => _available;
-            private set
-            {
-                if (_available != value)
-                {
-                    _available = value;
-                    OnPropertyChanged(nameof(Available));
-                }
-            }
+            private set => this.RaiseAndSetIfChanged(ref _accessibility, value);
         }
 
         private int _accessible;
         public int Accessible
         {
             get => _accessible;
-            private set
-            {
-                if (_accessible != value)
-                {
-                    _accessible = value;
-                    OnPropertyChanged(nameof(Accessible));
-                }
-            }
+            private set => this.RaiseAndSetIfChanged(ref _accessible, value);
+        }
+
+        private int _available;
+        public int Available
+        {
+            get => _available;
+            private set => this.RaiseAndSetIfChanged(ref _available, value);
         }
 
         private int _total;
         public int Total
         {
             get => _total;
-            private set
-            {
-                if (_total != value)
-                {
-                    _total = value;
-                    OnPropertyChanged(nameof(Total));
-                }
-            }
+            private set => this.RaiseAndSetIfChanged(ref _total, value);
+        }
+
+        private bool _isActive;
+        public bool IsActive
+        {
+            get => _isActive;
+            private set => this.RaiseAndSetIfChanged(ref _isActive, value);
+        }
+
+        private bool _shouldBeDisplayed;
+        public bool ShouldBeDisplayed
+        {
+            get => _shouldBeDisplayed;
+            private set => this.RaiseAndSetIfChanged(ref _shouldBeDisplayed, value);
         }
 
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
-        /// <param name="factory">
-        /// The location factory.
-        /// </param>
         /// <param name="mapLocationFactory">
-        /// The map location factory.
+        ///     The map location factory.
         /// </param>
         /// <param name="sectionFactory">
-        /// The section factory.
+        ///     The section factory.
         /// </param>
         /// <param name="markingFactory">
-        /// The marking factory.
+        ///     The marking factory.
+        /// </param>
+        /// <param name="addNoteFactory">
+        ///     An Autofac factory for creating undoable actions to add a note.
+        /// </param>
+        /// <param name="clearLocationFactory">
+        ///     An Autofac factory for creating undoable actions to clear the location.
+        /// </param>
+        /// <param name="pinLocationFactory">
+        ///     An Autofac factory for creating undoable actions to pin the location.
+        /// </param>
+        /// <param name="removeNoteFactory">
+        ///     An Autofac factory for creating undoable actions to remove a note.
+        /// </param>
+        /// <param name="unpinLocationFactory">
+        ///     An Autofac factory for creating undoable actions to unpin the location.
         /// </param>
         /// <param name="notes">
-        /// A new collection of location notes.
+        ///     A new collection of location notes.
         /// </param>
         /// <param name="id">
-        /// The ID of the location.
+        ///     The ID of the location.
         /// </param>
-        public Location(ILocationFactory factory, IMapLocationFactory mapLocationFactory,
-            ISectionFactory sectionFactory, IMarking.Factory markingFactory, 
-            ILocationNoteCollection notes, LocationID id)
+        /// <param name="name">
+        ///     A string representing the name of the location.
+        /// </param>
+        public Location(
+            IMapLocationFactory mapLocationFactory, ISectionFactory sectionFactory,
+            IMarking.Factory markingFactory, IClearLocation.Factory clearLocationFactory,
+            IPinLocation.Factory pinLocationFactory, IUnpinLocation.Factory unpinLocationFactory,
+            IAddNote.Factory addNoteFactory, IRemoveNote.Factory removeNoteFactory, ILocationNoteCollection notes,
+            LocationID id, string name)
         {
             _markingFactory = markingFactory;
+            _clearLocationFactory = clearLocationFactory;
+            _pinLocationFactory = pinLocationFactory;
+            _unpinLocationFactory = unpinLocationFactory;
+            _addNoteFactory = addNoteFactory;
+            _removeNoteFactory = removeNoteFactory;
 
             ID = id;
-            Name = factory.GetLocationName(ID);
+            Name = name;
+            
             MapLocations = mapLocationFactory.GetMapLocations(this);
             Sections = sectionFactory.GetSections(ID);
             Notes = notes;
@@ -123,122 +144,221 @@ namespace OpenTracker.Models.Locations
             UpdateAccessible();
             UpdateAvailable();
             UpdateTotal();
+            UpdateIsActive();
+            UpdateShouldBeDisplayed();
         }
 
-        /// <summary>
-        /// Raises the PropertyChanged event for the specified property.
-        /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changed property.
-        /// </param>
-        private void OnPropertyChanged(string propertyName)
+        public bool CanBeCleared(bool force)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            return Sections.Any(section => section.CanBeCleared(force));
+        }
+
+        public IUndoable CreateAddNoteAction()
+        {
+            return _addNoteFactory(this);
+        }
+
+        public IUndoable CreateRemoveNoteAction(IMarking note)
+        {
+            return _removeNoteFactory(note, this);
+        }
+
+        public IUndoable CreateClearLocationAction(bool force = false)
+        {
+            return _clearLocationFactory(this, force);
+        }
+
+        public IUndoable CreatePinLocationAction()
+        {
+            return _pinLocationFactory(this);
+        }
+
+        public IUndoable CreateUnpinLocationAction()
+        {
+            return _unpinLocationFactory(this);
+        }
+
+        public void Reset()
+        {
+            foreach (ISection section in Sections)
+            {
+                section.Reset();
+            }
+        }
+        
+        /// <summary>
+        ///     Returns a new location save data instance for this location.
+        /// </summary>
+        /// <returns>
+        ///     A new location save data instance.
+        /// </returns>
+        public LocationSaveData Save()
+        {
+            IList<SectionSaveData> sections = Sections.Select(section => section.Save()).ToList();
+            IList<MarkType?> markings = Notes.Select(marking => marking.Mark).Select(
+                mark => (MarkType?) mark).ToList();
+
+            return new LocationSaveData()
+            {
+                Sections = sections,
+                Markings = markings
+            };
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the ISection interface.
+        ///     Loads location save data.
+        /// </summary>
+        public void Load(LocationSaveData? saveData)
+        {
+            if (saveData is null)
+            {
+                return;
+            }
+
+            Notes.Clear();
+            LoadSections(saveData.Sections);
+            LoadMarkings(saveData.Markings);
+        }
+
+        /// <summary>
+        ///     Loads the section save data.
+        /// </summary>
+        /// <param name="sectionSaveData">
+        ///     The section save data.
+        /// </param>
+        private void LoadSections(IList<SectionSaveData>? sectionSaveData)
+        {
+            if (sectionSaveData is null)
+            {
+                return;
+            }
+            
+            for (var i = 0; i < sectionSaveData.Count; i++)
+            {
+                Sections[i].Load(sectionSaveData[i]);
+            }
+        }
+
+        /// <summary>
+        ///     Loads the marking save data.
+        /// </summary>
+        /// <param name="noteSaveData">
+        ///     The note save data.
+        /// </param>
+        private void LoadMarkings(IList<MarkType?>? noteSaveData)
+        {
+            if (noteSaveData is null)
+            {
+                return;
+            }
+
+            foreach (var marking in noteSaveData)
+            {
+                var newMarking = _markingFactory();
+
+                newMarking.Mark = marking ?? MarkType.Unknown;
+
+                Notes.Add(newMarking);
+            }
+        }
+
+        /// <summary>
+        ///     Subscribes to the PropertyChanged event on the ISection interface.
         /// </summary>
         /// <param name="sender">
-        /// The sending object of the event.
+        ///     The sending object of the event.
         /// </param>
         /// <param name="e">
-        /// The arguments of the PropertyChanged event.
+        ///     The arguments of the PropertyChanged event.
         /// </param>
         private void OnSectionChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(ISection.Available))
+            switch (e.PropertyName)
             {
-                UpdateAccessibility();
-                UpdateAvailable();
+                case nameof(ISection.Accessibility):
+                    UpdateAccessibility();
+                    break;
+                case nameof(ISection.Available):
+                    UpdateAccessibility();
+                    UpdateAvailable();
+                    break;
+                case nameof(IItemSection.Accessible):
+                    UpdateAccessible();
+                    break;
+                case nameof(ISection.Total):
+                    UpdateTotal();
+                    break;
+                case nameof(ISection.IsActive):
+                    UpdateIsActive();
+                    UpdateAccessibility();
+                    break;
+                case nameof(ISection.ShouldBeDisplayed):
+                    UpdateShouldBeDisplayed();
+                    break;
             }
-
-            if (e.PropertyName == nameof(ISection.Accessibility))
-                UpdateAccessibility();
-
-            if (e.PropertyName == nameof(ItemSection.Accessible) ||
-                e.PropertyName == nameof(DungeonItemSection.Accessible))
-                UpdateAccessible();
-
-            if (e.PropertyName == nameof(ItemSection.Total) ||
-                e.PropertyName == nameof(DungeonItemSection.Total))
-                UpdateTotal();
         }
 
         /// <summary>
-        /// Updates the accessibility of the location.
+        ///     Updates the value of the Accessibility property.
         /// </summary>
         private void UpdateAccessibility()
         {
-            AccessibilityLevel leastAccessible = AccessibilityLevel.Normal;
-            AccessibilityLevel mostAccessible = AccessibilityLevel.None;
+            var leastAccessible = AccessibilityLevel.Normal;
+            var mostAccessible = AccessibilityLevel.None;
 
-            bool available = false;
+            var available = false;
 
-            foreach (ISection section in Sections)
+            foreach (var section in Sections)
             {
-                if (section.IsAvailable() && section.Requirement.Met)
+                if (!section.IsActive || !section.IsAvailable())
                 {
-                    available = true;
-                    AccessibilityLevel sectionAccessibility = section.Accessibility;
+                    continue;
+                }
+                
+                available = true;
+                var sectionAccessibility = section.Accessibility;
 
-                    if (leastAccessible > sectionAccessibility)
-                    {
-                        leastAccessible = sectionAccessibility;
-                    }
+                if (leastAccessible > sectionAccessibility)
+                {
+                    leastAccessible = sectionAccessibility;
+                }
 
-                    if (mostAccessible < sectionAccessibility)
-                    {
-                        mostAccessible = sectionAccessibility;
-                    }
+                if (mostAccessible < sectionAccessibility)
+                {
+                    mostAccessible = sectionAccessibility;
                 }
             }
 
             if (!available)
             {
                 Accessibility = AccessibilityLevel.Cleared;
+                return;
             }
-            else
+
+            Accessibility = mostAccessible switch
             {
-                Accessibility = mostAccessible switch
-                {
-                    AccessibilityLevel.None => AccessibilityLevel.None,
-                    AccessibilityLevel.Inspect => AccessibilityLevel.Inspect,
-                    AccessibilityLevel.Partial => AccessibilityLevel.Partial,
-                    AccessibilityLevel.SequenceBreak when leastAccessible <= AccessibilityLevel.Partial => AccessibilityLevel.Partial,
-                    AccessibilityLevel.SequenceBreak => AccessibilityLevel.SequenceBreak,
-                    AccessibilityLevel.Normal when leastAccessible <= AccessibilityLevel.Partial => AccessibilityLevel.Partial,
-                    AccessibilityLevel.Normal when leastAccessible == AccessibilityLevel.SequenceBreak => AccessibilityLevel.SequenceBreak,
-                    AccessibilityLevel.Normal => AccessibilityLevel.Normal,
-                    _ => throw new Exception(string.Format(CultureInfo.InvariantCulture, "Unknown availability state for location {0}", ID.ToString())),
-                };
-            }
+                AccessibilityLevel.None => AccessibilityLevel.None,
+                AccessibilityLevel.Inspect => AccessibilityLevel.Inspect,
+                AccessibilityLevel.Partial => AccessibilityLevel.Partial,
+                AccessibilityLevel.SequenceBreak when leastAccessible <= AccessibilityLevel.Partial =>
+                    AccessibilityLevel.Partial,
+                AccessibilityLevel.SequenceBreak => AccessibilityLevel.SequenceBreak,
+                AccessibilityLevel.Normal when leastAccessible <= AccessibilityLevel.Partial =>
+                    AccessibilityLevel.Partial,
+                AccessibilityLevel.Normal when leastAccessible == AccessibilityLevel.SequenceBreak =>
+                    AccessibilityLevel.SequenceBreak,
+                AccessibilityLevel.Normal => AccessibilityLevel.Normal,
+                _ => throw new Exception(string.Format(
+                    CultureInfo.InvariantCulture, "Unknown availability state for location {0}", ID.ToString())),
+            };
         }
 
         /// <summary>
-        /// Updates the available count of the location.
-        /// </summary>
-        private void UpdateAvailable()
-        {
-            int available = 0;
-
-            foreach (ISection section in Sections)
-            {
-                if (section is IItemSection itemSection)
-                {
-                    available += itemSection.Available;
-                }
-            }
-
-            Available = available;
-        }
-
-        /// <summary>
-        /// Updates the accessible count of the location.
+        ///     Updates the value of the Accessible property.
         /// </summary>
         private void UpdateAccessible()
         {
-            int accessible = 0;
+            var accessible = 0;
 
             foreach (ISection section in Sections)
             {
@@ -252,13 +372,31 @@ namespace OpenTracker.Models.Locations
         }
 
         /// <summary>
-        /// Updates the total count of the location.
+        ///     Updates the value of the Available property.
+        /// </summary>
+        private void UpdateAvailable()
+        {
+            var available = 0;
+
+            foreach (var section in Sections)
+            {
+                if (section is IItemSection itemSection)
+                {
+                    available += itemSection.Available;
+                }
+            }
+
+            Available = available;
+        }
+
+        /// <summary>
+        ///     Updates the value of the Total property.
         /// </summary>
         private void UpdateTotal()
         {
-            int total = 0;
+            var total = 0;
 
-            foreach (ISection section in Sections)
+            foreach (var section in Sections)
             {
                 if (section is IItemSection itemSection)
                 {
@@ -270,95 +408,19 @@ namespace OpenTracker.Models.Locations
         }
 
         /// <summary>
-        /// Returns whether the location can be cleared.
+        ///     Updates the value of the IsActive property.
         /// </summary>
-        /// <returns>
-        /// A boolean representing whether the location can be cleared.
-        /// </returns>
-        public bool CanBeCleared(bool force)
+        private void UpdateIsActive()
         {
-            foreach (var section in Sections)
-            {
-                if (section.CanBeCleared(force))
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            IsActive = Sections.Any(section => section.IsActive);
         }
 
         /// <summary>
-        /// Resets the location to its starting values.
+        ///     Updates the value of the ShouldBeDisplayed property.
         /// </summary>
-        public void Reset()
+        private void UpdateShouldBeDisplayed()
         {
-            foreach (ISection section in Sections)
-            {
-                section.Reset();
-            }
-        }
-
-        /// <summary>
-        /// Returns a new location save data instance for this location.
-        /// </summary>
-        /// <returns>
-        /// A new location save data instance.
-        /// </returns>
-        public LocationSaveData Save()
-        {
-            List<SectionSaveData> sections = new List<SectionSaveData>();
-            List<MarkType?> markings = new List<MarkType?>();
-
-            foreach (var section in Sections)
-            {
-                sections.Add(section.Save());
-            }
-
-            foreach (var marking in Notes)
-            {
-                markings.Add(marking.Mark);
-            }
-
-            return new LocationSaveData()
-            {
-                Sections = sections,
-                Markings = markings
-            };
-        }
-
-        /// <summary>
-        /// Loads location save data.
-        /// </summary>
-        public void Load(LocationSaveData? saveData)
-        {
-            if (saveData == null)
-            {
-                return;
-            }
-
-            Notes.Clear();
-
-            for (int i = 0; i < saveData.Sections!.Count; i++)
-            {
-                Sections[i].Load(saveData.Sections[i]);
-            }
-
-            foreach (var marking in saveData.Markings!)
-            {
-                var newMarking = _markingFactory();
-
-                if (marking.HasValue)
-                {
-                    newMarking.Mark = marking.Value;
-                }
-                else
-                {
-                    newMarking.Mark = MarkType.Unknown;
-                }
-
-                Notes.Add(newMarking);
-            }
+            ShouldBeDisplayed = Sections.Any(section => section.ShouldBeDisplayed);
         }
     }
 }

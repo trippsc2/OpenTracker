@@ -1,0 +1,91 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:OpenTracker.ViewModels.Dialogs;assembly=OpenTracker"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" x:Class="OpenTracker.Views.Dialogs.SequenceBreakDialog"
+        Padding="5" CanResize="False" WindowStartupLocation="CenterScreen" SizeToContent="WidthAndHeight"
+        Icon="avares://OpenTracker/Assets/Images/triforce.png" Title="OpenTracker - Sequence Breaks">
+  
+  <Design.DataContext>
+    <vm:SequenceBreakDialogVM />
+  </Design.DataContext>
+  
+  <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+    <StackPanel>
+      
+      <TextBlock Classes="SequenceBreakTitle" Text="Bomb Duplication" />
+
+      <Panel HorizontalAlignment="Stretch">
+        <ItemsControl Items="{Binding BombDuplication}">
+          <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+              <UniformGrid Columns="3" />
+            </ItemsPanelTemplate>
+          </ItemsControl.ItemsPanel>
+        </ItemsControl>
+      </Panel>
+
+      <TextBlock Classes="SequenceBreakTitle" Text="Bomb Jumps" />
+
+      <Panel HorizontalAlignment="Stretch">
+        <ItemsControl Items="{Binding BombJumps}">
+          <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+              <UniformGrid Columns="3" />
+            </ItemsPanelTemplate>
+          </ItemsControl.ItemsPanel>
+        </ItemsControl>
+      </Panel>
+
+      <TextBlock Classes="SequenceBreakTitle" Text="Dark Rooms" />
+
+      <Panel HorizontalAlignment="Stretch">
+        <ItemsControl Items="{Binding DarkRooms}">
+          <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+              <UniformGrid Columns="3" />
+            </ItemsPanelTemplate>
+          </ItemsControl.ItemsPanel>
+        </ItemsControl>
+      </Panel>
+
+      <TextBlock Classes="SequenceBreakTitle" Text="Fake Flippers/WaterWalk" />
+
+      <Panel HorizontalAlignment="Stretch">
+        <ItemsControl Items="{Binding FakeFlippersWaterWalk}">
+          <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+              <UniformGrid Columns="3" />
+            </ItemsPanelTemplate>
+          </ItemsControl.ItemsPanel>
+        </ItemsControl>
+      </Panel>
+      
+      <TextBlock Classes="SequenceBreakTitle" Text="Super Bunny" />
+
+      <Panel HorizontalAlignment="Stretch">
+        <ItemsControl Items="{Binding SuperBunny}">
+          <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+              <UniformGrid Columns="3" />
+            </ItemsPanelTemplate>
+          </ItemsControl.ItemsPanel>
+        </ItemsControl>
+      </Panel>
+
+      <TextBlock Classes="SequenceBreakTitle" Text="Other" />
+
+      <Panel HorizontalAlignment="Stretch">
+        <ItemsControl Items="{Binding Other}">
+          <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+              <UniformGrid Columns="3" />
+            </ItemsPanelTemplate>
+          </ItemsControl.ItemsPanel>
+        </ItemsControl>
+      </Panel>
+
+    </StackPanel>
+  </ScrollViewer>
+</Window>
