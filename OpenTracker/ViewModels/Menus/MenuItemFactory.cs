@@ -243,7 +243,7 @@ namespace OpenTracker.ViewModels.Menus
             {
                 _itemFactory("File", items: GetFileMenuItems(open, save, saveAs, reset, close)),
                 _itemFactory("Tracker", items: GetTrackerMenuItems(undo, redo, autoTracker, sequenceBreaks)),
-                _itemFactory("Capture", items: GetCaptureMenuItems(_captureWindowMenuItems, captureDesign)),
+                //_itemFactory("Capture", items: GetCaptureMenuItems(_captureWindowMenuItems, captureDesign)),
                 _itemFactory("View", items: GetViewMenuItems(
                     changeTheme, toggleDisplayAllLocations, toggleShowItemCountsOnMap, toggleDisplayMapsCompasses,
                     toggleAlwaysDisplayDungeonItems, colorSelect, changeLayoutOrientation,
