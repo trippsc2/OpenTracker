@@ -18,7 +18,7 @@ using ReactiveUI;
 namespace OpenTracker.Models.Dungeons.AccessibilityProvider
 {
     /// <summary>
-    ///     This class contains the logic for updating the dungeon accessibility.
+    /// This class contains the logic for updating the dungeon accessibility.
     /// </summary>
     public class DungeonAccessibilityProvider : ReactiveObject, IDungeonAccessibilityProvider
     {

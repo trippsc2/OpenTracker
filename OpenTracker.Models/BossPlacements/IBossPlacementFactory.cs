@@ -1,26 +1,26 @@
 ﻿namespace OpenTracker.Models.BossPlacements
 {
     /// <summary>
-    ///     This interface contains the creation logic for boss placements.
+    /// This interface contains the creation logic for <see cref="IBossPlacement"/> objects.
     /// </summary>
     public interface IBossPlacementFactory
     {
         /// <summary>
-        ///     A factory for creating a new boss placement factory.
+        /// A factory for creating the <see cref="IBossPlacementFactory"/> object.
         /// </summary>
         /// <returns>
-        ///     A new boss placement factory.
+        ///     The <see cref="IBossPlacementFactory"/> object.
         /// </returns>
         delegate IBossPlacementFactory Factory();
         
         /// <summary>
-        ///     Returns a new boss placement.
+        /// Returns a new <see cref="IBossPlacement"/> object for the specified <see cref="BossPlacementID"/>.
         /// </summary>
         /// <param name="id">
-        ///     The boss placement ID.
+        ///     The <see cref="BossPlacementID"/>.
         /// </param>
         /// <returns>
-        ///     A new boss placement.
+        ///     A new <see cref="IBossPlacement"/> object.
         /// </returns>
         IBossPlacement GetBossPlacement(BossPlacementID id);
     }

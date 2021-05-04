@@ -10,7 +10,7 @@ using OpenTracker.Models.Dungeons.State;
 namespace OpenTracker.Models.Dungeons.AccessibilityProvider
 {
     /// <summary>
-    ///     This class contains the logic for aggregating dungeon results into final values.
+    /// This class contains the logic for aggregating dungeon results into final values.
     /// </summary>
     public class ResultAggregator : IResultAggregator
     {
@@ -22,16 +22,16 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         private IList<DungeonItemID> Bosses => _dungeon.Bosses;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="resultFactory">
-        ///     An Autofac factory for creating dungeon results.
+        ///     An Autofac factory for creating new <see cref="IDungeonResult"/> objects.
         /// </param>
         /// <param name="dungeon">
-        ///     The dungeon data.
+        ///     The <see cref="IDungeon"/>.
         /// </param>
         /// <param name="mutableDungeonQueue">
-        ///     The mutable dungeon data instance queue.
+        ///     The <see cref="IMutableDungeonQueue"/>.
         /// </param>
         public ResultAggregator(
             IDungeonResult.Factory resultFactory, IDungeon dungeon, IMutableDungeonQueue mutableDungeonQueue)
@@ -52,13 +52,14 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         }
 
         /// <summary>
-        ///     Processes the final permutation queue.
+        /// Processes the final permutation queue.
         /// </summary>
         /// <param name="finalQueue">
-        ///     The blocking collection queue to be processed.
+        ///     The <see cref="BlockingCollection{T}"/> queue of <see cref="IDungeonState"/> permutations to be
+        ///     processed.
         /// </param>
         /// <param name="resultQueue">
-        ///     The blocking collection queue of results.
+        ///     The <see cref="BlockingCollection{T}"/> queue of <see cref="IDungeonResult"/>.
         /// </param>
         private void ProcessFinalKeyDoorPermutationQueue(
             BlockingCollection<IDungeonState> finalQueue, BlockingCollection<IDungeonResult> resultQueue)
@@ -76,16 +77,16 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         }
 
         /// <summary>
-        ///     Process the final dungeon state permutation.
+        /// Process the final dungeon state permutation.
         /// </summary>
         /// <param name="dungeonData">
-        ///     The mutable dungeon data.
+        ///     The <see cref="IMutableDungeon"/>.
         /// </param>
         /// <param name="state">
-        ///     The permutation to be processed.
+        ///     The <see cref="IDungeonState"/> permutation.
         /// </param>
         /// <param name="resultQueue">
-        ///     The blocking collection queue of results.
+        ///     The <see cref="BlockingCollection{T}"/> queue of <see cref="IDungeonResult"/>.
         /// </param>
         private static void ProcessFinalDungeonState(
             IMutableDungeon dungeonData, IDungeonState state, BlockingCollection<IDungeonResult> resultQueue)
@@ -103,13 +104,13 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         }
         
         /// <summary>
-        ///     Returns the final results.
+        /// Returns the final results.
         /// </summary>
         /// <param name="resultQueue">
-        ///     A blocking collection queue for results in-logic.
+        ///     A <see cref="BlockingCollection{T}"/> queue for <see cref="IDungeonResult"/>.
         /// </param>
         /// <returns>
-        ///     The final results.
+        ///     The final <see cref="IDungeonResult"/>.
         /// </returns>
         private IDungeonResult ProcessResults(BlockingCollection<IDungeonResult> resultQueue)
         {
@@ -156,22 +157,22 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         }
 
         /// <summary>
-        ///     Processes a provided result queue. 
+        /// Processes a provided result queue. 
         /// </summary>
         /// <param name="resultQueue">
-        ///     The result queue to be processed.
+        ///     The <see cref="BlockingCollection{T}"/> queue of <see cref="IDungeonResult"/> to be processed.
         /// </param>
         /// <param name="lowestBossAccessibility">
-        ///     A list of the lowest accessibility for each boss so far.
+        ///     A <see cref="List{T}"/> of the lowest <see cref="AccessibilityLevel"/> for each boss.
         /// </param>
         /// <param name="highestBossAccessibility">
-        ///     A list of the highest accessibility for each boss so far.
+        ///     A <see cref="List{T}"/> of the highest <see cref="AccessibilityLevel"/> for each boss.
         /// </param>
         /// <param name="lowestAccessible">
-        ///     The dungeon result with the fewest accessible items.
+        ///     The nullable <see cref="IDungeonResult"/> with the fewest accessible items.
         /// </param>
         /// <param name="highestAccessible">
-        ///     The dungeon result with the most accessible items.
+        ///     The nullable <see cref="IDungeonResult"/> with the most accessible items.
         /// </param>
         private void ProcessResultQueue(
             BlockingCollection<IDungeonResult> resultQueue, List<AccessibilityLevel> lowestBossAccessibility,
@@ -186,16 +187,16 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         }
 
         /// <summary>
-        ///     Processes a result's boss accessibility values.
+        /// Processes a result's boss accessibility values.
         /// </summary>
         /// <param name="result">
-        ///     The result to be processed.
+        ///     The <see cref="IDungeonResult"/> to be processed.
         /// </param>
         /// <param name="lowestBossAccessibility">
-        ///     A list of the lowest accessibilities for each boss so far.
+        ///     A <see cref="List{T}"/> of the lowest <see cref="AccessibilityLevel"/> for each boss.
         /// </param>
         /// <param name="highestBossAccessibility">
-        ///     A list of the highest accessibilities for each boss so far.
+        ///     A <see cref="List{T}"/> of the highest <see cref="AccessibilityLevel"/> for each boss.
         /// </param>
         private static void ProcessBossAccessibilityResult(
             IDungeonResult result, List<AccessibilityLevel> lowestBossAccessibility,
@@ -217,16 +218,16 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         }
 
         /// <summary>
-        ///     Processes a result's item accessibility values.
+        /// Processes a result's item accessibility values.
         /// </summary>
         /// <param name="result">
-        ///     The result to be processed.
+        ///     The <see cref="IDungeonResult"/> to be processed.
         /// </param>
         /// <param name="lowestAccessible">
-        ///     The dungeon result with the fewest accessible items.
+        ///     The nullable <see cref="IDungeonResult"/> with the fewest accessible items.
         /// </param>
         /// <param name="highestAccessible">
-        ///     The dungeon result with the most accessible items.
+        ///     The nullable <see cref="IDungeonResult"/> with the most accessible items.
         /// </param>
         private void ProcessItemAccessibilityResult(
             IDungeonResult result, ref IDungeonResult? lowestAccessible, ref IDungeonResult? highestAccessible)
@@ -265,13 +266,13 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         }
 
         /// <summary>
-        ///     Adjusts the accessible result to account for maps, compasses, and guaranteed boss items.
+        /// Adjusts the accessible result to account for maps, compasses, and guaranteed boss items.
         /// </summary>
         /// <param name="result">
-        ///     The result to be adjusted.
+        ///     The <see cref="IDungeonResult"/> to be adjusted.
         /// </param>
         /// <returns>
-        ///     A 32-bit signed integer representing the adjusted result.
+        ///     A <see cref="int"/> representing the adjusted result.
         /// </returns>
         private int AdjustResultForMapCompassAndBosses(IDungeonResult result)
         {
@@ -279,16 +280,16 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         }
 
         /// <summary>
-        ///     Returns the list of final boss accessibility values.
+        /// Returns the <see cref="IList{T}"/> of final boss <see cref="AccessibilityLevel"/> values.
         /// </summary>
         /// <param name="highestBossAccessibility">
-        ///     A list of accessibility values for the most accessible.
+        ///     A <see cref="List{T}"/> of <see cref="AccessibilityLevel"/> values for the most accessible.
         /// </param>
         /// <param name="lowestBossAccessibility">
-        ///     A list of accessibility values for the least accessible.
+        ///     A <see cref="List{T}"/> of <see cref="AccessibilityLevel"/> values for the least accessible.
         /// </param>
         /// <returns>
-        ///     A list of boss accessibility values.
+        ///     A <see cref="IList{T}"/> of boss <see cref="AccessibilityLevel"/> values.
         /// </returns>
         private static IList<AccessibilityLevel> GetFinalBossAccessibility(
             List<AccessibilityLevel> highestBossAccessibility, List<AccessibilityLevel> lowestBossAccessibility)

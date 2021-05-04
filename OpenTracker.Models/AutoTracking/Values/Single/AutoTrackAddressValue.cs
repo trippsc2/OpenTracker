@@ -4,7 +4,7 @@ using OpenTracker.Models.AutoTracking.Memory;
 namespace OpenTracker.Models.AutoTracking.Values.Single
 {
     /// <summary>
-    ///     This class contains the auto-tracking result value of a memory address value.
+    /// This class contains the auto-tracking result value of a memory address value.
     /// </summary>
     public class AutoTrackAddressValue : AutoTrackValueBase, IAutoTrackAddressValue
     {
@@ -13,17 +13,17 @@ namespace OpenTracker.Models.AutoTracking.Values.Single
         private readonly int _adjustment;
         
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="address">
-        ///     The memory address for the comparison.
+        ///     The <see cref="IMemoryAddress"/> for the comparison.
         /// </param>
         /// <param name="maximum">
-        ///     An 8-bit unsigned integer representing the maximum valid value of the memory address.
+        ///     A <see cref="byte"/> representing the maximum valid value of the memory address.
         /// </param>
         /// <param name="adjustment">
-        ///     A 32-bit signed integer representing the amount that the result value should be adjusted from the actual
-        ///         value.
+        ///     A <see cref="int"/> representing the amount that the result value should be adjusted from the actual
+        ///     value.
         /// </param>
         public AutoTrackAddressValue(IMemoryAddress address, byte maximum, int adjustment)
         {
@@ -37,13 +37,13 @@ namespace OpenTracker.Models.AutoTracking.Values.Single
         }
 
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on the IMemoryAddress interface.
+        /// Subscribes to the <see cref="IMemoryAddress.PropertyChanged"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event was sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnMemoryChanged(object? sender, PropertyChangedEventArgs e)
         {

@@ -55,13 +55,13 @@ namespace OpenTracker.Models.AutoTracking
         }
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="memoryAddressProvider">
-        ///     The memory address provider.
+        ///     The <see cref="IMemoryAddressProvider"/>.
         /// </param>
         /// <param name="snesConnector">
-        ///     The SNES connector factory.
+        ///     The <see cref="ISNESConnector"/>.
         /// </param>
         public AutoTracker(IMemoryAddressProvider memoryAddressProvider, ISNESConnector snesConnector)
         {
@@ -149,10 +149,10 @@ namespace OpenTracker.Models.AutoTracking
         /// Subscribes to the <see cref="ISNESConnector.StatusChanged"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="status">
-        ///     The event args.
+        ///     The <see cref="ConnectionStatus"/> of the event.
         /// </param>
         private void OnStatusChanged(object? sender, ConnectionStatus status)
         {
@@ -173,10 +173,10 @@ namespace OpenTracker.Models.AutoTracking
         }
         
         /// <summary>
-        /// Updates cached values of a memory segment.
+        /// Updates cached values of the specified memory segment.
         /// </summary>
         /// <param name="segment">
-        ///     The segment to be updated.
+        ///     The <see cref="MemorySegmentType"/> to be updated.
         /// </param>
         private async Task MemoryCheck(MemorySegmentType segment)
         {

@@ -8,7 +8,7 @@ using OpenTracker.Models.Requirements.Mode;
 namespace OpenTracker.Models.Dropdowns
 {
     /// <summary>
-    ///     This class contains the creation logic for dropdowns.
+    /// This class contains the creation logic for <see cref="IDropdown"/> objects.
     /// </summary>
     public class DropdownFactory : IDropdownFactory
     {
@@ -18,16 +18,16 @@ namespace OpenTracker.Models.Dropdowns
         private readonly IDropdown.Factory _factory;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="aggregateRequirements">
-        ///     The aggregate requirement dictionary.
+        ///     The <see cref="IAggregateRequirementDictionary"/>.
         /// </param>
         /// <param name="entranceShuffleRequirements">
-        ///     The entrance shuffle requirement dictionary.
+        ///     The <see cref="IEntranceShuffleRequirementDictionary"/>.
         /// </param>
         /// <param name="factory">
-        ///     The factory for creating new dropdowns.
+        ///     An Autofac factory for creating new <see cref="IDropdown"/> objects.
         /// </param>
         public DropdownFactory(
             IAggregateRequirementDictionary aggregateRequirements,
@@ -38,14 +38,19 @@ namespace OpenTracker.Models.Dropdowns
             _entranceShuffleRequirements = entranceShuffleRequirements;
         }
 
+        public IDropdown GetDropdown(DropdownID id)
+        {
+            return _factory(GetRequirement(id));
+        }
+
         /// <summary>
-        ///     Returns the requirement for the specified dropdown to be relevant.
+        /// Returns the <see cref="IRequirement"/> for the specified <see cref="DropdownID"/> to be relevant.
         /// </summary>
         /// <param name="id">
-        ///     The dropdown identity.
+        ///     The <see cref="DropdownID"/>.
         /// </param>
         /// <returns>
-        ///     The requirement for the specified dropdown to be relevant.
+        ///     The <see cref="IRequirement"/> for the specified dropdown to be relevant.
         /// </returns>
         private IRequirement GetRequirement(DropdownID id)
         {
@@ -72,11 +77,6 @@ namespace OpenTracker.Models.Dropdowns
             }
 
             throw new ArgumentOutOfRangeException(nameof(id));
-        }
-
-        public IDropdown GetDropdown(DropdownID id)
-        {
-            return _factory(GetRequirement(id));
         }
     }
 }

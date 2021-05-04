@@ -6,16 +6,16 @@ namespace OpenTracker.Models.AutoTracking.Values.Multiple
     public interface IAutoTrackMultipleDifference : IAutoTrackValue
     {
         /// <summary>
-        ///     A factory for creating auto-tracking result values of subtracting a pair of values.
+        /// A factory for creating new <see cref="IAutoTrackMultipleDifference"/> objects.
         /// </summary>
         /// <param name="value1">
-        ///     The value from which to subtract.
+        ///     The <see cref="IAutoTrackValue"/> from which to subtract.
         /// </param>
         /// <param name="value2">
-        ///     The value to be subtracted.
+        ///     The <see cref="IAutoTrackValue"/> to be subtracted.
         /// </param>
         /// <returns>
-        ///     A new auto-tracking result value of subtracting a pair of values.
+        ///     A new <see cref="IAutoTrackMultipleDifference"/> object.
         /// </returns>
         delegate IAutoTrackMultipleDifference Factory(IAutoTrackValue value1, IAutoTrackValue value2);
     }

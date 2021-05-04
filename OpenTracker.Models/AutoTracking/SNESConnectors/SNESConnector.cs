@@ -11,7 +11,7 @@ using LogLevel = OpenTracker.Models.AutoTracking.Logging.LogLevel;
 namespace OpenTracker.Models.AutoTracking.SNESConnectors
 {
     /// <summary>
-    ///     This class contains logic for the SNES connector using WebSocketSharp to connect to (Q)USB2SNES.
+    /// This class contains logic for the SNES connector using WebSocketSharp to connect to (Q)USB2SNES.
     /// </summary>
     public class SNESConnector : ISNESConnector
     {
@@ -73,16 +73,16 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         }
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="logService">
-        ///     The log service for the SNES connector.
+        ///     The <see cref="IAutoTrackerLogService"/>.
         /// </param>
         /// <param name="requestFactory">
-        ///     An Autofac factory for creating requests.
+        ///     An Autofac factory for creating new <see cref="IRequest"/> objects.
         /// </param>
         /// <param name="webSocketFactory">
-        ///     An Autofac factory for creating new web sockets.
+        ///     An Autofac factory for creating new <see cref="IWebSocketWrapper"/> objects.
         /// </param>
         public SNESConnector(
             IAutoTrackerLogService logService, IRequest.Factory requestFactory,
@@ -106,13 +106,13 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         }
 
         /// <summary>
-        ///     Connects to the USB2SNES web socket.
+        /// Connects to the USB2SNES web socket.
         /// </summary>
         /// <param name="timeOutInMs">
-        ///     A 32-bit integer representing the timeout in milliseconds.
+        ///     A <see cref="int"/> representing the timeout in milliseconds.
         /// </param>
         /// <returns>
-        ///     A boolean representing whether the method is successful.
+        ///     A <see cref="bool"/> representing whether the method is successful.
         /// </returns>
         private bool Connect(int timeOutInMs)
         {
@@ -158,10 +158,10 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         }
 
         /// <summary>
-        ///     Returns whether the URI is valid.
+        /// Returns whether the URI is valid.
         /// </summary>
         /// <returns>
-        ///     A boolean representing whether the URI is valid.
+        ///     A <see cref="bool"/> representing whether the URI is valid.
         /// </returns>
         private bool ValidateURI()
         {
@@ -183,7 +183,7 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         }
 
         /// <summary>
-        ///     Disconnects from the web socket and unsets the web socket property.
+        /// Disconnects from the web socket and unsets the web socket property.
         /// </summary>
         private void Disconnect()
         {
@@ -200,13 +200,13 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         }
 
         /// <summary>
-        ///     Returns the devices able to be selected.
+        /// Returns the devices able to be selected.
         /// </summary>
         /// <param name="timeOutInMs">
-        ///     A 32-bit signed integer representing the time in milliseconds before timeout.
+        ///     A <see cref="int"/> representing the time in milliseconds before timeout.
         /// </param>
         /// <returns>
-        ///     An enumerable of strings representing the devices able to be selected.
+        ///     A <see cref="IEnumerable{T}"/> of <see cref="string"/> representing the devices able to be selected.
         /// </returns>
         private IEnumerable<string>? GetDevices(int timeOutInMs)
         {
@@ -222,13 +222,13 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         }
 
         /// <summary>
-        ///     Connects to the USB2SNES web socket, if not already connected.
+        /// Connects to the USB2SNES web socket, if not already connected.
         /// </summary>
         /// <param name="timeOutInMs">
-        ///     A 32-bit integer representing the timeout in milliseconds.
+        ///     A <see cref="int"/> representing the timeout in milliseconds.
         /// </param>
         /// <returns>
-        ///     A boolean representing whether the method is successful.
+        ///     A <see cref="bool"/> representing whether the method is successful.
         /// </returns>
         private bool ConnectIfNeeded(int timeOutInMs = 4096)
         {
@@ -250,19 +250,19 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         }
 
         /// <summary>
-        ///     Sends a request and receives a Json encoded response.
+        /// Sends a request and receives a Json encoded response.
         /// </summary>
         /// <param name="requestName">
-        ///     A string representing the type of request for logging purposes.
+        ///     A <see cref="string"/> representing the type of request for logging purposes.
         /// </param>
         /// <param name="request">
-        ///     The payload of the request.
+        ///     The <see cref="IRequest"/> payload.
         /// </param>
         /// <param name="timeOutInMs">
-        ///     A 32-bit integer representing the timeout in milliseconds.
+        ///     A <see cref="int"/> representing the timeout in milliseconds.
         /// </param>
         /// <returns>
-        ///     An enumerable of the resulting strings of the response.
+        ///     A <see cref="IEnumerable{T}"/> of the resulting <see cref="string"/> of the response.
         /// </returns>
         private IEnumerable<string>? GetJsonResults(
             string requestName, IRequest request, int timeOutInMs = 4096)
@@ -306,13 +306,13 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         }
 
         /// <summary>
-        ///     Sends a message to the web socket.
+        /// Sends a message to the web socket.
         /// </summary>
         /// <param name="request">
-        ///     The payload of the request.
+        ///     The <see cref="IRequest"/> payload.
         /// </param>
         /// <returns>
-        ///     A boolean representing whether the method is successful.
+        ///     A <see cref="bool"/> representing whether the method is successful.
         /// </returns>
         private bool Send(IRequest request)
         {
@@ -336,19 +336,19 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         }
 
         /// <summary>
-        ///     Returns the Results value of the JSON response to the specified request.
+        /// Returns the Results value of the JSON response to the specified request.
         /// </summary>
         /// <param name="requestName">
-        ///     A string representing the name of the request for logging purposes.
+        ///     A <see cref="string"/> representing the name of the request for logging purposes.
         /// </param>
         /// <param name="e">
-        ///     The message event args containing the message data.
+        ///     The <see cref="MessageEventArgs"/> containing the message data.
         /// </param>
         /// <param name="readEvent">
-        ///     The event wait handle used for timeout.
+        ///     The <see cref="EventWaitHandle"/> used for timeout.
         /// </param>
         /// <returns>
-        ///     A nullable array of strings representing the Results value of the response.
+        ///     A nullable array of <see cref="string"/> representing the Results value of the response.
         /// </returns>
         private string[]? ConvertResponseResultsToArray(
             string requestName, MessageEventArgs e, EventWaitHandle readEvent)
@@ -392,19 +392,19 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         }
 
         /// <summary>
-        ///     Returns the byte values of the specified memory addresses.
+        /// Returns the byte values of the specified memory addresses.
         /// </summary>
         /// <param name="address">
-        ///     A 64-bit unsigned integer representing the starting memory address.
+        ///     A <see cref="ulong"/> representing the starting memory address.
         /// </param>
         /// <param name="bytesToRead">
-        ///     A 32-bit signed integer representing the number of addresses to read.
+        ///     A <see cref="int"/> representing the number of addresses to read.
         /// </param>
         /// <param name="timeOutInMs">
-        ///     A 32-bit signed integer representing the time in milliseconds before timeout.
+        ///     A <see cref="int"/> representing the time in milliseconds before timeout.
         /// </param>
         /// <returns>
-        ///     An array of 8-bit unsigned integers representing the values of the memory addresses.
+        ///     An array of <see cref="byte"/> representing the values of the memory addresses.
         /// </returns>
         private byte[]? ReadMemory(ulong address, int bytesToRead, int timeOutInMs)
         {
@@ -479,13 +479,13 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         }
 
         /// <summary>
-        ///     Attaches to the selected device asynchronously, if not already attached.
+        /// Attaches to the selected device asynchronously, if not already attached.
         /// </summary>
         /// <param name="timeOutInMs">
-        ///     A 32-bit integer representing the timeout in milliseconds.
+        ///     A <see cref="int"/> representing the timeout in milliseconds.
         /// </param>
         /// <returns>
-        ///     A boolean representing whether the method is successful.
+        ///     A <see cref="bool"/> representing whether the method is successful.
         /// </returns>
         private async Task AttachDeviceIfNeededAsync(int timeOutInMs = 4096)
         {
@@ -493,13 +493,13 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         }
 
         /// <summary>
-        ///     Attaches to the selected device, if not already attached.
+        /// Attaches to the selected device, if not already attached.
         /// </summary>
         /// <param name="timeOutInMs">
-        ///     A 32-bit integer representing the timeout in milliseconds.
+        ///     A <see cref="int"/> representing the timeout in milliseconds.
         /// </param>
         /// <returns>
-        ///     A boolean representing whether the method is successful.
+        ///     A <see cref="bool"/> representing whether the method is successful.
         /// </returns>
         private bool AttachDeviceIfNeeded(int timeOutInMs)
         {
@@ -514,13 +514,13 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         }
 
         /// <summary>
-        ///     Attaches to the selected device.
+        /// Attaches to the selected device.
         /// </summary>
         /// <param name="timeOutInMs">
-        ///     A 32-bit signed integer representing the timeout in milliseconds.
+        ///     A <see cref="int"/> representing the timeout in milliseconds.
         /// </param>
         /// <returns>
-        ///     A boolean representing whether the method is successful.
+        ///     A <see cref="byte"/> representing whether the method is successful.
         /// </returns>
         private bool AttachDevice(int timeOutInMs = 4096)
         {
@@ -564,13 +564,13 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         }
 
         /// <summary>
-        ///     Returns the device info of the attached device.
+        /// Returns the device info of the attached device.
         /// </summary>
         /// <param name="timeOutInMs">
-        ///     A 32-bit integer representing the timeout in milliseconds.
+        ///     A <see cref="int"/> representing the timeout in milliseconds.
         /// </param>
         /// <returns>
-        ///     An enumerable of the device info strings.
+        ///     A <see cref="IEnumerable{T}"/> of <see cref="string"/> representing the device info.
         /// </returns>
         private IEnumerable<string>? GetDeviceInfo(int timeOutInMs = 4096)
         {
@@ -579,16 +579,16 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         }
 
         /// <summary>
-        ///     Sends a request without a response.
+        /// Sends a request without a response.
         /// </summary>
         /// <param name="requestName">
-        ///     A string representing the type of request for logging purposes.
+        ///     A <see cref="string"/> representing the type of request for logging purposes.
         /// </param>
         /// <param name="request">
-        ///     The payload of the request.
+        ///     The <see cref="IRequest"/> payload.
         /// </param>
         /// <returns>
-        ///     A boolean representing whether the method is successfully.
+        ///     A <see cref="bool"/> representing whether the method is successfully.
         /// </returns>
         private bool SendOnly(string requestName, IRequest request)
         {
@@ -608,7 +608,7 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         }
 
         /// <summary>
-        ///     Raises the StatusChanged event.
+        /// Raises the StatusChanged event.
         /// </summary>
         private void OnStatusChanged()
         {
@@ -616,13 +616,13 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         }
 
         /// <summary>
-        ///     Subscribes to the OnMessage event on the IWebSocketWrapper interface.
+        /// Subscribes to the <see cref="IWebSocketWrapper.OnMessage"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event was sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the OnMessage event.
+        ///     The <see cref="MessageEventArgs"/>.
         /// </param>
         private void HandleMessage(object? sender, MessageEventArgs e)
         {

@@ -27,6 +27,33 @@ namespace OpenTracker.Models.Reset
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="autoTracker">
+        ///     The <see cref="IAutoTracker"/>.
+        /// </param>
+        /// <param name="bossPlacements">
+        ///     The <see cref="IBossPlacementDictionary"/>.
+        /// </param>
+        /// <param name="connections">
+        ///     The <see cref="IConnectionCollection"/>.
+        /// </param>
+        /// <param name="dropdowns">
+        ///     The <see cref="IDropdownDictionary"/>.
+        /// </param>
+        /// <param name="items">
+        ///     The <see cref="IItemDictionary"/>.
+        /// </param>
+        /// <param name="locations">
+        ///     The <see cref="ILocationDictionary"/>.
+        /// </param>
+        /// <param name="pinnedLocations">
+        ///     The <see cref="IPinnedLocationCollection"/>.
+        /// </param>
+        /// <param name="prizePlacements">
+        ///     The <see cref="IPrizePlacementDictionary"/>.
+        /// </param>
+        /// <param name="undoRedoManager">
+        ///     The <see cref="IUndoRedoManager"/>.
+        /// </param>
         public ResetManager(
             IAutoTracker autoTracker, IBossPlacementDictionary bossPlacements, IConnectionCollection connections,
             IDropdownDictionary dropdowns, IItemDictionary items, ILocationDictionary locations,
@@ -44,14 +71,11 @@ namespace OpenTracker.Models.Reset
             _undoRedoManager = undoRedoManager;
         }
 
-        /// <summary>
-        /// Executes resetting the tracker.
-        /// </summary>
         public void Reset()
         {
             _undoRedoManager.Reset();
             _pinnedLocations.Clear();
-            _autoTracker.Disconnect();
+            _autoTracker.Disconnect().Wait();
             _bossPlacements.Reset();
             _locations.Reset();
             _prizePlacements.Reset();

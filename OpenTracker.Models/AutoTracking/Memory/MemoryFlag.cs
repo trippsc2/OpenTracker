@@ -41,10 +41,10 @@ namespace OpenTracker.Models.AutoTracking.Memory
         /// Subscribes to the <see cref="IMemoryAddress.PropertyChanged"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The object from which the event was sent.
+        ///     The <see cref="object"/> from which the event was sent.
         /// </param>
         /// <param name="e">
-        ///     The event args.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnMemoryChanged(object? sender, PropertyChangedEventArgs e)
         {

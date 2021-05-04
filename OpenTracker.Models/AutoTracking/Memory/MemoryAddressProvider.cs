@@ -97,7 +97,7 @@ namespace OpenTracker.Models.AutoTracking.Memory
         }
 
         /// <summary>
-        ///     Returns the number of memory addresses within the specified memory segment.
+        /// Returns the number of memory addresses within the specified memory segment.
         /// </summary>
         /// <param name="type">
         ///     The memory segment type.

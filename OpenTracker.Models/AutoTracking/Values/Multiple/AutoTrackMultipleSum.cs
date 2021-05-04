@@ -5,17 +5,17 @@ using System.Linq;
 namespace OpenTracker.Models.AutoTracking.Values.Multiple
 {
     /// <summary>
-    ///     This class contains the auto-tracking result value of a list of results to be summed.
+    /// This class contains the auto-tracking result value of a list of results to be summed.
     /// </summary>
     public class AutoTrackMultipleSum : AutoTrackValueBase, IAutoTrackMultipleSum
     {
         private readonly IList<IAutoTrackValue> _values;
         
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="values">
-        ///     The list of auto-tracking result values.
+        ///     The <see cref="IList{T}"/> of <see cref="IAutoTrackValue"/>.
         /// </param>
         public AutoTrackMultipleSum(IList<IAutoTrackValue> values)
         {
@@ -30,13 +30,13 @@ namespace OpenTracker.Models.AutoTracking.Values.Multiple
         }
 
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on the IAutoTrackValue interface.
+        /// Subscribes to the <see cref="IAutoTrackValue.PropertyChanged"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event was sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnValueChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -46,9 +46,6 @@ namespace OpenTracker.Models.AutoTracking.Values.Multiple
             }
         }
 
-        /// <summary>
-        ///     Updates the current value of this value.
-        /// </summary>
         protected override int? GetNewValue()
         {
             if (!_values.Any(x => x.CurrentValue.HasValue))

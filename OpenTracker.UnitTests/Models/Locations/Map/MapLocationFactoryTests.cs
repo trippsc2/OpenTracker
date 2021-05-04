@@ -2475,7 +2475,7 @@ namespace OpenTracker.UnitTests.Models.Locations.Map
                     },
                     LocationID.DarkLakeHyliaShop => new List<IMapLocation>
                     {
-                        Factory(MapID.DarkWorld, 1460, 1540, Location,
+                        Factory(MapID.DarkWorld, 1300, 1618, Location,
                             AggregateRequirements[new HashSet<IRequirement>
                             {
                                 AlternativeRequirements[new HashSet<IRequirement>

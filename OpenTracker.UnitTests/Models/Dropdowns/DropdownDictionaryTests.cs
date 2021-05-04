@@ -75,5 +75,15 @@ namespace OpenTracker.UnitTests.Models.Dropdowns
             
             Assert.NotNull(sut as DropdownDictionary);
         }
+
+        [Fact]
+        public void AutofacSingleInstanceTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var value1 = scope.Resolve<IDropdownDictionary>();
+            var value2 = scope.Resolve<IDropdownDictionary>();
+            
+            Assert.Equal(value1, value2);
+        }
     }
 }

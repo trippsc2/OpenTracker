@@ -6,32 +6,32 @@ using OpenTracker.Models.Dungeons.State;
 namespace OpenTracker.Models.Dungeons.AccessibilityProvider
 {
     /// <summary>
-    ///     This interface contains the logic for aggregating dungeon results into final values.
+    /// This interface contains the logic for aggregating dungeon results into final values.
     /// </summary>
     public interface IResultAggregator
     {
         /// <summary>
-        ///     A factory for creating result aggregators.
+        /// A factory for creating new <see cref="IResultAggregator"/> objects.
         /// </summary>
         /// <param name="dungeon">
-        ///     The dungeon data.
+        ///     The <see cref="IDungeon"/>.
         /// </param>
         /// <param name="mutableDungeonQueue">
-        ///     The mutable dungeon data instance queue.
+        ///     The <see cref="IMutableDungeonQueue"/>.
         /// </param>
         /// <returns>
-        ///     A new result aggregator.
+        ///     A new <see cref="IResultAggregator"/> object.
         /// </returns>
         delegate IResultAggregator Factory(IDungeon dungeon, IMutableDungeonQueue mutableDungeonQueue);
         
         /// <summary>
-        ///     Returns the final result.
+        /// Returns the final <see cref="IDungeonResult"/>.
         /// </summary>
         /// <param name="finalQueue">
-        ///     The blocking collection queue for final key door permutations.
+        ///     The <see cref="BlockingCollection{T}"/> queue for final <see cref="IDungeonState"/> permutations.
         /// </param>
         /// <returns>
-        ///     The final result.
+        ///     The final <see cref="IDungeonState"/>.
         /// </returns>
         IDungeonResult AggregateResults(BlockingCollection<IDungeonState> finalQueue);
     }

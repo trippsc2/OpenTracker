@@ -7,7 +7,7 @@ using OpenTracker.Utils;
 namespace OpenTracker.Models.BossPlacements
 {
     /// <summary>
-    ///     This class contains the dictionary container for boss placements.
+    /// This class contains the dictionary container for <see cref="IBossPlacement"/> objects.
     /// </summary>
     public class BossPlacementDictionary : LazyDictionary<BossPlacementID, IBossPlacement>,
         IBossPlacementDictionary
@@ -15,10 +15,10 @@ namespace OpenTracker.Models.BossPlacements
         private readonly Lazy<IBossPlacementFactory> _factory;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="factory">
-        ///     A factory for creating boss placements.
+        ///     An Autofac factory for creating the <see cref="IBossPlacementFactory"/> object.
         /// </param>
         public BossPlacementDictionary(IBossPlacementFactory.Factory factory)
             : base(new Dictionary<BossPlacementID, IBossPlacement>())
@@ -34,21 +34,12 @@ namespace OpenTracker.Models.BossPlacements
             }
         }
 
-        /// <summary>
-        ///     Returns a dictionary of boss placement save data.
-        /// </summary>
-        /// <returns>
-        ///     A dictionary of boss placement save data.
-        /// </returns>
         public IDictionary<BossPlacementID, BossPlacementSaveData> Save()
         {
             return Keys.ToDictionary(
                 bossPlacement => bossPlacement, bossPlacement => this[bossPlacement].Save());
         }
 
-        /// <summary>
-        ///     Loads a dictionary of boss placement save data.
-        /// </summary>
         public void Load(IDictionary<BossPlacementID, BossPlacementSaveData>? saveData)
         {
             if (saveData == null)

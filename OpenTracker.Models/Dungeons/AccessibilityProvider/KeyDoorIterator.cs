@@ -11,7 +11,7 @@ using OpenTracker.Utils;
 namespace OpenTracker.Models.Dungeons.AccessibilityProvider
 {
     /// <summary>
-    ///     This class contains the logic for iterating through key doors in a dungeon.
+    /// This class contains the logic for iterating through key doors in a dungeon.
     /// </summary>
     public class KeyDoorIterator : IKeyDoorIterator
     {
@@ -27,19 +27,19 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         private IList<KeyDoorID> SmallKeyDoors => _dungeon.SmallKeyDoors;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="taskScheduler">
-        ///     The task scheduler.
+        ///     The <see cref="ConstrainedTaskScheduler"/>.
         /// </param>
         /// <param name="stateFactory">
-        ///     An Autofac factory for creating new dungeon states.
+        ///     An Autofac factory for creating new <see cref="IDungeonState"/> objects.
         /// </param>
         /// <param name="dungeon">
-        ///     The dungeon data.
+        ///     The <see cref="IDungeon"/>.
         /// </param>
         /// <param name="mutableDungeonQueue">
-        ///     The queue of mutable dungeon data instances.
+        ///     The <see cref="IMutableDungeonQueue"/>.
         /// </param>
         public KeyDoorIterator(
             ConstrainedTaskScheduler taskScheduler, IDungeonState.Factory stateFactory, IDungeon dungeon,
@@ -65,10 +65,12 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         }
         
         /// <summary>
-        ///     Creates the list of blocking collection queues for processing dungeon key door permutations.
+        /// Creates the <see cref="IList{T}"/> of <see cref="BlockingCollection{T}"/> queues for processing
+        /// <see cref="IDungeonState"/> permutations.
         /// </summary>
         /// <returns>
-        ///     A list of blocking collection queues.
+        ///     A <see cref="IList{T}"/> of <see cref="BlockingCollection{T}"/> queues for processing
+        ///     <see cref="IDungeonState"/> permutations.
         /// </returns>
         private IList<BlockingCollection<IDungeonState>> CreateKeyDoorPermutationQueues()
         {
@@ -83,10 +85,10 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         }
 
         /// <summary>
-        ///     Populates the initial key permutations for the initial simulations.
+        /// Populates the initial <see cref="IDungeonState"/> permutations for the initial simulations.
         /// </summary>
         /// <param name="firstQueue">
-        ///     The blocking collection to be populated.
+        ///     The <see cref="BlockingCollection{T}"/> to be populated.
         /// </param>
         private void PopulateInitialDungeonStates(BlockingCollection<IDungeonState> firstQueue)
         {
@@ -108,16 +110,18 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         }
 
         /// <summary>
-        ///     Returns a list of asynchronous tasks to process each permutation queue.
+        /// Returns an array of <see cref="Task"/> to process each <see cref="BlockingCollection{T}"/> queue of
+        /// <see cref="IDungeonState"/> permutations.
         /// </summary>
         /// <param name="keyDoorPermutationQueue">
-        ///     A list of key door permutation queues to be processed by tasks.
+        ///     A <see cref="IList{T}"/> of <see cref="BlockingCollection{T}"/> queues of <see cref="IDungeonState"/>
+        ///     permutations to be processed by the tasks.
         /// </param>
         /// <param name="finalQueue">
-        ///     The blocking collection queue to place final permutations.
+        ///     The <see cref="BlockingCollection{T}"/> queue to place final <see cref="IDungeonState"/> permutations.
         /// </param>
         /// <returns>
-        ///     A list of permutation processing tasks.
+        ///     An array of permutation processing <see cref="Task">Tasks</see>.
         /// </returns>
         private Task[] CreatePermutationQueueProcessingTasks(
             IList<BlockingCollection<IDungeonState>> keyDoorPermutationQueue,
@@ -140,15 +144,18 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         }
         
         /// <summary>
-        ///     Processes a specified permutation queue.
+        /// Processes a specified <see cref="BlockingCollection{T}"/> queue of <see cref="IDungeonState"/> permutations.
         /// </summary>
         /// <param name="currentQueue">
-        ///     The blocking collection queue to be processed.
+        ///     The <see cref="BlockingCollection{T}"/> queue to be processed.
         /// </param>
         /// <param name="nextQueue">
-        ///     A nullable blocking collection queue to place generated permutations.
+        ///     A nullable <see cref="BlockingCollection{T}"/> queue to place generated <see cref="IDungeonState"/>
+        ///     permutations for further processing.
         /// </param>
-        /// <param name="finalQueue"></param>
+        /// <param name="finalQueue">
+        ///     The <see cref="BlockingCollection{T}"/> queue to place final <see cref="IDungeonState"/> permutations.
+        /// </param>
         private void ProcessPermutationQueue(
             BlockingCollection<IDungeonState> currentQueue, BlockingCollection<IDungeonState>? nextQueue,
             BlockingCollection<IDungeonState> finalQueue)
@@ -166,19 +173,20 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         }
 
         /// <summary>
-        ///     Process the dungeon state permutation.
+        /// Process the specified <see cref="IDungeonState"/> permutation.
         /// </summary>
         /// <param name="dungeonData">
-        ///     The mutable dungeon data.
+        ///     The <see cref="IMutableDungeon"/>.
         /// </param>
         /// <param name="state">
-        ///     The permutation to be processed.
+        ///     The <see cref="IDungeonState"/> permutation to be processed.
         /// </param>
         /// <param name="finalQueue">
-        ///     The final queue.
+        ///     The <see cref="BlockingCollection{T}"/> queue to place final <see cref="IDungeonState"/> permutations.
         /// </param>
         /// <param name="nextQueue">
-        ///     The next queue to which this permutation will be added.
+        ///     A nullable <see cref="BlockingCollection{T}"/> queue to place generated <see cref="IDungeonState"/>
+        ///     permutations for further processing.
         /// </param>
         private void ProcessDungeonState(
             IMutableDungeon dungeonData, IDungeonState state, BlockingCollection<IDungeonState> finalQueue,
@@ -211,16 +219,16 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         }
 
         /// <summary>
-        ///     Returns the number of keys that are available in the current dungeon state.
+        /// Returns the number of keys that are available in the specified <see cref="IDungeonState"/>.
         /// </summary>
         /// <param name="dungeonData">
-        ///     The mutable dungeon data.
+        ///     The <see cref="IMutableDungeon"/>.
         /// </param>
         /// <param name="state">
-        ///     The current dungeon state.
+        ///     The <see cref="IDungeonState"/>.
         /// </param>
         /// <returns>
-        ///     A 32-bit signed integer representing the number of keys available.
+        ///     A <see cref="int"/> representing the number of keys available.
         /// </returns>
         private static int GetAvailableSmallKeys(IMutableDungeon dungeonData, IDungeonState state)
         {
@@ -229,16 +237,18 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         }
 
         /// <summary>
-        ///     Queues the next set of state permutations.
+        /// Queues the next set of state permutations.
         /// </summary>
         /// <param name="state">
-        ///     The current dungeon state.
+        ///     The current <see cref="IDungeonState"/> permutation.
         /// </param>
         /// <param name="nextQueue">
-        ///     The next permutation queue.
+        ///     A <see cref="BlockingCollection{T}"/> queue to place generated <see cref="IDungeonState"/> permutations
+        ///     for further processing.
         /// </param>
         /// <param name="accessibleKeyDoors">
-        ///     The enumerable of accessible locked key doors.
+        ///     The <see cref="IEnumerable{T}"/> of <see cref="KeyDoorID"/> representing the accessible locked key
+        ///     doors.
         /// </param>
         private void QueueNextStatePermutations(
             IDungeonState state, BlockingCollection<IDungeonState> nextQueue, IEnumerable<KeyDoorID> accessibleKeyDoors)

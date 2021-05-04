@@ -1,7 +1,7 @@
 ﻿namespace OpenTracker.Models.Dropdowns
 {
     /// <summary>
-    ///     This enum type contains the identity of dropdowns.
+    /// This enum type defines the dropdown ID values.
     /// </summary>
     public enum DropdownID
     {

@@ -44,5 +44,15 @@ namespace OpenTracker.UnitTests.Models.AutoTracking.Logging
             
             Assert.NotNull(sut as AutoTrackerLogService);
         }
+
+        [Fact]
+        public void AutofacSingleInstanceTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var value1 = scope.Resolve<IAutoTrackerLogService>();
+            var value2 = scope.Resolve<IAutoTrackerLogService>();
+            
+            Assert.Equal(value1, value2);
+        }
     }
 }

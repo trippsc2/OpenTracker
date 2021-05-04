@@ -5,7 +5,7 @@ using ReactiveUI;
 namespace OpenTracker.Models.AutoTracking.Values.Single
 {
     /// <summary>
-    ///     This class contains the auto-tracking result value of a hidden item count.
+    /// This class contains the auto-tracking result value of a hidden item count.
     /// </summary>
     public class AutoTrackItemValue : ReactiveObject, IAutoTrackItemValue
     {
@@ -14,10 +14,10 @@ namespace OpenTracker.Models.AutoTracking.Values.Single
         public int? CurrentValue => _item.Current;
         
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="item">
-        ///     The item for which the count is represented.
+        ///     The <see cref="IItem"/> for which the count is represented.
         /// </param>
         public AutoTrackItemValue(IItem item)
         {
@@ -27,13 +27,13 @@ namespace OpenTracker.Models.AutoTracking.Values.Single
         }
 
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on the IItem interface.
+        /// Subscribes to the <see cref="IItem.PropertyChanged"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event was sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnItemChanged(object? sender, PropertyChangedEventArgs e)
         {

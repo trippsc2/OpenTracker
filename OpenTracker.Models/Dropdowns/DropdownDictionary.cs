@@ -7,17 +7,17 @@ using OpenTracker.Utils;
 namespace OpenTracker.Models.Dropdowns
 {
     /// <summary>
-    ///     This class contains the dictionary container of dropdowns.
+    /// This class contains the dictionary container of <see cref="IDropdown"/> objects.
     /// </summary>
     public class DropdownDictionary : LazyDictionary<DropdownID, IDropdown>, IDropdownDictionary
     {
         private readonly Lazy<IDropdownFactory> _factory;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="factory">
-        ///     A factory for creating new dropdowns.
+        ///     An Autofac factory for creating the <see cref="IDropdownFactory"/> object.
         /// </param>
         public DropdownDictionary(IDropdownFactory.Factory factory) : base(new Dictionary<DropdownID, IDropdown>())
         {
@@ -37,24 +37,12 @@ namespace OpenTracker.Models.Dropdowns
             }
         }
 
-        /// <summary>
-        ///     Returns a dictionary of dropdown save data.
-        /// </summary>
-        /// <returns>
-        ///     A dictionary of dropdown save data.
-        /// </returns>
         public IDictionary<DropdownID, DropdownSaveData> Save()
         {
             return Keys.ToDictionary(
                 type => type, type => this[type].Save());
         }
 
-        /// <summary>
-        ///     Loads a dictionary of dropdown save data.
-        /// </summary>
-        /// <param name="saveData">
-        ///     The save data to be loaded.
-        /// </param>
         public void Load(IDictionary<DropdownID, DropdownSaveData>? saveData)
         {
             if (saveData is null)

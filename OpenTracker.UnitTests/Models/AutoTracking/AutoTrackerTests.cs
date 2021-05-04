@@ -1,4 +1,5 @@
 using System;
+using Autofac;
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;
 using OpenTracker.Models.AutoTracking;
@@ -271,6 +272,25 @@ namespace OpenTracker.UnitTests.Models.AutoTracking
 
             await _snesConnector.Received(Enum.GetValues(typeof(MemorySegmentType)).Length + 1).ReadMemoryAsync(
                 Arg.Any<ulong>(), Arg.Any<int>());
+        }
+
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var sut = scope.Resolve<IAutoTracker>();
+            
+            Assert.NotNull(sut as AutoTracker);
+        }
+
+        [Fact]
+        public void AutofacSingleInstanceTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var value1 = scope.Resolve<IAutoTracker>();
+            var value2 = scope.Resolve<IAutoTracker>();
+            
+            Assert.Equal(value1, value2);
         }
     }
 }

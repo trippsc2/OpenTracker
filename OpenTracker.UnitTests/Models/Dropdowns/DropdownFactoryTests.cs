@@ -89,5 +89,16 @@ namespace OpenTracker.UnitTests.Models.Dropdowns
             
             Assert.NotNull(sut as DropdownFactory);
         }
+
+        [Fact]
+        public void AutofacSingleInstanceTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var factory = scope.Resolve<IDropdownFactory.Factory>();
+            var value1 = factory();
+            var value2 = factory();
+            
+            Assert.Equal(value1, value2);
+        }
     }
 }

@@ -21,12 +21,12 @@
         /// <param name="level">
         ///     The <see cref="LogLevel"/> of the log message.
         /// </param>
-        /// <param name="message">
+        /// <param name="content">
         ///     A <see cref="string"/> representing the content of the log message.
         /// </param>
         /// <returns>
         ///     A new <see cref="ILogMessage"/> object.
         /// </returns>
-        delegate ILogMessage Factory(LogLevel level, string message);
+        delegate ILogMessage Factory(LogLevel level, string content);
     }
 }

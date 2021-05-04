@@ -32,5 +32,15 @@ namespace OpenTracker.UnitTests.Models.AutoTracking.Memory
             
             Assert.NotNull(sut as MemoryAddressProvider);
         }
+
+        [Fact]
+        public void AutofacSingleInstanceTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var value1 = scope.Resolve<IMemoryAddressProvider>();
+            var value2 = scope.Resolve<IMemoryAddressProvider>();
+            
+            Assert.Equal(value1, value2);
+        }
     }
 }

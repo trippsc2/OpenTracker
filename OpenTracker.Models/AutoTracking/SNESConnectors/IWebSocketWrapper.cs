@@ -3,6 +3,9 @@ using WebSocketSharp;
 
 namespace OpenTracker.Models.AutoTracking.SNESConnectors
 {
+    /// <summary>
+    /// This interface wraps the <see cref="WebSocket"/> class to allow for unit testing.
+    /// </summary>
     public interface IWebSocketWrapper
     {
         bool IsAlive { get; }

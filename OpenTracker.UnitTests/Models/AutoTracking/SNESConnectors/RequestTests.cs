@@ -5,7 +5,7 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.AutoTracking.SNESConnectors
 {
-    public class RequestTypeTests
+    public class RequestTests
     {
         [Theory]
         [InlineData("DeviceList","DeviceList")]
