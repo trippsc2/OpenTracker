@@ -1,4 +1,4 @@
-﻿namespace OpenTracker.Models.AutoTracking.Logging
+﻿namespace OpenTracker.Models.Logging
 {
     /// <summary>
     /// This enum type defines the log level values.

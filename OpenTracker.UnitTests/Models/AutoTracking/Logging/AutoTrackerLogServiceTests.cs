@@ -1,5 +1,6 @@
 using Autofac;
 using OpenTracker.Models.AutoTracking.Logging;
+using OpenTracker.Models.Logging;
 using Xunit;
 
 namespace OpenTracker.UnitTests.Models.AutoTracking.Logging

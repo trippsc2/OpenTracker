@@ -20,6 +20,7 @@ using OpenTracker.Models.Items.Factories;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Locations.Map;
 using OpenTracker.Models.Locations.Map.Connections;
+using OpenTracker.Models.Logging;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.Nodes;
 using OpenTracker.Models.Nodes.Factories;
@@ -142,6 +143,7 @@ namespace OpenTracker
             nameof(LocationFactory),
             nameof(MapLocationFactory),
             nameof(PinnedLocationCollection),
+            nameof(AutoTrackerLogger),
             nameof(Mode),
             nameof(PrizePlacementDictionary),
             nameof(PrizePlacementFactory),

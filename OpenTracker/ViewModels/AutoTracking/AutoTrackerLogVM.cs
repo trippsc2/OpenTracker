@@ -12,7 +12,7 @@ using OpenTracker.Utils;
 using OpenTracker.Utils.Dialog;
 using OpenTracker.ViewModels.Dialogs;
 using ReactiveUI;
-using LogLevel = OpenTracker.Models.AutoTracking.Logging.LogLevel;
+using LogLevel = OpenTracker.Models.Logging.LogLevel;
 
 namespace OpenTracker.ViewModels.AutoTracking
 {
@@ -33,7 +33,7 @@ namespace OpenTracker.ViewModels.AutoTracking
         public ObservableStringBuilder LogText { get; } =
             new();
 
-        private LogLevel _logLevel = Models.AutoTracking.Logging.LogLevel.Info;
+        private LogLevel _logLevel = Models.Logging.LogLevel.Info;
         public string LogLevel
         {
             get => _logLevel.ToString();

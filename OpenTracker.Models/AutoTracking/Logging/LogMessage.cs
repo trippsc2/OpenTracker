@@ -1,4 +1,6 @@
-﻿namespace OpenTracker.Models.AutoTracking.Logging
+﻿using OpenTracker.Models.Logging;
+
+namespace OpenTracker.Models.AutoTracking.Logging
 {
     /// <summary>
     /// This class contains auto-tracking log message data.

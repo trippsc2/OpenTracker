@@ -1,51 +1,23 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Globalization;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using OpenTracker.Models.AutoTracking.Logging;
+using OpenTracker.Models.AutoTracking.SNESConnectors.Socket;
+using OpenTracker.Models.Logging;
+using ReactiveUI;
 using WebSocketSharp;
-using LogLevel = OpenTracker.Models.AutoTracking.Logging.LogLevel;
+using LogLevel = OpenTracker.Models.Logging.LogLevel;
 
 namespace OpenTracker.Models.AutoTracking.SNESConnectors
 {
-    /// <summary>
-    /// This class contains logic for the SNES connector using WebSocketSharp to connect to (Q)USB2SNES.
-    /// </summary>
-    public class SNESConnector : ISNESConnector
+    public class SNESConnector : ReactiveObject, ISNESConnector
     {
-        private readonly IAutoTrackerLogService _logService;
-        
-        private readonly IRequest.Factory _requestFactory;
+        private readonly IAutoTrackerLogger _logger;
+
         private readonly IWebSocketWrapper.Factory _webSocketFactory;
 
-        private const string AppName = "OpenTracker";
-        private readonly object _transmitLock = new();
-
-        private Action<MessageEventArgs>? _messageHandler;
         private string? _uri;
-        private string? _device;
-
-        private bool Connected => Socket is not null && Socket.IsAlive;
-
-        public event EventHandler<ConnectionStatus>? StatusChanged;
-
-        private ConnectionStatus _status;
-        private ConnectionStatus Status
-        {
-            get => _status;
-            set
-            {
-                if (_status == value)
-                {
-                    return;
-                }
-                
-                _status = value;
-                OnStatusChanged();
-            }
-        }
 
         private IWebSocketWrapper? _socket;
         private IWebSocketWrapper? Socket
@@ -57,7 +29,7 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
                 {
                     return;
                 }
-                
+
                 if (_socket is not null)
                 {
                     _socket.OnMessage -= HandleMessage;
@@ -71,110 +43,117 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
                 }
             }
         }
+        
+        private ConnectionStatus _status;
+        public ConnectionStatus Status
+        {
+            get => _status;
+            private set => this.RaiseAndSetIfChanged(ref _status, value);
+        }
 
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="logService">
-        ///     The <see cref="IAutoTrackerLogService"/>.
-        /// </param>
-        /// <param name="requestFactory">
-        ///     An Autofac factory for creating new <see cref="IRequest"/> objects.
+        /// <param name="logger">
+        ///     The <see cref="IAutoTrackerLogger"/>.
         /// </param>
         /// <param name="webSocketFactory">
         ///     An Autofac factory for creating new <see cref="IWebSocketWrapper"/> objects.
         /// </param>
-        public SNESConnector(
-            IAutoTrackerLogService logService, IRequest.Factory requestFactory,
-            IWebSocketWrapper.Factory webSocketFactory)
+        public SNESConnector(IAutoTrackerLogger logger, IWebSocketWrapper.Factory webSocketFactory)
         {
-            _logService = logService;
-            
-            _requestFactory = requestFactory;
+            _logger = logger;
             _webSocketFactory = webSocketFactory;
         }
 
-        public void SetUri(string uriString)
+        public void SetURI(string uriString)
         {
             _uri = uriString;
-            _logService.Log(LogLevel.Debug, $"URI set to {_uri}.");
+            _logger.Log(LogLevel.Info, $"URI set to \'{_uri}\'.");
         }
 
-        public async Task<bool> ConnectAsync(int timeOutInMs = 4096)
+        public async Task ConnectAsync()
         {
-            return await Task<bool>.Factory.StartNew(() => Connect(timeOutInMs));
+            try
+            {
+                await Task.Factory.StartNew(Connect);
+            }
+            catch (Exception exception)
+            {
+                switch (exception)
+                {
+                    case AggregateException aggregateException:
+                        foreach (var innerException in aggregateException.InnerExceptions)
+                        {
+                            HandleException(innerException);
+                        }
+                        break;
+                    default:
+                        HandleException(exception);
+                        break;
+                }
+            }
+        }
+
+        private void Connect()
+        {
+            if (Socket is not null)
+            {
+                throw new Exception("The WebSocket client already exists and cannot be created.");
+            }
+            
+            CreateWebSocket();
+
+            using var openEvent = new ManualResetEvent(false);
+            ConnectToWebSocket(openEvent);
         }
 
         /// <summary>
-        /// Connects to the USB2SNES web socket.
+        /// Create the <see cref="IWebSocketWrapper"/> object and log it for debugging purposes.
         /// </summary>
-        /// <param name="timeOutInMs">
-        ///     A <see cref="int"/> representing the timeout in milliseconds.
-        /// </param>
-        /// <returns>
-        ///     A <see cref="bool"/> representing whether the method is successful.
-        /// </returns>
-        private bool Connect(int timeOutInMs)
+        private void CreateWebSocket()
         {
-            if (!ValidateURI())
-            {
-                return false;
-            }
-
+            _logger.Log(LogLevel.Debug, $"Attempting to create WebSocket with URI \'{_uri}\'");
             Socket = _webSocketFactory(_uri!);
-            _logService.Log(
-                LogLevel.Info,
-                $"Attempting to connect to USB2SNES websocket at {Socket.Url.OriginalString}.");
-            Status = ConnectionStatus.Connecting;
+            _logger.Log(LogLevel.Debug, $"WebSocket successfully created with URI \'{_uri}\'");
+        }
 
-            using var openEvent = new ManualResetEvent(false);
-
+        /// <summary>
+        /// Connects to the websocket at the specified URI.
+        /// </summary>
+        /// <param name="openEvent">
+        ///     A <see cref="ManualResetEvent"/> that waits for the <see cref="WebSocket.OnOpen"/> event or a 5 second
+        ///     timeout.
+        /// </param>
+        /// <exception cref="Exception">
+        ///     Thrown if the connection to the websocket times out.
+        /// </exception>
+        private void ConnectToWebSocket(ManualResetEvent openEvent)
+        {
             void OnOpen(object? sender, EventArgs e)
             {
-                // ReSharper disable once AccessToDisposedClosure
                 openEvent.Set();
             }
 
-            Socket.OnOpen += OnOpen;
+            _logger.Log(
+                LogLevel.Debug,
+                $"Attempting to connect to USB2SNES websocket at {Socket!.Url.OriginalString}.");
+            Status = ConnectionStatus.Connecting;
+            Socket!.OnOpen += OnOpen;
             Socket.Connect();
-            var result = openEvent.WaitOne(timeOutInMs);
-            Socket.OnOpen -= OnOpen;
+            var result = openEvent.WaitOne(5000);
+            Socket!.OnOpen -= OnOpen;
 
-            if (result)
+            if (!result)
             {
-                _logService.Log(
-                    LogLevel.Info,
-                    $"Successfully connected to USB2SNES websocket at {Socket.Url.OriginalString}.");
-                Status = ConnectionStatus.SelectDevice;
-                return result;
+                throw new Exception(
+                    $"Failed to connect to USB2SNES websocket at \'{Socket.Url.OriginalString}\'.");
             }
-
-            _logService.Log(
-                LogLevel.Error,
-                $"Failed to connect to USB2SNES websocket at {Socket.Url.OriginalString}.");
-            Status = ConnectionStatus.Error;
-
-            return result;
-        }
-
-        /// <summary>
-        /// Returns whether the URI is valid.
-        /// </summary>
-        /// <returns>
-        ///     A <see cref="bool"/> representing whether the URI is valid.
-        /// </returns>
-        private bool ValidateURI()
-        {
-            if (_uri is not null)
-            {
-                _logService.Log(LogLevel.Debug, "Successfully tested URI for nullability.");
-                return true;
-            }
-
-            _logService.Log(
-                LogLevel.Info, "Unable to connect to USB2SNES websocket. The URI is empty.");
-            Status = ConnectionStatus.Error;
-            return false;
+            
+            _logger.Log(
+                LogLevel.Info,
+                $"Successfully connected to USB2SNES websocket at \'{Socket.Url.OriginalString}\'.");
+            Status = ConnectionStatus.SelectDevice;
         }
 
         public async Task DisconnectAsync()
@@ -183,436 +162,31 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         }
 
         /// <summary>
-        /// Disconnects from the web socket and unsets the web socket property.
+        /// Disconnects from the websocket and disposes of the <see cref="IWebSocketWrapper"/> object.
         /// </summary>
         private void Disconnect()
         {
             Socket?.Close();
+            Socket?.Dispose();
             Socket = null;
             GC.Collect();
             GC.WaitForPendingFinalizers();
             Status = ConnectionStatus.NotConnected;
         }
 
-        public async Task<IEnumerable<string>?> GetDevicesAsync(int timeOutInMs = 4096)
+        public Task<IEnumerable<string>?> GetDevicesAsync()
         {
-            return await Task<IEnumerable<string>?>.Factory.StartNew(() => GetDevices(timeOutInMs));
+            throw new System.NotImplementedException();
         }
 
-        /// <summary>
-        /// Returns the devices able to be selected.
-        /// </summary>
-        /// <param name="timeOutInMs">
-        ///     A <see cref="int"/> representing the time in milliseconds before timeout.
-        /// </param>
-        /// <returns>
-        ///     A <see cref="IEnumerable{T}"/> of <see cref="string"/> representing the devices able to be selected.
-        /// </returns>
-        private IEnumerable<string>? GetDevices(int timeOutInMs)
+        public Task SetDeviceAsync(string device)
         {
-            if (!ConnectIfNeeded(timeOutInMs))
-            {
-                _logService.Log(LogLevel.Error, "Unable to get devices. Could not connect to websocket.");
-                Status = ConnectionStatus.Error;
-                return null;
-            }
-
-            return GetJsonResults(
-                "get device list", _requestFactory(OpcodeType.DeviceList.ToString()), timeOutInMs);
+            throw new System.NotImplementedException();
         }
 
-        /// <summary>
-        /// Connects to the USB2SNES web socket, if not already connected.
-        /// </summary>
-        /// <param name="timeOutInMs">
-        ///     A <see cref="int"/> representing the timeout in milliseconds.
-        /// </param>
-        /// <returns>
-        ///     A <see cref="bool"/> representing whether the method is successful.
-        /// </returns>
-        private bool ConnectIfNeeded(int timeOutInMs = 4096)
+        public Task<byte[]?> ReadMemoryAsync(ulong address, int bytesToRead = 1)
         {
-            if (Connected)
-            {
-                _logService.Log(
-                    LogLevel.Debug, "Already connected to USB2SNES websocket, skipping connection attempt.");
-                return true;
-            }
-
-            if (Socket is not null)
-            {
-                _logService.Log(LogLevel.Debug, "Attempting to restart WebSocket class.");
-                Disconnect();
-                _logService.Log(LogLevel.Debug, "Existing WebSocket class restarted.");
-            }
-
-            return Connect(timeOutInMs);
-        }
-
-        /// <summary>
-        /// Sends a request and receives a Json encoded response.
-        /// </summary>
-        /// <param name="requestName">
-        ///     A <see cref="string"/> representing the type of request for logging purposes.
-        /// </param>
-        /// <param name="request">
-        ///     The <see cref="IRequest"/> payload.
-        /// </param>
-        /// <param name="timeOutInMs">
-        ///     A <see cref="int"/> representing the timeout in milliseconds.
-        /// </param>
-        /// <returns>
-        ///     A <see cref="IEnumerable{T}"/> of the resulting <see cref="string"/> of the response.
-        /// </returns>
-        private IEnumerable<string>? GetJsonResults(
-            string requestName, IRequest request, int timeOutInMs = 4096)
-        {
-            string[]? results = null;
-
-            lock (_transmitLock)
-            {
-                using ManualResetEvent readEvent = new(false);
-
-                // ReSharper disable once AccessToDisposedClosure
-                _messageHandler = e =>
-                {
-                    results = ConvertResponseResultsToArray(requestName, e, readEvent);
-                };
-
-                _logService.Log(LogLevel.Debug, $"Request {requestName} sending.");
-
-                if (!Send(request))
-                {
-                    _logService.Log(LogLevel.Error, $"Request {requestName} failed to send.");
-                    Status = ConnectionStatus.Error;
-                    return null;
-                }
-
-                _logService.Log(LogLevel.Debug, $"Request {requestName} sent.");
-
-                if (!readEvent.WaitOne(timeOutInMs))
-                {
-                    _logService.Log(LogLevel.Error, $"Request {requestName} timed out waiting for response.");
-                    Status = ConnectionStatus.Error;
-
-                    _messageHandler = null;
-                    return null;
-                }
-            }
-
-            _messageHandler = null;
-            _logService.Log(LogLevel.Debug, $"Request {requestName} successful.");
-            return results;
-        }
-
-        /// <summary>
-        /// Sends a message to the web socket.
-        /// </summary>
-        /// <param name="request">
-        ///     The <see cref="IRequest"/> payload.
-        /// </param>
-        /// <returns>
-        ///     A <see cref="bool"/> representing whether the method is successful.
-        /// </returns>
-        private bool Send(IRequest request)
-        {
-            var sendTask = Task<bool>.Factory.StartNew(() =>
-            {
-                try
-                {
-                    Socket?.Send(JsonConvert.SerializeObject(request));
-                }
-                catch (InvalidOperationException)
-                {
-                    return false;
-                }
-
-                return true;
-            });
-
-            sendTask.Wait();
-
-            return sendTask.Result;
-        }
-
-        /// <summary>
-        /// Returns the Results value of the JSON response to the specified request.
-        /// </summary>
-        /// <param name="requestName">
-        ///     A <see cref="string"/> representing the name of the request for logging purposes.
-        /// </param>
-        /// <param name="e">
-        ///     The <see cref="MessageEventArgs"/> containing the message data.
-        /// </param>
-        /// <param name="readEvent">
-        ///     The <see cref="EventWaitHandle"/> used for timeout.
-        /// </param>
-        /// <returns>
-        ///     A nullable array of <see cref="string"/> representing the Results value of the response.
-        /// </returns>
-        private string[]? ConvertResponseResultsToArray(
-            string requestName, MessageEventArgs e, EventWaitHandle readEvent)
-        {
-            _logService.Log(LogLevel.Info, $"Request {requestName} response received.");
-
-            var dictionary = JsonConvert.DeserializeObject<Dictionary<string, string[]>?>(e.Data);
-
-            if (dictionary is null)
-            {
-                _logService.Log(
-                    LogLevel.Error, $"Request {requestName} received invalid response. " +
-                        "Not able to convert response to JSON.");
-                return null;
-            }
-
-            if (!dictionary.TryGetValue("Results", out var deserialized))
-            {
-                _logService.Log(
-                    LogLevel.Error, $"Request {requestName} received invalid response. " +
-                        @"JSON response does not contain a ""Results"" key.");
-                return null;
-            }
-
-            _logService.Log(LogLevel.Debug, $"Request {requestName} successfully deserialized.");
-            // ReSharper disable once AccessToDisposedClosure
-            readEvent.Set();
-            return deserialized;
-        }
-
-        public async Task SetDeviceAsync(string device)
-        {
-            _device = device;
-
-            await AttachDeviceIfNeededAsync();
-        }
-
-        public async Task<byte[]?> ReadMemoryAsync(ulong address, int bytesToRead = 1, int timeOutInMs = 4096)
-        {
-            return await Task<byte[]?>.Factory.StartNew(() => ReadMemory(address, bytesToRead, timeOutInMs));
-        }
-
-        /// <summary>
-        /// Returns the byte values of the specified memory addresses.
-        /// </summary>
-        /// <param name="address">
-        ///     A <see cref="ulong"/> representing the starting memory address.
-        /// </param>
-        /// <param name="bytesToRead">
-        ///     A <see cref="int"/> representing the number of addresses to read.
-        /// </param>
-        /// <param name="timeOutInMs">
-        ///     A <see cref="int"/> representing the time in milliseconds before timeout.
-        /// </param>
-        /// <returns>
-        ///     An array of <see cref="byte"/> representing the values of the memory addresses.
-        /// </returns>
-        private byte[]? ReadMemory(ulong address, int bytesToRead, int timeOutInMs)
-        {
-            var buffer = new byte[bytesToRead];
-            
-            if (!AttachDeviceIfNeeded(timeOutInMs))
-            {
-                return null;
-            }
-
-            if (Status != ConnectionStatus.Connected)
-            {
-                return null;
-            }
-
-            using ManualResetEvent readEvent = new(false);
-
-            lock (_transmitLock)
-            {
-                // ReSharper disable once AccessToDisposedClosure
-                _messageHandler = (e) => { PopulateBufferArrayWithResponseData(e, buffer, readEvent); };
-
-                _logService.Log(LogLevel.Info, $"Reading {bytesToRead} byte(s) from {address:X}.");
-                Send(_requestFactory(
-                    OpcodeType.GetAddress.ToString(),
-                    operands: new List<string>(2)
-                    {
-                        AddressTranslator.TranslateAddress((uint) address, TranslationMode.Read)
-                            .ToString("X", CultureInfo.InvariantCulture),
-                        bytesToRead.ToString("X", CultureInfo.InvariantCulture)
-                    }));
-
-                if (!readEvent.WaitOne(timeOutInMs))
-                {
-                    _logService.Log(
-                        LogLevel.Error, $"Failed to read {buffer.Length} byte(s) from {address:X}.");
-                    Status = ConnectionStatus.Error;
-                    return null;
-                }
-            }
-
-            _logService.Log(LogLevel.Info, $"Read {buffer.Length} byte(s) from {address:X} successfully.");
-            return buffer;
-        }
-
-        private void PopulateBufferArrayWithResponseData(MessageEventArgs e, byte[] buffer, ManualResetEvent readEvent)
-        {
-            if (!e.IsBinary || e.RawData == null)
-            {
-                _logService.Log(
-                    LogLevel.Error, "Did not receive expected binary response from request to read memory.");
-                Status = ConnectionStatus.Error;
-                return;
-            }
-
-            if (e.RawData.Length != buffer.Length)
-            {
-                _logService.Log(
-                    LogLevel.Error,
-                    $"Expected to received {buffer.Length} bytes, but received {e.RawData.Length} instead.");
-                Status = ConnectionStatus.Error;
-                return;
-            }
-
-            for (var i = 0; i < buffer.Length; i++)
-            {
-                buffer[i] = e.RawData[i];
-            }
-
-            // ReSharper disable once AccessToDisposedClosure
-            readEvent.Set();
-        }
-
-        /// <summary>
-        /// Attaches to the selected device asynchronously, if not already attached.
-        /// </summary>
-        /// <param name="timeOutInMs">
-        ///     A <see cref="int"/> representing the timeout in milliseconds.
-        /// </param>
-        /// <returns>
-        ///     A <see cref="bool"/> representing whether the method is successful.
-        /// </returns>
-        private async Task AttachDeviceIfNeededAsync(int timeOutInMs = 4096)
-        {
-            await Task<bool>.Factory.StartNew(() => AttachDeviceIfNeeded(timeOutInMs));
-        }
-
-        /// <summary>
-        /// Attaches to the selected device, if not already attached.
-        /// </summary>
-        /// <param name="timeOutInMs">
-        ///     A <see cref="int"/> representing the timeout in milliseconds.
-        /// </param>
-        /// <returns>
-        ///     A <see cref="bool"/> representing whether the method is successful.
-        /// </returns>
-        private bool AttachDeviceIfNeeded(int timeOutInMs)
-        {
-            if (Status != ConnectionStatus.Connected)
-            {
-                return ConnectIfNeeded(timeOutInMs) && AttachDevice(timeOutInMs);
-            }
-
-            _logService.Log(
-                LogLevel.Debug, "Already attached to device, skipping attachment attempt.");
-            return true;
-        }
-
-        /// <summary>
-        /// Attaches to the selected device.
-        /// </summary>
-        /// <param name="timeOutInMs">
-        ///     A <see cref="int"/> representing the timeout in milliseconds.
-        /// </param>
-        /// <returns>
-        ///     A <see cref="byte"/> representing whether the method is successful.
-        /// </returns>
-        private bool AttachDevice(int timeOutInMs = 4096)
-        {
-            if (_device is null)
-            {
-                _logService.Log(LogLevel.Error, $"Cannot attach to device. Device is not defined.");
-                Status = ConnectionStatus.Error;
-                return false;
-            }
-
-            _logService.Log(LogLevel.Info, $"Attempting to attach to device {_device}.");
-            Status = ConnectionStatus.Attaching;
-
-            if (!SendOnly("attach", _requestFactory(
-                OpcodeType.Attach.ToString(), operands: new List<string>(1) { _device })))
-            {
-                _logService.Log(LogLevel.Error, $"Device {_device} could not be attached.");
-                Status = ConnectionStatus.Error;
-                return false;
-            }
-
-            if (!SendOnly("register name", _requestFactory(
-                OpcodeType.Name.ToString(), operands: new List<string>(1) { AppName })))
-            {
-                _logService.Log(LogLevel.Error, "Could not register app name with connection.");
-                Status = ConnectionStatus.Error;
-                return false;
-            }
-
-            if (GetDeviceInfo(timeOutInMs) is null)
-            {
-                _logService.Log(LogLevel.Error, $"Device {_device} could not be attached.");
-                Status = ConnectionStatus.Error;
-                return false;
-            }
-
-            _logService.Log(LogLevel.Info, $"Device {_device} is successfully attached.");
-            Status = ConnectionStatus.Connected;
-
-            return true;
-        }
-
-        /// <summary>
-        /// Returns the device info of the attached device.
-        /// </summary>
-        /// <param name="timeOutInMs">
-        ///     A <see cref="int"/> representing the timeout in milliseconds.
-        /// </param>
-        /// <returns>
-        ///     A <see cref="IEnumerable{T}"/> of <see cref="string"/> representing the device info.
-        /// </returns>
-        private IEnumerable<string>? GetDeviceInfo(int timeOutInMs = 4096)
-        {
-            return GetJsonResults(
-                "get device info", _requestFactory(OpcodeType.Info.ToString()), timeOutInMs);
-        }
-
-        /// <summary>
-        /// Sends a request without a response.
-        /// </summary>
-        /// <param name="requestName">
-        ///     A <see cref="string"/> representing the type of request for logging purposes.
-        /// </param>
-        /// <param name="request">
-        ///     The <see cref="IRequest"/> payload.
-        /// </param>
-        /// <returns>
-        ///     A <see cref="bool"/> representing whether the method is successfully.
-        /// </returns>
-        private bool SendOnly(string requestName, IRequest request)
-        {
-            _logService.Log(LogLevel.Info, $"Request {requestName} is being sent.");
-
-            lock (_transmitLock)
-            {
-                if (!Send(request))
-                {
-                    _logService.Log(LogLevel.Info, $"Request {requestName} failed to send.");
-                    return false;
-                }
-            }
-
-            _logService.Log(LogLevel.Info, $"Request {requestName} has been sent successfully.");
-            return true;
-        }
-
-        /// <summary>
-        /// Raises the StatusChanged event.
-        /// </summary>
-        private void OnStatusChanged()
-        {
-            StatusChanged?.Invoke(this, Status);
+            throw new System.NotImplementedException();
         }
 
         /// <summary>
@@ -626,7 +200,19 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         /// </param>
         private void HandleMessage(object? sender, MessageEventArgs e)
         {
-            _messageHandler?.Invoke(e);
+        }
+
+        /// <summary>
+        /// Logs the exception and sets the <see cref="Status"/> property to <see cref="ConnectionStatus.Error"/>.
+        /// </summary>
+        /// <param name="exception">
+        ///     The <see cref="Exception"/> to be handled.
+        /// </param>
+        private void HandleException(Exception exception)
+        {
+            _logger.Log(LogLevel.Error, exception.Message);
+            Debug.WriteLine(exception.Message);
+            Status = ConnectionStatus.Error;
         }
     }
 }

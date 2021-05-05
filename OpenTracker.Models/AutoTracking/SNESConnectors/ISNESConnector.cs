@@ -1,18 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using ReactiveUI;
 
 namespace OpenTracker.Models.AutoTracking.SNESConnectors
 {
     /// <summary>
     /// This interface contains logic for the SNES connector to (Q)USB2SNES.
     /// </summary>
-    public interface ISNESConnector
+    public interface ISNESConnector : IReactiveObject
     {
-        /// <summary>
-        /// The event raised when the connector status changes.
-        /// </summary>
-        event EventHandler<ConnectionStatus>? StatusChanged;
+        ConnectionStatus Status { get; }
 
         /// <summary>
         /// Sets the connection URI to be passed to the web socket.
@@ -20,18 +17,12 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         /// <param name="uriString">
         ///     A <see cref="string"/> representing the URI.
         /// </param>
-        void SetUri(string uriString);
+        void SetURI(string uriString);
 
         /// <summary>
         /// Connects to the USB2SNES web socket asynchronously.
         /// </summary>
-        /// <param name="timeOutInMs">
-        ///     A <see cref="int"/> representing the timeout in milliseconds.
-        /// </param>
-        /// <returns>
-        ///     A <see cref="bool"/> representing whether the method is successful.
-        /// </returns>
-        Task<bool> ConnectAsync(int timeOutInMs = 4096);
+        Task ConnectAsync();
 
         /// <summary>
         /// Disconnects from the web socket and unsets the web socket property asynchronously.
@@ -41,13 +32,10 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         /// <summary>
         /// Returns the devices able to be selected asynchronously.
         /// </summary>
-        /// <param name="timeOutInMs">
-        ///     A <see cref="int"/> representing the time in milliseconds before timeout.
-        /// </param>
         /// <returns>
         ///     A <see cref="IEnumerable{T}"/> of <see cref="string"/> representing the devices able to be selected.
         /// </returns>
-        Task<IEnumerable<string>?> GetDevicesAsync(int timeOutInMs = 4096);
+        Task<IEnumerable<string>?> GetDevicesAsync();
                 
         /// <summary>
         /// Sets the device to the specified device asynchronously.
@@ -66,12 +54,9 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         /// <param name="bytesToRead">
         ///     A <see cref="int"/> representing the number of addresses to read.
         /// </param>
-        /// <param name="timeOutInMs">
-        ///     A <see cref="int"/> representing the time in milliseconds before timeout.
-        /// </param>
         /// <returns>
         ///     An array of <see cref="byte"/> representing the values of the memory addresses.
         /// </returns>
-        Task<byte[]?> ReadMemoryAsync(ulong address, int bytesToRead = 1, int timeOutInMs = 4096);
+        Task<byte[]?> ReadMemoryAsync(ulong address, int bytesToRead = 1);
     }
 }

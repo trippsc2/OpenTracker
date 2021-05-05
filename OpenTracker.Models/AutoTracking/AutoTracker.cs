@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using OpenTracker.Models.AutoTracking.Memory;
 using OpenTracker.Models.AutoTracking.SNESConnectors;
@@ -47,12 +48,7 @@ namespace OpenTracker.Models.AutoTracking
             set => this.RaiseAndSetIfChanged(ref _raceIllegalTracking, value);
         }
 
-        private ConnectionStatus _status;
-        public ConnectionStatus Status
-        {
-            get => _status;
-            private set => this.RaiseAndSetIfChanged(ref _status, value);
-        }
+        public ConnectionStatus Status => _snesConnector.Status;
 
         /// <summary>
         /// Constructor
@@ -70,7 +66,7 @@ namespace OpenTracker.Models.AutoTracking
 
             InGameStatus = _memoryAddressProvider.MemoryAddresses[0x7e0010];
 
-            _snesConnector.StatusChanged += OnStatusChanged;
+            _snesConnector.PropertyChanged += OnSNESConnectorChanged;
         }
 
         public bool CanConnect()
@@ -80,7 +76,7 @@ namespace OpenTracker.Models.AutoTracking
 
         public async Task Connect(string uriString)
         {
-            _snesConnector.SetUri(uriString);
+            _snesConnector.SetURI(uriString);
             await _snesConnector.ConnectAsync();
         }
 
@@ -146,17 +142,20 @@ namespace OpenTracker.Models.AutoTracking
         }
 
         /// <summary>
-        /// Subscribes to the <see cref="ISNESConnector.StatusChanged"/> event.
+        /// Subscribes to the <see cref="ISNESConnector.PropertyChanged"/> event.
         /// </summary>
         /// <param name="sender">
         ///     The <see cref="object"/> from which the event is sent.
         /// </param>
-        /// <param name="status">
-        ///     The <see cref="ConnectionStatus"/> of the event.
+        /// <param name="e">
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
-        private void OnStatusChanged(object? sender, ConnectionStatus status)
+        private void OnSNESConnectorChanged(object? sender, PropertyChangedEventArgs e)
         {
-            Status = status;
+            if (e.PropertyName == nameof(ISNESConnector.Status))
+            {
+                this.RaisePropertyChanged(nameof(Status));
+            }
         }
 
         /// <summary>

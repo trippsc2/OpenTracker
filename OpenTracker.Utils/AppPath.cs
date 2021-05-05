@@ -14,14 +14,16 @@ namespace OpenTracker.Utils
         {
             get
             {
-                if (_appDataPath == null)
+                if (_appDataPath is not null)
                 {
-                    var appDataPath = Environment.GetFolderPath(
-                        Environment.SpecialFolder.LocalApplicationData,
-                        Environment.SpecialFolderOption.Create);
-
-                    _appDataPath = Path.Combine(appDataPath, "OpenTracker");
+                    return _appDataPath;
                 }
+                
+                var appDataPath = Environment.GetFolderPath(
+                    Environment.SpecialFolder.LocalApplicationData,
+                    Environment.SpecialFolderOption.Create);
+
+                _appDataPath = Path.Combine(appDataPath, "OpenTracker");
 
                 return _appDataPath;
             }
@@ -32,42 +34,63 @@ namespace OpenTracker.Utils
         {
             get
             {
-                if (_avaloniaLogFilePath == null)
+                if (_avaloniaLogFilePath is not null)
                 {
-                    _avaloniaLogFilePath = Path.Combine(AppDataPath, "OpenTracker.Avalonia.log");
+                    return _avaloniaLogFilePath;
                 }
+                
+                _avaloniaLogFilePath = Path.Combine(AppDataPath, "OpenTracker.Avalonia.log");
 
                 return _avaloniaLogFilePath;
+
             }
         }
 
+        private static string? _autoTrackingLogFilePath;
+        public static string AutoTrackingLogFilePath
+        {
+            get
+            {
+                if (_autoTrackingLogFilePath is not null)
+                {
+                    return _autoTrackingLogFilePath;
+                }
+                
+                _autoTrackingLogFilePath = Path.Combine(AppDataPath, "OpenTracker.AutoTracking.log");
+
+                return _autoTrackingLogFilePath;
+
+            }
+        }
+        
         private static string? _appDataThemesPath;
         public static string AppDataThemesPath
         {
             get
             {
-                if (_appDataThemesPath == null)
+                if (_appDataThemesPath is not null)
                 {
-                    _appDataThemesPath = Path.Combine(AppDataPath, "Themes");
+                    return _appDataThemesPath;
                 }
+                
+                _appDataThemesPath = Path.Combine(AppDataPath, "Themes");
 
                 return _appDataThemesPath;
             }
         }
 
         private static string? _appRootPath;
-        public static string AppRootPath
+        private static string AppRootPath
         {
             get
             {
-                if (_appRootPath == null)
+                if (_appRootPath is not null)
                 {
-                    var assembly = Assembly.GetEntryAssembly() ??
-                        throw new NullReferenceException();
-
-                    _appRootPath = Path.GetDirectoryName(assembly.Location) ??
-                        throw new NullReferenceException();
+                    return _appRootPath;
                 }
+                
+                var assembly = Assembly.GetEntryAssembly() ?? throw new NullReferenceException();
+                _appRootPath = Path.GetDirectoryName(assembly.Location) ?? throw new NullReferenceException();
 
                 return _appRootPath;
             }
@@ -78,10 +101,12 @@ namespace OpenTracker.Utils
         {
             get
             {
-                if (_appRootThemesPath == null)
+                if (_appRootThemesPath is not null)
                 {
-                    _appRootThemesPath = Path.Combine(AppRootPath, "Themes");
+                    return _appRootThemesPath;
                 }
+                
+                _appRootThemesPath = Path.Combine(AppRootPath, "Themes");
 
                 return _appRootThemesPath;
             }
@@ -92,10 +117,12 @@ namespace OpenTracker.Utils
         {
             get
             {
-                if (_lastThemeFilePath == null)
+                if (_lastThemeFilePath is not null)
                 {
-                    _lastThemeFilePath = Path.Combine(AppDataPath, "OpenTracker.theme");
+                    return _lastThemeFilePath;
                 }
+                
+                _lastThemeFilePath = Path.Combine(AppDataPath, "OpenTracker.theme");
 
                 return _lastThemeFilePath;
             }
@@ -106,10 +133,12 @@ namespace OpenTracker.Utils
         {
             get
             {
-                if (_appSettingsFilePath == null)
+                if (_appSettingsFilePath is not null)
                 {
-                    _appSettingsFilePath = Path.Combine(AppDataPath, "OpenTracker.json");
+                    return _appSettingsFilePath;
                 }
+                
+                _appSettingsFilePath = Path.Combine(AppDataPath, "OpenTracker.json");
 
                 return _appSettingsFilePath;
             }
@@ -120,10 +149,12 @@ namespace OpenTracker.Utils
         {
             get
             {
-                if (_sequenceBreakPath == null)
+                if (_sequenceBreakPath != null)
                 {
-                    _sequenceBreakPath = Path.Combine(AppDataPath, "sequencebreak.json");
+                    return _sequenceBreakPath;
                 }
+                
+                _sequenceBreakPath = Path.Combine(AppDataPath, "sequencebreak.json");
 
                 return _sequenceBreakPath;
             }

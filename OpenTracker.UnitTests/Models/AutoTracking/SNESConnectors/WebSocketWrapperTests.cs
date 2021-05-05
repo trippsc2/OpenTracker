@@ -1,5 +1,5 @@
 using Autofac;
-using OpenTracker.Models.AutoTracking.SNESConnectors;
+using OpenTracker.Models.AutoTracking.SNESConnectors.Socket;
 using Xunit;
 
 namespace OpenTracker.UnitTests.Models.AutoTracking.SNESConnectors

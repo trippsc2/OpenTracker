@@ -1,12 +1,12 @@
 using System;
 using WebSocketSharp;
 
-namespace OpenTracker.Models.AutoTracking.SNESConnectors
+namespace OpenTracker.Models.AutoTracking.SNESConnectors.Socket
 {
     /// <summary>
     /// This interface wraps the <see cref="WebSocket"/> class to allow for unit testing.
     /// </summary>
-    public interface IWebSocketWrapper
+    public interface IWebSocketWrapper : IDisposable
     {
         bool IsAlive { get; }
         Uri Url { get; }
@@ -18,6 +18,7 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
 
         void Close();
         void Connect();
+        void ConnectAsync();
         void Send(string data);
     }
 }
