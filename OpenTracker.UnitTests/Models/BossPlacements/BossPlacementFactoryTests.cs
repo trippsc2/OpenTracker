@@ -10,13 +10,16 @@ namespace OpenTracker.UnitTests.Models.BossPlacements
 {
     public class BossPlacementFactoryTests
     {
-        private readonly IMode _mode = Substitute.For<IMode>();
+        private static readonly IMode Mode = Substitute.For<IMode>();
+
+        private static readonly IChangeBoss.Factory ChangeBossFactory = (_, _) => Substitute.For<IChangeBoss>();
+        private readonly IBossPlacement.Factory _factory = boss => new BossPlacement(Mode, ChangeBossFactory, boss);
+        
         private readonly IBossPlacementFactory _sut;
 
         public BossPlacementFactoryTests()
         {
-            _sut = new BossPlacementFactory(boss => new BossPlacement(
-                _mode, (_, _) => Substitute.For<IChangeBoss>(), boss));
+            _sut = new BossPlacementFactory(_factory);
         }
         
         [Theory]
