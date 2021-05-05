@@ -46,7 +46,7 @@
 
       <StackPanel Margin="10" Orientation="Horizontal" HorizontalAlignment="Center">
         <Button Classes="AutoTrackerStart"
-                Command="{Binding StartCommand}">Start Auto-tracking</Button>
+                Command="{Binding StartCommand}">Start Auto-Tracking</Button>
       </StackPanel>
 
       <ContentControl Margin="10" HorizontalAlignment="Center"
