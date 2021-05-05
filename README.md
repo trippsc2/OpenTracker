@@ -22,12 +22,13 @@ The following is on my roadmap for future updates:
 - Add glitched logic options
   - Add Overworld/Major Glitches logic to the tracker
   - This feature will not be taken on until the v32 graph-based logic is made public, as I will be converting my logic to follow Veetorp's lead.
+- Add door shuffle support
 
 ## Getting Started
 
 ### Prerequisites
 
-OpenTracker is a .NET Core 3.1 application.  You will be required to install a .NET Core runtime version 3.1 or greater.  You can find it at this link: https://dotnet.microsoft.com/download/dotnet-core
+OpenTracker is a .NET 5.0 application.  You will be required to install a .NET runtime version 5.0 or greater.  You can find it at this link: https://dotnet.microsoft.com/download/dotnet
 
 ### Windows
 
@@ -84,22 +85,35 @@ Some notable differences from other map trackers:
 
 Autotracking support is available currently.  QUSB2SNES or USB2SNES are required to connect the tracker to your game currently.  I don't plan to add support for direct Lua connectors at this time, as QUSB2SNES can facilitate connections to those emulators already.  If there is enough demand, this may change.
 
-To start Autotracking, have QUSB2SNES or USB2SNES open and connected to your game, then select "Autotracker..." from the Tracker menu.  Click Start on the Autotracker window that pops up.
+To start Autotracking, perform the following steps:
+
+- Have QUSB2SNES or USB2SNES running and connected to your emulator or cartridge.
+- Select "Auto-Tracker..." from the Tracker menu.
+- Change the USB2SNES URI, if needed.  The default value will work for most.
+- Click the "Connect" button.
+- Click the "Get Devices" button.
+- Select your device from the dropdown menu.
+- If allowed, you can check the "Race Illegal Tracking" box.  DO NOT DO THIS IN COMPETITION UNLESS EXPLICITLY PERMITTED!
+- Click the "Start Auto-Tracking" button.
 
 Some notes about Autotracking:
 
-- Please note the rules for competitions regarding autotracking.  I will do my best to provide options to disable forbidden functionality, when reported.
-- All inventory items are autotracked.
+- Please note the rules for competitions regarding auto-tracking.  I will do my best to provide options to disable forbidden functionality, when reported.  The developers of OpenTracker assume no responsibility for how the tool is used in competition.  In short, don't be a cheater!
+- All Y-button inventory items are auto-tracked.
+- All swords (unless swordless, see below), shields, and tunic upgrades are auto-tracked.
+- Boots, Moon Pearl, Gloves, Flippers, and Half Magic Upgrade.
+- Whether the Flute has been activated is auto-tracked.
 - Small keys are autotracked for ROMs that support it.
-  - Berserker's Multiworld 3.2.0 or higher.
-  - alttpr.com 31.0.7 or higher will support this.
-- Big Keys are autotracked in all versions.
-- The dungeon prize type is not autotracked, but whether or not the dungeon prize has been acquired from the dungeon is autotracked.
+  - Berserker's Multi-world/Archipelago 3.2.0 or higher.
+  - alttpr.com 31.0.7 or higher.
+- Big Keys are auto-tracked in all versions.
+- The dungeon prize type is not auto-tracked, but whether or not the dungeon prize has been acquired from the dungeon is auto-tracked.
 - All non-dungeon item locations are autotracked.
-- OpenTracker v1.5 or newer supports an option for Race Illegal Tracking.  This enables tracking of dungeon item locations and should not be used in competitive races, unless it is allowed.
+- OpenTracker v1.5 or newer supports an option for Race Illegal Tracking.  This enables tracking of dungeon item locations and should not be used in competitive races, unless it is explicitly permitted.
 - All mode settings (including crystal requirements, swordless, etc.) are not autotracked.  This is to prevent providing information not available to the player in mystery seeds.
-- Entrance locations in Entrance Shuffle mode are not autotracked.
-- Take Any locations are not autotracked.
+- Entrance locations in Entrance Shuffle mode are not auto-tracked.
+- Take Any locations are not auto-tracked.
+- Shop locations are not auto-tracked.
 
 ### Entrance Shuffle
 
@@ -109,9 +123,11 @@ Enabling the Entrance Shuffle mode will do the following.
 - Stops displaying in-door overworld item locations.
 - Starts displaying entrances that can be shuffled.
 
-Each entrance can be marked with a number of images.  The images are of all inventory items, Ganon, Agahnim, and text representing each of the dungeon entrances.  When an image is selected, it will be displayed on the map instead of the square.  This allows for you to use your own system for marking entrance locations for future use and be able to see the markings you made at a glance.
+Each entrance can be marked with a number of images.  These images include all standard items, Agahnim, Ganon, text representing each dungeon entrance, and pictures representing most of the connectors.  When an image is selected, it will be displayed on the map attached to the entrance.  You can use this to mark points of interest for future use.
 
 The standard colors still display on each location to indicate whether the location is accessible as an entrance given the current items and exits available.  However, all entrance locations (including those colored as inaccessible) can be cleared by right clicking the location, indicating that it is available as an exit.  This will allow you to determine what locations a new exit provides.
+
+You can click and drag entrances together to connect them with a line.  This will allow you to mark connectors more clearly.
 
 ### UI Color Themes
 
@@ -130,16 +146,6 @@ The following lines need to be added and customized to the themes generated for 
 ```
 
 If you'd like to see a theme you created be included in the official release, please send it to me via an Issue or Pull Request on here or by a DM on Discord (Tripp#6120) or Reddit (trippsc2).
-
-## Development
-
-OpenTracker is developed in the Avalonia framework.  In order to develop using Visual Studio, you'll need to install the Avalonia extensions in the Extensions menu.
-
-OpenTracker follows the Model-View-ViewModel (MVVM) pattern as closely as possible.  The solution is separated into 3 projects.
-
-- OpenTracker - This project contains all GUI-specific code.  All View and ViewModel classes, GUI utility classes/types, and GUI-specific Model classes/types will be a part of this project.
-- OpenTracker.Models - This contains all GUI non-specific Model classes/types.  This project can be used to port the project to another UI framework without reliance on any Avalonia libraries.
-- OpenTracker.Setup - This is a Visual Studio Setup project used for creating the .MSI for Windows users.
 
 ## License
 
