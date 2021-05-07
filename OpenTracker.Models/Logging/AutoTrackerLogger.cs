@@ -14,7 +14,7 @@ namespace OpenTracker.Models.Logging
         {
             MinimumLogLevel = LogLevel.Warn;
 #if DEBUG
-            MinimumLogLevel = LogLevel.Debug;
+            MinimumLogLevel = LogLevel.Trace;
 #endif
         }
     }

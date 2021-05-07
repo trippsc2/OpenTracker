@@ -191,7 +191,7 @@ namespace OpenTracker.UnitTests.Models.AutoTracking
             const string device = "Test";
             await _sut.Start(device);
 
-            await _snesConnector.Received().SetDeviceAsync(device);
+            await _snesConnector.Received().AttachDeviceAsync(device);
         }
 
         [Fact]

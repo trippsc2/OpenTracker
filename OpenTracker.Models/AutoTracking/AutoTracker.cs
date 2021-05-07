@@ -108,7 +108,7 @@ namespace OpenTracker.Models.AutoTracking
 
         public async Task Start(string device)
         {
-            await _snesConnector.SetDeviceAsync(device);
+            await _snesConnector.AttachDeviceAsync(device);
         }
 
         public async Task InGameCheck()

@@ -43,7 +43,7 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         /// <param name="device">
         ///     A <see cref="string"/> representing the device.
         /// </param>
-        Task SetDeviceAsync(string device);
+        Task AttachDeviceAsync(string device);
 
         /// <summary>
         /// Returns the <see cref="byte"/> values of the specified memory addresses asynchronously.

@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Reactive;
 using System.Threading;
 using System.Threading.Tasks;
+using OpenTracker.Models.AutoTracking.SNESConnectors.Requests;
 using OpenTracker.Models.AutoTracking.SNESConnectors.Socket;
 using OpenTracker.Models.Logging;
 using ReactiveUI;
@@ -11,11 +13,21 @@ using LogLevel = OpenTracker.Models.Logging.LogLevel;
 
 namespace OpenTracker.Models.AutoTracking.SNESConnectors
 {
+    /// <summary>
+    /// This class contains logic for the SNES connector to (Q)USB2SNES.
+    /// </summary>
     public class SNESConnector : ReactiveObject, ISNESConnector
     {
         private readonly IAutoTrackerLogger _logger;
 
         private readonly IWebSocketWrapper.Factory _webSocketFactory;
+        private readonly IGetDevicesRequest.Factory _getDevicesFactory;
+        private readonly IAttachDeviceRequest.Factory _attachDeviceFactory;
+        private readonly IRegisterNameRequest.Factory _registerNameFactory;
+        private readonly IGetDeviceInfoRequest.Factory _getDeviceInfoFactory;
+        private readonly IReadMemoryRequest.Factory _readMemoryFactory;
+
+        private readonly object _transmitLock = new();
 
         private string? _uri;
 
@@ -32,15 +44,23 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
 
                 if (_socket is not null)
                 {
-                    _socket.OnMessage -= HandleMessage;
+                    _socket.OnClose -= TraceWebSocketClose;
+                    _socket.OnError -= TraceWebSocketError;
+                    _socket.OnMessage -= TraceWebSocketMessage;
+                    _socket.OnOpen -= TraceWebSocketOpen;
                 }
 
                 _socket = value;
 
-                if (_socket is not null)
+                if (_socket is null)
                 {
-                    _socket.OnMessage += HandleMessage;
+                    return;
                 }
+                
+                _socket.OnClose += TraceWebSocketClose;
+                _socket.OnError += TraceWebSocketError;
+                _socket.OnMessage += TraceWebSocketMessage;
+                _socket.OnOpen += TraceWebSocketOpen;
             }
         }
         
@@ -60,10 +80,35 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         /// <param name="webSocketFactory">
         ///     An Autofac factory for creating new <see cref="IWebSocketWrapper"/> objects.
         /// </param>
-        public SNESConnector(IAutoTrackerLogger logger, IWebSocketWrapper.Factory webSocketFactory)
+        /// <param name="getDevicesFactory">
+        ///     An Autofac factory for creating new <see cref="IGetDevicesRequest"/> objects.
+        /// </param>
+        /// <param name="attachDeviceFactory">
+        ///     An Autofac factory for creating new <see cref="IAttachDeviceRequest"/> objects.
+        /// </param>
+        /// <param name="registerNameFactory">
+        ///     An Autofac factory for creating new <see cref="IRegisterNameRequest"/> objects.
+        /// </param>
+        /// <param name="getDeviceInfoFactory">
+        ///     An Autofac factory for creating new <see cref="IGetDeviceInfoRequest"/> objects.
+        /// </param>
+        /// <param name="readMemoryFactory">
+        ///     An Autofac factory for creating new <see cref="IReadMemoryRequest"/> objects.
+        /// </param>
+        public SNESConnector(
+            IAutoTrackerLogger logger, IWebSocketWrapper.Factory webSocketFactory,
+            IGetDevicesRequest.Factory getDevicesFactory, IAttachDeviceRequest.Factory attachDeviceFactory,
+            IRegisterNameRequest.Factory registerNameFactory, IGetDeviceInfoRequest.Factory getDeviceInfoFactory,
+            IReadMemoryRequest.Factory readMemoryFactory)
         {
             _logger = logger;
+            
             _webSocketFactory = webSocketFactory;
+            _getDevicesFactory = getDevicesFactory;
+            _attachDeviceFactory = attachDeviceFactory;
+            _registerNameFactory = registerNameFactory;
+            _getDeviceInfoFactory = getDeviceInfoFactory;
+            _readMemoryFactory = readMemoryFactory;
         }
 
         public void SetURI(string uriString)
@@ -130,7 +175,7 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         /// </exception>
         private void ConnectToWebSocket(ManualResetEvent openEvent)
         {
-            void OnOpen(object? sender, EventArgs e)
+            void OpenHandler(object? sender, EventArgs e)
             {
                 openEvent.Set();
             }
@@ -139,10 +184,10 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
                 LogLevel.Debug,
                 $"Attempting to connect to USB2SNES websocket at {Socket!.Url.OriginalString}.");
             Status = ConnectionStatus.Connecting;
-            Socket!.OnOpen += OnOpen;
+            Socket!.OnOpen += OpenHandler;
             Socket.Connect();
             var result = openEvent.WaitOne(5000);
-            Socket!.OnOpen -= OnOpen;
+            Socket!.OnOpen -= OpenHandler;
 
             if (!result)
             {
@@ -166,40 +211,246 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         /// </summary>
         private void Disconnect()
         {
+            _logger.Log(LogLevel.Debug, "Attempting to disconnect and dispose of WebSocket.");
             Socket?.Close();
+            _logger.Log(LogLevel.Debug, "Disconnected from websocket server.");
             Socket?.Dispose();
+            _logger.Log(LogLevel.Debug, "Disposed WebSocket class.");
             Socket = null;
+            _logger.Log(LogLevel.Debug, "Unset the Socket property.");
             GC.Collect();
             GC.WaitForPendingFinalizers();
             Status = ConnectionStatus.NotConnected;
+            _logger.Log(LogLevel.Info, "Successfully disconnected websocket.");
         }
 
-        public Task<IEnumerable<string>?> GetDevicesAsync()
+        public async Task<IEnumerable<string>?> GetDevicesAsync()
         {
-            throw new System.NotImplementedException();
+            try
+            {
+                return await Task<IEnumerable<string>?>.Factory.StartNew(() =>
+                    HandleRequest(_getDevicesFactory()));
+            }
+            catch (Exception exception)
+            {
+                switch (exception)
+                {
+                    case AggregateException aggregateException:
+                        foreach (var innerException in aggregateException.InnerExceptions)
+                        {
+                            HandleException(innerException);
+                        }
+                        break;
+                    default:
+                        HandleException(exception);
+                        break;
+                }
+            }
+
+            return null;
         }
 
-        public Task SetDeviceAsync(string device)
+        public async Task AttachDeviceAsync(string device)
         {
-            throw new System.NotImplementedException();
-        }
-
-        public Task<byte[]?> ReadMemoryAsync(ulong address, int bytesToRead = 1)
-        {
-            throw new System.NotImplementedException();
+            try
+            {
+                await Task.Factory.StartNew(() => { AttachDevice(device); });
+            }
+            catch (Exception exception)
+            {
+                switch (exception)
+                {
+                    case AggregateException aggregateException:
+                        foreach (var innerException in aggregateException.InnerExceptions)
+                        {
+                            HandleException(innerException);
+                        }
+                        break;
+                    default:
+                        HandleException(exception);
+                        break;
+                }
+            }
         }
 
         /// <summary>
-        /// Subscribes to the <see cref="IWebSocketWrapper.OnMessage"/> event.
+        /// Sets the device to the specified device.
         /// </summary>
-        /// <param name="sender">
-        ///     The <see cref="object"/> from which the event was sent.
+        /// <param name="device">
+        ///     A <see cref="string"/> representing the device.
         /// </param>
-        /// <param name="e">
-        ///     The <see cref="MessageEventArgs"/>.
-        /// </param>
-        private void HandleMessage(object? sender, MessageEventArgs e)
+        private void AttachDevice(string device)
         {
+            Status = ConnectionStatus.Attaching;
+            HandleRequest(_attachDeviceFactory(device));
+
+            if (Status != ConnectionStatus.Error)
+            {
+                Status = ConnectionStatus.Connected;
+            }
+            
+            HandleRequest(_registerNameFactory());
+            var deviceInfo = HandleRequest(_getDeviceInfoFactory());
+
+            if (deviceInfo is null)
+            {
+                throw new Exception("Failed to connect to device.");
+            }
+        }
+
+        public async Task<byte[]?> ReadMemoryAsync(ulong address, int bytesToRead = 1)
+        {
+            try
+            {
+                return await Task<byte[]?>.Factory.StartNew(() =>
+                    HandleRequest(_readMemoryFactory(address, bytesToRead)));
+            }
+            catch (Exception exception)
+            {
+                switch (exception)
+                {
+                    case AggregateException aggregateException:
+                        foreach (var innerException in aggregateException.InnerExceptions)
+                        {
+                            HandleException(innerException);
+                        }
+                        break;
+                    default:
+                        HandleException(exception);
+                        break;
+                }
+            }
+
+            return default;
+        }
+
+        /// <summary>
+        /// Handles requests to the USB2SNES websocket.
+        /// </summary>
+        /// <param name="request">
+        ///     The <see cref="IRequest{T}"/> to be handled.
+        /// </param>
+        /// <typeparam name="T">
+        ///     The type of data to be returned by the request.
+        /// </typeparam>
+        /// <returns>
+        ///     The data resulting from the request.
+        /// </returns>
+        /// <exception cref="Exception">
+        ///     Thrown if the USB2SNES websocket is not in the required status.
+        /// </exception>
+        private T? HandleRequest<T>(IRequest<T> request)
+        {
+            lock (_transmitLock)
+            {
+                if (!ValidateRequestStatus(request))
+                {
+                    throw new Exception(
+                        $"The request expects a status of {request.StatusRequired} and current is {Status}");
+                }
+
+                using var sendEvent = new ManualResetEvent(false);
+                var result = SendRequestAndReceiveResult(request, sendEvent);
+
+                return result;
+            }
+        }
+
+        /// <summary>
+        /// Validates the <see cref="Status"/> property is appropriate for the specified <see cref="IRequest{T}"/>
+        /// </summary>
+        /// <param name="request">
+        ///     The <see cref="IRequest{T}"/> to be validated.
+        /// </param>
+        /// <typeparam name="T">
+        ///     The type of data to be returned by the request.
+        /// </typeparam>
+        /// <returns>
+        ///     A <see cref="bool"/> representing whether the <see cref="Status"/> is valid.
+        /// </returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        ///     Thrown when the <see cref="IRequest{T}"/> requires an unexpected <see cref="ConnectionStatus"/>.
+        /// </exception>
+        private bool ValidateRequestStatus<T>(IRequest<T> request)
+        {
+            return request.StatusRequired switch
+            {
+                ConnectionStatus.SelectDevice => Status is ConnectionStatus.SelectDevice or ConnectionStatus.Connected,
+                ConnectionStatus.Attaching => Status == ConnectionStatus.Attaching,
+                ConnectionStatus.Connected => Status == ConnectionStatus.Connected,
+                _ => throw new ArgumentOutOfRangeException(nameof(request))
+            };
+        }
+
+        /// <summary>
+        /// Sends the websocket request to USB2SNES and returns the processed result.
+        /// </summary>
+        /// <param name="request">
+        ///     The <see cref="IRequest{T}"/> representing the request to be sent.
+        /// </param>
+        /// <param name="sendEvent">
+        ///     A <see cref="ManualResetEvent"/> that waits for data to be received or a 2 second timeout.
+        /// </param>
+        /// <typeparam name="T">
+        ///     The type of the request response result.
+        /// </typeparam>
+        /// <returns>
+        ///     The data returned from the request.
+        /// </returns>
+        /// <exception cref="Exception">
+        ///     Thrown if the request fails to receive data.
+        /// </exception>
+        private T? SendRequestAndReceiveResult<T>(IRequest<T> request, ManualResetEvent sendEvent)
+        {
+            T? results = default;
+            
+            void HandleMessage(object? sender, MessageEventArgs e)
+            {
+                try
+                {
+                    results = request.ProcessResponseAndReturnResults(e, sendEvent);
+                }
+                catch (Exception exception)
+                {
+                    HandleException(exception);
+                }
+                
+                _logger.Log(
+                    LogLevel.Info, $"Response of request \'{request.Description}\' successfully received.");
+            }
+
+            if (request is not IRequest<Unit>)
+            {
+                Socket!.OnMessage += HandleMessage;
+                _logger.Log(LogLevel.Debug, $"Subscribed to message handler successfully.");
+            }
+            
+            _logger.Log(LogLevel.Debug, $"Attempting to send request \'{request.Description}\'.");
+            var requestMessage = request.ToJsonString();
+            _logger.Log(LogLevel.Trace, requestMessage);
+            Socket!.Send(requestMessage);
+            _logger.Log(LogLevel.Info, $"Sent request \'{request.Description}\' successfully.");
+
+            if (request is IRequest<Unit>)
+            {
+                _logger.Log(
+                    LogLevel.Debug,
+                    $"Skipped waiting for received data for request \'{request.Description}\'.");
+                return default;
+            }
+
+            var received = sendEvent.WaitOne(2000);
+            Socket!.OnMessage -= HandleMessage;
+            _logger.Log(LogLevel.Debug, $"Unsubscribed from message handler successfully.");
+
+            if (!received)
+            {
+                throw new Exception($"Failed to receive data from request \'{request.Description}\'.");
+            }
+
+            _logger.Log(
+                LogLevel.Info, $"Received response from request \'{request.Description}\' successfully.");
+            return results;
         }
 
         /// <summary>
@@ -213,6 +464,62 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
             _logger.Log(LogLevel.Error, exception.Message);
             Debug.WriteLine(exception.Message);
             Status = ConnectionStatus.Error;
+        }
+        
+        /// <summary>
+        /// Logs the <see cref="IWebSocketWrapper.OnClose"/> events. 
+        /// </summary>
+        /// <param name="sender">
+        ///     The <see cref="object"/> from which the event is sent.
+        /// </param>
+        /// <param name="e">
+        ///     The <see cref="CloseEventArgs"/>.
+        /// </param>
+        private void TraceWebSocketClose(object? sender, CloseEventArgs e)
+        {
+            _logger.Log(LogLevel.Trace, $"WebSocket closed: {e.Reason}");
+        }
+        
+        /// <summary>
+        /// Logs the <see cref="IWebSocketWrapper.OnError"/> events. 
+        /// </summary>
+        /// <param name="sender">
+        ///     The <see cref="object"/> from which the event is sent.
+        /// </param>
+        /// <param name="e">
+        ///     The <see cref="ErrorEventArgs"/>.
+        /// </param>
+        private void TraceWebSocketError(object? sender, ErrorEventArgs e)
+        {
+            _logger.Log(LogLevel.Trace, $"WebSocket error: {e.Message}");
+        }
+
+        /// <summary>
+        /// Logs the <see cref="IWebSocketWrapper.OnMessage"/> events. 
+        /// </summary>
+        /// <param name="sender">
+        ///     The <see cref="object"/> from which the event is sent.
+        /// </param>
+        /// <param name="e">
+        ///     The <see cref="MessageEventArgs"/>.
+        /// </param>
+        private void TraceWebSocketMessage(object? sender, MessageEventArgs e)
+        {
+            _logger.Log(LogLevel.Trace, e.IsBinary ? $"[{string.Join(",", e.RawData)}]" : e.Data);
+        }
+
+        /// <summary>
+        /// Logs the <see cref="IWebSocketWrapper.OnOpen"/> events. 
+        /// </summary>
+        /// <param name="sender">
+        ///     The <see cref="object"/> from which the event is sent.
+        /// </param>
+        /// <param name="e">
+        ///     The <see cref="EventArgs"/>.
+        /// </param>
+        private void TraceWebSocketOpen(object? sender, EventArgs e)
+        {
+            _logger.Log(LogLevel.Trace, "WebSocket connection opened.");
         }
     }
 }
