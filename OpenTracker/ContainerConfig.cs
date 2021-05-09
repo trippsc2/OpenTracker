@@ -103,6 +103,7 @@ namespace OpenTracker
             nameof(ConstrainedTaskScheduler),
             nameof(DialogService),
             nameof(FileDialogService),
+            nameof(FileManager),
             nameof(JsonConverter),
             nameof(ThemeManager),
             nameof(MainWindowProvider)

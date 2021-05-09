@@ -23,7 +23,7 @@
 				return mappedAddress;
 			}
 
-			for (uint index = 0x0; index < 0x3FU; ++index)
+			for (uint index = 0x0; index < 0x3F; ++index)
 			{
 				if (MapAddressInRange(
 					    address, (uint)((int)index * 0x10000 + 0x8000),

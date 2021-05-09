@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Reactive;
 using System.Threading;
+using OpenTracker.Models.AutoTracking.SNESConnectors.Socket;
 using OpenTracker.Models.Logging;
 using WebSocketSharp;
 
@@ -25,8 +26,8 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors.Requests
         {
         }
 
-        public override Unit ProcessResponseAndReturnResults(
-            MessageEventArgs messageEventArgs, ManualResetEvent sendEvent)
+        public override Unit ProcessResponseAndReturnResults(IMessageEventArgsWrapper messageEventArgs,
+            ManualResetEvent sendEvent)
         {
             return default;
         }

@@ -20,8 +20,7 @@ namespace OpenTracker.Utils
                 }
                 
                 var appDataPath = Environment.GetFolderPath(
-                    Environment.SpecialFolder.LocalApplicationData,
-                    Environment.SpecialFolderOption.Create);
+                    Environment.SpecialFolder.LocalApplicationData, Environment.SpecialFolderOption.Create);
 
                 _appDataPath = Path.Combine(appDataPath, "OpenTracker");
 

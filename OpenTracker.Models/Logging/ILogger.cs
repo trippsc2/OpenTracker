@@ -1,12 +1,11 @@
 using System.Threading.Tasks;
-using ReactiveUI;
 
 namespace OpenTracker.Models.Logging
 {
     /// <summary>
     /// This interface contains the logging logic.
     /// </summary>
-    public interface ILogger : IReactiveObject
+    public interface ILogger
     {
         /// <summary>
         /// The minimum <see cref="LogLevel"/> to log.

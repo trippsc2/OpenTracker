@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Reactive;
 using System.Threading;
+using OpenTracker.Models.AutoTracking.SNESConnectors.Socket;
 using OpenTracker.Models.Logging;
-using WebSocketSharp;
 
 namespace OpenTracker.Models.AutoTracking.SNESConnectors.Requests
 {
@@ -21,13 +21,13 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors.Requests
         ///     A <see cref="string"/> representing the device to be attached.
         /// </param>
         public AttachDeviceRequest(IAutoTrackerLogger logger, string device)
-            : base(logger, "Attach", "SNES", ConnectionStatus.Attaching, $"Select {device}",
+            : base(logger, "Attach", "SNES", ConnectionStatus.Attaching, $"Attach device \'{device}\'",
                 operands: new List<string> {device})
         {
         }
 
-        public override Unit ProcessResponseAndReturnResults(
-            MessageEventArgs messageEventArgs, ManualResetEvent sendEvent)
+        public override Unit ProcessResponseAndReturnResults(IMessageEventArgsWrapper messageEventArgs,
+            ManualResetEvent sendEvent)
         {
             return default;
         }

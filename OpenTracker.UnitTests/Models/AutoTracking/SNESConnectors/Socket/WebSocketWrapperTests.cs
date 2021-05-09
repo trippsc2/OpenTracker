@@ -2,7 +2,7 @@ using Autofac;
 using OpenTracker.Models.AutoTracking.SNESConnectors.Socket;
 using Xunit;
 
-namespace OpenTracker.UnitTests.Models.AutoTracking.SNESConnectors
+namespace OpenTracker.UnitTests.Models.AutoTracking.SNESConnectors.Socket
 {
     public class WebSocketWrapperTests
     {

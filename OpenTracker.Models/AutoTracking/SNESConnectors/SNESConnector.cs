@@ -26,6 +26,7 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         private readonly IRegisterNameRequest.Factory _registerNameFactory;
         private readonly IGetDeviceInfoRequest.Factory _getDeviceInfoFactory;
         private readonly IReadMemoryRequest.Factory _readMemoryFactory;
+        private readonly IMessageEventArgsWrapper.Factory _messageEventArgsWrapperFactory;
 
         private readonly object _transmitLock = new();
 
@@ -95,11 +96,15 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         /// <param name="readMemoryFactory">
         ///     An Autofac factory for creating new <see cref="IReadMemoryRequest"/> objects.
         /// </param>
+        /// <param name="messageEventArgsWrapperFactory">
+        ///     An Autofac factory for creating new <see cref="IMessageEventArgsWrapper"/> objects.
+        /// </param>
         public SNESConnector(
             IAutoTrackerLogger logger, IWebSocketWrapper.Factory webSocketFactory,
             IGetDevicesRequest.Factory getDevicesFactory, IAttachDeviceRequest.Factory attachDeviceFactory,
             IRegisterNameRequest.Factory registerNameFactory, IGetDeviceInfoRequest.Factory getDeviceInfoFactory,
-            IReadMemoryRequest.Factory readMemoryFactory)
+            IReadMemoryRequest.Factory readMemoryFactory,
+            IMessageEventArgsWrapper.Factory messageEventArgsWrapperFactory)
         {
             _logger = logger;
             
@@ -109,6 +114,7 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
             _registerNameFactory = registerNameFactory;
             _getDeviceInfoFactory = getDeviceInfoFactory;
             _readMemoryFactory = readMemoryFactory;
+            _messageEventArgsWrapperFactory = messageEventArgsWrapperFactory;
         }
 
         public void SetURI(string uriString)
@@ -125,21 +131,13 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
             }
             catch (Exception exception)
             {
-                switch (exception)
-                {
-                    case AggregateException aggregateException:
-                        foreach (var innerException in aggregateException.InnerExceptions)
-                        {
-                            HandleException(innerException);
-                        }
-                        break;
-                    default:
-                        HandleException(exception);
-                        break;
-                }
+                HandleException(exception);
             }
         }
 
+        /// <summary>
+        /// Connects to the USB2SNES web socket.
+        /// </summary>
         private void Connect()
         {
             if (Socket is not null)
@@ -233,18 +231,7 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
             }
             catch (Exception exception)
             {
-                switch (exception)
-                {
-                    case AggregateException aggregateException:
-                        foreach (var innerException in aggregateException.InnerExceptions)
-                        {
-                            HandleException(innerException);
-                        }
-                        break;
-                    default:
-                        HandleException(exception);
-                        break;
-                }
+                HandleException(exception);
             }
 
             return null;
@@ -258,18 +245,7 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
             }
             catch (Exception exception)
             {
-                switch (exception)
-                {
-                    case AggregateException aggregateException:
-                        foreach (var innerException in aggregateException.InnerExceptions)
-                        {
-                            HandleException(innerException);
-                        }
-                        break;
-                    default:
-                        HandleException(exception);
-                        break;
-                }
+                HandleException(exception);
             }
         }
 
@@ -307,18 +283,7 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
             }
             catch (Exception exception)
             {
-                switch (exception)
-                {
-                    case AggregateException aggregateException:
-                        foreach (var innerException in aggregateException.InnerExceptions)
-                        {
-                            HandleException(innerException);
-                        }
-                        break;
-                    default:
-                        HandleException(exception);
-                        break;
-                }
+                HandleException(exception);
             }
 
             return default;
@@ -408,7 +373,7 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
             {
                 try
                 {
-                    results = request.ProcessResponseAndReturnResults(e, sendEvent);
+                    results = request.ProcessResponseAndReturnResults(_messageEventArgsWrapperFactory(e), sendEvent);
                 }
                 catch (Exception exception)
                 {
@@ -477,7 +442,7 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         /// </param>
         private void TraceWebSocketClose(object? sender, CloseEventArgs e)
         {
-            _logger.Log(LogLevel.Trace, $"WebSocket closed: {e.Reason}");
+            _logger.Log(LogLevel.Trace, "WebSocket closed.");
         }
         
         /// <summary>

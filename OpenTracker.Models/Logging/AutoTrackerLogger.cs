@@ -10,9 +10,16 @@ namespace OpenTracker.Models.Logging
         /// <summary>
         /// Constructor
         /// </summary>
-        public AutoTrackerLogger() : base(AppPath.AutoTrackingLogFilePath)
+        /// <param name="fileManager">
+        ///     The <see cref="IFileManager"/> that allows for non-destructive unit testing.
+        /// </param>
+        /// <param name="streamWriterFactory">
+        ///     An Autofac factory for creating new <see cref="IStreamWriterWrapper"/> objects.
+        /// </param>
+        public AutoTrackerLogger(IFileManager fileManager, IStreamWriterWrapper.Factory streamWriterFactory)
+            : base(fileManager, streamWriterFactory, AppPath.AutoTrackingLogFilePath)
         {
-            MinimumLogLevel = LogLevel.Warn;
+            MinimumLogLevel = LogLevel.Info;
 #if DEBUG
             MinimumLogLevel = LogLevel.Trace;
 #endif

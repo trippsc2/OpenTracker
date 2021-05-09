@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading;
+using OpenTracker.Models.AutoTracking.SNESConnectors.Socket;
 using OpenTracker.Models.Logging;
-using WebSocketSharp;
 
 namespace OpenTracker.Models.AutoTracking.SNESConnectors.Requests
 {
@@ -37,8 +37,8 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors.Requests
             _bytesToRead = bytesToRead;
         }
 
-        public override byte[] ProcessResponseAndReturnResults(
-            MessageEventArgs messageEventArgs, ManualResetEvent sendEvent)
+        public override byte[] ProcessResponseAndReturnResults(IMessageEventArgsWrapper messageEventArgs,
+            ManualResetEvent sendEvent)
         {
             if (!messageEventArgs.IsBinary || messageEventArgs.RawData is null)
             {

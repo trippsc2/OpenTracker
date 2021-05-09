@@ -1,4 +1,5 @@
 using System.Threading;
+using OpenTracker.Models.AutoTracking.SNESConnectors.Socket;
 using WebSocketSharp;
 
 namespace OpenTracker.Models.AutoTracking.SNESConnectors.Requests
@@ -33,7 +34,7 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors.Requests
         /// Returns the processed result of the request from the specified response message.
         /// </summary>
         /// <param name="messageEventArgs">
-        ///     The <see cref="MessageEventArgs"/> of the response.
+        ///     The wrapped <see cref="MessageEventArgs"/> of the response.
         /// </param>
         /// <param name="sendEvent">
         ///     A <see cref="ManualResetEvent"/> that waits for data to be received or a 2 second timeout.
@@ -41,6 +42,6 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors.Requests
         /// <returns>
         ///     The processed result of the request.
         /// </returns>
-        T ProcessResponseAndReturnResults(MessageEventArgs messageEventArgs, ManualResetEvent sendEvent);
+        T ProcessResponseAndReturnResults(IMessageEventArgsWrapper messageEventArgs, ManualResetEvent sendEvent);
     }
 }

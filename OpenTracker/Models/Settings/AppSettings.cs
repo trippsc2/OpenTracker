@@ -118,12 +118,6 @@ namespace OpenTracker.Models.Settings
             Layout.LayoutOrientation = saveData.LayoutOrientation;
             Layout.MapOrientation = saveData.MapOrientation;
 
-            // Code to handle change of type from 1.3.2 to later versions.
-            if (saveData.Version == null)
-            {
-                AppSettingsConversion.ConvertPre132(saveData);
-            }
-
             Layout.HorizontalUIPanelPlacement = saveData.HorizontalUIPanelPlacement;
             Layout.VerticalUIPanelPlacement = saveData.VerticalUIPanelPlacement;
             Layout.HorizontalItemsPlacement = saveData.HorizontalItemsPlacement;

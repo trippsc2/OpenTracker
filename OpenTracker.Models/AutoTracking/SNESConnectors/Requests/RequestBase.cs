@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Threading;
 using Newtonsoft.Json;
+using OpenTracker.Models.AutoTracking.SNESConnectors.Socket;
 using OpenTracker.Models.Logging;
-using WebSocketSharp;
 using LogLevel = OpenTracker.Models.Logging.LogLevel;
 
 namespace OpenTracker.Models.AutoTracking.SNESConnectors.Requests
@@ -73,11 +73,6 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors.Requests
                 {"Space", _space}
             };
 
-            if (_flags.Count > 0)
-            {
-                requestObject.Add("Flags", _flags);
-            }
-
             if (_operands.Count > 0)
             {
                 requestObject.Add("Operands", _operands);
@@ -89,6 +84,7 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors.Requests
             return serializedObject;
         }
 
-        public abstract T ProcessResponseAndReturnResults(MessageEventArgs messageEventArgs, ManualResetEvent sendEvent);
+        public abstract T ProcessResponseAndReturnResults(IMessageEventArgsWrapper messageEventArgs,
+            ManualResetEvent sendEvent);
     }
 }
