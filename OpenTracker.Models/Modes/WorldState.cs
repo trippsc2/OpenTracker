@@ -1,7 +1,7 @@
 ﻿namespace OpenTracker.Models.Modes
 {
     /// <summary>
-    ///     This enum type contains the world state setting data.
+    /// This enum type defines the world state setting values.
     /// </summary>
     public enum WorldState
     {
