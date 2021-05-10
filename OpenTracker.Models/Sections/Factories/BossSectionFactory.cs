@@ -10,7 +10,7 @@ using OpenTracker.Models.Sections.Boss;
 namespace OpenTracker.Models.Sections.Factories
 {
     /// <summary>
-    ///     This class contains the creation logic for boss sections.
+    /// This class contains the creation logic for <see cref="IBossSection"/> and <see cref="IPrizeSection"/> objects.
     /// </summary>
     public class BossSectionFactory : IBossSectionFactory
     {
@@ -23,22 +23,22 @@ namespace OpenTracker.Models.Sections.Factories
         private readonly IPrizeSection.Factory _prizeSectionFactory;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="bossShuffleRequirements">
-        ///     The boss shuffle requirement dictionary.
+        ///     The <see cref="IBossShuffleRequirementDictionary"/>.
         /// </param>
         /// <param name="bossPlacements">
-        ///     The boss placement dictionary.
+        ///     The <see cref="IBossPlacementDictionary"/>.
         /// </param>
         /// <param name="prizePlacements">
-        ///     The prize placement dictionary.
+        ///     The <see cref="IPrizePlacementDictionary"/>.
         /// </param>
         /// <param name="bossSectionFactory">
-        ///     An Autofac factory for creating new boss sections.
+        ///     An Autofac factory for creating new <see cref="IBossSection"/> objects.
         /// </param>
         /// <param name="prizeSectionFactory">
-        ///     An Autofac factory for creating new prize sections.
+        ///     An Autofac factory for creating new <see cref="IPrizeSection"/> objects.
         /// </param>
         public BossSectionFactory(
             IBossShuffleRequirementDictionary bossShuffleRequirements, IBossPlacementDictionary bossPlacements,
@@ -74,16 +74,16 @@ namespace OpenTracker.Models.Sections.Factories
         }
 
         /// <summary>
-        ///     Returns the section name.
+        /// Returns the section name for the specified <see cref="LocationID"/> and index.
         /// </summary>
         /// <param name="id">
-        ///     The location ID.
+        ///     The <see cref="LocationID"/>.
         /// </param>
         /// <param name="index">
-        ///     The section index.
+        ///     A <see cref="int"/> representing the section index.
         /// </param>
         /// <returns>
-        ///     A string representing the section name.
+        ///     A <see cref="string"/> representing the section name.
         /// </returns>
         private static string GetName(LocationID id, int index)
         {
@@ -101,96 +101,67 @@ namespace OpenTracker.Models.Sections.Factories
         }
 
         /// <summary>
-        ///     Returns the boss placement for the specified section.
+        /// Returns the <see cref="IBossPlacement"/> for the specified <see cref="LocationID"/> and index.
         /// </summary>
         /// <param name="id">
-        ///     The location ID.
+        ///     The <see cref="LocationID"/>.
         /// </param>
         /// <param name="index">
-        ///     The section index.
+        ///     A <see cref="int"/> representing the section index.
         /// </param>
         /// <returns>
-        ///     The boss placement.
+        ///     The <see cref="IBossPlacement"/>.
         /// </returns>
         private IBossPlacement GetBossPlacement(LocationID id, int index)
         {
-            switch (id)
+            return id switch
             {
-                case LocationID.AgahnimTower:
-                    return _bossPlacements[BossPlacementID.ATBoss];
-                case LocationID.EasternPalace:
-                    return _bossPlacements[BossPlacementID.EPBoss];
-                case LocationID.DesertPalace:
-                    return _bossPlacements[BossPlacementID.DPBoss];
-                case LocationID.TowerOfHera:
-                    return _bossPlacements[BossPlacementID.ToHBoss];
-                case LocationID.PalaceOfDarkness:
-                    return _bossPlacements[BossPlacementID.PoDBoss];
-                case LocationID.SwampPalace:
-                    return _bossPlacements[BossPlacementID.SPBoss];
-                case LocationID.SkullWoods:
-                    return _bossPlacements[BossPlacementID.SWBoss];
-                case LocationID.ThievesTown:
-                    return _bossPlacements[BossPlacementID.TTBoss];
-                case LocationID.IcePalace:
-                    return _bossPlacements[BossPlacementID.IPBoss];
-                case LocationID.MiseryMire:
-                    return _bossPlacements[BossPlacementID.MMBoss];
-                case LocationID.TurtleRock:
-                    return _bossPlacements[BossPlacementID.TRBoss];
-                case LocationID.GanonsTower when index == 1:
-                    return _bossPlacements[BossPlacementID.GTBoss1];
-                case LocationID.GanonsTower when index == 2:
-                    return _bossPlacements[BossPlacementID.GTBoss2];
-                case LocationID.GanonsTower when index == 3:
-                    return _bossPlacements[BossPlacementID.GTBoss3];
-                case LocationID.GanonsTower:
-                    return _bossPlacements[BossPlacementID.GTFinalBoss];
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(id), id, null);
-            }
+                LocationID.AgahnimTower => _bossPlacements[BossPlacementID.ATBoss],
+                LocationID.EasternPalace => _bossPlacements[BossPlacementID.EPBoss],
+                LocationID.DesertPalace => _bossPlacements[BossPlacementID.DPBoss],
+                LocationID.TowerOfHera => _bossPlacements[BossPlacementID.ToHBoss],
+                LocationID.PalaceOfDarkness => _bossPlacements[BossPlacementID.PoDBoss],
+                LocationID.SwampPalace => _bossPlacements[BossPlacementID.SPBoss],
+                LocationID.SkullWoods => _bossPlacements[BossPlacementID.SWBoss],
+                LocationID.ThievesTown => _bossPlacements[BossPlacementID.TTBoss],
+                LocationID.IcePalace => _bossPlacements[BossPlacementID.IPBoss],
+                LocationID.MiseryMire => _bossPlacements[BossPlacementID.MMBoss],
+                LocationID.TurtleRock => _bossPlacements[BossPlacementID.TRBoss],
+                LocationID.GanonsTower when index == 1 => _bossPlacements[BossPlacementID.GTBoss1],
+                LocationID.GanonsTower when index == 2 => _bossPlacements[BossPlacementID.GTBoss2],
+                LocationID.GanonsTower when index == 3 => _bossPlacements[BossPlacementID.GTBoss3],
+                LocationID.GanonsTower => _bossPlacements[BossPlacementID.GTFinalBoss],
+                _ => throw new ArgumentOutOfRangeException(nameof(id), id, null)
+            };
         }
 
         /// <summary>
-        ///     Returns the prize placement for the specified section.
+        /// Returns the <see cref="IPrizePlacement"/> for the specified <see cref="LocationID"/>.
         /// </summary>
         /// <param name="id">
-        ///     The location ID.
+        ///     The <see cref="LocationID"/>.
         /// </param>
         /// <returns>
-        ///     The prize placement.
+        ///     The <see cref="IPrizePlacement"/>.
         /// </returns>
         private IPrizePlacement GetPrizePlacement(LocationID id)
         {
-            switch (id)
+            return id switch
             {
-                case LocationID.AgahnimTower:
-                    return _prizePlacements[PrizePlacementID.ATPrize];
-                case LocationID.EasternPalace:
-                    return _prizePlacements[PrizePlacementID.EPPrize];
-                case LocationID.DesertPalace:
-                    return _prizePlacements[PrizePlacementID.DPPrize];
-                case LocationID.TowerOfHera:
-                    return _prizePlacements[PrizePlacementID.ToHPrize];
-                case LocationID.PalaceOfDarkness:
-                    return _prizePlacements[PrizePlacementID.PoDPrize];
-                case LocationID.SwampPalace:
-                    return _prizePlacements[PrizePlacementID.SPPrize];
-                case LocationID.SkullWoods:
-                    return _prizePlacements[PrizePlacementID.SWPrize];
-                case LocationID.ThievesTown:
-                    return _prizePlacements[PrizePlacementID.TTPrize];
-                case LocationID.IcePalace:
-                    return _prizePlacements[PrizePlacementID.IPPrize];
-                case LocationID.MiseryMire:
-                    return _prizePlacements[PrizePlacementID.MMPrize];
-                case LocationID.TurtleRock:
-                    return _prizePlacements[PrizePlacementID.TRPrize];
-                case LocationID.GanonsTower:
-                    return _prizePlacements[PrizePlacementID.GTPrize];
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(id), id, null);
-            }
+                LocationID.AgahnimTower => _prizePlacements[PrizePlacementID.ATPrize],
+                LocationID.EasternPalace => _prizePlacements[PrizePlacementID.EPPrize],
+                LocationID.DesertPalace => _prizePlacements[PrizePlacementID.DPPrize],
+                LocationID.TowerOfHera => _prizePlacements[PrizePlacementID.ToHPrize],
+                LocationID.PalaceOfDarkness => _prizePlacements[PrizePlacementID.PoDPrize],
+                LocationID.SwampPalace => _prizePlacements[PrizePlacementID.SPPrize],
+                LocationID.SkullWoods => _prizePlacements[PrizePlacementID.SWPrize],
+                LocationID.ThievesTown => _prizePlacements[PrizePlacementID.TTPrize],
+                LocationID.IcePalace => _prizePlacements[PrizePlacementID.IPPrize],
+                LocationID.MiseryMire => _prizePlacements[PrizePlacementID.MMPrize],
+                LocationID.TurtleRock => _prizePlacements[PrizePlacementID.TRPrize],
+                LocationID.GanonsTower => _prizePlacements[PrizePlacementID.GTPrize],
+                _ => throw new ArgumentOutOfRangeException(nameof(id), id, null)
+            };
         }
     }
 }

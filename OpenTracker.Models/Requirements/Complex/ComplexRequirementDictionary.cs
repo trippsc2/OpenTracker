@@ -5,7 +5,8 @@ using OpenTracker.Utils;
 namespace OpenTracker.Models.Requirements.Complex
 {
     /// <summary>
-    ///     This class contains the dictionary container for complex requirements.
+    /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for <see cref="IRequirement"/> objects
+    /// indexed by <see cref="ComplexRequirementType"/>.
     /// </summary>
     public class ComplexRequirementDictionary : LazyDictionary<ComplexRequirementType, IRequirement>,
         IComplexRequirementDictionary
@@ -13,10 +14,10 @@ namespace OpenTracker.Models.Requirements.Complex
         private readonly Lazy<IComplexRequirementFactory> _factory;
         
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="factory">
-        ///     The factory for creating complex requirements.
+        ///     An Autofac factory for creating the <see cref="IComplexRequirementFactory"/> object.
         /// </param>
         public ComplexRequirementDictionary(IComplexRequirementFactory.Factory factory)
             : base(new Dictionary<ComplexRequirementType, IRequirement>())

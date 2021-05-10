@@ -12,7 +12,7 @@ using OpenTracker.Models.UndoRedo.Sections;
 namespace OpenTracker.Models.Sections.Item
 {
     /// <summary>
-    ///     This class contains dungeon item section data.
+    /// This class contains dungeon item section data.
     /// </summary>
     public class DungeonItemSection : ItemSectionBase, IDungeonItemSection
     {
@@ -20,31 +20,31 @@ namespace OpenTracker.Models.Sections.Item
         private readonly IDungeonAccessibilityProvider _accessibilityProvider;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="saveLoadManager">
-        ///     The save/load manager.
+        ///     The <see cref="ISaveLoadManager"/>.
         /// </param>
         /// <param name="collectSectionFactory">
-        ///     An Autofac factory for creating collect section undoable actions.
+        ///     An Autofac factory for creating new <see cref="ICollectSection"/> objects.
         /// </param>
         /// <param name="uncollectSectionFactory">
-        ///     An Autofac factory for creating uncollect section undoable actions.
+        ///     An Autofac factory for creating new <see cref="IUncollectSection"/> objects.
         /// </param>
         /// <param name="dungeon">
-        ///     The dungeon data.
+        ///     The <see cref="IDungeon"/>.
         /// </param>
         /// <param name="accessibilityProvider">
-        ///     The dungeon accessibility provider.
+        ///     The <see cref="IDungeonAccessibilityProvider"/>.
         /// </param>
         /// <param name="autoTrackValue">
-        ///     The section auto track value.
+        ///     The nullable <see cref="IAutoTrackValue"/>.
         /// </param>
         /// <param name="marking">
-        ///     The section marking.
+        ///     The nullable <see cref="IMarking"/>.
         /// </param>
         /// <param name="requirement">
-        ///     The requirement for this section to be visible.
+        ///     The <see cref="IRequirement"/> for this section to be visible.
         /// </param>
         public DungeonItemSection(
             ISaveLoadManager saveLoadManager, ICollectSection.Factory collectSectionFactory,
@@ -86,13 +86,13 @@ namespace OpenTracker.Models.Sections.Item
         }
 
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on the IDungeon interface.
+        /// Subscribes to the <see cref="IDungeon.PropertyChanged"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnDungeonChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -103,13 +103,13 @@ namespace OpenTracker.Models.Sections.Item
         }
         
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on the IDungeonAccessibilityProvider interface.
+        /// Subscribes to the <see cref="IDungeonAccessibilityProvider.PropertyChanged"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnAccessibilityProviderChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -124,7 +124,7 @@ namespace OpenTracker.Models.Sections.Item
         }
 
         /// <summary>
-        ///     Updates value of the Total property.
+        /// Updates value of the <see cref="ISection.Total"/> property.
         /// </summary>
         private void UpdateTotal()
         {
@@ -136,7 +136,7 @@ namespace OpenTracker.Models.Sections.Item
         }
 
         /// <summary>
-        ///     Updates values of the Accessible and Accessibility properties.
+        /// Updates values of the <see cref="IItemSection.Accessible"/> and <see cref="ISection.Available"/> properties.
         /// </summary>
         private void UpdateAccessibility()
         {

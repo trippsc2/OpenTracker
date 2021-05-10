@@ -90,7 +90,7 @@ namespace OpenTracker.Models.Locations
         /// Returns whether the location can be cleared.
         /// </summary>
         /// <param name="force">
-        ///     A <see cref="bool"/> representing whether logic is to be ignored when clearing.
+        ///     A <see cref="bool"/> representing whether the accessibility logic should be obeyed.
         /// </param>
         /// <returns>
         ///     A <see cref="bool"/> representing whether the location can be cleared.
@@ -120,7 +120,7 @@ namespace OpenTracker.Models.Locations
         /// Returns a new <see cref="IClearLocation"/> object.
         /// </summary>
         /// <param name="force">
-        ///     A <see cref="bool"/> representing whether logic is to be ignored when clearing.
+        ///     A <see cref="bool"/> representing whether the accessibility logic should be obeyed.
         /// </param>
         /// <returns>
         ///     A new <see cref="IClearLocation"/> object.

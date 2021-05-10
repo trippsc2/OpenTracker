@@ -4,7 +4,8 @@ using OpenTracker.Models.SaveLoad;
 namespace OpenTracker.Models.SequenceBreaks
 {
     /// <summary>
-    /// This interface contains the dictionary container for sequence breaks.
+    /// This interface contains the <see cref="IDictionary{TKey,TValue}"/> container for <see cref="ISequenceBreak"/>
+    /// objects indexed by <see cref="SequenceBreakType"/>.
     /// </summary>
     public interface ISequenceBreakDictionary : IDictionary<SequenceBreakType, ISequenceBreak>,
         ISaveable<Dictionary<SequenceBreakType, SequenceBreakSaveData>>

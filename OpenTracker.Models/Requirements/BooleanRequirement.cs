@@ -36,7 +36,7 @@ namespace OpenTracker.Models.Requirements
         /// Constructor
         /// </summary>
         /// <param name="metAccessibility">
-        /// The accessibility level when the condition is met.
+        ///     The <see cref="AccessibilityLevel"/> when the condition is met.
         /// </param>
         protected BooleanRequirement(AccessibilityLevel metAccessibility = AccessibilityLevel.Normal)
         {
@@ -46,8 +46,14 @@ namespace OpenTracker.Models.Requirements
         }
 
         /// <summary>
-        /// Raises the PropertyChanged and ChangePropagated events for all properties.
+        /// Subscribes to the <see cref="IRequirement.PropertyChanged"/> event on this object.
         /// </summary>
+        /// <param name="sender">
+        ///     The <see cref="object"/> from which the event is sent.
+        /// </param>
+        /// <param name="e">
+        ///     The <see cref="PropertyChangedEventArgs"/>.
+        /// </param>
         private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Met))
@@ -60,12 +66,12 @@ namespace OpenTracker.Models.Requirements
         /// Returns whether the condition is met.
         /// </summary>
         /// <returns>
-        /// A boolean representing whether the condition is met.
+        ///     A <see cref="bool"/> representing whether the condition is met.
         /// </returns>
         protected abstract bool ConditionMet();
 
         /// <summary>
-        /// Updates the value of the Met property.
+        /// Updates the <see cref="Met"/> property value.
         /// </summary>
         protected void UpdateValue()
         {

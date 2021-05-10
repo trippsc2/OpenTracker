@@ -1,7 +1,7 @@
 ﻿namespace OpenTracker.Models.SequenceBreaks
 {
     /// <summary>
-    /// This is the enum type for the types of sequence breaks.
+    /// This enum type defines the sequence break type values.
     /// </summary>
     public enum SequenceBreakType
     {

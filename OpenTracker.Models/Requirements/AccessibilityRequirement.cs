@@ -6,7 +6,7 @@ using ReactiveUI;
 namespace OpenTracker.Models.Requirements
 {
     /// <summary>
-    ///     This base class contains non-boolean requirement data.
+    /// This base class contains non-boolean requirement data.
     /// </summary>
     public abstract class AccessibilityRequirement : ReactiveObject, IRequirement
     {
@@ -31,7 +31,7 @@ namespace OpenTracker.Models.Requirements
         public bool Met => Accessibility > AccessibilityLevel.None;
         
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         protected AccessibilityRequirement()
         {
@@ -39,8 +39,14 @@ namespace OpenTracker.Models.Requirements
         }
 
         /// <summary>
-        ///     Raises the PropertyChanged and ChangePropagated events for all properties.
+        /// Subscribes to the <see cref="IRequirement.PropertyChanged"/> event on this object.
         /// </summary>
+        /// <param name="sender">
+        ///     The <see cref="object"/> from which the event is sent.
+        /// </param>
+        /// <param name="e">
+        ///     The <see cref="PropertyChangedEventArgs"/>.
+        /// </param>
         private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Accessibility))
@@ -50,15 +56,15 @@ namespace OpenTracker.Models.Requirements
         }
 
         /// <summary>
-        ///     Returns the current accessibility of the requirement.
+        /// Returns the current accessibility.
         /// </summary>
         /// <returns>
-        ///     The accessibility level.
+        ///     The <see cref="AccessibilityLevel"/>.
         /// </returns>
         protected abstract AccessibilityLevel GetAccessibility();
 
         /// <summary>
-        ///     Updates the value of the Accessibility property.
+        /// Updates the <see cref="Accessibility"/> property value.
         /// </summary>
         protected void UpdateValue()
         {

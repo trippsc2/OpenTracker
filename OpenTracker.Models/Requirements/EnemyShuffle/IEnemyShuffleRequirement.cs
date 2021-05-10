@@ -1,18 +1,20 @@
+using OpenTracker.Models.Modes;
+
 namespace OpenTracker.Models.Requirements.EnemyShuffle
 {
     /// <summary>
-    ///     This interface contains enemy shuffle requirement data.
+    /// This interface contains <see cref="IMode.EnemyShuffle"/> requirement data.
     /// </summary>
     public interface IEnemyShuffleRequirement : IRequirement
     {
         /// <summary>
-        ///     A factory for creating new enemy shuffle requirements.
+        /// A factory for creating new <see cref="IEnemyShuffleRequirement"/> objects.
         /// </summary>
         /// <param name="expectedValue">
-        ///     The required enemy shuffle value.
+        ///     A <see cref="bool"/> representing the expected <see cref="IMode.EnemyShuffle"/> value.
         /// </param>
         /// <returns>
-        ///     A new enemy shuffle requirement.
+        ///     A new <see cref="IEnemyShuffleRequirement"/> object.
         /// </returns>
         delegate IEnemyShuffleRequirement Factory(bool expectedValue);
     }

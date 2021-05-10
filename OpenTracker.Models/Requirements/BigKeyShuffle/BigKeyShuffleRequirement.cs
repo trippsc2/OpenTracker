@@ -4,7 +4,7 @@ using OpenTracker.Models.Modes;
 namespace OpenTracker.Models.Requirements.BigKeyShuffle
 {
     /// <summary>
-    ///     This class contains big key shuffle requirement data.
+    /// This class contains <see cref="IMode.BigKeyShuffle"/> requirement data.
     /// </summary>
     public class BigKeyShuffleRequirement : BooleanRequirement, IBigKeyShuffleRequirement
     {
@@ -12,13 +12,13 @@ namespace OpenTracker.Models.Requirements.BigKeyShuffle
         private readonly bool _expectedValue;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="mode">
-        ///     The mode settings.
+        ///     The <see cref="IMode"/> data.
         /// </param>
         /// <param name="expectedValue">
-        ///     The expected big key shuffle value.
+        ///     A <see cref="bool"/> representing the expected value.
         /// </param>
         public BigKeyShuffleRequirement(IMode mode, bool expectedValue)
         {
@@ -31,13 +31,13 @@ namespace OpenTracker.Models.Requirements.BigKeyShuffle
         }
 
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on the IMode interface.
+        /// Subscribes to the <see cref="IMode.PropertyChanged"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The event sender.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The PropertyChanged event args.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnModeChanged(object? sender, PropertyChangedEventArgs e)
         {

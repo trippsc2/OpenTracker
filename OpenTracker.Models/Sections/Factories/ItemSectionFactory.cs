@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.AutoTracking.Values;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Markings;
@@ -13,7 +14,7 @@ using OpenTracker.Models.Sections.Item;
 namespace OpenTracker.Models.Sections.Factories
 {
     /// <summary>
-    ///     This class contains the creation logic for item sections.
+    /// This class contains the creation logic for <see cref="IItemSection"/> objects.
     /// </summary>
     public class ItemSectionFactory : IItemSectionFactory
     {
@@ -27,25 +28,25 @@ namespace OpenTracker.Models.Sections.Factories
         private readonly IMarking.Factory _markingFactory;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="overworldNodes">
-        ///     The overworld node dictionary.
+        ///     The <see cref="IOverworldNodeDictionary"/>.
         /// </param>
         /// <param name="alternativeRequirements">
-        ///     The alternative requirement dictionary.
+        ///     The <see cref="IAlternativeRequirementDictionary"/>.
         /// </param>
         /// <param name="entranceShuffleRequirements">
-        ///     The entrance shuffle requirement dictionary.
+        ///     The <see cref="IEntranceShuffleRequirementDictionary"/>.
         /// </param>
         /// <param name="worldStateRequirements">
-        ///     The world state requirement dictionary.
+        ///     The <see cref="IWorldStateRequirementDictionary"/>.
         /// </param>
         /// <param name="factory">
-        ///     An Autofac factory for creating new item sections.
+        ///     An Autofac factory for creating new <see cref="IItemSection"/> objects.
         /// </param>
         /// <param name="markingFactory">
-        ///     An Autofac factory for creating new markings.
+        ///     An Autofac factory for creating new <see cref="IMarking"/> objects.
         /// </param>
         public ItemSectionFactory(
             IOverworldNodeDictionary overworldNodes, IAlternativeRequirementDictionary alternativeRequirements,
@@ -74,16 +75,16 @@ namespace OpenTracker.Models.Sections.Factories
         }
 
         /// <summary>
-        ///     Returns a string representing the section name.
+        /// Returns the section name for the specified <see cref="LocationID"/> and section index.
         /// </summary>
         /// <param name="id">
-        ///     The location ID.
+        ///     The <see cref="LocationID"/>.
         /// </param>
         /// <param name="index">
-        ///     The section index.
+        ///     A <see cref="int"/> representing the section index.
         /// </param>
         /// <returns>
-        ///     The section name.
+        ///     A <see cref="string"/> representing the section name.
         /// </returns>
         private static string GetName(LocationID id, int index)
         {
@@ -189,16 +190,17 @@ namespace OpenTracker.Models.Sections.Factories
         }
 
         /// <summary>
-        ///     Returns the node to which the specified section belongs.
+        /// Returns the <see cref="INode"/> to which the section belongs for the specified <see cref="LocationID"/> and
+        /// section index.
         /// </summary>
         /// <param name="id">
-        ///     The location ID.
+        ///     The <see cref="LocationID"/>.
         /// </param>
         /// <param name="index">
-        ///     The section index.
+        ///     A <see cref="int"/> representing the section index.
         /// </param>
         /// <returns>
-        ///     The requirement node to which the section belongs.
+        ///     The <see cref="INode"/> to which the section belongs.
         /// </returns>
         private INode GetNode(LocationID id, int index)
         {
@@ -325,16 +327,16 @@ namespace OpenTracker.Models.Sections.Factories
         }
 
         /// <summary>
-        ///     Returns item section total.
+        /// Returns the item section total for the specified <see cref="LocationID"/> and section index.
         /// </summary>
         /// <param name="id">
-        ///     The location ID.
+        ///     The <see cref="LocationID"/>.
         /// </param>
         /// <param name="index">
-        ///     The section index.
+        ///     A <see cref="int"/> representing the section index.
         /// </param>
         /// <returns>
-        ///     A 32-bit signed integer representing the total items in the section.
+        ///     A <see cref="int"/> representing the item section total.
         /// </returns>
         private static int GetTotal(LocationID id, int index)
         {
@@ -362,16 +364,17 @@ namespace OpenTracker.Models.Sections.Factories
         }
 
         /// <summary>
-        ///     Returns the node from which the specified section is visible.
+        /// Returns the <see cref="INode"/> that provides Inspect <see cref="AccessibilityLevel"/> for the specified
+        /// <see cref="LocationID"/> and section index.
         /// </summary>
         /// <param name="id">
-        ///     The location ID.
+        ///     The <see cref="LocationID"/>.
         /// </param>
         /// <param name="index">
-        ///     The section index.
+        ///     A <see cref="int"/> representing the section index.
         /// </param>
         /// <returns>
-        ///     The node from which the section is visible.
+        ///     The nullable <see cref="INode"/> that provides Inspect <see cref="AccessibilityLevel"/> for the section.
         /// </returns>
         private INode? GetVisibleNode(LocationID id, int index)
         {
@@ -409,16 +412,16 @@ namespace OpenTracker.Models.Sections.Factories
         }
 
         /// <summary>
-        ///     Returns the requirement for the specified section.
+        /// Returns the <see cref="IRequirement"/> for the specified <see cref="LocationID"/> and section index.
         /// </summary>
         /// <param name="id">
-        ///     The location ID.
+        ///     The <see cref="LocationID"/>.
         /// </param>
         /// <param name="index">
-        ///     The section index.
+        ///     A <see cref="int"/> representing the section index.
         /// </param>
         /// <returns>
-        ///     The requirement.
+        ///     The nullable <see cref="IRequirement"/> for the section to be visible.
         /// </returns>
         private IRequirement? GetRequirement(LocationID id, int index)
         {

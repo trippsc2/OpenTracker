@@ -5,17 +5,17 @@ using OpenTracker.Models.Accessibility;
 namespace OpenTracker.Models.Requirements.Aggregate
 {
     /// <summary>
-    ///     This class contains logic aggregating a set of requirements.
+    /// This class contains logic aggregating a set of <see cref="IRequirement"/>.
     /// </summary>
     public class AggregateRequirement : AccessibilityRequirement, IAggregateRequirement
     {
         private readonly IList<IRequirement> _requirements;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="requirements">
-        ///     A list of requirements to be aggregated.
+        ///     A <see cref="IList{T}"/> of <see cref="IRequirement"/> to be aggregated.
         /// </param>
         public AggregateRequirement(IList<IRequirement> requirements)
         {
@@ -30,13 +30,13 @@ namespace OpenTracker.Models.Requirements.Aggregate
         }
 
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on the IRequirement interface.
+        /// Subscribes to the <see cref="IRequirement.PropertyChanged"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnRequirementChanged(object? sender, PropertyChangedEventArgs e)
         {

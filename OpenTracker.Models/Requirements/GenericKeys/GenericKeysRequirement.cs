@@ -4,7 +4,7 @@ using OpenTracker.Models.Modes;
 namespace OpenTracker.Models.Requirements.GenericKeys
 {
     /// <summary>
-    ///     This class contains generic keys requirement data.
+    /// This class contains <see cref="IMode.GenericKeys"/> requirement data.
     /// </summary>
     public class GenericKeysRequirement : BooleanRequirement, IGenericKeysRequirement
     {
@@ -12,13 +12,13 @@ namespace OpenTracker.Models.Requirements.GenericKeys
         private readonly bool _expectedValue;
         
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="mode">
-        ///     The mode settings.
+        ///     The <see cref="IMode"/> data.
         /// </param>
         /// <param name="expectedValue">
-        ///     The required enemy shuffle value.
+        ///     A <see cref="bool"/> representing the expected <see cref="IMode.GenericKeys"/> value.
         /// </param>
         public GenericKeysRequirement(IMode mode, bool expectedValue)
         {
@@ -31,13 +31,13 @@ namespace OpenTracker.Models.Requirements.GenericKeys
         }
 
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on the IMode interface.
+        /// Subscribes to the <see cref="IMode.PropertyChanged"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnModeChanged(object? sender, PropertyChangedEventArgs e)
         {

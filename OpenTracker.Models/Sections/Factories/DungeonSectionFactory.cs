@@ -7,7 +7,7 @@ using OpenTracker.Models.Locations;
 namespace OpenTracker.Models.Sections.Factories
 {
     /// <summary>
-    ///     This class contains the creation logic for dungeon sections.
+    /// This class contains the creation logic for dungeon sections.
     /// </summary>
     public class DungeonSectionFactory : IDungeonSectionFactory
     {
@@ -20,22 +20,22 @@ namespace OpenTracker.Models.Sections.Factories
         private readonly IDungeonItemSectionFactory _dungeonItemSectionFactory;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="dungeons">
-        ///     The dungeon dictionary.
+        ///     The <see cref="IDungeonDictionary"/>.
         /// </param>
         /// <param name="accessibilityProviderFactory">
-        ///     An Autofac factory for creating new dungeon accessibility providers.
+        ///     An Autofac factory for creating new <see cref="IDungeonAccessibilityProvider"/> objects.
         /// </param>
         /// <param name="autoTrackingFactory">
-        ///     The section auto-tracking factory.
+        ///     The <see cref="ISectionAutoTrackingFactory"/>.
         /// </param>
         /// <param name="bossSectionFactory">
-        ///     The boss section factory.
+        ///     The <see cref="IBossSectionFactory"/>.
         /// </param>
         /// <param name="dungeonItemSectionFactory">
-        ///     The dungeon item section factory.
+        ///     The <see cref="IDungeonItemSectionFactory"/>.
         /// </param>
         public DungeonSectionFactory(
             IDungeonDictionary dungeons, IDungeonAccessibilityProvider.Factory accessibilityProviderFactory,

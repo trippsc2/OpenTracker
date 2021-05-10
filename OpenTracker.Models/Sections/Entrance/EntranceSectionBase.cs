@@ -9,7 +9,7 @@ using OpenTracker.Models.UndoRedo.Sections;
 namespace OpenTracker.Models.Sections.Entrance
 {
     /// <summary>
-    ///     This base class contains the entrance section data.
+    /// This base class contains the entrance section data.
     /// </summary>
     public abstract class EntranceSectionBase : SectionBase, IEntranceSection
     {
@@ -17,31 +17,31 @@ namespace OpenTracker.Models.Sections.Entrance
         private readonly IOverworldNode? _exitProvided;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="saveLoadManager">
-        ///     The save/load manager.
+        ///     The <see cref="ISaveLoadManager"/>.
         /// </param>
         /// <param name="collectSectionFactory">
-        ///     An Autofac factory for creating collect section undoable actions.
+        ///     An Autofac factory for creating new <see cref="ICollectSection"/> objects.
         /// </param>
         /// <param name="uncollectSectionFactory">
-        ///     An Autofac factory for creating uncollect section undoable actions.
+        ///     An Autofac factory for creating new <see cref="IUncollectSection"/> objects.
         /// </param>
         /// <param name="markingFactory">
-        ///     An Autofac factory for creating new markings.
+        ///     An Autofac factory for creating new <see cref="IMarking"/> objects.
         /// </param>
         /// <param name="name">
-        ///     A string representing the name of the section.
+        ///     A <see cref="string"/> representing the section name.
         /// </param>
         /// <param name="entranceShuffleLevel">
-        ///     The minimum entrance shuffle level.
+        ///     The minimum <see cref="EntranceShuffle"/> level.
         /// </param>
         /// <param name="requirement">
-        ///     The requirement for the section to be active.
+        ///     The <see cref="IRequirement"/> for the section to be active.
         /// </param>
         /// <param name="exitProvided">
-        ///     The overworld node exit that this section provides.
+        ///     The nullable <see cref="IOverworldNode"/> exit that this section provides.
         /// </param>
         protected EntranceSectionBase(
             ISaveLoadManager saveLoadManager, ICollectSection.Factory collectSectionFactory,

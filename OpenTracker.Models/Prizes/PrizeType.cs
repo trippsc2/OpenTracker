@@ -1,7 +1,7 @@
 ﻿namespace OpenTracker.Models.Prizes
 {
     /// <summary>
-    ///     This is the enum type for prize types.
+    /// This enum type defines the prize type values.
     /// </summary>
     public enum PrizeType
     {

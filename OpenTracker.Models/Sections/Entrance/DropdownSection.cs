@@ -10,7 +10,7 @@ using OpenTracker.Models.UndoRedo.Sections;
 namespace OpenTracker.Models.Sections.Entrance
 {
     /// <summary>
-    ///     This class contains dropdown section data.
+    /// This class contains dropdown section data.
     /// </summary>
     public class DropdownSection : EntranceSectionBase, IDropdownSection
     {
@@ -20,16 +20,16 @@ namespace OpenTracker.Models.Sections.Entrance
         private readonly INode _holeNode;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="saveLoadManager">
-        ///     The save/load manager.
+        ///     The <see cref="ISaveLoadManager"/>.
         /// </param>
         /// <param name="mode">
-        ///     The mode settings data.
+        ///     The <see cref="IMode"/> data.
         /// </param>
         /// <param name="collectSectionFactory">
-        ///     An Autofac factory for creating collect section undoable actions.
+        ///     An Autofac factory for creating new <see cref="ICollectSection"/> collect section undoable actions.
         /// </param>
         /// <param name="uncollectSectionFactory">
         ///     An Autofac factory for creating uncollect section undoable actions.
@@ -65,13 +65,13 @@ namespace OpenTracker.Models.Sections.Entrance
         }
 
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on the IMode interface.
+        /// Subscribes to the <see cref="IMode.PropertyChanged"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnModeChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -82,13 +82,13 @@ namespace OpenTracker.Models.Sections.Entrance
         }
 
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on the IOverworldNode interface.
+        /// Subscribes to the <see cref="IOverworldNode.PropertyChanged"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnNodeChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -99,7 +99,7 @@ namespace OpenTracker.Models.Sections.Entrance
         }
 
         /// <summary>
-        ///     Updates the value of the Accessibility property.
+        /// Updates the value of the <see cref="Accessibility"/> property.
         /// </summary>
         private void UpdateAccessibility()
         {

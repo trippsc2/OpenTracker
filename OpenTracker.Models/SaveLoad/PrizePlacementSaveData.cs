@@ -7,6 +7,6 @@ namespace OpenTracker.Models.SaveLoad
     /// </summary>
     public class PrizePlacementSaveData
     {
-        public PrizeType? Prize { get; set; }
+        public PrizeType? Prize { get; init; }
     }
 }

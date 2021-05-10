@@ -12,7 +12,7 @@ using OpenTracker.Models.Sections.Entrance;
 namespace OpenTracker.Models.Sections.Factories
 {
     /// <summary>
-    ///     This class contains the creation logic for entrance sections.
+    /// This class contains the creation logic for <see cref="IEntranceSection"/> objects.
     /// </summary>
     public class EntranceSectionFactory : IEntranceSectionFactory
     {
@@ -26,25 +26,25 @@ namespace OpenTracker.Models.Sections.Factories
         private readonly IEntranceSection.Factory _factory;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="aggregateRequirements">
-        ///     The aggregate requirement dictionary.
+        ///     The <see cref="IAggregateRequirementDictionary"/>.
         /// </param>
         /// <param name="alternativeRequirements">
-        ///     The alternative requirement dictionary.
+        ///     The <see cref="IAlternativeRequirementDictionary"/>.
         /// </param>
         /// <param name="entranceShuffleRequirements">
-        ///     The entrance shuffle requirement.
+        ///     The <see cref="IEntranceShuffleRequirementDictionary"/>.
         /// </param>
         /// <param name="worldStateRequirements">
-        ///     The world state requirement.
+        ///     The <see cref="IWorldStateRequirementDictionary"/>.
         /// </param>
         /// <param name="overworldNodes">
-        ///     The overworld node dictionary.
+        ///     The <see cref="IOverworldNodeDictionary"/>.
         /// </param>
         /// <param name="factory">
-        ///     An Autofac factory for creating new entrance sections.
+        ///     An Autofac factory for creating new <see cref="IEntranceSection"/> objects.
         /// </param>
         public EntranceSectionFactory(
             IAggregateRequirementDictionary aggregateRequirements,
@@ -73,13 +73,13 @@ namespace OpenTracker.Models.Sections.Factories
         }
 
         /// <summary>
-        ///     Returns the section name.
+        /// Returns the section name for the specified <see cref="LocationID"/>.
         /// </summary>
         /// <param name="id">
-        ///     The location ID.
+        ///     The <see cref="LocationID"/>.
         /// </param>
         /// <returns>
-        ///     A string representing the section name.
+        ///     A <see cref="string"/> representing the section name.
         /// </returns>
         private static string GetName(LocationID id)
         {
@@ -184,13 +184,13 @@ namespace OpenTracker.Models.Sections.Factories
         }
 
         /// <summary>
-        ///     Returns the entrance shuffle level of the section.
+        /// Returns the <see cref="EntranceShuffle"/> level for the specified <see cref="LocationID"/>.
         /// </summary>
         /// <param name="id">
-        ///     The location ID.
+        ///     The <see cref="LocationID"/>.
         /// </param>
         /// <returns>
-        ///     The entrance shuffle level of the section.
+        ///     The <see cref="EntranceShuffle"/> level of the section.
         /// </returns>
         private static EntranceShuffle GetEntranceShuffleLevel(LocationID id)
         {
@@ -336,16 +336,17 @@ namespace OpenTracker.Models.Sections.Factories
         }
 
         /// <summary>
-        ///     Returns the requirement of the section.
+        /// Returns the <see cref="IRequirement"/> for the section to be active for the specified
+        /// <see cref="LocationID"/> and <see cref="EntranceShuffle"/> level.
         /// </summary>
         /// <param name="id">
-        ///     The location ID.
+        ///     The <see cref="LocationID"/>.
         /// </param>
         /// <param name="entranceShuffleLevel">
-        ///     The entrance shuffle level.
+        ///     The <see cref="EntranceShuffle"/> level.
         /// </param>
         /// <returns>
-        ///     The requirement.
+        ///     The <see cref="IRequirement"/> for the section to be active.
         /// </returns>
         private IRequirement GetRequirement(LocationID id, EntranceShuffle entranceShuffleLevel)
         {
@@ -392,13 +393,13 @@ namespace OpenTracker.Models.Sections.Factories
         }
 
         /// <summary>
-        ///     Returns the node to which the section belongs.
+        /// Returns the <see cref="INode"/> for the specified <see cref="LocationID"/>.
         /// </summary>
         /// <param name="id">
-        ///     The location ID.
+        ///     The <see cref="LocationID"/>.
         /// </param>
         /// <returns>
-        ///     The node to which the section belongs.
+        ///     The <see cref="INode"/> to which the section belongs.
         /// </returns>
         private INode GetNode(LocationID id)
         {
@@ -566,13 +567,14 @@ namespace OpenTracker.Models.Sections.Factories
         }
 
         /// <summary>
-        ///     Returns the node to which this section provides access.
+        /// Returns the <see cref="IOverworldNode"/> exit that the section provides for the specified
+        /// <see cref="LocationID"/>.
         /// </summary>
         /// <param name="id">
-        ///     The location ID.
+        ///     The <see cref="LocationID"/>.
         /// </param>
         /// <returns>
-        ///     The node to which this section provides access.
+        ///     The <see cref="IOverworldNode"/> exit that the section provides.
         /// </returns>
         private IOverworldNode? GetExitProvided(LocationID id)
         {

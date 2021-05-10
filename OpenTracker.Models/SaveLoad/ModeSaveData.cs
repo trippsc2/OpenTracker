@@ -7,19 +7,19 @@ namespace OpenTracker.Models.SaveLoad
     /// </summary>
     public class ModeSaveData
     {
-        public ItemPlacement ItemPlacement { get; set; } = ItemPlacement.Advanced;
-        public bool MapShuffle { get; set; }
-        public bool CompassShuffle { get; set; }
-        public bool SmallKeyShuffle { get; set; }
-        public bool BigKeyShuffle { get; set; }
-        public WorldState WorldState { get; set; }
-        public EntranceShuffle EntranceShuffle { get; set; }
-        public bool BossShuffle { get; set; }
-        public bool EnemyShuffle { get; set; }
-        public bool GuaranteedBossItems { get; set; }
-        public bool GenericKeys { get; set; }
-        public bool TakeAnyLocations { get; set; }
-        public bool KeyDropShuffle { get; set; }
-        public bool ShopShuffle { get; set; }
+        public ItemPlacement ItemPlacement { get; init; } = ItemPlacement.Advanced;
+        public bool MapShuffle { get; init; }
+        public bool CompassShuffle { get; init; }
+        public bool SmallKeyShuffle { get; init; }
+        public bool BigKeyShuffle { get; init; }
+        public WorldState WorldState { get; init; }
+        public EntranceShuffle EntranceShuffle { get; init; }
+        public bool BossShuffle { get; init; }
+        public bool EnemyShuffle { get; init; }
+        public bool GuaranteedBossItems { get; init; }
+        public bool GenericKeys { get; init; }
+        public bool TakeAnyLocations { get; init; }
+        public bool KeyDropShuffle { get; init; }
+        public bool ShopShuffle { get; init; }
     }
 }

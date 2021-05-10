@@ -1,18 +1,20 @@
+using OpenTracker.Models.Modes;
+
 namespace OpenTracker.Models.Requirements.KeyDropShuffle
 {
     /// <summary>
-    ///     This interface contains key drop shuffle setting requirement data.
+    /// This interface contains the <see cref="IMode.KeyDropShuffle"/> <see cref="IRequirement"/> data.
     /// </summary>
     public interface IKeyDropShuffleRequirement : IRequirement
     {
         /// <summary>
-        ///     A factory for creating new key drop shuffle requirements.
+        /// A factory for creating new <see cref="IKeyDropShuffleRequirement"/> objects.
         /// </summary>
         /// <param name="expectedValue">
-        ///     A boolean expected key door shuffle value.
+        ///     A <see cref="bool"/> representing the expected <see cref="IMode.KeyDropShuffle"/> value.
         /// </param>
         /// <returns>
-        ///     A new key drop shuffle requirement.
+        ///     A new <see cref="IKeyDropShuffleRequirement"/> object.
         /// </returns>
         delegate IKeyDropShuffleRequirement Factory(bool expectedValue);
     }

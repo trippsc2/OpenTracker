@@ -1,9 +1,10 @@
 ﻿using OpenTracker.Models.Sections;
+using OpenTracker.Models.Sections.Boss;
 
 namespace OpenTracker.Models.UndoRedo.Sections
 {
     /// <summary>
-    /// This class contains undoable action to toggle a dungeon prize.
+    /// This class contains the <see cref="IUndoable"/> action to toggle the <see cref="IPrizeSection"/>.
     /// </summary>
     public class TogglePrizeSection : ITogglePrizeSection
     {
@@ -16,10 +17,10 @@ namespace OpenTracker.Models.UndoRedo.Sections
         /// Constructor
         /// </summary>
         /// <param name="section">
-        /// The boss section data for the prize to be toggled.
+        ///     The <see cref="ISection"/>.
         /// </param>
         /// <param name="force">
-        /// A boolean representing whether to bypass logic on the prize.
+        ///     A <see cref="bool"/> representing whether the accessibility logic should be obeyed.
         /// </param>
         public TogglePrizeSection(ISection section, bool force)
         {
@@ -27,20 +28,11 @@ namespace OpenTracker.Models.UndoRedo.Sections
             _force = force;
         }
 
-        /// <summary>
-        /// Returns whether the action can be executed.
-        /// </summary>
-        /// <returns>
-        /// A boolean representing whether the action can be executed.
-        /// </returns>
         public bool CanExecute()
         {
             return _section.CanBeUncleared() || _section.CanBeCleared(_force);
         }
 
-        /// <summary>
-        /// Executes the action.
-        /// </summary>
         public void ExecuteDo()
         {
             _section.Available = _section.IsAvailable() ? 0 : 1;
@@ -48,9 +40,6 @@ namespace OpenTracker.Models.UndoRedo.Sections
             _section.UserManipulated = true;
         }
 
-        /// <summary>
-        /// Undoes the action.
-        /// </summary>
         public void ExecuteUndo()
         {
             _section.Available = _section.IsAvailable() ? 0 : 1;

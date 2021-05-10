@@ -3,45 +3,33 @@
 namespace OpenTracker.Models.UndoRedo.Prize
 {
     /// <summary>
-    ///     This class contains undoable action data to change the dungeon prize.
+    /// This class contains the <see cref="IUndoable"/> action to change the prize of a <see cref="IPrizePlacement"/>.
     /// </summary>
     public class ChangePrize : IChangePrize
     {
         private readonly IPrizePlacement _prizePlacement;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="prizePlacement">
-        ///     The prize placement to be changed.
+        ///     The <see cref="IPrizePlacement"/>.
         /// </param>
         public ChangePrize(IPrizePlacement prizePlacement)
         {
             _prizePlacement = prizePlacement;
         }
 
-        /// <summary>
-        ///     Returns whether the action can be executed.
-        /// </summary>
-        /// <returns>
-        ///     A boolean representing whether the action can be executed.
-        /// </returns>
         public bool CanExecute()
         {
             return _prizePlacement.CanCycle();
         }
 
-        /// <summary>
-        ///     Executes the action.
-        /// </summary>
         public void ExecuteDo()
         {
             _prizePlacement.Cycle();
         }
 
-        /// <summary>
-        ///     Undoes the action.
-        /// </summary>
         public void ExecuteUndo()
         {
             _prizePlacement.Cycle(true);

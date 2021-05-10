@@ -1,18 +1,20 @@
+using OpenTracker.Models.Modes;
+
 namespace OpenTracker.Models.Requirements.GuaranteedBossItems
 {
     /// <summary>
-    ///     This interface contains guaranteed boss items requirement data.
+    /// This interface contains <see cref="IMode.GuaranteedBossItems"/> requirement data.
     /// </summary>
     public interface IGuaranteedBossItemsRequirement : IRequirement
     {
         /// <summary>
-        ///     A factory for creating new guaranteed boss items requirements.
+        /// A factory for creating new <see cref="IGuaranteedBossItemsRequirement"/> objects.
         /// </summary>
         /// <param name="expectedValue">
-        ///     A boolean expected guaranteed boss items value.
+        ///     A <see cref="bool"/> representing the expected <see cref="IMode.GuaranteedBossItems"/> value.
         /// </param>
         /// <returns>
-        ///     A new guaranteed boss items requirement.
+        ///     A new <see cref="IGuaranteedBossItemsRequirement"/> object.
         /// </returns>
         delegate IGuaranteedBossItemsRequirement Factory(bool expectedValue);
     }

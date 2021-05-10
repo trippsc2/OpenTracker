@@ -7,8 +7,8 @@ namespace OpenTracker.Models.SaveLoad
     /// </summary>
     public class SectionSaveData
     {
-        public MarkType? Marking { get; set; }
-        public bool UserManipulated { get; set; }
-        public int Available { get; set; }
+        public MarkType? Marking { get; init; }
+        public bool UserManipulated { get; init; }
+        public int Available { get; init; }
     }
 }

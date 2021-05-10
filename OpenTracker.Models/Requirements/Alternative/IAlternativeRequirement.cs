@@ -3,18 +3,18 @@ using System.Collections.Generic;
 namespace OpenTracker.Models.Requirements.Alternative
 {
     /// <summary>
-    ///     This interface contains logic for a set of requirement alternatives.
+    /// This interface contains logic for a set of <see cref="IRequirement"/> alternatives.
     /// </summary>
     public interface IAlternativeRequirement : IRequirement
     {
         /// <summary>
-        ///     A factory for creating a set of requirement alternatives.
+        /// A factory for creating new <see cref="IAlternativeRequirement"/> objects.
         /// </summary>
         /// <param name="requirements">
-        ///     A list of requirement alternatives.
+        ///     A <see cref="IList{T}"/> of <see cref="IRequirement"/> alternatives.
         /// </param>
         /// <returns>
-        ///     A new set of requirement alternatives.
+        ///     A new <see cref="IAlternativeRequirement"/> object.
         /// </returns>
         delegate IAlternativeRequirement Factory(IList<IRequirement> requirements);
     }

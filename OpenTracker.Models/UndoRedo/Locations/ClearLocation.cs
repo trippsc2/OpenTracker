@@ -6,7 +6,7 @@ using OpenTracker.Models.Sections;
 namespace OpenTracker.Models.UndoRedo.Locations
 {
     /// <summary>
-    /// This class contains undoable action data to clear a location.
+    /// This class contains the <see cref="IUndoable"/> action to clear a <see cref="ILocation"/>.
     /// </summary>
     public class ClearLocation : IClearLocation
     {
@@ -20,10 +20,10 @@ namespace OpenTracker.Models.UndoRedo.Locations
         /// Constructor
         /// </summary>
         /// <param name="location">
-        /// The location to be cleared.
+        ///     The <see cref="ILocation"/>.
         /// </param>
         /// <param name="force">
-        /// A boolean representing whether to override logic and clear the location.
+        ///     A <see cref="bool"/> representing whether the accessibility logic should be obeyed.
         /// </param>
         public ClearLocation(ILocation location, bool force = false)
         {
@@ -31,20 +31,11 @@ namespace OpenTracker.Models.UndoRedo.Locations
             _force = force;
         }
 
-        /// <summary>
-        /// Returns whether the action can be executed.
-        /// </summary>
-        /// <returns>
-        /// A boolean representing whether the action can be executed.
-        /// </returns>
         public bool CanExecute()
         {
             return _location.CanBeCleared(_force);
         }
 
-        /// <summary>
-        /// Executes the action.
-        /// </summary>
         public void ExecuteDo()
         {
             _previousLocationCounts.Clear();
@@ -70,9 +61,6 @@ namespace OpenTracker.Models.UndoRedo.Locations
             }
         }
 
-        /// <summary>
-        /// Undoes the action.
-        /// </summary>
         public void ExecuteUndo()
         {
             for (var i = 0; i < _previousLocationCounts.Count; i++)

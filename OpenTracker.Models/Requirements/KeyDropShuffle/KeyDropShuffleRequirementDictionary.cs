@@ -4,17 +4,18 @@ using OpenTracker.Utils;
 namespace OpenTracker.Models.Requirements.KeyDropShuffle
 {
     /// <summary>
-    ///     This class contains the dictionary container for key drop shuffle requirements.
+    /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for
+    /// <see cref="IKeyDropShuffleRequirement"/> objects indexed by <see cref="bool"/>.
     /// </summary>
     public class KeyDropShuffleRequirementDictionary : LazyDictionary<bool, IRequirement>, IKeyDropShuffleRequirementDictionary
     {
         private readonly IKeyDropShuffleRequirement.Factory _factory;
         
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="factory">
-        ///     An Autofac factory for creating new key drop shuffle requirements.
+        ///     An Autofac factory for creating new <see cref="IKeyDropShuffleRequirement"/> objects.
         /// </param>
         public KeyDropShuffleRequirementDictionary(IKeyDropShuffleRequirement.Factory factory)
             : base(new Dictionary<bool, IRequirement>())

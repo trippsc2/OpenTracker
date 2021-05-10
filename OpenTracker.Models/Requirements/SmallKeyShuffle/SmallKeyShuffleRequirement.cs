@@ -4,7 +4,7 @@ using OpenTracker.Models.Modes;
 namespace OpenTracker.Models.Requirements.SmallKeyShuffle
 {
     /// <summary>
-    ///     This class contains small key shuffle requirement data.
+    /// This class contains the <see cref="IMode.SmallKeyShuffle"/> <see cref="IRequirement"/> data.
     /// </summary>
     public class SmallKeyShuffleRequirement : BooleanRequirement, ISmallKeyShuffleRequirement
     {
@@ -12,13 +12,13 @@ namespace OpenTracker.Models.Requirements.SmallKeyShuffle
         private readonly bool _expectedValue;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="mode">
-        ///     The mode settings data.
+        ///     The <see cref="IMode"/> data.
         /// </param>
         /// <param name="expectedValue">
-        ///     A boolean expected small key shuffle value.
+        ///     A <see cref="bool"/> expected <see cref="IMode.SmallKeyShuffle"/> value.
         /// </param>
         public SmallKeyShuffleRequirement(IMode mode, bool expectedValue)
         {
@@ -31,13 +31,13 @@ namespace OpenTracker.Models.Requirements.SmallKeyShuffle
         }
 
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on the IMode interface.
+        /// Subscribes to the <see cref="IMode.PropertyChanged"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnModeChanged(object? sender, PropertyChangedEventArgs e)
         {

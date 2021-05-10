@@ -3,10 +3,20 @@ using OpenTracker.Models.Locations.Map.Connections;
 namespace OpenTracker.Models.UndoRedo.Connections
 {
     /// <summary>
-    /// This interface contains undoable action to remove a connection between two entrances.
+    /// This interface contains the <see cref="IUndoable"/> action to remove a new <see cref="IMapConnection"/> from
+    /// the map.
     /// </summary>
     public interface IRemoveMapConnection : IUndoable
     {
-        delegate IRemoveMapConnection Factory(IMapConnection connection);
+        /// <summary>
+        /// A factory for creating new <see cref="IRemoveMapConnection"/> objects.
+        /// </summary>
+        /// <param name="mapConnection">
+        ///     The <see cref="IMapConnection"/>.
+        /// </param>
+        /// <returns>
+        ///     A new <see cref="IRemoveMapConnection"/> object.
+        /// </returns>
+        delegate IRemoveMapConnection Factory(IMapConnection mapConnection);
     }
 }

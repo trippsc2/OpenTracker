@@ -4,18 +4,18 @@ using OpenTracker.Models.Locations;
 namespace OpenTracker.Models.Sections.Factories
 {
     /// <summary>
-    ///     This interface contains creation logic for section data.
+    /// This interface contains creation logic for section data.
     /// </summary>
     public interface ISectionFactory
     {
         /// <summary>
-        ///     Returns a list of sections for the specified location.
+        /// Returns a <see cref="List{T}"/> of <see cref="ISection"/> for the specified <see cref="LocationID"/>.
         /// </summary>
         /// <param name="id">
-        ///     The location ID.
+        ///     The <see cref="LocationID"/>.
         /// </param>
         /// <returns>
-        ///     A list of sections.
+        ///     A <see cref="List{T}"/> of <see cref="ISection"/>.
         /// </returns>
         List<ISection> GetSections(LocationID id);
     }

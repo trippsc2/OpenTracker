@@ -4,7 +4,7 @@ using OpenTracker.Models.Items.Keys;
 namespace OpenTracker.Models.Requirements.Item.SmallKey
 {
     /// <summary>
-    ///     This class contains small key requirement data.
+    /// This class contains small key <see cref="IRequirement"/> data.
     /// </summary>
     public class SmallKeyRequirement : BooleanRequirement, ISmallKeyRequirement
     {
@@ -12,13 +12,13 @@ namespace OpenTracker.Models.Requirements.Item.SmallKey
         private readonly int _count;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="item">
-        ///     The item of the requirement.
+        ///     The <see cref="ISmallKeyItem"/>.
         /// </param>
         /// <param name="count">
-        ///     A 32-bit integer representing the number of the item required.
+        ///     A <see cref="int"/> representing the number of the item required.
         /// </param>
         public SmallKeyRequirement(ISmallKeyItem item, int count = 1)
         {
@@ -31,13 +31,13 @@ namespace OpenTracker.Models.Requirements.Item.SmallKey
         }
         
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on the IItem interface.
+        /// Subscribes to the <see cref="ISmallKeyItem.PropertyChanged"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnItemChanged(object? sender, PropertyChangedEventArgs e)
         {

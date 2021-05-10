@@ -3,7 +3,7 @@
 namespace OpenTracker.Models.UndoRedo.Items
 {
     /// <summary>
-    /// This class contains undoable action data to add an item.
+    /// This class contains the <see cref="IUndoable"/> action to add an <see cref="IItem"/>.
     /// </summary>
     public class AddItem : IAddItem
     {
@@ -13,35 +13,23 @@ namespace OpenTracker.Models.UndoRedo.Items
         /// Constructor
         /// </summary>
         /// <param name="item">
-        /// The item to be added.
+        ///     The <see cref="IItem"/>.
         /// </param>
         public AddItem(IItem item)
         {
             _item = item;
         }
 
-        /// <summary>
-        /// Returns whether the action can be executed.
-        /// </summary>
-        /// <returns>
-        /// A boolean representing whether the action can be executed.
-        /// </returns>
         public bool CanExecute()
         {
             return _item.CanAdd();
         }
 
-        /// <summary>
-        /// Executes the action.
-        /// </summary>
         public void ExecuteDo()
         {
             _item.Add();
         }
 
-        /// <summary>
-        /// Undoes the action.
-        /// </summary>
         public void ExecuteUndo()
         {
             _item.Remove();

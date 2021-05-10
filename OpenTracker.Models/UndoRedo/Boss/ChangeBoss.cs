@@ -3,7 +3,8 @@
 namespace OpenTracker.Models.UndoRedo.Boss
 {
     /// <summary>
-    /// This class contains undoable action to change the boss of a dungeon.
+    /// This class contains the <see cref="IUndoable"/> action to change the <see cref="BossType"/> of a
+    /// <see cref="IBossPlacement"/>.
     /// </summary>
     public class ChangeBoss : IChangeBoss
     {
@@ -16,10 +17,10 @@ namespace OpenTracker.Models.UndoRedo.Boss
         /// Constructor
         /// </summary>
         /// <param name="bossPlacement">
-        /// The boss section to be changed.
+        ///     The <see cref="IBossPlacement"/>.
         /// </param>
         /// <param name="newValue">
-        /// The boss to be assigned to the dungeon.
+        ///     The new nullable <see cref="BossType"/> value.
         /// </param>
         public ChangeBoss(IBossPlacement bossPlacement, BossType? newValue)
         {
@@ -27,29 +28,17 @@ namespace OpenTracker.Models.UndoRedo.Boss
             _newValue = newValue;
         }
 
-        /// <summary>
-        /// Returns whether the action can be executed.
-        /// </summary>
-        /// <returns>
-        /// A boolean representing whether the action can be executed.
-        /// </returns>
         public bool CanExecute()
         {
             return true;
         }
 
-        /// <summary>
-        /// Executes the action.
-        /// </summary>
         public void ExecuteDo()
         {
             _previousValue = _bossPlacement.Boss;
             _bossPlacement.Boss = _newValue;
         }
 
-        /// <summary>
-        /// Undoes the action.
-        /// </summary>
         public void ExecuteUndo()
         {
             _bossPlacement.Boss = _previousValue;

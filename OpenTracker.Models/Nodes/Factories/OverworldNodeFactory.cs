@@ -5,7 +5,7 @@ using OpenTracker.Models.Nodes.Connections;
 namespace OpenTracker.Models.Nodes.Factories
 {
     /// <summary>
-    ///     This class contains creation logic for requirement node data.
+    /// This class contains creation logic for <see cref="IStartNode"/> and <see cref="IOverworldNode"/> objects.
     /// </summary>
     public class OverworldNodeFactory : IOverworldNodeFactory
     {
@@ -25,46 +25,46 @@ namespace OpenTracker.Models.Nodes.Factories
         private readonly IStartNode.Factory _startFactory;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="startConnectionFactory">
-        ///     The start node connection factory. 
+        ///     The <see cref="IStartConnectionFactory"/>. 
         /// </param>
         /// <param name="lightWorldConnectionFactory">
-        ///     The general light world node connection factory. 
+        ///     The <see cref="ILightWorldConnectionFactory"/>. 
         /// </param>
         /// <param name="nwLightWorldConnectionFactory">
-        ///     The northwest light world node connection factory.
+        ///     The <see cref="INWLightWorldConnectionFactory"/>.
         /// </param>
         /// <param name="sLightWorldConnectionFactory">
-        ///     The south light world node connection factory.
+        ///     The <see cref="ISLightWorldConnectionFactory"/>.
         /// </param>
         /// <param name="neLightWorldConnectionFactory">
-        ///     The northeast light world node connection factory.
+        ///     The <see cref="INELightWorldConnectionFactory"/>.
         /// </param>
         /// <param name="lwDeathMountainConnectionFactory">
-        ///     The light world death mountain node connection factory.
+        ///     The <see cref="ILWDeathMountainConnectionFactory"/>.
         /// </param>
         /// <param name="nwDarkWorldConnectionFactory">
-        ///     The northwest dark world node connection factory.
+        ///     The <see cref="INWDarkWorldConnectionFactory"/>.
         /// </param>
         /// <param name="sDarkWorldConnectionFactory">
-        ///     The south dark world node connection factory.
+        ///     The <see cref="ISDarkWorldConnectionFactory"/>.
         /// </param>
         /// <param name="neDarkWorldConnectionFactory">
-        ///     The northeast dark world node connection factory.
+        ///     The <see cref="INEDarkWorldConnectionFactory"/>.
         /// </param>
         /// <param name="dwDeathMountainConnectionFactory">
-        ///     The dark world death mountain node connection factory.
+        ///     The <see cref="IDWDeathMountainConnectionFactory"/>.
         /// </param>
         /// <param name="dungeonEntryConnectionFactory">
-        ///     The dungeon entry node connection factory.
+        ///     The <see cref="IDungeonEntryConnectionFactory"/>.
         /// </param>
         /// <param name="factory">
-        ///     An Autofac factory for creating requirement nodes.
+        ///     An Autofac factory for creating new <see cref="IOverworldNode"/> objects.
         /// </param>
         /// <param name="startFactory">
-        ///     An Autofac factory for creating the start requirement node.
+        ///     An Autofac factory for creating new <see cref="IStartNode"/> objects.
         /// </param>
         public OverworldNodeFactory(
             IStartConnectionFactory startConnectionFactory, ILightWorldConnectionFactory lightWorldConnectionFactory,

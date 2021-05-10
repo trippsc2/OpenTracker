@@ -6,7 +6,7 @@
     public interface IResetManager
     {
         /// <summary>
-        /// Resets all the tracker to its starting values.
+        /// Resets all the tracker data to its starting values.
         /// </summary>
         void Reset();
     }

@@ -4,7 +4,7 @@ using OpenTracker.Models.Modes;
 namespace OpenTracker.Models.Requirements.KeyDropShuffle
 {
     /// <summary>
-    ///     This class contains key drop shuffle setting requirement data.
+    /// This class contains the <see cref="IMode.KeyDropShuffle"/> <see cref="IRequirement"/> data.
     /// </summary>
     public class KeyDropShuffleRequirement : BooleanRequirement, IKeyDropShuffleRequirement
     {
@@ -12,13 +12,13 @@ namespace OpenTracker.Models.Requirements.KeyDropShuffle
         private readonly bool _expectedValue;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="mode">
-        ///     The mode settings.
+        ///     The <see cref="IMode"/> data.
         /// </param>
         /// <param name="expectedValue">
-        ///     A boolean expected key door shuffle value.
+        ///     A <see cref="bool"/> representing the expected <see cref="IMode.KeyDropShuffle"/> value.
         /// </param>
         public KeyDropShuffleRequirement(IMode mode, bool expectedValue)
         {
@@ -31,13 +31,13 @@ namespace OpenTracker.Models.Requirements.KeyDropShuffle
         }
 
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on the IMode interface.
+        /// Subscribes to the <see cref="IMode.PropertyChanged"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnModeChanged(object? sender, PropertyChangedEventArgs e)
         {

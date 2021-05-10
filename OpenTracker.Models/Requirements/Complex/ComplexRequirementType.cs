@@ -1,7 +1,7 @@
 namespace OpenTracker.Models.Requirements.Complex
 {
     /// <summary>
-    ///     This enum type is for types of requirements that require a short-hand due to complexity.
+    /// This enum type defines the complex requirement type values.
     /// </summary>
     public enum ComplexRequirementType
     {

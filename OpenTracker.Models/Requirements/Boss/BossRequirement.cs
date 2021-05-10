@@ -7,7 +7,7 @@ using OpenTracker.Models.Modes;
 namespace OpenTracker.Models.Requirements.Boss
 {
     /// <summary>
-    ///     This class contains boss placement requirement data.
+    /// This class contains <see cref="IBossPlacement"/> requirement data.
     /// </summary>
     public class BossRequirement : AccessibilityRequirement, IBossRequirement
     {
@@ -42,16 +42,16 @@ namespace OpenTracker.Models.Requirements.Boss
         }
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="mode">
-        ///     The mode settings.
+        ///     The <see cref="IMode"/> data.
         /// </param>
         /// <param name="bossTypeRequirements">
-        ///     The boss type requirement dictionary.
+        ///     The <see cref="IBossTypeRequirementDictionary"/>.
         /// </param>
         /// <param name="bossPlacement">
-        ///     The boss placement to provide requirements.
+        ///     The <see cref="IBossPlacement"/>.
         /// </param>
         public BossRequirement(
             IMode mode, IBossTypeRequirementDictionary bossTypeRequirements, IBossPlacement bossPlacement)
@@ -67,13 +67,13 @@ namespace OpenTracker.Models.Requirements.Boss
         }
 
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on the IMode interface.
+        /// Subscribes to the <see cref="IMode.PropertyChanged"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnModeChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -84,13 +84,13 @@ namespace OpenTracker.Models.Requirements.Boss
         }
 
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on the IBossPlacement interface.
+        /// Subscribes to the <see cref="IBossPlacement.PropertyChanged"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnBossPlacementChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -101,13 +101,13 @@ namespace OpenTracker.Models.Requirements.Boss
         }
 
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on the IRequirement interface.
+        /// Subscribes to the <see cref="IRequirement.PropertyChanged"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnRequirementChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -118,7 +118,7 @@ namespace OpenTracker.Models.Requirements.Boss
         }
 
         /// <summary>
-        ///     Updates boss requirement of this requirement.
+        /// Updates the <see cref="CurrentBossRequirement"/> property value.
         /// </summary>
         private void UpdateRequirement()
         {

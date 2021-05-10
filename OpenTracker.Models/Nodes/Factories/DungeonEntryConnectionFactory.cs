@@ -14,7 +14,7 @@ using OpenTracker.Models.SequenceBreaks;
 namespace OpenTracker.Models.Nodes.Factories
 {
     /// <summary>
-    ///     This class contains the creation logic for dungeon entry node connections.
+    /// This class contains the creation logic for overworld dungeon entry <see cref="INodeConnection"/> objects.
     /// </summary>
     public class DungeonEntryConnectionFactory : IDungeonEntryConnectionFactory
     {
@@ -30,31 +30,31 @@ namespace OpenTracker.Models.Nodes.Factories
         private readonly INodeConnection.Factory _connectionFactory;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="complexRequirements">
-        ///     The complex requirement dictionary.
+        ///     The <see cref="IComplexRequirementDictionary"/>.
         /// </param>
         /// <param name="entranceShuffleRequirements">
-        ///     The entrance shuffle requirement dictionary.
+        ///     The <see cref="IEntranceShuffleRequirementDictionary"/>.
         /// </param>
         /// <param name="itemRequirements">
-        ///     The item requirement dictionary.
+        ///     The <see cref="IItemRequirementDictionary"/>.
         /// </param>
         /// <param name="prizeRequirements">
-        ///     The prize requirement dictionary.
+        ///     The <see cref="IPrizeRequirementDictionary"/>.
         /// </param>
         /// <param name="sequenceBreakRequirements">
-        ///     The sequence break requirement dictionary.
+        ///     The <see cref="ISequenceBreakRequirementDictionary"/>.
         /// </param>
         /// <param name="worldStateRequirements">
-        ///     The world state requirement dictionary.
+        ///     The <see cref="IWorldStateRequirementDictionary"/>.
         /// </param>
         /// <param name="overworldNodes">
-        ///     The overworld node dictionary.
+        ///     The <see cref="IOverworldNodeDictionary"/>.
         /// </param>
         /// <param name="connectionFactory">
-        ///     An Autofac factory for creating new node connections.
+        ///     An Autofac factory for creating new <see cref="INodeConnection"/> objects.
         /// </param>
         public DungeonEntryConnectionFactory(
             IComplexRequirementDictionary complexRequirements,

@@ -11,7 +11,7 @@ using OpenTracker.Models.Sections.Entrance;
 namespace OpenTracker.Models.Sections.Factories
 {
     /// <summary>
-    ///     This class contains the creation logic for dropdown sections.
+    /// This class contains the creation logic for <see cref="IDropdownSection"/> objects.
     /// </summary>
     public class DropdownSectionFactory : IDropdownSectionFactory
     {
@@ -23,19 +23,19 @@ namespace OpenTracker.Models.Sections.Factories
         private readonly IDropdownSection.Factory _factory;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="alternativeRequirements">
-        ///     The alternative requirement dictionary.
+        ///     The <see cref="IAlternativeRequirementDictionary"/>.
         /// </param>
         /// <param name="entranceShuffleRequirements">
-        ///     The entrance shuffle requirement dictionary.
+        ///     The <see cref="IEntranceShuffleRequirementDictionary"/>.
         /// </param>
         /// <param name="overworldNodes">
-        ///     The overworld node dictionary.
+        ///     The <see cref="IOverworldNodeDictionary"/>.
         /// </param>
         /// <param name="factory">
-        ///     An Autofac factory for creating new dropdown sections.
+        ///     An Autofac factory for creating new <see cref="IDropdownSection"/> objects.
         /// </param>
         public DropdownSectionFactory(
             IAlternativeRequirementDictionary alternativeRequirements,
@@ -61,13 +61,13 @@ namespace OpenTracker.Models.Sections.Factories
         }
 
         /// <summary>
-        ///     Returns the exit node of the section.
+        /// Returns the exit <see cref="INode"/> for the specified <see cref="LocationID"/>.
         /// </summary>
         /// <param name="id">
-        ///     The location ID.
+        ///     The <see cref="LocationID"/>.
         /// </param>
         /// <returns>
-        ///     The exit node.
+        ///     The exit <see cref="INode"/>.
         /// </returns>
         private INode GetExitNode(LocationID id)
         {
@@ -83,13 +83,13 @@ namespace OpenTracker.Models.Sections.Factories
         }
 
         /// <summary>
-        ///     Returns the hole node of the section.
+        /// Returns the hole <see cref="INode"/> for the specified <see cref="LocationID"/>.
         /// </summary>
         /// <param name="id">
-        ///     The location ID.
+        ///     The <see cref="LocationID"/>.
         /// </param>
         /// <returns>
-        ///     The hole node.
+        ///     The hole <see cref="INode"/>.
         /// </returns>
         private INode GetHoleNode(LocationID id)
         {

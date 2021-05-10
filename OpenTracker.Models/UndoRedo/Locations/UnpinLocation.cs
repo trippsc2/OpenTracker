@@ -10,7 +10,7 @@ namespace OpenTracker.Models.UndoRedo.Locations
     {
         private readonly IPinnedLocationCollection _pinnedLocations;
 
-        private readonly ILocation _pinnedLocation;
+        private readonly ILocation _location;
 
         private int? _existingIndex;
 
@@ -18,40 +18,28 @@ namespace OpenTracker.Models.UndoRedo.Locations
         /// Constructor
         /// </summary>
         /// <param name="pinnedLocations">
-        /// The pinned locations collection.
+        ///     The <see cref="IPinnedLocationCollection"/>.
         /// </param>
-        /// <param name="pinnedLocation">
-        /// The pinned location ViewModel instance to be added.
+        /// <param name="location">
+        ///     The <see cref="ILocation"/>.
         /// </param>
-        public UnpinLocation(IPinnedLocationCollection pinnedLocations, ILocation pinnedLocation)
+        public UnpinLocation(IPinnedLocationCollection pinnedLocations, ILocation location)
         {
             _pinnedLocations = pinnedLocations;
-            _pinnedLocation = pinnedLocation;
+            _location = location;
         }
 
-        /// <summary>
-        /// Returns whether the action can be executed.
-        /// </summary>
-        /// <returns>
-        /// A boolean representing whether the action can be executed.
-        /// </returns>
         public bool CanExecute()
         {
             return true;
         }
 
-        /// <summary>
-        /// Executes the action.
-        /// </summary>
         public void ExecuteDo()
         {
-            _existingIndex = _pinnedLocations.IndexOf(_pinnedLocation);
-            _pinnedLocations.Remove(_pinnedLocation);
+            _existingIndex = _pinnedLocations.IndexOf(_location);
+            _pinnedLocations.Remove(_location);
         }
 
-        /// <summary>
-        /// Undoes the action.
-        /// </summary>
         public void ExecuteUndo()
         {
             if (_existingIndex is null)
@@ -59,7 +47,7 @@ namespace OpenTracker.Models.UndoRedo.Locations
                 throw new NullReferenceException("_existingIndex is not defined.");
             }
             
-            _pinnedLocations.Insert(_existingIndex.Value, _pinnedLocation);
+            _pinnedLocations.Insert(_existingIndex.Value, _location);
         }
     }
 }

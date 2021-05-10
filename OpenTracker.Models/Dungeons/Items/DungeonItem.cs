@@ -80,7 +80,7 @@ namespace OpenTracker.Models.Dungeons.Items
         }
 
         /// <summary>
-        /// Updates the accessibility of the item.
+        /// Updates the <see cref="Accessibility"/> property value.
         /// </summary>
         private void UpdateAccessibility()
         {

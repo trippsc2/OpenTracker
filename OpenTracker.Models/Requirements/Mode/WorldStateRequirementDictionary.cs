@@ -5,17 +5,19 @@ using OpenTracker.Utils;
 namespace OpenTracker.Models.Requirements.Mode
 {
     /// <summary>
-    ///     This class contains the dictionary container for world state requirements.
+    /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for
+    /// <see cref="IWorldStateRequirement"/> objects indexed by <see cref="WorldState"/>.
     /// </summary>
-    public class WorldStateRequirementDictionary : LazyDictionary<WorldState, IRequirement>, IWorldStateRequirementDictionary
+    public class WorldStateRequirementDictionary : LazyDictionary<WorldState, IRequirement>,
+        IWorldStateRequirementDictionary
     {
         private readonly IWorldStateRequirement.Factory _factory;
         
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="factory">
-        ///     An Autofac factory for creating new world state requirements.
+        ///     An Autofac factory for creating new <see cref="IWorldStateRequirement"/> objects.
         /// </param>
         public WorldStateRequirementDictionary(IWorldStateRequirement.Factory factory)
             : base(new Dictionary<WorldState, IRequirement>())

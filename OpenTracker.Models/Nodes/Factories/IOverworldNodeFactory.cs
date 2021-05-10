@@ -1,26 +1,26 @@
 ﻿namespace OpenTracker.Models.Nodes.Factories
 {
     /// <summary>
-    ///     This interface contains creation logic for requirement node data.
+    /// This interface contains creation logic for <see cref="IStartNode"/> and <see cref="IOverworldNode"/> objects.
     /// </summary>
     public interface IOverworldNodeFactory : INodeConnectionFactory
     {
         /// <summary>
-        ///     A factory for creating the overworld node factory.
+        /// A factory for creating the <see cref="IOverworldNodeFactory"/> object.
         /// </summary>
         /// <returns>
-        ///     The overworld node factory.
+        ///     The <see cref="IOverworldNodeFactory"/> object.
         /// </returns>
         delegate IOverworldNodeFactory Factory();
 
         /// <summary>
-        ///     Returns a new requirement node for the specified requirement node ID.
+        /// Returns a new <see cref="INode"/> for the specified <see cref="OverworldNodeID"/>.
         /// </summary>
         /// <param name="id">
-        ///     The requirement node ID.
+        ///     The <see cref="OverworldNodeID"/>.
         /// </param>
         /// <returns>
-        ///     A new requirement node.
+        ///     A new <see cref="INode"/>.
         /// </returns>
         INode GetOverworldNode(OverworldNodeID id);
     }

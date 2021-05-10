@@ -5,17 +5,19 @@ using OpenTracker.Utils;
 namespace OpenTracker.Models.Requirements.Alternative
 {
     /// <summary>
-    ///     This class contains the dictionary container for sets of alternative requirements.
+    /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for
+    /// <see cref="IAlternativeRequirement"/> objects indexed by <see cref="HashSet{T}"/> of <see cref="IRequirement"/>.
     /// </summary>
-    public class AlternativeRequirementDictionary : LazyDictionary<HashSet<IRequirement>, IRequirement>, IAlternativeRequirementDictionary
+    public class AlternativeRequirementDictionary : LazyDictionary<HashSet<IRequirement>, IRequirement>,
+        IAlternativeRequirementDictionary
     {
         private readonly IAlternativeRequirement.Factory _factory;
         
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="factory">
-        ///     An Autofac factory for creating new sets of alternative requirements.
+        ///     An Autofac factory for creating new <see cref="IAlternativeRequirement"/> objects.
         /// </param>
         public AlternativeRequirementDictionary(IAlternativeRequirement.Factory factory)
             : base(new Dictionary<HashSet<IRequirement>, IRequirement>(HashSet<IRequirement>.CreateSetComparer()))

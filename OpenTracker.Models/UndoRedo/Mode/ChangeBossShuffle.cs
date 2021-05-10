@@ -3,7 +3,7 @@
 namespace OpenTracker.Models.UndoRedo.Mode
 {
     /// <summary>
-    /// This class contains undoable action to change the boss shuffle setting.
+    /// This class contains the <see cref="IUndoable"/> action to change the <see cref="IMode.BossShuffle"/> property.
     /// </summary>
     public class ChangeBossShuffle : IChangeBossShuffle
     {
@@ -17,10 +17,10 @@ namespace OpenTracker.Models.UndoRedo.Mode
         /// Constructor
         /// </summary>
         /// <param name="mode">
-        /// The game mode data.
+        ///     The <see cref="IMode"/> data.
         /// </param>
         /// <param name="newValue">
-        /// A boolean representing the new boss shuffle setting.
+        ///     A <see cref="bool"/> representing the new <see cref="IMode.BossShuffle"/> value.
         /// </param>
         public ChangeBossShuffle(IMode mode, bool newValue)
         {
@@ -28,29 +28,17 @@ namespace OpenTracker.Models.UndoRedo.Mode
             _newValue = newValue;
         }
 
-        /// <summary>
-        /// Returns whether the action can be executed.
-        /// </summary>
-        /// <returns>
-        /// A boolean representing whether the action can be executed.
-        /// </returns>
         public bool CanExecute()
         {
             return true;
         }
 
-        /// <summary>
-        /// Executes the action.
-        /// </summary>
         public void ExecuteDo()
         {
             _previousValue = _mode.BossShuffle;
             _mode.BossShuffle = _newValue;
         }
 
-        /// <summary>
-        /// Undoes the action.
-        /// </summary>
         public void ExecuteUndo()
         {
             _mode.BossShuffle = _previousValue;

@@ -4,17 +4,19 @@ using OpenTracker.Utils;
 namespace OpenTracker.Models.Requirements.EnemyShuffle
 {
     /// <summary>
-    ///     This class contains the dictionary container for enemy shuffle requirements.
+    /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for
+    /// <see cref="IEnemyShuffleRequirement"/> objects indexed by <see cref="bool"/>.
     /// </summary>
-    public class EnemyShuffleRequirementDictionary : LazyDictionary<bool, IRequirement>, IEnemyShuffleRequirementDictionary
+    public class EnemyShuffleRequirementDictionary : LazyDictionary<bool, IRequirement>,
+        IEnemyShuffleRequirementDictionary
     {
         private readonly IEnemyShuffleRequirement.Factory _factory;
         
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="factory">
-        ///     An Autofac factory for creating new enemy shuffle requirements.
+        ///     An Autofac factory for creating new <see cref="IEnemyShuffleRequirement"/> objects.
         /// </param>
         public EnemyShuffleRequirementDictionary(IEnemyShuffleRequirement.Factory factory)
             : base(new Dictionary<bool, IRequirement>())

@@ -22,7 +22,7 @@ using OpenTracker.Models.SequenceBreaks;
 namespace OpenTracker.Models.Requirements.Complex
 {
     /// <summary>
-    ///     This class contains the creation logic for complex requirements.
+    /// This class contains the creation logic for complex <see cref="IRequirement"/> objects.
     /// </summary>
     public class ComplexRequirementFactory : IComplexRequirementFactory
     {
@@ -43,52 +43,52 @@ namespace OpenTracker.Models.Requirements.Complex
         private readonly IWorldStateRequirementDictionary _worldStateRequirements;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="aggregateRequirements">
-        ///     The aggregate requirement dictionary.
+        ///     The <see cref="IAggregateRequirementDictionary"/>.
         /// </param>
         /// <param name="alternativeRequirements">
-        ///     The alternative requirement dictionary.
+        ///     The <see cref="IAlternativeRequirementDictionary"/>.
         /// </param>
         /// <param name="complexRequirements">
-        ///     The complex requirement dictionary.
+        ///     The <see cref="IComplexRequirementDictionary"/>.
         /// </param>
         /// <param name="enemyShuffleRequirements">
-        ///     The enemy shuffle requirement dictionary.
+        ///     The <see cref="IEnemyShuffleRequirementDictionary"/>.
         /// </param>
         /// <param name="entranceShuffleRequirements">
-        ///     The entrance shuffle requirement dictionary.
+        ///     The <see cref="IEntranceShuffleRequirementDictionary"/>.
         /// </param>
         /// <param name="itemRequirements">
-        ///     The item requirement dictionary.
+        ///     The <see cref="IItemRequirementDictionary"/>.
         /// </param>
         /// <param name="itemExactRequirements">
-        ///     The item exact requirement dictionary.
+        ///     The <see cref="IItemExactRequirementDictionary"/>.
         /// </param>
         /// <param name="itemPlacementRequirements">
-        ///     The item placement requirement dictionary.
+        ///     The <see cref="IItemPlacementRequirementDictionary"/>.
         /// </param>
         /// <param name="keyDropShuffleRequirements">
-        ///     The key drop shuffle requirement dictionary.
+        ///     The <see cref="IKeyDropShuffleRequirementDictionary"/>.
         /// </param>
         /// <param name="prizeRequirements">
-        ///     The prize requirement dictionary.
+        ///     The <see cref="IPrizeRequirementDictionary"/>.
         /// </param>
         /// <param name="sequenceBreakRequirements">
-        ///     The sequence break dictionary.
+        ///     The <see cref="ISequenceBreakRequirementDictionary"/>.
         /// </param>
         /// <param name="smallKeyRequirements">
-        ///     The small key requirement dictionary.
+        ///     The <see cref="ISmallKeyRequirementDictionary"/>.
         /// </param>
         /// <param name="smallKeyShuffleRequirements">
-        ///     The small key shuffle requirement dictionary.
+        ///     The <see cref="ISmallKeyShuffleRequirementDictionary"/>.
         /// </param>
         /// <param name="staticRequirements">
-        ///     The static requirement dictionary.
+        ///     The <see cref="IStaticRequirementDictionary"/>.
         /// </param>
         /// <param name="worldStateRequirements">
-        ///     The world state requirement dictionary.
+        ///     The <see cref="IWorldStateRequirementDictionary"/>.
         /// </param>
         public ComplexRequirementFactory(
             IAggregateRequirementDictionary aggregateRequirements,

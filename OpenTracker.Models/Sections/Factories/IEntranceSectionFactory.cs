@@ -4,18 +4,18 @@ using OpenTracker.Models.Sections.Entrance;
 namespace OpenTracker.Models.Sections.Factories
 {
     /// <summary>
-    ///     This interface contains the creation logic for entrance sections.
+    /// This interface contains the creation logic for <see cref="IEntranceSection"/> objects.
     /// </summary>
     public interface IEntranceSectionFactory
     {
         /// <summary>
-        ///     Returns a new entrance section for the specified location ID.
+        /// Returns a new <see cref="IEntranceSection"/> object for the specified <see cref="LocationID"/>.
         /// </summary>
         /// <param name="id">
-        ///     The location ID.
+        ///     The <see cref="LocationID"/>.
         /// </param>
         /// <returns>
-        ///     A new entrance section.
+        ///     A new <see cref="IEntranceSection"/> object.
         /// </returns>
         IEntranceSection GetEntranceSection(LocationID id);
     }

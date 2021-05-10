@@ -4,17 +4,19 @@ using OpenTracker.Utils;
 namespace OpenTracker.Models.Requirements.GenericKeys
 {
     /// <summary>
-    ///     This class contains the dictionary container for generic keys requirements.
+    /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for
+    /// <see cref="IGenericKeysRequirement"/> objects indexed by <see cref="bool"/>.
     /// </summary>
-    public class GenericKeysRequirementDictionary : LazyDictionary<bool, IRequirement>, IGenericKeysRequirementDictionary
+    public class GenericKeysRequirementDictionary : LazyDictionary<bool, IRequirement>,
+        IGenericKeysRequirementDictionary
     {
         private readonly IGenericKeysRequirement.Factory _factory;
         
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="factory">
-        ///     An Autofac factory for creating generic keys requirements.
+        ///     An Autofac factory for creating new <see cref="IGenericKeysRequirement"/> objects.
         /// </param>
         public GenericKeysRequirementDictionary(IGenericKeysRequirement.Factory factory)
             : base(new Dictionary<bool, IRequirement>())

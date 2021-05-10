@@ -3,7 +3,7 @@
 namespace OpenTracker.Models.UndoRedo.Items
 {
     /// <summary>
-    /// This class contains undoable action data to cycle an item through valid counts.
+    /// This class contains the <see cref="IUndoable"/> action to cycle a <see cref="ICappedItem"/>.
     /// </summary>
     public class CycleItem : ICycleItem
     {
@@ -13,35 +13,23 @@ namespace OpenTracker.Models.UndoRedo.Items
         /// Constructor
         /// </summary>
         /// <param name="item">
-        /// The item data to be manipulated.
+        ///     The <see cref="ICappedItem"/>.
         /// </param>
         public CycleItem(ICappedItem item)
         {
             _item = item;
         }
 
-        /// <summary>
-        /// Returns whether the action can be executed.
-        /// </summary>
-        /// <returns>
-        /// A boolean representing whether the action can be executed.
-        /// </returns>
         public bool CanExecute()
         {
             return true;
         }
 
-        /// <summary>
-        /// Executes the action.
-        /// </summary>
         public void ExecuteDo()
         {
             _item.Cycle();
         }
 
-        /// <summary>
-        /// Undoes the action.
-        /// </summary>
         public void ExecuteUndo()
         {
             _item.Cycle(true);

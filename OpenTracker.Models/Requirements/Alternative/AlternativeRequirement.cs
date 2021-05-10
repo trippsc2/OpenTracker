@@ -5,17 +5,17 @@ using OpenTracker.Models.Accessibility;
 namespace OpenTracker.Models.Requirements.Alternative
 {
     /// <summary>
-    ///     This class contains logic for a set of requirement alternatives.
+    /// This class contains logic for a set of <see cref="IRequirement"/> alternatives.
     /// </summary>
     public class AlternativeRequirement : AccessibilityRequirement, IAlternativeRequirement
     {
         private readonly IList<IRequirement> _requirements;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="requirements">
-        ///     A list of requirement alternatives.
+        ///     A <see cref="IList{T}"/> of <see cref="IRequirement"/> alternatives.
         /// </param>
         public AlternativeRequirement(IList<IRequirement> requirements)
         {
@@ -30,13 +30,13 @@ namespace OpenTracker.Models.Requirements.Alternative
         }
 
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on the IRequirement interface.
+        /// Subscribes to the <see cref="IRequirement.PropertyChanged"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnRequirementChanged(object? sender, PropertyChangedEventArgs e)
         {

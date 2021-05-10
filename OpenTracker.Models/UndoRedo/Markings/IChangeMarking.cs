@@ -7,6 +7,18 @@ namespace OpenTracker.Models.UndoRedo.Markings
     /// </summary>
     public interface IChangeMarking : IUndoable
     {
-        delegate IChangeMarking Factory(IMarking marking, MarkType newMarking);
+        /// <summary>
+        /// A factory for creating new <see cref="IChangeMarking"/> objects.
+        /// </summary>
+        /// <param name="marking">
+        ///     The <see cref="IMarking"/>.
+        /// </param>
+        /// <param name="newValue">
+        ///     The new <see cref="MarkType"/> value.
+        /// </param>
+        /// <returns>
+        ///     A new <see cref="IChangeMarking"/> object.
+        /// </returns>
+        delegate IChangeMarking Factory(IMarking marking, MarkType newValue);
     }
 }

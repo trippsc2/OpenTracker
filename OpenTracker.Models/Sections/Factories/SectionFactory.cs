@@ -5,7 +5,7 @@ using OpenTracker.Models.Locations;
 namespace OpenTracker.Models.Sections.Factories
 {
     /// <summary>
-    ///     This class contains creation logic for section data.
+    /// This class contains creation logic for section data.
     /// </summary>
     public class SectionFactory : ISectionFactory
     {
@@ -19,28 +19,28 @@ namespace OpenTracker.Models.Sections.Factories
         private readonly ISectionAutoTrackingFactory _autoTrackingFactory;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="dropdownSectionFactory">
-        ///     The dropdown section factory.
+        ///     The <see cref="IDropdownSectionFactory"/>.
         /// </param>
         /// <param name="dungeonSectionFactory">
-        ///     The dungeon section factory.
+        ///     The <see cref="IDungeonSectionFactory"/>.
         /// </param>
         /// <param name="entranceSectionFactory">
-        ///     The entrance section factory.
+        ///     The <see cref="IEntranceSectionFactory"/>.
         /// </param>
         /// <param name="itemSectionFactory">
-        ///     The item section factory.
+        ///     The <see cref="IItemSectionFactory"/>.
         /// </param>
         /// <param name="shopSectionFactory">
-        ///     The shop section factory.
+        ///     The <see cref="IShopSectionFactory"/>.
         /// </param>
         /// <param name="takeAnySectionFactory">
-        ///     The take any section factory.
+        ///     The <see cref="ITakeAnySectionFactory"/>.
         /// </param>
         /// <param name="autoTrackingFactory">
-        ///     The section auto-tracking factory.
+        ///     The <see cref="ISectionAutoTrackingFactory"/>.
         /// </param>
         public SectionFactory(
             IDropdownSectionFactory dropdownSectionFactory, IDungeonSectionFactory dungeonSectionFactory,

@@ -4,7 +4,7 @@ using OpenTracker.Models.Modes;
 namespace OpenTracker.Models.Requirements.Mode
 {
     /// <summary>
-    ///     This class contains world state requirement data.
+    /// This class contains <see cref="IMode.WorldState"/> <see cref="IRequirement"/> data.
     /// </summary>
     public class WorldStateRequirement : BooleanRequirement, IWorldStateRequirement
     {
@@ -12,13 +12,13 @@ namespace OpenTracker.Models.Requirements.Mode
         private readonly WorldState _expectedValue;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="mode">
-        ///     The mode settings.
+        ///     The <see cref="IMode"/> data.
         /// </param>
         /// <param name="expectedValue">
-        ///     The required world state.
+        ///     A <see cref="WorldState"/> representing the expected <see cref="IMode.WorldState"/> value.
         /// </param>
         public WorldStateRequirement(IMode mode, WorldState expectedValue)
         {
@@ -31,13 +31,13 @@ namespace OpenTracker.Models.Requirements.Mode
         }
 
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on the IMode interface.
+        /// Subscribes to the <see cref="IMode.PropertyChanged"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnModeChanged(object? sender, PropertyChangedEventArgs e)
         {

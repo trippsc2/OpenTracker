@@ -3,53 +3,41 @@
 namespace OpenTracker.Models.UndoRedo.Connections
 {
     /// <summary>
-    /// This class contains undoable action data to create a connection between two entrances.
+    /// This class contains the <see cref="IUndoable"/> action to add a new <see cref="IMapConnection"/> to the map.
     /// </summary>
     public class AddMapConnection : IAddMapConnection
     {
-        private readonly IMapConnectionCollection _connections;
-        private readonly IMapConnection _connection;
+        private readonly IMapConnectionCollection _mapConnections;
+        private readonly IMapConnection _mapConnection;
 
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="connections">
-        /// The connection collection.
+        /// <param name="mapConnections">
+        ///     The <see cref="IMapConnectionCollection"/>.
         /// </param>
-        /// <param name="connection">
-        /// A tuple of the two map locations that are being collected.
+        /// <param name="mapConnection">
+        ///     The <see cref="IMapConnection"/>.
         /// </param>
-        public AddMapConnection(IMapConnectionCollection connections, IMapConnection connection)
+        public AddMapConnection(IMapConnectionCollection mapConnections, IMapConnection mapConnection)
         {
-            _connections = connections;
-            _connection = connection;
+            _mapConnections = mapConnections;
+            _mapConnection = mapConnection;
         }
 
-        /// <summary>
-        /// Returns whether the action can be executed.
-        /// </summary>
-        /// <returns>
-        /// A boolean representing whether the action can be executed.
-        /// </returns>
         public bool CanExecute()
         {
-            return !_connections.Contains(_connection);
+            return !_mapConnections.Contains(_mapConnection);
         }
 
-        /// <summary>
-        /// Executes the action.
-        /// </summary>
         public void ExecuteDo()
         {
-            _connections.Add(_connection);
+            _mapConnections.Add(_mapConnection);
         }
 
-        /// <summary>
-        /// Undoes the action.
-        /// </summary>
         public void ExecuteUndo()
         {
-            _connections.Remove(_connection);
+            _mapConnections.Remove(_mapConnection);
         }
     }
 }

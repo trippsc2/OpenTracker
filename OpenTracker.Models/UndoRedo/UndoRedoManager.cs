@@ -5,7 +5,7 @@ using ReactiveUI;
 namespace OpenTracker.Models.UndoRedo
 {
     /// <summary>
-    /// This class contains logic managing undo/redo actions.
+    /// This class contains logic managing <see cref="IUndoable"/> actions.
     /// </summary>
     public class UndoRedoManager : ReactiveObject, IUndoRedoManager
     {
@@ -33,19 +33,13 @@ namespace OpenTracker.Models.UndoRedo
         /// Constructor
         /// </summary>
         /// <param name="saveLoadManager">
-        /// The save/load manager.
+        ///     The <see cref="ISaveLoadManager"/>.
         /// </param>
         public UndoRedoManager(ISaveLoadManager saveLoadManager)
         {
             _saveLoadManager = saveLoadManager;
         }
 
-        /// <summary>
-        /// Executes a specified action and adds it to the stack of undoable actions.
-        /// </summary>
-        /// <param name="action">
-        /// The action to be executed.
-        /// </param>
         public void NewAction(IUndoable action)
         {
             lock (_syncLock)
@@ -67,9 +61,6 @@ namespace OpenTracker.Models.UndoRedo
             }
         }
 
-        /// <summary>
-        /// Undo the last action.
-        /// </summary>
         public void Undo()
         {
             lock (_syncLock)
@@ -91,9 +82,6 @@ namespace OpenTracker.Models.UndoRedo
             }
         }
 
-        /// <summary>
-        /// Redo the last undone action.
-        /// </summary>
         public void Redo()
         {
             lock (_syncLock)
@@ -115,9 +103,6 @@ namespace OpenTracker.Models.UndoRedo
             }
         }
 
-        /// <summary>
-        /// Resets the undo/redo stacks to their starting values.
-        /// </summary>
         public void Reset()
         {
             lock (_syncLock)
@@ -131,7 +116,7 @@ namespace OpenTracker.Models.UndoRedo
         }
 
         /// <summary>
-        /// Updates the CanUndo property value.
+        /// Updates the <see cref="CanUndo"/> property value.
         /// </summary>
         private void UpdateCanUndo()
         {
@@ -139,7 +124,7 @@ namespace OpenTracker.Models.UndoRedo
         }
 
         /// <summary>
-        /// Updates the CanRedo property value. 
+        /// Updates the <see cref="CanRedo"/> property value. 
         /// </summary>
         private void UpdateCanRedo()
         {

@@ -3,7 +3,7 @@
 namespace OpenTracker.Models.UndoRedo.Sections
 {
     /// <summary>
-    /// This class contains undoable action to uncollect a section.
+    /// This class contains the <see cref="IUndoable"/> action to uncollect a <see cref="ISection"/>.
     /// </summary>
     public class UncollectSection : IUncollectSection
     {
@@ -15,27 +15,18 @@ namespace OpenTracker.Models.UndoRedo.Sections
         /// Constructor
         /// </summary>
         /// <param name="section">
-        /// The section data to be manipulated.
+        ///     The <see cref="ISection"/>.
         /// </param>
         public UncollectSection(ISection section)
         {
             _section = section;
         }
 
-        /// <summary>
-        /// Returns whether the action can be executed.
-        /// </summary>
-        /// <returns>
-        /// A boolean representing whether the action can be executed.
-        /// </returns>
         public bool CanExecute()
         {
             return _section.CanBeUncleared();
         }
 
-        /// <summary>
-        /// Executes the action.
-        /// </summary>
         public void ExecuteDo()
         {
             _previousUserManipulated = _section.UserManipulated;
@@ -43,9 +34,6 @@ namespace OpenTracker.Models.UndoRedo.Sections
             _section.Available++;
         }
 
-        /// <summary>
-        /// Undoes the action.
-        /// </summary>
         public void ExecuteUndo()
         {
             _section.UserManipulated = _previousUserManipulated;

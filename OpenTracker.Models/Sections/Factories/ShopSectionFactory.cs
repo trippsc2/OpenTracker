@@ -14,7 +14,7 @@ using OpenTracker.Models.Sections.Boolean;
 namespace OpenTracker.Models.Sections.Factories
 {
     /// <summary>
-    ///     This class contains the creation logic for shop sections.
+    /// This class contains the creation logic for <see cref="IShopSection"/> objects.
     /// </summary>
     public class ShopSectionFactory : IShopSectionFactory
     {
@@ -29,28 +29,28 @@ namespace OpenTracker.Models.Sections.Factories
         private readonly IShopSection.Factory _factory;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="aggregateRequirements">
-        ///     The aggregate requirement dictionary.
+        ///     The <see cref="IAggregateRequirementDictionary"/>.
         /// </param>
         /// <param name="alternativeRequirements">
-        ///     The alternative requirement dictionary.
+        ///     The <see cref="IAlternativeRequirementDictionary"/>.
         /// </param>
         /// <param name="entranceShuffleRequirements">
-        ///     The entrance shuffle requirement dictionary.
+        ///     The <see cref="IEntranceShuffleRequirementDictionary"/>.
         /// </param>
         /// <param name="shopShuffleRequirements">
-        ///     The shop shuffle requirement dictionary.
+        ///     The <see cref="IShopShuffleRequirementDictionary"/>.
         /// </param>
         /// <param name="takeAnyLocationsRequirements">
-        ///     The take any locations requirement dictionary.
+        ///     The <see cref="ITakeAnyLocationsRequirementDictionary"/>.
         /// </param>
         /// <param name="overworldNodes">
-        ///     The overworld node dictionary.
+        ///     The <see cref="IOverworldNodeDictionary"/>.
         /// </param>
         /// <param name="factory">
-        ///     An Autofac factory for creating new shop sections.
+        ///     An Autofac factory for creating new <see cref="IShopSection"/> objects.
         /// </param>
         public ShopSectionFactory(
             IAggregateRequirementDictionary aggregateRequirements,
@@ -77,13 +77,13 @@ namespace OpenTracker.Models.Sections.Factories
         }
 
         /// <summary>
-        ///     Returns the node to which the section belongs.
+        /// Returns the <see cref="INode"/> to which the section belongs for the specified <see cref="LocationID"/>.
         /// </summary>
         /// <param name="id">
-        ///     The location ID.
+        ///     The <see cref="LocationID"/>.
         /// </param>
         /// <returns>
-        ///     The node to which the section belongs.
+        ///     The <see cref="INode"/> to which the section belongs.
         /// </returns>
         private INode GetNode(LocationID id)
         {
@@ -113,13 +113,14 @@ namespace OpenTracker.Models.Sections.Factories
         }
 
         /// <summary>
-        ///     Returns the requirement for the section to be active.
+        /// Returns the <see cref="IRequirement"/> for the section to be active for the specified
+        /// <see cref="LocationID"/>.
         /// </summary>
         /// <param name="id">
-        ///     The location ID.
+        ///     The <see cref="LocationID"/>.
         /// </param>
         /// <returns>
-        ///     The requirement for the section to be active.
+        ///     The <see cref="IRequirement"/> for the section to be active.
         /// </returns>
         private IRequirement GetRequirement(LocationID id)
         {

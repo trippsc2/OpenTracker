@@ -4,18 +4,18 @@ using OpenTracker.Models.Sections.Boolean;
 namespace OpenTracker.Models.Sections.Factories
 {
     /// <summary>
-    ///     This interface contains the creation logic for take any sections.
+    /// This interface contains the creation logic for <see cref="ITakeAnySection"/> objects.
     /// </summary>
     public interface ITakeAnySectionFactory
     {
         /// <summary>
-        ///     Returns a new take any section for the specified location ID.
+        /// Returns a new <see cref="ITakeAnySection"/> object for the specified <see cref="LocationID"/>.
         /// </summary>
         /// <param name="id">
-        ///     The location ID.
+        ///     The <see cref="LocationID"/>.
         /// </param>
         /// <returns>
-        ///     A new take any section.
+        ///     A new <see cref="ITakeAnySection"/> object.
         /// </returns>
         ITakeAnySection GetTakeAnySection(LocationID id);
     }

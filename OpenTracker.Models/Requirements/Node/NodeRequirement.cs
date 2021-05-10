@@ -5,17 +5,17 @@ using OpenTracker.Models.Nodes;
 namespace OpenTracker.Models.Requirements.Node
 {
     /// <summary>
-    ///     This class containing node requirement data.
+    /// This class containing <see cref="INode"/> <see cref="IRequirement"/> data.
     /// </summary>
     public class NodeRequirement : AccessibilityRequirement, INodeRequirement
     {
         private readonly INode _node;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="node">
-        ///     The required requirement node.
+        ///     The <see cref="INode"/>.
         /// </param>
         public NodeRequirement(INode node)
         {
@@ -27,13 +27,13 @@ namespace OpenTracker.Models.Requirements.Node
         }
 
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on the IRequirementNode interface.
+        /// Subscribes to the <see cref="INode.PropertyChanged"/> event on the IRequirementNode interface.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnNodeChanged(object? sender, PropertyChangedEventArgs e)
         {

@@ -5,17 +5,18 @@ using OpenTracker.Utils;
 namespace OpenTracker.Models.Requirements.Mode
 {
     /// <summary>
-    ///     This class contains the dictionary container for the item placement requirements.
+    /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for the
+    /// <see cref="IItemPlacementRequirement"/> objects indexed by <see cref="ItemPlacement"/>.
     /// </summary>
     public class ItemPlacementRequirementDictionary : LazyDictionary<ItemPlacement, IRequirement>, IItemPlacementRequirementDictionary
     {
         private readonly IItemPlacementRequirement.Factory _factory;
         
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="factory">
-        ///     An Autofac factory for creating new item placement requirements.
+        ///     An Autofac factory for creating new <see cref="IItemPlacementRequirement"/> objects.
         /// </param>
         public ItemPlacementRequirementDictionary(IItemPlacementRequirement.Factory factory)
             : base(new Dictionary<ItemPlacement, IRequirement>())

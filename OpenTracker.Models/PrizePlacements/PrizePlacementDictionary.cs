@@ -7,7 +7,8 @@ using OpenTracker.Utils;
 namespace OpenTracker.Models.PrizePlacements
 {
     /// <summary>
-    ///     This class contains the dictionary container for prize placement data.
+    /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for <see cref="IPrizePlacement"/>
+    /// objects indexed by <see cref="PrizePlacementID"/>.
     /// </summary>
     public class PrizePlacementDictionary : LazyDictionary<PrizePlacementID, IPrizePlacement>,
         IPrizePlacementDictionary
@@ -15,10 +16,10 @@ namespace OpenTracker.Models.PrizePlacements
         private readonly Lazy<IPrizePlacementFactory> _factory;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="factory">
-        ///     The prize placement factory.
+        ///     An Autofac factory for creating the <see cref="IPrizePlacementFactory"/> object.
         /// </param>
         public PrizePlacementDictionary(IPrizePlacementFactory.Factory factory)
             : base(new Dictionary<PrizePlacementID, IPrizePlacement>())
@@ -34,12 +35,6 @@ namespace OpenTracker.Models.PrizePlacements
             }
         }
 
-        /// <summary>
-        ///     Returns a dictionary of prize placement save data.
-        /// </summary>
-        /// <returns>
-        ///     A dictionary of prize placement save data.
-        /// </returns>
         public IDictionary<PrizePlacementID, PrizePlacementSaveData> Save()
         {
             return Keys.ToDictionary(
@@ -47,9 +42,6 @@ namespace OpenTracker.Models.PrizePlacements
                 prizePlacement => this[prizePlacement].Save());
         }
 
-        /// <summary>
-        ///     Loads a dictionary of prize placement save data.
-        /// </summary>
         public void Load(IDictionary<PrizePlacementID, PrizePlacementSaveData>? saveData)
         {
             if (saveData == null)

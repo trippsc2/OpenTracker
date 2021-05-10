@@ -5,6 +5,6 @@
     /// </summary>
     public class DropdownSaveData
     {
-        public bool Checked { get; set; }
+        public bool Checked { get; init; }
     }
 }

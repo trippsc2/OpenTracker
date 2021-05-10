@@ -4,21 +4,21 @@ using OpenTracker.Models.Requirements;
 namespace OpenTracker.Models.Sections.Boolean
 {
     /// <summary>
-    ///     This interface contains shop section data.
+    /// This interface contains shop section data.
     /// </summary>
     public interface IShopSection : ISection
     {
         /// <summary>
-        ///     A factory for creating new shop sections.
+        /// A factory for creating new <see cref="IShopSection"/> objects.
         /// </summary>
         /// <param name="node">
-        ///     The node to which this take any section belongs.
+        ///     The <see cref="INode"/> to which this section belongs.
         /// </param>
         /// <param name="requirement">
-        ///     The requirement for this section to be active.
+        ///     The <see cref="IRequirement"/> for this section to be active.
         /// </param>
         /// <returns>
-        ///     A new shop section.
+        ///     A new <see cref="IShopSection"/> object.
         /// </returns>
         delegate IShopSection Factory(INode node, IRequirement requirement);
     }

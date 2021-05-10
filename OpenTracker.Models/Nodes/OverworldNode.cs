@@ -10,7 +10,7 @@ using ReactiveUI;
 namespace OpenTracker.Models.Nodes
 {
     /// <summary>
-    ///     This class contains requirement node data.
+    /// This class contains requirement node data.
     /// </summary>
     public class OverworldNode : ReactiveObject, IOverworldNode
     {
@@ -59,25 +59,25 @@ namespace OpenTracker.Models.Nodes
         }
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="mode">
-        ///     The mode settings data.
+        ///     The <see cref="IMode"/> data.
         /// </param>
-        /// <param name="requirementNodes">
-        ///     The requirement node dictionary.
+        /// <param name="overworldNodes">
+        ///     The <see cref="IOverworldNodeDictionary"/>.
         /// </param>
         /// <param name="factory">
-        ///     The requirement node factory.
+        ///     The <see cref="IOverworldNodeFactory"/>.
         /// </param>
         public OverworldNode(
-            IMode mode, IOverworldNodeDictionary requirementNodes, IOverworldNodeFactory factory)
+            IMode mode, IOverworldNodeDictionary overworldNodes, IOverworldNodeFactory factory)
         {
             _mode = mode;
             _factory = factory;
 
             PropertyChanged += OnPropertyChanged;
-            requirementNodes.ItemCreated += OnNodeCreated;
+            overworldNodes.ItemCreated += OnNodeCreated;
             _mode.PropertyChanged += OnModeChanged;
         }
 
@@ -115,13 +115,13 @@ namespace OpenTracker.Models.Nodes
         }
 
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on this object.
+        /// Subscribes to the <see cref="IOverworldNode.PropertyChanged"/> event on this object.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -136,13 +136,14 @@ namespace OpenTracker.Models.Nodes
         }
 
         /// <summary>
-        ///     Subscribes to the ItemCreated event on the IOverworldNodeDictionary interface.
+        /// Subscribes to the <see cref="IOverworldNodeDictionary.ItemCreated"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the ItemCreated event.
+        ///     The <see cref="KeyValuePair{TKey,TValue}"/> of <see cref="OverworldNodeID"/> and <see cref="INode"/>
+        ///     objects that were created.
         /// </param>
         private void OnNodeCreated(object? sender, KeyValuePair<OverworldNodeID, INode> e)
         {
@@ -164,13 +165,13 @@ namespace OpenTracker.Models.Nodes
         }
 
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on the IMode interface.
+        /// Subscribes to the <see cref="IMode.PropertyChanged"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnModeChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -186,13 +187,13 @@ namespace OpenTracker.Models.Nodes
         }
 
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on the INodeConnection interface.
+        /// Subscribes to the <see cref="INodeConnection.PropertyChanged"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnConnectionChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -203,7 +204,7 @@ namespace OpenTracker.Models.Nodes
         }
 
         /// <summary>
-        ///     Updates the accessibility of the node.
+        /// Updates the <see cref="Accessibility"/> property.
         /// </summary>
         private void UpdateAccessibility()
         {

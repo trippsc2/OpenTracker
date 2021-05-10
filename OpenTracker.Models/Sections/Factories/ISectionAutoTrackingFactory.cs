@@ -4,21 +4,21 @@ using OpenTracker.Models.Locations;
 namespace OpenTracker.Models.Sections.Factories
 {
     /// <summary>
-    ///     This interface containing creation logic for section auto-tracking.
+    /// This interface containing creation logic for section <see cref="IAutoTrackValue"/> objects.
     /// </summary>
     public interface ISectionAutoTrackingFactory
     {
         /// <summary>
-        ///     Returns the auto-tracking value for the specified section.
+        /// Returns the <see cref="IAutoTrackValue"/> for the specified <see cref="LocationID"/> and section index.
         /// </summary>
         /// <param name="id">
-        ///     The location ID of the section.
+        ///     The <see cref="LocationID"/>.
         /// </param>
         /// <param name="sectionIndex">
-        ///     The index of the section.
+        ///     A <see cref="int"/> representing the section index.
         /// </param>
         /// <returns>
-        ///     The auto-tracking value for the specified section.
+        ///     The nullable <see cref="IAutoTrackValue"/>.
         /// </returns>
         IAutoTrackValue? GetAutoTrackValue(LocationID id, int sectionIndex = 0);
     }
