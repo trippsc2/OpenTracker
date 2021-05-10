@@ -4,7 +4,7 @@ using OpenTracker.Utils;
 namespace OpenTracker.Models.Logging
 {
     /// <summary>
-    /// This interface contains the logging logic.
+    /// This base class contains the logging logic.
     /// </summary>
     public abstract class LoggerBase : ILogger
     {

@@ -1,7 +1,7 @@
 ﻿namespace OpenTracker.Models.Locations.Map
 {
     /// <summary>
-    /// This is the enum type for the map identity.
+    /// This enum type defines the map ID values.
     /// </summary>
     public enum MapID
     {

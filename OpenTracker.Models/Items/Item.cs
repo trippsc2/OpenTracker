@@ -9,7 +9,7 @@ using ReactiveUI;
 namespace OpenTracker.Models.Items
 {
     /// <summary>
-    ///     This class contains item data.
+    /// This class contains item data.
     /// </summary>
     public class Item : ReactiveObject, IItem
     {
@@ -29,22 +29,22 @@ namespace OpenTracker.Models.Items
         }
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="saveLoadManager">
-        ///     The save/load manager.
+        ///     The <see cref="ISaveLoadManager"/>.
         /// </param>
         /// <param name="addItemFactory">
-        ///     An Autofac factory for creating undoable actions to add items.
+        ///     An Autofac factory for creating new <see cref="IAddItem"/> objects.
         /// </param>
         /// <param name="removeItemFactory">
-        ///     An Autofac factory for creating undoable actions to remove items.
+        ///     An Autofac factory for creating new <see cref="IRemoveItem"/> objects.
         /// </param>
         /// <param name="starting">
-        ///     A 32-bit signed integer representing the starting value of the item.
+        ///     A <see cref="int"/> representing the starting value.
         /// </param>
         /// <param name="autoTrackValue">
-        ///     The auto-track value.
+        ///     The nullable <see cref="IAutoTrackValue"/>.
         /// </param>
         public Item(
             ISaveLoadManager saveLoadManager, IAddItem.Factory addItemFactory, IRemoveItem.Factory removeItemFactory,
@@ -105,12 +105,6 @@ namespace OpenTracker.Models.Items
             Current = _starting;
         }
 
-        /// <summary>
-        ///     Returns a new item save data instance for this item.
-        /// </summary>
-        /// <returns>
-        ///     A new item save data instance.
-        /// </returns>
         public virtual ItemSaveData Save()
         {
             return new()
@@ -119,9 +113,6 @@ namespace OpenTracker.Models.Items
             };
         }
 
-        /// <summary>
-        ///     Loads item save data.
-        /// </summary>
         public virtual void Load(ItemSaveData? saveData)
         {
             if (saveData is null)
@@ -133,13 +124,13 @@ namespace OpenTracker.Models.Items
         }
         
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on the IAutoTrackValue interface.
+        /// Subscribes to the <see cref="IAutoTrackValue.PropertyChanged"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnAutoTrackChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -150,7 +141,7 @@ namespace OpenTracker.Models.Items
         }
 
         /// <summary>
-        ///     Update the Current property to match the auto-tracking value.
+        /// Update the <see cref="Current"/> property to match the auto-tracking value.
         /// </summary>
         private void AutoTrackUpdate()
         {

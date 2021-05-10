@@ -28,28 +28,28 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
         ///     Constructor
         /// </summary>
         /// <param name="aggregateRequirements">
-        ///     The aggregate requirement dictionary.
+        ///     The <see cref="IAggregateRequirementDictionary"/>.
         /// </param>
         /// <param name="alternativeRequirements">
-        ///     The alternative requirement dictionary.
+        ///     The <see cref="IAlternativeRequirementDictionary"/>.
         /// </param>
         /// <param name="bigKeyShuffleRequirements">
-        ///     The big key shuffle requirement dictionary.
+        ///     The <see cref="IBigKeyShuffleRequirementDictionary"/>.
         /// </param>
         /// <param name="keyDropShuffleRequirements">
-        ///     The key drop shuffle requirement dictionary.
+        ///     The <see cref="IKeyDropShuffleRequirementDictionary"/>.
         /// </param>
         /// <param name="smallKeyShuffleRequirements">
-        ///     The small key shuffle requirement dictionary.
+        ///     The <see cref="ISmallKeyShuffleRequirementDictionary"/>.
         /// </param>
         /// <param name="bigKeyFactory">
-        ///     An Autofac factory for creating big key layouts.
+        ///     An Autofac factory for creating new <see cref="IBigKeyLayout"/> objects.
         /// </param>
         /// <param name="endFactory">
-        ///     An Autofac factory for ending key layouts.
+        ///     An Autofac factory for creating new <see cref="IEndKeyLayout"/> objects.
         /// </param>
         /// <param name="smallKeyFactory">
-        ///     An Autofac factory for creating small key layouts.
+        ///     An Autofac factory for creating new <see cref="ISmallKeyLayout"/> objects.
         /// </param>
         public HCKeyLayoutFactory(
             IAggregateRequirementDictionary aggregateRequirements,

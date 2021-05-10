@@ -8,7 +8,7 @@ using OpenTracker.Models.Requirements;
 namespace OpenTracker.Models.Dungeons.KeyLayouts
 {
     /// <summary>
-    ///     This class contains small key layout data.
+    /// This class contains small key layout data.
     /// </summary>
     public class SmallKeyLayout : ISmallKeyLayout
     {
@@ -20,26 +20,25 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts
         private readonly IDungeon _dungeon;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="count">
-        ///     A 32-bit signed integer representing the number of keys that must be contained in the
-        ///         list of locations.
+        ///     A <see cref="int"/> representing the number of keys that must be contained in the locations.
         /// </param>
         /// <param name="smallKeyLocations">
-        ///     The list of dungeon item IDs that the number of small keys must be contained in.
+        ///     The <see cref="IList{T}"/> of <see cref="DungeonItemID"/> in which the small keys must be.
         /// </param>
         /// <param name="bigKeyInLocations">
-        ///     A boolean representing whether the big key is contained in the list of locations.
+        ///     A <see cref="bool"/> representing whether the big key is contained in the locations.
         /// </param>
         /// <param name="children">
-        ///     The list of child key layouts, if this layout is possible.
+        ///     The <see cref="IList{T}"/> of child <see cref="IKeyLayout"/>, if this layout is possible.
         /// </param>
         /// <param name="dungeon">
-        ///     The dungeon parent class.
+        ///     The <see cref="IDungeon"/> parent class.
         /// </param>
         /// <param name="requirement">
-        ///     The requirement for this key layout to be valid.
+        ///     The <see cref="IRequirement"/> for this key layout to be valid.
         /// </param>
         public SmallKeyLayout(
             int count, IList<DungeonItemID> smallKeyLocations, bool bigKeyInLocations, IList<IKeyLayout> children,
@@ -68,25 +67,22 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts
                 inaccessibleWithoutBigKey--;
             }
 
-            var dungeonSmallKeys = _dungeon.SmallKey.Maximum;
-
             return ValidateMinimumKeyCount(state.KeysCollected, inaccessibleWithoutBigKey) &&
-                   ValidateMaximumKeyCount(
-                       dungeonSmallKeys, state.KeysCollected, state.BigKeyCollected, inaccessibleCount) &&
+                   ValidateMaximumKeyCount(state.KeysCollected, state.BigKeyCollected, inaccessibleCount) &&
                    _children.Any(child => child.CanBeTrue(inaccessible, accessible, state));
         }
 
         /// <summary>
-        ///     Returns whether the key layout satisfies the minimum number of keys collected.
+        /// Returns whether the minimum number of keys have been collected for the key layout to be valid.
         /// </summary>
         /// <param name="collectedKeys">
-        ///     A 32-bit signed integer representing the number of small keys collected.
+        ///     A <see cref="int"/> representing the number of small keys collected.
         /// </param>
         /// <param name="inaccessible">
-        ///     A 32-bit signed integer representing the number of inaccessible locations.
+        ///     A <see cref="int"/> representing the number of inaccessible locations.
         /// </param>
         /// <returns>
-        ///     A boolean representing whether the key layout is possible.
+        ///     A <see cref="bool"/> representing whether the key layout is possible.
         /// </returns>
         private bool ValidateMinimumKeyCount(int collectedKeys, int inaccessible)
         {
@@ -94,24 +90,21 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts
         }
 
         /// <summary>
-        ///     Returns whether the key layout satisfies the maximum number of keys collected.
+        /// Returns whether the more than maximum number of keys have not been collected for the key layout to be valid.
         /// </summary>
-        /// <param name="dungeonKeys">
-        ///     The dungeon small key total.
-        /// </param>
         /// <param name="collectedKeys">
-        ///     A 32-bit signed integer representing the number of small keys collected.
+        ///     A <see cref="int"/> representing the number of small keys collected.
         /// </param>
         /// <param name="bigKeyCollected">
-        ///     A boolean representing whether the big key has been collected.
+        ///     A <see cref="bool"/> representing whether the big key has been collected.
         /// </param>
         /// <param name="inaccessible">
-        ///     A 32-bit signed integer representing the number of inaccessible locations.
+        ///     A <see cref="int"/> representing the number of inaccessible locations.
         /// </param>
         /// <returns>
-        ///     A boolean representing whether the key layout is possible.
+        ///     A <see cref="bool"/> representing whether the key layout is possible.
         /// </returns>
-        private bool ValidateMaximumKeyCount(int dungeonKeys, int collectedKeys, bool bigKeyCollected, int inaccessible)
+        private bool ValidateMaximumKeyCount(int collectedKeys, bool bigKeyCollected, int inaccessible)
         {
             var locationCount = _smallKeyLocations.Count;
 
@@ -120,7 +113,7 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts
                 locationCount--;
             }
             
-            return collectedKeys <= dungeonKeys - Math.Max(0, inaccessible - (locationCount - _count));
+            return collectedKeys <= _dungeon.SmallKey.Maximum - Math.Max(0, inaccessible - (locationCount - _count));
         }
     }
 }

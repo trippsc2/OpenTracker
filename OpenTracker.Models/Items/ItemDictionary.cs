@@ -8,26 +8,22 @@ using OpenTracker.Utils;
 namespace OpenTracker.Models.Items
 {
     /// <summary>
-    ///     This class contains the dictionary container for item data.
+    /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for <see cref="IItem"/> objects
+    /// indexed by <see cref="ItemType"/>.
     /// </summary>
     public class ItemDictionary : LazyDictionary<ItemType, IItem>, IItemDictionary
     {
         private readonly Lazy<IItemFactory> _factory;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="factory">
-        ///     A factory for creating items.
+        ///     An Autofac factory for creating the <see cref="IItemFactory"/> object.
         /// </param>
         public ItemDictionary(IItemFactory.Factory factory) : base(new Dictionary<ItemType, IItem>())
         {
             _factory = new Lazy<IItemFactory>(() => factory());
-        }
-
-        protected override IItem Create(ItemType key)
-        {
-            return _factory.Value.GetItem(key);
         }
 
         public void Reset()
@@ -38,20 +34,16 @@ namespace OpenTracker.Models.Items
             }
         }
 
-        /// <summary>
-        ///     Returns a dictionary of item save data.
-        /// </summary>
-        /// <returns>
-        ///     A dictionary of item save data.
-        /// </returns>
+        protected override IItem Create(ItemType key)
+        {
+            return _factory.Value.GetItem(key);
+        }
+
         public IDictionary<ItemType, ItemSaveData> Save()
         {
             return Keys.ToDictionary(type => type, type => this[type].Save());
         }
 
-        /// <summary>
-        ///     Loads a dictionary of item save data.
-        /// </summary>
         public void Load(IDictionary<ItemType, ItemSaveData>? saveData)
         {
             if (saveData == null)

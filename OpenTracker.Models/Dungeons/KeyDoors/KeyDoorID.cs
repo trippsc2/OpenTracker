@@ -1,7 +1,7 @@
 ﻿namespace OpenTracker.Models.Dungeons.KeyDoors
 {
     /// <summary>
-    /// This is the enum type for key door identity.
+    /// This enum type defines for key door ID values.
     /// </summary>
     public enum KeyDoorID
     {

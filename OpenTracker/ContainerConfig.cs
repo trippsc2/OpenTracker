@@ -83,6 +83,7 @@ using OpenTracker.ViewModels.PinnedLocations;
 using OpenTracker.ViewModels.PinnedLocations.Sections;
 using OpenTracker.ViewModels.SequenceBreaks;
 using OpenTracker.ViewModels.UIPanels;
+using MapConnectionCollection = OpenTracker.Models.Locations.Map.Connections.MapConnectionCollection;
 
 namespace OpenTracker
 {
@@ -126,7 +127,7 @@ namespace OpenTracker
             nameof(SNESConnector),
             nameof(BossPlacementDictionary),
             nameof(BossPlacementFactory),
-            nameof(ConnectionCollection),
+            nameof(MapConnectionCollection),
             nameof(DropdownDictionary),
             nameof(DropdownFactory),
             nameof(DungeonItemFactory),
@@ -248,7 +249,7 @@ namespace OpenTracker
             nameof(ItemVMDictionary),
             nameof(ItemVMFactory),
             nameof(MapLocationVMFactory),
-            nameof(MapConnectionCollection),
+            nameof(ViewModels.Maps.MapConnectionCollection),
             nameof(MarkingSelectFactory),
             nameof(MarkingImageDictionary),
             nameof(MarkingImageFactory),

@@ -8,7 +8,7 @@ using OpenTracker.Models.Requirements.SmallKeyShuffle;
 namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
 {
     /// <summary>
-    ///     This class contains the creation logic for Palace of Darkness key layouts.
+    /// This class contains the creation logic for Palace of Darkness key layouts.
     /// </summary>
     public class PoDKeyLayoutFactory : IPoDKeyLayoutFactory
     {
@@ -21,25 +21,25 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
         private readonly ISmallKeyLayout.Factory _smallKeyFactory;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="aggregateRequirements">
-        ///     The aggregate requirement dictionary.
+        ///     The <see cref="IAggregateRequirementDictionary"/>.
         /// </param>
         /// <param name="bigKeyShuffleRequirements">
-        ///     The big key shuffle requirement dictionary.
+        ///     The <see cref="IBigKeyShuffleRequirementDictionary"/>.
         /// </param>
         /// <param name="smallKeyShuffleRequirements">
-        ///     The small key shuffle requirement dictionary.
+        ///     The <see cref="ISmallKeyShuffleRequirementDictionary"/>.
         /// </param>
         /// <param name="bigKeyFactory">
-        ///     An Autofac factory for creating big key layouts.
+        ///     An Autofac factory for creating new <see cref="IBigKeyLayout"/> objects.
         /// </param>
         /// <param name="endFactory">
-        ///     An Autofac factory for ending key layouts.
+        ///     An Autofac factory for creating new <see cref="IEndKeyLayout"/> objects.
         /// </param>
         /// <param name="smallKeyFactory">
-        ///     An Autofac factory for creating small key layouts.
+        ///     An Autofac factory for creating new <see cref="ISmallKeyLayout"/> objects.
         /// </param>
         public PoDKeyLayoutFactory(
             IAggregateRequirementDictionary aggregateRequirements,

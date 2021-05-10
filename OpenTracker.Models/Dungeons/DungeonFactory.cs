@@ -10,7 +10,7 @@ using OpenTracker.Models.Nodes;
 namespace OpenTracker.Models.Dungeons
 {
     /// <summary>
-    ///     This class contains the creation logic for dungeons.
+    /// This class contains the creation logic for <see cref="IDungeon"/> objects.
     /// </summary>
     public class DungeonFactory : IDungeonFactory
     {
@@ -20,16 +20,16 @@ namespace OpenTracker.Models.Dungeons
         private readonly IDungeon.Factory _factory;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="items">
-        ///     The item dictionary.
+        ///     The <see cref="IItemDictionary"/>.
         /// </param>
         /// <param name="overworldNodes">
-        ///     The requirement node dictionary.
+        ///     The <see cref="IOverworldNodeDictionary"/>.
         /// </param>
         /// <param name="factory">
-        ///     An Autofac factory for creating dungeons.
+        ///     An Autofac factory for creating new <see cref="IDungeon"/> objects.
         /// </param>
         public DungeonFactory(
             IItemDictionary items, IOverworldNodeDictionary overworldNodes, IDungeon.Factory factory)
@@ -51,13 +51,13 @@ namespace OpenTracker.Models.Dungeons
         }
 
         /// <summary>
-        ///     Returns the map item for the specified dungeon.
+        /// Returns the map item for the specified dungeon.
         /// </summary>
         /// <param name="id">
-        ///     The dungeon ID.
+        ///     The <see cref="DungeonID"/>.
         /// </param>
         /// <returns>
-        ///     The map item.
+        ///     The nullable <see cref="ICappedItem"/> representing the dungeon map.
         /// </returns>
         private ICappedItem? GetDungeonMapItem(DungeonID id)
         {

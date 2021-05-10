@@ -7,7 +7,7 @@ using OpenTracker.Models.Requirements;
 namespace OpenTracker.Models.Dungeons.KeyLayouts
 {
     /// <summary>
-    ///     This class contains the big key layout data.
+    /// This class contains the big key layout data.
     /// </summary>
     public class BigKeyLayout : IBigKeyLayout
     {
@@ -16,16 +16,16 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts
         private readonly IRequirement? _requirement;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="bigKeyLocations">
-        ///     The list of dungeon item IDs that can contain the big key.
+        ///     The <see cref="IList{T}"/> of <see cref="DungeonItemID"/> that can contain the big key.
         /// </param>
         /// <param name="children">
-        ///     The list of child key layouts, if this layout is possible.
+        ///     The <see cref="IList{T}"/> of child <see cref="IKeyLayout"/>, if this layout is possible.
         /// </param>
         /// <param name="requirement">
-        ///     The requirement for this key layout to be valid.
+        ///     The <see cref="IRequirement"/> for this key layout to be valid.
         /// </param>
         public BigKeyLayout(
             IList<DungeonItemID> bigKeyLocations, IList<IKeyLayout> children, IRequirement? requirement = null)

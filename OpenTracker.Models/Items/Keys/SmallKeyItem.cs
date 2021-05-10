@@ -12,7 +12,7 @@ using ReactiveUI;
 namespace OpenTracker.Models.Items.Keys
 {
     /// <summary>
-    ///     This class contains the item data for small keys.
+    /// This class contains the small key item data.
     /// </summary>
     public class SmallKeyItem : Item, ISmallKeyItem
     {
@@ -34,34 +34,34 @@ namespace OpenTracker.Models.Items.Keys
         }
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="mode">
-        ///     The mode settings.
+        ///     The <see cref="IMode"/> data.
         /// </param>
         /// <param name="saveLoadManager">
-        ///     The save/load manager.
+        ///     The <see cref="ISaveLoadManager"/>.
         /// </param>
         /// <param name="addItemFactory">
-        ///     An Autofac factory for creating undoable actions to add items.
+        ///     An Autofac factory for creating new <see cref="IAddItem"/> objects.
         /// </param>
         /// <param name="removeItemFactory">
-        ///     An Autofac factory for creating undoable actions to remove items.
+        ///     An Autofac factory for creating new <see cref="IRemoveItem"/> objects.
         /// </param>
         /// <param name="cycleItemFactory">
-        ///     An Autofac factory for creating undoable actions to cycle the item.
+        ///     An Autofac factory for creating new <see cref="ICycleItem"/> objects.
         /// </param>
         /// <param name="genericKey">
-        ///     The generic key item.
+        ///     The <see cref="IItem"/> representing the generic keys item.
         /// </param>
         /// <param name="nonKeyDropMaximum">
-        ///     A 32-bit signed integer representing the maximum value of the item.
+        ///     A <see cref="int"/> representing the item maximum when key drop shuffle is disabled.
         /// </param>
         /// <param name="keyDropMaximum">
-        ///     A 32-bit signed integer representing the delta maximum for key drop shuffle of the item.
+        ///     A <see cref="int"/> representing the item maximum when key drop shuffle is enabled.
         /// </param>
         /// <param name="autoTrackValue">
-        ///     The auto-track value.
+        ///     The nullable <see cref="IAutoTrackValue"/>.
         /// </param>
         public SmallKeyItem(
             IMode mode, ISaveLoadManager saveLoadManager, IAddItem.Factory addItemFactory,
@@ -144,13 +144,13 @@ namespace OpenTracker.Models.Items.Keys
         }
         
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on this object.
+        /// Subscribes to the <see cref="ISmallKeyItem.PropertyChanged"/> event on this object.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -161,13 +161,13 @@ namespace OpenTracker.Models.Items.Keys
         }
 
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on the IMode interface.
+        /// Subscribes to the <see cref="IMode.PropertyChanged"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnModeChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -188,13 +188,13 @@ namespace OpenTracker.Models.Items.Keys
         }
 
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on the IItem interface.
+        /// Subscribes to the <see cref="IItem.PropertyChanged"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnGenericKeyChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -205,7 +205,7 @@ namespace OpenTracker.Models.Items.Keys
         }
 
         /// <summary>
-        ///     Updates the value of the EffectiveCurrent property.
+        /// Updates the value of the <see cref="EffectiveCurrent"/> property.
         /// </summary>
         private void UpdateEffectiveCurrent()
         {

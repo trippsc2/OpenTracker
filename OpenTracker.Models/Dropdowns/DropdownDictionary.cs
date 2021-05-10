@@ -7,7 +7,8 @@ using OpenTracker.Utils;
 namespace OpenTracker.Models.Dropdowns
 {
     /// <summary>
-    /// This class contains the dictionary container of <see cref="IDropdown"/> objects.
+    /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container of <see cref="IDropdown"/> objects
+    /// index by <see cref="DropdownID"/>.
     /// </summary>
     public class DropdownDictionary : LazyDictionary<DropdownID, IDropdown>, IDropdownDictionary
     {

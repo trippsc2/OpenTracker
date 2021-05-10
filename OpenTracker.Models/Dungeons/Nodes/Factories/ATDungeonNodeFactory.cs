@@ -11,7 +11,7 @@ using OpenTracker.Models.Requirements.Complex;
 namespace OpenTracker.Models.Dungeons.Nodes.Factories
 {
     /// <summary>
-    ///     This class contains the creation logic for Agahnim's Tower nodes.
+    /// This class contains the creation logic for Agahnim's Tower nodes.
     /// </summary>
     public class ATDungeonNodeFactory : IATDungeonNodeFactory
     {
@@ -24,22 +24,22 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
         private readonly INodeConnection.Factory _connectionFactory;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="bossRequirements">
-        ///     The boss requirement dictionary.
+        ///     The <see cref="IBossRequirementDictionary"/>.
         /// </param>
         /// <param name="complexRequirements">
-        ///     The complex requirement dictionary.
+        ///     The <see cref="IComplexRequirementDictionary"/>.
         /// </param>
         /// <param name="overworldNodes">
-        ///     The overworld node dictionary.
+        ///     The <see cref="IOverworldNodeDictionary"/>.
         /// </param>
         /// <param name="entryFactory">
-        ///     An Autofac factory for creating entry node connections.
+        ///     An Autofac factory for creating new <see cref="IEntryNodeConnection"/> objects.
         /// </param>
         /// <param name="connectionFactory">
-        ///     An Autofac factory for creating regular node connections.
+        ///     An Autofac factory for creating new <see cref="INodeConnection"/> objects.
         /// </param>
         public ATDungeonNodeFactory(
             IBossRequirementDictionary bossRequirements, IComplexRequirementDictionary complexRequirements,

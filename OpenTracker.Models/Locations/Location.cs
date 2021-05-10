@@ -18,7 +18,7 @@ using ReactiveUI;
 namespace OpenTracker.Models.Locations
 {
     /// <summary>
-    ///     This class contains location data.
+    /// This class contains location data.
     /// </summary>
     public class Location : ReactiveObject, ILocation
     {
@@ -79,40 +79,40 @@ namespace OpenTracker.Models.Locations
         }
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="mapLocationFactory">
-        ///     The map location factory.
+        ///     The <see cref="IMapLocationFactory"/>.
         /// </param>
         /// <param name="sectionFactory">
-        ///     The section factory.
+        ///     The <see cref="ISectionFactory"/>.
         /// </param>
         /// <param name="markingFactory">
-        ///     The marking factory.
+        ///     An Autofac factory for creating new <see cref="IMarking"/> objects.
         /// </param>
         /// <param name="addNoteFactory">
-        ///     An Autofac factory for creating undoable actions to add a note.
+        ///     An Autofac factory for creating new <see cref="IAddNote"/> objects.
         /// </param>
         /// <param name="clearLocationFactory">
-        ///     An Autofac factory for creating undoable actions to clear the location.
+        ///     An Autofac factory for creating new <see cref="IClearLocation"/> objects.
         /// </param>
         /// <param name="pinLocationFactory">
-        ///     An Autofac factory for creating undoable actions to pin the location.
+        ///     An Autofac factory for creating new <see cref="IPinLocation"/> objects.
         /// </param>
         /// <param name="removeNoteFactory">
-        ///     An Autofac factory for creating undoable actions to remove a note.
+        ///     An Autofac factory for creating new <see cref="IRemoveNote"/> objects.
         /// </param>
         /// <param name="unpinLocationFactory">
-        ///     An Autofac factory for creating undoable actions to unpin the location.
+        ///     An Autofac factory for creating new <see cref="IUnpinLocation"/> objects.
         /// </param>
         /// <param name="notes">
-        ///     A new collection of location notes.
+        ///     A <see cref="ILocationNoteCollection"/>.
         /// </param>
         /// <param name="id">
-        ///     The ID of the location.
+        ///     The <see cref="LocationID"/>.
         /// </param>
         /// <param name="name">
-        ///     A string representing the name of the location.
+        ///     A <see cref="string"/> representing the location name.
         /// </param>
         public Location(
             IMapLocationFactory mapLocationFactory, ISectionFactory sectionFactory,
@@ -186,12 +186,6 @@ namespace OpenTracker.Models.Locations
             }
         }
         
-        /// <summary>
-        ///     Returns a new location save data instance for this location.
-        /// </summary>
-        /// <returns>
-        ///     A new location save data instance.
-        /// </returns>
         public LocationSaveData Save()
         {
             IList<SectionSaveData> sections = Sections.Select(section => section.Save()).ToList();
@@ -205,9 +199,6 @@ namespace OpenTracker.Models.Locations
             };
         }
 
-        /// <summary>
-        ///     Loads location save data.
-        /// </summary>
         public void Load(LocationSaveData? saveData)
         {
             if (saveData is null)
@@ -221,7 +212,7 @@ namespace OpenTracker.Models.Locations
         }
 
         /// <summary>
-        ///     Loads the section save data.
+        /// Loads the section save data.
         /// </summary>
         /// <param name="sectionSaveData">
         ///     The section save data.
@@ -240,7 +231,7 @@ namespace OpenTracker.Models.Locations
         }
 
         /// <summary>
-        ///     Loads the marking save data.
+        /// Loads the marking save data.
         /// </summary>
         /// <param name="noteSaveData">
         ///     The note save data.
@@ -263,13 +254,13 @@ namespace OpenTracker.Models.Locations
         }
 
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on the ISection interface.
+        /// Subscribes to the <see cref="ISection.PropertyChanged"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnSectionChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -299,7 +290,7 @@ namespace OpenTracker.Models.Locations
         }
 
         /// <summary>
-        ///     Updates the value of the Accessibility property.
+        /// Updates the value of the <see cref="Accessibility"/> property.
         /// </summary>
         private void UpdateAccessibility()
         {
@@ -354,7 +345,7 @@ namespace OpenTracker.Models.Locations
         }
 
         /// <summary>
-        ///     Updates the value of the Accessible property.
+        /// Updates the value of the <see cref="Accessible"/> property.
         /// </summary>
         private void UpdateAccessible()
         {
@@ -372,7 +363,7 @@ namespace OpenTracker.Models.Locations
         }
 
         /// <summary>
-        ///     Updates the value of the Available property.
+        /// Updates the value of the <see cref="Available"/> property.
         /// </summary>
         private void UpdateAvailable()
         {
@@ -390,7 +381,7 @@ namespace OpenTracker.Models.Locations
         }
 
         /// <summary>
-        ///     Updates the value of the Total property.
+        /// Updates the value of the <see cref="Total"/> property.
         /// </summary>
         private void UpdateTotal()
         {
@@ -408,7 +399,7 @@ namespace OpenTracker.Models.Locations
         }
 
         /// <summary>
-        ///     Updates the value of the IsActive property.
+        /// Updates the value of the <see cref="IsActive"/> property.
         /// </summary>
         private void UpdateIsActive()
         {
@@ -416,7 +407,7 @@ namespace OpenTracker.Models.Locations
         }
 
         /// <summary>
-        ///     Updates the value of the ShouldBeDisplayed property.
+        /// Updates the value of the <see cref="ShouldBeDisplayed"/> property.
         /// </summary>
         private void UpdateShouldBeDisplayed()
         {

@@ -8,30 +8,31 @@ using OpenTracker.Models.UndoRedo.Connections;
 namespace OpenTracker.Models.Locations.Map.Connections
 {
     /// <summary>
-    ///     This class contains the collection container for map connections.
+    /// This class contains the <see cref="ObservableCollection{T}"/> container for <see cref="IMapConnection"/>
+    /// objects.
     /// </summary>
-    public class ConnectionCollection : ObservableCollection<IConnection>, IConnectionCollection
+    public class MapConnectionCollection : ObservableCollection<IMapConnection>, IMapConnectionCollection
     {
         private readonly ILocationDictionary _locations;
 
-        private readonly IConnection.Factory _connectionFactory;
-        private readonly IAddConnection.Factory _addConnectionFactory;
+        private readonly IMapConnection.Factory _connectionFactory;
+        private readonly IAddMapConnection.Factory _addConnectionFactory;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="locations">
-        ///     The location dictionary.
+        ///     The <see cref="ILocationDictionary"/>.
         /// </param>
         /// <param name="connectionFactory">
-        ///     An Autofac factory for creating new connections.
+        ///     An Autofac factory for creating new <see cref="IMapConnection"/> objects.
         /// </param>
         /// <param name="addConnectionFactory">
-        ///     An Autofac factory for creating new add connection undoable actions.
+        ///     An Autofac factory for creating new <see cref="IAddMapConnection"/> objects.
         /// </param>
-        public ConnectionCollection(
-            ILocationDictionary locations, IConnection.Factory connectionFactory,
-            IAddConnection.Factory addConnectionFactory)
+        public MapConnectionCollection(
+            ILocationDictionary locations, IMapConnection.Factory connectionFactory,
+            IAddMapConnection.Factory addConnectionFactory)
         {
             _locations = locations;
             _connectionFactory = connectionFactory;
@@ -43,23 +44,11 @@ namespace OpenTracker.Models.Locations.Map.Connections
             return _addConnectionFactory(_connectionFactory(location1, location2));
         }
 
-        /// <summary>
-        ///     Returns a list of connection save data.
-        /// </summary>
-        /// <returns>
-        ///     A list of connection save data.
-        /// </returns>
         public IList<ConnectionSaveData> Save()
         {
             return this.Select(connection => connection.Save()).ToList();
         }
 
-        /// <summary>
-        ///     Loads a list of connection save data.
-        /// </summary>
-        /// <param name="saveData">
-        ///     A list of connection save data.
-        /// </param>
         public void Load(IList<ConnectionSaveData>? saveData)
         {
             if (saveData == null)

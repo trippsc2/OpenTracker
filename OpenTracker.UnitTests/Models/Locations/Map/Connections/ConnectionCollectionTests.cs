@@ -14,13 +14,13 @@ namespace OpenTracker.UnitTests.Models.Locations.Map.Connections
     {
         private readonly ILocationDictionary _locations = Substitute.For<ILocationDictionary>();
         
-        private readonly IConnection.Factory _connectionFactory = (_, _) => Substitute.For<IConnection>();
-        private readonly IAddConnection.Factory _addConnectionFactory = _ => Substitute.For<IAddConnection>();
+        private readonly IMapConnection.Factory _connectionFactory = (_, _) => Substitute.For<IMapConnection>();
+        private readonly IAddMapConnection.Factory _addConnectionFactory = _ => Substitute.For<IAddMapConnection>();
 
-        private readonly IConnection _connection = Substitute.For<IConnection>();
+        private readonly IMapConnection _connection = Substitute.For<IMapConnection>();
         private readonly ConnectionSaveData _connectionSaveData = new();
 
-        private readonly ConnectionCollection _sut;
+        private readonly MapConnectionCollection _sut;
 
         public ConnectionCollectionTests()
         {
@@ -35,7 +35,7 @@ namespace OpenTracker.UnitTests.Models.Locations.Map.Connections
             
             _locations[Arg.Any<LocationID>()].Returns(location);
             
-            _sut = new ConnectionCollection(_locations, _connectionFactory, _addConnectionFactory)
+            _sut = new MapConnectionCollection(_locations, _connectionFactory, _addConnectionFactory)
             {
                 _connection
             };
@@ -92,10 +92,10 @@ namespace OpenTracker.UnitTests.Models.Locations.Map.Connections
         public void AutofacTest()
         {
             using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-            var factory = scope.Resolve<IConnectionCollection.Factory>();
+            var factory = scope.Resolve<IMapConnectionCollection.Factory>();
             var sut = factory();
             
-            Assert.NotNull(sut as ConnectionCollection);
+            Assert.NotNull(sut as MapConnectionCollection);
         }
     }
 }

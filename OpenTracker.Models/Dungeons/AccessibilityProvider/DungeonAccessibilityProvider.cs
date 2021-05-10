@@ -64,25 +64,25 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         private IEnumerable<INode> EntryNodes => _dungeon.EntryNodes;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="mode">
-        ///     The mode settings data.
+        ///     The <see cref="IMode"/> data.
         /// </param>
         /// <param name="bossProviderFactory">
-        ///     An Autofac factory for creating boss accessibility providers.
+        ///     An Autofac factory for creating <see cref="IBossAccessibilityProvider"/> objects.
         /// </param>
         /// <param name="mutableDungeonQueue">
-        ///     An Autofac factory for creating the mutable dungeon queue.
+        ///     An Autofac factory for creating <see cref="IMutableDungeonQueue"/> objects.
         /// </param>
         /// <param name="dungeon">
-        ///     The dungeon data.
+        ///     The <see cref="IDungeon"/> data.
         /// </param>
         /// <param name="keyDoorIterator">
-        ///     The key door iterator.
+        ///     The <see cref="IKeyDoorIterator"/>.
         /// </param>
         /// <param name="resultAggregator">
-        ///     The result aggregator.
+        ///     The <see cref="IResultAggregator"/>.
         /// </param>
         public DungeonAccessibilityProvider(
             IMode mode, IBossAccessibilityProvider.Factory bossProviderFactory,
@@ -119,13 +119,13 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         }
 
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on the IMode interface.
+        /// Subscribes to the <see cref="IMode.PropertyChanged"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnModeChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -144,13 +144,13 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         }
 
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on the IItem interface.
+        /// Subscribes to the <see cref="IItem.PropertyChanged"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnBigKeyChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -161,13 +161,13 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         }
 
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on the IKeyItem interface.
+        /// Subscribes to the <see cref="ISmallKeyItem.PropertyChanged"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnSmallKeyChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -178,13 +178,13 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         }
 
         /// <summary>
-        ///     Subscribes to the ChangePropagated event on the IRequirement interface.
+        /// Subscribes to the <see cref="IRequirement.ChangePropagated"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the ChangePropagated event.
+        ///     The <see cref="EventArgs"/>.
         /// </param>
         private void OnRequirementChangePropagated(object? sender, EventArgs e)
         {
@@ -192,13 +192,13 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         }
 
         /// <summary>
-        ///     Subscribes to the ChangePropagated event on the IRequirementNode interface.
+        /// Subscribes to the <see cref="IOverworldNode.ChangePropagated"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the ChangePropagated event.
+        ///     The <see cref="EventArgs"/>.
         /// </param>
         private void OnNodeChanged(object? sender, EventArgs e)
         {
@@ -206,7 +206,7 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         }
 
         /// <summary>
-        ///     Subscribes to PropertyChanged event on each requirement.
+        /// Subscribes to PropertyChanged event on each requirement.
         /// </summary>
         private void SubscribeToConnectionRequirements()
         {
@@ -234,7 +234,7 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider
         }
 
         /// <summary>
-        ///     Updates all values in the accessibility provider.
+        /// Updates all values in the accessibility provider.
         /// </summary>
         private void UpdateValues()
         {

@@ -15,7 +15,7 @@ using OpenTracker.Models.SequenceBreaks;
 namespace OpenTracker.Models.Dungeons.Nodes.Factories
 {
     /// <summary>
-    ///     This class contains the creation logic for Ice Palace nodes.
+    /// This class contains the creation logic for Ice Palace nodes.
     /// </summary>
     public class IPDungeonNodeFactory : IIPDungeonNodeFactory
     {
@@ -30,28 +30,28 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
         private readonly INodeConnection.Factory _connectionFactory;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="bossRequirements">
-        ///     The boss requirement dictionary.
+        ///     The <see cref="IBossRequirementDictionary"/>.
         /// </param>
         /// <param name="complexRequirements">
-        ///     The complex requirement dictionary.
+        ///     The <see cref="IComplexRequirementDictionary"/>.
         /// </param>
         /// <param name="itemRequirements">
-        ///     The item requirement dictionary
+        ///     The <see cref="IItemRequirementDictionary"/>.
         /// </param>
         /// <param name="sequenceBreakRequirements">
-        ///     The sequence break requirement dictionary.
+        ///     The <see cref="ISequenceBreakRequirementDictionary"/>.
         /// </param>
         /// <param name="overworldNodes">
-        ///     The overworld node dictionary.
+        ///     The <see cref="IOverworldNodeDictionary"/>.
         /// </param>
         /// <param name="entryFactory">
-        ///     An Autofac factory for creating entry node connections.
+        ///     An Autofac factory for creating new <see cref="IEntryNodeConnection"/> objects.
         /// </param>
         /// <param name="connectionFactory">
-        ///     An Autofac factory for creating regular node connections.
+        ///     An Autofac factory for creating new <see cref="INodeConnection"/> objects.
         /// </param>
         public IPDungeonNodeFactory(
             IBossRequirementDictionary bossRequirements, IComplexRequirementDictionary complexRequirements,

@@ -9,7 +9,7 @@ using OpenTracker.Models.Requirements.Mode;
 namespace OpenTracker.Models.Locations.Map
 {
     /// <summary>
-    /// This class contains the creation logic for map location data.
+    /// This class contains the creation logic for <see cref="IMapLocation"/> objects.
     /// </summary>
     public class MapLocationFactory : IMapLocationFactory
     {
@@ -21,22 +21,22 @@ namespace OpenTracker.Models.Locations.Map
         private readonly IMapLocation.Factory _factory;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="alternativeRequirements">
-        ///     The alternative requirement dictionary.
+        ///     The <see cref="IAlternativeRequirementDictionary"/>.
         /// </param>
         /// <param name="aggregateRequirements">
-        ///     The aggregate requirement dictionary.
+        ///     The <see cref="IAggregateRequirementDictionary"/>.
         /// </param>
         /// <param name="entranceShuffleRequirements">
-        ///     The entrance shuffle requirement dictionary.
+        ///     The <see cref="IEntranceShuffleRequirementDictionary"/>.
         /// </param>
         /// <param name="worldStateRequirements">
-        ///     The world state requirement dictionary.
+        ///     The <see cref="IWorldStateRequirementDictionary"/>.
         /// </param>
         /// <param name="factory">
-        ///     An Autofac factory for creating map locations.
+        ///     An Autofac factory for creating new <see cref="IMapLocation"/> objects.
         /// </param>
         public MapLocationFactory(
             IAlternativeRequirementDictionary alternativeRequirements,
@@ -52,15 +52,6 @@ namespace OpenTracker.Models.Locations.Map
             _factory = factory;
         }
 
-        /// <summary>
-        /// Returns the list of map locations for the specified location.
-        /// </summary>
-        /// <param name="location">
-        ///     The location data.
-        /// </param>
-        /// <returns>
-        ///     The list of map locations.
-        /// </returns>
         public IList<IMapLocation> GetMapLocations(ILocation location)
         {
             return location.ID switch

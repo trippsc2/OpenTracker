@@ -1,48 +1,49 @@
 using OpenTracker.Models.AutoTracking.Values;
 using OpenTracker.Models.UndoRedo;
+using OpenTracker.Models.UndoRedo.Items;
 
 namespace OpenTracker.Models.Items
 {
     /// <summary>
-    ///     This interface contains item data with a maximum value.
+    /// This interface contains item data with a maximum value.
     /// </summary>
     public interface ICappedItem : IItem
     {
         /// <summary>
-        ///     A 32-bit signed integer representing the maximum value.
+        /// A <see cref="int"/> representing the maximum value.
         /// </summary>
         int Maximum { get; }
         
         /// <summary>
-        ///     A factory for creating new items with maximum values.
+        /// A factory for creating new <see cref="ICappedItem"/> objects.
         /// </summary>
         /// <param name="starting">
-        ///     A 32-bit signed integer representing the starting value of the item.
+        ///     A <see cref="int"/> representing the starting value.
         /// </param>
         /// <param name="maximum">
-        ///     A 32-bit signed integer representing the maximum value of the item.
+        ///     A <see cref="int"/> representing the maximum.
         /// </param>
         /// <param name="autoTrackValue">
-        ///     The auto-track value.
+        ///     The nullable <see cref="IAutoTrackValue"/>.
         /// </param>
         /// <returns>
-        ///     A new item with a maximum value.
+        ///     A new <see cref="ICappedItem"/> object.
         /// </returns>
         new delegate ICappedItem Factory(int starting, int maximum, IAutoTrackValue? autoTrackValue);
 
         /// <summary>
-        ///     Returns a new undoable action to cycle the item.
+        /// Returns a new <see cref="ICycleItem"/> object.
         /// </summary>
         /// <returns>
-        ///     A new undoable action to cycle the item.
+        ///     A new <see cref="ICycleItem"/> object.
         /// </returns>
         IUndoable CreateCycleItemAction();
 
         /// <summary>
-        ///     Cycles the item.
+        /// Cycles the item.
         /// </summary>
         /// <param name="reverse">
-        ///     A boolean representing whether to cycle in reverse.
+        ///     A <see cref="bool"/> representing whether to cycle in reverse.
         /// </param>
         void Cycle(bool reverse = false);
     }

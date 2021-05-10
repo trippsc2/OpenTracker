@@ -4,17 +4,17 @@ using OpenTracker.Models.AutoTracking.Values;
 namespace OpenTracker.Models.Items.Factories
 {
     /// <summary>
-    ///     This class contains the creation logic for items with maximum values.
+    /// This class contains the creation logic for <see cref="ICappedItem"/> objects.
     /// </summary>
     public class CappedItemFactory : ICappedItemFactory
     {
         private readonly ICappedItem.Factory _factory;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="factory">
-        ///     An Autofac factory for creating items with maximum values.
+        ///     An Autofac factory for creating <see cref="ICappedItem"/> objects.
         /// </param>
         public CappedItemFactory(ICappedItem.Factory factory)
         {
@@ -27,13 +27,13 @@ namespace OpenTracker.Models.Items.Factories
         }
         
         /// <summary>
-        ///     Returns the maximum amount of the item.
+        /// Returns the item maximum.
         /// </summary>
         /// <param name="type">
-        ///     The type of item.
+        ///     The <see cref="ItemType"/>.
         /// </param>
         /// <returns>
-        ///     A 32-bit integer representing the maximum amount of the item.
+        ///     A <see cref="int"/> representing the item maximum.
         /// </returns>
         private static int GetItemMaximum(ItemType type)
         {

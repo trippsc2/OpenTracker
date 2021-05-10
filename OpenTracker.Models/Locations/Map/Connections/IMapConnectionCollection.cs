@@ -8,7 +8,7 @@ namespace OpenTracker.Models.Locations.Map.Connections
     /// <summary>
     ///     This interface contains the collection container for map connections.
     /// </summary>
-    public interface IConnectionCollection : IObservableCollection<IConnection>,
+    public interface IMapConnectionCollection : IObservableCollection<IMapConnection>,
         ISaveable<IList<ConnectionSaveData>>
     {
         /// <summary>
@@ -17,7 +17,7 @@ namespace OpenTracker.Models.Locations.Map.Connections
         /// <returns>
         ///     The connection collection.
         /// </returns>
-        delegate IConnectionCollection Factory();
+        delegate IMapConnectionCollection Factory();
 
         /// <summary>
         ///     Creates an undoable action to add a connection and sends it to the undo/redo manager.

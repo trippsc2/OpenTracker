@@ -25,7 +25,7 @@ namespace OpenTracker.UnitTests.Models.SaveLoad
         private readonly ILocationDictionary _locations = Substitute.For<ILocationDictionary>();
         private readonly IBossPlacementDictionary _bossPlacements = Substitute.For<IBossPlacementDictionary>();
         private readonly IPrizePlacementDictionary _prizePlacements = Substitute.For<IPrizePlacementDictionary>();
-        private readonly IConnectionCollection _connections = Substitute.For<IConnectionCollection>();
+        private readonly IMapConnectionCollection _connections = Substitute.For<IMapConnectionCollection>();
         private readonly IDropdownDictionary _dropdowns = Substitute.For<IDropdownDictionary>();
         private readonly IPinnedLocationCollection _pinnedLocations = Substitute.For<IPinnedLocationCollection>();
         private readonly ISequenceBreakDictionary _sequenceBreaks = Substitute.For<ISequenceBreakDictionary>();

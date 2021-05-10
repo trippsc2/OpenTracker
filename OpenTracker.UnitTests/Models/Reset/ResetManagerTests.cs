@@ -17,7 +17,7 @@ namespace OpenTracker.UnitTests.Models.Reset
     {
         private readonly IAutoTracker _autoTracker = Substitute.For<IAutoTracker>();
         private readonly IBossPlacementDictionary _bossPlacements = Substitute.For<IBossPlacementDictionary>();
-        private readonly IConnectionCollection _connections = Substitute.For<IConnectionCollection>();
+        private readonly IMapConnectionCollection _connections = Substitute.For<IMapConnectionCollection>();
         private readonly IDropdownDictionary _dropdowns = Substitute.For<IDropdownDictionary>();
         private readonly IItemDictionary _items = Substitute.For<IItemDictionary>();
         private readonly ILocationDictionary _locations = Substitute.For<ILocationDictionary>();

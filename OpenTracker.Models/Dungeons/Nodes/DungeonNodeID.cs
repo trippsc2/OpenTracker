@@ -1,7 +1,7 @@
 ﻿namespace OpenTracker.Models.Dungeons.Nodes
 {
     /// <summary>
-    ///     This enum type contains the dungeon node ID data.
+    /// This enum type defines the dungeon node ID values.
     /// </summary>
     public enum DungeonNodeID
     {

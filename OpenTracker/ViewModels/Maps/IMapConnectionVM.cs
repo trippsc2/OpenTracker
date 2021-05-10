@@ -5,6 +5,6 @@ namespace OpenTracker.ViewModels.Maps
 {
     public interface IMapConnectionVM : IModelWrapper
     {
-        delegate IMapConnectionVM Factory(IConnection connection);
+        delegate IMapConnectionVM Factory(IMapConnection connection);
     }
 }

@@ -6,7 +6,8 @@ using OpenTracker.Utils;
 namespace OpenTracker.Models.Dungeons.Items
 {
     /// <summary>
-    ///     This class contains the dictionary container of dungeon items.
+    /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container of <see cref="IDungeonItem"/> objects
+    /// indexed by <see cref="DungeonItemID"/>.
     /// </summary>
     public class DungeonItemDictionary : LazyDictionary<DungeonItemID, IDungeonItem>, IDungeonItemDictionary
     {
@@ -14,13 +15,13 @@ namespace OpenTracker.Models.Dungeons.Items
         private readonly Lazy<IDungeonItemFactory> _factory;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="factory">
-        ///     A factory for creating dungeon items.
+        ///     An Autofac factory for creating the <see cref="IDungeonItemFactory"/> object.
         /// </param>
         /// <param name="dungeonData">
-        ///     The mutable dungeon data.
+        ///     The <see cref="IMutableDungeon"/> data.
         /// </param>
         public DungeonItemDictionary(IDungeonItemFactory.Factory factory, IMutableDungeon dungeonData)
             : base(new Dictionary<DungeonItemID, IDungeonItem>())
@@ -29,12 +30,6 @@ namespace OpenTracker.Models.Dungeons.Items
             _factory = new Lazy<IDungeonItemFactory>(() => factory());
         }
 
-        /// <summary>
-        ///     Calls the indexer for each item in the specified list, so that it is initialized.
-        /// </summary>
-        /// <param name="items">
-        ///     A list of dungeon item IDs for which to call.
-        /// </param>
         public void PopulateItems(IList<DungeonItemID> items)
         {
             foreach (var item in items)

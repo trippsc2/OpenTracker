@@ -28,7 +28,7 @@ namespace OpenTracker.Models.SaveLoad
         private readonly ILocationDictionary _locations;
         private readonly IBossPlacementDictionary _bossPlacements;
         private readonly IPrizePlacementDictionary _prizePlacements;
-        private readonly Lazy<IConnectionCollection> _connections;
+        private readonly Lazy<IMapConnectionCollection> _connections;
         private readonly IDropdownDictionary _dropdowns;
         private readonly IPinnedLocationCollection _pinnedLocations;
         private readonly ISequenceBreakDictionary _sequenceBreaks;
@@ -83,7 +83,7 @@ namespace OpenTracker.Models.SaveLoad
         public SaveLoadManager(
             IJsonConverter jsonConversion, IMode mode, IItemDictionary items, ILocationDictionary locations,
             IBossPlacementDictionary bossPlacements, IPrizePlacementDictionary prizePlacements,
-            IConnectionCollection.Factory connections, IDropdownDictionary dropdowns,
+            IMapConnectionCollection.Factory connections, IDropdownDictionary dropdowns,
             IPinnedLocationCollection pinnedLocations, ISequenceBreakDictionary sequenceBreaks)
         {
             _mode = mode;
@@ -91,7 +91,7 @@ namespace OpenTracker.Models.SaveLoad
             _locations = locations;
             _bossPlacements = bossPlacements;
             _prizePlacements = prizePlacements;
-            _connections = new Lazy<IConnectionCollection>(() => connections());
+            _connections = new Lazy<IMapConnectionCollection>(() => connections());
             _dropdowns = dropdowns;
             _pinnedLocations = pinnedLocations;
             _sequenceBreaks = sequenceBreaks;

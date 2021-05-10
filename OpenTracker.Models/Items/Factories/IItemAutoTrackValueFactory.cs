@@ -3,26 +3,26 @@
 namespace OpenTracker.Models.Items.Factories
 {
     /// <summary>
-    ///     This interface contains creation logic for item auto-track values.
+    /// This interface contains creation logic for item <see cref="IAutoTrackValue"/> objects.
     /// </summary>
     public interface IItemAutoTrackValueFactory
     {
         /// <summary>
-        ///     A factory for creating the item auto-track value factory.
+        /// A factory for creating the <see cref="IItemAutoTrackValueFactory"/> object.
         /// </summary>
         /// <returns>
-        ///     The item auto-track value factory.
+        ///     The <see cref="IItemAutoTrackValueFactory"/> object.
         /// </returns>
         delegate IItemAutoTrackValueFactory Factory();
 
         /// <summary>
-        ///     Returns the auto-tracking value for the specified item.
+        /// Returns the <see cref="IAutoTrackValue"/> for the specified <see cref="ItemType"/>.
         /// </summary>
         /// <param name="type">
-        ///     The item type.
+        ///     The <see cref="ItemType"/>.
         /// </param>
         /// <returns>
-        ///     The auto-tracking value for the specified item.
+        ///     The nullable <see cref="IAutoTrackValue"/> for the item.
         /// </returns>
         IAutoTrackValue? GetAutoTrackValue(ItemType type);
     }

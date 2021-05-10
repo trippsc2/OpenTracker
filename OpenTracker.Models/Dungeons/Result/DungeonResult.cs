@@ -18,19 +18,19 @@ namespace OpenTracker.Models.Dungeons.Result
         /// Constructor
         /// </summary>
         /// <param name="bossAccessibility">
-        /// A list of accessibility of each boss.
+        ///     A <see cref="IList{T}"/> of <see cref="AccessibilityLevel"/> of each boss.
         /// </param>
         /// <param name="accessible">
-        /// The number of accessible items.
+        ///     A <see cref="int"/> representing the number of accessible items.
         /// </param>
         /// <param name="sequenceBreak">
-        /// A boolean representing whether the result required a sequence break or non-guaranteed item placement.
+        ///     A <see cref="bool"/> representing whether the result allowed sequence-breaking.
         /// </param>
         /// <param name="visible">
-        /// A boolean representing whether one inaccessible item is visible.
+        ///     A <see cref="bool"/> representing whether one inaccessible item is visible.
         /// </param>
         /// <param name="minimumInaccessible">
-        /// A 32-bit signed integer representing the minimum number of checks that are inaccessible.
+        ///     A <see cref="int"/> representing the minimum number of checks that are inaccessible.
         /// </param>
         public DungeonResult(
             IList<AccessibilityLevel> bossAccessibility, int accessible, bool sequenceBreak, bool visible,

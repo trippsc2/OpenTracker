@@ -4,22 +4,22 @@ using System.Collections.Concurrent;
 namespace OpenTracker.Models.Dungeons.Mutable
 {
     /// <summary>
-    ///     This class contains the queue of mutable dungeon data for the specified dungeon.
+    /// This class contains the queue of <see cref="IMutableDungeon"/> objects for the specified dungeon.
     /// </summary>
     public class MutableDungeonQueue : ConcurrentQueue<IMutableDungeon>, IMutableDungeonQueue
     {
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="factory">
-        ///     An Autofac factory for creating mutable dungeon data.
+        ///     An Autofac factory for creating new <see cref="IMutableDungeon"/> objects.
         /// </param>
         /// <param name="dungeon">
-        ///     The dungeon to which this queue belongs.
+        ///     The <see cref="IDungeon"/> to which this queue belongs.
         /// </param>
         /// <param name="count">
-        ///     A nullable 32-bit signed integer representing the number of instances to create.  This defaults to one
-        ///         less than the current processor count with a minimum of 1.
+        ///     A nullable <see cref="int"/> representing the number of instances to create.  This defaults to one less
+        ///     than the current processor count with a minimum of 1.
         /// </param>
         public MutableDungeonQueue(IMutableDungeon.Factory factory, IDungeon dungeon, int? count = null)
         {

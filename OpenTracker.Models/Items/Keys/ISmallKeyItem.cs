@@ -4,41 +4,41 @@ using OpenTracker.Models.AutoTracking.Values;
 namespace OpenTracker.Models.Items.Keys
 {
     /// <summary>
-    ///     This interface contains the item data for small keys.
+    /// This interface contains the small key item data.
     /// </summary>
     public interface ISmallKeyItem : ICappedItem
     {
         /// <summary>
-        ///     A 32-bit signed integer representing the effective current.
+        /// A <see cref="int"/> representing the effective current value.
         /// </summary>
         int EffectiveCurrent { get; }
 
         /// <summary>
-        ///     A factory for creating small key items.
+        /// A factory for creating new <see cref="ISmallKeyItem"/> objects.
         /// </summary>
         /// <param name="genericKey">
-        ///     The generic key item.
+        ///     The <see cref="IItem"/> representing the generic keys item.
         /// </param>
         /// <param name="nonKeyDropMaximum">
-        ///     A 32-bit signed integer representing the maximum value of the item.
+        ///     A <see cref="int"/> representing the item maximum when key drop shuffle is disabled.
         /// </param>
         /// <param name="keyDropMaximum">
-        ///     A 32-bit signed integer representing the delta maximum for key drop shuffle of the item.
+        ///     A <see cref="int"/> representing the item maximum when key drop shuffle is enabled.
         /// </param>
         /// <param name="autoTrackValue">
-        ///     The auto-track value.
+        ///     The nullable <see cref="IAutoTrackValue"/>.
         /// </param>
         /// <returns>
-        ///     A new small key item.
+        ///     A new <see cref="ISmallKeyItem"/> object.
         /// </returns>
         new delegate ISmallKeyItem Factory(
             IItem genericKey, int nonKeyDropMaximum, int keyDropMaximum, IAutoTrackValue? autoTrackValue);
         
         /// <summary>
-        ///     Returns a list of possible key values.
+        /// Returns a <see cref="IList{T}"/> of possible key values.
         /// </summary>
         /// <returns>
-        ///     A list of possible small key values.
+        ///     A <see cref="IList{T}"/> of <see cref="int"/> representing possible small key values.
         /// </returns>
         IList<int> GetKeyValues();
     }

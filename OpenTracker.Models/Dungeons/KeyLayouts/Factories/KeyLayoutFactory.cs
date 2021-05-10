@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
 {
     /// <summary>
-    ///     This class contains creation logic for key layout data.
+    /// This class contains creation logic for key layout data.
     /// </summary>
     public class KeyLayoutFactory : IKeyLayoutFactory
     {
@@ -23,46 +23,46 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
         private readonly IGTKeyLayoutFactory _gtFactory;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="hcFactory">
-        ///     A factory for creating Hyrule Castle key layouts.
+        ///     The <see cref="IHCKeyLayoutFactory"/>.
         /// </param>
         /// <param name="atFactory">
-        ///     A factory for creating Agahnim's Tower key layouts.
+        ///     The <see cref="IATKeyLayoutFactory"/>
         /// </param>
         /// <param name="epFactory">
-        ///     A factory for creating Eastern Palace key layouts.
+        ///     The <see cref="IEPKeyLayoutFactory"/>
         /// </param>
         /// <param name="dpFactory">
-        ///     A factory for creating Desert Palace key layouts.
+        ///     The <see cref="IDPKeyLayoutFactory"/>
         /// </param>
         /// <param name="tohFactory">
-        ///     A factory for creating Tower of Hera key layouts.
+        ///     The <see cref="IToHKeyLayoutFactory"/>
         /// </param>
         /// <param name="podFactory">
-        ///     A factory for creating Palace of Darkness key layouts.
+        ///     The <see cref="IPoDKeyLayoutFactory"/>
         /// </param>
         /// <param name="spFactory">
-        ///     A factory for creating Swamp Palace key layouts.
+        ///     The <see cref="ISPKeyLayoutFactory"/>
         /// </param>
         /// <param name="swFactory">
-        ///     A factory for creating Skull Woods key layouts.
+        ///     The <see cref="ISWKeyLayoutFactory"/>
         /// </param>
         /// <param name="ttFactory">
-        ///     A factory for creating Thieves' Town key layouts.
+        ///     The <see cref="ITTKeyLayoutFactory"/>
         /// </param>
         /// <param name="ipFactory">
-        ///     A factory for creating Ice Palace key layouts.
+        ///     The <see cref="IIPKeyLayoutFactory"/>
         /// </param>
         /// <param name="mmFactory">
-        ///     A factory for creating Misery Mire key layouts.
+        ///     The <see cref="IMMKeyLayoutFactory"/>
         /// </param>
         /// <param name="trFactory">
-        ///     A factory for creating Turtle Rock key layouts.
+        ///     The <see cref="ITRKeyLayoutFactory"/>
         /// </param>
         /// <param name="gtFactory">
-        ///     A factory for creating Ganon's Tower key layouts.
+        ///     The <see cref="IGTKeyLayoutFactory"/>
         /// </param>
         public KeyLayoutFactory(
             IHCKeyLayoutFactory hcFactory, IATKeyLayoutFactory atFactory, IEPKeyLayoutFactory epFactory,

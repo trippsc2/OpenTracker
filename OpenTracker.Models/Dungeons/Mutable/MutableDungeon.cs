@@ -12,7 +12,7 @@ using OpenTracker.Models.Modes;
 namespace OpenTracker.Models.Dungeons.Mutable
 {
     /// <summary>
-    ///     This class contains the mutable dungeon data.
+    /// This class contains the mutable dungeon data.
     /// </summary>
     public class MutableDungeon : IMutableDungeon
     {
@@ -27,25 +27,25 @@ namespace OpenTracker.Models.Dungeons.Mutable
         public IDungeonItemDictionary DungeonItems { get; }
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="mode">
-        ///     The mode data.
+        ///     The <see cref="IMode"/> data.
         /// </param>
         /// <param name="keyDoors">
-        ///     The key door dictionary.
+        ///     An Autofac factory for creating new <see cref="IKeyDoorDictionary"/> objects.
         /// </param>
         /// <param name="nodes">
-        ///     The dungeon node dictionary.
+        ///     An Autofac factory for creating new <see cref="IDungeonNodeDictionary"/> objects.
         /// </param>
         /// <param name="dungeonItems">
-        ///     The dungeon item dictionary.
+        ///     An Autofac factory for creating new <see cref="IDungeonItemDictionary"/> objects.
         /// </param>
         /// <param name="resultFactory">
-        ///     An Autofac factory for creating dungeon results.
+        ///     An Autofac factory for creating new <see cref="IDungeonResult"/> objects.
         /// </param>
         /// <param name="dungeon">
-        ///     The dungeon immutable data.
+        ///     The <see cref="IDungeon"/> to which the mutable data belongs.
         /// </param>
         public MutableDungeon(
             IMode mode, IKeyDoorDictionary.Factory keyDoors, IDungeonNodeDictionary.Factory nodes,
@@ -83,10 +83,10 @@ namespace OpenTracker.Models.Dungeons.Mutable
         }
 
         /// <summary>
-        ///     Sets the state of all small key doors based on a specified list of unlocked doors.
+        /// Sets the state of all small key doors.
         /// </summary>
         /// <param name="unlockedDoors">
-        ///     A list of unlocked doors.
+        ///     A <see cref="IList{T}"/> of unlocked <see cref="KeyDoorID"/>.
         /// </param>
         private void SetSmallKeyDoorState(IList<KeyDoorID> unlockedDoors)
         {
@@ -97,13 +97,13 @@ namespace OpenTracker.Models.Dungeons.Mutable
         }
 
         /// <summary>
-        ///     Returns whether the big key is available to be collected in the dungeon.
+        /// Returns whether the big key is available to be collected in the dungeon.
         /// </summary>
         /// <param name="sequenceBreak">
-        ///     A boolean representing whether sequence breaking is allowed.
+        ///     A <see cref="bool"/> representing whether sequence breaking is allowed.
         /// </param>
         /// <returns>
-        ///     A boolean representing whether the big key is available to be collected.
+        ///     A <see cref="bool"/> representing whether the big key is available to be collected.
         /// </returns>
         private bool GetAvailableBigKey(bool sequenceBreak = false)
         {
@@ -126,10 +126,10 @@ namespace OpenTracker.Models.Dungeons.Mutable
         }
 
         /// <summary>
-        ///     Sets the state of all big key doors to a specified state.
+        /// Sets the state of all big key doors to a specified state.
         /// </summary>
         /// <param name="unlocked">
-        ///     A boolean representing whether the doors are to be unlocked.
+        ///     A <see cref="bool"/> representing whether the doors are unlocked.
         /// </param>
         private void SetBigKeyDoorState(bool unlocked)
         {
@@ -205,6 +205,21 @@ namespace OpenTracker.Models.Dungeons.Mutable
             return _dungeon.KeyLayouts.Any(keyLayout => keyLayout.CanBeTrue(inaccessible, accessible, state));
         }
 
+        /// <summary>
+        /// Populates the lists of <see cref="DungeonItemID"/> for accessible and inaccessible items.  
+        /// </summary>
+        /// <param name="state">
+        ///     The <see cref="IDungeonState"/>.
+        /// </param>
+        /// <param name="items">
+        ///     The <see cref="IList{T}"/> of <see cref="DungeonItemID"/> for the dungeon.
+        /// </param>
+        /// <param name="inaccessible">
+        ///     The inaccessible <see cref="List{T}"/> of <see cref="DungeonItemID"/>.
+        /// </param>
+        /// <param name="accessible">
+        ///     The accessible <see cref="List{T}"/> of <see cref="DungeonItemID"/>.
+        /// </param>
         private void PopulateItemAccessibility(
             IDungeonState state, IList<DungeonItemID> items, List<DungeonItemID> inaccessible,
             List<DungeonItemID> accessible)
@@ -264,10 +279,10 @@ namespace OpenTracker.Models.Dungeons.Mutable
         }
 
         /// <summary>
-        ///     Returns a list of the current accessibility of each boss in the dungeon.
+        /// Returns a <see cref="List{T}"/> of the current <see cref="AccessibilityLevel"/> of each boss in the dungeon.
         /// </summary>
         /// <returns>
-        ///     A list of the current accessibility of each boss in the dungeon.
+        ///     A <see cref="List{T}"/> of the current <see cref="AccessibilityLevel"/> of each boss in the dungeon.
         /// </returns>
         private List<AccessibilityLevel> GetBossAccessibility()
         {
@@ -275,25 +290,26 @@ namespace OpenTracker.Models.Dungeons.Mutable
         }
 
         /// <summary>
-        ///     Check the accessibility of a specified list of item IDs.
+        /// Check the accessibility of a specified <see cref="IList{T}"/> of <see cref="DungeonItemID"/>.
         /// </summary>
         /// <param name="state">
-        ///     The dungeon state to be checked.
+        ///     The <see cref="IDungeonState"/>.
         /// </param>
         /// <param name="items">
-        ///     A list of item IDs to be checked.
+        ///     A <see cref="IList{T}"/> of <see cref="DungeonItemID"/> to be checked.
         /// </param>
         /// <param name="inaccessibleBossItems">
-        ///     A 32-bit signed integer representing the number of inaccessible bosses.
+        ///     A <see cref="int"/> representing the number of inaccessible bosses.
         /// </param>
         /// <param name="inaccessibleItems">
-        ///     A 32-bit signed integer representing the number of inaccessible items.
+        ///     A <see cref="int"/> representing the number of inaccessible items.
         /// </param>
         /// <param name="visible">
-        ///     A boolean representing whether the last inaccessible item is visible.
+        ///     A <see cref="bool"/> representing whether the last inaccessible item is visible.
         /// </param>
         private void CheckItemAccessibility(
-            IDungeonState state, IList<DungeonItemID> items, ref int inaccessibleBossItems, ref int inaccessibleItems, ref bool visible)
+            IDungeonState state, IList<DungeonItemID> items, ref int inaccessibleBossItems, ref int inaccessibleItems,
+            ref bool visible)
         {
             foreach (var id in items)
             {

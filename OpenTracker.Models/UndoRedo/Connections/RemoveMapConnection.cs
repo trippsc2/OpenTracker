@@ -3,12 +3,12 @@
 namespace OpenTracker.Models.UndoRedo.Connections
 {
     /// <summary>
-    /// This class contains undoable action data to create a connection between two entrances.
+    /// This class contains undoable action to remove a connection between two entrances.
     /// </summary>
-    public class AddConnection : IAddConnection
+    public class RemoveMapConnection : IRemoveMapConnection
     {
-        private readonly IConnectionCollection _connections;
-        private readonly IConnection _connection;
+        private readonly IMapConnectionCollection _connections;
+        private readonly IMapConnection _connection;
 
         /// <summary>
         /// Constructor
@@ -17,9 +17,9 @@ namespace OpenTracker.Models.UndoRedo.Connections
         /// The connection collection.
         /// </param>
         /// <param name="connection">
-        /// A tuple of the two map locations that are being collected.
+        /// The connection to be removed.
         /// </param>
-        public AddConnection(IConnectionCollection connections, IConnection connection)
+        public RemoveMapConnection(IMapConnectionCollection connections, IMapConnection connection)
         {
             _connections = connections;
             _connection = connection;
@@ -33,7 +33,7 @@ namespace OpenTracker.Models.UndoRedo.Connections
         /// </returns>
         public bool CanExecute()
         {
-            return !_connections.Contains(_connection);
+            return true;
         }
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace OpenTracker.Models.UndoRedo.Connections
         /// </summary>
         public void ExecuteDo()
         {
-            _connections.Add(_connection);
+            _connections.Remove(_connection);
         }
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace OpenTracker.Models.UndoRedo.Connections
         /// </summary>
         public void ExecuteUndo()
         {
-            _connections.Remove(_connection);
+            _connections.Add(_connection);
         }
     }
 }

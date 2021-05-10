@@ -9,7 +9,7 @@ using ReactiveUI;
 namespace OpenTracker.Models.Dungeons.Items
 {
     /// <summary>
-    ///     This class contains mutable dungeon item data.
+    /// This class contains mutable dungeon item data.
     /// </summary>
     public class DungeonItem : ReactiveObject, IDungeonItem
     {
@@ -24,13 +24,13 @@ namespace OpenTracker.Models.Dungeons.Items
         }
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="dungeonData">
-        ///     The mutable dungeon data parent class.
+        ///     The <see cref="IMutableDungeon"/> parent class.
         /// </param>
         /// <param name="node">
-        ///     The dungeon node to which this item belongs.
+        ///     The <see cref="INode"/> to which this item belongs.
         /// </param>
         public DungeonItem(IMutableDungeon dungeonData, INode node)
         {
@@ -42,13 +42,14 @@ namespace OpenTracker.Models.Dungeons.Items
         }
 
         /// <summary>
-        ///     Subscribes to the DungeonItemCreated event on the IDungeonItemDictionary interface.
+        /// Subscribes to the <see cref="IDungeonItemDictionary.ItemCreated"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the DungeonItemCreated event.
+        ///     The <see cref="KeyValuePair{TKey,TValue}"/> of <see cref="DungeonItemID"/> and
+        ///     <see cref="IDungeonItem"/> objects that were created.
         /// </param>
         private void OnDungeonItemCreated(object? sender, KeyValuePair<DungeonItemID, IDungeonItem> e)
         {
@@ -62,13 +63,13 @@ namespace OpenTracker.Models.Dungeons.Items
         }
 
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on the IDungeonNode interface.
+        /// Subscribes to the <see cref="INode.PropertyChanged"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnNodeChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -79,7 +80,7 @@ namespace OpenTracker.Models.Dungeons.Items
         }
 
         /// <summary>
-        ///     Updates the accessibility of the item.
+        /// Updates the accessibility of the item.
         /// </summary>
         private void UpdateAccessibility()
         {

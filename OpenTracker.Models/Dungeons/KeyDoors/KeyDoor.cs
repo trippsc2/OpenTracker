@@ -8,7 +8,7 @@ using ReactiveUI;
 namespace OpenTracker.Models.Dungeons.KeyDoors
 {
     /// <summary>
-    ///     This class contains key door data.
+    /// This class contains key door data.
     /// </summary>
     public class KeyDoor : ReactiveObject, IKeyDoor
     {
@@ -26,13 +26,13 @@ namespace OpenTracker.Models.Dungeons.KeyDoors
         public AccessibilityLevel Accessibility => _node.Accessibility; 
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="requirementFactory">
-        ///     The key door requirement factory.
+        ///     An Autofac factory for creating new <see cref="IKeyDoorRequirement"/> objects.
         /// </param>
         /// <param name="node">
-        ///     The node to which the key door belongs.
+        ///     The <see cref="INode"/> to which the key door belongs.
         /// </param>
         public KeyDoor(IKeyDoorRequirement.Factory requirementFactory, INode node)
         {
@@ -46,13 +46,13 @@ namespace OpenTracker.Models.Dungeons.KeyDoors
         }
 
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on the INode interface.
+        /// Subscribes to the <see cref="INode.PropertyChanged"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnNodeChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -63,7 +63,7 @@ namespace OpenTracker.Models.Dungeons.KeyDoors
         }
 
         /// <summary>
-        ///     Updates the accessibility of the key door.
+        /// Updates the accessibility of the key door.
         /// </summary>
         private void UpdateAccessibility()
         {

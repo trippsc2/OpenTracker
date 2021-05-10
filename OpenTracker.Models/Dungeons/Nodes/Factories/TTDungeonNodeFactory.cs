@@ -13,7 +13,7 @@ using OpenTracker.Models.Requirements.Item;
 namespace OpenTracker.Models.Dungeons.Nodes.Factories
 {
     /// <summary>
-    ///     This class contains the creation logic for Thieves' Town nodes.
+    /// This class contains the creation logic for Thieves' Town nodes.
     /// </summary>
     public class TTDungeonNodeFactory : ITTDungeonNodeFactory
     {
@@ -27,25 +27,25 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
         private readonly INodeConnection.Factory _connectionFactory;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="bossRequirements">
-        ///     The boss requirement dictionary.
+        ///     The <see cref="IBossRequirementDictionary"/>.
         /// </param>
         /// <param name="bossShuffleRequirements">
-        ///     The boss shuffle requirement dictionary.
+        ///     The <see cref="IBossShuffleRequirementDictionary"/>.
         /// </param>
         /// <param name="itemRequirements">
-        ///     The item requirement dictionary.
+        ///     The <see cref="IItemRequirementDictionary"/>.
         /// </param>
         /// <param name="overworldNodes">
-        ///     The overworld node dictionary.
+        ///     The <see cref="IOverworldNodeDictionary"/>.
         /// </param>
         /// <param name="entryFactory">
-        ///     An Autofac factory for creating entry node connections.
+        ///     An Autofac factory for creating new <see cref="IEntryNodeConnection"/> objects.
         /// </param>
         /// <param name="connectionFactory">
-        ///     An Autofac factory for creating regular node connections.
+        ///     An Autofac factory for creating new <see cref="INodeConnection"/> objects.
         /// </param>
         public TTDungeonNodeFactory(
             IBossRequirementDictionary bossRequirements, IBossShuffleRequirementDictionary bossShuffleRequirements,

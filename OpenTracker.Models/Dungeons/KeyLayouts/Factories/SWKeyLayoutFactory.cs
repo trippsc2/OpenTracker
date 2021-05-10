@@ -12,7 +12,7 @@ using OpenTracker.Models.Requirements.SmallKeyShuffle;
 namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
 {
     /// <summary>
-    ///     This class contains the creation logic for Skull Woods key layouts.
+    /// This class contains the creation logic for Skull Woods key layouts.
     /// </summary>
     public class SWKeyLayoutFactory : ISWKeyLayoutFactory
     {
@@ -28,34 +28,34 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
         private readonly ISmallKeyLayout.Factory _smallKeyFactory;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="aggregateRequirements">
-        ///     The aggregate requirement dictionary.
+        ///     The <see cref="IAggregateRequirementDictionary"/>.
         /// </param>
         /// <param name="bigKeyShuffleRequirements">
-        ///     The big key shuffle requirement dictionary.
+        ///     The <see cref="IBigKeyShuffleRequirementDictionary"/>.
         /// </param>
         /// <param name="guaranteedBossItemsRequirements">
-        ///     The guaranteed boss items requirement dictionary.
+        ///     The <see cref="IGuaranteedBossItemsRequirementDictionary"/>.
         /// </param>
         /// <param name="itemPlacementRequirements">
-        ///     The item placement requirement dictionary.
+        ///     The <see cref="IItemPlacementRequirementDictionary"/>.
         /// </param>
         /// <param name="keyDropShuffleRequirements">
-        ///     The key drop shuffle requirement dictionary.
+        ///     The <see cref="IKeyDropShuffleRequirementDictionary"/>.
         /// </param>
         /// <param name="smallKeyShuffleRequirements">
-        ///     The small key shuffle requirement dictionary.
+        ///     The <see cref="ISmallKeyShuffleRequirementDictionary"/>.
         /// </param>
         /// <param name="bigKeyFactory">
-        ///     An Autofac factory for creating big key layouts.
+        ///     An Autofac factory for creating new <see cref="IBigKeyLayout"/> objects.
         /// </param>
         /// <param name="endFactory">
-        ///     An Autofac factory for ending key layouts.
+        ///     An Autofac factory for creating new <see cref="IEndKeyLayout"/> objects.
         /// </param>
         /// <param name="smallKeyFactory">
-        ///     An Autofac factory for creating small key layouts.
+        ///     An Autofac factory for creating new <see cref="ISmallKeyLayout"/> objects.
         /// </param>
         public SWKeyLayoutFactory(
             IAggregateRequirementDictionary aggregateRequirements,

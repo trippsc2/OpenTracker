@@ -10,7 +10,7 @@ using ReactiveUI;
 namespace OpenTracker.Models.Dungeons.Nodes
 {
     /// <summary>
-    ///     This class contains the dungeon requirement node data.
+    /// This class contains the dungeon requirement node data.
     /// </summary>
     public class DungeonNode : ReactiveObject, IDungeonNode
     {
@@ -27,13 +27,13 @@ namespace OpenTracker.Models.Dungeons.Nodes
         }
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="factory">
-        ///     The dungeon node factory for creating node connections.
+        ///     The <see cref="IDungeonNodeFactory"/>.
         /// </param>
         /// <param name="dungeonData">
-        ///     The mutable dungeon data parent class.
+        ///     The <see cref="IMutableDungeon"/> parent class.
         /// </param>
         public DungeonNode(IDungeonNodeFactory factory, IMutableDungeon dungeonData)
         {
@@ -44,13 +44,14 @@ namespace OpenTracker.Models.Dungeons.Nodes
         }
 
         /// <summary>
-        ///     Subscribes to the ItemCreated event on the IRequirementNodeDictionary interface.
+        /// Subscribes to the <see cref="IDungeonNodeDictionary.ItemCreated"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the ItemCreated event.
+        ///     The <see cref="KeyValuePair{TKey,TValue}"/> of <see cref="DungeonNodeID"/> and
+        ///     <see cref="IDungeonNode"/> objects that were created.
         /// </param>
         private void OnNodeCreated(object? sender, KeyValuePair<DungeonNodeID, IDungeonNode> e)
         {
@@ -73,13 +74,13 @@ namespace OpenTracker.Models.Dungeons.Nodes
         }
 
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on the INodeConnection interface.
+        /// Subscribes to the <see cref="INodeConnection.PropertyChanged"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnConnectionChanged(object? sender, PropertyChangedEventArgs e)
         {

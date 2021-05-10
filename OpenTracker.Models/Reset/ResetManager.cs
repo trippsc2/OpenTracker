@@ -16,7 +16,7 @@ namespace OpenTracker.Models.Reset
     {
         private readonly IAutoTracker _autoTracker;
         private readonly IBossPlacementDictionary _bossPlacements;
-        private readonly IConnectionCollection _connections;
+        private readonly IMapConnectionCollection _connections;
         private readonly IDropdownDictionary _dropdowns;
         private readonly IItemDictionary _items;
         private readonly ILocationDictionary _locations;
@@ -34,7 +34,7 @@ namespace OpenTracker.Models.Reset
         ///     The <see cref="IBossPlacementDictionary"/>.
         /// </param>
         /// <param name="connections">
-        ///     The <see cref="IConnectionCollection"/>.
+        ///     The <see cref="IMapConnectionCollection"/>.
         /// </param>
         /// <param name="dropdowns">
         ///     The <see cref="IDropdownDictionary"/>.
@@ -55,7 +55,7 @@ namespace OpenTracker.Models.Reset
         ///     The <see cref="IUndoRedoManager"/>.
         /// </param>
         public ResetManager(
-            IAutoTracker autoTracker, IBossPlacementDictionary bossPlacements, IConnectionCollection connections,
+            IAutoTracker autoTracker, IBossPlacementDictionary bossPlacements, IMapConnectionCollection connections,
             IDropdownDictionary dropdowns, IItemDictionary items, ILocationDictionary locations,
             IPinnedLocationCollection pinnedLocations, IPrizePlacementDictionary prizePlacements,
             IUndoRedoManager undoRedoManager)

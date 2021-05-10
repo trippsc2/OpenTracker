@@ -6,26 +6,26 @@ using ReactiveUI;
 namespace OpenTracker.Models.Dungeons.Items
 {
     /// <summary>
-    ///     This interface contains mutable dungeon item data.
+    /// This interface contains mutable dungeon item data.
     /// </summary>
     public interface IDungeonItem : IReactiveObject
     {
         /// <summary>
-        ///     The accessibility level of the dungeon item.
+        /// The <see cref="AccessibilityLevel"/> of the dungeon item.
         /// </summary>
         AccessibilityLevel Accessibility { get; }
 
         /// <summary>
-        ///     A factory for creating dungeon items.
+        /// A factory for creating new <see cref="IDungeonItem"/> objects.
         /// </summary>
         /// <param name="dungeonData">
-        ///     The mutable dungeon data parent class.
+        ///     The <see cref="IMutableDungeon"/> parent class.
         /// </param>
         /// <param name="node">
-        ///     The dungeon node to which this item belongs.
+        ///     The <see cref="INode"/> to which this item belongs.
         /// </param>
         /// <returns>
-        ///     A new dungeon item.
+        ///     A new <see cref="IDungeonItem"/> object.
         /// </returns>
         delegate IDungeonItem Factory(IMutableDungeon dungeonData, INode node);
     }
