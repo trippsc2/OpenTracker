@@ -60,7 +60,7 @@ namespace OpenTracker.Models.Sections
         public bool ShouldBeDisplayed
         {
             get => _shouldBeDisplayed;
-            private set => this.RaiseAndSetIfChanged(ref _shouldBeDisplayed, value);
+            protected set => this.RaiseAndSetIfChanged(ref _shouldBeDisplayed, value);
         }
 
         /// <summary>
@@ -236,9 +236,9 @@ namespace OpenTracker.Models.Sections
         /// <summary>
         ///     Updates the value of the ShouldBeDisplayed property.
         /// </summary>
-        protected void UpdateShouldBeDisplayed()
+        protected virtual void UpdateShouldBeDisplayed()
         {
-            ShouldBeDisplayed = (IsAvailable() && Accessibility >= AccessibilityLevel.Inspect) || CanBeCleared();
+            ShouldBeDisplayed = IsAvailable() && Accessibility >= AccessibilityLevel.Inspect || CanBeCleared();
         }
 
         /// <summary>

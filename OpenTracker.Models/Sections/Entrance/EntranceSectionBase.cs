@@ -56,6 +56,8 @@ namespace OpenTracker.Models.Sections.Entrance
             Total = 1;
             _available = 1;
 
+            Marking!.PropertyChanged += OnMarkingChanged;
+
             UpdateShouldBeDisplayed();
         }
 
@@ -107,6 +109,34 @@ namespace OpenTracker.Models.Sections.Entrance
                     _exitProvided.InsanityExitsAccessible++;
                     break;
             }
+        }
+
+        /// <summary>
+        /// Subscribes to the <see cref="IMarking.PropertyChanged"/> event on <see cref="Marking"/>.
+        /// </summary>
+        /// <param name="sender">
+        ///     The sending <see cref="IMarking"/>.
+        /// </param>
+        /// <param name="e">
+        ///     The <see cref="PropertyChangedEventArgs"/>.
+        /// </param>
+        private void OnMarkingChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(IMarking.Mark))
+            {
+                UpdateShouldBeDisplayed();
+            }
+        }
+
+        protected override void UpdateShouldBeDisplayed()
+        {
+            if (Marking!.Mark is not MarkType.Unknown)
+            {
+                ShouldBeDisplayed = true;
+                return;
+            }
+            
+            base.UpdateShouldBeDisplayed();
         }
     }
 }
