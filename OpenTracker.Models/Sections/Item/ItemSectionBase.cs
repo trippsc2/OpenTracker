@@ -9,7 +9,7 @@ using ReactiveUI;
 namespace OpenTracker.Models.Sections.Item
 {
     /// <summary>
-    ///     This base class contains the item section data.
+    /// This base class contains the item section data.
     /// </summary>
     public abstract class ItemSectionBase : SectionBase, IItemSection
     {
@@ -21,28 +21,28 @@ namespace OpenTracker.Models.Sections.Item
         }
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="saveLoadManager">
-        ///     The save/load manager.
+        ///     The <see cref="ISaveLoadManager"/>.
         /// </param>
         /// <param name="collectSectionFactory">
-        ///     An Autofac factory for creating collect section undoable actions.
+        ///     An Autofac factory for creating new <see cref="ICollectSection"/> objects.
         /// </param>
         /// <param name="uncollectSectionFactory">
-        ///     An Autofac factory for creating uncollect section undoable actions.
+        ///     An Autofac factory for creating new <see cref="IUncollectSection"/> objects.
         /// </param>
         /// <param name="name">
-        ///     A string representing the name of the section.
+        ///     A <see cref="string"/> representing the section name.
         /// </param>
         /// <param name="autoTrackValue">
-        ///     The auto-tracking value for this section.
+        ///     The nullable <see cref="IAutoTrackValue"/>.
         /// </param>
         /// <param name="marking">
-        ///     The section marking.
+        ///     The nullable <see cref="IMarking"/>.
         /// </param>
         /// <param name="requirement">
-        ///     The requirement for the section to be active.
+        ///     The nullable <see cref="IRequirement"/> for the section to be active.
         /// </param>
         protected ItemSectionBase(
             ISaveLoadManager saveLoadManager, ICollectSection.Factory collectSectionFactory,

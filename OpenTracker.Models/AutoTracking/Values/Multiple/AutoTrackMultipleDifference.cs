@@ -5,7 +5,7 @@ using ReactiveUI;
 namespace OpenTracker.Models.AutoTracking.Values.Multiple
 {
     /// <summary>
-    ///     This class contains the auto-tracking result value data of subtracting a pair of values.
+    /// This class contains the auto-tracking result value data of subtracting a pair of values.
     /// </summary>
     public class AutoTrackMultipleDifference : ReactiveObject, IAutoTrackMultipleDifference
     {
@@ -18,13 +18,13 @@ namespace OpenTracker.Models.AutoTracking.Values.Multiple
                 : _value1.CurrentValue.Value : null;
         
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="value1">
-        ///     The value from which to subtract.
+        ///     The <see cref="IAutoTrackValue"/> from which to subtract.
         /// </param>
         /// <param name="value2">
-        ///     The value to be subtracted.
+        ///     The <see cref="IAutoTrackValue"/> to be subtracted.
         /// </param>
         public AutoTrackMultipleDifference(IAutoTrackValue value1, IAutoTrackValue value2)
         {
@@ -36,13 +36,13 @@ namespace OpenTracker.Models.AutoTracking.Values.Multiple
         }
 
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on the IAutoTrackValue interface.
+        /// Subscribes to the <see cref="IAutoTrackValue.PropertyChanged"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event was sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnValueChanged(object? sender, PropertyChangedEventArgs e)
         {

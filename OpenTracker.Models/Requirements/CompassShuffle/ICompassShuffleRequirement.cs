@@ -1,16 +1,21 @@
+using OpenTracker.Models.Modes;
+
 namespace OpenTracker.Models.Requirements.CompassShuffle
 {
     /// <summary>
-    ///     This interface contains compass shuffle requirement data.
+    /// This interface contains <see cref="IMode.CompassShuffle"/> requirement data.
     /// </summary>
     public interface ICompassShuffleRequirement : IRequirement
     {
         /// <summary>
-        ///     A factory for creating new compass shuffle requirements.
+        /// A factory for creating new <see cref="ICompassShuffleRequirement"/> objects.
         /// </summary>
         /// <param name="expectedValue">
-        ///     A boolean representing the required compass shuffle value.
+        ///     A <see cref="bool"/> representing the expected <see cref="IMode.CompassShuffle"/> value.
         /// </param>
+        /// <returns>
+        ///     A new <see cref="ICompassShuffleRequirement"/> object.
+        /// </returns>
         delegate ICompassShuffleRequirement Factory(bool expectedValue);
     }
 }

@@ -3,18 +3,18 @@
 namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories
 {
     /// <summary>
-    ///     This interface contains creation logic for key layout data.
+    /// This interface contains creation logic for key layout data.
     /// </summary>
     public interface IKeyLayoutFactory
     {
         /// <summary>
-        ///     Returns the list of key layouts for the specified dungeon.
+        /// Returns the <see cref="IList{T}"/> of <see cref="IKeyLayout"/> for the specified <see cref="IDungeon"/>.
         /// </summary>
         /// <param name="dungeon">
-        ///     The dungeon parent class.
+        ///     The <see cref="IDungeon"/> parent class.
         /// </param>
         /// <returns>
-        ///     The list of key layouts.
+        ///     The <see cref="IList{T}"/> of <see cref="IKeyLayout"/>.
         /// </returns>
         IList<IKeyLayout> GetDungeonKeyLayouts(IDungeon dungeon);
     }

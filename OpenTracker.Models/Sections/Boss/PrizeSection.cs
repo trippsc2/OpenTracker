@@ -10,7 +10,7 @@ using OpenTracker.Models.UndoRedo.Sections;
 namespace OpenTracker.Models.Sections.Boss
 {
     /// <summary>
-    ///     This class contains end of boss section with prize data.
+    /// This class contains end of dungeon boss section with prize data.
     /// </summary>
     public class PrizeSection : BossSection, IPrizeSection
     {
@@ -19,34 +19,34 @@ namespace OpenTracker.Models.Sections.Boss
         public IPrizePlacement PrizePlacement { get; }
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="saveLoadManager">
-        ///     The save/load manager.
+        ///     The <see cref="ISaveLoadManager"/>.
         /// </param>
         /// <param name="collectSectionFactory">
-        ///     An Autofac factory for creating collect section undoable actions.
+        ///     An Autofac factory for creating new <see cref="ICollectSection"/> objects.
         /// </param>
         /// <param name="uncollectSectionFactory">
-        ///     An Autofac factory for creating uncollect section undoable actions.
+        ///     An Autofac factory for creating new <see cref="IUncollectSection"/> objects.
         /// </param>
         /// <param name="togglePrizeSectionFactory">
-        ///     An Autofac factory for creating toggle prize section sections.
+        ///     An Autofac factory for creating new <see cref="ITogglePrizeSection"/> objects.
         /// </param>
         /// <param name="accessibilityProvider">
-        ///     The boss accessibility provider for this section.
+        ///     The <see cref="IBossAccessibilityProvider"/>.
         /// </param>
         /// <param name="name">
-        ///     A string representing the name of the section.
+        ///     A <see cref="string"/> representing the section name.
         /// </param>
         /// <param name="bossPlacement">
-        ///     The boss placement for the section.
+        ///     The <see cref="IBossPlacement"/>.
         /// </param>
         /// <param name="prizePlacement">
-        ///     The prize placement for the section.
+        ///     The <see cref="IPrizePlacement"/>.
         /// </param>
         /// <param name="autoTrackValue">
-        ///     The section auto-track value.
+        ///     The nullable <see cref="IAutoTrackValue"/>.
         /// </param>
         public PrizeSection(
             ISaveLoadManager saveLoadManager, ICollectSection.Factory collectSectionFactory,
@@ -93,13 +93,13 @@ namespace OpenTracker.Models.Sections.Boss
         }
 
         /// <summary>
-        ///     Subscribes to the PropertyChanging event on the IPrizePlacement interface.
+        /// Subscribes to the <see cref="IPrizePlacement.PropertyChanging"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanging event.
+        ///     The <see cref="PropertyChangingEventArgs"/>.
         /// </param>
         private void OnPrizePlacementChanging(object? sender, PropertyChangingEventArgs e)
         {
@@ -110,13 +110,13 @@ namespace OpenTracker.Models.Sections.Boss
         }
 
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on the IPrizePlacement interface.
+        /// Subscribes to the <see cref="IPrizePlacement.PropertyChanged"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnPrizePlacementChanged(object? sender, PropertyChangedEventArgs e)
         {

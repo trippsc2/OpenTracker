@@ -27,7 +27,7 @@ namespace OpenTracker.ViewModels.Maps
 
         private readonly IMapAreaVM _mapArea;
 
-        private readonly IConnection _connection;
+        private readonly IMapConnection _connection;
 
         private bool _highlighted;
         public bool Highlighted
@@ -85,7 +85,7 @@ namespace OpenTracker.ViewModels.Maps
         /// </param>
         public MapConnectionVM(
             IColorSettings colorSettings, IMode mode, IUndoRedoManager undoRedoManager, IMapAreaVM mapArea,
-            IConnection connection)
+            IMapConnection connection)
         {
             _colorSettings = colorSettings;
             _mode = mode;

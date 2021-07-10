@@ -5,23 +5,23 @@ using ReactiveUI;
 namespace OpenTracker.Models.Nodes
 {
     /// <summary>
-    ///     This interface contains the node data.
+    /// This interface contains the node data.
     /// </summary>
     public interface INode : IReactiveObject
     {
         /// <summary>
-        ///     The accessibility level of the node.
+        /// The <see cref="AccessibilityLevel"/>.
         /// </summary>
         AccessibilityLevel Accessibility { get; }
 
         /// <summary>
-        ///     Returns the node accessibility.
+        /// Returns the node <see cref="AccessibilityLevel"/>.
         /// </summary>
         /// <param name="excludedNodes">
-        ///     The list of node IDs from which to not check accessibility.
+        ///     The <see cref="IList{T}"/> of <see cref="INode"/> from which to skip connections and prevent loops.
         /// </param>
         /// <returns>
-        ///     The accessibility of the node.
+        ///     The <see cref="AccessibilityLevel"/> of the node.
         /// </returns>
         AccessibilityLevel GetNodeAccessibility(IList<INode> excludedNodes);
     }

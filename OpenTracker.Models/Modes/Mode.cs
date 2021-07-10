@@ -7,7 +7,7 @@ using ReactiveUI;
 namespace OpenTracker.Models.Modes
 {
     /// <summary>
-    ///     This class contains game mode settings data.
+    /// This class contains game mode settings data.
     /// </summary>
     public class Mode : ReactiveObject, IMode
     {
@@ -125,49 +125,49 @@ namespace OpenTracker.Models.Modes
         }
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="changeItemPlacementFactory">
-        ///     An Autofac factory for creating undoable actions to change item placement setting.
+        ///     An Autofac factory for creating new <see cref="IChangeItemPlacement"/> objects.
         /// </param>
         /// <param name="changeMapShuffleFactory">
-        ///     An Autofac factory for creating undoable actions to change map shuffle setting.
+        ///     An Autofac factory for creating new <see cref="IChangeMapShuffle"/> objects.
         /// </param>
         /// <param name="changeCompassShuffleFactory">
-        ///     An Autofac factory for creating undoable actions to change compass shuffle setting.
+        ///     An Autofac factory for creating new <see cref="IChangeCompassShuffle"/> objects.
         /// </param>
         /// <param name="changeSmallKeyShuffleFactory">
-        ///     An Autofac factory for creating undoable actions to change small key shuffle setting.
+        ///     An Autofac factory for creating new <see cref="IChangeSmallKeyShuffle"/> objects.
         /// </param>
         /// <param name="changeBigKeyShuffleFactory">
-        ///     An Autofac factory for creating undoable actions to change big key shuffle setting.
+        ///     An Autofac factory for creating new <see cref="IChangeBigKeyShuffle"/> objects.
         /// </param>
         /// <param name="changeWorldStateFactory">
-        ///     An Autofac factory for creating undoable actions to change world state setting.
+        ///     An Autofac factory for creating new <see cref="IChangeWorldState"/> objects.
         /// </param>
         /// <param name="changeEntranceShuffleFactory">
-        ///     An Autofac factory for creating undoable actions to change entrance shuffle setting.
+        ///     An Autofac factory for creating new <see cref="IChangeEntranceShuffle"/> objects.
         /// </param>
         /// <param name="changeBossShuffleFactory">
-        ///     An Autofac factory for creating undoable actions to change boss shuffle setting.
+        ///     An Autofac factory for creating new <see cref="IChangeBossShuffle"/> objects.
         /// </param>
         /// <param name="changeEnemyShuffleFactory">
-        ///     An Autofac factory for creating undoable actions to change enemy shuffle setting.
+        ///     An Autofac factory for creating new <see cref="IChangeEnemyShuffle"/> objects.
         /// </param>
         /// <param name="changeGuaranteedBossItemsFactory">
-        ///     An Autofac factory for creating undoable actions to change guaranteed boss items setting.
+        ///     An Autofac factory for creating new <see cref="IChangeGuaranteedBossItems"/> objects.
         /// </param>
         /// <param name="changeGenericKeysFactory">
-        ///     An Autofac factory for creating undoable actions to change generic keys setting.
+        ///     An Autofac factory for creating new <see cref="IChangeGenericKeys"/> objects.
         /// </param>
         /// <param name="changeTakeAnyLocationsFactory">
-        ///     An Autofac factory for creating undoable actions to change take any locations setting.
+        ///     An Autofac factory for creating new <see cref="IChangeTakeAnyLocations"/> objects.
         /// </param>
         /// <param name="changeKeyDropShuffleFactory">
-        ///     An Autofac factory for creating undoable actions to change key drop shuffle setting.
+        ///     An Autofac factory for creating new <see cref="IChangeKeyDropShuffle"/> objects.
         /// </param>
         /// <param name="changeShopShuffleFactory">
-        ///     An Autofac factory for creating undoable actions to change shop shuffle setting.
+        ///     An Autofac factory for creating new <see cref="IChangeShopShuffle"/> objects.
         /// </param>
         public Mode(
             IChangeItemPlacement.Factory changeItemPlacementFactory, IChangeMapShuffle.Factory changeMapShuffleFactory,
@@ -270,12 +270,6 @@ namespace OpenTracker.Models.Modes
             return _changeShopShuffleFactory(newValue);
         }
         
-        /// <summary>
-        ///     Returns save data for this mode instance.
-        /// </summary>
-        /// <returns>
-        ///     Save data for this mode instance.
-        /// </returns>
         public ModeSaveData Save()
         {
             return new()
@@ -297,12 +291,6 @@ namespace OpenTracker.Models.Modes
             };
         }
 
-        /// <summary>
-        ///     Loads the save data to this mode instance.
-        /// </summary>
-        /// <param name="saveData">
-        ///     The save data to be loaded.
-        /// </param>
         public void Load(ModeSaveData? saveData)
         {
             if (saveData == null)
@@ -327,13 +315,13 @@ namespace OpenTracker.Models.Modes
         }
 
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on this object.
+        /// Subscribes to the <see cref="IMode.PropertyChanged"/> event on this object.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {

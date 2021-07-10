@@ -17,7 +17,7 @@ using OpenTracker.Models.SequenceBreaks;
 namespace OpenTracker.Models.Requirements.Boss
 {
     /// <summary>
-    ///     This class contains the creation logic for boss type requirements.
+    /// This class contains the creation logic for <see cref="IRequirement"/> objects for boss type requirements.
     /// </summary>
     public class BossTypeRequirementFactory : IBossTypeRequirementFactory
     {
@@ -32,34 +32,34 @@ namespace OpenTracker.Models.Requirements.Boss
         private readonly IStaticRequirementDictionary _staticRequirements;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="aggregateRequirements">
-        ///     The aggregate requirement dictionary.
+        ///     The <see cref="IAggregateRequirementDictionary"/>.
         /// </param>
         /// <param name="alternativeRequirements">
-        ///     The alternative requirement dictionary.
+        ///     The <see cref="IAlternativeRequirementDictionary"/>.
         /// </param>
         /// <param name="bossTypeRequirements">
-        ///     The boss type requirement dictionary.
+        ///     The <see cref="IBossTypeRequirementDictionary"/>.
         /// </param>
         /// <param name="complexRequirements">
-        ///     The complex requirement dictionary.
+        ///     The <see cref="IComplexRequirementDictionary"/>.
         /// </param>
         /// <param name="itemRequirements">
-        ///     The item requirement dictionary.
+        ///     The <see cref="IItemRequirementDictionary"/>.
         /// </param>
         /// <param name="itemExactRequirements">
-        ///     The item exact requirement dictionary.
+        ///     The <see cref="IItemExactRequirementDictionary"/>.
         /// </param>
         /// <param name="itemPlacementRequirements">
-        ///     The item placement requirement dictionary.
+        ///     The <see cref="IItemPlacementRequirementDictionary"/>.
         /// </param>
         /// <param name="sequenceBreakRequirements">
-        ///     The sequence break requirement dictionary.
+        ///     The <see cref="ISequenceBreakRequirementDictionary"/>.
         /// </param>
         /// <param name="staticRequirements">
-        ///     The static requirement dictionary.
+        ///     The <see cref="IStaticRequirementDictionary"/>.
         /// </param>
         public BossTypeRequirementFactory(
             IAggregateRequirementDictionary aggregateRequirements,

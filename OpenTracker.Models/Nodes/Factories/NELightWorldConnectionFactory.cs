@@ -14,7 +14,7 @@ using OpenTracker.Models.Requirements.Mode;
 namespace OpenTracker.Models.Nodes.Factories
 {
     /// <summary>
-    ///     This class contains the creation logic for northeast light world node connections.
+    /// This class contains the creation logic for northeast light world <see cref="INodeConnection"/> objects.
     /// </summary>
     public class NELightWorldConnectionFactory : INELightWorldConnectionFactory
     {
@@ -31,34 +31,34 @@ namespace OpenTracker.Models.Nodes.Factories
         private readonly INodeConnection.Factory _connectionFactory;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="crystalRequirement">
-        ///     The crystal requirement.
+        ///     The <see cref="ICrystalRequirement"/>.
         /// </param>
         /// <param name="complexRequirements">
-        ///     The complex requirement dictionary.
+        ///     The <see cref="IComplexRequirementDictionary"/>.
         /// </param>
         /// <param name="entranceShuffleRequirements">
-        ///     The entrance shuffle requirement dictionary.
+        ///     The <see cref="IEntranceShuffleRequirementDictionary"/>.
         /// </param>
         /// <param name="itemRequirements">
-        ///     The item requirement dictionary.
+        ///     The <see cref="IItemRequirementDictionary"/>.
         /// </param>
         /// <param name="itemExactRequirements">
-        ///     The item exact requirement dictionary.
+        ///     The <see cref="IItemExactRequirementDictionary"/>.
         /// </param>
         /// <param name="prizeRequirements">
-        ///     The prize requirement dictionary.
+        ///     The <see cref="IPrizeRequirementDictionary"/>.
         /// </param>
         /// <param name="worldStateRequirements">
-        ///     The world state requirement dictionary.
+        ///     The <see cref="IWorldStateRequirementDictionary"/>.
         /// </param>
         /// <param name="overworldNodes">
-        ///     The overworld node dictionary.
+        ///     The <see cref="IOverworldNodeDictionary"/>.
         /// </param>
         /// <param name="connectionFactory">
-        ///     An Autofac factory for creating new node connections.
+        ///     An Autofac factory for creating new <see cref="INodeConnection"/> objects.
         /// </param>
         public NELightWorldConnectionFactory(
             ICrystalRequirement crystalRequirement, IComplexRequirementDictionary complexRequirements,

@@ -7,7 +7,7 @@ using ReactiveUI;
 namespace OpenTracker.Models.Nodes.Connections
 {
     /// <summary>
-    ///     This class contains node connection data.
+    /// This class contains node connection data.
     /// </summary>
     public class NodeConnection : ReactiveObject, INodeConnection
     {
@@ -24,16 +24,16 @@ namespace OpenTracker.Models.Nodes.Connections
         }
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="fromNode">
-        ///     The node from which the connection originates.
+        ///     The <see cref="INode"/> from which the connection originates.
         /// </param>
         /// <param name="toNode">
-        ///     The node to which the connection belongs.
+        ///     The <see cref="INode"/> to which the connection belongs.
         /// </param>
         /// <param name="requirement">
-        ///     The requirement for the connection to be accessible.
+        ///     The <see cref="IRequirement"/> for the connection to be accessible.
         /// </param>
         public NodeConnection(INode fromNode, INode toNode, IRequirement? requirement = null)
         {
@@ -44,12 +44,14 @@ namespace OpenTracker.Models.Nodes.Connections
 
             _fromNode.PropertyChanged += OnNodeChanged;
 
-            if (Requirement is not null)
-            {
-                Requirement.PropertyChanged += OnRequirementChanged;
-            }
-
             UpdateAccessibility();
+
+            if (Requirement is null)
+            {
+                return;
+            }
+            
+            Requirement.PropertyChanged += OnRequirementChanged;
         }
 
         public AccessibilityLevel GetConnectionAccessibility(IList<INode> excludedNodes)
@@ -68,13 +70,13 @@ namespace OpenTracker.Models.Nodes.Connections
         }
         
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on the IRequirementNode interface.
+        /// Subscribes to the <see cref="INode.PropertyChanged"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnNodeChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -85,13 +87,13 @@ namespace OpenTracker.Models.Nodes.Connections
         }
 
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on the IRequirement interface.
+        /// Subscribes to the <see cref="IRequirement.PropertyChanged"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnRequirementChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -102,7 +104,7 @@ namespace OpenTracker.Models.Nodes.Connections
         }
 
         /// <summary>
-        ///     Updates the Accessibility property.
+        /// Updates the <see cref="Accessibility"/> property.
         /// </summary>
         private void UpdateAccessibility()
         {

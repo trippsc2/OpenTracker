@@ -5,28 +5,25 @@
 	/// </summary>
     public static class AddressTranslator
     {
-		/// <summary>
-		///	Translates an input address to the SD2SNES address space.
-		/// </summary>
-		/// <param name="address">
-		///		A <see cref="int"/> representing the untranslated address.
-		/// </param>
-		/// <param name="mode">
-		///		The <see cref="TranslationMode"/>.
-		/// </param>
-		/// <returns>
-		///		A <see cref="uint"/> representing the translated address.
-		/// </returns>
-		public static uint TranslateAddress(uint address, TranslationMode mode)
+	    ///  <summary>
+	    /// Translates an input address to the SD2SNES address space.
+	    ///  </summary>
+	    ///  <param name="address">
+	    ///		A <see cref="int"/> representing the untranslated address.
+	    ///  </param>
+	    ///  <returns>
+	    /// 	A <see cref="uint"/> representing the translated address.
+	    ///  </returns>
+	    public static uint TranslateAddress(uint address)
 		{
-			if (mode == TranslationMode.Read && MapAddressInRange(
+			if (MapAddressInRange(
 				address, 0x7E0000U, 0x7FFFFFU, 0xF50000U,
 				out var mappedAddress))
 			{
 				return mappedAddress;
 			}
 
-			for (uint index = 0x0; index < 0x3FU; ++index)
+			for (uint index = 0x0; index < 0x3F; ++index)
 			{
 				if (MapAddressInRange(
 					    address, (uint)((int)index * 0x10000 + 0x8000),

@@ -4,24 +4,24 @@ using OpenTracker.Models.Requirements;
 namespace OpenTracker.Models.Sections.Entrance
 {
     /// <summary>
-    ///     This interface contains dropdown section data.
+    /// This interface contains dropdown section data.
     /// </summary>
     public interface IDropdownSection : ISection
     {
         /// <summary>
-        ///     A factory for creating new dropdown sections.
+        /// A factory for creating new <see cref="IDropdownSection"/> objects.
         /// </summary>
         /// <param name="exitNode">
-        ///     The node to which the exit belongs.
+        ///     The <see cref="INode"/> to which the exit belongs.
         /// </param>
         /// <param name="holeNode">
-        ///     The node to which the hole belongs.
+        ///     The <see cref="INode"/> to which the hole belongs.
         /// </param>
         /// <param name="requirement">
-        ///     The requirement for the section to be active.
+        ///     The <see cref="IRequirement"/> for the section to be active.
         /// </param>
         /// <returns>
-        ///     A new dropdown section.
+        ///     A new <see cref="IDropdownSection"/> object.
         /// </returns>
         delegate IDropdownSection Factory(INode exitNode, INode holeNode, IRequirement requirement);
     }

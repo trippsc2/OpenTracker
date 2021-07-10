@@ -1,18 +1,20 @@
+using OpenTracker.Models.Modes;
+
 namespace OpenTracker.Models.Requirements.BigKeyShuffle
 {
     /// <summary>
-    ///     This interface contains big key shuffle requirement data.
+    /// This interface contains <see cref="IMode.BigKeyShuffle"/> requirement data.
     /// </summary>
     public interface IBigKeyShuffleRequirement : IRequirement
     {
         /// <summary>
-        ///     A factory for creating new big key shuffle requirements.
+        /// A factory for creating new <see cref="IBigKeyShuffleRequirement"/> objects.
         /// </summary>
         /// <param name="expectedValue">
-        ///     The expected big key shuffle value.
+        ///     A <see cref="bool"/> representing the expected value.
         /// </param>
         /// <returns>
-        ///     A new big key shuffle requirement.
+        ///     A new <see cref="IBigKeyShuffleRequirement"/> object.
         /// </returns>
         delegate IBigKeyShuffleRequirement Factory(bool expectedValue);
     }

@@ -7,7 +7,7 @@ using OpenTracker.Models.Nodes.Connections;
 namespace OpenTracker.Models.Dungeons.Nodes.Factories
 {
     /// <summary>
-    ///     This class contains the creation logic for dungeon nodes.
+    /// This class contains the creation logic for dungeon nodes.
     /// </summary>
     public class DungeonNodeFactory : IDungeonNodeFactory
     {
@@ -26,46 +26,46 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
         private readonly IGTDungeonNodeFactory _gtFactory;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="hcFactory">
-        ///     The Hyrule Castle dungeon node factory.
+        ///     The <see cref="IHCDungeonNodeFactory"/>.
         /// </param>
         /// <param name="atFactory">
-        ///     The Agahnim's Tower dungeon node factory.
+        ///     The <see cref="IATDungeonNodeFactory"/>.
         /// </param>
         /// <param name="epFactory">
-        ///     The Eastern Palace dungeon node factory.
+        ///     The <see cref="IEPDungeonNodeFactory"/>.
         /// </param>
         /// <param name="dpFactory">
-        ///     The Desert Palace dungeon node factory.
+        ///     The <see cref="IDPDungeonNodeFactory"/>.
         /// </param>
         /// <param name="tohFactory">
-        ///     The Tower of Hera dungeon node factory.
+        ///     The <see cref="IToHDungeonNodeFactory"/>.
         /// </param>
         /// <param name="podFactory">
-        ///     The Palace of Darkness dungeon node factory.
+        ///     The <see cref="IPoDDungeonNodeFactory"/>.
         /// </param>
         /// <param name="spFactory">
-        ///     The Swamp Palace dungeon node factory.
+        ///     The <see cref="ISPDungeonNodeFactory"/>.
         /// </param>
         /// <param name="swFactory">
-        ///     The Skull Woods dungeon node factory.
+        ///     The <see cref="ISWDungeonNodeFactory"/>.
         /// </param>
         /// <param name="ttFactory">
-        ///     The Thieves' Town dungeon node factory.
+        ///     The <see cref="ITTDungeonNodeFactory"/>.
         /// </param>
         /// <param name="ipFactory">
-        ///     The Ice Palace dungeon node factory.
+        ///     The <see cref="IIPDungeonNodeFactory"/>.
         /// </param>
         /// <param name="mmFactory">
-        ///     The Misery Mire dungeon node factory.
+        ///     The <see cref="IMMDungeonNodeFactory"/>.
         /// </param>
         /// <param name="trFactory">
-        ///     The Turtle Rock dungeon node factory.
+        ///     The <see cref="ITRDungeonNodeFactory"/>.
         /// </param>
         /// <param name="gtFactory">
-        ///     The Ganon's Tower dungeon node factory.
+        ///     The <see cref="IGTDungeonNodeFactory"/>.
         /// </param>
         public DungeonNodeFactory(
             IHCDungeonNodeFactory hcFactory, IATDungeonNodeFactory atFactory, IEPDungeonNodeFactory epFactory,

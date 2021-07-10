@@ -1,7 +1,7 @@
 ﻿namespace OpenTracker.Models.Nodes
 {
     /// <summary>
-    /// This is the enum type for requirement node identity.
+    /// This enum type defines the overworld node ID values.
     /// </summary>
     public enum OverworldNodeID
     {

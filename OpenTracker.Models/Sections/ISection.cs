@@ -1,104 +1,107 @@
 ﻿using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Markings;
+using OpenTracker.Models.Reset;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.UndoRedo;
+using OpenTracker.Models.UndoRedo.Sections;
 using ReactiveUI;
 
 namespace OpenTracker.Models.Sections
 {
     /// <summary>
-    ///     This base interface contains section data.
+    /// This interface contains section data.
     /// </summary>
-    public interface ISection : IReactiveObject, ISaveable<SectionSaveData>
+    public interface ISection : IReactiveObject, IResettable, ISaveable<SectionSaveData>
     {
         /// <summary>
-        ///     A string representing the name of the section.
+        /// A <see cref="string"/> representing the section name.
         /// </summary>
         string Name { get; }
         
         /// <summary>
-        ///     A boolean representing whether the user has manipulated this section.
+        /// A <see cref="bool"/> representing whether the user has manipulated the section.
         /// </summary>
         bool UserManipulated { get; set; }
         
         /// <summary>
-        ///     The marking of this section.
+        /// A nullable <see cref="IMarking"/>.
         /// </summary>
         IMarking? Marking { get; }
 
         /// <summary>
-        ///     The accessibility level of the section.
+        /// The <see cref="AccessibilityLevel"/>.
         /// </summary>
         AccessibilityLevel Accessibility { get; }
 
         /// <summary>
-        ///     A 32-bit signed integer representing the section availability.
+        /// A <see cref="int"/> representing the number of available items.
         /// </summary>
         int Available { get; set; }
         
         /// <summary>
-        ///     A boolean representing whether the section is active.
+        /// A <see cref="bool"/> representing whether the section is active.
         /// </summary>
         bool IsActive { get; }
         
         /// <summary>
-        ///     A boolean representing whether the section should be displayed on the map.
+        /// A <see cref="bool"/> representing whether the section should be displayed on the map.
         /// </summary>
         bool ShouldBeDisplayed { get; }
 
+        /// <summary>
+        /// A <see cref="int"/> representing the total number of items.
+        /// </summary>
         int Total { get; }
 
         /// <summary>
-        ///     A boolean representing whether the section is available.
+        /// Returns whether the section is available.
         /// </summary>
         /// <returns>
-        ///     Whether the section is available.
+        ///     A <see cref="bool"/> representing whether the section is available.
         /// </returns>
         bool IsAvailable();
         
         /// <summary>
-        ///     A boolean representing whether the section can be cleared/collected.
+        /// Returns whether the section can be cleared/collected.
         /// </summary>
         /// <param name="force">
-        ///     A boolean representing whether the accessibility logic should be obeyed.
+        ///     A <see cref="bool"/> representing whether the accessibility logic should be obeyed.
         /// </param>
         /// <returns>
-        ///     Whether the section can be cleared/collected.
+        ///     A <see cref="bool"/> representing whether the section can be cleared/collected.
         /// </returns>
         bool CanBeCleared(bool force = false);
         
         /// <summary>
-        ///     Clears the section, specifying whether to obey accessibility logic.
+        /// Clears the section.
         /// </summary>
         /// <param name="force">
-        ///     A boolean representing whether the accessibility logic should be obeyed.
+        ///     A <see cref="bool"/> representing whether the accessibility logic should be obeyed.
         /// </param>
         void Clear(bool force);
 
         /// <summary>
-        ///     Creates an undoable action to collect the section and sends it to the undo/redo manager.
+        /// Returns a new <see cref="ICollectSection"/> object.
         /// </summary>
         /// <param name="force">
-        ///     A boolean representing whether to override the logic while collecting the section.
+        ///     A <see cref="bool"/> representing whether the accessibility logic should be obeyed.
         /// </param>
         IUndoable CreateCollectSectionAction(bool force);
 
         /// <summary>
-        ///     Returns whether the section can be uncollected.
+        /// Returns whether the section can be uncollected.
         /// </summary>
         /// <returns>
-        ///     A boolean representing whether the section can be uncollected.
+        ///     A <see cref="bool"/> representing whether the section can be uncollected.
         /// </returns>
         bool CanBeUncleared();
 
         /// <summary>
-        ///     Creates an undoable action to uncollect the section and sends it to the undo/redo manager.
+        /// Returns a new <see cref="IUncollectSection"/> object.
         /// </summary>
+        /// <returns>
+        ///     A new <see cref="IUncollectSection"/> object.
+        /// </returns>
         IUndoable CreateUncollectSectionAction();
-        
-        /// <summary>
-        ///     Resets the section to its starting values.
-        /// </summary>
-        void Reset();
     }
 }

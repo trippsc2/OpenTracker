@@ -20,6 +20,7 @@ using OpenTracker.Models.Items.Factories;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Locations.Map;
 using OpenTracker.Models.Locations.Map.Connections;
+using OpenTracker.Models.Logging;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.Nodes;
 using OpenTracker.Models.Nodes.Factories;
@@ -82,6 +83,7 @@ using OpenTracker.ViewModels.PinnedLocations;
 using OpenTracker.ViewModels.PinnedLocations.Sections;
 using OpenTracker.ViewModels.SequenceBreaks;
 using OpenTracker.ViewModels.UIPanels;
+using MapConnectionCollection = OpenTracker.Models.Locations.Map.Connections.MapConnectionCollection;
 
 namespace OpenTracker
 {
@@ -102,6 +104,7 @@ namespace OpenTracker
             nameof(ConstrainedTaskScheduler),
             nameof(DialogService),
             nameof(FileDialogService),
+            nameof(FileManager),
             nameof(JsonConverter),
             nameof(ThemeManager),
             nameof(MainWindowProvider)
@@ -124,7 +127,7 @@ namespace OpenTracker
             nameof(SNESConnector),
             nameof(BossPlacementDictionary),
             nameof(BossPlacementFactory),
-            nameof(ConnectionCollection),
+            nameof(MapConnectionCollection),
             nameof(DropdownDictionary),
             nameof(DropdownFactory),
             nameof(DungeonItemFactory),
@@ -142,6 +145,7 @@ namespace OpenTracker
             nameof(LocationFactory),
             nameof(MapLocationFactory),
             nameof(PinnedLocationCollection),
+            nameof(AutoTrackerLogger),
             nameof(Mode),
             nameof(PrizePlacementDictionary),
             nameof(PrizePlacementFactory),
@@ -177,6 +181,7 @@ namespace OpenTracker
             nameof(ShopShuffleRequirementDictionary),
             nameof(SmallKeyShuffleRequirementDictionary),
             nameof(TakeAnyLocationsRequirementDictionary),
+            nameof(ResetManager),
             nameof(SaveLoadManager),
             nameof(SectionFactory),
             nameof(SectionAutoTrackingFactory),
@@ -219,7 +224,6 @@ namespace OpenTracker
             nameof(AlwaysDisplayDungeonItemsRequirementDictionary),
             nameof(DisplayMapsCompassesRequirementDictionary),
             nameof(ItemsPanelOrientationRequirementDictionary),
-            nameof(ResetManager),
             nameof(AppSettings),
             nameof(BoundsSettings),
             nameof(ColorSettings),
@@ -245,7 +249,7 @@ namespace OpenTracker
             nameof(ItemVMDictionary),
             nameof(ItemVMFactory),
             nameof(MapLocationVMFactory),
-            nameof(MapConnectionCollection),
+            nameof(ViewModels.Maps.MapConnectionCollection),
             nameof(MarkingSelectFactory),
             nameof(MarkingImageDictionary),
             nameof(MarkingImageFactory),

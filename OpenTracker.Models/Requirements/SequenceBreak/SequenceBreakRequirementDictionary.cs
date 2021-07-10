@@ -5,7 +5,8 @@ using OpenTracker.Utils;
 namespace OpenTracker.Models.Requirements.SequenceBreak
 {
     /// <summary>
-    ///     This class contains the dictionary container for sequence break requirements.
+    /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for
+    /// <see cref="ISequenceBreakRequirement"/> objects indexed by <see cref="SequenceBreakType"/>.
     /// </summary>
     public class SequenceBreakRequirementDictionary : LazyDictionary<SequenceBreakType, IRequirement>,
         ISequenceBreakRequirementDictionary
@@ -15,13 +16,13 @@ namespace OpenTracker.Models.Requirements.SequenceBreak
         private readonly ISequenceBreakRequirement.Factory _factory;
         
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="sequenceBreaks">
-        ///     The sequence break dictionary.
+        ///     The <see cref="ISequenceBreakDictionary"/>.
         /// </param>
         /// <param name="factory">
-        ///     An Autofac factory for creating sequence break requirements.
+        ///     An Autofac factory for creating new <see cref="ISequenceBreakRequirement"/> objects.
         /// </param>
         public SequenceBreakRequirementDictionary(
             ISequenceBreakDictionary sequenceBreaks, ISequenceBreakRequirement.Factory factory)

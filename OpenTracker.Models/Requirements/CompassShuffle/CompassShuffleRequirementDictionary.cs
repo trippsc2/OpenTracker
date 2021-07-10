@@ -4,17 +4,19 @@ using OpenTracker.Utils;
 namespace OpenTracker.Models.Requirements.CompassShuffle
 {
     /// <summary>
-    ///     This class contains the dictionary container for compass shuffle requirements.
+    /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for
+    /// <see cref="ICompassShuffleRequirement"/> objects indexed by <see cref="bool"/>.
     /// </summary>
-    public class CompassShuffleRequirementDictionary : LazyDictionary<bool, IRequirement>, ICompassShuffleRequirementDictionary
+    public class CompassShuffleRequirementDictionary : LazyDictionary<bool, IRequirement>,
+        ICompassShuffleRequirementDictionary
     {
         private readonly ICompassShuffleRequirement.Factory _factory;
         
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="factory">
-        ///     An Autofac factory for creating new compass shuffle requirements.
+        ///     An Autofac factory for creating new <see cref="ICompassShuffleRequirement"/> objects.
         /// </param>
         public CompassShuffleRequirementDictionary(ICompassShuffleRequirement.Factory factory)
             : base(new Dictionary<bool, IRequirement>())

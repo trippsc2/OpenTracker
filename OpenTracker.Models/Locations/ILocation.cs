@@ -2,135 +2,145 @@
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Locations.Map;
 using OpenTracker.Models.Markings;
+using OpenTracker.Models.Reset;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.Sections;
 using OpenTracker.Models.UndoRedo;
+using OpenTracker.Models.UndoRedo.Locations;
+using OpenTracker.Models.UndoRedo.Notes;
 using ReactiveUI;
 
 namespace OpenTracker.Models.Locations
 {
     /// <summary>
-    ///     This interface contains location data.
+    /// This interface contains location data.
     /// </summary>
-    public interface ILocation : IReactiveObject, ISaveable<LocationSaveData>
+    public interface ILocation : IReactiveObject, IResettable, ISaveable<LocationSaveData>
     {
         /// <summary>
-        ///     The location ID.
+        /// The <see cref="LocationID"/>.
         /// </summary>
         LocationID ID { get; }
         
         /// <summary>
-        ///     A string representing the name of the location.
+        /// A <see cref="string"/> representing the location name.
         /// </summary>
         string Name { get; }
         
         /// <summary>
-        ///     A list of map locations for the location.
+        /// A <see cref="IList{T}"/> of <see cref="IMapLocation"/>.
         /// </summary>
         IList<IMapLocation> MapLocations { get; }
         
         /// <summary>
-        ///     A list of sections for this location.
+        /// A <see cref="IList{T}"/> of <see cref="ISection"/>.
         /// </summary>
         IList<ISection> Sections { get; }
         
         /// <summary>
-        ///     A collection of notes for this location.
+        /// A <see cref="ILocationNoteCollection"/> for this location.
         /// </summary>
         ILocationNoteCollection Notes { get; }
         
         /// <summary>
-        ///     The accessibility of the location.
+        /// The <see cref="AccessibilityLevel"/>.
         /// </summary>
         AccessibilityLevel Accessibility { get; }
         
         /// <summary>
-        ///     The number of accessible items for the location.
+        /// A <see cref="int"/> representing the number of accessible items.
         /// </summary>
         int Accessible { get; }
         
         /// <summary>
-        ///     The number of unchecked items for the location.
+        /// A <see cref="int"/> representing the number of unchecked items.
         /// </summary>
         int Available { get; }
         
         /// <summary>
-        ///     The number of checked and unchecked items for the location.
+        /// A <see cref="int"/> representing the number of checked and unchecked items.
         /// </summary>
         int Total { get; }
         
         /// <summary>
-        ///     A boolean representing whether the location is visible in the UI.
+        /// A <see cref="bool"/> representing whether the location should be displayed normally.
         /// </summary>
         bool ShouldBeDisplayed { get; }
 
+        /// <summary>
+        /// A <see cref="bool"/> representing whether the location is active.
+        /// </summary>
         bool IsActive { get; }
 
         /// <summary>
-        ///     A factory for creating new locations.
+        /// A factory for creating new <see cref="ILocation"/> objects.
         /// </summary>
         /// <param name="id">
-        ///     The ID of the location.
+        ///     The <see cref="LocationID"/>.
         /// </param>
         /// <param name="name">
-        ///     A string representing the name of the location.
+        ///     A <see cref="string"/> representing the location name.
         /// </param>
         /// <returns>
-        ///     A new location.
+        ///     A new <see cref="ILocation"/> object.
         /// </returns>
         delegate ILocation Factory(LocationID id, string name);
 
         /// <summary>
-        ///     Returns whether the location can be cleared.
+        /// Returns whether the location can be cleared.
         /// </summary>
+        /// <param name="force">
+        ///     A <see cref="bool"/> representing whether the accessibility logic should be obeyed.
+        /// </param>
         /// <returns>
-        ///     A boolean representing whether the location can be cleared.
+        ///     A <see cref="bool"/> representing whether the location can be cleared.
         /// </returns>
         bool CanBeCleared(bool force);
 
         /// <summary>
-        ///     Creates a new undoable action to add a note and sends it to the undo/redo manager.
+        /// Returns a new <see cref="IAddNote"/> object.
         /// </summary>
+        /// <returns>
+        ///     A new <see cref="IAddNote"/> object.
+        /// </returns>
         IUndoable CreateAddNoteAction();
 
         /// <summary>
-        ///     Creates a new undoable action to remove a note and sends it to the undo/redo manager.
+        /// Returns a new <see cref="IRemoveNote"/> object.
         /// </summary>
         /// <param name="note">
-        ///     The note to be removed.
+        ///     A <see cref="IMarking"/> representing the note to be removed.
         /// </param>
+        /// <returns>
+        ///     A new <see cref="IRemoveNote"/> object.
+        /// </returns>
         IUndoable CreateRemoveNoteAction(IMarking note);
 
         /// <summary>
-        ///     Returns a new undoable action to clear the location.
+        /// Returns a new <see cref="IClearLocation"/> object.
         /// </summary>
         /// <param name="force">
-        ///     A boolean representing whether to ignore the logic.
+        ///     A <see cref="bool"/> representing whether the accessibility logic should be obeyed.
         /// </param>
         /// <returns>
-        ///     A new undoable action to clear the location.
+        ///     A new <see cref="IClearLocation"/> object.
         /// </returns>
         IUndoable CreateClearLocationAction(bool force = false);
 
         /// <summary>
-        ///     Returns a new undoable action to pin the location.
+        /// Returns a new <see cref="IPinLocation"/> object.
         /// </summary>
         /// <returns>
-        ///     A new undoable action to pin the location.
+        ///     A new <see cref="IPinLocation"/> object.
         /// </returns>
         IUndoable CreatePinLocationAction();
 
         /// <summary>
-        ///     Returns a new undoable action to unpin the location.
+        /// Returns a new <see cref="IUnpinLocation"/> object.
         /// </summary>
         /// <returns>
-        ///     A new undoable action to unpin the location.
+        ///     A new <see cref="IUnpinLocation"/> object.
         /// </returns>
         IUndoable CreateUnpinLocationAction();
-
-        /// <summary>
-        ///     Resets the location to its starting values.
-        /// </summary>
-        void Reset();
     }
 }

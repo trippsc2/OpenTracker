@@ -6,7 +6,8 @@ using OpenTracker.Utils;
 namespace OpenTracker.Models.SequenceBreaks
 {
     /// <summary>
-    ///     This class contains the dictionary container for sequence breaks.
+    /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for <see cref="ISequenceBreak"/>
+    /// objects indexed by <see cref="SequenceBreakType"/>.
     /// </summary>
     public class SequenceBreakDictionary : LazyDictionary<SequenceBreakType, ISequenceBreak>,
         ISequenceBreakDictionary
@@ -14,10 +15,10 @@ namespace OpenTracker.Models.SequenceBreaks
         private readonly ISequenceBreak.Factory _factory;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="factory">
-        ///     A factory for creating new sequence breaks.
+        ///     A factory for creating new <see cref="ISequenceBreak"/> objects.
         /// </param>
         public SequenceBreakDictionary(ISequenceBreak.Factory factory)
             : base(new Dictionary<SequenceBreakType, ISequenceBreak>())
@@ -25,20 +26,11 @@ namespace OpenTracker.Models.SequenceBreaks
             _factory = factory;
         }
 
-        /// <summary>
-        ///     Returns a dictionary of sequence break save data.
-        /// </summary>
-        /// <returns>
-        ///     A dictionary of sequence break save data.
-        /// </returns>
         public Dictionary<SequenceBreakType, SequenceBreakSaveData> Save()
         {
             return Keys.ToDictionary(type => type, type => this[type].Save());
         }
 
-        /// <summary>
-        ///     Loads a dictionary of prize placement save data.
-        /// </summary>
         public void Load(Dictionary<SequenceBreakType, SequenceBreakSaveData>? saveData)
         {
             if (saveData == null)

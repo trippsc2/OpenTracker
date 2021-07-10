@@ -8,32 +8,32 @@ using OpenTracker.Models.UndoRedo.Sections;
 namespace OpenTracker.Models.Sections.Boolean
 {
     /// <summary>
-    ///     This base class contains the boolean section data for shop and take any sections.
+    /// This base class contains the boolean section data for shop and take any sections.
     /// </summary>
     public abstract class BooleanSectionBase : SectionBase
     {
         private readonly INode _node;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="saveLoadManager">
-        ///     The save/load manager.
+        ///     The <see cref="ISaveLoadManager"/>.
         /// </param>
         /// <param name="collectSectionFactory">
-        ///     An Autofac factory for creating collect section undoable actions.
+        ///     An Autofac factory for creating new <see cref="ICollectSection"/> objects.
         /// </param>
         /// <param name="uncollectSectionFactory">
-        ///     An Autofac factory for creating uncollect section undoable actions.
+        ///     An Autofac factory for creating new <see cref="IUncollectSection"/> objects.
         /// </param>
         /// <param name="name">
-        ///     A string representing the name of the section.
+        ///     A <see cref="string"/> representing the section name.
         /// </param>
         /// <param name="node">
-        ///     The node to which this section belongs.
+        ///     The <see cref="INode"/> to which this section belongs.
         /// </param>
         /// <param name="requirement">
-        ///     The requirement for this section to be active.
+        ///     The <see cref="IRequirement"/> for this section to be active.
         /// </param>
         protected BooleanSectionBase(
             ISaveLoadManager saveLoadManager, ICollectSection.Factory collectSectionFactory,
@@ -62,13 +62,13 @@ namespace OpenTracker.Models.Sections.Boolean
         }
 
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on the INode interface.
+        /// Subscribes to the <see cref="INode.PropertyChanged"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnNodeChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -79,7 +79,7 @@ namespace OpenTracker.Models.Sections.Boolean
         }
 
         /// <summary>
-        ///     Updates the value of the Accessibility property.
+        /// Updates the value of the <see cref="Accessibility"/> property.
         /// </summary>
         private void UpdateAccessibility()
         {

@@ -3,70 +3,58 @@
 namespace OpenTracker.Models.UndoRedo.Locations
 {
     /// <summary>
-    /// This class contains undoable action data to pin a location.
+    /// This class contains the <see cref="IUndoable"/> action to pin a <see cref="ILocation"/>.
     /// </summary>
     public class PinLocation : IPinLocation
     {
         private readonly IPinnedLocationCollection _pinnedLocations;
 
-        private readonly ILocation _pinnedLocation;
+        private readonly ILocation _location;
         private int? _existingIndex;
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="pinnedLocations">
-        /// The pinned location collection.
+        ///     The <see cref="IPinnedLocationCollection"/>.
         /// </param>
-        /// <param name="pinnedLocation">
-        /// The pinned location to be added.
+        /// <param name="location">
+        ///     The <see cref="ILocation"/>.
         /// </param>
-        public PinLocation(IPinnedLocationCollection pinnedLocations, ILocation pinnedLocation)
+        public PinLocation(IPinnedLocationCollection pinnedLocations, ILocation location)
         {
             _pinnedLocations = pinnedLocations;
-            _pinnedLocation = pinnedLocation;
+            _location = location;
         }
 
-        /// <summary>
-        /// Returns whether the action can be executed.
-        /// </summary>
-        /// <returns>
-        /// A boolean representing whether the action can be executed.
-        /// </returns>
         public bool CanExecute()
         {
-            if (!_pinnedLocations.Contains(_pinnedLocation))
+            if (!_pinnedLocations.Contains(_location))
             {
                 return true;
             }
 
-            return _pinnedLocations.IndexOf(_pinnedLocation) != 0;
+            return _pinnedLocations.IndexOf(_location) != 0;
         }
 
-        /// <summary>
-        /// Executes the action.
-        /// </summary>
         public void ExecuteDo()
         {
-            if (_pinnedLocations.Contains(_pinnedLocation))
+            if (_pinnedLocations.Contains(_location))
             {
-                _existingIndex = _pinnedLocations.IndexOf(_pinnedLocation);
-                _pinnedLocations.Remove(_pinnedLocation);
+                _existingIndex = _pinnedLocations.IndexOf(_location);
+                _pinnedLocations.Remove(_location);
             }
             
-            _pinnedLocations.Insert(0, _pinnedLocation);
+            _pinnedLocations.Insert(0, _location);
         }
 
-        /// <summary>
-        /// Undoes the action.
-        /// </summary>
         public void ExecuteUndo()
         {
-            _pinnedLocations.Remove(_pinnedLocation);
+            _pinnedLocations.Remove(_location);
 
             if (_existingIndex.HasValue)
             {
-                _pinnedLocations.Insert(_existingIndex.Value, _pinnedLocation);
+                _pinnedLocations.Insert(_existingIndex.Value, _location);
             }
         }
     }

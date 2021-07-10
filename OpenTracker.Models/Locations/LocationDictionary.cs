@@ -7,26 +7,24 @@ using System.Linq;
 namespace OpenTracker.Models.Locations
 {
     /// <summary>
-    ///     This class contains the dictionary container for location data.
+    /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for <see cref="ILocation"/> objects
+    /// indexed by <see cref="LocationID"/>.
     /// </summary>
     public class LocationDictionary : LazyDictionary<LocationID, ILocation>, ILocationDictionary
     {
         private readonly Lazy<ILocationFactory> _factory;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="factory">
-        ///     An Autofac factory for creating the location factory.
+        ///     An Autofac factory for creating the <see cref="ILocationFactory"/> object.
         /// </param>
         public LocationDictionary(ILocationFactory.Factory factory) : base(new Dictionary<LocationID, ILocation>())
         {
             _factory = new Lazy<ILocationFactory>(() => factory());
         }
 
-        /// <summary>
-        ///     Resets all locations to their starting values.
-        /// </summary>
         public void Reset()
         {
             foreach (var location in Values)
@@ -35,20 +33,11 @@ namespace OpenTracker.Models.Locations
             }
         }
 
-        /// <summary>
-        ///     Returns a dictionary of location save data.
-        /// </summary>
-        /// <returns>
-        ///     A dictionary of location save data.
-        /// </returns>
         public IDictionary<LocationID, LocationSaveData> Save()
         {
             return Keys.ToDictionary(id => id, id => this[id].Save());
         }
 
-        /// <summary>
-        ///     Loads a dictionary of location save data.
-        /// </summary>
         public void Load(IDictionary<LocationID, LocationSaveData>? saveData)
         {
             if (saveData == null)

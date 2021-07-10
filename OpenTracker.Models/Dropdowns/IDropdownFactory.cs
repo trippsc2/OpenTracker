@@ -1,26 +1,26 @@
 ﻿namespace OpenTracker.Models.Dropdowns
 {
     /// <summary>
-    ///     This interface contains the creation logic for dropdowns.
+    /// This interface contains the creation logic for <see cref="IDropdown"/> objects.
     /// </summary>
     public interface IDropdownFactory
     {
         /// <summary>
-        ///     A factory for creating the dropdown factory.
+        /// A factory for creating the <see cref="IDropdownFactory"/> object.
         /// </summary>
         /// <returns>
-        ///     The dropdown factory.
+        ///     The <see cref="IDropdownFactory"/> object.
         /// </returns>
         delegate IDropdownFactory Factory();
 
         /// <summary>
-        ///     Returns a new dropdown for the given ID.
+        /// Returns a new <see cref="IDropdown"/> object for the specified <see cref="DropdownID"/>.
         /// </summary>
         /// <param name="id">
-        ///     The dropdown ID
+        ///     The <see cref="DropdownID"/>
         /// </param>
         /// <returns>
-        ///     A new dropdown.
+        ///     A new <see cref="IDropdown"/> object.
         /// </returns>
         IDropdown GetDropdown(DropdownID id);
     }

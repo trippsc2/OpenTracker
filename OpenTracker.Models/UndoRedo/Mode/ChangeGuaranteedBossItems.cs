@@ -3,7 +3,8 @@
 namespace OpenTracker.Models.UndoRedo.Mode
 {
     /// <summary>
-    /// This class contains undoable action to change the guaranteed boss items setting (Ambrosia).
+    /// This class contains the <see cref="IUndoable"/> action to change the <see cref="IMode.GuaranteedBossItems"/>
+    /// property.
     /// </summary>
     public class ChangeGuaranteedBossItems : IChangeGuaranteedBossItems
     {
@@ -16,10 +17,10 @@ namespace OpenTracker.Models.UndoRedo.Mode
         /// Constructor
         /// </summary>
         /// <param name="mode">
-        /// The mode settings.
+        ///     The <see cref="IMode"/> data.
         /// </param>
         /// <param name="newValue">
-        /// The new guaranteed boss items setting.
+        ///     A <see cref="bool"/> representing the new <see cref="IMode.GuaranteedBossItems"/> value.
         /// </param>
         public ChangeGuaranteedBossItems(IMode mode, bool newValue)
         {
@@ -27,29 +28,17 @@ namespace OpenTracker.Models.UndoRedo.Mode
             _newValue = newValue;
         }
 
-        /// <summary>
-        /// Returns whether the action can be executed.
-        /// </summary>
-        /// <returns>
-        /// A boolean representing whether the action can be executed.
-        /// </returns>
         public bool CanExecute()
         {
             return true;
         }
 
-        /// <summary>
-        /// Executes the action.
-        /// </summary>
         public void ExecuteDo()
         {
             _previousValue = _mode.GuaranteedBossItems;
             _mode.GuaranteedBossItems = _newValue;
         }
 
-        /// <summary>
-        /// Undoes the action.
-        /// </summary>
         public void ExecuteUndo()
         {
             _mode.GuaranteedBossItems = _previousValue;

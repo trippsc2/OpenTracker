@@ -6,17 +6,17 @@ using OpenTracker.Models.Nodes;
 namespace OpenTracker.Models.Dungeons.KeyDoors
 {
     /// <summary>
-    ///     This class contains creation logic for key door data.
+    /// This class contains creation logic for <see cref="IKeyDoor"/> objects.
     /// </summary>
     public class KeyDoorFactory : IKeyDoorFactory
     {
         private readonly IKeyDoor.Factory _factory;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="factory">
-        ///     An Autofac factory for creating key doors.
+        ///     An Autofac factory for creating <see cref="IKeyDoor"/> objects.
         /// </param>
         public KeyDoorFactory(IKeyDoor.Factory factory)
         {
@@ -29,16 +29,16 @@ namespace OpenTracker.Models.Dungeons.KeyDoors
         }
 
         /// <summary>
-        ///     Returns the requirement for the specified key door.
+        /// Returns the <see cref="INode"/> for the specified <see cref="KeyDoorID"/>.
         /// </summary>
         /// <param name="id">
-        ///     The key door ID.
+        ///     The <see cref="KeyDoorID"/>.
         /// </param>
         /// <param name="dungeonData">
-        ///     The mutable dungeon data.
+        ///     The <see cref="IMutableDungeon"/> parent class.
         /// </param>
         /// <returns>
-        ///     The requirement for the specified key door.
+        ///     The <see cref="INode"/> to which the key door belongs.
         /// </returns>
         private static INode GetKeyDoorNode(KeyDoorID id, IMutableDungeon dungeonData)
         {

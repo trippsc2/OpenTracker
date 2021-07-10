@@ -5,7 +5,8 @@ using OpenTracker.Utils;
 namespace OpenTracker.Models.Requirements.Item.Exact
 {
     /// <summary>
-    ///     This class contains the dictionary container for item exact requirements.
+    /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for <see cref="IItemExactRequirement"/>
+    /// objects indexed by <see cref="ItemType"/> and count.
     /// </summary>
     public class ItemExactRequirementDictionary : LazyDictionary<(ItemType type, int count), IRequirement>, IItemExactRequirementDictionary
     {
@@ -14,13 +15,13 @@ namespace OpenTracker.Models.Requirements.Item.Exact
         private readonly IItemExactRequirement.Factory _factory;
         
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="items">
-        ///     The item dictionary.
+        ///     The <see cref="IItemDictionary"/>.
         /// </param>
         /// <param name="factory">
-        ///     An Autofac factory for creating new item exact requirements.
+        ///     An Autofac factory for creating new <see cref="IItemExactRequirement"/> objects.
         /// </param>
         public ItemExactRequirementDictionary(IItemDictionary items, IItemExactRequirement.Factory factory)
             : base(new Dictionary<(ItemType type, int count), IRequirement>())

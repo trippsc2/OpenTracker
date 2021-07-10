@@ -93,5 +93,15 @@ namespace OpenTracker.UnitTests.Models.BossPlacements
             
             Assert.NotNull(sut as BossPlacementDictionary);
         }
+
+        [Fact]
+        public void AutofacSingleInstanceTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var value1 = scope.Resolve<IBossPlacementDictionary>();
+            var value2 = scope.Resolve<IBossPlacementDictionary>();
+            
+            Assert.Equal(value1, value2);
+        }
     }
 }

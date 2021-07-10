@@ -4,7 +4,7 @@ using OpenTracker.Models.AutoTracking;
 namespace OpenTracker.Models.Requirements.AutoTracking
 {
     /// <summary>
-    ///     This class contains race illegal tracking requirement data.
+    /// This class contains <see cref="IAutoTracker.RaceIllegalTracking"/> requirement data.
     /// </summary>
     public class RaceIllegalTrackingRequirement : BooleanRequirement, IRaceIllegalTrackingRequirement
     {
@@ -12,10 +12,10 @@ namespace OpenTracker.Models.Requirements.AutoTracking
         private readonly bool _expectedValue;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="autoTracker">
-        ///     The auto-tracker data.
+        ///     The <see cref="IAutoTracker"/>.
         /// </param>
         public RaceIllegalTrackingRequirement(IAutoTracker autoTracker)
         {
@@ -28,13 +28,13 @@ namespace OpenTracker.Models.Requirements.AutoTracking
         }
 
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on the IAutoTracker interface.
+        /// Subscribes to the <see cref="IAutoTracker.PropertyChanged"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnAutoTrackerChanged(object? sender, PropertyChangedEventArgs e)
         {

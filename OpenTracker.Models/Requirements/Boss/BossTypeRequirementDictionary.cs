@@ -6,7 +6,8 @@ using OpenTracker.Utils;
 namespace OpenTracker.Models.Requirements.Boss
 {
     /// <summary>
-    ///     This interface contains the dictionary container for boss type requirements. 
+    /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for <see cref="IRequirement"/> objects
+    /// indexed by <see cref="BossType"/>. 
     /// </summary>
     public class BossTypeRequirementDictionary : LazyDictionary<BossType, IRequirement>, IBossTypeRequirementDictionary
     {

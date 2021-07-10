@@ -7,30 +7,30 @@ using OpenTracker.Models.Requirements;
 namespace OpenTracker.Models.Sections.Item
 {
     /// <summary>
-    ///     This interface contains dungeon item section data.
+    /// This interface contains dungeon item section data.
     /// </summary>
     public interface IDungeonItemSection : IItemSection
     {
         /// <summary>
-        ///     A factory for creating new dungeon item sections.
+        /// A factory for creating new <see cref="IDungeonItemSection"/> objects.
         /// </summary>
         /// <param name="dungeon">
-        ///     The dungeon data.
+        ///     The <see cref="IDungeon"/>.
         /// </param>
         /// <param name="accessibilityProvider">
-        ///     The dungeon accessibility provider.
+        ///     The <see cref="IDungeonAccessibilityProvider"/>.
         /// </param>
         /// <param name="autoTrackValue">
-        ///     The section auto track value.
+        ///     The nullable <see cref="IAutoTrackValue"/>.
         /// </param>
         /// <param name="marking">
-        ///     The section marking.
+        ///     The nullable <see cref="IMarking"/>.
         /// </param>
         /// <param name="requirement">
-        ///     The requirement for this section to be visible.
+        ///     The <see cref="IRequirement"/> for this section to be visible.
         /// </param>
         /// <returns>
-        ///     A new dungeon item section.
+        ///     A new <see cref="IDungeonItemSection"/> object.
         /// </returns>
         new delegate IDungeonItemSection Factory(
             IDungeon dungeon, IDungeonAccessibilityProvider accessibilityProvider,

@@ -17,7 +17,7 @@ using ReactiveUI;
 namespace OpenTracker.Models.SaveLoad
 {
     /// <summary>
-    ///     This class contains logic managing saving and loading game data.
+    /// This class contains logic managing saving and loading game data.
     /// </summary>
     public class SaveLoadManager : ReactiveObject, ISaveLoadManager
     {
@@ -28,7 +28,7 @@ namespace OpenTracker.Models.SaveLoad
         private readonly ILocationDictionary _locations;
         private readonly IBossPlacementDictionary _bossPlacements;
         private readonly IPrizePlacementDictionary _prizePlacements;
-        private readonly Lazy<IConnectionCollection> _connections;
+        private readonly Lazy<IMapConnectionCollection> _connections;
         private readonly IDropdownDictionary _dropdowns;
         private readonly IPinnedLocationCollection _pinnedLocations;
         private readonly ISequenceBreakDictionary _sequenceBreaks;
@@ -48,42 +48,42 @@ namespace OpenTracker.Models.SaveLoad
         }
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="jsonConversion">
-        ///     The JSON converter.
+        ///     The <see cref="IJsonConverter"/>.
         /// </param>
         /// <param name="mode">
-        ///     The mode settings.
+        ///     The <see cref="IMode"/> data.
         /// </param>
         /// <param name="items">
-        ///     The item dictionary.
+        ///     The <see cref="IItemDictionary"/>.
         /// </param>
         /// <param name="locations">
-        ///     The location dictionary.
+        ///     The <see cref="ILocationDictionary"/>.
         /// </param>
         /// <param name="bossPlacements">
-        ///     The boss placement dictionary.
+        ///     The <see cref="IBossPlacementDictionary"/>.
         /// </param>
         /// <param name="prizePlacements">
-        ///     The prize placement dictionary.
+        ///     The <see cref="IBossPlacementDictionary"/>.
         /// </param>
-        /// <param name="connections">
-        ///     The connection collection.
+        /// <param name="mapConnections">
+        ///     An Autofac factory for creating the <see cref="IMapConnectionCollection"/> object.
         /// </param>
         /// <param name="dropdowns">
-        ///     The dropdown dictionary.
+        ///     The <see cref="IDropdownDictionary"/>.
         /// </param>
         /// <param name="pinnedLocations">
-        ///     The pinned location collection.
+        ///     The <see cref="IPinnedLocationCollection"/>.
         /// </param>
         /// <param name="sequenceBreaks">
-        ///     The sequence break dictionary.
+        ///     The <see cref="ISequenceBreakDictionary"/>.
         /// </param>
         public SaveLoadManager(
             IJsonConverter jsonConversion, IMode mode, IItemDictionary items, ILocationDictionary locations,
             IBossPlacementDictionary bossPlacements, IPrizePlacementDictionary prizePlacements,
-            IConnectionCollection.Factory connections, IDropdownDictionary dropdowns,
+            IMapConnectionCollection.Factory mapConnections, IDropdownDictionary dropdowns,
             IPinnedLocationCollection pinnedLocations, ISequenceBreakDictionary sequenceBreaks)
         {
             _mode = mode;
@@ -91,7 +91,7 @@ namespace OpenTracker.Models.SaveLoad
             _locations = locations;
             _bossPlacements = bossPlacements;
             _prizePlacements = prizePlacements;
-            _connections = new Lazy<IConnectionCollection>(() => connections());
+            _connections = new Lazy<IMapConnectionCollection>(() => mapConnections());
             _dropdowns = dropdowns;
             _pinnedLocations = pinnedLocations;
             _sequenceBreaks = sequenceBreaks;
@@ -127,13 +127,13 @@ namespace OpenTracker.Models.SaveLoad
         }
 
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on this object.
+        /// Subscribes to the <see cref="ISaveLoadManager.PropertyChanged"/> event on this object.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -144,10 +144,10 @@ namespace OpenTracker.Models.SaveLoad
         }
 
         /// <summary>
-        ///     Gets saved data from the tracker.
+        /// Gets saved data from the tracker classes.
         /// </summary>
         /// <returns>
-        ///     Saved data from the tracker.
+        ///     The <see cref="SaveData"/> from the tracker classes.
         /// </returns>
         private SaveData GetSaveData()
         {
@@ -166,10 +166,10 @@ namespace OpenTracker.Models.SaveLoad
         }
 
         /// <summary>
-        ///     Loads save data into the tracker.
+        /// Loads save data to the tracker classes.
         /// </summary>
         /// <param name="saveData">
-        ///     The save data to be loaded.
+        ///     The <see cref="SaveData"/> to be loaded.
         /// </param>
         private void LoadSaveData(SaveData saveData)
         {

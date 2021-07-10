@@ -4,23 +4,23 @@ using ReactiveUI;
 namespace OpenTracker.Models.SequenceBreaks
 {
     /// <summary>
-    ///     This interface contains sequence break data.
+    /// This interface contains sequence break data.
     /// </summary>
     public interface ISequenceBreak : IReactiveObject, ISaveable<SequenceBreakSaveData>
     {
         /// <summary>
-        ///     A boolean representing whether the sequence break is enabled.
+        /// A <see cref="bool"/> representing whether the sequence break is enabled.
         /// </summary>
         bool Enabled { get; set; }
 
         /// <summary>
-        ///     A factory for creating new sequence breaks.
+        /// A factory for creating new <see cref="ISequenceBreak"/> objects.
         /// </summary>
         /// <param name="starting">
-        ///     A boolean representing the starting value of this sequence break.
+        ///     A <see cref="bool"/> representing the starting <see cref="Enabled"/> value.
         /// </param>
         /// <returns>
-        ///     A new sequence break.
+        ///     A new <see cref="ISequenceBreak"/> object.
         /// </returns>
         delegate ISequenceBreak Factory(bool starting = true);
     }

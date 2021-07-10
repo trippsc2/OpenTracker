@@ -5,31 +5,32 @@ using OpenTracker.Models.Dungeons.Mutable;
 namespace OpenTracker.Models.Dungeons.Nodes
 {
     /// <summary>
-    ///     This interface contains the dictionary container for dungeon nodes.
+    /// This interface contains the <see cref="IDictionary{TKey,TValue}"/> container of <see cref="IDungeonNode"/>
+    /// indexed by <see cref="DungeonNodeID"/>.
     /// </summary>
     public interface IDungeonNodeDictionary : IDictionary<DungeonNodeID, IDungeonNode>
     {
         /// <summary>
-        ///     The event raised when a new item is created in the dictionary.
+        /// The event raised when a new <see cref="IDungeonNode"/> is created.
         /// </summary>
         event EventHandler<KeyValuePair<DungeonNodeID, IDungeonNode>> ItemCreated;
 
         /// <summary>
-        ///     A factory for creating the dungeon node dictionary for the specified mutable dungeon data instance.
+        /// A factory for creating new <see cref="IDungeonNodeDictionary"/> objects.
         /// </summary>
         /// <param name="dungeonData">
-        ///     The mutable dungeon data.
+        ///     The <see cref="IMutableDungeon"/> parent class.
         /// </param>
         /// <returns>
-        ///     The dungeon node dictionary.
+        ///     A new <see cref="IDungeonNodeDictionary"/> object.
         /// </returns>
         delegate IDungeonNodeDictionary Factory(IMutableDungeon dungeonData);
 
         /// <summary>
-        ///     Calls the indexer for each node in the dungeon, so that it is initialized.
+        /// Calls the indexer for each node in the dungeon, so that it is initialized.
         /// </summary>
         /// <param name="dungeonNodes">
-        ///     A list of dungeon node IDs for which to call.
+        ///     A <see cref="IList{T}"/> of <see cref="DungeonNodeID"/> for which to call.
         /// </param>
         void PopulateNodes(IList<DungeonNodeID> dungeonNodes);
     }

@@ -5,29 +5,29 @@ using OpenTracker.Models.Dungeons.State;
 namespace OpenTracker.Models.Dungeons.AccessibilityProvider
 {
     /// <summary>
-    ///     This interface contains the logic for iterating through key doors in a dungeon.
+    /// This interface contains the logic for iterating through key doors in a dungeon.
     /// </summary>
     public interface IKeyDoorIterator
     {
         /// <summary>
-        ///     A factory for creating key door iterators.
+        /// A factory for creating new <see cref="IKeyDoorIterator"/> objects.
         /// </summary>
         /// <param name="dungeon">
-        ///     The dungeon data.
+        ///     The <see cref="IDungeon"/>.
         /// </param>
         /// <param name="mutableDungeonQueue">
-        ///     The queue of mutable dungeon data instances.
+        ///     The <see cref="IMutableDungeonQueue"/>.
         /// </param>
         /// <returns>
-        ///     A new key door iterator.
+        ///     A new <see cref="IKeyDoorIterator"/> object.
         /// </returns>
         delegate IKeyDoorIterator Factory(IDungeon dungeon, IMutableDungeonQueue mutableDungeonQueue);
         
         /// <summary>
-        ///     Processes all key door permutations and places final permutations into a queue.
+        /// Processes all key door permutations and places final permutations into a queue.
         /// </summary>
         /// <param name="finalQueue">
-        ///     The blocking collection queue of final permutations.
+        ///     The <see cref="BlockingCollection{T}"/> of final <see cref="IDungeonState"/> permutations.
         /// </param>
         void ProcessKeyDoorPermutations(BlockingCollection<IDungeonState> finalQueue);
     }

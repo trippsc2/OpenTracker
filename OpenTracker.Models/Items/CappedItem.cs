@@ -7,7 +7,7 @@ using OpenTracker.Models.UndoRedo.Items;
 namespace OpenTracker.Models.Items
 {
     /// <summary>
-    ///     This class contains item data with a maximum value.
+    /// This class contains item data with a maximum value.
     /// </summary>
     public class CappedItem : Item, ICappedItem
     {
@@ -16,28 +16,28 @@ namespace OpenTracker.Models.Items
         public int Maximum { get; }
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="saveLoadManager">
-        ///     The save/load manager.
+        ///     The <see cref="ISaveLoadManager"/>.
         /// </param>
         /// <param name="addItemFactory">
-        ///     An Autofac factory for creating undoable actions to add items.
+        ///     An Autofac factory for creating new <see cref="IAddItem"/> objects.
         /// </param>
         /// <param name="removeItemFactory">
-        ///     An Autofac factory for creating undoable actions to remove items.
+        ///     An Autofac factory for creating new <see cref="IRemoveItem"/> objects.
         /// </param>
         /// <param name="cycleItemFactory">
-        ///     An Autofac factory for creating undoable actions to cycle the item.
+        ///     An Autofac factory for creating new <see cref="ICycleItem"/> objects.
         /// </param>
         /// <param name="starting">
-        ///     A 32-bit signed integer representing the starting value of the item.
+        ///     A <see cref="int"/> representing the starting value.
         /// </param>
         /// <param name="maximum">
-        ///     A 32-bit signed integer representing the maximum value of the item.
+        ///     A <see cref="int"/> representing the maximum.
         /// </param>
         /// <param name="autoTrackValue">
-        ///     The auto-track value.
+        ///     The nullable <see cref="IAutoTrackValue"/>.
         /// </param>
         public CappedItem(
             ISaveLoadManager saveLoadManager, IAddItem.Factory addItemFactory, IRemoveItem.Factory removeItemFactory,

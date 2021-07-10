@@ -1,7 +1,7 @@
 ﻿namespace OpenTracker.Models.Locations
 {
     /// <summary>
-    ///     This is the enum type of the location.
+    /// This enum type defines the location ID values.
     /// </summary>
     public enum LocationID
     {

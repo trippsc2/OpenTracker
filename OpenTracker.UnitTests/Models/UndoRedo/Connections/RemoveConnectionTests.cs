@@ -8,14 +8,14 @@ namespace OpenTracker.UnitTests.Models.UndoRedo.Connections
 {
     public class RemoveConnectionTests
     {
-        private readonly IConnection _connection = Substitute.For<IConnection>();
-        private readonly IConnectionCollection _connections = Substitute.For<IConnectionCollection>();
+        private readonly IMapConnection _connection = Substitute.For<IMapConnection>();
+        private readonly IMapConnectionCollection _connections = Substitute.For<IMapConnectionCollection>();
 
-        private readonly RemoveConnection _sut;
+        private readonly RemoveMapConnection _sut;
 
         public RemoveConnectionTests()
         {
-            _sut = new RemoveConnection(_connections, _connection);
+            _sut = new RemoveMapConnection(_connections, _connection);
         }
         
         [Fact]
@@ -46,10 +46,10 @@ namespace OpenTracker.UnitTests.Models.UndoRedo.Connections
         {
             using var scope = ContainerConfig.Configure().BeginLifetimeScope();
 
-            var factory = scope.Resolve<IRemoveConnection.Factory>();
+            var factory = scope.Resolve<IRemoveMapConnection.Factory>();
             var sut = factory(_connection);
             
-            Assert.NotNull(sut as RemoveConnection);
+            Assert.NotNull(sut as RemoveMapConnection);
         }
     }
 }

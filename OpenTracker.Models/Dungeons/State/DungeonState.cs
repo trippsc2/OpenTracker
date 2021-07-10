@@ -18,17 +18,16 @@ namespace OpenTracker.Models.Dungeons.State
         /// Constructor
         /// </summary>
         /// <param name="unlockedDoors">
-        /// A list of key door IDs of doors that are unlocked.
+        ///     A <see cref="IList{T}"/> of <see cref="KeyDoorID"/> of doors that are unlocked.
         /// </param>
         /// <param name="keysCollected">
-        /// A 32-bit signed integer representing the number of small keys collected from dungeon
-        /// item checks.
+        ///     A <see cref="int"/> representing the number of small keys collected from dungeon item checks.
         /// </param>
         /// <param name="bigKeyCollected">
-        /// A boolean representing whether the big key is collected.
+        ///     A <see cref="bool"/> representing whether the big key is collected.
         /// </param>
         /// <param name="sequenceBreak">
-        /// A boolean representing whether sequence breaks are allowed.
+        ///     A <see cref="bool"/> representing whether sequence breaks are allowed.
         /// </param>
         public DungeonState(
             IList<KeyDoorID> unlockedDoors, int keysCollected, bool bigKeyCollected,

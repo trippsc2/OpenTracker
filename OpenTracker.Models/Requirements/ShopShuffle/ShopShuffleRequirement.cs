@@ -4,7 +4,7 @@ using OpenTracker.Models.Modes;
 namespace OpenTracker.Models.Requirements.ShopShuffle
 {
     /// <summary>
-    ///     This class contains shop shuffle requirement data.
+    /// This class contains <see cref="IMode.ShopShuffle"/> <see cref="IRequirement"/> data.
     /// </summary>
     public class ShopShuffleRequirement : BooleanRequirement, IShopShuffleRequirement
     {
@@ -12,13 +12,13 @@ namespace OpenTracker.Models.Requirements.ShopShuffle
         private readonly bool _expectedValue;
         
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="mode">
-        ///     The mode settings.
+        ///     The <see cref="IMode"/> data.
         /// </param>
         /// <param name="expectedValue">
-        ///     A boolean expected shop shuffle shuffle value.
+        ///     A <see cref="bool"/> expected <see cref="IMode.ShopShuffle"/> value.
         /// </param>
         public ShopShuffleRequirement(IMode mode, bool expectedValue)
         {
@@ -31,13 +31,13 @@ namespace OpenTracker.Models.Requirements.ShopShuffle
         }
 
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on the IMode interface.
+        /// Subscribes to the <see cref="IMode.PropertyChanged"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnModeChanged(object? sender, PropertyChangedEventArgs e)
         {

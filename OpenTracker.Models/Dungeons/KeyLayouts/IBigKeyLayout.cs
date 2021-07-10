@@ -10,19 +10,19 @@ namespace OpenTracker.Models.Dungeons.KeyLayouts
     public interface IBigKeyLayout : IKeyLayout
     {
         /// <summary>
-        ///     A factory for creating new big key layouts.
+        /// A factory for creating new <see cref="IBigKeyLayout"/> objects.
         /// </summary>
         /// <param name="bigKeyLocations">
-        ///     The list of dungeon item IDs that can contain the big key.
+        ///     The <see cref="IList{T}"/> of <see cref="DungeonItemID"/> that can contain the big key.
         /// </param>
         /// <param name="children">
-        ///     The list of child key layouts, if this layout is possible.
+        ///     The <see cref="IList{T}"/> of child <see cref="IKeyLayout"/>, if this layout is possible.
         /// </param>
         /// <param name="requirement">
-        ///     The requirement for this key layout to be valid.
+        ///     The <see cref="IRequirement"/> for this key layout to be valid.
         /// </param>
         /// <returns>
-        ///     A new big key layout.
+        ///     A new <see cref="IBigKeyLayout"/> object.
         /// </returns>
         delegate IBigKeyLayout Factory(
             IList<DungeonItemID> bigKeyLocations, IList<IKeyLayout> children, IRequirement? requirement = null);

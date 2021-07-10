@@ -10,7 +10,7 @@ using OpenTracker.Models.Sections.Item;
 namespace OpenTracker.Models.Sections.Factories
 {
     /// <summary>
-    ///     This class contains the creation logic for dungeon item sections.
+    /// This class contains the creation logic for <see cref="IDungeonItemSection"/> objects.
     /// </summary>
     public class DungeonItemSectionFactory : IDungeonItemSectionFactory
     {
@@ -21,16 +21,16 @@ namespace OpenTracker.Models.Sections.Factories
         private readonly IDungeonItemSection.Factory _factory;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="smallKeyShuffleRequirements">
-        ///     The small key shuffle requirement dictionary.
+        ///     The <see cref="ISmallKeyShuffleRequirementDictionary"/>.
         /// </param>
         /// <param name="markingFactory">
-        ///     An Autofac factory for creating new markings.
+        ///     An Autofac factory for creating new <see cref="IMarking"/> objects.
         /// </param>
         /// <param name="factory">
-        ///     An Autofac factory for creating new dungeon item sections.
+        ///     An Autofac factory for creating new <see cref="IDungeonItemSection"/> objects.
         /// </param>
         public DungeonItemSectionFactory(
             ISmallKeyShuffleRequirementDictionary smallKeyShuffleRequirements, IMarking.Factory markingFactory,
@@ -41,24 +41,6 @@ namespace OpenTracker.Models.Sections.Factories
             _factory = factory;
         }
 
-        /// <summary>
-        ///     Returns a new dungeon item section for the specified location ID.
-        /// </summary>
-        /// <param name="dungeon">
-        ///     The dungeon.
-        /// </param>
-        /// <param name="accessibilityProvider">
-        ///     The accessibility provider.
-        /// </param>
-        /// <param name="autoTrackValue">
-        ///     The auto-track value.
-        /// </param>
-        /// <param name="id">
-        ///     The location ID.
-        /// </param>
-        /// <returns>
-        ///     A new dungeon item section.
-        /// </returns>
         public IDungeonItemSection GetDungeonItemSection(
             IDungeon dungeon, IDungeonAccessibilityProvider accessibilityProvider, IAutoTrackValue? autoTrackValue,
             LocationID id)
@@ -67,28 +49,28 @@ namespace OpenTracker.Models.Sections.Factories
         }
 
         /// <summary>
-        ///     Returns the marking for the section.
+        /// Returns the nullable <see cref="IMarking"/> for the specified <see cref="LocationID"/>.
         /// </summary>
         /// <param name="id">
-        ///     The location ID.
+        ///     The <see cref="LocationID"/>.
         /// </param>
         /// <returns>
-        ///     The marking for the section.
+        ///     The nullable <see cref="IMarking"/>.
         /// </returns>
         private IMarking? GetMarking(LocationID id)
         {
-            return id is LocationID.DesertPalace or LocationID.GanonsTower
-                ? _markingFactory() : null;
+            return id is LocationID.DesertPalace or LocationID.GanonsTower ? _markingFactory() : null;
         }
 
         /// <summary>
-        ///     Returns the requirement for the section to be active.
+        /// Returns the <see cref="IRequirement"/> for the section to be active for the specified
+        /// <see cref="LocationID"/>.
         /// </summary>
         /// <param name="id">
-        ///     The location ID.
+        ///     The <see cref="LocationID"/>.
         /// </param>
         /// <returns>
-        ///     The requirement for the section to be active.
+        ///     The <see cref="IRequirement"/> for the section to be active.
         /// </returns>
         private IRequirement? GetRequirement(LocationID id)
         {

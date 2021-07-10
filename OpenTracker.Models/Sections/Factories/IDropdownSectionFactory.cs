@@ -4,18 +4,18 @@ using OpenTracker.Models.Sections.Entrance;
 namespace OpenTracker.Models.Sections.Factories
 {
     /// <summary>
-    ///     This interface contains the creation logic for dropdown sections.
+    /// This interface contains the creation logic for <see cref="IDropdownSection"/> objects.
     /// </summary>
     public interface IDropdownSectionFactory
     {
         /// <summary>
-        ///     Returns a new dropdown section for the specified location ID.
+        /// Returns a new <see cref="IDropdownSection"/> object for the specified <see cref="LocationID"/>.
         /// </summary>
         /// <param name="id">
-        ///     The location ID.
+        ///     The <see cref="LocationID"/>.
         /// </param>
         /// <returns>
-        ///     A new dropdown section.
+        ///     A new <see cref="IDropdownSection"/> object.
         /// </returns>
         IDropdownSection GetDropdownSection(LocationID id);
     }

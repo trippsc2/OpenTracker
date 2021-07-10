@@ -3,18 +3,18 @@ using OpenTracker.Models.Nodes;
 namespace OpenTracker.Models.Requirements.Node
 {
     /// <summary>
-    ///     This interface containing node requirement data.
+    /// This interface containing <see cref="INode"/> <see cref="IRequirement"/> data.
     /// </summary>
     public interface INodeRequirement : IRequirement
     {
         /// <summary>
-        ///     A factory for creating new node requirements.
+        /// A factory for creating new <see cref="INodeRequirement"/> objects.
         /// </summary>
         /// <param name="node">
-        ///     The required node.
+        ///     The <see cref="INode"/>.
         /// </param>
         /// <returns>
-        ///     A new node requirement.
+        ///     A new <see cref="INodeRequirement"/> object.
         /// </returns>
         delegate INodeRequirement Factory(INode node);
     }

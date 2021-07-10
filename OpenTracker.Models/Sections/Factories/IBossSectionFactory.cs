@@ -6,27 +6,29 @@ using OpenTracker.Models.Sections.Boss;
 namespace OpenTracker.Models.Sections.Factories
 {
     /// <summary>
-    ///     This interface contains the creation logic for boss sections.
+    /// This interface contains the creation logic for <see cref="IBossSection"/> and <see cref="IPrizeSection"/>
+    /// objects.
     /// </summary>
     public interface IBossSectionFactory
     {
         /// <summary>
-        ///     Returns a new boss section for the specified location ID and section index.
+        /// Returns a new <see cref="IBossSection"/> or <see cref="IPrizeSection"/> object for the specified
+        /// <see cref="LocationID"/> and section index.
         /// </summary>
         /// <param name="accessibilityProvider">
-        ///     The accessibility provider.
+        ///     The <see cref="IDungeonAccessibilityProvider"/>.
         /// </param>
         /// <param name="autoTrackValue">
-        ///     The auto-track value.
+        ///     The nullable <see cref="IAutoTrackValue"/>.
         /// </param>
         /// <param name="id">
-        ///     The location ID.
+        ///     The <see cref="LocationID"/>.
         /// </param>
         /// <param name="index">
-        ///     The section index.
+        ///     A <see cref="int"/> representing the section index.
         /// </param>
         /// <returns>
-        ///     A new boss section.
+        ///     A new <see cref="IBossSection"/> or <see cref="IPrizeSection"/> object.
         /// </returns>
         IBossSection GetBossSection(
             IBossAccessibilityProvider accessibilityProvider, IAutoTrackValue? autoTrackValue, LocationID id,

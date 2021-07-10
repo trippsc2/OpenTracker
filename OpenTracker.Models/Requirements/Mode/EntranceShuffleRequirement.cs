@@ -4,7 +4,7 @@ using OpenTracker.Models.Modes;
 namespace OpenTracker.Models.Requirements.Mode
 {
     /// <summary>
-    ///     This class contains entrance shuffle requirement data.
+    /// This class contains <see cref="IMode.EntranceShuffle"/> <see cref="IRequirement"/> data.
     /// </summary>
     public class EntranceShuffleRequirement : BooleanRequirement, IEntranceShuffleRequirement
     {
@@ -12,13 +12,13 @@ namespace OpenTracker.Models.Requirements.Mode
         private readonly EntranceShuffle _expectedValue;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="mode">
-        ///     The mode settings.
+        ///     The <see cref="IMode"/> data.
         /// </param>
         /// <param name="expectedValue">
-        ///     The required entrance shuffle value.
+        ///     A <see cref="EntranceShuffle"/> representing the expected <see cref="IMode.EntranceShuffle"/> value.
         /// </param>
         public EntranceShuffleRequirement(IMode mode, EntranceShuffle expectedValue)
         {
@@ -34,10 +34,10 @@ namespace OpenTracker.Models.Requirements.Mode
         /// Subscribes to the PropertyChanged event on the IMode interface.
         /// </summary>
         /// <param name="sender">
-        /// The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        /// The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnModeChanged(object? sender, PropertyChangedEventArgs e)
         {

@@ -8,96 +8,95 @@ using OpenTracker.Models.Dungeons.State;
 namespace OpenTracker.Models.Dungeons.Mutable
 {
     /// <summary>
-    ///     This interface contains the mutable dungeon data.
+    /// This interface contains the mutable dungeon data.
     /// </summary>
     public interface IMutableDungeon
     {
         /// <summary>
-        ///     The dungeon ID to which this data belongs.
+        /// The <see cref="DungeonID"/> to which this data belongs.
         /// </summary>
         DungeonID ID { get; }
 
         /// <summary>
-        ///     The dictionary of nodes by ID.
+        /// The <see cref="IDungeonNodeDictionary"/>.
         /// </summary>
         IDungeonNodeDictionary Nodes { get; }
         
         /// <summary>
-        ///     The dictionary of items by ID.
+        /// The <see cref="IDungeonItemDictionary"/>.
         /// </summary>
         IDungeonItemDictionary DungeonItems { get; }
         
         /// <summary>
-        ///     The dictionary of key doors by ID.
+        /// The <see cref="IKeyDoorDictionary"/>.
         /// </summary>
         IKeyDoorDictionary KeyDoors { get; }
         
         /// <summary>
-        ///     A factory for creating mutable dungeon data.
+        /// A factory for creating new <see cref="IMutableDungeon"/> objects.
         /// </summary>
         /// <param name="dungeon">
-        ///     The dungeon immutable data.
+        ///     The <see cref="IDungeon"/> to which the mutable data belongs.
         /// </param>
         /// <returns>
-        ///     A new mutable dungeon data instance.
+        ///     A new <see cref="IMutableDungeon"/> object.
         /// </returns>
         delegate IMutableDungeon Factory(IDungeon dungeon);
 
         /// <summary>
-        ///     Initializes the dictionary data classes for this dungeon.
+        /// Initializes the dictionary data classes for this dungeon.
         /// </summary>
         void InitializeData();
 
         /// <summary>
-        ///     Applies the dungeon state conditions to this instance.
+        /// Applies the <see cref="IDungeonState"/> conditions to this instance.
         /// </summary>
         /// <param name="state">
-        ///     The dungeon state to be applied.
+        ///     The <see cref="IDungeonState"/> to be applied.
         /// </param>
         void ApplyState(IDungeonState state);
 
         /// <summary>
-        ///     Returns the number of keys that are available to be collected in the dungeon.
+        /// Returns the number of keys that are available to be collected in the dungeon.
         /// </summary>
         /// <param name="sequenceBreak">
-        ///     A boolean representing whether sequence breaking is allowed for this count.
+        ///     A <see cref="bool"/> representing whether sequence breaking is allowed for this count.
         /// </param>
         /// <returns>
-        ///     A 32-bit integer representing the number of keys that are available to be collected in the
-        ///         dungeon.
+        ///     A <see cref="int"/> representing the number of keys that are available to be collected in the dungeon.
         /// </returns>
         int GetAvailableSmallKeys(bool sequenceBreak = false);
         
         /// <summary>
-        ///     Returns a list of accessible key doors in the dungeon.
+        /// Returns a <see cref="IList{T}"/> of accessible <see cref="KeyDoorID"/> in the dungeon.
         /// </summary>
         /// <param name="sequenceBreak">
-        ///     A boolean representing whether to return key doors only accessible by sequence break.
+        ///     A <see cref="bool"/> representing whether to return key doors only accessible by sequence break.
         /// </param>
         /// <returns>
-        ///     A list of accessible key doors.
+        ///     A <see cref="IList{T}"/> of accessible <see cref="KeyDoorID"/>.
         /// </returns>
         IList<KeyDoorID> GetAccessibleKeyDoors(bool sequenceBreak = false);
         
         /// <summary>
-        ///     Returns whether the specified number of collected keys and big key can occur, based on key logic.
+        /// Returns whether the specified number of collected keys and big key can occur, based on key layout logic.
         /// </summary>
         /// <param name="state">
-        ///     The dungeon state data.
+        ///     The <see cref="IDungeonState"/>.
         /// </param>
         /// <returns>
-        ///     A boolean representing whether the result can occur.
+        ///     A <see cref="bool"/> representing whether the result can occur.
         /// </returns>
         bool ValidateKeyLayout(IDungeonState state);
 
         /// <summary>
-        ///     Returns the current accessibility and accessible item count based on the specified dungeon state.
+        /// Returns the <see cref="IDungeonResult"/> based on the specified <see cref="IDungeonState"/>.
         /// </summary>
         /// <param name="state">
-        ///     The dungeon state data.
+        ///     The <see cref="IDungeonState"/>.
         /// </param>
         /// <returns>
-        ///     The dungeon result data.
+        ///     The <see cref="IDungeonResult"/>.
         /// </returns>
         IDungeonResult GetDungeonResult(IDungeonState state);
     }

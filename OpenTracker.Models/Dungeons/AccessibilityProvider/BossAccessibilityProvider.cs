@@ -3,6 +3,9 @@ using ReactiveUI;
 
 namespace OpenTracker.Models.Dungeons.AccessibilityProvider
 {
+    /// <summary>
+    /// This class contains the boss accessibility provider data.
+    /// </summary>
     public class BossAccessibilityProvider : ReactiveObject, IBossAccessibilityProvider
     {
         private AccessibilityLevel _accessibility;

@@ -6,14 +6,14 @@ using OpenTracker.Models.Nodes;
 namespace OpenTracker.Models.Dungeons.Items
 {
     /// <summary>
-    ///     This class contains the creation logic for dungeon items.
+    /// This class contains the creation logic for <see cref="IDungeonItem"/> objects.
     /// </summary>
     public class DungeonItemFactory : IDungeonItemFactory
     {
         private readonly IDungeonItem.Factory _factory;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="factory">
         ///     The factory for creating dungeon items.
@@ -23,17 +23,22 @@ namespace OpenTracker.Models.Dungeons.Items
             _factory = factory;
         }
 
+        public IDungeonItem GetDungeonItem(IMutableDungeon dungeonData, DungeonItemID id)
+        {
+            return _factory(dungeonData, GetDungeonItemNode(dungeonData, id));
+        }
+
         /// <summary>
-        ///     Returns a dungeon node to which the specified item ID belongs.
+        /// Returns a dungeon <see cref="INode"/> to which the specified <see cref="DungeonItemID"/> belongs.
         /// </summary>
         /// <param name="dungeonData">
-        ///     The dungeon mutable data parent class.
+        ///     The <see cref="IMutableDungeon"/> parent class.
         /// </param>
         /// <param name="id">
-        ///     The dungeon node identity.
+        ///     The <see cref="DungeonItemID"/>.
         /// </param>
         /// <returns>
-        ///     A dungeon node.
+        ///     A dungeon <see cref="INode"/>.
         /// </returns>
         private static INode GetDungeonItemNode(IMutableDungeon dungeonData, DungeonItemID id)
         {
@@ -318,11 +323,6 @@ namespace OpenTracker.Models.Dungeons.Items
             }
 
             throw new ArgumentOutOfRangeException(nameof(id));
-        }
-
-        public IDungeonItem GetDungeonItem(IMutableDungeon dungeonData, DungeonItemID id)
-        {
-            return _factory(dungeonData, GetDungeonItemNode(dungeonData, id));
         }
     }
 }

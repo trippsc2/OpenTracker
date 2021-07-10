@@ -5,30 +5,30 @@ using OpenTracker.Models.Requirements;
 namespace OpenTracker.Models.Sections.Entrance
 {
     /// <summary>
-    ///     This interface contains entrance section data.
+    /// This interface contains entrance section data.
     /// </summary>
     public interface IEntranceSection : ISection
     {
         /// <summary>
-        ///     A factory for creating new entrance sections.
+        /// A factory for creating new <see cref="IEntranceSection"/> objects.
         /// </summary>
         /// <param name="name">
-        ///     A string representing the name of the section.
+        ///     A <see cref="string"/> representing the section name.
         /// </param>
         /// <param name="entranceShuffleLevel">
-        ///     The minimum entrance shuffle level.
+        ///     The minimum <see cref="EntranceShuffle"/> level.
         /// </param>
         /// <param name="requirement">
-        ///     The requirement for the section to be active.
+        ///     The <see cref="IRequirement"/> for the section to be active.
         /// </param>
         /// <param name="node">
-        ///     The node to which this section belongs.
+        ///     The <see cref="INode"/> to which this section belongs.
         /// </param>
         /// <param name="exitProvided">
-        ///     The overworld node exit that this section provides.
+        ///     The <see cref="IOverworldNode"/> exit that this section provides.
         /// </param>
         /// <returns>
-        ///     A new entrance section.
+        ///     A new <see cref="IEntranceSection"/> object.
         /// </returns>
         delegate IEntranceSection Factory(
             string name, EntranceShuffle entranceShuffleLevel, IRequirement requirement, INode node,

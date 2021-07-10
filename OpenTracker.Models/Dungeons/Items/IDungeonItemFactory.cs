@@ -3,20 +3,20 @@
 namespace OpenTracker.Models.Dungeons.Items
 {
     /// <summary>
-    ///     This interface contains the creation logic for dungeon items.
+    /// This interface contains the creation logic for <see cref="IDungeonItem"/> objects.
     /// </summary>
     public interface IDungeonItemFactory
     {
         /// <summary>
-        ///     A factory for creating the dungeon item factory.
+        /// A factory for creating the <see cref="IDungeonItemFactory"/> objects.
         /// </summary>
         /// <returns>
-        ///     The dungeon item factory.
+        ///     The <see cref="IDungeonItemFactory"/> object.
         /// </returns>
         delegate IDungeonItemFactory Factory();
 
         /// <summary>
-        ///     Returns a new dungeon item for the specified dungeon data and dungeon item ID.
+        /// Returns a new dungeon item for the specified dungeon data and dungeon item ID.
         /// </summary>
         /// <param name="dungeonData">
         ///     The dungeon data.

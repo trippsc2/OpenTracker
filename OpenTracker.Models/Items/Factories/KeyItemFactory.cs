@@ -5,7 +5,7 @@ using OpenTracker.Models.Items.Keys;
 namespace OpenTracker.Models.Items.Factories
 {
     /// <summary>
-    ///     This class contains the creation logic for key items.
+    /// This class contains the creation logic for <see cref="ISmallKeyItem"/> and <see cref="IBigKeyItem"/> objects.
     /// </summary>
     public class KeyItemFactory : IKeyItemFactory
     {
@@ -15,16 +15,16 @@ namespace OpenTracker.Models.Items.Factories
         private readonly IBigKeyItem.Factory _bigKeyFactory;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="items">
-        ///     The item dictionary.
+        ///     The <see cref="IItemDictionary"/>.
         /// </param>
         /// <param name="smallKeyFactory">
-        ///     An Autofac factory for creating small keys.
+        ///     An Autofac factory for creating new <see cref="ISmallKeyItem"/> objects.
         /// </param>
         /// <param name="bigKeyFactory">
-        ///     An Autofac factory for creating big keys.
+        ///     An Autofac factory for creating new <see cref="IBigKeyItem"/> objects.
         /// </param>
         public KeyItemFactory(
             IItemDictionary items, ISmallKeyItem.Factory smallKeyFactory, IBigKeyItem.Factory bigKeyFactory)
@@ -76,13 +76,13 @@ namespace OpenTracker.Models.Items.Factories
         }
         
         /// <summary>
-        ///     Returns the maximum value when key drop shuffle is disabled.
+        /// Returns the maximum value when key drop shuffle is disabled for the specified <see cref="ItemType"/>.
         /// </summary>
         /// <param name="type">
-        ///     The type of item.
+        ///     The <see cref="ItemType"/>.
         /// </param>
         /// <returns>
-        ///     A 32-bit integer representing the maximum value.
+        ///     A <see cref="int"/> representing the maximum value when key drop shuffle is disabled.
         /// </returns>
         private static int GetItemNonKeyDropMaximum(ItemType type)
         {
@@ -125,13 +125,13 @@ namespace OpenTracker.Models.Items.Factories
         }
 
         /// <summary>
-        ///     Returns the maximum value when key drop shuffle is enabled.
+        /// Returns the maximum value when key drop shuffle is enabled for the specified <see cref="ItemType"/>.
         /// </summary>
         /// <param name="type">
-        ///     The type of item.
+        ///     The <see cref="ItemType"/>.
         /// </param>
         /// <returns>
-        ///     A 32-bit integer representing the maximum value.
+        ///     A <see cref="int"/> representing the maximum value when key drop shuffle is enabled.
         /// </returns>
         private static int? GetItemKeyDropMaximum(ItemType type)
         {

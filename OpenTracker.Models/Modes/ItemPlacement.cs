@@ -1,7 +1,7 @@
 ﻿namespace OpenTracker.Models.Modes
 {
     /// <summary>
-    ///     This enum type contains the item placement setting data.
+    /// This enum type defines the item placement setting values.
     /// </summary>
     public enum ItemPlacement
     {

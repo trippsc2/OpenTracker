@@ -1,7 +1,7 @@
 ﻿namespace OpenTracker.Models.PrizePlacements
 {
     /// <summary>
-    /// This is the enum type for prize placement ID.
+    /// This enum type defines the prize placement ID values.
     /// </summary>
     public enum PrizePlacementID
     {

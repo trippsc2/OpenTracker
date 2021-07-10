@@ -5,7 +5,7 @@ using ReactiveUI;
 namespace OpenTracker.Models.Markings
 {
     /// <summary>
-    ///     This class contains marking data.
+    /// This class contains marking data.
     /// </summary>
     public class Marking : ReactiveObject, IMarking
     {
@@ -19,10 +19,10 @@ namespace OpenTracker.Models.Markings
         }
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="changeMarkingFactory">
-        ///     An Autofac factory for creating undoable actions to change the marking.
+        ///     An Autofac factory for creating new <see cref="IChangeMarking"/> objects.
         /// </param>
         public Marking(IChangeMarking.Factory changeMarkingFactory)
         {

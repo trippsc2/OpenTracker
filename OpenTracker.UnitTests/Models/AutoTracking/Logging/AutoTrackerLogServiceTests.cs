@@ -1,5 +1,6 @@
 using Autofac;
 using OpenTracker.Models.AutoTracking.Logging;
+using OpenTracker.Models.Logging;
 using Xunit;
 
 namespace OpenTracker.UnitTests.Models.AutoTracking.Logging
@@ -43,6 +44,16 @@ namespace OpenTracker.UnitTests.Models.AutoTracking.Logging
             var sut = scope.Resolve<IAutoTrackerLogService>();
             
             Assert.NotNull(sut as AutoTrackerLogService);
+        }
+
+        [Fact]
+        public void AutofacSingleInstanceTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var value1 = scope.Resolve<IAutoTrackerLogService>();
+            var value2 = scope.Resolve<IAutoTrackerLogService>();
+            
+            Assert.Equal(value1, value2);
         }
     }
 }

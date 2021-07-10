@@ -1,5 +1,6 @@
 using Autofac;
 using OpenTracker.Models.AutoTracking.Logging;
+using OpenTracker.Models.Logging;
 using Xunit;
 
 namespace OpenTracker.UnitTests.Models.AutoTracking.Logging
@@ -7,9 +8,9 @@ namespace OpenTracker.UnitTests.Models.AutoTracking.Logging
     public class LogMessageTests
     {
         private const LogLevel Level = LogLevel.Trace;
-        private const string Message = "Test log message.";
+        private const string Content = "Test log message.";
 
-        private readonly LogMessage _sut = new(Level, Message);
+        private readonly LogMessage _sut = new(Level, Content);
 
         [Fact]
         public void Ctor_ShouldSetLevelToExpected()
@@ -20,7 +21,7 @@ namespace OpenTracker.UnitTests.Models.AutoTracking.Logging
         [Fact]
         public void Ctor_ShouldSetMessageToExpected()
         {
-            Assert.Equal(Message, _sut.Content);
+            Assert.Equal(Content, _sut.Content);
         }
 
         [Fact]
@@ -28,7 +29,7 @@ namespace OpenTracker.UnitTests.Models.AutoTracking.Logging
         {
             using var scope = ContainerConfig.Configure().BeginLifetimeScope();
             var factory = scope.Resolve<ILogMessage.Factory>();
-            var sut = factory(Level, Message);
+            var sut = factory(Level, Content);
             
             Assert.NotNull(sut as LogMessage);
         }

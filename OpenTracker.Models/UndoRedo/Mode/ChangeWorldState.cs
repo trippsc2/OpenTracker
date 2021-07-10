@@ -3,7 +3,7 @@
 namespace OpenTracker.Models.UndoRedo.Mode
 {
     /// <summary>
-    /// This class contains undoable action data to change the world state setting.
+    /// This class contains the <see cref="IUndoable"/> action to change the <see cref="IMode.WorldState"/> property.
     /// </summary>
     public class ChangeWorldState : IChangeWorldState
     {
@@ -16,10 +16,10 @@ namespace OpenTracker.Models.UndoRedo.Mode
         /// Constructor
         /// </summary>
         /// <param name="mode">
-        /// The mode settings data.
+        ///     The <see cref="IMode"/> data.
         /// </param>
         /// <param name="newValue">
-        /// The new world state setting.
+        ///     A <see cref="WorldState"/> representing the new <see cref="IMode.WorldState"/> value.
         /// </param>
         public ChangeWorldState(IMode mode, WorldState newValue)
         {
@@ -27,20 +27,11 @@ namespace OpenTracker.Models.UndoRedo.Mode
             _newValue = newValue;
         }
 
-        /// <summary>
-        /// Returns whether the action can be executed.
-        /// </summary>
-        /// <returns>
-        /// A boolean representing whether the action can be executed.
-        /// </returns>
         public bool CanExecute()
         {
             return true;
         }
 
-        /// <summary>
-        /// Executes the action.
-        /// </summary>
         public void ExecuteDo()
         {
             _previousValue = _mode.WorldState;
@@ -48,9 +39,6 @@ namespace OpenTracker.Models.UndoRedo.Mode
             _mode.WorldState = _newValue;
         }
 
-        /// <summary>
-        /// Undoes the action.
-        /// </summary>
         public void ExecuteUndo()
         {
             _mode.WorldState = _previousValue;

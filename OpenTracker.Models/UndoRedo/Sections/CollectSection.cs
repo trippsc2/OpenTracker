@@ -4,7 +4,7 @@ using OpenTracker.Models.Sections;
 namespace OpenTracker.Models.UndoRedo.Sections
 {
     /// <summary>
-    /// This class contains undoable action data to collect an item/entrance from a location section.
+    /// This class contains the <see cref="IUndoable"/> action to collect a <see cref="ISection"/>.
     /// </summary>
     public class CollectSection : ICollectSection
     {
@@ -17,10 +17,10 @@ namespace OpenTracker.Models.UndoRedo.Sections
         /// Constructor
         /// </summary>
         /// <param name="section">
-        /// The section to be collected.
+        ///     The <see cref="ISection"/>.
         /// </param>
         /// <param name="force">
-        /// A boolean representing whether to obey the section logic.
+        ///     A <see cref="bool"/> representing whether the accessibility logic should be obeyed.
         /// </param>
         public CollectSection(ISection section, bool force)
         {
@@ -28,20 +28,11 @@ namespace OpenTracker.Models.UndoRedo.Sections
             _force = force;
         }
 
-        /// <summary>
-        /// Returns whether the action can be executed.
-        /// </summary>
-        /// <returns>
-        /// A boolean representing whether the action can be executed.
-        /// </returns>
         public bool CanExecute()
         {
             return _section.CanBeCleared(_force);
         }
 
-        /// <summary>
-        /// Executes the action.
-        /// </summary>
         public void ExecuteDo()
         {
             _previousMarking = _section.Marking?.Mark;
@@ -51,9 +42,6 @@ namespace OpenTracker.Models.UndoRedo.Sections
             _section.Available--;
         }
 
-        /// <summary>
-        /// Undoes the action.
-        /// </summary>
         public void ExecuteUndo()
         {
             _section.Available++;

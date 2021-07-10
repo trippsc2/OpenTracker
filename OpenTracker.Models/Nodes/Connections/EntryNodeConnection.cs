@@ -7,7 +7,7 @@ using ReactiveUI;
 namespace OpenTracker.Models.Nodes.Connections
 {
     /// <summary>
-    ///     This class contains dungeon entry node connection data.
+    /// This class contains dungeon entry node connection data.
     /// </summary>
     public class EntryNodeConnection : ReactiveObject, IEntryNodeConnection
     {
@@ -18,10 +18,10 @@ namespace OpenTracker.Models.Nodes.Connections
         public AccessibilityLevel Accessibility => _fromNode.Accessibility;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="fromNode">
-        ///     The node from which the connection originates.
+        ///     The <see cref="INode"/> from which the connection originates.
         /// </param>
         public EntryNodeConnection(INode fromNode)
         {
@@ -36,13 +36,13 @@ namespace OpenTracker.Models.Nodes.Connections
         }
         
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on the IRequirementNode interface.
+        /// Subscribes to the <see cref="INode.PropertyChanged"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnNodeChanged(object? sender, PropertyChangedEventArgs e)
         {

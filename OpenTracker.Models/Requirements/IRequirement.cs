@@ -5,22 +5,23 @@ using ReactiveUI;
 namespace OpenTracker.Models.Requirements
 {
     /// <summary>
-    ///     This is the interface for requirements.
+    /// This interface contains the requirement data.
     /// </summary>
     public interface IRequirement : IReactiveObject
     {
         /// <summary>
-        ///     A boolean representing whether the requirement has been met.
+        /// A <see cref="bool"/> representing whether the condition has been met.
         /// </summary>
         bool Met { get; }
         
         /// <summary>
-        ///     The accessibility level of the requirement.
+        /// The <see cref="AccessibilityLevel"/>.
         /// </summary>
         AccessibilityLevel Accessibility { get; }
 
         /// <summary>
-        ///     An event that indicates that the accessibility has changed and subscribing methods have been called.
+        /// An event that indicates that the <see cref="Accessibility"/> or <see cref="Met"/> property has changed and
+        /// all subscribing methods have been executed.
         /// </summary>
         event EventHandler? ChangePropagated;
     }

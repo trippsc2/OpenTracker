@@ -4,18 +4,18 @@ using OpenTracker.Models.Locations;
 namespace OpenTracker.Models.Sections.Factories
 {
     /// <summary>
-    ///     This interface contains the creation logic for dungeon sections.
+    /// This interface contains the creation logic for dungeon sections.
     /// </summary>
     public interface IDungeonSectionFactory
     {
         /// <summary>
-        ///     Returns a list of sections for the specified location.
+        /// Returns a <see cref="List{T}"/> of <see cref="ISection"/> for the specified <see cref="LocationID"/>.
         /// </summary>
         /// <param name="id">
-        ///     The location ID.
+        ///     The <see cref="LocationID"/>.
         /// </param>
         /// <returns>
-        ///     A list of sections.
+        ///     A <see cref="List{T}"/> of <see cref="ISection"/>.
         /// </returns>
         List<ISection> GetDungeonSections(LocationID id);
     }

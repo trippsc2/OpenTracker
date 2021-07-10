@@ -8,7 +8,7 @@ using ReactiveUI;
 namespace OpenTracker.Models.Dropdowns
 {
     /// <summary>
-    ///     This class contains dropdown data.
+    /// This class contains dropdown data.
     /// </summary>
     public class Dropdown : ReactiveObject, IDropdown
     {
@@ -27,16 +27,16 @@ namespace OpenTracker.Models.Dropdowns
         }
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="checkDropdownFactory">
-        ///     An Autofac factory for creating undoable actions to check the dropdown.
+        ///     An Autofac factory for creating new <see cref="ICheckDropdown"/> objects.
         /// </param>
         /// <param name="uncheckDropdownFactory">
-        ///     An Autofac factory for creating undoable actions to uncheck the dropdown.
+        ///     An Autofac factory for creating new <see cref="IUncheckDropdown"/> objects.
         /// </param>
         /// <param name="requirement">
-        ///     The requirement for the dropdown to be relevant.
+        ///     The <see cref="IRequirement"/> for the dropdown to be relevant.
         /// </param>
         public Dropdown(
             ICheckDropdown.Factory checkDropdownFactory, IUncheckDropdown.Factory uncheckDropdownFactory,
@@ -64,12 +64,6 @@ namespace OpenTracker.Models.Dropdowns
             Checked = false;
         }
 
-        /// <summary>
-        ///     Returns a new dropdown save data instance for this dropdown.
-        /// </summary>
-        /// <returns>
-        ///     A new dropdown save data instance.
-        /// </returns>
         public DropdownSaveData Save()
         {
             return new()
@@ -78,12 +72,6 @@ namespace OpenTracker.Models.Dropdowns
             };
         }
 
-        /// <summary>
-        ///     Loads dropdown save data.
-        /// </summary>
-        /// <param name="saveData">
-        ///     The dropdown save data to load.
-        /// </param>
         public void Load(DropdownSaveData? saveData)
         {
             if (saveData == null)
@@ -95,13 +83,13 @@ namespace OpenTracker.Models.Dropdowns
         }
 
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on the IRequirement interface.
+        /// Subscribes to the <see cref="IRequirement.PropertyChanged"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnRequirementChanged(object? sender, PropertyChangedEventArgs e)
         {

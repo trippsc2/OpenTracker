@@ -15,7 +15,7 @@ using OpenTracker.Models.Requirements.SmallKeyShuffle;
 namespace OpenTracker.Models.Sections.Factories
 {
     /// <summary>
-    ///     This class containing creation logic for section auto-tracking.
+    /// This class containing creation logic for section <see cref="IAutoTrackValue"/> objects.
     /// </summary>
     public class SectionAutoTrackingFactory : ISectionAutoTrackingFactory
     {
@@ -41,61 +41,61 @@ namespace OpenTracker.Models.Sections.Factories
         private readonly IMemoryFlag.Factory _memoryFlagFactory;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="memoryAddressProvider">
-        ///     The auto-tracker data.
+        ///     The <see cref="IMemoryAddressProvider"/>.
         /// </param>
         /// <param name="items">
-        ///     The item dictionary.
+        ///     The <see cref="IItemDictionary"/>.
         /// </param>
         /// <param name="bigKeyShuffleRequirements">
-        ///     The big key shuffle requirement dictionary.
+        ///     The <see cref="IBigKeyShuffleRequirementDictionary"/>.
         /// </param>
         /// <param name="compassShuffleRequirements">
-        ///     The compass shuffle requirement dictionary.
+        ///     The <see cref="ICompassShuffleRequirementDictionary"/>.
         /// </param>
         /// <param name="mapShuffleRequirements">
-        ///     The map shuffle requirement dictionary.
+        ///     The <see cref="IMapShuffleRequirementDictionary"/>.
         /// </param>
         /// <param name="raceIllegalTrackingRequirement">
-        ///     The race illegal tracking requirement.
+        ///     The <see cref="IRaceIllegalTrackingRequirement"/>.
         /// </param>
         /// <param name="smallKeyShuffleRequirements">
-        ///     The small key shuffle requirement dictionary.
+        ///     The <see cref="ISmallKeyShuffleRequirementDictionary"/>.
         /// </param>
         /// <param name="boolFactory">
-        ///     An Autofac factory creating address boolean auto-track values.
+        ///     An Autofac factory creating new <see cref="IAutoTrackAddressBool"/> objects.
         /// </param>
         /// <param name="valueFactory">
-        ///     An Autofac factory creating address value auto-track values.
+        ///     An Autofac factory creating new <see cref="IAutoTrackAddressValue"/> objects.
         /// </param>
         /// <param name="bitwiseIntegerFactory">
-        ///     An Autofac factory creating bitwise integer auto-track values.
+        ///     An Autofac factory creating new <see cref="IAutoTrackBitwiseIntegerValue"/> objects.
         /// </param>
         /// <param name="conditionalFactory">
-        ///     An Autofac factory creating conditional auto-track values.
+        ///     An Autofac factory creating new <see cref="IAutoTrackConditionalValue"/> objects.
         /// </param>
         /// <param name="flagBoolFactory">
-        ///     An Autofac factory creating flag boolean auto-track values.
+        ///     An Autofac factory creating new <see cref="IAutoTrackFlagBool"/> objects.
         /// </param>
         /// <param name="itemValueFactory">
-        ///     An Autofac factory creating item value auto-track values.
+        ///     An Autofac factory creating new <see cref="IAutoTrackItemValue"/> objects.
         /// </param>
         /// <param name="differenceFactory">
-        ///     An Autofac factory creating difference auto-track values.
+        ///     An Autofac factory creating new <see cref="IAutoTrackMultipleDifference"/> objects.
         /// </param>
         /// <param name="overrideFactory">
-        ///     An Autofac factory creating override auto-track values.
+        ///     An Autofac factory creating new <see cref="IAutoTrackMultipleOverride"/> objects.
         /// </param>
         /// <param name="sumFactory">
-        ///     An Autofac factory creating sum auto-track values.
+        ///     An Autofac factory creating new <see cref="IAutoTrackMultipleSum"/> objects.
         /// </param>
         /// <param name="staticValueFactory">
-        ///     An Autofac factory creating static auto-track values.
+        ///     An Autofac factory creating new <see cref="IAutoTrackStaticValue"/> objects.
         /// </param>
         /// <param name="memoryFlagFactory">
-        ///     An Autofac factory creating memory flags.
+        ///     An Autofac factory creating new <see cref="IMemoryFlag"/> objects.
         /// </param>
         public SectionAutoTrackingFactory(
             IMemoryAddressProvider memoryAddressProvider, IItemDictionary items,

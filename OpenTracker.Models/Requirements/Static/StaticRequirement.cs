@@ -5,7 +5,7 @@ using ReactiveUI;
 namespace OpenTracker.Models.Requirements.Static
 {
     /// <summary>
-    ///     This class contains unchanging requirement data.
+    /// This class contains unchanging <see cref="IRequirement"/> data.
     /// </summary>
     public class StaticRequirement : ReactiveObject, IStaticRequirement
     {
@@ -16,10 +16,10 @@ namespace OpenTracker.Models.Requirements.Static
         public event EventHandler? ChangePropagated;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="accessibility">
-        ///     The accessibility level of the requirement.
+        ///     The <see cref="AccessibilityLevel"/>.
         /// </param>
         public StaticRequirement(AccessibilityLevel accessibility)
         {

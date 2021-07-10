@@ -3,7 +3,7 @@
 namespace OpenTracker.Models.UndoRedo.Items
 {
     /// <summary>
-    /// This class contains undoable action to remove an item.
+    /// This class contains the <see cref="IUndoable"/> action to remove an <see cref="IItem"/>.
     /// </summary>
     public class RemoveItem : IRemoveItem
     {
@@ -13,35 +13,23 @@ namespace OpenTracker.Models.UndoRedo.Items
         /// Constructor
         /// </summary>
         /// <param name="item">
-        /// The item data to be manipulated.
+        ///     The <see cref="IItem"/>.
         /// </param>
         public RemoveItem(IItem item)
         {
             _item = item;
         }
 
-        /// <summary>
-        /// Returns whether the action can be executed.
-        /// </summary>
-        /// <returns>
-        /// A boolean representing whether the action can be executed.
-        /// </returns>
         public bool CanExecute()
         {
             return _item.CanRemove();
         }
 
-        /// <summary>
-        /// Executes the action.
-        /// </summary>
         public void ExecuteDo()
         {
             _item.Remove();
         }
 
-        /// <summary>
-        /// Undoes the action.
-        /// </summary>
         public void ExecuteUndo()
         {
             _item.Add();

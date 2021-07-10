@@ -18,7 +18,7 @@ namespace OpenTracker.ViewModels.MapLocations
     /// </summary>
     public class EntranceMapLocationVM : ViewModelBase, IEntranceMapLocationVM
     {
-        private readonly IConnectionCollection _connections;
+        private readonly IMapConnectionCollection _connections;
         private readonly IUndoRedoManager _undoRedoManager;
 
         private readonly IMapLocationColorProvider _colorProvider;
@@ -64,7 +64,7 @@ namespace OpenTracker.ViewModels.MapLocations
         /// The list of points for the polygon control.
         /// </param>
         public EntranceMapLocationVM(
-            IConnectionCollection connections, IUndoRedoManager undoRedoManager,
+            IMapConnectionCollection connections, IUndoRedoManager undoRedoManager,
             IMapLocationColorProvider.Factory colorProvider, IMapLocation mapLocation, double offsetX, double offsetY,
             List<Point> points)
         {

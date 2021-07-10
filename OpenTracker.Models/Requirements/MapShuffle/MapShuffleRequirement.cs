@@ -4,7 +4,7 @@ using OpenTracker.Models.Modes;
 namespace OpenTracker.Models.Requirements.MapShuffle
 {
     /// <summary>
-    ///     This class contains map shuffle setting requirement data.
+    /// This class contains the <see cref="IMode.MapShuffle"/> <see cref="IRequirement"/> data.
     /// </summary>
     public class MapShuffleRequirement : BooleanRequirement, IMapShuffleRequirement
     {
@@ -12,13 +12,13 @@ namespace OpenTracker.Models.Requirements.MapShuffle
         private readonly bool _expectedValue;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="mode">
-        ///     The mode settings.
+        ///     The <see cref="IMode"/> data.
         /// </param>
         /// <param name="expectedValue">
-        ///     A boolean expected map shuffle value.
+        ///     A <see cref="bool"/> representing the expected <see cref="IMode.MapShuffle"/> value.
         /// </param>
         public MapShuffleRequirement(IMode mode, bool expectedValue)
         {

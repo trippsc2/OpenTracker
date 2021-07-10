@@ -5,7 +5,7 @@ using ReactiveUI;
 namespace OpenTracker.Models.Locations.Map
 {
     /// <summary>
-    ///     This class contains map location data.
+    /// This class contains map location data.
     /// </summary>
     public class MapLocation : ReactiveObject, IMapLocation
     {
@@ -26,22 +26,22 @@ namespace OpenTracker.Models.Locations.Map
         public bool ShouldBeDisplayed => Location.ShouldBeDisplayed;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="map">
-        ///     The map identity on which the location is represented.
+        ///     The <see cref="MapID"/> to which this map location belongs.
         /// </param>
         /// <param name="x">
-        ///     The X coordinate of the map location.
+        ///     A <see cref="double"/> representing the X coordinate of the map location.
         /// </param>
         /// <param name="y">
-        ///     The Y coordinate of the map location.
+        ///     A <see cref="double"/> representing the Y coordinate of the map location.
         /// </param>
         /// <param name="location">
-        ///     The location parent class.
+        ///     The <see cref="ILocation"/> parent class.
         /// </param>
         /// <param name="requirement">
-        ///     The mode requirement for displaying this map location.
+        ///     The nullable <see cref="IRequirement"/> for displaying this map location.
         /// </param>
         public MapLocation(MapID map, double x, double y, ILocation location, IRequirement? requirement = null)
         {
@@ -62,13 +62,13 @@ namespace OpenTracker.Models.Locations.Map
         }
 
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on the ILocation interface.
+        /// Subscribes to the <see cref="ILocation.PropertyChanged"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnLocationChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -84,13 +84,13 @@ namespace OpenTracker.Models.Locations.Map
         }
 
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on the IRequirement interface.
+        /// Subscribes to the <see cref="IRequirement.PropertyChanged"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnRequirementChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -101,7 +101,7 @@ namespace OpenTracker.Models.Locations.Map
         }
 
         /// <summary>
-        ///     Updates the value of the IsActive property.
+        /// Updates the value of the <see cref="IsActive"/> property.
         /// </summary>
         private void UpdateIsActive()
         {

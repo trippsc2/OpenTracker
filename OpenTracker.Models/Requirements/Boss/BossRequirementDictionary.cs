@@ -5,7 +5,8 @@ using OpenTracker.Utils;
 namespace OpenTracker.Models.Requirements.Boss
 {
     /// <summary>
-    ///     This class contains the dictionary container for boss requirements.
+    /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for <see cref="IBossRequirement"/>
+    /// objects indexed by <see cref="BossPlacementID"/>.
     /// </summary>
     public class BossRequirementDictionary : LazyDictionary<BossPlacementID, IRequirement>, IBossRequirementDictionary
     {
@@ -14,13 +15,13 @@ namespace OpenTracker.Models.Requirements.Boss
         private readonly IBossRequirement.Factory _factory;
         
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="bossPlacements">
-        ///     The boss placement dictionary.
+        ///     The <see cref="IBossPlacementDictionary"/>.
         /// </param>
         /// <param name="factory">
-        ///     An Autofac factory for creating new boss requirements.
+        ///     An Autofac factory for creating new <see cref="IBossRequirement"/> objects.
         /// </param>
         public BossRequirementDictionary(IBossPlacementDictionary bossPlacements, IBossRequirement.Factory factory)
             : base(new Dictionary<BossPlacementID, IRequirement>())

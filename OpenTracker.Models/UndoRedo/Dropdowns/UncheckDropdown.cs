@@ -3,7 +3,7 @@
 namespace OpenTracker.Models.UndoRedo.Dropdowns
 {
     /// <summary>
-    /// This class contains undoable action data to uncheck a dropdown.
+    /// This class contains the <see cref="IUndoable"/> action to uncheck a <see cref="IDropdown"/>.
     /// </summary>
     public class UncheckDropdown : IUncheckDropdown
     {
@@ -13,35 +13,23 @@ namespace OpenTracker.Models.UndoRedo.Dropdowns
         /// Constructor
         /// </summary>
         /// <param name="dropdown">
-        /// The dropdown to be checked.
+        ///     The <see cref="IDropdown"/>.
         /// </param>
         public UncheckDropdown(IDropdown dropdown)
         {
             _dropdown = dropdown;
         }
 
-        /// <summary>
-        /// Returns whether the action can be executed.
-        /// </summary>
-        /// <returns>
-        /// A boolean representing whether the action can be executed.
-        /// </returns>
         public bool CanExecute()
         {
             return _dropdown.Checked;
         }
 
-        /// <summary>
-        /// Executes the action.
-        /// </summary>
         public void ExecuteDo()
         {
             _dropdown.Checked = false;
         }
 
-        /// <summary>
-        /// Undoes the action.
-        /// </summary>
         public void ExecuteUndo()
         {
             _dropdown.Checked = true;

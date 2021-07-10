@@ -11,7 +11,7 @@ using ReactiveUI;
 namespace OpenTracker.Models.Sections
 {
     /// <summary>
-    ///     This base class contains section data.
+    /// This base class contains section data.
     /// </summary>
     public abstract class SectionBase : ReactiveObject, ISection
     {
@@ -64,28 +64,28 @@ namespace OpenTracker.Models.Sections
         }
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="saveLoadManager">
-        ///     The save/load manager.
+        ///     The <see cref="ISaveLoadManager"/>.
         /// </param>
         /// <param name="collectSectionFactory">
-        ///     An Autofac factory for creating collect section undoable actions.
+        ///     An Autofac factory for creating new <see cref="ICollectSection"/> objects.
         /// </param>
         /// <param name="uncollectSectionFactory">
-        ///     An Autofac factory for creating uncollect section undoable actions.
+        ///     An Autofac factory for creating new <see cref="IUncollectSection"/> objects.
         /// </param>
         /// <param name="name">
-        ///     A string representing the name of the section.
+        ///     A string representing the section name.
         /// </param>
         /// <param name="autoTrackValue">
-        ///     The section auto-track value.
+        ///     The nullable <see cref="IAutoTrackValue"/>.
         /// </param>
         /// <param name="marking">
-        ///     The marking for the section.
+        ///     The nullable <see cref="IMarking"/>.
         /// </param>
         /// <param name="requirement">
-        ///     The requirement for the section to be active.
+        ///     The nullable <see cref="IRequirement"/> for the section to be active.
         /// </param>
         protected SectionBase(
             ISaveLoadManager saveLoadManager, ICollectSection.Factory collectSectionFactory,
@@ -153,12 +153,6 @@ namespace OpenTracker.Models.Sections
             }
         }
         
-        /// <summary>
-        ///     Returns a new section save data instance for this section.
-        /// </summary>
-        /// <returns>
-        ///     A new section save data instance.
-        /// </returns>
         public SectionSaveData Save()
         {
             return new()
@@ -169,9 +163,6 @@ namespace OpenTracker.Models.Sections
             };
         }
 
-        /// <summary>
-        ///     Loads section save data.
-        /// </summary>
         public void Load(SectionSaveData? saveData)
         {
             if (saveData is null)
@@ -189,13 +180,13 @@ namespace OpenTracker.Models.Sections
         }
 
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on this object.
+        /// Subscribes to the <see cref="ISection.PropertyChanged"/> event on this object.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         protected virtual void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -209,13 +200,13 @@ namespace OpenTracker.Models.Sections
         }
 
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on the IRequirement interface.
+        /// Subscribes to the <see cref="IRequirement.PropertyChanged"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnRequirementChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -226,7 +217,7 @@ namespace OpenTracker.Models.Sections
         }
 
         /// <summary>
-        ///     Updates the value of the IsActive property.
+        /// Updates the value of the <see cref="IsActive"/> property.
         /// </summary>
         private void UpdateIsActive()
         {
@@ -234,7 +225,7 @@ namespace OpenTracker.Models.Sections
         }
 
         /// <summary>
-        ///     Updates the value of the ShouldBeDisplayed property.
+        /// Updates the value of the <see cref="ShouldBeDisplayed"/> property.
         /// </summary>
         protected virtual void UpdateShouldBeDisplayed()
         {
@@ -242,13 +233,13 @@ namespace OpenTracker.Models.Sections
         }
 
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on the IAutoTrackValue interface.
+        /// Subscribes to the <see cref="IAutoTrackValue.PropertyChanged"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnAutoTrackValueChanged(object? sender, PropertyChangedEventArgs e)
         {

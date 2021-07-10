@@ -6,17 +6,17 @@ using OpenTracker.Models.Requirements;
 namespace OpenTracker.Models.Dungeons.KeyLayouts
 {
     /// <summary>
-    ///     This class contains the end of key layout data.
+    /// This class contains the end of key layout data.
     /// </summary>
     public class EndKeyLayout : IEndKeyLayout
     {
         private readonly IRequirement? _requirement;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="requirement">
-        ///     The requirement for this key layout to be valid.
+        ///     The <see cref="IRequirement"/> for this key layout to be valid.
         /// </param>
         public EndKeyLayout(IRequirement? requirement = null)
         {

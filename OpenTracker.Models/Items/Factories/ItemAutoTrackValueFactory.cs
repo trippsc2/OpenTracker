@@ -11,7 +11,7 @@ using OpenTracker.Models.Requirements.KeyDropShuffle;
 namespace OpenTracker.Models.Items.Factories
 {
     /// <summary>
-    ///     This class contains creation logic for item auto-track values.
+    /// This class contains creation logic for item <see cref="IAutoTrackValue"/> objects.
     /// </summary>
     public class ItemAutoTrackValueFactory : IItemAutoTrackValueFactory
     {
@@ -35,52 +35,52 @@ namespace OpenTracker.Models.Items.Factories
         private readonly IMemoryFlag.Factory _memoryFlagFactory;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="items">
-        ///     The item dictionary.
+        ///     The <see cref="IItemDictionary"/>.
         /// </param>
         /// <param name="memoryAddressProvider">
-        ///     The memory address provider.
+        ///     The <see cref="IMemoryAddressProvider"/>.
         /// </param>
         /// <param name="genericKeysRequirements">
-        ///     The generic keys requirement dictionary.
+        ///     The <see cref="IGenericKeysRequirementDictionary"/>.
         /// </param>
         /// <param name="keyDropShuffleRequirements">
-        ///     The key drop shuffle requirement dictionary.
+        ///     The <see cref="IKeyDropShuffleRequirementDictionary"/>.
         /// </param>
         /// <param name="raceIllegalTrackingRequirement">
-        ///     The race illegal tracking requirement.
+        ///     The <see cref="IRaceIllegalTrackingRequirement"/>.
         /// </param>
         /// <param name="boolFactory">
-        ///     An Autofac factory for creating memory address boolean result values.
+        ///     An Autofac factory for creating new <see cref="IAutoTrackAddressBool"/> objects.
         /// </param>
         /// <param name="valueFactory">
-        ///     An Autofac factory for creating memory address value result values.
+        ///     An Autofac factory for creating new <see cref="IAutoTrackAddressValue"/> objects.
         /// </param>
         /// <param name="conditionalFactory">
-        ///     An Autofac factory for creating conditional result values.
+        ///     An Autofac factory for creating new <see cref="IAutoTrackConditionalValue"/> objects.
         /// </param>
         /// <param name="flagBoolFactory">
-        ///     An Autofac factory for creating memory flag boolean result values.
+        ///     An Autofac factory for creating new <see cref="IAutoTrackFlagBool"/> objects.
         /// </param>
         /// <param name="itemValueFactory">
-        ///     An Autofac factory for creating item value result values.
+        ///     An Autofac factory for creating new <see cref="IAutoTrackItemValue"/> objects.
         /// </param>
         /// <param name="differenceFactory">
-        ///     An Autofac factory for creating the difference of two values result values.
+        ///     An Autofac factory for creating new <see cref="IAutoTrackMultipleDifference"/> objects.
         /// </param>
         /// <param name="overrideFactory">
-        ///     An Autofac factory for creating multiple overriding values result values.
+        ///     An Autofac factory for creating new <see cref="IAutoTrackMultipleOverride"/> objects.
         /// </param>
         /// <param name="sumFactory">
-        ///     An Autofac factory for creating the sum of multiple values result values.
+        ///     An Autofac factory for creating new <see cref="IAutoTrackMultipleSum"/> objects.
         /// </param>
         /// <param name="staticFactory">
-        ///     An Autofac factory for creating static result values.
+        ///     An Autofac factory for creating new <see cref="IAutoTrackStaticValue"/> objects.
         /// </param>
         /// <param name="memoryFlagFactory">
-        ///     An Autofac factory for memory flags.
+        ///     An Autofac factory for creating new <see cref="IMemoryFlag"/> objects.
         /// </param>
         public ItemAutoTrackValueFactory(
             IItemDictionary items, IMemoryAddressProvider memoryAddressProvider,

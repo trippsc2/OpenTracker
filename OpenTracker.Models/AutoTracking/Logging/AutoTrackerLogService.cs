@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using OpenTracker.Models.Logging;
 
 namespace OpenTracker.Models.AutoTracking.Logging
 {

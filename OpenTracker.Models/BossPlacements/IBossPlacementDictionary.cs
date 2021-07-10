@@ -1,17 +1,14 @@
 ﻿using System.Collections.Generic;
+using OpenTracker.Models.Reset;
 using OpenTracker.Models.SaveLoad;
 
 namespace OpenTracker.Models.BossPlacements
 {
     /// <summary>
-    ///     This interface contains the dictionary container for boss placements.
+    /// This interface contains the dictionary container for <see cref="IBossPlacement"/> objects.
     /// </summary>
-    public interface IBossPlacementDictionary : IDictionary<BossPlacementID, IBossPlacement>,
+    public interface IBossPlacementDictionary : IDictionary<BossPlacementID, IBossPlacement>, IResettable,
         ISaveable<IDictionary<BossPlacementID, BossPlacementSaveData>>
     {
-        /// <summary>
-        ///     Resets the contained boss placements to their starting values.
-        /// </summary>
-        void Reset();
     }
 }

@@ -5,6 +5,6 @@
     /// </summary>
     public class SequenceBreakSaveData
     {
-        public bool Enabled { get; set; }
+        public bool Enabled { get; init; }
     }
 }

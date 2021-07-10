@@ -8,7 +8,7 @@ namespace OpenTracker.Models.SaveLoad
     /// </summary>
     public class LocationSaveData
     {
-        public IList<SectionSaveData>? Sections { get; set; }
-        public IList<MarkType?>? Markings { get; set; }
+        public IList<SectionSaveData>? Sections { get; init; }
+        public IList<MarkType?>? Markings { get; init; }
     }
 }

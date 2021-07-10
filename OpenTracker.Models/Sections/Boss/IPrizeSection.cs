@@ -3,52 +3,53 @@ using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.Dungeons.AccessibilityProvider;
 using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.UndoRedo;
+using OpenTracker.Models.UndoRedo.Sections;
 
 namespace OpenTracker.Models.Sections.Boss
 {
     /// <summary>
-    ///     This interface contains end of boss section with prize data.
+    /// This interface contains end of dungeon boss section with prize data.
     /// </summary>
     public interface IPrizeSection : IBossSection
     {
         /// <summary>
-        ///     The prize placement for the section.
+        /// The <see cref="IPrizePlacement"/>.
         /// </summary>
         IPrizePlacement PrizePlacement { get; }
         
         /// <summary>
-        ///     A factory for creating new prize sections.
+        /// A factory for creating new <see cref="IPrizeSection"/> objects.
         /// </summary>
         /// <param name="accessibilityProvider">
-        ///     The boss accessibility provider for this section.
+        ///     The <see cref="IBossAccessibilityProvider"/>.
         /// </param>
         /// <param name="name">
-        ///     A string representing the name of the section.
+        ///     A <see cref="string"/> representing the section name.
         /// </param>
         /// <param name="bossPlacement">
-        ///     The boss placement for the section.
+        ///     The <see cref="IBossPlacement"/>.
         /// </param>
         /// <param name="prizePlacement">
-        ///     The prize placement for the section.
+        ///     The <see cref="IPrizePlacement"/>.
         /// </param>
         /// <param name="autoTrackValue">
-        ///     The section auto-track value.
+        ///     The nullable <see cref="IAutoTrackValue"/>.
         /// </param>
         /// <returns>
-        ///     A prize section.
+        ///     A new <see cref="IPrizeSection"/> object.
         /// </returns>
         new delegate IPrizeSection Factory(
             IBossAccessibilityProvider accessibilityProvider, string name, IBossPlacement bossPlacement,
             IPrizePlacement prizePlacement, IAutoTrackValue? autoTrackValue = null);
 
         /// <summary>
-        ///     Returns a new undoable action to toggle the prize.
+        /// Returns a new <see cref="ITogglePrizeSection"/> objects.
         /// </summary>
         /// <param name="force">
-        ///     A boolean representing whether to ignore the logic.
+        ///     A <see cref="bool"/> representing whether to ignore the logic.
         /// </param>
         /// <returns>
-        ///     An undoable action to toggle the prize.
+        ///     A new <see cref="ITogglePrizeSection"/> object.
         /// </returns>
         IUndoable CreateTogglePrizeSectionAction(bool force);
     }

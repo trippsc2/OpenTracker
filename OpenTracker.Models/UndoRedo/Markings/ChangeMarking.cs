@@ -3,12 +3,12 @@
 namespace OpenTracker.Models.UndoRedo.Markings
 {
     /// <summary>
-    /// This class contains undoable action data to change a marking.
+    /// This class contains <see cref="IUndoable"/> action to change a <see cref="IMarking"/>.
     /// </summary>
     public class ChangeMarking : IChangeMarking
     {
         private readonly IMarking _marking;
-        private readonly MarkType _newMarking;
+        private readonly MarkType _newValue;
 
         private MarkType _previousMarking;
         
@@ -16,40 +16,28 @@ namespace OpenTracker.Models.UndoRedo.Markings
         /// Constructor
         /// </summary>
         /// <param name="marking">
-        /// The section data to be marked.
+        ///     The <see cref="IMarking"/>.
         /// </param>
-        /// <param name="newMarking">
-        /// The marking to be applied to the section.
+        /// <param name="newValue">
+        ///     The new <see cref="MarkType"/> value.
         /// </param>
-        public ChangeMarking(IMarking marking, MarkType newMarking)
+        public ChangeMarking(IMarking marking, MarkType newValue)
         {
             _marking = marking;
-            _newMarking = newMarking;
+            _newValue = newValue;
         }
 
-        /// <summary>
-        /// Returns whether the action can be executed.
-        /// </summary>
-        /// <returns>
-        /// A boolean representing whether the action can be executed.
-        /// </returns>
         public bool CanExecute()
         {
             return true;
         }
 
-        /// <summary>
-        /// Executes the action.
-        /// </summary>
         public void ExecuteDo()
         {
             _previousMarking = _marking.Mark;
-            _marking.Mark = _newMarking;
+            _marking.Mark = _newValue;
         }
 
-        /// <summary>
-        /// Undoes the action.
-        /// </summary>
         public void ExecuteUndo()
         {
             _marking.Mark = _previousMarking;

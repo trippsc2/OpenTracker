@@ -10,7 +10,7 @@ using OpenTracker.Models.UndoRedo.Sections;
 namespace OpenTracker.Models.Sections.Item
 {
     /// <summary>
-    ///     This class contains item sections with marking data.
+    /// This class contains item sections with marking data.
     /// </summary>
     public class ItemSection : ItemSectionBase
     {
@@ -18,37 +18,37 @@ namespace OpenTracker.Models.Sections.Item
         private readonly INode _node;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="saveLoadManager">
-        ///     The save/load manager.
+        ///     The <see cref="ISaveLoadManager"/>.
         /// </param>
         /// <param name="collectSectionFactory">
-        ///     An Autofac factory for creating collect section undoable actions.
+        ///     An Autofac factory for creating new <see cref="ICollectSection"/> objects.
         /// </param>
         /// <param name="uncollectSectionFactory">
-        ///     An Autofac factory for creating uncollect section undoable actions.
+        ///     An Autofac factory for creating new <see cref="IUncollectSection"/> objects.
         /// </param>
         /// <param name="name">
-        ///     A string representing the name of the section.
+        ///     A <see cref="string"/> representing the section name.
         /// </param>
         /// <param name="node">
-        ///     The requirement node to which this section belongs.
+        ///     The <see cref="INode"/> to which this section belongs.
         /// </param>
         /// <param name="total">
-        ///     A 32-bit signed integer representing the total number of items.
+        ///     A <see cref="int"/> representing the total number of items.
         /// </param>
         /// <param name="autoTrackValue">
-        ///     The auto-tracking value for this section.
+        ///     The nullable <see cref="IAutoTrackValue"/>.
         /// </param>
         /// <param name="marking">
-        ///     The section marking.
+        ///     The nullable <see cref="IMarking"/>.
         /// </param>
         /// <param name="requirement">
-        ///     The requirement for the section to be visible.
+        ///     The nullable <see cref="IRequirement"/> for the section to be visible.
         /// </param>
         /// <param name="visibleNode">
-        ///     The node that provides Inspect accessibility for this section.
+        ///     The nullable <see cref="INode"/> that provides Inspect <see cref="AccessibilityLevel"/> for the section.
         /// </param>
         public ItemSection(
             ISaveLoadManager saveLoadManager, ICollectSection.Factory collectSectionFactory,
@@ -99,13 +99,13 @@ namespace OpenTracker.Models.Sections.Item
         }
 
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on the INode interface.
+        /// Subscribes to the <see cref="INode.PropertyChanged"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnNodeChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -116,7 +116,7 @@ namespace OpenTracker.Models.Sections.Item
         }
 
         /// <summary>
-        ///     Updates values of the Accessibility property.
+        /// Updates values of the <see cref="Accessibility"/> property.
         /// </summary>
         private void UpdateAccessibility()
         {
@@ -133,7 +133,7 @@ namespace OpenTracker.Models.Sections.Item
         }
 
         /// <summary>
-        ///     Updates values of the Accessibility property.
+        /// Updates values of the <see cref="IItemSection.Accessible"/> property.
         /// </summary>
         private void UpdateAccessible()
         {

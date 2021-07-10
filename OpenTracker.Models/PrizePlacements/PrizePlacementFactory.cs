@@ -3,7 +3,7 @@
 namespace OpenTracker.Models.PrizePlacements
 {
     /// <summary>
-    ///     This class contains the creation logic for prize placement data.
+    /// This class contains the creation logic for <see cref="IPrizePlacement"/> objects.
     /// </summary>
     public class PrizePlacementFactory : IPrizePlacementFactory
     {
@@ -11,13 +11,13 @@ namespace OpenTracker.Models.PrizePlacements
         private readonly IPrizePlacement.Factory _factory;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="prizes">
-        ///     The prize dictionary.
+        ///     The <see cref="IPrizeDictionary"/>.
         /// </param>
         /// <param name="factory">
-        ///     A factory that creates prize placements.
+        ///     An Autofac factory for creating new <see cref="IPrizePlacement"/> objects.
         /// </param>
         public PrizePlacementFactory(IPrizeDictionary prizes, IPrizePlacement.Factory factory)
         {
@@ -26,13 +26,13 @@ namespace OpenTracker.Models.PrizePlacements
         }
 
         /// <summary>
-        ///     Returns a new prize placement instance for the specified prize placement ID.
+        /// Returns a new <see cref="IPrizePlacement"/> object for the specified <see cref="PrizePlacementID"/>.
         /// </summary>
         /// <param name="id">
-        ///     The prize placement ID.
+        ///     The <see cref="PrizePlacementID"/>.
         /// </param>
         /// <returns>
-        ///     A new prize placement instance.
+        ///     A new <see cref="IPrizePlacement"/> object.
         /// </returns>
         public IPrizePlacement GetPrizePlacement(PrizePlacementID id)
         {

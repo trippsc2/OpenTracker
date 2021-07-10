@@ -11,7 +11,7 @@ using ReactiveUI;
 namespace OpenTracker.Models.PrizePlacements
 {
     /// <summary>
-    ///     This class contains prize placement data.
+    /// This class contains prize placement data.
     /// </summary>
     public class PrizePlacement : ReactiveObject, IPrizePlacement
     {
@@ -29,16 +29,16 @@ namespace OpenTracker.Models.PrizePlacements
         }
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="prizes">
-        ///     The prize dictionary.
+        ///     The <see cref="IPrizeDictionary"/>.
         /// </param>
         /// <param name="changePrizeFactory">
-        ///     An Autofac factory for creating undoable actions to change the prize.
+        ///     An Autofac factory for creating new <see cref="IChangePrize"/> objects.
         /// </param>
         /// <param name="startingPrize">
-        ///     The starting prize item.
+        ///     The nullable <see cref="IItem"/> representing the starting prize.
         /// </param>
         public PrizePlacement(
             IPrizeDictionary prizes, IChangePrize.Factory changePrizeFactory, IItem? startingPrize = null)
@@ -97,12 +97,6 @@ namespace OpenTracker.Models.PrizePlacements
             Prize = _startingPrize;
         }
 
-        /// <summary>
-        ///     Returns a new prize placement save data instance for this prize placement.
-        /// </summary>
-        /// <returns>
-        ///     A new prize placement save data instance.
-        /// </returns>
         public PrizePlacementSaveData Save()
         {
             var prize = Prize is null ? (PrizeType?) null
@@ -114,9 +108,6 @@ namespace OpenTracker.Models.PrizePlacements
             };
         }
 
-        /// <summary>
-        ///     Loads prize placement save data.
-        /// </summary>
         public void Load(PrizePlacementSaveData? saveData)
         {
             if (saveData is null)

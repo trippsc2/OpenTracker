@@ -15,7 +15,7 @@ using ReactiveUI;
 namespace OpenTracker.Models.Dungeons
 {
     /// <summary>
-    ///     This class contains the immutable dungeon data.
+    /// This class contains the immutable dungeon data.
     /// </summary>
     public class Dungeon : ReactiveObject, IDungeon
     {
@@ -48,52 +48,52 @@ namespace OpenTracker.Models.Dungeons
         }
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="mode">
-        ///     The mode settings data.
-        /// </param>
-        /// <param name="id">
-        ///     The dungeon ID.
+        ///     The <see cref="IMode"/> data.
         /// </param>
         /// <param name="keyLayoutFactory">
-        ///     A factory for creating key layouts.
+        ///     The <see cref="IKeyLayoutFactory"/>.
+        /// </param>
+        /// <param name="id">
+        ///     The <see cref="DungeonID"/>.
         /// </param>
         /// <param name="map">
-        ///     The map item for the dungeon.
+        ///     The nullable <see cref="ICappedItem"/> representing the dungeon map.
         /// </param>
         /// <param name="compass">
-        ///     The compass item for the dungeon.
+        ///     The nullable <see cref="ICappedItem"/> representing the dungeon compass.
         /// </param>
         /// <param name="smallKey">
-        ///     The small key item for the dungeon.
+        ///     The <see cref="ISmallKeyItem"/> representing the dungeon small key.
         /// </param>
         /// <param name="bigKey">
-        ///     The big key item for the dungeon.
+        ///     The nullable <see cref="IBigKeyItem"/> representing the dungeon big key.
         /// </param>
         /// <param name="dungeonItems">
-        ///     A list of dungeon item IDs in this dungeon.
+        ///     A <see cref="IList{T}"/> of <see cref="DungeonItemID"/> representing the dungeon items.
         /// </param>
         /// <param name="bosses">
-        ///     A list of dungeon item IDs for bosses in this dungeon.
+        ///     A <see cref="IList{T}"/> of <see cref="DungeonItemID"/> representing the dungeon bosses.
         /// </param>
         /// <param name="smallKeyDrops">
-        ///     A list of dungeon item IDs for small key drops in this dungeon.
+        ///     A <see cref="IList{T}"/> of <see cref="DungeonItemID"/> representing the dungeon small key drops.
         /// </param>
         /// <param name="bigKeyDrops">
-        ///     A list of dungeon item IDs for big key drops in this dungeon.
+        ///     A <see cref="IList{T}"/> of <see cref="DungeonItemID"/> representing the dungeon big key drops.
         /// </param>
         /// <param name="smallKeyDoors">
-        ///     A list of small key door IDs in this dungeon.
+        ///     A <see cref="IList{T}"/> of <see cref="KeyDoorID"/> representing the dungeon small key doors.
         /// </param>
         /// <param name="bigKeyDoors">
-        ///     A list of big key door IDs in this dungeon.
+        ///     A <see cref="IList{T}"/> of <see cref="KeyDoorID"/> representing the dungeon big key doors.
         /// </param>
         /// <param name="nodes">
-        ///     A list of dungeon nodes in this dungeon.
+        ///     A <see cref="IList{T}"/> of <see cref="DungeonNodeID"/> representing the dungeon nodes.
         /// </param>
         /// <param name="entryNodes">
-        ///     A list of entry nodes for this dungeon.
+        ///     A <see cref="IList{T}"/> of <see cref="IOverworldNode"/> representing the dungeon entry nodes.
         /// </param>
         public Dungeon(
             IMode mode, IKeyLayoutFactory keyLayoutFactory, DungeonID id, ICappedItem? map, ICappedItem? compass,
@@ -130,13 +130,13 @@ namespace OpenTracker.Models.Dungeons
         }
         
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on the IMode interface.
+        /// Subscribes to the <see cref="IMode.PropertyChanged"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnModeChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -153,7 +153,7 @@ namespace OpenTracker.Models.Dungeons
         }
 
         /// <summary>
-        ///     Updates the value of the Total and TotalWithMapAndCompass properties.
+        /// Updates the value of the <see cref="Total"/> and <see cref="TotalWithMapAndCompass"/> properties.
         /// </summary>
         private void UpdateTotal()
         {

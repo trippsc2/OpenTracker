@@ -3,17 +3,17 @@
 namespace OpenTracker.Models.BossPlacements
 {
     /// <summary>
-    ///     This class contains the creation logic for boss placements.
+    /// This class contains the creation logic for <see cref="IBossPlacement"/> objects.
     /// </summary>
     public class BossPlacementFactory : IBossPlacementFactory
     {
         private readonly IBossPlacement.Factory _factory;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="factory">
-        ///     An Autofac factory for creating boss placements.
+        ///     An Autofac factory for creating new <see cref="IBossPlacement"/> objects.
         /// </param>
         public BossPlacementFactory(IBossPlacement.Factory factory)
         {

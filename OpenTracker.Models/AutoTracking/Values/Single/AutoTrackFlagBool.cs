@@ -4,7 +4,7 @@ using OpenTracker.Models.AutoTracking.Memory;
 namespace OpenTracker.Models.AutoTracking.Values.Single
 {
     /// <summary>
-    ///     This class contains the auto-tracking result value of a memory flag.
+    /// This class contains the auto-tracking result value of a memory flag.
     /// </summary>
     public class AutoTrackFlagBool : AutoTrackValueBase, IAutoTrackFlagBool
     {
@@ -12,13 +12,13 @@ namespace OpenTracker.Models.AutoTracking.Values.Single
         private readonly int _trueValue;
         
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="flag">
-        ///     The memory flag to be checked.
+        ///     The <see cref="IMemoryFlag"/> to be checked.
         /// </param>
         /// <param name="trueValue">
-        ///     A 32-bit signed integer representing the resultant value, if the flag is set.
+        ///     A <see cref="int"/> representing the resultant value, if the flag is set.
         /// </param>
         public AutoTrackFlagBool(IMemoryFlag flag, int trueValue)
         {
@@ -31,13 +31,13 @@ namespace OpenTracker.Models.AutoTracking.Values.Single
         }
 
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on the IMemoryFlag interface.
+        /// Subscribes to the <see cref="IMemoryFlag.PropertyChanged"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event was sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnMemoryChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -47,9 +47,6 @@ namespace OpenTracker.Models.AutoTracking.Values.Single
             }
         }
 
-        /// <summary>
-        ///     Updates the current value of this value.
-        /// </summary>
         protected override int? GetNewValue()
         {
             if (_flag.Status is null)

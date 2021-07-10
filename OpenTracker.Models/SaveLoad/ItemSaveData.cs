@@ -5,7 +5,7 @@
     /// </summary>
     public class ItemSaveData
     {
-        public int Current { get; set; }
+        public int Current { get; init; }
         public bool Known { get; set; }
     }
 }

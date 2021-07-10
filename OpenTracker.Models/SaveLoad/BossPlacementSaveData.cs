@@ -7,6 +7,6 @@ namespace OpenTracker.Models.SaveLoad
     /// </summary>
     public class BossPlacementSaveData
     {
-        public BossType? Boss { get; set; }
+        public BossType? Boss { get; init; }
     }
 }

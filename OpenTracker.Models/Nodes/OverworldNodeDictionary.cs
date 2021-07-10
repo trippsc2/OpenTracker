@@ -6,7 +6,8 @@ using OpenTracker.Utils;
 namespace OpenTracker.Models.Nodes
 {
     /// <summary>
-    /// This class contains the dictionary container for requirement node data.
+    /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for <see cref="INode"/> objects
+    /// indexed by <see cref="OverworldNodeID"/>.
     /// </summary>
     public class OverworldNodeDictionary : LazyDictionary<OverworldNodeID, INode>,
         IOverworldNodeDictionary
@@ -17,7 +18,7 @@ namespace OpenTracker.Models.Nodes
         /// Constructor
         /// </summary>
         /// <param name="factory">
-        /// The requirement node factory.
+        ///     An Autofac factory for creating the <see cref="IOverworldNodeFactory"/> object.
         /// </param>
         public OverworldNodeDictionary(IOverworldNodeFactory.Factory factory)
             : base(new Dictionary<OverworldNodeID, INode>())

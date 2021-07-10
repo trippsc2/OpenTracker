@@ -7,6 +7,7 @@ using Avalonia.Threading;
 using OpenTracker.Models.AutoTracking;
 using OpenTracker.Models.AutoTracking.Logging;
 using OpenTracker.Models.AutoTracking.SNESConnectors;
+using OpenTracker.Models.Logging;
 using OpenTracker.Utils.Dialog;
 using OpenTracker.ViewModels.AutoTracking;
 using ReactiveUI;

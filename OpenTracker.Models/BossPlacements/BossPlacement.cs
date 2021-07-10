@@ -7,7 +7,7 @@ using ReactiveUI;
 namespace OpenTracker.Models.BossPlacements
 {
     /// <summary>
-    ///     This class contains boss placement data.
+    /// This class contains boss placement data.
     /// </summary>
     public class BossPlacement : ReactiveObject, IBossPlacement
     {
@@ -25,16 +25,16 @@ namespace OpenTracker.Models.BossPlacements
         }
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="mode">
-        ///     The mode settings.
+        ///     The <see cref="IMode"/>.
         /// </param>
         /// <param name="changeBossFactory">
-        ///     An Autofac factory for creating change boss undoable actions.
+        ///     An Autofac factory for creating new <see cref="IChangeBoss"/> objects.
         /// </param>
         /// <param name="defaultBoss">
-        ///     The default boss type for the boss placement.
+        ///     The default <see cref="BossType"/> for the boss placement.
         /// </param>
         public BossPlacement(IMode mode, IChangeBoss.Factory changeBossFactory, BossType defaultBoss)
         {
@@ -70,12 +70,6 @@ namespace OpenTracker.Models.BossPlacements
             Boss = null;
         }
 
-        /// <summary>
-        ///     Returns a new boss placement save data instance for this boss placement.
-        /// </summary>
-        /// <returns>
-        ///     A new boss placement save data instance.
-        /// </returns>
         public BossPlacementSaveData Save()
         {
             return new()
@@ -84,9 +78,6 @@ namespace OpenTracker.Models.BossPlacements
             };
         }
 
-        /// <summary>
-        ///     Loads boss placement save data.
-        /// </summary>
         public void Load(BossPlacementSaveData? saveData)
         {
             if (saveData == null)

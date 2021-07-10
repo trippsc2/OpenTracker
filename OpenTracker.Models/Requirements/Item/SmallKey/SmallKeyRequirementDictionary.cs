@@ -5,7 +5,8 @@ using OpenTracker.Utils;
 namespace OpenTracker.Models.Requirements.Item.SmallKey
 {
     /// <summary>
-    ///     This class contains the dictionary container for small key requirements.
+    /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for <see cref="ISmallKeyRequirement"/>
+    /// objects indexed by <see cref="DungeonID"/> and count.
     /// </summary>
     public class SmallKeyRequirementDictionary : LazyDictionary<(DungeonID id, int count), IRequirement>,
         ISmallKeyRequirementDictionary
@@ -15,13 +16,13 @@ namespace OpenTracker.Models.Requirements.Item.SmallKey
         private readonly ISmallKeyRequirement.Factory _factory;
         
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="dungeons">
-        ///     The dungeon dictionary.
+        ///     The <see cref="IDungeonDictionary"/>.
         /// </param>
         /// <param name="factory">
-        ///     An Autofac factory for creating small key requirements.
+        ///     An Autofac factory for creating new <see cref="ISmallKeyRequirement"/> objects.
         /// </param>
         public SmallKeyRequirementDictionary(IDungeonDictionary dungeons, ISmallKeyRequirement.Factory factory)
             : base(new Dictionary<(DungeonID id, int count), IRequirement>())

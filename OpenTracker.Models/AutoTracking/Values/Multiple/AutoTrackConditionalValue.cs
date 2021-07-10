@@ -5,7 +5,7 @@ using ReactiveUI;
 namespace OpenTracker.Models.AutoTracking.Values.Multiple
 {
     /// <summary>
-    ///     This class contains the auto-tracking result value data that is conditional.
+    /// This class contains the auto-tracking result value data that is conditional.
     /// </summary>
     public class AutoTrackConditionalValue : ReactiveObject, IAutoTrackConditionalValue
     {
@@ -15,18 +15,17 @@ namespace OpenTracker.Models.AutoTracking.Values.Multiple
 
         public int? CurrentValue => _condition.Met ? _trueValue?.CurrentValue : _falseValue?.CurrentValue;
 
-
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="condition">
-        ///     A requirement condition for determining which value to use.
+        ///     A <see cref="IRequirement"/> condition for determining which value to use.
         /// </param>
         /// <param name="trueValue">
-        ///     The value to be presented, if the condition is met.
+        ///     The nullable <see cref="IAutoTrackValue"/> to be presented, if the condition is met.
         /// </param>
         /// <param name="falseValue">
-        ///     The value to be presented, if the condition is not met.
+        ///     The nullable <see cref="IAutoTrackValue"/> to be presented, if the condition is not met.
         /// </param>
         public AutoTrackConditionalValue(
             IRequirement condition, IAutoTrackValue? trueValue, IAutoTrackValue? falseValue)
@@ -49,13 +48,13 @@ namespace OpenTracker.Models.AutoTracking.Values.Multiple
         }
 
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on the IRequirement interface.
+        /// Subscribes to the <see cref="IRequirement.PropertyChanged"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event was sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnRequirementChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -66,13 +65,13 @@ namespace OpenTracker.Models.AutoTracking.Values.Multiple
         }
 
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on the IAutoTrackValue interface.
+        /// Subscribes to the <see cref="IAutoTrackValue.PropertyChanged"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event was sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnValueChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -83,7 +82,7 @@ namespace OpenTracker.Models.AutoTracking.Values.Multiple
         }
 
         /// <summary>
-        ///     Updates the value presented.
+        /// Updates the value presented.
         /// </summary>
         private void UpdateValue()
         {

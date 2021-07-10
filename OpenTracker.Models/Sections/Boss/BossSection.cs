@@ -10,8 +10,8 @@ using OpenTracker.Models.UndoRedo.Sections;
 namespace OpenTracker.Models.Sections.Boss
 {
     /// <summary>
-    ///     This class contains boss section data.  It will be used directly for GT LW boss re-fights and as a base
-    ///         class for final bosses that provide a prize.
+    /// This class contains boss section data.  It will be used directly for GT LW boss re-fights and as a base class
+    /// for final bosses that provide a prize.
     /// </summary>
     public class BossSection : SectionBase, IBossSection
     {
@@ -20,31 +20,31 @@ namespace OpenTracker.Models.Sections.Boss
         public IBossPlacement BossPlacement { get; }
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="saveLoadManager">
-        ///     The save/load manager.
+        ///     The <see cref="ISaveLoadManager"/>.
         /// </param>
         /// <param name="collectSectionFactory">
-        ///     An Autofac factory for creating collect section undoable actions.
+        ///     An Autofac factory for creating new <see cref="ICollectSection"/> objects.
         /// </param>
         /// <param name="uncollectSectionFactory">
-        ///     An Autofac factory for creating uncollect section undoable actions.
+        ///     An Autofac factory for creating new <see cref="IUncollectSection"/> objects.
         /// </param>
         /// <param name="accessibilityProvider">
-        ///     The boss accessibility provider for this section.
+        ///     The <see cref="IBossAccessibilityProvider"/>.
         /// </param>
         /// <param name="name">
-        ///     A string representing the name of the section.
+        ///     A <see cref="string"/> representing the section name.
         /// </param>
         /// <param name="bossPlacement">
-        ///     The boss placement for the section.
+        ///     The <see cref="IBossPlacement"/>.
         /// </param>
         /// <param name="autoTrackValue">
-        ///     The section auto-track value.
+        ///     The nullable <see cref="IAutoTrackValue"/>.
         /// </param>
         /// <param name="requirement">
-        ///     The requirement for the section to be active.
+        ///     The <see cref="IRequirement"/> for the section to be active.
         /// </param>
         public BossSection(
             ISaveLoadManager saveLoadManager, ICollectSection.Factory collectSectionFactory,
@@ -74,13 +74,13 @@ namespace OpenTracker.Models.Sections.Boss
         }
 
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on the IBossAccessibilityProvider interface.
+        /// Subscribes to the <see cref="IBossAccessibilityProvider.PropertyChanged"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnAccessibilityProviderChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -91,7 +91,7 @@ namespace OpenTracker.Models.Sections.Boss
         }
 
         /// <summary>
-        ///     Updates the value of the Accessibility property.
+        /// Updates the value of the <see cref="Accessibility"/> property.
         /// </summary>
         private void UpdateAccessibility()
         {

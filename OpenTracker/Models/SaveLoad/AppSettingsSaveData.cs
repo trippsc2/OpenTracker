@@ -8,25 +8,26 @@ namespace OpenTracker.Models.SaveLoad
 {
     public class AppSettingsSaveData
     {
-        public Version? Version { get; set; }
-        public bool? Maximized { get; set; }
-        public double? X { get; set; }
-        public double? Y { get; set; }
-        public double? Width { get; set; }
-        public double? Height { get; set; }
-        public bool DisplayAllLocations { get; set; }
-        public bool ShowItemCountsOnMap { get; set; }
-        public bool? DisplayMapsCompasses { get; set; }
-        public bool? AlwaysDisplayDungeonItems { get; set; }
-        public Orientation? LayoutOrientation { get; set; }
-        public Orientation? MapOrientation { get; set; }
-        public Dock HorizontalUIPanelPlacement { get; set; }
-        public Dock VerticalUIPanelPlacement { get; set; }
-        public Dock HorizontalItemsPlacement { get; set; }
-        public Dock VerticalItemsPlacement { get; set; }
-        public double UIScale { get; set; }
-        public string? EmphasisFontColor { get; set; }
-        public string? ConnectorColor { get; set; }
-        public Dictionary<AccessibilityLevel, string>? AccessibilityColors { get; set; }
+        // ReSharper disable once UnusedAutoPropertyAccessor.Global
+        public Version? Version { get; init; }
+        public bool? Maximized { get; init; }
+        public double? X { get; init; }
+        public double? Y { get; init; }
+        public double? Width { get; init; }
+        public double? Height { get; init; }
+        public bool DisplayAllLocations { get; init; }
+        public bool ShowItemCountsOnMap { get; init; }
+        public bool? DisplayMapsCompasses { get; init; }
+        public bool? AlwaysDisplayDungeonItems { get; init; }
+        public Orientation? LayoutOrientation { get; init; }
+        public Orientation? MapOrientation { get; init; }
+        public Dock HorizontalUIPanelPlacement { get; init; }
+        public Dock VerticalUIPanelPlacement { get; init; }
+        public Dock HorizontalItemsPlacement { get; init; }
+        public Dock VerticalItemsPlacement { get; init; }
+        public double UIScale { get; init; }
+        public string? EmphasisFontColor { get; init; }
+        public string? ConnectorColor { get; init; }
+        public Dictionary<AccessibilityLevel, string>? AccessibilityColors { get; init; }
     }
 }

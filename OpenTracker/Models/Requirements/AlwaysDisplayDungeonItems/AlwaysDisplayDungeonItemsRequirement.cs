@@ -4,7 +4,7 @@ using OpenTracker.Models.Settings;
 namespace OpenTracker.Models.Requirements.AlwaysDisplayDungeonItems
 {
     /// <summary>
-    ///     This class contains always display dungeon items setting requirement data.
+    /// This class contains the <see cref="ILayoutSettings.AlwaysDisplayDungeonItems"/> <see cref="IRequirement"/> data.
     /// </summary>
     public class AlwaysDisplayDungeonItemsRequirement : BooleanRequirement, IAlwaysDisplayDungeonItemsRequirement
     {
@@ -12,13 +12,14 @@ namespace OpenTracker.Models.Requirements.AlwaysDisplayDungeonItems
         private readonly bool _expectedValue;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="layoutSettings">
-        ///     The layout settings.
+        ///     The <see cref="ILayoutSettings"/>.
         /// </param>
         /// <param name="expectedValue">
-        ///     A boolean representing the expected value.
+        ///     A <see cref="bool"/> representing the expected <see cref="ILayoutSettings.AlwaysDisplayDungeonItems"/>
+        ///     value.
         /// </param>
         public AlwaysDisplayDungeonItemsRequirement(ILayoutSettings layoutSettings, bool expectedValue)
         {
@@ -31,13 +32,13 @@ namespace OpenTracker.Models.Requirements.AlwaysDisplayDungeonItems
         }
 
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on the ILayoutSettings interface.
+        /// Subscribes to the <see cref="ILayoutSettings.PropertyChanged"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnLayoutChanged(object? sender, PropertyChangedEventArgs e)
         {

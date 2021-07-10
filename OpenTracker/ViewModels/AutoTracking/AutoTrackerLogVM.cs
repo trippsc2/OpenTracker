@@ -1,18 +1,17 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Reactive;
 using System.Threading.Tasks;
 using Avalonia.Threading;
 using OpenTracker.Models.AutoTracking.Logging;
+using OpenTracker.Models.Logging;
 using OpenTracker.Utils;
 using OpenTracker.Utils.Dialog;
 using OpenTracker.ViewModels.Dialogs;
 using ReactiveUI;
-using LogLevel = OpenTracker.Models.AutoTracking.Logging.LogLevel;
+using LogLevel = OpenTracker.Models.Logging.LogLevel;
 
 namespace OpenTracker.ViewModels.AutoTracking
 {
@@ -22,22 +21,19 @@ namespace OpenTracker.ViewModels.AutoTracking
     public class AutoTrackerLogVM : ViewModelBase, IAutoTrackerLogVM
     {
         private readonly IAutoTrackerLogService _logService;
+        private readonly IAutoTrackerLogger _logger;
 
         private readonly IDialogService _dialogService;
         private readonly IFileDialogService _fileDialogService;
 
         private readonly IErrorBoxDialogVM.Factory _errorBoxFactory;
 
-        public ObservableCollection<string> LogLevelOptions { get; } =
-            new();
-        public ObservableStringBuilder LogText { get; } =
-            new();
+        public ObservableCollection<string> LogLevelOptions { get; } = new();
 
-        private LogLevel _logLevel = Models.AutoTracking.Logging.LogLevel.Info;
         public string LogLevel
         {
-            get => _logLevel.ToString();
-            set => this.RaiseAndSetIfChanged(ref _logLevel, Enum.Parse<LogLevel>(value));
+            get => _logger.MinimumLogLevel.ToString();
+            set => _logger.MinimumLogLevel = Enum.Parse<LogLevel>(value);
         }
 
         private bool _logVisible;
@@ -71,9 +67,12 @@ namespace OpenTracker.ViewModels.AutoTracking
         /// <param name="errorBoxFactory">
         /// An Autofac factory for creating error box dialog windows.
         /// </param>
+        /// <param name="logger">
+        ///     The <see cref="IAutoTrackerLogger"/>.
+        /// </param>
         public AutoTrackerLogVM(
             IAutoTrackerLogService logService, IDialogService dialogService, IFileDialogService fileDialogService,
-            IErrorBoxDialogVM.Factory errorBoxFactory)
+            IErrorBoxDialogVM.Factory errorBoxFactory, IAutoTrackerLogger logger)
         {
             _logService = logService;
 
@@ -81,7 +80,8 @@ namespace OpenTracker.ViewModels.AutoTracking
             _fileDialogService = fileDialogService;
 
             _errorBoxFactory = errorBoxFactory;
-            
+            _logger = logger;
+
             foreach (LogLevel logLevel in Enum.GetValues(typeof(LogLevel)))
             {
                 LogLevelOptions.Add(logLevel.ToString());                
@@ -94,95 +94,6 @@ namespace OpenTracker.ViewModels.AutoTracking
             SaveLogCommand = ReactiveCommand.CreateFromTask(SaveLog);
             SaveLogCommand.IsExecuting.ToProperty(
                 this, x => x.IsSavingLog, out _isSavingLog);
-
-            PropertyChanged += OnPropertyChanged;
-            _logService.LogCollection.CollectionChanged += OnLogMessageChanged;
-        }
-
-        /// <summary>
-        /// Subscribes to the PropertyChanged event on itself.
-        /// </summary>
-        /// <param name="sender">
-        /// The sending object of the event.
-        /// </param>
-        /// <param name="e">
-        /// The arguments of the PropertyChanged event.
-        /// </param>
-        private async void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(LogLevel))
-            {
-                await RefreshLog();
-            }
-        }
-
-        /// <summary>
-        /// Subscribes to the ObservableCollection of log messages CollectionChanged event.
-        /// </summary>
-        /// <param name="sender">
-        /// The sending object of the event.
-        /// </param>
-        /// <param name="e">
-        /// The arguments of the CollectionChanged event.
-        /// </param>
-        private async void OnLogMessageChanged(object? sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (e.Action != NotifyCollectionChangedAction.Add)
-            {
-                return;
-            }
-
-            if (e.NewItems is null)
-            {
-                throw new NullReferenceException();
-            }
-
-            foreach (var item in e.NewItems)
-            {
-                switch (item)
-                {
-                    case null:
-                        continue;
-                    case ILogMessage message when message.Level >= _logLevel:
-                        await AddLog(message);
-                        break;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Adds a log message to the log view.
-        /// </summary>
-        /// <param name="message">
-        /// The log message.
-        /// </param>
-        private async Task AddLog(ILogMessage message)
-        {
-            await Dispatcher.UIThread.InvokeAsync(() =>
-            {
-                LogText.AppendLine(
-                    $"{message.Level.ToString().ToUpper(CultureInfo.CurrentCulture)}:" +
-                    message.Content);
-            });
-        }
-
-        /// <summary>
-        /// Regenerates the log view from the log messages.
-        /// </summary>
-        private async Task RefreshLog()
-        {
-            await Dispatcher.UIThread.InvokeAsync(() =>
-            {
-                LogText.Clear();
-            });
-
-            foreach (var message in _logService.LogCollection)
-            {
-                if (message.Level >= _logLevel)
-                {
-                    await AddLog(message);
-                }
-            }
         }
 
         /// <summary>
@@ -194,7 +105,6 @@ namespace OpenTracker.ViewModels.AutoTracking
             
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
-                LogText.Clear();
             });
         }
         

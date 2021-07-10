@@ -4,7 +4,7 @@ using OpenTracker.Models.AutoTracking.Memory;
 namespace OpenTracker.Models.AutoTracking.Values.Single
 {
     /// <summary>
-    ///     This class contains the auto-tracking result value of a memory address bitwise integer.
+    /// This class contains the auto-tracking result value of a memory address bitwise integer.
     /// </summary>
     public class AutoTrackBitwiseIntegerValue : AutoTrackValueBase, IAutoTrackBitwiseIntegerValue
     {
@@ -13,16 +13,16 @@ namespace OpenTracker.Models.AutoTracking.Values.Single
         private readonly int _shift;
         
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="address">
-        ///     The memory address to be represented.
+        ///     The <see cref="IMemoryAddress"/> to be represented.
         /// </param>
         /// <param name="mask">
-        ///     An 8-bit unsigned integer representing the bitwise mask of relevant bits.
+        ///     A <see cref="byte"/> representing the bitwise mask of relevant bits.
         /// </param>
         /// <param name="shift">
-        ///     A 32-bit signed integer representing the number of bitwise digits to right shift the address value.
+        ///     A <see cref="int"/> representing the number of bitwise digits to right shift the address value.
         /// </param>
         public AutoTrackBitwiseIntegerValue(IMemoryAddress address, byte mask, int shift)
         {
@@ -36,13 +36,13 @@ namespace OpenTracker.Models.AutoTracking.Values.Single
         }
 
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on the IMemoryAddress interface.
+        /// Subscribes to the <see cref="IMemoryAddress.PropertyChanged"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event was sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnMemoryChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -52,9 +52,6 @@ namespace OpenTracker.Models.AutoTracking.Values.Single
             }
         }
 
-        /// <summary>
-        /// Updates the current value of this value.
-        /// </summary>
         protected override int? GetNewValue()
         {
             if (_address.Value is null)

@@ -8,13 +8,13 @@ namespace OpenTracker.Models.AutoTracking.Values.Multiple
     public interface IAutoTrackMultipleOverride : IAutoTrackValue
     {
         /// <summary>
-        ///     A factory for creating auto-tracking result values of an ordered priority list of results.
+        /// A factory for creating new <see cref="IAutoTrackMultipleOverride"/> objects.
         /// </summary>
         /// <param name="values">
-        ///     The list of auto-tracking result values.
+        ///     The <see cref="IList{T}"/> of <see cref="IAutoTrackValue"/>.
         /// </param>
         /// <returns>
-        ///     A new auto-tracking result value of an ordered priority list of results.
+        ///     A new <see cref="IAutoTrackMultipleOverride"/> object.
         /// </returns>
         delegate IAutoTrackMultipleOverride Factory(IList<IAutoTrackValue> values);
     }

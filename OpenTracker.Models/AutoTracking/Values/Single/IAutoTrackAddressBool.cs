@@ -3,25 +3,25 @@ using OpenTracker.Models.AutoTracking.Memory;
 namespace OpenTracker.Models.AutoTracking.Values.Single
 {
     /// <summary>
-    ///     This interface contains the auto-tracking result value of a comparison of a SNES memory address to a given
-    ///         value.
+    /// This interface contains the auto-tracking result value of a comparison of a SNES memory address to a given
+    /// value.
     /// </summary>
     public interface IAutoTrackAddressBool : IAutoTrackValue
     {
         /// <summary>
-        ///     A factory for creating auto-tracking result value boolean comparisons.
+        /// A factory for creating new <see cref="IAutoTrackAddressBool"/> objects.
         /// </summary>
         /// <param name="address">
-        ///     The memory address for the comparison.
+        ///     The <see cref="IMemoryAddress"/> for the comparison.
         /// </param>
         /// <param name="comparison">
-        ///     An 8-bit unsigned integer representing the value to which the memory address is compared.
+        ///     A <see cref="byte"/> representing the value to which the memory address is compared.
         /// </param>
         /// <param name="trueValue">
-        ///     A 32-bit signed integer representing the resultant value, if the comparison is true.
+        ///     A <see cref="int"/> representing the resultant value, if the comparison is true.
         /// </param>
         /// <returns>
-        ///     A new auto-tracking result value boolean comparison.
+        ///     A new <see cref="IAutoTrackAddressBool"/> object.
         /// </returns>
         delegate IAutoTrackAddressBool Factory(IMemoryAddress address, byte comparison, int trueValue);
     }

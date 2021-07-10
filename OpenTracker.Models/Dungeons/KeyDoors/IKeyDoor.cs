@@ -6,33 +6,33 @@ using ReactiveUI;
 namespace OpenTracker.Models.Dungeons.KeyDoors
 {
     /// <summary>
-    ///     This interface contains key door data.
+    /// This interface contains key door data.
     /// </summary>
     public interface IKeyDoor : IReactiveObject
     {
         /// <summary>
-        ///     The accessibility level of the key door.
+        /// The <see cref="AccessibilityLevel"/> of the key door.
         /// </summary>
         AccessibilityLevel Accessibility { get; }
         
         /// <summary>
-        ///     A boolean representing whether the key door is unlocked.
+        /// A <see cref="bool"/> representing whether the key door is unlocked.
         /// </summary>
         bool Unlocked { get; set; }
         
         /// <summary>
-        ///     The requirement for this key door.
+        /// The <see cref="IRequirement"/> for this key door to be unlocked.
         /// </summary>
         IRequirement Requirement { get; }
 
         /// <summary>
-        ///     A factory for creating key doors.
+        /// A factory for creating new <see cref="IKeyDoor"/> objects.
         /// </summary>
         /// <param name="node">
-        ///     The node to which the key door belongs.
+        ///     The <see cref="INode"/> to which the key door belongs.
         /// </param>
         /// <returns>
-        ///     A new key door.
+        ///     A new <see cref="IKeyDoor"/> object.
         /// </returns>
         delegate IKeyDoor Factory(INode node);
     }

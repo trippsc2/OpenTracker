@@ -4,18 +4,18 @@ using OpenTracker.Models.Sections.Boolean;
 namespace OpenTracker.Models.Sections.Factories
 {
     /// <summary>
-    ///     This interface contains the creation logic for shop sections.
+    /// This interface contains the creation logic for <see cref="IShopSection"/> objects.
     /// </summary>
     public interface IShopSectionFactory
     {
         /// <summary>
-        ///     Returns a new shop section for the specified location ID.
+        /// Returns a new <see cref="IShopSection"/> object for the specified <see cref="LocationID"/>.
         /// </summary>
         /// <param name="id">
-        ///     The location ID.
+        ///     The <see cref="LocationID"/>.
         /// </param>
         /// <returns>
-        ///     A new shop section.
+        ///     A new <see cref="IShopSection"/> object.
         /// </returns>
         IShopSection GetShopSection(LocationID id);
     }

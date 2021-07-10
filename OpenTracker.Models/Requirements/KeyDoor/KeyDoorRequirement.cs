@@ -4,17 +4,17 @@ using OpenTracker.Models.Dungeons.KeyDoors;
 namespace OpenTracker.Models.Requirements.KeyDoor
 {
     /// <summary>
-    ///     This class contains key door requirement data.
+    /// This class contains <see cref="IKeyDoor"/> <see cref="IRequirement"/> data.
     /// </summary>
     public class KeyDoorRequirement : BooleanRequirement, IKeyDoorRequirement
     {
         private readonly IKeyDoor _keyDoor;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="keyDoor">
-        ///     The key door for the requirement.
+        ///     The <see cref="IKeyDoor"/>.
         /// </param>
         public KeyDoorRequirement(IKeyDoor keyDoor)
         {
@@ -26,13 +26,13 @@ namespace OpenTracker.Models.Requirements.KeyDoor
         }
 
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on the IKeyDoor interface.
+        /// Subscribes to the <see cref="IKeyDoor.PropertyChanged"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnKeyDoorChanged(object? sender, PropertyChangedEventArgs e)
         {

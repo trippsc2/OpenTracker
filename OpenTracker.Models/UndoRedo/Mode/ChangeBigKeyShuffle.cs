@@ -3,7 +3,7 @@
 namespace OpenTracker.Models.UndoRedo.Mode
 {
     /// <summary>
-    /// This class contains undoable action data to change the big key shuffle setting.
+    /// This class contains the <see cref="IUndoable"/> action to change the <see cref="IMode.BigKeyShuffle"/> property.
     /// </summary>
     public class ChangeBigKeyShuffle : IChangeBigKeyShuffle
     {
@@ -17,10 +17,10 @@ namespace OpenTracker.Models.UndoRedo.Mode
         /// Constructor
         /// </summary>
         /// <param name="mode">
-        /// The mode settings.
+        ///     The <see cref="IMode"/> data.
         /// </param>
         /// <param name="newValue">
-        /// The new big key shuffle setting.
+        ///     A <see cref="bool"/> representing the new <see cref="IMode.BigKeyShuffle"/> value.
         /// </param>
         public ChangeBigKeyShuffle(IMode mode, bool newValue)
         {
@@ -28,29 +28,17 @@ namespace OpenTracker.Models.UndoRedo.Mode
             _newValue = newValue;
         }
 
-        /// <summary>
-        /// Returns whether the action can be executed.
-        /// </summary>
-        /// <returns>
-        /// A boolean representing whether the action can be executed.
-        /// </returns>
         public bool CanExecute()
         {
             return true;
         }
 
-        /// <summary>
-        /// Executes the action.
-        /// </summary>
         public void ExecuteDo()
         {
             _previousValue = _mode.BigKeyShuffle;
             _mode.BigKeyShuffle = _newValue;
         }
 
-        /// <summary>
-        /// Undoes the action.
-        /// </summary>
         public void ExecuteUndo()
         {
             _mode.BigKeyShuffle = _previousValue;

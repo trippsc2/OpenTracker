@@ -6,23 +6,23 @@ using OpenTracker.Models.Nodes.Connections;
 namespace OpenTracker.Models.Dungeons.Nodes
 {
     /// <summary>
-    ///     This interface contains the dungeon requirement node data.
+    /// This interface contains the dungeon requirement node data.
     /// </summary>
     public interface IDungeonNode : INode
     {
         /// <summary>
-        ///     A list of node connections to this node.
+        /// A <see cref="IList{T}"/> of <see cref="INodeConnection"/> to this node.
         /// </summary>
         IList<INodeConnection> Connections { get; }
 
         /// <summary>
-        ///     A factory for creating dungeon nodes.
+        /// A factory for creating new <see cref="IDungeonNode"/> objects.
         /// </summary>
         /// <param name="dungeonData">
-        ///     The mutable dungeon data parent class.
+        ///     The <see cref="IMutableDungeon"/> parent class.
         /// </param>'
         /// <returns>
-        ///     A new dungeon node.
+        ///     A new <see cref="IDungeonNode"/> objects.
         /// </returns>
         delegate IDungeonNode Factory(IMutableDungeon dungeonData);
     }

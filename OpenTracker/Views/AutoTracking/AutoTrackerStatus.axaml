@@ -10,7 +10,7 @@
   </Design.DataContext>
   
   <StackPanel Orientation="Horizontal">
-    <TextBlock Classes="AutoTrackerLabel">AutoTracking Status is:</TextBlock>
+    <TextBlock Classes="AutoTrackerLabel">Auto-Tracking Status is:</TextBlock>
     <TextBlock Classes="AutoTrackerStatus"
                Foreground="{Binding StatusTextColor, Mode=OneWay}"
                Text="{Binding StatusText}" />

@@ -1,9 +1,10 @@
 ﻿using System;
+using OpenTracker.Models.Items.Keys;
 
 namespace OpenTracker.Models.Items.Factories
 {
     /// <summary>
-    ///     This class contains creation logic for item data.
+    /// This class contains creation logic for <see cref="IItem"/> objects.
     /// </summary>
     public class ItemFactory : IItemFactory
     {
@@ -16,22 +17,22 @@ namespace OpenTracker.Models.Items.Factories
         private readonly ICrystalRequirementItem.Factory _crystalRequirementFactory;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="autoTrackValueFactory">
-        ///     An Autofac factory for creating auto-track values.
+        ///     An Autofac factory for creating the <see cref="IItemAutoTrackValueFactory"/> object.
         /// </param>
         /// <param name="cappedItemFactory">
-        ///     A factory for creating items with maximum values.
+        ///     A factory for creating new <see cref="ICappedItem"/> objects.
         /// </param>
         /// <param name="keyItemFactory">
-        ///     A factory for creating key items.
+        ///     A factory for creating new <see cref="ISmallKeyItem"/> and <see cref="IBigKeyItem"/> objects.
         /// </param>
         /// <param name="itemFactory">
-        ///     An Autofac factory for creating items.
+        ///     An Autofac factory for creating new <see cref="IItem"/> objects.
         /// </param>
         /// <param name="crystalRequirementFactory">
-        ///     An Autofac factory for creating crystal requirement items.
+        ///     An Autofac factory for creating new <see cref="ICrystalRequirementItem"/> objects.
         /// </param>
         public ItemFactory(IItemAutoTrackValueFactory.Factory autoTrackValueFactory,
             ICappedItemFactory cappedItemFactory, IKeyItemFactory keyItemFactory, IItem.Factory itemFactory,
@@ -176,13 +177,13 @@ namespace OpenTracker.Models.Items.Factories
         }
 
         /// <summary>
-        ///     Returns the starting amount of the item.
+        /// Returns the item starting amount for the specified <see cref="ItemType"/>.
         /// </summary>
         /// <param name="type">
-        ///     The item type.
+        ///     The <see cref="ItemType"/>.
         /// </param>
         /// <returns>
-        ///     A 32-bit integer representing the starting amount of the item.
+        ///     A <see cref="int"/> representing the starting amount of the item.
         /// </returns>
         private static int GetItemStarting(ItemType type)
         {

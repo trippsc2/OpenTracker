@@ -5,17 +5,19 @@ using OpenTracker.Utils;
 namespace OpenTracker.Models.Requirements.Aggregate
 {
     /// <summary>
-    ///     This class contains the dictionary container for requirements aggregating a set of requirements.
+    /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for
+    /// <see cref="IAggregateRequirement"/> objects indexed by <see cref="HashSet{T}"/> of <see cref="IRequirement"/>.
     /// </summary>
-    public class AggregateRequirementDictionary : LazyDictionary<HashSet<IRequirement>, IRequirement>, IAggregateRequirementDictionary
+    public class AggregateRequirementDictionary : LazyDictionary<HashSet<IRequirement>, IRequirement>,
+        IAggregateRequirementDictionary
     {
         private readonly IAggregateRequirement.Factory _factory;
         
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="factory">
-        ///     An Autofac factory for creating new requirements aggregating a set of requirements.
+        ///     An Autofac factory for creating new <see cref="IAggregateRequirement"/> objects.
         /// </param>
         public AggregateRequirementDictionary(IAggregateRequirement.Factory factory)
             : base(new Dictionary<HashSet<IRequirement>, IRequirement>(HashSet<IRequirement>.CreateSetComparer()))

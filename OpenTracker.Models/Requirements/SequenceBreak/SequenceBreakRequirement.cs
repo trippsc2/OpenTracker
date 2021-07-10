@@ -5,17 +5,17 @@ using OpenTracker.Models.SequenceBreaks;
 namespace OpenTracker.Models.Requirements.SequenceBreak
 {
     /// <summary>
-    ///     This class contains sequence break requirement data.
+    /// This class contains <see cref="ISequenceBreak"/> <see cref="IRequirement"/> data.
     /// </summary>
     public class SequenceBreakRequirement : BooleanRequirement, ISequenceBreakRequirement
     {
         private readonly ISequenceBreak _sequenceBreak;
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="sequenceBreak">
-        ///     The sequence break required.
+        ///     The <see cref="ISequenceBreak"/>.
         /// </param>
         public SequenceBreakRequirement(ISequenceBreak sequenceBreak) : base(AccessibilityLevel.SequenceBreak)
         {
@@ -27,13 +27,13 @@ namespace OpenTracker.Models.Requirements.SequenceBreak
         }
 
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on the ISequenceBreak interface.
+        /// Subscribes to the <see cref="ISequenceBreak.PropertyChanged"/> event.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnSequenceBreakChanged(object? sender, PropertyChangedEventArgs e)
         {

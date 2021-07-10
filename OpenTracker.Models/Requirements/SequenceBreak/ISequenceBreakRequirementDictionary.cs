@@ -4,7 +4,8 @@ using OpenTracker.Models.SequenceBreaks;
 namespace OpenTracker.Models.Requirements.SequenceBreak
 {
     /// <summary>
-    ///     This interface contains the dictionary container for sequence break requirements.
+    /// This interface contains the <see cref="IDictionary{TKey,TValue}"/> container for
+    /// <see cref="ISequenceBreakRequirement"/> objects indexed by <see cref="SequenceBreakType"/>.
     /// </summary>
     public interface ISequenceBreakRequirementDictionary : IDictionary<SequenceBreakType, IRequirement>
     {

@@ -1,4 +1,6 @@
 using System;
+using System.ComponentModel;
+using Autofac;
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;
 using OpenTracker.Models.AutoTracking;
@@ -29,10 +31,9 @@ namespace OpenTracker.UnitTests.Models.AutoTracking
         [InlineData(ConnectionStatus.Attaching, ConnectionStatus.Attaching)]
         [InlineData(ConnectionStatus.Connected, ConnectionStatus.Connected)]
         [InlineData(ConnectionStatus.Error, ConnectionStatus.Error)]
-        public void StatusChanged_ShouldBeEqualToExpected(ConnectionStatus expected, ConnectionStatus eventValue)
+        public void StatusChanged_ShouldBeEqualToExpected(ConnectionStatus expected, ConnectionStatus connectorStatus)
         {
-            _snesConnector.StatusChanged += Raise.Event<EventHandler<ConnectionStatus>>(
-                _snesConnector, eventValue);
+            _snesConnector.Status.Returns(connectorStatus);
             
             Assert.Equal(expected, _sut.Status);
         }
@@ -90,8 +91,8 @@ namespace OpenTracker.UnitTests.Models.AutoTracking
         {
             Assert.PropertyChanged(
                 _sut, nameof(IAutoTracker.Status), () =>
-                    _snesConnector.StatusChanged += Raise.Event<EventHandler<ConnectionStatus>>(
-                        _snesConnector, ConnectionStatus.Connected));
+                    _snesConnector.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                        _snesConnector, new PropertyChangedEventArgs(nameof(ISNESConnector.Status))));
         }
 
         [Theory]
@@ -103,8 +104,7 @@ namespace OpenTracker.UnitTests.Models.AutoTracking
         [InlineData(false, ConnectionStatus.Error)]
         public void CanConnect_ShouldReturnExpected(bool expected, ConnectionStatus status)
         {
-            _snesConnector.StatusChanged += Raise.Event<EventHandler<ConnectionStatus>>(
-                _snesConnector, status);
+            _snesConnector.Status.Returns(status);
             
             Assert.Equal(expected, _sut.CanConnect());
         }
@@ -115,7 +115,7 @@ namespace OpenTracker.UnitTests.Models.AutoTracking
             const string uriString = "Test";
             await _sut.Connect(uriString);
             
-            _snesConnector.Received().SetUri(uriString);
+            _snesConnector.Received().SetURI(uriString);
         }
 
         [Fact]
@@ -136,8 +136,7 @@ namespace OpenTracker.UnitTests.Models.AutoTracking
         [InlineData(false, ConnectionStatus.Error)]
         public void CanGetDevices_ShouldReturnExpected(bool expected, ConnectionStatus status)
         {
-            _snesConnector.StatusChanged += Raise.Event<EventHandler<ConnectionStatus>>(
-                _snesConnector, status);
+            _snesConnector.Status.Returns(status);
             
             Assert.Equal(expected, _sut.CanGetDevices());
         }
@@ -159,8 +158,7 @@ namespace OpenTracker.UnitTests.Models.AutoTracking
         [InlineData(true, ConnectionStatus.Error)]
         public void CanDisconnect_ShouldReturnExpected(bool expected, ConnectionStatus status)
         {
-            _snesConnector.StatusChanged += Raise.Event<EventHandler<ConnectionStatus>>(
-                _snesConnector, status);
+            _snesConnector.Status.Returns(status);
             
             Assert.Equal(expected, _sut.CanDisconnect());
         }
@@ -182,8 +180,7 @@ namespace OpenTracker.UnitTests.Models.AutoTracking
         [InlineData(false, ConnectionStatus.Error)]
         public void CanStart_ShouldReturnExpected(bool expected, ConnectionStatus status)
         {
-            _snesConnector.StatusChanged += Raise.Event<EventHandler<ConnectionStatus>>(
-                _snesConnector, status);
+            _snesConnector.Status.Returns(status);
             
             Assert.Equal(expected, _sut.CanStart());
         }
@@ -194,7 +191,7 @@ namespace OpenTracker.UnitTests.Models.AutoTracking
             const string device = "Test";
             await _sut.Start(device);
 
-            await _snesConnector.Received().SetDeviceAsync(device);
+            await _snesConnector.Received().AttachDeviceAsync(device);
         }
 
         [Fact]
@@ -208,8 +205,7 @@ namespace OpenTracker.UnitTests.Models.AutoTracking
         [Fact]
         public async void InGameCheck_ShouldCallRead_WhenCanReadMemoryReturnsTrue()
         {
-            _snesConnector.StatusChanged += Raise.Event<EventHandler<ConnectionStatus>>(
-                _snesConnector, ConnectionStatus.Connected);
+            _snesConnector.Status.Returns(ConnectionStatus.Connected);
             _snesConnector.ReadMemoryAsync(0x7e0010).ReturnsNull();
             await _sut.InGameCheck();
 
@@ -220,8 +216,7 @@ namespace OpenTracker.UnitTests.Models.AutoTracking
         public async void InGameCheck_ShouldSetInGameStatusValue_WhenReadMemoryReturnsTrue()
         {
             const byte value = 0x07;
-            _snesConnector.StatusChanged += Raise.Event<EventHandler<ConnectionStatus>>(
-                _snesConnector, ConnectionStatus.Connected);
+            _snesConnector.Status.Returns(ConnectionStatus.Connected);
             _snesConnector.ReadMemoryAsync(0x7e0010).Returns(new[] {value});
             await _sut.InGameCheck();
             
@@ -239,8 +234,7 @@ namespace OpenTracker.UnitTests.Models.AutoTracking
         [Fact]
         public async void MemoryCheck_ShouldDoNothing_WhenIsInGameReturnsFalse()
         {
-            _snesConnector.StatusChanged += Raise.Event<EventHandler<ConnectionStatus>>(
-                _snesConnector, ConnectionStatus.Connected);
+            _snesConnector.Status.Returns(ConnectionStatus.Connected);
             _snesConnector.ReadMemoryAsync(0x7e0010).ReturnsNull();
             await _sut.InGameCheck();
             await _sut.MemoryCheck();
@@ -251,8 +245,7 @@ namespace OpenTracker.UnitTests.Models.AutoTracking
         [Fact]
         public async void MemoryCheck_ShouldCallReadOnSNESConnector_WhenCanReadMemoryAndIsInGameReturnTrue()
         {
-            _snesConnector.StatusChanged += Raise.Event<EventHandler<ConnectionStatus>>(
-                _snesConnector, ConnectionStatus.Connected);
+            _snesConnector.Status.Returns(ConnectionStatus.Connected);
             _snesConnector.ReadMemoryAsync(Arg.Any<ulong>(), Arg.Any<int>()).Returns(x =>
             {
                 var bytesToRead = (int)x[1];
@@ -271,6 +264,25 @@ namespace OpenTracker.UnitTests.Models.AutoTracking
 
             await _snesConnector.Received(Enum.GetValues(typeof(MemorySegmentType)).Length + 1).ReadMemoryAsync(
                 Arg.Any<ulong>(), Arg.Any<int>());
+        }
+
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var sut = scope.Resolve<IAutoTracker>();
+            
+            Assert.NotNull(sut as AutoTracker);
+        }
+
+        [Fact]
+        public void AutofacSingleInstanceTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var value1 = scope.Resolve<IAutoTracker>();
+            var value2 = scope.Resolve<IAutoTracker>();
+            
+            Assert.Equal(value1, value2);
         }
     }
 }

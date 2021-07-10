@@ -7,7 +7,7 @@ using ReactiveUI;
 namespace OpenTracker.Models.Items
 {
     /// <summary>
-    ///     This class contains crystal requirement data.
+    /// This class contains crystal requirement data.
     /// </summary>
     public class CrystalRequirementItem : CappedItem, ICrystalRequirementItem
     {
@@ -19,19 +19,19 @@ namespace OpenTracker.Models.Items
         }
 
         /// <summary>
-        ///     Constructor
+        /// Constructor
         /// </summary>
         /// <param name="saveLoadManager">
-        ///     The save/load manager.
+        ///     The <see cref="ISaveLoadManager"/>.
         /// </param>
         /// <param name="addItemFactory">
-        ///     An Autofac factory for creating undoable actions to add items.
+        ///     An Autofac factory for creating new <see cref="IAddItem"/> objects.
         /// </param>
         /// <param name="removeItemFactory">
-        ///     An Autofac factory for creating undoable actions to remove items.
+        ///     An Autofac factory for creating new <see cref="IRemoveItem"/> objects.
         /// </param>
         /// <param name="cycleItemFactory">
-        ///     An Autofac factory for creating undoable actions to cycle the item.
+        ///     An Autofac factory for creating new <see cref="ICycleItem"/> objects.
         /// </param>
         public CrystalRequirementItem(
             ISaveLoadManager saveLoadManager, IAddItem.Factory addItemFactory, IRemoveItem.Factory removeItemFactory,
@@ -118,13 +118,13 @@ namespace OpenTracker.Models.Items
         }
         
         /// <summary>
-        ///     Subscribes to the PropertyChanged event on this object.
+        /// Subscribes to the <see cref="ICrystalRequirementItem.PropertyChanged"/> event on this object.
         /// </summary>
         /// <param name="sender">
-        ///     The sending object of the event.
+        ///     The <see cref="object"/> from which the event is sent.
         /// </param>
         /// <param name="e">
-        ///     The arguments of the PropertyChanged event.
+        ///     The <see cref="PropertyChangedEventArgs"/>.
         /// </param>
         private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {

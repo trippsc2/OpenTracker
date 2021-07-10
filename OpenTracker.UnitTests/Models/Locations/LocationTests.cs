@@ -23,6 +23,13 @@ namespace OpenTracker.UnitTests.Models.Locations
     {
         private const string Name = "Test";
         
+        private readonly IMarking.Factory _markingFactory = () => Substitute.For<IMarking>();
+        private readonly IClearLocation.Factory _clearLocationFactory = (_, _) => Substitute.For<IClearLocation>();
+        private readonly IPinLocation.Factory _pinLocationFactory = _ => Substitute.For<IPinLocation>();
+        private readonly IUnpinLocation.Factory _unpinLocationFactory = _ => Substitute.For<IUnpinLocation>();
+        private readonly IAddNote.Factory _addNoteFactory = _ => Substitute.For<IAddNote>();
+        private readonly IRemoveNote.Factory _removeNoteFactory = (_, _) => Substitute.For<IRemoveNote>();
+
         private readonly List<IMapLocation> _mapLocations = new();
 
         private readonly List<ISection> _sections = new()
@@ -48,12 +55,8 @@ namespace OpenTracker.UnitTests.Models.Locations
         public void Ctor_ShouldSetIDToExpected(LocationID expected, LocationID id)
         {
             var sut = new Location(
-                _mapLocationFactory, _sectionFactory, () => Substitute.For<IMarking>(),
-                (_, _) => Substitute.For<IClearLocation>(),
-                _ => Substitute.For<IPinLocation>(),
-                _ => Substitute.For<IUnpinLocation>(),
-                _ => Substitute.For<IAddNote>(), (_, _) => Substitute.For<IRemoveNote>(),
-                _notes, id, Name);
+                _mapLocationFactory, _sectionFactory, _markingFactory, _clearLocationFactory, _pinLocationFactory,
+                _unpinLocationFactory, _addNoteFactory, _removeNoteFactory, _notes, id, Name);
             
             Assert.Equal(expected, sut.ID);
         }
@@ -62,11 +65,8 @@ namespace OpenTracker.UnitTests.Models.Locations
         public void Ctor_ShouldSetNameToExpected()
         {
             var sut = new Location(
-                _mapLocationFactory, _sectionFactory, () => Substitute.For<IMarking>(),
-                (_, _) => Substitute.For<IClearLocation>(),
-                _ => Substitute.For<IPinLocation>(),
-                _ => Substitute.For<IUnpinLocation>(), _ => Substitute.For<IAddNote>(),
-                (_, _) => Substitute.For<IRemoveNote>(), _notes, LocationID.Pedestal, Name);
+                _mapLocationFactory, _sectionFactory, _markingFactory, _clearLocationFactory, _pinLocationFactory,
+                _unpinLocationFactory, _addNoteFactory, _removeNoteFactory, _notes, LocationID.Pedestal, Name);
             
             Assert.Equal(Name, sut.Name);
         }
@@ -75,11 +75,8 @@ namespace OpenTracker.UnitTests.Models.Locations
         public void Ctor_ShouldSetMapLocationsToExpected()
         {
             var sut = new Location(
-                _mapLocationFactory, _sectionFactory, () => Substitute.For<IMarking>(),
-                (_, _) => Substitute.For<IClearLocation>(),
-                _ => Substitute.For<IPinLocation>(),
-                _ => Substitute.For<IUnpinLocation>(), _ => Substitute.For<IAddNote>(),
-                (_, _) => Substitute.For<IRemoveNote>(), _notes, LocationID.Pedestal, Name);
+                _mapLocationFactory, _sectionFactory, _markingFactory, _clearLocationFactory, _pinLocationFactory,
+                _unpinLocationFactory, _addNoteFactory, _removeNoteFactory, _notes, LocationID.Pedestal, Name);
             
             Assert.Equal(_mapLocations, sut.MapLocations);
         }
@@ -88,11 +85,8 @@ namespace OpenTracker.UnitTests.Models.Locations
         public void Ctor_ShouldSetSectionsToExpected()
         {
             var sut = new Location(
-                _mapLocationFactory, _sectionFactory, () => Substitute.For<IMarking>(),
-                (_, _) => Substitute.For<IClearLocation>(),
-                _ => Substitute.For<IPinLocation>(),
-                _ => Substitute.For<IUnpinLocation>(), _ => Substitute.For<IAddNote>(),
-                (_, _) => Substitute.For<IRemoveNote>(), _notes, LocationID.Pedestal, Name);
+                _mapLocationFactory, _sectionFactory, _markingFactory, _clearLocationFactory, _pinLocationFactory,
+                _unpinLocationFactory, _addNoteFactory, _removeNoteFactory, _notes, LocationID.Pedestal, Name);
             
             Assert.Equal(_sections, sut.Sections);
         }
@@ -101,11 +95,8 @@ namespace OpenTracker.UnitTests.Models.Locations
         public void Ctor_ShouldSetNotesToExpected()
         {
             var sut = new Location(
-                _mapLocationFactory, _sectionFactory, () => Substitute.For<IMarking>(),
-                (_, _) => Substitute.For<IClearLocation>(),
-                _ => Substitute.For<IPinLocation>(),
-                _ => Substitute.For<IUnpinLocation>(), _ => Substitute.For<IAddNote>(),
-                (_, _) => Substitute.For<IRemoveNote>(), _notes, LocationID.Pedestal, Name);
+                _mapLocationFactory, _sectionFactory, _markingFactory, _clearLocationFactory, _pinLocationFactory,
+                _unpinLocationFactory, _addNoteFactory, _removeNoteFactory, _notes, LocationID.Pedestal, Name);
             
             Assert.Equal(_notes, sut.Notes);
         }
@@ -124,11 +115,8 @@ namespace OpenTracker.UnitTests.Models.Locations
             ((IItemSection) _sections[1]).Total.Returns(1);
             
             var sut = new Location(
-                _mapLocationFactory, _sectionFactory, () => Substitute.For<IMarking>(),
-                (_, _) => Substitute.For<IClearLocation>(),
-                _ => Substitute.For<IPinLocation>(),
-                _ => Substitute.For<IUnpinLocation>(), _ => Substitute.For<IAddNote>(),
-                (_, _) => Substitute.For<IRemoveNote>(), _notes, LocationID.Pedestal, Name);
+                _mapLocationFactory, _sectionFactory, _markingFactory, _clearLocationFactory, _pinLocationFactory,
+                _unpinLocationFactory, _addNoteFactory, _removeNoteFactory, _notes, LocationID.Pedestal, Name);
 
             _sections[0].Accessibility.Returns(AccessibilityLevel.Normal);
 
@@ -223,11 +211,8 @@ namespace OpenTracker.UnitTests.Models.Locations
             _sections[1].Accessibility.Returns(section2);
             
             var sut = new Location(
-                _mapLocationFactory, _sectionFactory, () => Substitute.For<IMarking>(),
-                (_, _) => Substitute.For<IClearLocation>(),
-                _ => Substitute.For<IPinLocation>(),
-                _ => Substitute.For<IUnpinLocation>(), _ => Substitute.For<IAddNote>(),
-                (_, _) => Substitute.For<IRemoveNote>(), _notes, LocationID.Pedestal, Name);
+                _mapLocationFactory, _sectionFactory, _markingFactory, _clearLocationFactory, _pinLocationFactory,
+                _unpinLocationFactory, _addNoteFactory, _removeNoteFactory, _notes, LocationID.Pedestal, Name);
             
             Assert.Equal(expected, sut.Accessibility);
         }
@@ -250,11 +235,8 @@ namespace OpenTracker.UnitTests.Models.Locations
             _sections[1].Accessibility.Returns(AccessibilityLevel.Cleared);
             
             Assert.Throws<Exception>(() => _ = new Location(
-                _mapLocationFactory, _sectionFactory, () => Substitute.For<IMarking>(),
-                (_, _) => Substitute.For<IClearLocation>(),
-                _ => Substitute.For<IPinLocation>(),
-                _ => Substitute.For<IUnpinLocation>(), _ => Substitute.For<IAddNote>(),
-                (_, _) => Substitute.For<IRemoveNote>(), _notes, LocationID.Pedestal, Name));
+                _mapLocationFactory, _sectionFactory, _markingFactory, _clearLocationFactory, _pinLocationFactory,
+                _unpinLocationFactory, _addNoteFactory, _removeNoteFactory, _notes, LocationID.Pedestal, Name));
         }
 
         [Fact]
@@ -270,11 +252,8 @@ namespace OpenTracker.UnitTests.Models.Locations
             ((IItemSection) _sections[1]).Total.Returns(1);
             
             var sut = new Location(
-                _mapLocationFactory, _sectionFactory, () => Substitute.For<IMarking>(),
-                (_, _) => Substitute.For<IClearLocation>(),
-                _ => Substitute.For<IPinLocation>(),
-                _ => Substitute.For<IUnpinLocation>(), _ => Substitute.For<IAddNote>(),
-                (_, _) => Substitute.For<IRemoveNote>(), _notes, LocationID.Pedestal, Name);
+                _mapLocationFactory, _sectionFactory, _markingFactory, _clearLocationFactory, _pinLocationFactory,
+                _unpinLocationFactory, _addNoteFactory, _removeNoteFactory, _notes, LocationID.Pedestal, Name);
 
             ((IItemSection) _sections[1]).Accessible.Returns(1);
 
@@ -300,11 +279,8 @@ namespace OpenTracker.UnitTests.Models.Locations
             ((IItemSection) _sections[1]).Accessible.Returns(accessible);
             
             var sut = new Location(
-                _mapLocationFactory, _sectionFactory, () => Substitute.For<IMarking>(),
-                (_, _) => Substitute.For<IClearLocation>(),
-                _ => Substitute.For<IPinLocation>(),
-                _ => Substitute.For<IUnpinLocation>(), _ => Substitute.For<IAddNote>(),
-                (_, _) => Substitute.For<IRemoveNote>(), _notes, LocationID.Pedestal, Name);
+                _mapLocationFactory, _sectionFactory, _markingFactory, _clearLocationFactory, _pinLocationFactory,
+                _unpinLocationFactory, _addNoteFactory, _removeNoteFactory, _notes, LocationID.Pedestal, Name);
             
             Assert.Equal(expected, sut.Accessible);
         }
@@ -322,11 +298,8 @@ namespace OpenTracker.UnitTests.Models.Locations
             ((IItemSection) _sections[1]).Accessible.Returns(1);
             
             var sut = new Location(
-                _mapLocationFactory, _sectionFactory, () => Substitute.For<IMarking>(),
-                (_, _) => Substitute.For<IClearLocation>(),
-                _ => Substitute.For<IPinLocation>(),
-                _ => Substitute.For<IUnpinLocation>(), _ => Substitute.For<IAddNote>(),
-                (_, _) => Substitute.For<IRemoveNote>(), _notes, LocationID.Pedestal, Name);
+                _mapLocationFactory, _sectionFactory, _markingFactory, _clearLocationFactory, _pinLocationFactory,
+                _unpinLocationFactory, _addNoteFactory, _removeNoteFactory, _notes, LocationID.Pedestal, Name);
 
             ((IItemSection) _sections[1]).Total.Returns(1);
             
@@ -352,11 +325,8 @@ namespace OpenTracker.UnitTests.Models.Locations
             ((IItemSection) _sections[1]).Total.Returns(total);
             
             var sut = new Location(
-                _mapLocationFactory, _sectionFactory, () => Substitute.For<IMarking>(),
-                (_, _) => Substitute.For<IClearLocation>(),
-                _ => Substitute.For<IPinLocation>(),
-                _ => Substitute.For<IUnpinLocation>(), _ => Substitute.For<IAddNote>(),
-                (_, _) => Substitute.For<IRemoveNote>(), _notes, LocationID.Pedestal, Name);
+                _mapLocationFactory, _sectionFactory, _markingFactory, _clearLocationFactory, _pinLocationFactory,
+                _unpinLocationFactory, _addNoteFactory, _removeNoteFactory, _notes, LocationID.Pedestal, Name);
             
             Assert.Equal(expected, sut.Total);
         }
@@ -365,11 +335,8 @@ namespace OpenTracker.UnitTests.Models.Locations
         public void ShouldBeDisplayed_ShouldRaisePropertyChanged()
         {
             var sut = new Location(
-                _mapLocationFactory, _sectionFactory, () => Substitute.For<IMarking>(),
-                (_, _) => Substitute.For<IClearLocation>(),
-                _ => Substitute.For<IPinLocation>(),
-                _ => Substitute.For<IUnpinLocation>(), _ => Substitute.For<IAddNote>(),
-                (_, _) => Substitute.For<IRemoveNote>(), _notes, LocationID.Pedestal, Name);
+                _mapLocationFactory, _sectionFactory, _markingFactory, _clearLocationFactory, _pinLocationFactory,
+                _unpinLocationFactory, _addNoteFactory, _removeNoteFactory, _notes, LocationID.Pedestal, Name);
 
             _sections[0].ShouldBeDisplayed.Returns(true);
             _sections[1].ShouldBeDisplayed.Returns(true);
@@ -391,11 +358,8 @@ namespace OpenTracker.UnitTests.Models.Locations
             _sections[1].ShouldBeDisplayed.Returns(section2ShouldBeDisplayed);
 
             var sut = new Location(
-                _mapLocationFactory, _sectionFactory, () => Substitute.For<IMarking>(),
-                (_, _) => Substitute.For<IClearLocation>(),
-                _ => Substitute.For<IPinLocation>(),
-                _ => Substitute.For<IUnpinLocation>(), _ => Substitute.For<IAddNote>(),
-                (_, _) => Substitute.For<IRemoveNote>(), _notes, LocationID.Pedestal, Name);
+                _mapLocationFactory, _sectionFactory, _markingFactory, _clearLocationFactory, _pinLocationFactory,
+                _unpinLocationFactory, _addNoteFactory, _removeNoteFactory, _notes, LocationID.Pedestal, Name);
             
             Assert.Equal(expected, sut.ShouldBeDisplayed);
         }
@@ -404,11 +368,8 @@ namespace OpenTracker.UnitTests.Models.Locations
         public void IsActive_ShouldRaisePropertyChanged()
         {
             var sut = new Location(
-                _mapLocationFactory, _sectionFactory, () => Substitute.For<IMarking>(),
-                (_, _) => Substitute.For<IClearLocation>(),
-                _ => Substitute.For<IPinLocation>(),
-                _ => Substitute.For<IUnpinLocation>(), _ => Substitute.For<IAddNote>(),
-                (_, _) => Substitute.For<IRemoveNote>(), _notes, LocationID.Pedestal, Name);
+                _mapLocationFactory, _sectionFactory, _markingFactory, _clearLocationFactory, _pinLocationFactory,
+                _unpinLocationFactory, _addNoteFactory, _removeNoteFactory, _notes, LocationID.Pedestal, Name);
 
             _sections[0].IsActive.Returns(true);
             _sections[1].IsActive.Returns(true);
@@ -430,11 +391,8 @@ namespace OpenTracker.UnitTests.Models.Locations
             _sections[1].IsActive.Returns(section2ShouldBeDisplayed);
 
             var sut = new Location(
-                _mapLocationFactory, _sectionFactory, () => Substitute.For<IMarking>(),
-                (_, _) => Substitute.For<IClearLocation>(),
-                _ => Substitute.For<IPinLocation>(),
-                _ => Substitute.For<IUnpinLocation>(), _ => Substitute.For<IAddNote>(),
-                (_, _) => Substitute.For<IRemoveNote>(), _notes, LocationID.Pedestal, Name);
+                _mapLocationFactory, _sectionFactory, _markingFactory, _clearLocationFactory, _pinLocationFactory,
+                _unpinLocationFactory, _addNoteFactory, _removeNoteFactory, _notes, LocationID.Pedestal, Name);
             
             Assert.Equal(expected, sut.IsActive);
         }
@@ -453,11 +411,8 @@ namespace OpenTracker.UnitTests.Models.Locations
             ((IItemSection) _sections[1]).Total.Returns(1);
             
             var sut = new Location(
-                _mapLocationFactory, _sectionFactory, () => Substitute.For<IMarking>(),
-                (_, _) => Substitute.For<IClearLocation>(),
-                _ => Substitute.For<IPinLocation>(),
-                _ => Substitute.For<IUnpinLocation>(), _ => Substitute.For<IAddNote>(),
-                (_, _) => Substitute.For<IRemoveNote>(), _notes, LocationID.Pedestal, Name);
+                _mapLocationFactory, _sectionFactory, _markingFactory, _clearLocationFactory, _pinLocationFactory,
+                _unpinLocationFactory, _addNoteFactory, _removeNoteFactory, _notes, LocationID.Pedestal, Name);
 
             _sections[0].Accessibility.Returns(AccessibilityLevel.Normal);
 
@@ -481,11 +436,8 @@ namespace OpenTracker.UnitTests.Models.Locations
             ((IItemSection) _sections[1]).Total.Returns(1);
             
             var sut = new Location(
-                _mapLocationFactory, _sectionFactory, () => Substitute.For<IMarking>(),
-                (_, _) => Substitute.For<IClearLocation>(),
-                _ => Substitute.For<IPinLocation>(),
-                _ => Substitute.For<IUnpinLocation>(), _ => Substitute.For<IAddNote>(),
-                (_, _) => Substitute.For<IRemoveNote>(), _notes, LocationID.Pedestal, Name);
+                _mapLocationFactory, _sectionFactory, _markingFactory, _clearLocationFactory, _pinLocationFactory,
+                _unpinLocationFactory, _addNoteFactory, _removeNoteFactory, _notes, LocationID.Pedestal, Name);
 
             _sections[0].Accessibility.Returns(AccessibilityLevel.Normal);
 
@@ -508,11 +460,8 @@ namespace OpenTracker.UnitTests.Models.Locations
             ((IItemSection) _sections[1]).Total.Returns(1);
             
             var sut = new Location(
-                _mapLocationFactory, _sectionFactory, () => Substitute.For<IMarking>(),
-                (_, _) => Substitute.For<IClearLocation>(),
-                _ => Substitute.For<IPinLocation>(),
-                _ => Substitute.For<IUnpinLocation>(), _ => Substitute.For<IAddNote>(),
-                (_, _) => Substitute.For<IRemoveNote>(), _notes, LocationID.Pedestal, Name);
+                _mapLocationFactory, _sectionFactory, _markingFactory, _clearLocationFactory, _pinLocationFactory,
+                _unpinLocationFactory, _addNoteFactory, _removeNoteFactory, _notes, LocationID.Pedestal, Name);
 
             ((IItemSection) _sections[1]).Accessible.Returns(1);
 
@@ -535,11 +484,8 @@ namespace OpenTracker.UnitTests.Models.Locations
             ((IItemSection) _sections[1]).Total.Returns(1);
             
             var sut = new Location(
-                _mapLocationFactory, _sectionFactory, () => Substitute.For<IMarking>(),
-                (_, _) => Substitute.For<IClearLocation>(),
-                _ => Substitute.For<IPinLocation>(),
-                _ => Substitute.For<IUnpinLocation>(), _ => Substitute.For<IAddNote>(),
-                (_, _) => Substitute.For<IRemoveNote>(), _notes, LocationID.Pedestal, Name);
+                _mapLocationFactory, _sectionFactory, _markingFactory, _clearLocationFactory, _pinLocationFactory,
+                _unpinLocationFactory, _addNoteFactory, _removeNoteFactory, _notes, LocationID.Pedestal, Name);
 
             _sections[1].Available.Returns(1);
 
@@ -562,11 +508,8 @@ namespace OpenTracker.UnitTests.Models.Locations
             ((IItemSection) _sections[1]).Accessible.Returns(1);
             
             var sut = new Location(
-                _mapLocationFactory, _sectionFactory, () => Substitute.For<IMarking>(),
-                (_, _) => Substitute.For<IClearLocation>(),
-                _ => Substitute.For<IPinLocation>(),
-                _ => Substitute.For<IUnpinLocation>(), _ => Substitute.For<IAddNote>(),
-                (_, _) => Substitute.For<IRemoveNote>(), _notes, LocationID.Pedestal, Name);
+                _mapLocationFactory, _sectionFactory, _markingFactory, _clearLocationFactory, _pinLocationFactory,
+                _unpinLocationFactory, _addNoteFactory, _removeNoteFactory, _notes, LocationID.Pedestal, Name);
 
             ((IItemSection) _sections[1]).Total.Returns(1);
             
@@ -580,11 +523,8 @@ namespace OpenTracker.UnitTests.Models.Locations
         public void SectionChanged_ShouldUpdateShouldBeDisplayed_WhenSectionShouldBeDisplayedChanged()
         { 
             var sut = new Location(
-                _mapLocationFactory, _sectionFactory, () => Substitute.For<IMarking>(),
-                (_, _) => Substitute.For<IClearLocation>(),
-                _ => Substitute.For<IPinLocation>(),
-                _ => Substitute.For<IUnpinLocation>(), _ => Substitute.For<IAddNote>(),
-                (_, _) => Substitute.For<IRemoveNote>(), _notes, LocationID.Pedestal, Name);
+                _mapLocationFactory, _sectionFactory, _markingFactory, _clearLocationFactory, _pinLocationFactory,
+                _unpinLocationFactory, _addNoteFactory, _removeNoteFactory, _notes, LocationID.Pedestal, Name);
 
             _sections[0].ShouldBeDisplayed.Returns(true);
 
@@ -598,11 +538,8 @@ namespace OpenTracker.UnitTests.Models.Locations
         public void SectionChanged_ShouldUpdateIsActive_WhenSectionIsActiveChanged()
         { 
             var sut = new Location(
-                _mapLocationFactory, _sectionFactory, () => Substitute.For<IMarking>(),
-                (_, _) => Substitute.For<IClearLocation>(),
-                _ => Substitute.For<IPinLocation>(),
-                _ => Substitute.For<IUnpinLocation>(), _ => Substitute.For<IAddNote>(),
-                (_, _) => Substitute.For<IRemoveNote>(), _notes, LocationID.Pedestal, Name);
+                _mapLocationFactory, _sectionFactory, _markingFactory, _clearLocationFactory, _pinLocationFactory,
+                _unpinLocationFactory, _addNoteFactory, _removeNoteFactory, _notes, LocationID.Pedestal, Name);
 
             _sections[0].IsActive.Returns(true);
 
@@ -616,11 +553,8 @@ namespace OpenTracker.UnitTests.Models.Locations
         public void CanBeCleared_ShouldCallCanBeClearedOnSections()
         {
             var sut = new Location(
-                _mapLocationFactory, _sectionFactory, () => Substitute.For<IMarking>(),
-                (_, _) => Substitute.For<IClearLocation>(),
-                _ => Substitute.For<IPinLocation>(),
-                _ => Substitute.For<IUnpinLocation>(), _ => Substitute.For<IAddNote>(),
-                (_, _) => Substitute.For<IRemoveNote>(), _notes, LocationID.Pedestal, Name);
+                _mapLocationFactory, _sectionFactory, _markingFactory, _clearLocationFactory, _pinLocationFactory,
+                _unpinLocationFactory, _addNoteFactory, _removeNoteFactory, _notes, LocationID.Pedestal, Name);
 
             _ = sut.CanBeCleared(false);
 
@@ -643,11 +577,8 @@ namespace OpenTracker.UnitTests.Models.Locations
             _sections[1].CanBeCleared(force).Returns(section2);
 
             var sut = new Location(
-                _mapLocationFactory, _sectionFactory, () => Substitute.For<IMarking>(),
-                (_, _) => Substitute.For<IClearLocation>(),
-                _ => Substitute.For<IPinLocation>(),
-                _ => Substitute.For<IUnpinLocation>(), _ => Substitute.For<IAddNote>(),
-                (_, _) => Substitute.For<IRemoveNote>(), _notes, LocationID.Pedestal, Name);
+                _mapLocationFactory, _sectionFactory, _markingFactory, _clearLocationFactory, _pinLocationFactory,
+                _unpinLocationFactory, _addNoteFactory, _removeNoteFactory, _notes, LocationID.Pedestal, Name);
             
             Assert.Equal(expected, sut.CanBeCleared(force));
         }
@@ -656,11 +587,8 @@ namespace OpenTracker.UnitTests.Models.Locations
         public void CreateAddNoteAction_ShouldReturnAction()
         {
             var sut = new Location(
-                _mapLocationFactory, _sectionFactory, () => Substitute.For<IMarking>(),
-                (_, _) => Substitute.For<IClearLocation>(),
-                _ => Substitute.For<IPinLocation>(),
-                _ => Substitute.For<IUnpinLocation>(), _ => Substitute.For<IAddNote>(),
-                (_, _) => Substitute.For<IRemoveNote>(), _notes, LocationID.Pedestal, Name);
+                _mapLocationFactory, _sectionFactory, _markingFactory, _clearLocationFactory, _pinLocationFactory,
+                _unpinLocationFactory, _addNoteFactory, _removeNoteFactory, _notes, LocationID.Pedestal, Name);
 
             Assert.NotNull(sut.CreateAddNoteAction());
         }
@@ -669,11 +597,8 @@ namespace OpenTracker.UnitTests.Models.Locations
         public void CreateRemoveNoteAction_ShouldReturnAction()
         {
             var sut = new Location(
-                _mapLocationFactory, _sectionFactory, () => Substitute.For<IMarking>(),
-                (_, _) => Substitute.For<IClearLocation>(),
-                _ => Substitute.For<IPinLocation>(),
-                _ => Substitute.For<IUnpinLocation>(), _ => Substitute.For<IAddNote>(),
-                (_, _) => Substitute.For<IRemoveNote>(), _notes, LocationID.Pedestal, Name);
+                _mapLocationFactory, _sectionFactory, _markingFactory, _clearLocationFactory, _pinLocationFactory,
+                _unpinLocationFactory, _addNoteFactory, _removeNoteFactory, _notes, LocationID.Pedestal, Name);
 
             Assert.NotNull(sut.CreateRemoveNoteAction(Substitute.For<IMarking>()));
         }
@@ -682,11 +607,8 @@ namespace OpenTracker.UnitTests.Models.Locations
         public void CreateClearLocationAction_ShouldReturnAction()
         {
             var sut = new Location(
-                _mapLocationFactory, _sectionFactory, () => Substitute.For<IMarking>(),
-                (_, _) => Substitute.For<IClearLocation>(),
-                _ => Substitute.For<IPinLocation>(),
-                _ => Substitute.For<IUnpinLocation>(), _ => Substitute.For<IAddNote>(),
-                (_, _) => Substitute.For<IRemoveNote>(), _notes, LocationID.Pedestal, Name);
+                _mapLocationFactory, _sectionFactory, _markingFactory, _clearLocationFactory, _pinLocationFactory,
+                _unpinLocationFactory, _addNoteFactory, _removeNoteFactory, _notes, LocationID.Pedestal, Name);
 
             Assert.NotNull(sut.CreateClearLocationAction());
         }
@@ -695,11 +617,8 @@ namespace OpenTracker.UnitTests.Models.Locations
         public void CreatePinLocationAction_ShouldReturnAction()
         {
             var sut = new Location(
-                _mapLocationFactory, _sectionFactory, () => Substitute.For<IMarking>(),
-                (_, _) => Substitute.For<IClearLocation>(),
-                _ => Substitute.For<IPinLocation>(),
-                _ => Substitute.For<IUnpinLocation>(), _ => Substitute.For<IAddNote>(),
-                (_, _) => Substitute.For<IRemoveNote>(), _notes, LocationID.Pedestal, Name);
+                _mapLocationFactory, _sectionFactory, _markingFactory, _clearLocationFactory, _pinLocationFactory,
+                _unpinLocationFactory, _addNoteFactory, _removeNoteFactory, _notes, LocationID.Pedestal, Name);
 
             Assert.NotNull(sut.CreatePinLocationAction());
         }
@@ -708,11 +627,8 @@ namespace OpenTracker.UnitTests.Models.Locations
         public void CreateUnpinLocationAction_ShouldReturnAction()
         {
             var sut = new Location(
-                _mapLocationFactory, _sectionFactory, () => Substitute.For<IMarking>(),
-                (_, _) => Substitute.For<IClearLocation>(),
-                _ => Substitute.For<IPinLocation>(),
-                _ => Substitute.For<IUnpinLocation>(), _ => Substitute.For<IAddNote>(),
-                (_, _) => Substitute.For<IRemoveNote>(), _notes, LocationID.Pedestal, Name);
+                _mapLocationFactory, _sectionFactory, _markingFactory, _clearLocationFactory, _pinLocationFactory,
+                _unpinLocationFactory, _addNoteFactory, _removeNoteFactory, _notes, LocationID.Pedestal, Name);
 
             Assert.NotNull(sut.CreateUnpinLocationAction());
         }
@@ -721,11 +637,8 @@ namespace OpenTracker.UnitTests.Models.Locations
         public void Reset_ShouldCallResetOnSections()
         {
             var sut = new Location(
-                _mapLocationFactory, _sectionFactory, () => Substitute.For<IMarking>(),
-                (_, _) => Substitute.For<IClearLocation>(),
-                _ => Substitute.For<IPinLocation>(),
-                _ => Substitute.For<IUnpinLocation>(), _ => Substitute.For<IAddNote>(),
-                (_, _) => Substitute.For<IRemoveNote>(), _notes, LocationID.Pedestal, Name);
+                _mapLocationFactory, _sectionFactory, _markingFactory, _clearLocationFactory, _pinLocationFactory,
+                _unpinLocationFactory, _addNoteFactory, _removeNoteFactory, _notes, LocationID.Pedestal, Name);
 
             sut.Reset();
 
@@ -749,11 +662,8 @@ namespace OpenTracker.UnitTests.Models.Locations
             }.ToExpectedObject();
             
             var sut = new Location(
-                _mapLocationFactory, _sectionFactory, () => Substitute.For<IMarking>(),
-                (_, _) => Substitute.For<IClearLocation>(),
-                _ => Substitute.For<IPinLocation>(),
-                _ => Substitute.For<IUnpinLocation>(), _ => Substitute.For<IAddNote>(),
-                (_, _) => Substitute.For<IRemoveNote>(), _notes, LocationID.Pedestal, Name);
+                _mapLocationFactory, _sectionFactory, _markingFactory, _clearLocationFactory, _pinLocationFactory,
+                _unpinLocationFactory, _addNoteFactory, _removeNoteFactory, _notes, LocationID.Pedestal, Name);
 
             var saveData = sut.Save();
             
@@ -779,11 +689,8 @@ namespace OpenTracker.UnitTests.Models.Locations
             }.ToExpectedObject();
 
             var sut = new Location(
-                _mapLocationFactory, _sectionFactory, () => Substitute.For<IMarking>(),
-                (_, _) => Substitute.For<IClearLocation>(),
-                _ => Substitute.For<IPinLocation>(),
-                _ => Substitute.For<IUnpinLocation>(), _ => Substitute.For<IAddNote>(),
-                (_, _) => Substitute.For<IRemoveNote>(), _notes, LocationID.Pedestal, Name);
+                _mapLocationFactory, _sectionFactory, _markingFactory, _clearLocationFactory, _pinLocationFactory,
+                _unpinLocationFactory, _addNoteFactory, _removeNoteFactory, _notes, LocationID.Pedestal, Name);
             
             markings.ShouldEqual(sut.Save().Markings);
         }
@@ -792,11 +699,8 @@ namespace OpenTracker.UnitTests.Models.Locations
         public void Load_ShouldDoNothing_WhenSaveDataIsNull()
         {
             var sut = new Location(
-                _mapLocationFactory, _sectionFactory, () => Substitute.For<IMarking>(),
-                (_, _) => Substitute.For<IClearLocation>(),
-                _ => Substitute.For<IPinLocation>(),
-                _ => Substitute.For<IUnpinLocation>(), _ => Substitute.For<IAddNote>(),
-                (_, _) => Substitute.For<IRemoveNote>(), _notes, LocationID.Pedestal, Name);
+                _mapLocationFactory, _sectionFactory, _markingFactory, _clearLocationFactory, _pinLocationFactory,
+                _unpinLocationFactory, _addNoteFactory, _removeNoteFactory, _notes, LocationID.Pedestal, Name);
 
             sut.Load(null);
             
@@ -817,11 +721,8 @@ namespace OpenTracker.UnitTests.Models.Locations
             };
 
             var sut = new Location(
-                _mapLocationFactory, _sectionFactory, () => Substitute.For<IMarking>(),
-                (_, _) => Substitute.For<IClearLocation>(),
-                _ => Substitute.For<IPinLocation>(),
-                _ => Substitute.For<IUnpinLocation>(), _ => Substitute.For<IAddNote>(),
-                (_, _) => Substitute.For<IRemoveNote>(), _notes, LocationID.Pedestal, Name);
+                _mapLocationFactory, _sectionFactory, _markingFactory, _clearLocationFactory, _pinLocationFactory,
+                _unpinLocationFactory, _addNoteFactory, _removeNoteFactory, _notes, LocationID.Pedestal, Name);
 
             var saveData = new LocationSaveData
             {
@@ -847,11 +748,8 @@ namespace OpenTracker.UnitTests.Models.Locations
             };
 
             var sut = new Location(
-                _mapLocationFactory, _sectionFactory, () => Substitute.For<IMarking>(),
-                (_, _) => Substitute.For<IClearLocation>(),
-                _ => Substitute.For<IPinLocation>(),
-                _ => Substitute.For<IUnpinLocation>(), _ => Substitute.For<IAddNote>(),
-                (_, _) => Substitute.For<IRemoveNote>(), _notes, LocationID.Pedestal, Name);
+                _mapLocationFactory, _sectionFactory, _markingFactory, _clearLocationFactory, _pinLocationFactory,
+                _unpinLocationFactory, _addNoteFactory, _removeNoteFactory, _notes, LocationID.Pedestal, Name);
 
             var saveData = new LocationSaveData
             {

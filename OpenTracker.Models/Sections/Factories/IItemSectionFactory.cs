@@ -5,24 +5,24 @@ using OpenTracker.Models.Sections.Item;
 namespace OpenTracker.Models.Sections.Factories
 {
     /// <summary>
-    ///     This interface contains the creation logic for item sections.
+    /// This interface contains the creation logic for <see cref="IItemSection"/> objects.
     /// </summary>
     public interface IItemSectionFactory
     {
         /// <summary>
-        ///     Returns a new item section.
+        /// Returns a new <see cref="IItemSection"/> object.
         /// </summary>
         /// <param name="autoTrackValue">
-        ///     The auto-track value.
+        ///     The nullable <see cref="IAutoTrackValue"/>.
         /// </param>
         /// <param name="id">
-        ///     The location ID.
+        ///     The <see cref="LocationID"/>.
         /// </param>
         /// <param name="index">
-        ///     The section index.
+        ///     A <see cref="int"/> representing the section index.
         /// </param>
         /// <returns>
-        ///     A new item section.
+        ///     A new <see cref="IItemSection"/> object.
         /// </returns>
         IItemSection GetItemSection(IAutoTrackValue? autoTrackValue, LocationID id, int index = 0);
     }

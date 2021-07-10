@@ -7,27 +7,27 @@ using OpenTracker.Models.Sections.Item;
 namespace OpenTracker.Models.Sections.Factories
 {
     /// <summary>
-    ///     This interface contains the creation logic for dungeon item sections.
+    /// This interface contains the creation logic for <see cref="IDungeonItemSection"/> objects.
     /// </summary>
     public interface IDungeonItemSectionFactory
     {
         /// <summary>
-        ///     Returns a new dungeon item section for the specified location ID.
+        /// Returns a new <see cref="IDungeonItemSection"/> object for the specified <see cref="LocationID"/>.
         /// </summary>
         /// <param name="dungeon">
-        ///     The dungeon.
+        ///     The <see cref="IDungeon"/>.
         /// </param>
         /// <param name="accessibilityProvider">
-        ///     The accessibility provider.
+        ///     The <see cref="IDungeonAccessibilityProvider"/>.
         /// </param>
         /// <param name="autoTrackValue">
-        ///     The auto-track value.
+        ///     The nullable <see cref="IAutoTrackValue"/>.
         /// </param>
         /// <param name="id">
-        ///     The location ID.
+        ///     The <see cref="LocationID"/>.
         /// </param>
         /// <returns>
-        ///     A new dungeon item section.
+        ///     A new <see cref="IDungeonItemSection"/> object.
         /// </returns>
         IDungeonItemSection GetDungeonItemSection(
             IDungeon dungeon, IDungeonAccessibilityProvider accessibilityProvider, IAutoTrackValue? autoTrackValue,

@@ -1,16 +1,15 @@
 ﻿using System.Collections.Generic;
+using OpenTracker.Models.Reset;
 using OpenTracker.Models.SaveLoad;
 
 namespace OpenTracker.Models.Items
 {
     /// <summary>
-    ///     This interface contains the dictionary container for item data.
+    /// This interface contains the <see cref="IDictionary{TKey,TValue}"/> container for <see cref="IItem"/> objects
+    /// indexed by <see cref="ItemType"/>.
     /// </summary>
-    public interface IItemDictionary : IDictionary<ItemType, IItem>, ISaveable<IDictionary<ItemType, ItemSaveData>>
+    public interface IItemDictionary : IDictionary<ItemType, IItem>, IResettable,
+        ISaveable<IDictionary<ItemType, ItemSaveData>>
     {
-        /// <summary>
-        ///     Resets all items to their starting values.
-        /// </summary>
-        void Reset();
     }
 }
