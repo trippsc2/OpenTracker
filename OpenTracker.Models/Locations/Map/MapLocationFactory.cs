@@ -219,8 +219,7 @@ namespace OpenTracker.Models.Locations.Map
                             _alternativeRequirements[new HashSet<IRequirement>
                             {
                                 _entranceShuffleRequirements[EntranceShuffle.None],
-                                _entranceShuffleRequirements[EntranceShuffle.All],
-                                _entranceShuffleRequirements[EntranceShuffle.Insanity]
+                                _entranceShuffleRequirements[EntranceShuffle.Dungeon]
                             }],
                             _worldStateRequirements[WorldState.StandardOpen]
                         }]),
