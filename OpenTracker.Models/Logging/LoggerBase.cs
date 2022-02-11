@@ -8,10 +8,8 @@ namespace OpenTracker.Models.Logging
     /// </summary>
     public abstract class LoggerBase : ILogger
     {
-        private readonly IStreamWriterWrapper.Factory _streamWriterFactory;
+        private readonly IStreamWriterWrapper _streamWriter;
         
-        private readonly string _filePath;
-
         public LogLevel MinimumLogLevel { get; set; }
 
         /// <summary>
@@ -29,10 +27,9 @@ namespace OpenTracker.Models.Logging
         protected LoggerBase(
             IFileManager fileManager, IStreamWriterWrapper.Factory streamWriterFactory, string filePath)
         {
-            _filePath = filePath;
-            _streamWriterFactory = streamWriterFactory;
+            fileManager.EnsureFileDoesNotExist(filePath);
             
-            fileManager.EnsureFileDoesNotExist(_filePath);
+            _streamWriter = streamWriterFactory(filePath, true);
         }
         
         public void Log(LogLevel logLevel, string message)
@@ -42,8 +39,7 @@ namespace OpenTracker.Models.Logging
                 return;
             }
             
-            using var streamWriter = _streamWriterFactory(_filePath, true);
-            streamWriter.WriteLine($"{logLevel.ToString().ToUpperInvariant()}: {message}");
+            _streamWriter.WriteLine($"{logLevel.ToString().ToUpperInvariant()}: {message}");
         }
 
         public async Task LogAsync(LogLevel logLevel, string message)
@@ -53,8 +49,7 @@ namespace OpenTracker.Models.Logging
                 return;
             }
 
-            await using var streamWriter = _streamWriterFactory(_filePath, true);
-            await streamWriter.WriteLineAsync($"{logLevel.ToString().ToUpperInvariant()}: {message}");
+            await _streamWriter.WriteLineAsync($"{logLevel.ToString().ToUpperInvariant()}: {message}");
         }
     }
 }
