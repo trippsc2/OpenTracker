@@ -20,7 +20,7 @@ namespace OpenTracker.ViewModels.Items
 
         public bool Visible => _requirement is null || _requirement.Met;
         public string ImageSource => _item.ImageSource;
-        public bool LabelVisible => !(_item.Label is null);
+        public bool LabelVisible => _item.Label is not null;
         public string? Label => _item.Label;
         public string LabelColor => _item.LabelColor;
 

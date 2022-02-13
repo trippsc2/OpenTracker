@@ -227,7 +227,7 @@ namespace OpenTracker.ViewModels.Dungeons
                 _aggregateRequirements[new HashSet<IRequirement>
                 {
                     _itemsPanelOrientationRequirements[Orientation.Vertical],
-                    _aggregateRequirements[new HashSet<IRequirement>
+                    _alternativeRequirements[new HashSet<IRequirement>
                     {
                         _alwaysDisplayDungeonItemsRequirements[true],
                         _bigKeyShuffleRequirements[true]

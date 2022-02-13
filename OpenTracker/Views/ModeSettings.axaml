@@ -17,7 +17,7 @@
     <Image Source="avares://OpenTracker/Assets/Images/settings.png" ToolTip.Tip="Mode Settings">
       <i:Interaction.Behaviors>
         <ia:EventTriggerBehavior EventName="PointerReleased">
-          <ia:InvokeCommandAction Command="{Binding HandleClick}" />
+          <ia:InvokeCommandAction Command="{Binding HandleClick}" PassEventArgsToCommand="True" />
         </ia:EventTriggerBehavior>
       </i:Interaction.Behaviors>
     </Image>

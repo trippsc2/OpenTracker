@@ -29,7 +29,7 @@
           <Image DockPanel.Dock="Right" Classes="Close" Source="avares://OpenTracker/Assets/Images/close.png">
             <i:Interaction.Behaviors>
               <ia:EventTriggerBehavior EventName="PointerReleased">
-                <ia:InvokeCommandAction Command="{Binding HandleClick}" />
+                <ia:InvokeCommandAction Command="{Binding HandleClick}" PassEventArgsToCommand="True" />
               </ia:EventTriggerBehavior>
             </i:Interaction.Behaviors>
           </Image>

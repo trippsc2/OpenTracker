@@ -28,7 +28,7 @@ namespace OpenTracker.Utils
 
             var content = File.ReadAllText(path);
 
-            return JsonConvert.DeserializeObject<T>(content);
+            return JsonConvert.DeserializeObject<T>(content)!;
         }
     }
 }

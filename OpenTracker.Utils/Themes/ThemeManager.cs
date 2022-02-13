@@ -58,10 +58,16 @@ namespace OpenTracker.Utils.Themes
                 Source = new Uri("resm:Avalonia.Themes.Default.Accents.BaseLight.xaml?assembly=Avalonia.Themes.Default")
             };
 
+            var citrus = new StyleInclude(new Uri("resm:Styles?assembly=Citrus.Avalonia.Sandbox"))
+            {
+                Source = new Uri("avares://Citrus.Avalonia/Citrus.xaml")
+            };
+
             return new List<ITheme>
             {
                 _themeFactory("Dark", dark),
-                _themeFactory("Light", light)
+                _themeFactory("Light", light),
+                _themeFactory("Citrus", citrus)
             };
         }
 
@@ -102,8 +108,10 @@ namespace OpenTracker.Utils.Themes
             {
                 Debug.Write(e.ToString());
             }
+            
+            themes.AddRange(GetDefaultThemes());
 
-            return themes.Count == 0 ? GetDefaultThemes() : themes;
+            return themes;
         }
         
         public void LoadSelectedTheme(string file)

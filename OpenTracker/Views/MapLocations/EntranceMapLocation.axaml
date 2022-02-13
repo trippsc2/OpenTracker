@@ -25,7 +25,7 @@
                                 Handler="{StaticResource EntranceDropHandler}" />
 
       <ia:EventTriggerBehavior EventName="PointerReleased">
-        <ia:InvokeCommandAction Command="{Binding HandleClick}" />
+        <ia:InvokeCommandAction Command="{Binding HandleClick}" PassEventArgsToCommand="True" />
       </ia:EventTriggerBehavior>
       
       <ia:EventTriggerBehavior EventName="DoubleTapped">

@@ -439,6 +439,7 @@ namespace OpenTracker.Models.Sections.Factories
                     }];
                 case LocationID.Pedestal:
                 case LocationID.BottleVendor:
+                case LocationID.Tavern:
                 case LocationID.RaceGame:
                 case LocationID.MushroomSpot:
                 case LocationID.Dam when index == 1:
@@ -462,7 +463,6 @@ namespace OpenTracker.Models.Sections.Factories
                 case LocationID.BlindsHouse:
                 case LocationID.TheWell:
                 case LocationID.ChickenHouse:
-                case LocationID.Tavern:
                 case LocationID.SickKid:
                 case LocationID.MagicBat:
                 case LocationID.Library:
