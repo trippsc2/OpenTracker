@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reactive.Linq;
 using Avalonia.Markup.Xaml;
 using Avalonia.Markup.Xaml.Styling;
 using Avalonia.Styling;
@@ -37,13 +36,7 @@ namespace OpenTracker.Utils.Themes
             app.Styles.Insert(0, SelectedTheme.Style);
 
             var _ = this.WhenAnyValue(x => x.SelectedTheme)
-                .Where(x => x != null).Subscribe(x =>
-                {
-                    if (x?.Style != null)
-                    {
-                        app.Styles[0] = x.Style;
-                    }
-                });
+                .Subscribe(x => { app.Styles[0] = x.Style; });
         }
 
         private List<ITheme> GetDefaultThemes()
@@ -58,16 +51,10 @@ namespace OpenTracker.Utils.Themes
                 Source = new Uri("resm:Avalonia.Themes.Default.Accents.BaseLight.xaml?assembly=Avalonia.Themes.Default")
             };
 
-            var citrus = new StyleInclude(new Uri("resm:Styles?assembly=Citrus.Avalonia.Sandbox"))
-            {
-                Source = new Uri("avares://Citrus.Avalonia/Citrus.xaml")
-            };
-
             return new List<ITheme>
             {
                 _themeFactory("Dark", dark),
-                _themeFactory("Light", light),
-                _themeFactory("Citrus", citrus)
+                _themeFactory("Light", light)
             };
         }
 
@@ -109,9 +96,7 @@ namespace OpenTracker.Utils.Themes
                 Debug.Write(e.ToString());
             }
             
-            themes.AddRange(GetDefaultThemes());
-
-            return themes;
+            return themes.Count == 0 ? GetDefaultThemes() : themes;
         }
         
         public void LoadSelectedTheme(string file)

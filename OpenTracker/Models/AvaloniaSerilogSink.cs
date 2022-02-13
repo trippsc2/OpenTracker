@@ -33,13 +33,13 @@ namespace OpenTracker.Models
             return _logger.IsEnabled((Serilog.Events.LogEventLevel)level);
         }
 
-        public void Log(LogEventLevel level, string area, object source, string messageTemplate)
+        public void Log(LogEventLevel level, string area, object? source, string messageTemplate)
         {
             Log(level, area, source, messageTemplate, Array.Empty<object>());
         }
 
         public void Log<T0>(
-            LogEventLevel level, string area, object source, string messageTemplate, T0 propertyValue0)
+            LogEventLevel level, string area, object? source, string messageTemplate, T0 propertyValue0)
         {
             if (propertyValue0 is null)
             {
@@ -50,7 +50,7 @@ namespace OpenTracker.Models
         }
 
         public void Log<T0, T1>(
-            LogEventLevel level, string area, object source, string messageTemplate, T0 propertyValue0,
+            LogEventLevel level, string area, object? source, string messageTemplate, T0 propertyValue0,
             T1 propertyValue1)
         {
             if (propertyValue0 is null)
@@ -70,7 +70,7 @@ namespace OpenTracker.Models
         }
 
         public void Log<T0, T1, T2>(
-            LogEventLevel level, string area, object source, string messageTemplate, T0 propertyValue0,
+            LogEventLevel level, string area, object? source, string messageTemplate, T0 propertyValue0,
             T1 propertyValue1, T2 propertyValue2)
         {
             if (propertyValue0 is null)
@@ -94,7 +94,7 @@ namespace OpenTracker.Models
             });
         }
 
-        public void Log(LogEventLevel level, string area, object source, string messageTemplate, params object[] propertyValues)
+        public void Log(LogEventLevel level, string area, object? source, string messageTemplate, params object?[] propertyValues)
         {
             for (var i = 0; i < propertyValues.Length; i++)
             {
@@ -114,7 +114,7 @@ namespace OpenTracker.Models
         /// <returns>
         ///     A string representing the visual hierarchy of the control as an object.
         /// </returns>
-        private static object GetHierarchy(object source)
+        private static object? GetHierarchy(object? source)
         {
             if (source is not IControl visual)
             {
@@ -128,8 +128,9 @@ namespace OpenTracker.Models
                 visualString
             };
 
-            while ((visual = visual.Parent) is not null)
+            while (visual.Parent is not null)
             {
+                visual = visual.Parent;
                 visualString = visual.ToString() ?? throw new NullReferenceException();
 
                 hierarchy.Insert(0, visualString);

@@ -15,19 +15,25 @@
     {
         "Entry"
         {
+        "MsmKey" = "8:_0D875BFCC3AF4A1589F8C7E33357693B"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_4913C9C404594CDBAE9F3117F7A8A99C"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_975CA38B882C463AA889B74F563350D7"
+        "MsmKey" = "8:_5BB2FE7855FB42E1B6BD9385F7BE35CB"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_9AE8180EC7284F8CAADB0EB749E44301"
+        "MsmKey" = "8:_85CFBA2DE302467E93A2A484896EB594"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -39,13 +45,7 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_BB8564D1E1364967B945056E0DE2B87D"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_D4C025E52F6D4B0CBD39712608FCF0CC"
+        "MsmKey" = "8:_B2E14E312E94461A96BDCEA89020A1F8"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -136,6 +136,26 @@
         }
         "File"
         {
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0D875BFCC3AF4A1589F8C7E33357693B"
+            {
+            "SourcePath" = "8:..\\OpenTracker\\bin\\Release\\net6.0\\Themes\\Dark.xaml"
+            "TargetName" = "8:Dark.xaml"
+            "Tag" = "8:"
+            "Folder" = "8:_11221B6B0EEF426CA5A7900FE825EF8D"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4913C9C404594CDBAE9F3117F7A8A99C"
             {
             "SourcePath" = "8:..\\OpenTracker\\triforce.ico"
@@ -156,12 +176,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_975CA38B882C463AA889B74F563350D7"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5BB2FE7855FB42E1B6BD9385F7BE35CB"
             {
-            "SourcePath" = "8:..\\OpenTracker\\bin\\Release\\netcoreapp3.1\\Themes\\Dark.xaml"
-            "TargetName" = "8:Dark.xaml"
+            "SourcePath" = "8:..\\OpenTracker\\bin\\Release\\net6.0\\runtimes\\win7-x64\\native\\lzma.dll"
+            "TargetName" = "8:lzma.dll"
             "Tag" = "8:"
-            "Folder" = "8:_11221B6B0EEF426CA5A7900FE825EF8D"
+            "Folder" = "8:_C85AC8B5F1374419BA0D2192D2D360D5"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -176,29 +196,9 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9AE8180EC7284F8CAADB0EB749E44301"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_85CFBA2DE302467E93A2A484896EB594"
             {
-            "SourcePath" = "8:..\\OpenTracker\\bin\\Release\\netcoreapp3.1\\Themes\\Default.xaml"
-            "TargetName" = "8:Default.xaml"
-            "Tag" = "8:"
-            "Folder" = "8:_11221B6B0EEF426CA5A7900FE825EF8D"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_BB8564D1E1364967B945056E0DE2B87D"
-            {
-            "SourcePath" = "8:..\\OpenTracker\\bin\\Release\\netcoreapp3.1\\OpenTracker.deps.json"
+            "SourcePath" = "8:..\\OpenTracker\\bin\\Release\\net6.0\\OpenTracker.deps.json"
             "TargetName" = "8:OpenTracker.deps.json"
             "Tag" = "8:"
             "Folder" = "8:_B21EA2C01C014AC99A33B72F50C26B5D"
@@ -216,12 +216,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D4C025E52F6D4B0CBD39712608FCF0CC"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B2E14E312E94461A96BDCEA89020A1F8"
             {
-            "SourcePath" = "8:..\\OpenTracker\\bin\\Release\\netcoreapp3.1\\runtimes\\win7-x64\\native\\lzma.dll"
-            "TargetName" = "8:lzma.dll"
+            "SourcePath" = "8:..\\OpenTracker\\bin\\Release\\net6.0\\Themes\\Default.xaml"
+            "TargetName" = "8:Default.xaml"
             "Tag" = "8:"
-            "Folder" = "8:_C85AC8B5F1374419BA0D2192D2D360D5"
+            "Folder" = "8:_11221B6B0EEF426CA5A7900FE825EF8D"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -347,15 +347,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:OpenTracker"
-        "ProductCode" = "8:{5EAF757E-FE14-4A69-B5DC-96006B64848A}"
-        "PackageCode" = "8:{C8BB1096-45C2-456B-BC96-24DA20F06E48}"
+        "ProductCode" = "8:{6DB73962-5FE7-42A2-8EA6-79DEF608AC05}"
+        "PackageCode" = "8:{DD037352-9411-41C5-A2B2-807061F138AC}"
         "UpgradeCode" = "8:{C98C2121-B4C5-473A-9B86-5407FEFFE8F1}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.8.2"
+        "ProductVersion" = "8:1.8.3"
         "Manufacturer" = "8:OpenTracker"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -897,7 +897,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_9E6FFC26C1B94A308AE37383659B05F8"
             {
-            "SourcePath" = "8:..\\OpenTracker\\obj\\Release\\netcoreapp3.1\\apphost.exe"
+            "SourcePath" = "8:..\\OpenTracker\\obj\\Release\\net6.0\\apphost.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_B21EA2C01C014AC99A33B72F50C26B5D"

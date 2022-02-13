@@ -40,7 +40,7 @@ namespace OpenTracker.ValueConverters
                             try
                             {
                                 var assets = AvaloniaLocator.Current.GetService<IAssetLoader>();
-                                return new Bitmap(assets.Open(uri));
+                                return new Bitmap(assets?.Open(uri));
                             }
                             catch (FileNotFoundException ex)
                             {
@@ -54,7 +54,7 @@ namespace OpenTracker.ValueConverters
             }
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
             throw new Exception("All bindings should be one-way.");
         }
