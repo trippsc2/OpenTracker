@@ -358,7 +358,7 @@ namespace OpenTracker.ViewModels.Menus
 
             if (result)
             {
-                _resetManager.Reset();
+                _resetManager.ResetAsync();
             }
         }
 

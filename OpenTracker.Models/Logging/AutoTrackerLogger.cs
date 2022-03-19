@@ -3,26 +3,15 @@ using OpenTracker.Utils;
 namespace OpenTracker.Models.Logging
 {
     /// <summary>
-    /// This class contains the logic for logging auto-tracking.
+    /// Auto-tracker logger
     /// </summary>
     public class AutoTrackerLogger : LoggerBase, IAutoTrackerLogger
     {
         /// <summary>
-        /// Constructor
+        /// Initializes a new <see cref="AutoTrackerLogger"/> object
         /// </summary>
-        /// <param name="fileManager">
-        ///     The <see cref="IFileManager"/> that allows for non-destructive unit testing.
-        /// </param>
-        /// <param name="streamWriterFactory">
-        ///     An Autofac factory for creating new <see cref="IStreamWriterWrapper"/> objects.
-        /// </param>
-        public AutoTrackerLogger(IFileManager fileManager, IStreamWriterWrapper.Factory streamWriterFactory)
-            : base(fileManager, streamWriterFactory, AppPath.AutoTrackingLogFilePath)
+        public AutoTrackerLogger() : base(AppPath.AutoTrackingLogFilePath)
         {
-            MinimumLogLevel = LogLevel.Info;
-#if DEBUG
-            MinimumLogLevel = LogLevel.Trace;
-#endif
         }
     }
 }

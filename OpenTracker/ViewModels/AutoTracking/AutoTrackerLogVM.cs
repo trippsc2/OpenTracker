@@ -6,7 +6,6 @@ using System.Reactive;
 using System.Threading.Tasks;
 using Avalonia.Threading;
 using OpenTracker.Models.AutoTracking.Logging;
-using OpenTracker.Models.Logging;
 using OpenTracker.Utils;
 using OpenTracker.Utils.Dialog;
 using OpenTracker.ViewModels.Dialogs;
@@ -21,7 +20,6 @@ namespace OpenTracker.ViewModels.AutoTracking
     public class AutoTrackerLogVM : ViewModelBase, IAutoTrackerLogVM
     {
         private readonly IAutoTrackerLogService _logService;
-        private readonly IAutoTrackerLogger _logger;
 
         private readonly IDialogService _dialogService;
         private readonly IFileDialogService _fileDialogService;
@@ -29,12 +27,6 @@ namespace OpenTracker.ViewModels.AutoTracking
         private readonly IErrorBoxDialogVM.Factory _errorBoxFactory;
 
         public ObservableCollection<string> LogLevelOptions { get; } = new();
-
-        public string LogLevel
-        {
-            get => _logger.MinimumLogLevel.ToString();
-            set => _logger.MinimumLogLevel = Enum.Parse<LogLevel>(value);
-        }
 
         private bool _logVisible;
         public bool LogVisible
@@ -67,12 +59,11 @@ namespace OpenTracker.ViewModels.AutoTracking
         /// <param name="errorBoxFactory">
         /// An Autofac factory for creating error box dialog windows.
         /// </param>
-        /// <param name="logger">
-        ///     The <see cref="IAutoTrackerLogger"/>.
-        /// </param>
         public AutoTrackerLogVM(
-            IAutoTrackerLogService logService, IDialogService dialogService, IFileDialogService fileDialogService,
-            IErrorBoxDialogVM.Factory errorBoxFactory, IAutoTrackerLogger logger)
+            IAutoTrackerLogService logService,
+            IDialogService dialogService,
+            IFileDialogService fileDialogService,
+            IErrorBoxDialogVM.Factory errorBoxFactory)
         {
             _logService = logService;
 
@@ -80,7 +71,6 @@ namespace OpenTracker.ViewModels.AutoTracking
             _fileDialogService = fileDialogService;
 
             _errorBoxFactory = errorBoxFactory;
-            _logger = logger;
 
             foreach (LogLevel logLevel in Enum.GetValues(typeof(LogLevel)))
             {

@@ -29,4 +29,8 @@
     <ProjectReference Include="..\OpenTracker\OpenTracker.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\Logging" />
+  </ItemGroup>
+
 </Project>

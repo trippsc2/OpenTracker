@@ -27,7 +27,8 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors.Requests
         public override IEnumerable<string> ProcessResponseAndReturnResults(IMessageEventArgsWrapper messageEventArgs,
             ManualResetEvent sendEvent)
         {
-            Logger.Log(LogLevel.Debug, $"Received response message from request \'{Description}\'");
+            Logger.Debug("Received response message from request \'{Description}\'",
+                Description);
 
             var deserialized = JsonConvert.DeserializeObject<Dictionary<string, string[]>?>(messageEventArgs.Data);
 
@@ -37,7 +38,8 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors.Requests
                     $"Request \'{Description}\' is invalid and does not contain a \'Results\' key.");
             }
             
-            Logger.Log(LogLevel.Debug, $"Request \'{Description}\' response successfully deserialized.");
+            Logger.Debug("Request \'{Description}\' response successfully deserialized",
+                Description);
             sendEvent.Set();
             return results;
         }

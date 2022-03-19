@@ -1,55 +1,34 @@
-using System.Threading.Tasks;
-using OpenTracker.Utils;
+using Serilog;
+using Serilog.Events;
 
-namespace OpenTracker.Models.Logging
+namespace OpenTracker.Models.Logging;
+
+/// <summary>
+/// Serilog logger base type
+/// </summary>
+public abstract class LoggerBase : ILogger
 {
-    /// <summary>
-    /// This base class contains the logging logic.
-    /// </summary>
-    public abstract class LoggerBase : ILogger
+    private readonly ILogger _logger;
+
+    protected LoggerBase(string filePath)
     {
-        private readonly IStreamWriterWrapper _streamWriter;
-        
-        public LogLevel MinimumLogLevel { get; set; }
+        _logger = new LoggerConfiguration()
+            .MinimumLevel
+            .Debug()
+#if DEBUG
+            .MinimumLevel
+            .Verbose()
+            .WriteTo.Debug()
+#endif
+            .WriteTo.File(
+                filePath,
+                rollingInterval: RollingInterval.Hour,
+                retainedFileCountLimit: 3)
+            .CreateLogger();
+    }
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="fileManager">
-        ///     The <see cref="IFileManager"/> that allows for non-destructive unit testing.
-        /// </param>
-        /// <param name="streamWriterFactory">
-        ///     An Autofac factory for creating new <see cref="IStreamWriterWrapper"/> objects.
-        /// </param>
-        /// <param name="filePath">
-        ///     A <see cref="string"/> representing the path to the log file.
-        /// </param>
-        protected LoggerBase(
-            IFileManager fileManager, IStreamWriterWrapper.Factory streamWriterFactory, string filePath)
-        {
-            fileManager.EnsureFileDoesNotExist(filePath);
-            
-            _streamWriter = streamWriterFactory(filePath, true);
-        }
-        
-        public void Log(LogLevel logLevel, string message)
-        {
-            if (logLevel < MinimumLogLevel)
-            {
-                return;
-            }
-            
-            _streamWriter.WriteLine($"{logLevel.ToString().ToUpperInvariant()}: {message}");
-        }
-
-        public async Task LogAsync(LogLevel logLevel, string message)
-        {
-            if (logLevel < MinimumLogLevel)
-            {
-                return;
-            }
-
-            await _streamWriter.WriteLineAsync($"{logLevel.ToString().ToUpperInvariant()}: {message}");
-        }
+    public void Write(LogEvent logEvent)
+    {
+        _logger.Write(logEvent);
     }
 }

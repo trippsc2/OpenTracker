@@ -71,11 +71,11 @@ namespace OpenTracker.Models.Reset
             _undoRedoManager = undoRedoManager;
         }
 
-        public void Reset()
+        public async void ResetAsync()
         {
             _undoRedoManager.Reset();
             _pinnedLocations.Clear();
-            _autoTracker.Disconnect().Wait();
+            await _autoTracker.Disconnect();
             _bossPlacements.Reset();
             _locations.Reset();
             _prizePlacements.Reset();

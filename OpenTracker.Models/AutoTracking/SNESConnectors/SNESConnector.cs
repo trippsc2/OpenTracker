@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Reactive;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,7 +8,6 @@ using OpenTracker.Models.AutoTracking.SNESConnectors.Socket;
 using OpenTracker.Models.Logging;
 using ReactiveUI;
 using WebSocketSharp;
-using LogLevel = OpenTracker.Models.Logging.LogLevel;
 
 namespace OpenTracker.Models.AutoTracking.SNESConnectors
 {
@@ -120,24 +118,24 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         public void SetURI(string uriString)
         {
             _uri = uriString;
-            _logger.Log(LogLevel.Info, $"URI set to \'{_uri}\'.");
+            _logger.Information("URI set to \'{UriValue}\'", _uri);
         }
 
-        public async Task ConnectAsync()
+        public Task ConnectAsync()
         {
-            try
+            return Task.Run(() =>
             {
-                await Task.Factory.StartNew(Connect);
-            }
-            catch (Exception exception)
-            {
-                HandleException(exception);
-            }
+                try
+                {
+                    Connect();
+                }
+                catch (Exception ex)
+                {
+                    HandleException(ex);
+                }
+            });
         }
 
-        /// <summary>
-        /// Connects to the USB2SNES web socket.
-        /// </summary>
         private void Connect()
         {
             if (Socket is not null)
@@ -151,36 +149,24 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
             ConnectToWebSocket(openEvent);
         }
 
-        /// <summary>
-        /// Create the <see cref="IWebSocketWrapper"/> object and log it for debugging purposes.
-        /// </summary>
         private void CreateWebSocket()
         {
-            _logger.Log(LogLevel.Debug, $"Attempting to create WebSocket with URI \'{_uri}\'");
+            _logger.Debug("Attempting to create WebSocket with URI \'{Uri}\'",
+                _uri);
             Socket = _webSocketFactory(_uri!);
-            _logger.Log(LogLevel.Debug, $"WebSocket successfully created with URI \'{_uri}\'");
+            _logger.Debug("WebSocket successfully created with URI \'{Uri}\'",
+                _uri);
         }
 
-        /// <summary>
-        /// Connects to the websocket at the specified URI.
-        /// </summary>
-        /// <param name="openEvent">
-        ///     A <see cref="ManualResetEvent"/> that waits for the <see cref="WebSocket.OnOpen"/> event or a 5 second
-        ///     timeout.
-        /// </param>
-        /// <exception cref="Exception">
-        ///     Thrown if the connection to the websocket times out.
-        /// </exception>
-        private void ConnectToWebSocket(ManualResetEvent openEvent)
+        private void ConnectToWebSocket(EventWaitHandle openEvent)
         {
             void OpenHandler(object? sender, EventArgs e)
             {
                 openEvent.Set();
             }
 
-            _logger.Log(
-                LogLevel.Debug,
-                $"Attempting to connect to USB2SNES websocket at {Socket!.Url.OriginalString}.");
+            _logger.Debug("Attempting to connect to USB2SNES websocket at {Uri}",
+                _socket!.Url.OriginalString);
             Status = ConnectionStatus.Connecting;
             Socket!.OnOpen += OpenHandler;
             Socket.Connect();
@@ -193,15 +179,14 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
                     $"Failed to connect to USB2SNES websocket at \'{Socket.Url.OriginalString}\'.");
             }
             
-            _logger.Log(
-                LogLevel.Info,
-                $"Successfully connected to USB2SNES websocket at \'{Socket.Url.OriginalString}\'.");
+            _logger.Information("Successfully connected to USB2SNES websocket at \'{Uri}\'",
+                _socket!.Url.OriginalString);
             Status = ConnectionStatus.SelectDevice;
         }
 
-        public async Task DisconnectAsync()
+        public Task DisconnectAsync()
         {
-            await Task.Factory.StartNew(Disconnect);
+            return Task.Run(Disconnect);
         }
 
         /// <summary>
@@ -209,44 +194,48 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         /// </summary>
         private void Disconnect()
         {
-            _logger.Log(LogLevel.Debug, "Attempting to disconnect and dispose of WebSocket.");
+            _logger.Debug("Attempting to disconnect and dispose of WebSocket");
             Socket?.Close();
-            _logger.Log(LogLevel.Debug, "Disconnected from websocket server.");
+            _logger.Debug("Disconnected from websocket server");
             Socket?.Dispose();
-            _logger.Log(LogLevel.Debug, "Disposed WebSocket class.");
+            _logger.Debug("Disposed WebSocket class");
             Socket = null;
-            _logger.Log(LogLevel.Debug, "Unset the Socket property.");
+            _logger.Debug("Unset the Socket property");
             GC.Collect();
             GC.WaitForPendingFinalizers();
             Status = ConnectionStatus.NotConnected;
-            _logger.Log(LogLevel.Info, "Successfully disconnected websocket.");
+            _logger.Information("Successfully disconnected websocket");
         }
 
-        public async Task<IEnumerable<string>?> GetDevicesAsync()
+        public Task<IEnumerable<string>?> GetDevicesAsync()
         {
-            try
+            return Task.Run(() =>
             {
-                return await Task<IEnumerable<string>?>.Factory.StartNew(() =>
-                    HandleRequest(_getDevicesFactory()));
-            }
-            catch (Exception exception)
-            {
-                HandleException(exception);
-            }
-
-            return null;
+                try
+                {
+                    return HandleRequest(_getDevicesFactory());
+                }
+                catch (Exception exception)
+                {
+                    HandleException(exception);
+                    return null;
+                }
+            });
         }
 
-        public async Task AttachDeviceAsync(string device)
+        public Task AttachDeviceAsync(string device)
         {
-            try
+            return Task.Run(() =>
             {
-                await Task.Factory.StartNew(() => { AttachDevice(device); });
-            }
-            catch (Exception exception)
-            {
-                HandleException(exception);
-            }
+                try
+                {
+                    AttachDevice(device);
+                }
+                catch (Exception exception)
+                {
+                    HandleException(exception);
+                }
+            });
         }
 
         /// <summary>
@@ -274,19 +263,20 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
             }
         }
 
-        public async Task<byte[]?> ReadMemoryAsync(ulong address, int bytesToRead = 1)
+        public Task<byte[]?> ReadMemoryAsync(ulong address, int bytesToRead = 1)
         {
-            try
+            return Task.Run(() =>
             {
-                return await Task<byte[]?>.Factory.StartNew(() =>
-                    HandleRequest(_readMemoryFactory(address, bytesToRead)));
-            }
-            catch (Exception exception)
-            {
-                HandleException(exception);
-            }
-
-            return default;
+                try
+                {
+                    return HandleRequest(_readMemoryFactory(address, bytesToRead));
+                }
+                catch (Exception exception)
+                {
+                    HandleException(exception);
+                    return null;
+                }
+            });
         }
 
         /// <summary>
@@ -380,41 +370,42 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
                     HandleException(exception);
                 }
                 
-                _logger.Log(
-                    LogLevel.Info, $"Response of request \'{request.Description}\' successfully received.");
+                _logger.Information("Response of request \'{Request}\' successfully received",
+                    request.Description);
             }
 
             if (request is not IRequest<Unit>)
             {
                 Socket!.OnMessage += HandleMessage;
-                _logger.Log(LogLevel.Debug, $"Subscribed to message handler successfully.");
+                _logger.Debug("Subscribed to message handler successfully");
             }
             
-            _logger.Log(LogLevel.Debug, $"Attempting to send request \'{request.Description}\'.");
+            _logger.Debug("Attempting to send request \'{Request}\'",
+                request.Description);
             var requestMessage = request.ToJsonString();
-            _logger.Log(LogLevel.Trace, requestMessage);
+            _logger.Verbose("{Request}", requestMessage);
             Socket!.Send(requestMessage);
-            _logger.Log(LogLevel.Info, $"Sent request \'{request.Description}\' successfully.");
+            _logger.Information("Sent request \'{Request}\' successfully",
+                request.Description);
 
             if (request is IRequest<Unit>)
             {
-                _logger.Log(
-                    LogLevel.Debug,
-                    $"Skipped waiting for received data for request \'{request.Description}\'.");
+                _logger.Debug("Skipped waiting for received data for request \'{Request}\'",
+                    request.Description);
                 return default;
             }
 
             var received = sendEvent.WaitOne(2000);
             Socket!.OnMessage -= HandleMessage;
-            _logger.Log(LogLevel.Debug, $"Unsubscribed from message handler successfully.");
+            _logger.Debug("Unsubscribed from message handler successfully");
 
             if (!received)
             {
                 throw new Exception($"Failed to receive data from request \'{request.Description}\'.");
             }
 
-            _logger.Log(
-                LogLevel.Info, $"Received response from request \'{request.Description}\' successfully.");
+            _logger.Information("Received response from request \'{Request}\' successfully",
+                request.Description);
             return results;
         }
 
@@ -426,8 +417,7 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         /// </param>
         private void HandleException(Exception exception)
         {
-            _logger.Log(LogLevel.Error, exception.Message);
-            Debug.WriteLine(exception.Message);
+            _logger.Error("{ExceptionMessage}", exception.Message);
             Status = ConnectionStatus.Error;
         }
         
@@ -442,7 +432,7 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         /// </param>
         private void TraceWebSocketClose(object? sender, CloseEventArgs e)
         {
-            _logger.Log(LogLevel.Trace, "WebSocket closed.");
+            _logger.Verbose("WebSocket closed by event");
         }
         
         /// <summary>
@@ -456,7 +446,8 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         /// </param>
         private void TraceWebSocketError(object? sender, ErrorEventArgs e)
         {
-            _logger.Log(LogLevel.Trace, $"WebSocket error: {e.Message}");
+            _logger.Verbose("WebSocket error: {ExceptionMessage}",
+                e.Message);
         }
 
         /// <summary>
@@ -470,7 +461,8 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         /// </param>
         private void TraceWebSocketMessage(object? sender, MessageEventArgs e)
         {
-            _logger.Log(LogLevel.Trace, e.IsBinary ? $"[{string.Join(",", e.RawData)}]" : e.Data);
+            _logger.Verbose("{MessageData}",
+                e.IsBinary ? $"[{string.Join(",", e.RawData)}]" : e.Data);
         }
 
         /// <summary>
@@ -484,7 +476,7 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         /// </param>
         private void TraceWebSocketOpen(object? sender, EventArgs e)
         {
-            _logger.Log(LogLevel.Trace, "WebSocket connection opened.");
+            _logger.Verbose("WebSocket connection opened");
         }
     }
 }

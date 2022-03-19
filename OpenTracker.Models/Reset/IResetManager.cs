@@ -8,6 +8,6 @@
         /// <summary>
         /// Resets all the tracker data to its starting values.
         /// </summary>
-        void Reset();
+        void ResetAsync();
     }
 }

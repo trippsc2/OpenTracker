@@ -66,7 +66,8 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors.Requests
         
         public string ToJsonString()
         {
-            Logger.Log(LogLevel.Debug, $"Attempting to create JSON request \'{Description}\'.");
+            Logger.Debug("Attempting to create JSON request \'{Description}\'",
+                Description);
             var requestObject = new Dictionary<string, object>
             {
                 {"Opcode", _opcode},
@@ -79,7 +80,8 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors.Requests
             }
             
             var serializedObject = JsonConvert.SerializeObject(requestObject);
-            Logger.Log(LogLevel.Debug, $"Successfully created JSON request \'{Description}\'.");
+            Logger.Debug("Successfully created JSON request \'{Description}\'",
+                Description);
 
             return serializedObject;
         }

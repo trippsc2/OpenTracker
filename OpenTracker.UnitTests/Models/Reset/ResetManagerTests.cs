@@ -37,7 +37,7 @@ namespace OpenTracker.UnitTests.Models.Reset
         [Fact]
         public void Reset_ShouldCallResetOnUndoRedoManager()
         {
-            _sut.Reset();
+            _sut.ResetAsync();
             
             _undoRedoManager.Received(1).Reset();
         }
@@ -45,7 +45,7 @@ namespace OpenTracker.UnitTests.Models.Reset
         [Fact]
         public void Reset_ShouldCallClearOnPinnedLocations()
         {
-            _sut.Reset();
+            _sut.ResetAsync();
             
             _pinnedLocations.Received(1).Clear();
         }
@@ -53,7 +53,7 @@ namespace OpenTracker.UnitTests.Models.Reset
         [Fact]
         public async void Reset_ShouldCallDisconnectOnAutoTracker()
         {
-            _sut.Reset();
+            _sut.ResetAsync();
             
             await _autoTracker.Received(1).Disconnect();
         }
@@ -61,7 +61,7 @@ namespace OpenTracker.UnitTests.Models.Reset
         [Fact]
         public void Reset_ShouldCallResetOnBossPlacements()
         {
-            _sut.Reset();
+            _sut.ResetAsync();
             
             _bossPlacements.Received(1).Reset();
         }
@@ -69,7 +69,7 @@ namespace OpenTracker.UnitTests.Models.Reset
         [Fact]
         public void Reset_ShouldCallResetOnLocations()
         {
-            _sut.Reset();
+            _sut.ResetAsync();
             
             _locations.Received(1).Reset();
         }
@@ -77,7 +77,7 @@ namespace OpenTracker.UnitTests.Models.Reset
         [Fact]
         public void Reset_ShouldCallResetOnPrizePlacements()
         {
-            _sut.Reset();
+            _sut.ResetAsync();
             
             _prizePlacements.Received(1).Reset();
         }
@@ -85,7 +85,7 @@ namespace OpenTracker.UnitTests.Models.Reset
         [Fact]
         public void Reset_ShouldCallResetOnItems()
         {
-            _sut.Reset();
+            _sut.ResetAsync();
             
             _items.Received(1).Reset();
         }
@@ -93,7 +93,7 @@ namespace OpenTracker.UnitTests.Models.Reset
         [Fact]
         public void Reset_ShouldCallResetOnDropdowns()
         {
-            _sut.Reset();
+            _sut.ResetAsync();
             
             _dropdowns.Received(1).Reset();
         }
@@ -101,7 +101,7 @@ namespace OpenTracker.UnitTests.Models.Reset
         [Fact]
         public void Reset_ShouldCallClearOnConnections()
         {
-            _sut.Reset();
+            _sut.ResetAsync();
             
             _connections.Received(1).Clear();
         }

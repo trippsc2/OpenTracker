@@ -10,7 +10,8 @@ using OpenTracker.Models.AutoTracking.SNESConnectors.Socket;
 using OpenTracker.Models.Logging;
 using WebSocketSharp;
 using Xunit;
-using LogLevel = OpenTracker.Models.Logging.LogLevel;
+
+// ReSharper disable TemplateIsNotCompileTimeConstantProblem
 
 namespace OpenTracker.UnitTests.Models.AutoTracking.SNESConnectors
 {
@@ -81,9 +82,7 @@ namespace OpenTracker.UnitTests.Models.AutoTracking.SNESConnectors
             const string uriString = "Test";
             _sut.SetURI(uriString);
             
-            _logger.Received(1).Log(
-                Arg.Is<LogLevel>(l => l == LogLevel.Info), 
-                Arg.Is<string>(s => s == $"URI set to \'{uriString}\'."));
+            _logger.Received(1).Information(Arg.Any<string>(), Arg.Any<string>());
         }
 
         [Fact]
@@ -283,8 +282,7 @@ namespace OpenTracker.UnitTests.Models.AutoTracking.SNESConnectors
             _webSocket.OnClose += Raise.Event<EventHandler<CloseEventArgs>>(
                 _webSocket, FormatterServices.GetUninitializedObject(typeof(CloseEventArgs)));
             
-            // ReSharper disable once MethodHasAsyncOverload
-            _logger.Received(1).Log(Arg.Is<LogLevel>(l => l == LogLevel.Trace), Arg.Any<string>());
+            _logger.Received(1).Verbose(Arg.Any<string>());
         }
 
         [Fact]
@@ -294,8 +292,7 @@ namespace OpenTracker.UnitTests.Models.AutoTracking.SNESConnectors
             _webSocket.OnError += Raise.Event<EventHandler<ErrorEventArgs>>(
                 _webSocket, FormatterServices.GetUninitializedObject(typeof(ErrorEventArgs)));
             
-            // ReSharper disable once MethodHasAsyncOverload
-            _logger.Received(1).Log(Arg.Is<LogLevel>(l => l == LogLevel.Trace), Arg.Any<string>());
+            _logger.Received(1).Verbose(Arg.Any<string>(), Arg.Any<string>());
         }
         
         [Fact]

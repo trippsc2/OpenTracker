@@ -1,3 +1,5 @@
+using Serilog;
+
 namespace OpenTracker.Models.Logging
 {
     /// <summary>

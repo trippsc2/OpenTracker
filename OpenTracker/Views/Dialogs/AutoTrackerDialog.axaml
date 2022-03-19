@@ -4,59 +4,59 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" x:Class="OpenTracker.Views.Dialogs.AutoTrackerDialog"
-        WindowStartupLocation="CenterScreen" Icon="avares://OpenTracker/Assets/Images/triforce.png"
-        Title="OpenTracker - Auto-Tracker" Width="420" Height="630" Padding="5">
+        WindowStartupLocation="CenterOwner"
+        Icon="avares://OpenTracker/Assets/Images/triforce.png"
+        Title="OpenTracker - Auto-Tracker"
+        Padding="40 10"
+        SizeToContent="WidthAndHeight">
   
   <Design.DataContext>
     <vm:AutoTrackerDialogVM />
   </Design.DataContext>
   
-  <DockPanel>
-    <StackPanel DockPanel.Dock="Top" Orientation="Vertical">
-      
-      <StackPanel Margin="10" Orientation="Horizontal" HorizontalAlignment="Center">
-        <TextBlock Classes="AutoTrackerLabel">USB2SNES URI:</TextBlock>
-        <TextBox Classes="AutoTrackerURI"
-                 Text="{Binding UriString, Mode=TwoWay}"
-                 IsEnabled="{Binding UriTextBoxEnabled}" />
-        <Button Classes="AutoTrackerConnect"
-                Command="{Binding ConnectCommand}">Connect</Button>
-      </StackPanel>
-
-      <StackPanel Margin="10" Orientation="Horizontal" HorizontalAlignment="Center">
-        <Button Classes="AutoTracker"
-                Command="{Binding GetDevicesCommand}">Get Devices</Button>
-        <Button Classes="AutoTracker"
-                Command="{Binding DisconnectCommand}">Disconnect</Button>
-      </StackPanel>
-
-      <StackPanel Margin="10" Orientation="Horizontal" HorizontalAlignment="Center">
-        <TextBlock Classes="AutoTrackerLabel">Device:</TextBlock>
-        <ComboBox Classes="AutoTrackerDevices"
-                  Items="{Binding Devices, Mode=OneWay}"
-                  SelectedItem="{Binding Device, Mode=TwoWay}"
-                  IsEnabled="{Binding DevicesComboBoxEnabled}" />
-      </StackPanel>
-
-      <CheckBox HorizontalAlignment="Center" Classes="AutoTracker"
-                IsChecked="{Binding RaceIllegalTracking}"
-                Command="{Binding ToggleRaceIllegalTrackingCommand}"
-                ToolTip.Tip="This enables auto-tracking of dungeon items.&#x0a;
-                This may not work correctly in all randomizer versions.">Race Illegal Tracking</CheckBox>
-
-      <StackPanel Margin="10" Orientation="Horizontal" HorizontalAlignment="Center">
-        <Button Classes="AutoTrackerStart"
-                Command="{Binding StartCommand}">Start Auto-Tracking</Button>
-      </StackPanel>
-
-      <ContentControl Margin="10" HorizontalAlignment="Center"
-                      Content="{Binding Status}" />
-
+  <StackPanel DockPanel.Dock="Top" Orientation="Vertical">
+    <StackPanel Margin="10"
+                Orientation="Horizontal"
+                HorizontalAlignment="Center">
+      <TextBlock Classes="AutoTrackerLabel">USB2SNES URI:</TextBlock>
+      <TextBox Classes="AutoTrackerURI"
+               Text="{Binding UriString, Mode=TwoWay}"
+               IsEnabled="{Binding UriTextBoxEnabled}" />
+      <Button Classes="AutoTrackerConnect"
+              Command="{Binding ConnectCommand}">Connect</Button>
     </StackPanel>
     
-    <Panel>
-      <ContentControl Content="{Binding Log}" />
-    </Panel>
+    <StackPanel Margin="10"
+                Orientation="Horizontal"
+                HorizontalAlignment="Center">
+      <Button Classes="AutoTracker"
+              Command="{Binding GetDevicesCommand}">Get Devices</Button>
+      <Button Classes="AutoTracker"
+              Command="{Binding DisconnectCommand}">Disconnect</Button>
+    </StackPanel>
 
-  </DockPanel>
+    <StackPanel Margin="10"
+                Orientation="Horizontal"
+                HorizontalAlignment="Center">
+      <TextBlock Classes="AutoTrackerLabel">Device:</TextBlock>
+      <ComboBox Classes="AutoTrackerDevices"
+                Items="{Binding Devices, Mode=OneWay}"
+                SelectedItem="{Binding Device, Mode=TwoWay}"
+                IsEnabled="{Binding DevicesComboBoxEnabled}" />
+    </StackPanel>
+
+    <CheckBox HorizontalAlignment="Center" Classes="AutoTracker"
+              IsChecked="{Binding RaceIllegalTracking}"
+              Command="{Binding ToggleRaceIllegalTrackingCommand}"
+              ToolTip.Tip="This enables auto-tracking of dungeon items.&#x0a;
+                This may not work correctly in all randomizer versions.">Race Illegal Tracking</CheckBox>
+
+    <StackPanel Margin="10" Orientation="Horizontal" HorizontalAlignment="Center">
+      <Button Classes="AutoTrackerStart"
+              Command="{Binding StartCommand}">Start Auto-Tracking</Button>
+    </StackPanel>
+
+    <ContentControl Margin="10" HorizontalAlignment="Center"
+                    Content="{Binding Status}" />
+  </StackPanel>
 </Window>

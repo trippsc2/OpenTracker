@@ -399,11 +399,6 @@ namespace OpenTracker.ViewModels.Dialogs
 
             var uri = new Uri(UriString);
 
-            if (uri == null)
-            {
-                return false;
-            }
-
             if (!uri.IsAbsoluteUri)
             {
                 return false;
@@ -411,7 +406,7 @@ namespace OpenTracker.ViewModels.Dialogs
 
             var scheme = uri.Scheme;
 
-            if (!(scheme == "ws" || scheme == "wss"))
+            if (scheme is not ("ws" or "wss"))
             {
                 return false;
             }
