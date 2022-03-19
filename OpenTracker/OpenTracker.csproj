@@ -4,11 +4,11 @@
     <TargetFramework>net6.0</TargetFramework>
     <ApplicationIcon>triforce.ico</ApplicationIcon>
     <Win32Resource />
-    <Version>1.8.3</Version>
+    <Version>1.8.4</Version>
     <Authors>Tripp</Authors>
-    <AssemblyVersion>1.8.3</AssemblyVersion>
-    <FileVersion>1.8.3</FileVersion>
-    <CFBundleShortVersionString>1.8.3</CFBundleShortVersionString>
+    <AssemblyVersion>1.8.4</AssemblyVersion>
+    <FileVersion>1.8.4</FileVersion>
+    <CFBundleShortVersionString>1.8.4</CFBundleShortVersionString>
     <Nullable>enable</Nullable>
     <RuntimeIdentifiers>osx-x64;linux-x64;debian-x64;rhel-x64;win-x64;win-x86;win7-x64;win7-x86</RuntimeIdentifiers>
     <LangVersion>default</LangVersion>
