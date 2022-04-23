@@ -127,6 +127,7 @@ namespace OpenTracker.Models.Nodes.Factories
                 case OverworldNodeID.LightWorldHammer:
                 case OverworldNodeID.LightWorldLift1:
                 case OverworldNodeID.LightWorldFlute:
+                case OverworldNodeID.LightWorldBook:
                     return _lightWorldConnectionFactory.GetNodeConnections(id, node);
                 case OverworldNodeID.Pedestal:
                 case OverworldNodeID.LumberjackCaveHole:
@@ -168,6 +169,7 @@ namespace OpenTracker.Models.Nodes.Factories
                 case OverworldNodeID.CheckerboardCave:
                 case OverworldNodeID.DesertPalaceFrontEntrance:
                 case OverworldNodeID.BombosTabletLedge:
+                case OverworldNodeID.BombosTabletLedgeBook:
                 case OverworldNodeID.BombosTablet:
                 case OverworldNodeID.LWMirePortal:
                 case OverworldNodeID.LWMirePortalStandardOpen:
@@ -204,6 +206,7 @@ namespace OpenTracker.Models.Nodes.Factories
                 case OverworldNodeID.DeathMountainWestBottomNotBunny:
                 case OverworldNodeID.SpectacleRockTop:
                 case OverworldNodeID.DeathMountainWestTop:
+                case OverworldNodeID.DeathMountainWestTopBook:
                 case OverworldNodeID.DeathMountainWestTopNotBunny:
                 case OverworldNodeID.EtherTablet:
                 case OverworldNodeID.DeathMountainEastBottom:

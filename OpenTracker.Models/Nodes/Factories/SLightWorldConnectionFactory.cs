@@ -165,15 +165,18 @@ namespace OpenTracker.Models.Nodes.Factories
                 },
                 OverworldNodeID.DesertPalaceFrontEntrance => new List<INodeConnection>
                 {
-                    _connectionFactory(
-                        _overworldNodes[OverworldNodeID.LightWorld], node,
-                        _itemRequirements[(ItemType.Book, 1)]),
+                    _connectionFactory(_overworldNodes[OverworldNodeID.LightWorldBook], node),
                     _connectionFactory(_overworldNodes[OverworldNodeID.MireAreaMirror], node)
                 },
                 OverworldNodeID.BombosTabletLedge => new List<INodeConnection>
                 {
                     _connectionFactory(_overworldNodes[OverworldNodeID.LightWorldInverted], node),
                     _connectionFactory(_overworldNodes[OverworldNodeID.DarkWorldSouthMirror], node)
+                },
+                OverworldNodeID.BombosTabletLedgeBook => new List<INodeConnection>
+                {
+                    _connectionFactory(_overworldNodes[OverworldNodeID.BombosTabletLedge], node,
+                        _itemRequirements[(ItemType.Book, 1)])
                 },
                 OverworldNodeID.BombosTablet => new List<INodeConnection>
                 {

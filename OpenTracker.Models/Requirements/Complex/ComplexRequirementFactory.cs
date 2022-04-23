@@ -338,11 +338,6 @@ namespace OpenTracker.Models.Requirements.Complex
                             _itemRequirements[(ItemType.Book, 1)],
                             _sequenceBreakRequirements[SequenceBreakType.BlindPedestal]
                         }]
-                    }],
-                    _aggregateRequirements[new HashSet<IRequirement>
-                    {
-                        _itemRequirements[(ItemType.Book, 1)],
-                        _staticRequirements[AccessibilityLevel.Inspect]
                     }]
                 }],
                 ComplexRequirementType.RedEyegoreGoriya => _alternativeRequirements[new HashSet<IRequirement>
@@ -374,8 +369,7 @@ namespace OpenTracker.Models.Requirements.Complex
                         {
                             _itemExactRequirements[(ItemType.Sword, 0)],
                             _itemRequirements[(ItemType.Hammer, 1)]
-                        }],
-                        _staticRequirements[AccessibilityLevel.Inspect]
+                        }]
                     }]
                 }],
                 ComplexRequirementType.Torch => _alternativeRequirements[new HashSet<IRequirement>

@@ -127,6 +127,11 @@ namespace OpenTracker.Models.Nodes.Factories
                         _itemRequirements[(ItemType.Hammer, 1)]),
                     _connectionFactory(_overworldNodes[OverworldNodeID.DarkDeathMountainTopMirror], node)
                 },
+                OverworldNodeID.DeathMountainWestTopBook => new List<INodeConnection>
+                {
+                    _connectionFactory(_overworldNodes[OverworldNodeID.DeathMountainWestTop], node,
+                        _itemRequirements[(ItemType.Book, 1)])
+                },
                 OverworldNodeID.DeathMountainWestTopNotBunny => new List<INodeConnection>
                 {
                     _connectionFactory(

@@ -198,6 +198,12 @@ namespace OpenTracker.Models.Nodes.Factories
                         _overworldNodes[OverworldNodeID.LightWorldNotBunny], node,
                         _itemRequirements[(ItemType.Flute, 1)])
                 },
+                OverworldNodeID.LightWorldBook => new List<INodeConnection>
+                {
+                    _connectionFactory(
+                        _overworldNodes[OverworldNodeID.LightWorld], node,
+                        _itemRequirements[(ItemType.Book, 1)])
+                },
                 _ => throw new ArgumentOutOfRangeException(nameof(id), id, null)
             };
         }
