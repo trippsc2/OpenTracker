@@ -22,7 +22,6 @@ namespace OpenTracker.ViewModels.Menus
     /// </summary>
     public class MenuItemFactory : IMenuItemFactory
     {
-        private readonly ICaptureWindowMenuCollection _captureWindowMenuItems;
         private readonly IThemeManager _themeManager;
         
         private readonly IAlwaysDisplayDungeonItemsRequirementDictionary _alwaysDisplayDungeonItemsRequirements;
@@ -42,10 +41,11 @@ namespace OpenTracker.ViewModels.Menus
         private readonly IUIScaleRequirement.Factory _uiScaleFactory;
 
         public MenuItemFactory(
-            ICaptureWindowMenuCollection captureWindowMenuItems, IThemeManager themeManager,
+            IThemeManager themeManager,
             IAlwaysDisplayDungeonItemsRequirementDictionary alwaysDisplayDungeonItemsRequirements,
             IDisplayMapsCompassesRequirementDictionary displayMapsCompassesRequirements,
-            IMenuItemVM.Factory itemFactory, IThemeSelectedRequirement.Factory themeSelectedFactory,
+            IMenuItemVM.Factory itemFactory,
+            IThemeSelectedRequirement.Factory themeSelectedFactory,
             IDisplayAllLocationsRequirement.Factory displayAllLocationsFactory,
             IShowItemCountsOnMapRequirement.Factory showItemCountsOnMapFactory,
             ILayoutOrientationRequirement.Factory layoutOrientationFactory,
@@ -53,11 +53,11 @@ namespace OpenTracker.ViewModels.Menus
             IHorizontalItemsPanelPlacementRequirement.Factory horizontalItemsPanelPlacementFactory,
             IVerticalUIPanelPlacementRequirement.Factory verticalUIPanelPlacementFactory,
             IVerticalItemsPanelPlacementRequirement.Factory verticalItemsPanelPlacementFactory,
-            IMapOrientationRequirement.Factory mapOrientationFactory, IUIScaleRequirement.Factory uiScaleFactory)
+            IMapOrientationRequirement.Factory mapOrientationFactory,
+            IUIScaleRequirement.Factory uiScaleFactory)
         {
             _themeManager = themeManager;
-            _captureWindowMenuItems = captureWindowMenuItems;
-            
+
             _itemFactory = itemFactory;
 
             _themeSelectedFactory = themeSelectedFactory;
@@ -99,17 +99,6 @@ namespace OpenTracker.ViewModels.Menus
                 _itemFactory("Auto-Tracker...", command: autoTracker),
                 _itemFactory("-"),
                 _itemFactory("Sequence Breaks...", command: sequenceBreaks)
-            };
-        }
-
-        private List<IMenuItemVM> GetCaptureMenuItems(
-            ICaptureWindowMenuCollection captureWindowMenuItems, ICommand captureDesign)
-        {
-            return new()
-            {
-                _itemFactory("Windows", items: captureWindowMenuItems),
-                _itemFactory("-"),
-                _itemFactory("Design Capture Windows...", command: captureDesign)
             };
         }
 

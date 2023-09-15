@@ -4,7 +4,6 @@ using System.Threading;
 using Newtonsoft.Json;
 using OpenTracker.Models.AutoTracking.SNESConnectors.Socket;
 using OpenTracker.Models.Logging;
-using LogLevel = OpenTracker.Models.Logging.LogLevel;
 
 namespace OpenTracker.Models.AutoTracking.SNESConnectors.Requests
 {

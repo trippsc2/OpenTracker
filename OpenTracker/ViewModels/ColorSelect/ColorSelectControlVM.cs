@@ -225,25 +225,25 @@ namespace OpenTracker.ViewModels.ColorSelect
                 switch (_type)
                 {
                     case ColorType.EmphasisFont:
-                        _colorSettings.EmphasisFontColor = Color.ToString();
+                        _colorSettings.EmphasisFontColor = Color.ToString()!;
                         break;
                     case ColorType.AccessibilityNone:
-                        _colorSettings.AccessibilityColors[AccessibilityLevel.None] = Color.ToString();
+                        _colorSettings.AccessibilityColors[AccessibilityLevel.None] = Color.ToString()!;
                         break;
                     case ColorType.AccessibilityPartial:
-                        _colorSettings.AccessibilityColors[AccessibilityLevel.Partial] = Color.ToString();
+                        _colorSettings.AccessibilityColors[AccessibilityLevel.Partial] = Color.ToString()!;
                         break;
                     case ColorType.AccessibilityInspect:
-                        _colorSettings.AccessibilityColors[AccessibilityLevel.Inspect] = Color.ToString();
+                        _colorSettings.AccessibilityColors[AccessibilityLevel.Inspect] = Color.ToString()!;
                         break;
                     case ColorType.AccessibilitySequenceBreak:
-                        _colorSettings.AccessibilityColors[AccessibilityLevel.SequenceBreak] = Color.ToString();
+                        _colorSettings.AccessibilityColors[AccessibilityLevel.SequenceBreak] = Color.ToString()!;
                         break;
                     case ColorType.AccessibilityNormal:
-                        _colorSettings.AccessibilityColors[AccessibilityLevel.Normal] = Color.ToString();
+                        _colorSettings.AccessibilityColors[AccessibilityLevel.Normal] = Color.ToString()!;
                         break;
                     case ColorType.Connector:
-                        _colorSettings.ConnectorColor = Color.ToString();
+                        _colorSettings.ConnectorColor = Color.ToString()!;
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();

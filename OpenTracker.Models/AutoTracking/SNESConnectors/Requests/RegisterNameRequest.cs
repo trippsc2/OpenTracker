@@ -3,7 +3,6 @@ using System.Reactive;
 using System.Threading;
 using OpenTracker.Models.AutoTracking.SNESConnectors.Socket;
 using OpenTracker.Models.Logging;
-using WebSocketSharp;
 
 namespace OpenTracker.Models.AutoTracking.SNESConnectors.Requests
 {

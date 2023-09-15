@@ -114,7 +114,7 @@ namespace OpenTracker.Models.Items
             }
             
             base.Load(saveData);
-            Known = saveData!.Known;
+            Known = saveData.Known;
         }
         
         /// <summary>
