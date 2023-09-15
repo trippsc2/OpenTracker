@@ -448,6 +448,7 @@ namespace OpenTracker.Models.Sections.Factories
                 case LocationID.Tavern:
                 case LocationID.RaceGame:
                 case LocationID.MushroomSpot:
+                case LocationID.GroveDiggingSpot:
                 case LocationID.Dam when index == 1:
                 case LocationID.Hobo:
                 case LocationID.PyramidLedge:
@@ -459,6 +460,7 @@ namespace OpenTracker.Models.Sections.Factories
                 case LocationID.DesertLedge:
                 case LocationID.Blacksmith:
                 case LocationID.PurpleChest:
+                case LocationID.BumperCave:
                 case LocationID.LakeHyliaIsland:
                 case LocationID.OldMan:
                 case LocationID.SpectacleRock when index == 0:
@@ -479,7 +481,6 @@ namespace OpenTracker.Models.Sections.Factories
                 case LocationID.BonkRocks:
                 case LocationID.KingsTomb:
                 case LocationID.AginahsCave:
-                case LocationID.GroveDiggingSpot:
                 case LocationID.Dam:
                 case LocationID.MiniMoldormCave:
                 case LocationID.IceRodCave:
@@ -492,7 +493,6 @@ namespace OpenTracker.Models.Sections.Factories
                 case LocationID.TreasureGame:
                 case LocationID.BombableShack:
                 case LocationID.HammerPegs:
-                case LocationID.BumperCave:
                 case LocationID.MireShack:
                 case LocationID.CheckerboardCave:
                 case LocationID.SpectacleRock:

@@ -52,7 +52,7 @@ namespace OpenTracker.UnitTests.Models.Nodes.Factories
         {
             ExpectedValues.Clear();
 
-            foreach (OverworldNodeID id in Enum.GetValues(typeof(OverworldNodeID)))
+            foreach (var id in Enum.GetValues<OverworldNodeID>())
             {
                 var node = OverworldNodes[id];
 
@@ -143,9 +143,7 @@ namespace OpenTracker.UnitTests.Models.Nodes.Factories
                     },
                     OverworldNodeID.DesertPalaceFrontEntrance => new List<INodeConnection>
                     {
-                        ConnectionFactory(
-                            OverworldNodes[OverworldNodeID.LightWorld], node,
-                            ItemRequirements[(ItemType.Book, 1)]),
+                        ConnectionFactory(OverworldNodes[OverworldNodeID.LightWorldBook], node),
                         ConnectionFactory(OverworldNodes[OverworldNodeID.MireAreaMirror], node)
                     },
                     OverworldNodeID.BombosTabletLedge => new List<INodeConnection>

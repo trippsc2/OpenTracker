@@ -5,24 +5,15 @@ namespace OpenTracker.Models.AutoTracking.Logging
     /// <summary>
     /// This class contains auto-tracking log message data.
     /// </summary>
-    public class LogMessage : ILogMessage
+    public sealed class LogMessage
     {
-        public LogLevel Level { get; }
-        public string Content { get; }
-
         /// <summary>
-        /// Constructor
+        /// The <see cref="LogLevel"/> of the log message.
         /// </summary>
-        /// <param name="level">
-        ///     The <see cref="LogLevel"/> of the log message.
-        /// </param>
-        /// <param name="content">
-        ///     A <see cref="string"/> representing the content of the log message.
-        /// </param>
-        public LogMessage(LogLevel level, string content)
-        {
-            Level = level;
-            Content = content;
-        }
+        public required LogLevel Level { get; init; }
+        /// <summary>
+        /// A <see cref="string"/> representing the content of the log message.
+        /// </summary>
+        public required string Content { get; init; }
     }
 }

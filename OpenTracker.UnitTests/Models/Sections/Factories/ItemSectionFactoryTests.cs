@@ -63,7 +63,7 @@ namespace OpenTracker.UnitTests.Models.Sections.Factories
         {
             ExpectedValues.Clear();
 
-            foreach (LocationID id in Enum.GetValues(typeof(LocationID)))
+            foreach (var id in Enum.GetValues<LocationID>())
             {
                 for (var i = 0; i < 2; i++)
                 {
@@ -340,6 +340,8 @@ namespace OpenTracker.UnitTests.Models.Sections.Factories
         {
             switch (id)
             {
+                case LocationID.Pedestal:
+                    return OverworldNodes[OverworldNodeID.LightWorldBook];
                 case LocationID.LumberjackCave:
                 case LocationID.RaceGame:
                 case LocationID.Library:
@@ -354,12 +356,16 @@ namespace OpenTracker.UnitTests.Models.Sections.Factories
                 case LocationID.HoulihanHole:
                 case LocationID.SanctuaryGrave:
                     return OverworldNodes[OverworldNodeID.LightWorld];
+                case LocationID.BombosTablet:
+                    return OverworldNodes[OverworldNodeID.BombosTabletLedgeBook];
                 case LocationID.ZoraArea when index == 0:
                     return OverworldNodes[OverworldNodeID.ZoraArea];
                 case LocationID.BumperCave:
                     return OverworldNodes[OverworldNodeID.DarkWorldWest];
                 case LocationID.SpectacleRock when index == 0:
                     return OverworldNodes[OverworldNodeID.DeathMountainWestBottom];
+                case LocationID.EtherTablet:
+                    return OverworldNodes[OverworldNodeID.DeathMountainWestTopBook];
                 case LocationID.FloatingIsland:
                     return OverworldNodes[OverworldNodeID.DeathMountainEastTop];
                 case LocationID.CastleSecretEntrance:
@@ -387,8 +393,10 @@ namespace OpenTracker.UnitTests.Models.Sections.Factories
                     }];
                 case LocationID.Pedestal:
                 case LocationID.BottleVendor:
+                case LocationID.Tavern:
                 case LocationID.RaceGame:
                 case LocationID.MushroomSpot:
+                case LocationID.GroveDiggingSpot:
                 case LocationID.Dam when index == 1:
                 case LocationID.Hobo:
                 case LocationID.PyramidLedge:
@@ -400,6 +408,7 @@ namespace OpenTracker.UnitTests.Models.Sections.Factories
                 case LocationID.DesertLedge:
                 case LocationID.Blacksmith:
                 case LocationID.PurpleChest:
+                case LocationID.BumperCave:
                 case LocationID.LakeHyliaIsland:
                 case LocationID.OldMan:
                 case LocationID.SpectacleRock when index == 0:
@@ -410,7 +419,6 @@ namespace OpenTracker.UnitTests.Models.Sections.Factories
                 case LocationID.BlindsHouse:
                 case LocationID.TheWell:
                 case LocationID.ChickenHouse:
-                case LocationID.Tavern:
                 case LocationID.SickKid:
                 case LocationID.MagicBat:
                 case LocationID.Library:
@@ -421,7 +429,6 @@ namespace OpenTracker.UnitTests.Models.Sections.Factories
                 case LocationID.BonkRocks:
                 case LocationID.KingsTomb:
                 case LocationID.AginahsCave:
-                case LocationID.GroveDiggingSpot:
                 case LocationID.Dam:
                 case LocationID.MiniMoldormCave:
                 case LocationID.IceRodCave:
@@ -434,7 +441,6 @@ namespace OpenTracker.UnitTests.Models.Sections.Factories
                 case LocationID.TreasureGame:
                 case LocationID.BombableShack:
                 case LocationID.HammerPegs:
-                case LocationID.BumperCave:
                 case LocationID.MireShack:
                 case LocationID.CheckerboardCave:
                 case LocationID.SpectacleRock:

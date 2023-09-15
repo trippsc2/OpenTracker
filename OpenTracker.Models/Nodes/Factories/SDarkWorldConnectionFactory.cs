@@ -273,7 +273,7 @@ namespace OpenTracker.Models.Nodes.Factories
                         _complexRequirements[ComplexRequirementType.FakeFlippersSplashDeletion]),
                     _connectionFactory(
                         _overworldNodes[OverworldNodeID.DarkWorldSouthNotBunny], node,
-                        _sequenceBreakRequirements[SequenceBreakType.FakeFlippersFairyRevival]),
+                        _complexRequirements[ComplexRequirementType.FakeFlippersFairyRevival]),
                     _connectionFactory(
                         _overworldNodes[OverworldNodeID.DarkWorldSouthNotBunny], node,
                         _complexRequirements[ComplexRequirementType.FakeFlippersSplashDeletion]),

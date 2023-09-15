@@ -10,13 +10,8 @@ namespace OpenTracker.UnitTests.Models.AutoTracking.Logging
         private const LogLevel Level = LogLevel.Trace;
         private const string Message = "Test log message.";
         
-        private readonly AutoTrackerLogService _sut;
-        
-        public AutoTrackerLogServiceTests()
-        {
-            _sut = new AutoTrackerLogService((logLevel, message) => new LogMessage(logLevel, message));
-        }
-        
+        private readonly AutoTrackerLogService _sut = new();
+
         [Fact]
         public void Log_ShouldAddLogToLogCollection()
         {
@@ -33,8 +28,7 @@ namespace OpenTracker.UnitTests.Models.AutoTracking.Logging
             var logCollection = _sut.LogCollection;
             logCollection.Clear();
             
-            Assert.PropertyChanged(
-                logCollection, "Count", () => _sut.Log(Level, Message));
+            Assert.PropertyChanged(logCollection, "Count", () => _sut.Log(Level, Message));
         }
 
         [Fact]
@@ -43,7 +37,7 @@ namespace OpenTracker.UnitTests.Models.AutoTracking.Logging
             using var scope = ContainerConfig.Configure().BeginLifetimeScope();
             var sut = scope.Resolve<IAutoTrackerLogService>();
             
-            Assert.NotNull(sut as AutoTrackerLogService);
+            Assert.IsType<AutoTrackerLogService>(sut);
         }
 
         [Fact]

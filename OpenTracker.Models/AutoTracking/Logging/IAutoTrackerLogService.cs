@@ -9,9 +9,9 @@ namespace OpenTracker.Models.AutoTracking.Logging
     public interface IAutoTrackerLogService
     {
         /// <summary>
-        /// The <see cref="ObservableCollection{T}"/> of log messages.
+        /// A <see cref="ObservableCollection{T}"/> of <see cref="LogMessage"/> representing the log messages.
         /// </summary>
-        ObservableCollection<ILogMessage> LogCollection { get; }
+        ObservableCollection<LogMessage> LogCollection { get; }
 
         /// <summary>
         /// Logs a new message.
