@@ -1,4 +1,3 @@
-using Autofac;
 using OpenTracker.Models.AutoTracking.Memory;
 using Xunit;
 
@@ -11,7 +10,7 @@ namespace OpenTracker.UnitTests.Models.AutoTracking.Memory
         [Fact]
         public void Value_ShouldRaisePropertyChanged()
         {
-            Assert.PropertyChanged(_sut, nameof(IMemoryAddress.Value), () => _sut.Value = 1);
+            Assert.PropertyChanged(_sut, nameof(MemoryAddress.Value), () => _sut.Value = 1);
         }
 
         [Fact]
@@ -21,16 +20,6 @@ namespace OpenTracker.UnitTests.Models.AutoTracking.Memory
             _sut.Reset();
             
             Assert.Null(_sut.Value);
-        }
-
-        [Fact]
-        public void AutofacTest()
-        {
-            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-            var factory = scope.Resolve<IMemoryAddress.Factory>();
-            var sut = factory();
-            
-            Assert.NotNull(sut as MemoryAddress);
         }
     }
 }

@@ -1,5 +1,6 @@
-﻿using System.ComponentModel;
+﻿using System.Reactive.Linq;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 
 namespace OpenTracker.Models.AutoTracking.Memory
 {
@@ -8,64 +9,41 @@ namespace OpenTracker.Models.AutoTracking.Memory
     /// </summary>
     public class MemoryFlag : ReactiveObject, IMemoryFlag
     {
-        private readonly IMemoryAddress _memoryAddress;
         private readonly byte _flag;
 
-        private bool? _status;
-        public bool? Status
-        {
-            get => _status;
-            private set => this.RaiseAndSetIfChanged(ref _status, value);
-        }
+        private MemoryAddress MemoryAddress { get; }
+
+        [ObservableAsProperty]
+        public bool? Status { get; }
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="memoryAddress">
-        ///     The <see cref="IMemoryAddress"/> containing the flag.
+        ///     The <see cref="Memory.MemoryAddress"/> containing the flag.
         /// </param>
         /// <param name="flag">
         ///     A <see cref="byte"/> representing the bitwise flag.
         /// </param>
-        public MemoryFlag(IMemoryAddress memoryAddress, byte flag)
+        public MemoryFlag(MemoryAddress memoryAddress, byte flag)
         {
-            _memoryAddress = memoryAddress;
             _flag = flag;
-
-            UpdateFlag();
             
-            _memoryAddress.PropertyChanged += OnMemoryChanged;
+            MemoryAddress = memoryAddress;
+
+            this.WhenAnyValue(x => x.MemoryAddress.Value)
+                .Select(GetNewStatusFromAddressValue)
+                .ToPropertyEx(this, x => x.Status);
         }
 
-        /// <summary>
-        /// Subscribes to the <see cref="IMemoryAddress.PropertyChanged"/> event.
-        /// </summary>
-        /// <param name="sender">
-        ///     The <see cref="object"/> from which the event was sent.
-        /// </param>
-        /// <param name="e">
-        ///     The <see cref="PropertyChangedEventArgs"/>.
-        /// </param>
-        private void OnMemoryChanged(object? sender, PropertyChangedEventArgs e)
+        private bool? GetNewStatusFromAddressValue(byte? addressValue)
         {
-            if (e.PropertyName == nameof(IMemoryAddress.Value))
+            if (addressValue is null)
             {
-                UpdateFlag();
-            }
-        }
-
-        /// <summary>
-        /// Updates the flag status.
-        /// </summary>
-        private void UpdateFlag()
-        {
-            if (_memoryAddress.Value is null)
-            {
-                Status = null;
-                return;
+                return null;
             }
             
-            Status = (_memoryAddress.Value & _flag) != 0;
+            return (addressValue & _flag) != 0;
         }
     }
 }

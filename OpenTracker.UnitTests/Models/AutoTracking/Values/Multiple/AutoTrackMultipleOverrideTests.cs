@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.ComponentModel;
-using Autofac;
 using NSubstitute;
 using OpenTracker.Models.AutoTracking.Values;
 using OpenTracker.Models.AutoTracking.Values.Multiple;
@@ -140,20 +139,6 @@ namespace OpenTracker.UnitTests.Models.AutoTracking.Values.Multiple
             Assert.PropertyChanged(sut, nameof(IAutoTrackValue.CurrentValue),
                 () => values[2].PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
                     values[2], new PropertyChangedEventArgs(nameof(IAutoTrackValue.CurrentValue))));
-        }
-
-        [Fact]
-        public void AutofacTest()
-        {
-            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-            var factory = scope.Resolve<IAutoTrackMultipleOverride.Factory>();
-            var sut = factory(new List<IAutoTrackValue>
-            {
-                Substitute.For<IAutoTrackValue>(),
-                Substitute.For<IAutoTrackValue>()
-            });
-            
-            Assert.NotNull(sut as AutoTrackMultipleOverride);
         }
     }
 }

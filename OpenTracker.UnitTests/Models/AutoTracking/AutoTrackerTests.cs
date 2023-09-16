@@ -13,8 +13,7 @@ namespace OpenTracker.UnitTests.Models.AutoTracking
     public class AutoTrackerTests
     {
         private readonly ISNESConnector _snesConnector;
-        private readonly IMemoryAddressProvider _memoryAddressProvider =
-            new MemoryAddressProvider(() => new MemoryAddress());
+        private readonly IMemoryAddressProvider _memoryAddressProvider = new MemoryAddressProvider();
         
         private readonly AutoTracker _sut;
 

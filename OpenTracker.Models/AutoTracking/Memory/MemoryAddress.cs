@@ -1,22 +1,19 @@
 ﻿using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 
 namespace OpenTracker.Models.AutoTracking.Memory
 {
     /// <summary>
     /// This class contains SNES memory address data.
     /// </summary>
-    public class MemoryAddress : ReactiveObject, IMemoryAddress
+    public sealed class MemoryAddress : ReactiveObject
     {
-        private byte? _value;
-        public byte? Value
-        {
-            get => _value;
-            set => this.RaiseAndSetIfChanged(ref _value, value);
-        }
+        [Reactive]
+        public byte? Value { get; set; }
 
         public void Reset()
         {
-            _value = null;
+            Value = null;
         }
     }
 }

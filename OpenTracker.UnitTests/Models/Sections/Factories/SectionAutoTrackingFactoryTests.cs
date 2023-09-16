@@ -24,8 +24,7 @@ namespace OpenTracker.UnitTests.Models.Sections.Factories
 {
     public class SectionAutoTrackingFactoryTests
     {
-        private static readonly IMemoryAddressProvider MemoryAddressProvider = new MemoryAddressProvider(() => 
-            Substitute.For<IMemoryAddress>());
+        private static readonly IMemoryAddressProvider MemoryAddressProvider = new MemoryAddressProvider();
         private static readonly IItemDictionary Items = new ItemDictionary(() => Substitute.For<IItemFactory>());
 
         private static readonly IBigKeyShuffleRequirementDictionary BigKeyShuffleRequirements =
@@ -38,25 +37,7 @@ namespace OpenTracker.UnitTests.Models.Sections.Factories
             Substitute.For<IRaceIllegalTrackingRequirement>();
         private static readonly ISmallKeyShuffleRequirementDictionary SmallKeyShuffleRequirements =
             new SmallKeyShuffleRequirementDictionary(_ => Substitute.For<ISmallKeyShuffleRequirement>());
-        
-        private static readonly IAutoTrackAddressBool.Factory BoolFactory = (memoryAddress, comparison, trueValue) => 
-            new AutoTrackAddressBool(memoryAddress, comparison, trueValue);
-        private static readonly IAutoTrackAddressValue.Factory ValueFactory = (memoryAddress, maximum, adjustment) => 
-            new AutoTrackAddressValue(memoryAddress, maximum, adjustment);
-        private static readonly IAutoTrackBitwiseIntegerValue.Factory BitwiseIntegerFactory = (memoryAddress, mask, shift) =>
-            new AutoTrackBitwiseIntegerValue(memoryAddress, mask, shift);
-        private static readonly IAutoTrackConditionalValue.Factory ConditionalFactory = (condition, trueValue, falseValue) => 
-            new AutoTrackConditionalValue(condition, trueValue, falseValue);
-        private static readonly IAutoTrackFlagBool.Factory FlagBoolFactory = (flag, trueValue) =>
-            new AutoTrackFlagBool(flag, trueValue);
-        private static readonly IAutoTrackItemValue.Factory ItemValueFactory = item => new AutoTrackItemValue(item);
-        private static readonly IAutoTrackMultipleDifference.Factory DifferenceFactory = (value1, value2) => 
-                new AutoTrackMultipleDifference(value1, value2);
-        private static readonly IAutoTrackMultipleOverride.Factory OverrideFactory =
-            values => new AutoTrackMultipleOverride(values);
-        private static readonly IAutoTrackMultipleSum.Factory SumFactory = values => new AutoTrackMultipleSum(values);
-        private static readonly IAutoTrackStaticValue.Factory StaticValueFactory = value => new AutoTrackStaticValue(value);
-        
+
         private static readonly IMemoryFlag.Factory MemoryFlagFactory = (memoryAddress, flag) =>
             new MemoryFlag(memoryAddress, flag);
 
@@ -65,10 +46,7 @@ namespace OpenTracker.UnitTests.Models.Sections.Factories
 
         private readonly SectionAutoTrackingFactory _sut = new(
             MemoryAddressProvider, Items, BigKeyShuffleRequirements, CompassShuffleRequirements,
-            MapShuffleRequirements, RaceIllegalTrackingRequirement, SmallKeyShuffleRequirements,
-            BoolFactory, ValueFactory, BitwiseIntegerFactory, ConditionalFactory,
-            FlagBoolFactory, ItemValueFactory, DifferenceFactory, OverrideFactory, SumFactory,
-            StaticValueFactory, MemoryFlagFactory);
+            MapShuffleRequirements, RaceIllegalTrackingRequirement, SmallKeyShuffleRequirements, MemoryFlagFactory);
 
         private static void PopulateExpectedValues()
         {
@@ -80,569 +58,569 @@ namespace OpenTracker.UnitTests.Models.Sections.Factories
                 {
                     IAutoTrackValue? value = id switch
                     {
-                        LocationID.LinksHouse => OverrideFactory(new List<IAutoTrackValue>
+                        LocationID.LinksHouse => new AutoTrackMultipleOverride(new List<IAutoTrackValue>
                         {
-                            FlagBoolFactory(
+                            new AutoTrackFlagBool(
                                 MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef001], 0x04), 1),
-                            FlagBoolFactory(
+                            new AutoTrackFlagBool(
                                 MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef208], 0x10), 1)
                         }),
-                        LocationID.Pedestal => FlagBoolFactory(
+                        LocationID.Pedestal => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef300], 0x40), 1),
-                        LocationID.LumberjackCave => FlagBoolFactory(
+                        LocationID.LumberjackCave => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef1c5], 0x02), 1),
-                        LocationID.BlindsHouse when i == 0 => SumFactory(new List<IAutoTrackValue>
+                        LocationID.BlindsHouse when i == 0 => new AutoTrackMultipleSum(new List<IAutoTrackValue>
                         {
-                            FlagBoolFactory(
+                            new AutoTrackFlagBool(
                                 MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef23a], 0x20), 1),
-                            FlagBoolFactory(
+                            new AutoTrackFlagBool(
                                 MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef23a], 0x40), 1),
-                            FlagBoolFactory(
+                            new AutoTrackFlagBool(
                                 MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef23a], 0x80), 1),
-                            FlagBoolFactory(
+                            new AutoTrackFlagBool(
                                 MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef23b], 0x01), 1),
                         }),
-                        LocationID.BlindsHouse => FlagBoolFactory(
+                        LocationID.BlindsHouse => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef23a], 0x10), 1),
-                        LocationID.TheWell when i == 0 => SumFactory(new List<IAutoTrackValue>
+                        LocationID.TheWell when i == 0 => new AutoTrackMultipleSum(new List<IAutoTrackValue>
                         {
-                            FlagBoolFactory(
+                            new AutoTrackFlagBool(
                                 MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef05e], 0x20), 1),
-                            FlagBoolFactory(
+                            new AutoTrackFlagBool(
                                 MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef05e], 0x40), 1),
-                            FlagBoolFactory(
+                            new AutoTrackFlagBool(
                                 MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef05e], 0x80), 1),
-                            FlagBoolFactory(
+                            new AutoTrackFlagBool(
                                 MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef05f], 0x01), 1),
                         }),
-                        LocationID.TheWell => FlagBoolFactory(
+                        LocationID.TheWell => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef05e], 0x10), 1),
-                        LocationID.BottleVendor => FlagBoolFactory(
+                        LocationID.BottleVendor => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef3c9], 0x02), 1),
-                        LocationID.ChickenHouse => FlagBoolFactory(
+                        LocationID.ChickenHouse => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef210], 0x10), 1),
-                        LocationID.Tavern => FlagBoolFactory(
+                        LocationID.Tavern => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef206], 0x10), 1),
-                        LocationID.SickKid => FlagBoolFactory(
+                        LocationID.SickKid => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef410], 0x04), 1),
-                        LocationID.MagicBat => FlagBoolFactory(
+                        LocationID.MagicBat => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef411], 0x80), 1),
-                        LocationID.RaceGame => FlagBoolFactory(
+                        LocationID.RaceGame => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef2a8], 0x40), 1),
-                        LocationID.Library => FlagBoolFactory(
+                        LocationID.Library => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef410], 0x80), 1),
-                        LocationID.MushroomSpot => FlagBoolFactory(
+                        LocationID.MushroomSpot => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef411], 0x10), 1),
-                        LocationID.ForestHideout => FlagBoolFactory(
+                        LocationID.ForestHideout => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef1c3], 0x02), 1),
-                        LocationID.CastleSecret when i == 1 => FlagBoolFactory(
+                        LocationID.CastleSecret when i == 1 => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef3c6], 0x01), 1),
-                        LocationID.CastleSecret => FlagBoolFactory(
+                        LocationID.CastleSecret => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef0aa], 0x10), 1),
-                        LocationID.WitchsHut => FlagBoolFactory(
+                        LocationID.WitchsHut => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef411], 0x20), 1),
-                        LocationID.SahasrahlasHut when i == 0 => SumFactory(new List<IAutoTrackValue>
+                        LocationID.SahasrahlasHut when i == 0 => new AutoTrackMultipleSum(new List<IAutoTrackValue>
                         {
-                            FlagBoolFactory(
+                            new AutoTrackFlagBool(
                                 MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef20a], 0x10), 1),
-                            FlagBoolFactory(
+                            new AutoTrackFlagBool(
                                 MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef20a], 0x20), 1),
-                            FlagBoolFactory(
+                            new AutoTrackFlagBool(
                                 MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef20a], 0x40), 1),
                         }),
-                        LocationID.SahasrahlasHut => FlagBoolFactory(
+                        LocationID.SahasrahlasHut => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef410], 0x10), 1),
-                        LocationID.BonkRocks => FlagBoolFactory(
+                        LocationID.BonkRocks => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef248], 0x10), 1),
-                        LocationID.KingsTomb => FlagBoolFactory(
+                        LocationID.KingsTomb => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef226], 0x10), 1),
-                        LocationID.AginahsCave => FlagBoolFactory(
+                        LocationID.AginahsCave => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef214], 0x10), 1),
-                        LocationID.GroveDiggingSpot => FlagBoolFactory(
+                        LocationID.GroveDiggingSpot => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef2aa], 0x40), 1),
-                        LocationID.Dam when i == 0 => FlagBoolFactory(
+                        LocationID.Dam when i == 0 => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef216], 0x10), 1),
-                        LocationID.Dam => FlagBoolFactory(
+                        LocationID.Dam => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef2bb], 0x40), 1),
-                        LocationID.MiniMoldormCave => SumFactory(new List<IAutoTrackValue>
+                        LocationID.MiniMoldormCave => new AutoTrackMultipleSum(new List<IAutoTrackValue>
                         {
-                            FlagBoolFactory(
+                            new AutoTrackFlagBool(
                                 MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef246], 0x10), 1),
-                            FlagBoolFactory(
+                            new AutoTrackFlagBool(
                                 MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef246], 0x20), 1),
-                            FlagBoolFactory(
+                            new AutoTrackFlagBool(
                                 MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef246], 0x40), 1),
-                            FlagBoolFactory(
+                            new AutoTrackFlagBool(
                                 MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef246], 0x80), 1),
-                            FlagBoolFactory(
+                            new AutoTrackFlagBool(
                                 MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef247], 0x04), 1)
                         }),
-                        LocationID.IceRodCave => FlagBoolFactory(
+                        LocationID.IceRodCave => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef240], 0x10), 1),
-                        LocationID.Hobo => FlagBoolFactory(
+                        LocationID.Hobo => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef3c9], 0x01), 1),
-                        LocationID.PyramidLedge => FlagBoolFactory(
+                        LocationID.PyramidLedge => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef2db], 0x40), 1),
-                        LocationID.FatFairy => SumFactory(new List<IAutoTrackValue>
+                        LocationID.FatFairy => new AutoTrackMultipleSum(new List<IAutoTrackValue>
                         {
-                            FlagBoolFactory(
+                            new AutoTrackFlagBool(
                                 MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef22c], 0x10), 1),
-                            FlagBoolFactory(
+                            new AutoTrackFlagBool(
                                 MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef22c], 0x20), 1)
                         }),
-                        LocationID.HauntedGrove => FlagBoolFactory(
+                        LocationID.HauntedGrove => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef410], 0x08), 1),
-                        LocationID.HypeCave => SumFactory(new List<IAutoTrackValue>
+                        LocationID.HypeCave => new AutoTrackMultipleSum(new List<IAutoTrackValue>
                         {
-                            FlagBoolFactory(
+                            new AutoTrackFlagBool(
                                 MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef23c], 0x10), 1),
-                            FlagBoolFactory(
+                            new AutoTrackFlagBool(
                                 MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef23c], 0x20), 1),
-                            FlagBoolFactory(
+                            new AutoTrackFlagBool(
                                 MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef23c], 0x40), 1),
-                            FlagBoolFactory(
+                            new AutoTrackFlagBool(
                                 MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef23c], 0x80), 1),
-                            FlagBoolFactory(
+                            new AutoTrackFlagBool(
                                 MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef23d], 0x04), 1)
                         }),
-                        LocationID.BombosTablet => FlagBoolFactory(
+                        LocationID.BombosTablet => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef411], 0x02), 1),
-                        LocationID.SouthOfGrove => FlagBoolFactory(
+                        LocationID.SouthOfGrove => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef237], 0x04), 1),
-                        LocationID.DiggingGame => FlagBoolFactory(
+                        LocationID.DiggingGame => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef2e8], 0x40), 1),
-                        LocationID.WaterfallFairy => SumFactory(new List<IAutoTrackValue>
+                        LocationID.WaterfallFairy => new AutoTrackMultipleSum(new List<IAutoTrackValue>
                         {
-                            FlagBoolFactory(
+                            new AutoTrackFlagBool(
                                 MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef228], 0x10), 1),
-                            FlagBoolFactory(
+                            new AutoTrackFlagBool(
                                 MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef228], 0x20), 1)
                         }),
-                        LocationID.ZoraArea when i == 0 => FlagBoolFactory(
+                        LocationID.ZoraArea when i == 0 => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef301], 0x40), 1),
-                        LocationID.ZoraArea => FlagBoolFactory(
+                        LocationID.ZoraArea => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef410], 0x02), 1),
-                        LocationID.Catfish => FlagBoolFactory(
+                        LocationID.Catfish => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef410], 0x20), 1),
-                        LocationID.GraveyardLedge => FlagBoolFactory(
+                        LocationID.GraveyardLedge => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef237], 0x02), 1),
-                        LocationID.DesertLedge => FlagBoolFactory(
+                        LocationID.DesertLedge => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef2b0], 0x40), 1),
-                        LocationID.CShapedHouse => FlagBoolFactory(
+                        LocationID.CShapedHouse => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef238], 0x10), 1),
-                        LocationID.TreasureGame => FlagBoolFactory(
+                        LocationID.TreasureGame => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef20d], 0x04), 1),
-                        LocationID.BombableShack => FlagBoolFactory(
+                        LocationID.BombableShack => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef20c], 0x10), 1),
-                        LocationID.Blacksmith => FlagBoolFactory(
+                        LocationID.Blacksmith => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef411], 0x04), 1),
-                        LocationID.PurpleChest => FlagBoolFactory(
+                        LocationID.PurpleChest => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef3c9], 0x10), 1),
-                        LocationID.HammerPegs => FlagBoolFactory(
+                        LocationID.HammerPegs => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef24f], 0x04), 1),
-                        LocationID.BumperCave => FlagBoolFactory(
+                        LocationID.BumperCave => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef2ca], 0x40), 1),
-                        LocationID.LakeHyliaIsland => FlagBoolFactory(
+                        LocationID.LakeHyliaIsland => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef2b5], 0x40), 1),
-                        LocationID.MireShack => SumFactory(new List<IAutoTrackValue>
+                        LocationID.MireShack => new AutoTrackMultipleSum(new List<IAutoTrackValue>
                         {
-                            FlagBoolFactory(
+                            new AutoTrackFlagBool(
                                 MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef21a], 0x10), 1),
-                            FlagBoolFactory(
+                            new AutoTrackFlagBool(
                                 MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef21a], 0x20), 1)
                         }),
-                        LocationID.CheckerboardCave => FlagBoolFactory(
+                        LocationID.CheckerboardCave => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef24d], 0x02), 1),
-                        LocationID.OldMan => FlagBoolFactory(
+                        LocationID.OldMan => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef410], 0x01), 1),
-                        LocationID.SpectacleRock when i == 0 => FlagBoolFactory(
+                        LocationID.SpectacleRock when i == 0 => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef283], 0x40), 1),
-                        LocationID.SpectacleRock => FlagBoolFactory(
+                        LocationID.SpectacleRock => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef1d5], 0x04), 1),
-                        LocationID.EtherTablet => FlagBoolFactory(
+                        LocationID.EtherTablet => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef411], 0x01), 1),
-                        LocationID.SpikeCave => FlagBoolFactory(
+                        LocationID.SpikeCave => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef22e], 0x10), 1),
-                        LocationID.SpiralCave => FlagBoolFactory(
+                        LocationID.SpiralCave => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef1fc], 0x10), 1),
-                        LocationID.ParadoxCave when i == 0 => SumFactory(new List<IAutoTrackValue>
+                        LocationID.ParadoxCave when i == 0 => new AutoTrackMultipleSum(new List<IAutoTrackValue>
                         {
-                            FlagBoolFactory(
+                            new AutoTrackFlagBool(
                                 MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef1fe], 0x10), 1),
-                            FlagBoolFactory(
+                            new AutoTrackFlagBool(
                                 MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef1fe], 0x20), 1)
                         }),
-                        LocationID.ParadoxCave => SumFactory(new List<IAutoTrackValue>
+                        LocationID.ParadoxCave => new AutoTrackMultipleSum(new List<IAutoTrackValue>
                         {
-                            FlagBoolFactory(
+                            new AutoTrackFlagBool(
                                 MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef1de], 0x10), 1),
-                            FlagBoolFactory(
+                            new AutoTrackFlagBool(
                                 MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef1de], 0x20), 1),
-                            FlagBoolFactory(
+                            new AutoTrackFlagBool(
                                 MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef1de], 0x40), 1),
-                            FlagBoolFactory(
+                            new AutoTrackFlagBool(
                                 MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef1de], 0x80), 1),
-                            FlagBoolFactory(
+                            new AutoTrackFlagBool(
                                 MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef1df], 0x01), 1)
                         }),
-                        LocationID.SuperBunnyCave => SumFactory(new List<IAutoTrackValue>
+                        LocationID.SuperBunnyCave => new AutoTrackMultipleSum(new List<IAutoTrackValue>
                         {
-                            FlagBoolFactory(
+                            new AutoTrackFlagBool(
                                 MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef1f0], 0x10), 1),
-                            FlagBoolFactory(
+                            new AutoTrackFlagBool(
                                 MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef1f0], 0x20), 1)
                         }),
-                        LocationID.HookshotCave when i == 0 => FlagBoolFactory(
+                        LocationID.HookshotCave when i == 0 => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef078], 0x80), 1),
-                        LocationID.HookshotCave => SumFactory(new List<IAutoTrackValue>
+                        LocationID.HookshotCave => new AutoTrackMultipleSum(new List<IAutoTrackValue>
                         {
-                            FlagBoolFactory(
+                            new AutoTrackFlagBool(
                                 MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef078], 0x10), 1),
-                            FlagBoolFactory(
+                            new AutoTrackFlagBool(
                                 MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef078], 0x20), 1),
-                            FlagBoolFactory(
+                            new AutoTrackFlagBool(
                                 MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef078], 0x40), 1)
                         }),
-                        LocationID.FloatingIsland => FlagBoolFactory(
+                        LocationID.FloatingIsland => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef285], 0x40), 1),
-                        LocationID.MimicCave => FlagBoolFactory(
+                        LocationID.MimicCave => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef218], 0x10), 1),
-                        LocationID.HyruleCastle => ConditionalFactory(
-                            RaceIllegalTrackingRequirement, DifferenceFactory(
-                                OverrideFactory(new List<IAutoTrackValue>
+                        LocationID.HyruleCastle => new AutoTrackConditionalValue(
+                            RaceIllegalTrackingRequirement, new AutoTrackMultipleDifference(
+                                new AutoTrackMultipleOverride(new List<IAutoTrackValue>
                                 {
-                                    ValueFactory(MemoryAddressProvider.MemoryAddresses[0x7ef4c0], 255, 0),
-                                    BitwiseIntegerFactory(MemoryAddressProvider.MemoryAddresses[0x7ef434], 0xF0, 4)
+                                    new AutoTrackAddressValue(MemoryAddressProvider.MemoryAddresses[0x7ef4c0], 255),
+                                    new AutoTrackBitwiseIntegerValue(MemoryAddressProvider.MemoryAddresses[0x7ef434], 0xF0, 4)
                                 }),
-                                SumFactory(new List<IAutoTrackValue>
+                                new AutoTrackMultipleSum(new List<IAutoTrackValue>
                                 {
-                                    ConditionalFactory(
+                                    new AutoTrackConditionalValue(
                                         MapShuffleRequirements[false],
-                                        ItemValueFactory(Items[ItemType.HCMap]),
-                                        StaticValueFactory(0)),
-                                    ConditionalFactory(
+                                        new AutoTrackItemValue(Items[ItemType.HCMap]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
                                         SmallKeyShuffleRequirements[false],
-                                        ItemValueFactory(Items[ItemType.HCSmallKey]),
-                                        StaticValueFactory(0))
+                                        new AutoTrackItemValue(Items[ItemType.HCSmallKey]),
+                                        new AutoTrackStaticValue(0))
                                 })),
                             null),
-                        LocationID.AgahnimTower when i == 0 => ConditionalFactory(
+                        LocationID.AgahnimTower when i == 0 => new AutoTrackConditionalValue(
                             RaceIllegalTrackingRequirement,
-                            DifferenceFactory(
-                                OverrideFactory(new List<IAutoTrackValue>
+                            new AutoTrackMultipleDifference(
+                                new AutoTrackMultipleOverride(new List<IAutoTrackValue>
                                 {
-                                    ValueFactory(MemoryAddressProvider.MemoryAddresses[0x7ef4c3], 255, 0),
-                                    BitwiseIntegerFactory(MemoryAddressProvider.MemoryAddresses[0x7ef435], 0x3, 0)
+                                    new AutoTrackAddressValue(MemoryAddressProvider.MemoryAddresses[0x7ef4c3], 255),
+                                    new AutoTrackBitwiseIntegerValue(MemoryAddressProvider.MemoryAddresses[0x7ef435], 0x3, 0)
                                 }),
-                                SumFactory(new List<IAutoTrackValue>
+                                new AutoTrackMultipleSum(new List<IAutoTrackValue>
                                 {
-                                    ConditionalFactory(
+                                    new AutoTrackConditionalValue(
                                         SmallKeyShuffleRequirements[false],
-                                        ItemValueFactory(Items[ItemType.ATSmallKey]),
-                                        StaticValueFactory(0))
+                                        new AutoTrackItemValue(Items[ItemType.ATSmallKey]),
+                                        new AutoTrackStaticValue(0))
                                 })),
                             null),
-                        LocationID.AgahnimTower => BoolFactory(
+                        LocationID.AgahnimTower => new AutoTrackAddressBool(
                             MemoryAddressProvider.MemoryAddresses[0x7ef3c5], 2, 1),
-                        LocationID.EasternPalace when i == 0 => ConditionalFactory(
-                            RaceIllegalTrackingRequirement, DifferenceFactory(
-                                OverrideFactory(new List<IAutoTrackValue>
+                        LocationID.EasternPalace when i == 0 => new AutoTrackConditionalValue(
+                            RaceIllegalTrackingRequirement, new AutoTrackMultipleDifference(
+                                new AutoTrackMultipleOverride(new List<IAutoTrackValue>
                                 {
-                                    ValueFactory(MemoryAddressProvider.MemoryAddresses[0x7ef4c1], 255, 0),
-                                    BitwiseIntegerFactory(MemoryAddressProvider.MemoryAddresses[0x7ef436], 0x07, 0)
+                                    new AutoTrackAddressValue(MemoryAddressProvider.MemoryAddresses[0x7ef4c1], 255),
+                                    new AutoTrackBitwiseIntegerValue(MemoryAddressProvider.MemoryAddresses[0x7ef436], 0x07, 0)
                                 }),
-                                SumFactory(new List<IAutoTrackValue>
+                                new AutoTrackMultipleSum(new List<IAutoTrackValue>
                                 {
-                                    ConditionalFactory(
-                                        MapShuffleRequirements[false], ItemValueFactory(Items[ItemType.EPMap]),
-                                        StaticValueFactory(0)),
-                                    ConditionalFactory(
+                                    new AutoTrackConditionalValue(
+                                        MapShuffleRequirements[false], new AutoTrackItemValue(Items[ItemType.EPMap]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
                                         CompassShuffleRequirements[false],
-                                        ItemValueFactory(Items[ItemType.EPCompass]),
-                                        StaticValueFactory(0)),
-                                    ConditionalFactory(
-                                        BigKeyShuffleRequirements[false], ItemValueFactory(Items[ItemType.EPBigKey]),
-                                        StaticValueFactory(0))
+                                        new AutoTrackItemValue(Items[ItemType.EPCompass]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
+                                        BigKeyShuffleRequirements[false], new AutoTrackItemValue(Items[ItemType.EPBigKey]),
+                                        new AutoTrackStaticValue(0))
                                 })),
                             null),
-                        LocationID.EasternPalace => FlagBoolFactory(
+                        LocationID.EasternPalace => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef191], 0x08), 1),
-                        LocationID.DesertPalace when i == 0 => ConditionalFactory(
-                            RaceIllegalTrackingRequirement, DifferenceFactory(
-                                OverrideFactory(new List<IAutoTrackValue>
+                        LocationID.DesertPalace when i == 0 => new AutoTrackConditionalValue(
+                            RaceIllegalTrackingRequirement, new AutoTrackMultipleDifference(
+                                new AutoTrackMultipleOverride(new List<IAutoTrackValue>
                                 {
-                                    ValueFactory(MemoryAddressProvider.MemoryAddresses[0x7ef4c2], 255, 0),
-                                    BitwiseIntegerFactory(MemoryAddressProvider.MemoryAddresses[0x7ef435], 0xE0, 5)
+                                    new AutoTrackAddressValue(MemoryAddressProvider.MemoryAddresses[0x7ef4c2], 255),
+                                    new AutoTrackBitwiseIntegerValue(MemoryAddressProvider.MemoryAddresses[0x7ef435], 0xE0, 5)
                                 }),
-                                SumFactory(new List<IAutoTrackValue>
+                                new AutoTrackMultipleSum(new List<IAutoTrackValue>
                                 {
-                                    ConditionalFactory(
-                                        MapShuffleRequirements[false], ItemValueFactory(Items[ItemType.DPMap]),
-                                        StaticValueFactory(0)),
-                                    ConditionalFactory(
+                                    new AutoTrackConditionalValue(
+                                        MapShuffleRequirements[false], new AutoTrackItemValue(Items[ItemType.DPMap]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
                                         CompassShuffleRequirements[false],
-                                        ItemValueFactory(Items[ItemType.DPCompass]),
-                                        StaticValueFactory(0)),
-                                    ConditionalFactory(
+                                        new AutoTrackItemValue(Items[ItemType.DPCompass]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
                                         SmallKeyShuffleRequirements[false],
-                                        ItemValueFactory(Items[ItemType.DPSmallKey]),
-                                        StaticValueFactory(0)),
-                                    ConditionalFactory(
+                                        new AutoTrackItemValue(Items[ItemType.DPSmallKey]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
                                         BigKeyShuffleRequirements[false],
-                                        ItemValueFactory(Items[ItemType.DPBigKey]),
-                                        StaticValueFactory(0))
+                                        new AutoTrackItemValue(Items[ItemType.DPBigKey]),
+                                        new AutoTrackStaticValue(0))
                                 })),
                             null),
-                        LocationID.DesertPalace => FlagBoolFactory(
+                        LocationID.DesertPalace => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef067], 0x08), 1),
-                        LocationID.TowerOfHera when i == 0 => ConditionalFactory(
-                            RaceIllegalTrackingRequirement, DifferenceFactory(
-                                OverrideFactory(new List<IAutoTrackValue>
+                        LocationID.TowerOfHera when i == 0 => new AutoTrackConditionalValue(
+                            RaceIllegalTrackingRequirement, new AutoTrackMultipleDifference(
+                                new AutoTrackMultipleOverride(new List<IAutoTrackValue>
                                 {
-                                    ValueFactory(MemoryAddressProvider.MemoryAddresses[0x7ef4c9], 255, 0),
-                                    BitwiseIntegerFactory(MemoryAddressProvider.MemoryAddresses[0x7ef435], 0x1C, 2)
+                                    new AutoTrackAddressValue(MemoryAddressProvider.MemoryAddresses[0x7ef4c9], 255),
+                                    new AutoTrackBitwiseIntegerValue(MemoryAddressProvider.MemoryAddresses[0x7ef435], 0x1C, 2)
                                 }),
-                                SumFactory(new List<IAutoTrackValue>
+                                new AutoTrackMultipleSum(new List<IAutoTrackValue>
                                 {
-                                    ConditionalFactory(
-                                        MapShuffleRequirements[false], ItemValueFactory(Items[ItemType.ToHMap]),
-                                        StaticValueFactory(0)),
-                                    ConditionalFactory(
+                                    new AutoTrackConditionalValue(
+                                        MapShuffleRequirements[false], new AutoTrackItemValue(Items[ItemType.ToHMap]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
                                         CompassShuffleRequirements[false],
-                                        ItemValueFactory(Items[ItemType.ToHCompass]),
-                                        StaticValueFactory(0)),
-                                    ConditionalFactory(
+                                        new AutoTrackItemValue(Items[ItemType.ToHCompass]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
                                         SmallKeyShuffleRequirements[false],
-                                        ItemValueFactory(Items[ItemType.ToHSmallKey]),
-                                        StaticValueFactory(0)),
-                                    ConditionalFactory(
+                                        new AutoTrackItemValue(Items[ItemType.ToHSmallKey]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
                                         BigKeyShuffleRequirements[false],
-                                        ItemValueFactory(Items[ItemType.ToHBigKey]),
-                                        StaticValueFactory(0))
+                                        new AutoTrackItemValue(Items[ItemType.ToHBigKey]),
+                                        new AutoTrackStaticValue(0))
                                 })),
                             null),
-                        LocationID.TowerOfHera => FlagBoolFactory(
+                        LocationID.TowerOfHera => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef00f], 0x08), 1),
-                        LocationID.PalaceOfDarkness when i == 0 => ConditionalFactory(
-                            RaceIllegalTrackingRequirement, DifferenceFactory(
-                                OverrideFactory(new List<IAutoTrackValue>
+                        LocationID.PalaceOfDarkness when i == 0 => new AutoTrackConditionalValue(
+                            RaceIllegalTrackingRequirement, new AutoTrackMultipleDifference(
+                                new AutoTrackMultipleOverride(new List<IAutoTrackValue>
                                 {
-                                    ValueFactory(MemoryAddressProvider.MemoryAddresses[0x7ef4c5], 255, 0),
-                                    BitwiseIntegerFactory(MemoryAddressProvider.MemoryAddresses[0x7ef434], 0x0F, 0)
+                                    new AutoTrackAddressValue(MemoryAddressProvider.MemoryAddresses[0x7ef4c5], 255),
+                                    new AutoTrackBitwiseIntegerValue(MemoryAddressProvider.MemoryAddresses[0x7ef434], 0x0F, 0)
                                 }),
-                                SumFactory(new List<IAutoTrackValue>
+                                new AutoTrackMultipleSum(new List<IAutoTrackValue>
                                 {
-                                    ConditionalFactory(
-                                        MapShuffleRequirements[false], ItemValueFactory(Items[ItemType.PoDMap]),
-                                        StaticValueFactory(0)),
-                                    ConditionalFactory(
+                                    new AutoTrackConditionalValue(
+                                        MapShuffleRequirements[false], new AutoTrackItemValue(Items[ItemType.PoDMap]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
                                         CompassShuffleRequirements[false],
-                                        ItemValueFactory(Items[ItemType.PoDCompass]),
-                                        StaticValueFactory(0)),
-                                    ConditionalFactory(
+                                        new AutoTrackItemValue(Items[ItemType.PoDCompass]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
                                         SmallKeyShuffleRequirements[false],
-                                        ItemValueFactory(Items[ItemType.PoDSmallKey]),
-                                        StaticValueFactory(0)),
-                                    ConditionalFactory(
+                                        new AutoTrackItemValue(Items[ItemType.PoDSmallKey]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
                                         BigKeyShuffleRequirements[false],
-                                        ItemValueFactory(Items[ItemType.PoDBigKey]),
-                                        StaticValueFactory(0))
+                                        new AutoTrackItemValue(Items[ItemType.PoDBigKey]),
+                                        new AutoTrackStaticValue(0))
                                 })),
                             null),
-                        LocationID.PalaceOfDarkness => FlagBoolFactory(
+                        LocationID.PalaceOfDarkness => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef0b5], 0x08), 1),
-                        LocationID.SwampPalace when i == 0 => ConditionalFactory(
-                            RaceIllegalTrackingRequirement, DifferenceFactory(
-                                OverrideFactory(new List<IAutoTrackValue>
+                        LocationID.SwampPalace when i == 0 => new AutoTrackConditionalValue(
+                            RaceIllegalTrackingRequirement, new AutoTrackMultipleDifference(
+                                new AutoTrackMultipleOverride(new List<IAutoTrackValue>
                                 {
-                                    ValueFactory(MemoryAddressProvider.MemoryAddresses[0x7ef4c4], 255, 0),
-                                    BitwiseIntegerFactory(MemoryAddressProvider.MemoryAddresses[0x7ef439], 0xF, 0),
+                                    new AutoTrackAddressValue(MemoryAddressProvider.MemoryAddresses[0x7ef4c4], 255),
+                                    new AutoTrackBitwiseIntegerValue(MemoryAddressProvider.MemoryAddresses[0x7ef439], 0xF, 0),
                                 }),
-                                SumFactory(new List<IAutoTrackValue>
+                                new AutoTrackMultipleSum(new List<IAutoTrackValue>
                                 {
-                                    ConditionalFactory(
-                                        MapShuffleRequirements[false], ItemValueFactory(Items[ItemType.SPMap]),
-                                        StaticValueFactory(0)),
-                                    ConditionalFactory(
+                                    new AutoTrackConditionalValue(
+                                        MapShuffleRequirements[false], new AutoTrackItemValue(Items[ItemType.SPMap]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
                                         CompassShuffleRequirements[false],
-                                        ItemValueFactory(Items[ItemType.SPCompass]),
-                                        StaticValueFactory(0)),
-                                    ConditionalFactory(
+                                        new AutoTrackItemValue(Items[ItemType.SPCompass]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
                                         SmallKeyShuffleRequirements[false],
-                                        ItemValueFactory(Items[ItemType.SPSmallKey]),
-                                        StaticValueFactory(0)),
-                                    ConditionalFactory(
+                                        new AutoTrackItemValue(Items[ItemType.SPSmallKey]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
                                         BigKeyShuffleRequirements[false],
-                                        ItemValueFactory(Items[ItemType.SPBigKey]),
-                                        StaticValueFactory(0))
+                                        new AutoTrackItemValue(Items[ItemType.SPBigKey]),
+                                        new AutoTrackStaticValue(0))
                                 })),
                             null),
-                        LocationID.SwampPalace => FlagBoolFactory(
+                        LocationID.SwampPalace => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef00d], 0x08), 1),
-                        LocationID.SkullWoods when i == 0 => ConditionalFactory(
-                            RaceIllegalTrackingRequirement, DifferenceFactory(
-                                OverrideFactory(new List<IAutoTrackValue>
+                        LocationID.SkullWoods when i == 0 => new AutoTrackConditionalValue(
+                            RaceIllegalTrackingRequirement, new AutoTrackMultipleDifference(
+                                new AutoTrackMultipleOverride(new List<IAutoTrackValue>
                                 {
-                                    ValueFactory(MemoryAddressProvider.MemoryAddresses[0x7ef4c7], 255, 0),
-                                    BitwiseIntegerFactory(MemoryAddressProvider.MemoryAddresses[0x7ef437], 0xF0, 4)
+                                    new AutoTrackAddressValue(MemoryAddressProvider.MemoryAddresses[0x7ef4c7], 255),
+                                    new AutoTrackBitwiseIntegerValue(MemoryAddressProvider.MemoryAddresses[0x7ef437], 0xF0, 4)
                                 }),
-                                SumFactory(new List<IAutoTrackValue>
+                                new AutoTrackMultipleSum(new List<IAutoTrackValue>
                                 {
-                                    ConditionalFactory(
-                                        MapShuffleRequirements[false], ItemValueFactory(Items[ItemType.SWMap]),
-                                        StaticValueFactory(0)),
-                                    ConditionalFactory(
+                                    new AutoTrackConditionalValue(
+                                        MapShuffleRequirements[false], new AutoTrackItemValue(Items[ItemType.SWMap]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
                                         CompassShuffleRequirements[false],
-                                        ItemValueFactory(Items[ItemType.SWCompass]),
-                                        StaticValueFactory(0)),
-                                    ConditionalFactory(
+                                        new AutoTrackItemValue(Items[ItemType.SWCompass]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
                                         SmallKeyShuffleRequirements[false],
-                                        ItemValueFactory(Items[ItemType.SWSmallKey]),
-                                        StaticValueFactory(0)),
-                                    ConditionalFactory(
+                                        new AutoTrackItemValue(Items[ItemType.SWSmallKey]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
                                         BigKeyShuffleRequirements[false],
-                                        ItemValueFactory(Items[ItemType.SWBigKey]),
-                                        StaticValueFactory(0))
+                                        new AutoTrackItemValue(Items[ItemType.SWBigKey]),
+                                        new AutoTrackStaticValue(0))
                                 })),
                             null),
-                        LocationID.SkullWoods => FlagBoolFactory(
+                        LocationID.SkullWoods => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef053], 0x08), 1),
-                        LocationID.ThievesTown when i == 0 => ConditionalFactory(
-                            RaceIllegalTrackingRequirement, DifferenceFactory(
-                                OverrideFactory(new List<IAutoTrackValue>
+                        LocationID.ThievesTown when i == 0 => new AutoTrackConditionalValue(
+                            RaceIllegalTrackingRequirement, new AutoTrackMultipleDifference(
+                                new AutoTrackMultipleOverride(new List<IAutoTrackValue>
                                 {
-                                    ValueFactory(MemoryAddressProvider.MemoryAddresses[0x7ef4ca], 255, 0),
-                                    BitwiseIntegerFactory(MemoryAddressProvider.MemoryAddresses[0x7ef437], 0xF, 0)
+                                    new AutoTrackAddressValue(MemoryAddressProvider.MemoryAddresses[0x7ef4ca], 255),
+                                    new AutoTrackBitwiseIntegerValue(MemoryAddressProvider.MemoryAddresses[0x7ef437], 0xF, 0)
                                 }),
-                                SumFactory(new List<IAutoTrackValue>
+                                new AutoTrackMultipleSum(new List<IAutoTrackValue>
                                 {
-                                    ConditionalFactory(
-                                        MapShuffleRequirements[false], ItemValueFactory(Items[ItemType.TTMap]),
-                                        StaticValueFactory(0)),
-                                    ConditionalFactory(
+                                    new AutoTrackConditionalValue(
+                                        MapShuffleRequirements[false], new AutoTrackItemValue(Items[ItemType.TTMap]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
                                         CompassShuffleRequirements[false],
-                                        ItemValueFactory(Items[ItemType.TTCompass]),
-                                        StaticValueFactory(0)),
-                                    ConditionalFactory(
+                                        new AutoTrackItemValue(Items[ItemType.TTCompass]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
                                         SmallKeyShuffleRequirements[false],
-                                        ItemValueFactory(Items[ItemType.TTSmallKey]),
-                                        StaticValueFactory(0)),
-                                    ConditionalFactory(
+                                        new AutoTrackItemValue(Items[ItemType.TTSmallKey]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
                                         BigKeyShuffleRequirements[false],
-                                        ItemValueFactory(Items[ItemType.TTBigKey]),
-                                        StaticValueFactory(0))
+                                        new AutoTrackItemValue(Items[ItemType.TTBigKey]),
+                                        new AutoTrackStaticValue(0))
                                 })),
                             null),
-                        LocationID.ThievesTown => FlagBoolFactory(
+                        LocationID.ThievesTown => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef159], 0x08), 1),
-                        LocationID.IcePalace when i == 0 => ConditionalFactory(
-                            RaceIllegalTrackingRequirement, DifferenceFactory(
-                                OverrideFactory(new List<IAutoTrackValue>
+                        LocationID.IcePalace when i == 0 => new AutoTrackConditionalValue(
+                            RaceIllegalTrackingRequirement, new AutoTrackMultipleDifference(
+                                new AutoTrackMultipleOverride(new List<IAutoTrackValue>
                                 {
-                                    ValueFactory(MemoryAddressProvider.MemoryAddresses[0x7ef4c8], 255, 0),
-                                    BitwiseIntegerFactory(MemoryAddressProvider.MemoryAddresses[0x7ef438], 0xF0, 4)
+                                    new AutoTrackAddressValue(MemoryAddressProvider.MemoryAddresses[0x7ef4c8], 255),
+                                    new AutoTrackBitwiseIntegerValue(MemoryAddressProvider.MemoryAddresses[0x7ef438], 0xF0, 4)
                                 }),
-                                SumFactory(new List<IAutoTrackValue>
+                                new AutoTrackMultipleSum(new List<IAutoTrackValue>
                                 {
-                                    ConditionalFactory(
-                                        MapShuffleRequirements[false], ItemValueFactory(Items[ItemType.IPMap]),
-                                        StaticValueFactory(0)),
-                                    ConditionalFactory(
+                                    new AutoTrackConditionalValue(
+                                        MapShuffleRequirements[false], new AutoTrackItemValue(Items[ItemType.IPMap]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
                                         CompassShuffleRequirements[false],
-                                        ItemValueFactory(Items[ItemType.IPCompass]),
-                                        StaticValueFactory(0)),
-                                    ConditionalFactory(
+                                        new AutoTrackItemValue(Items[ItemType.IPCompass]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
                                         SmallKeyShuffleRequirements[false],
-                                        ItemValueFactory(Items[ItemType.IPSmallKey]),
-                                        StaticValueFactory(0)),
-                                    ConditionalFactory(
+                                        new AutoTrackItemValue(Items[ItemType.IPSmallKey]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
                                         BigKeyShuffleRequirements[false],
-                                        ItemValueFactory(Items[ItemType.IPBigKey]),
-                                        StaticValueFactory(0))
+                                        new AutoTrackItemValue(Items[ItemType.IPBigKey]),
+                                        new AutoTrackStaticValue(0))
                                 })),
                             null),
-                        LocationID.IcePalace => FlagBoolFactory(
+                        LocationID.IcePalace => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef1bd], 0x08), 1),
-                        LocationID.MiseryMire when i == 0 => ConditionalFactory(
-                            RaceIllegalTrackingRequirement, DifferenceFactory(
-                                OverrideFactory(new List<IAutoTrackValue>
+                        LocationID.MiseryMire when i == 0 => new AutoTrackConditionalValue(
+                            RaceIllegalTrackingRequirement, new AutoTrackMultipleDifference(
+                                new AutoTrackMultipleOverride(new List<IAutoTrackValue>
                                 {
-                                    ValueFactory(MemoryAddressProvider.MemoryAddresses[0x7ef4c6], 255, 0),
-                                    BitwiseIntegerFactory(MemoryAddressProvider.MemoryAddresses[0x7ef438], 0xF, 0)
+                                    new AutoTrackAddressValue(MemoryAddressProvider.MemoryAddresses[0x7ef4c6], 255),
+                                    new AutoTrackBitwiseIntegerValue(MemoryAddressProvider.MemoryAddresses[0x7ef438], 0xF, 0)
                                 }),
-                                SumFactory(new List<IAutoTrackValue>
+                                new AutoTrackMultipleSum(new List<IAutoTrackValue>
                                 {
-                                    ConditionalFactory(
-                                        MapShuffleRequirements[false], ItemValueFactory(Items[ItemType.MMMap]),
-                                        StaticValueFactory(0)),
-                                    ConditionalFactory(
+                                    new AutoTrackConditionalValue(
+                                        MapShuffleRequirements[false], new AutoTrackItemValue(Items[ItemType.MMMap]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
                                         CompassShuffleRequirements[false],
-                                        ItemValueFactory(Items[ItemType.MMCompass]),
-                                        StaticValueFactory(0)),
-                                    ConditionalFactory(
+                                        new AutoTrackItemValue(Items[ItemType.MMCompass]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
                                         SmallKeyShuffleRequirements[false],
-                                        ItemValueFactory(Items[ItemType.MMSmallKey]),
-                                        StaticValueFactory(0)),
-                                    ConditionalFactory(
+                                        new AutoTrackItemValue(Items[ItemType.MMSmallKey]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
                                         BigKeyShuffleRequirements[false],
-                                        ItemValueFactory(Items[ItemType.MMBigKey]),
-                                        StaticValueFactory(0))
+                                        new AutoTrackItemValue(Items[ItemType.MMBigKey]),
+                                        new AutoTrackStaticValue(0))
                                 })),
                             null),
-                        LocationID.MiseryMire => FlagBoolFactory(
+                        LocationID.MiseryMire => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef121], 0x08), 1),
-                        LocationID.TurtleRock when i == 0 => ConditionalFactory(
-                            RaceIllegalTrackingRequirement, DifferenceFactory(
-                                OverrideFactory(new List<IAutoTrackValue>
+                        LocationID.TurtleRock when i == 0 => new AutoTrackConditionalValue(
+                            RaceIllegalTrackingRequirement, new AutoTrackMultipleDifference(
+                                new AutoTrackMultipleOverride(new List<IAutoTrackValue>
                                 {
-                                    ValueFactory(MemoryAddressProvider.MemoryAddresses[0x7ef4cb], 255, 0),
-                                    BitwiseIntegerFactory(MemoryAddressProvider.MemoryAddresses[0x7ef439], 0xF0, 4)
+                                    new AutoTrackAddressValue(MemoryAddressProvider.MemoryAddresses[0x7ef4cb], 255),
+                                    new AutoTrackBitwiseIntegerValue(MemoryAddressProvider.MemoryAddresses[0x7ef439], 0xF0, 4)
                                 }),
-                                SumFactory(new List<IAutoTrackValue>
+                                new AutoTrackMultipleSum(new List<IAutoTrackValue>
                                 {
-                                    ConditionalFactory(
-                                        MapShuffleRequirements[false], ItemValueFactory(Items[ItemType.TRMap]),
-                                        StaticValueFactory(0)),
-                                    ConditionalFactory(
+                                    new AutoTrackConditionalValue(
+                                        MapShuffleRequirements[false], new AutoTrackItemValue(Items[ItemType.TRMap]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
                                         CompassShuffleRequirements[false],
-                                        ItemValueFactory(Items[ItemType.TRCompass]),
-                                        StaticValueFactory(0)),
-                                    ConditionalFactory(
+                                        new AutoTrackItemValue(Items[ItemType.TRCompass]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
                                         SmallKeyShuffleRequirements[false],
-                                        ItemValueFactory(Items[ItemType.TRSmallKey]),
-                                        StaticValueFactory(0)),
-                                    ConditionalFactory(
+                                        new AutoTrackItemValue(Items[ItemType.TRSmallKey]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
                                         BigKeyShuffleRequirements[false],
-                                        ItemValueFactory(Items[ItemType.TRBigKey]),
-                                        StaticValueFactory(0))
+                                        new AutoTrackItemValue(Items[ItemType.TRBigKey]),
+                                        new AutoTrackStaticValue(0))
                                 })),
                             null),
-                        LocationID.TurtleRock => FlagBoolFactory(
+                        LocationID.TurtleRock => new AutoTrackFlagBool(
                             MemoryFlagFactory(MemoryAddressProvider.MemoryAddresses[0x7ef149], 0x08), 1),
-                        LocationID.GanonsTower when i == 0 => ConditionalFactory(
-                            RaceIllegalTrackingRequirement, DifferenceFactory(
-                                OverrideFactory(new List<IAutoTrackValue>
+                        LocationID.GanonsTower when i == 0 => new AutoTrackConditionalValue(
+                            RaceIllegalTrackingRequirement, new AutoTrackMultipleDifference(
+                                new AutoTrackMultipleOverride(new List<IAutoTrackValue>
                                 {
-                                    ValueFactory(MemoryAddressProvider.MemoryAddresses[0x7ef4cc], 255, 0),
-                                    BitwiseIntegerFactory(MemoryAddressProvider.MemoryAddresses[0x7ef436], 0xF8, 3)
+                                    new AutoTrackAddressValue(MemoryAddressProvider.MemoryAddresses[0x7ef4cc], 255),
+                                    new AutoTrackBitwiseIntegerValue(MemoryAddressProvider.MemoryAddresses[0x7ef436], 0xF8, 3)
                                 }),
-                                SumFactory(new List<IAutoTrackValue>
+                                new AutoTrackMultipleSum(new List<IAutoTrackValue>
                                 {
-                                    ConditionalFactory(
-                                        MapShuffleRequirements[false], ItemValueFactory(Items[ItemType.GTMap]),
-                                        StaticValueFactory(0)),
-                                    ConditionalFactory(
+                                    new AutoTrackConditionalValue(
+                                        MapShuffleRequirements[false], new AutoTrackItemValue(Items[ItemType.GTMap]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
                                         CompassShuffleRequirements[false],
-                                        ItemValueFactory(Items[ItemType.GTCompass]),
-                                        StaticValueFactory(0)),
-                                    ConditionalFactory(
+                                        new AutoTrackItemValue(Items[ItemType.GTCompass]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
                                         SmallKeyShuffleRequirements[false],
-                                        ItemValueFactory(Items[ItemType.GTSmallKey]),
-                                        StaticValueFactory(0)),
-                                    ConditionalFactory(
+                                        new AutoTrackItemValue(Items[ItemType.GTSmallKey]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
                                         BigKeyShuffleRequirements[false],
-                                        ItemValueFactory(Items[ItemType.GTBigKey]),
-                                        StaticValueFactory(0))
+                                        new AutoTrackItemValue(Items[ItemType.GTBigKey]),
+                                        new AutoTrackStaticValue(0))
                                 })),
                             null),
                         _ => null

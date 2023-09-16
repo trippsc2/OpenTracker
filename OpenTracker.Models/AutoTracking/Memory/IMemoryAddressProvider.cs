@@ -11,13 +11,13 @@ namespace OpenTracker.Models.AutoTracking.Memory
         /// A <see cref="IDictionary{TKey,TValue}"/> containing the memory segments to be sent to the SNES connector
         /// indexed by <see cref="MemorySegmentType"/>.
         /// </summary>
-        IDictionary<MemorySegmentType, IList<IMemoryAddress>> MemorySegments { get; }
+        IDictionary<MemorySegmentType, IList<MemoryAddress>> MemorySegments { get; }
         
         /// <summary>
-        /// A <see cref="IDictionary{TKey,TValue}"/> containing the <see cref="IMemoryAddress"/> objects indexed by
+        /// A <see cref="IDictionary{TKey,TValue}"/> containing the <see cref="MemoryAddress"/> objects indexed by
         /// <see cref="ulong"/> address.
         /// </summary>
-        IDictionary<ulong, IMemoryAddress> MemoryAddresses { get; }
+        IDictionary<ulong, MemoryAddress> MemoryAddresses { get; }
 
         /// <summary>
         /// Returns the starting <see cref="ulong"/> address of the specified <see cref="MemorySegmentType"/>.
@@ -31,7 +31,7 @@ namespace OpenTracker.Models.AutoTracking.Memory
         ulong GetMemorySegmentStart(MemorySegmentType type);
 
         /// <summary>
-        /// Resets all <see cref="IMemoryAddress"/> objects to their initial values.
+        /// Resets all <see cref="MemoryAddress"/> objects to their initial values.
         /// </summary>
         void Reset();
     }

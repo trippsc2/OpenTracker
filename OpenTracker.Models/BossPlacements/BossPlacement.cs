@@ -3,6 +3,7 @@ using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Models.UndoRedo.Boss;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 
 namespace OpenTracker.Models.BossPlacements
 {
@@ -17,12 +18,8 @@ namespace OpenTracker.Models.BossPlacements
 
         public BossType DefaultBoss { get; }
 
-        private BossType? _boss;
-        public BossType? Boss
-        {
-            get => _boss;
-            set => this.RaiseAndSetIfChanged(ref _boss, value);
-        }
+        [Reactive]
+        public BossType? Boss { get; set; }
 
         /// <summary>
         /// Constructor
@@ -72,7 +69,7 @@ namespace OpenTracker.Models.BossPlacements
 
         public BossPlacementSaveData Save()
         {
-            return new()
+            return new BossPlacementSaveData
             {
                 Boss = Boss
             };

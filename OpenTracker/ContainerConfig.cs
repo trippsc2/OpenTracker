@@ -7,7 +7,6 @@ using OpenTracker.Models.AutoTracking;
 using OpenTracker.Models.AutoTracking.Logging;
 using OpenTracker.Models.AutoTracking.Memory;
 using OpenTracker.Models.AutoTracking.SNESConnectors;
-using OpenTracker.Models.AutoTracking.Values;
 using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.Dropdowns;
 using OpenTracker.Models.Dungeons;
@@ -110,7 +109,6 @@ namespace OpenTracker
 
         private static List<string> ModelsSkipTypes => new()
         {
-            nameof(AutoTrackValueBase),
             nameof(AccessibilityRequirement),
             nameof(BooleanRequirement)
         };

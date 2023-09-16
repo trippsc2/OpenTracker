@@ -1,6 +1,4 @@
-using System.ComponentModel;
 using Autofac;
-using NSubstitute;
 using OpenTracker.Models.AutoTracking.Memory;
 using Xunit;
 
@@ -8,7 +6,7 @@ namespace OpenTracker.UnitTests.Models.AutoTracking.Memory
 {
     public class MemoryFlagTests
     {
-        private readonly IMemoryAddress _memoryAddress = Substitute.For<IMemoryAddress>();
+        private readonly MemoryAddress _memoryAddress = new();
         
         [Theory]
         [InlineData(null, null, 0x1)]
@@ -36,7 +34,7 @@ namespace OpenTracker.UnitTests.Models.AutoTracking.Memory
         [InlineData(true, (byte)255, 0x4)]
         public void Status_ShouldReturnExpected(bool? expected, byte? value, byte flag)
         {
-            _memoryAddress.Value.Returns(value);
+            _memoryAddress.Value = value;
             var sut = new MemoryFlag(_memoryAddress, flag);
             
             Assert.Equal(expected, sut.Status);
@@ -45,13 +43,14 @@ namespace OpenTracker.UnitTests.Models.AutoTracking.Memory
         [Fact]
         public void Status_ShouldRaisePropertyChanged()
         {
-            _memoryAddress.Value.Returns((byte?)null);
-            var sut = new MemoryFlag(_memoryAddress, 0x1);
-            _memoryAddress.Value.Returns((byte?)0);
+            _memoryAddress.Value = null;
             
-            Assert.PropertyChanged(sut, nameof(IMemoryFlag.Status), () => 
-                _memoryAddress.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
-                    _memoryAddress, new PropertyChangedEventArgs(nameof(IMemoryAddress.Value))));
+            var sut = new MemoryFlag(_memoryAddress, 0x1);
+            
+            Assert.PropertyChanged(
+                sut,
+                nameof(IMemoryFlag.Status),
+                () => _memoryAddress.Value = 0);
         }
 
         [Fact]

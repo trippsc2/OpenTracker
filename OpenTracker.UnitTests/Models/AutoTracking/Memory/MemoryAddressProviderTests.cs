@@ -1,5 +1,4 @@
 using Autofac;
-using NSubstitute;
 using OpenTracker.Models.AutoTracking.Memory;
 using Xunit;
 
@@ -7,21 +6,17 @@ namespace OpenTracker.UnitTests.Models.AutoTracking.Memory
 {
     public class MemoryAddressProviderTests
     {
-        private readonly IMemoryAddress.Factory _addressFactory = () => Substitute.For<IMemoryAddress>();
-        private readonly MemoryAddressProvider _sut;
-
-        public MemoryAddressProviderTests()
-        {
-            _sut = new MemoryAddressProvider(_addressFactory);
-        }
+        private readonly MemoryAddressProvider _sut = new();
 
         [Fact]
         public void Reset_ShouldCallResetOnMemoryAddresses()
         {
             var memoryAddress = _sut.MemoryAddresses[0x7ef000];
+            memoryAddress.Value = 1;
+            
             _sut.Reset();
             
-            memoryAddress.Received().Reset();
+            Assert.Null(memoryAddress.Value);
         }
 
         [Fact]

@@ -1,6 +1,3 @@
-using System.ComponentModel;
-using Autofac;
-using NSubstitute;
 using OpenTracker.Models.AutoTracking.Memory;
 using OpenTracker.Models.AutoTracking.Values;
 using OpenTracker.Models.AutoTracking.Values.Single;
@@ -10,7 +7,7 @@ namespace OpenTracker.UnitTests.Models.AutoTracking.Values.Single
 {
     public class AutoTrackAddressValueTests
     {
-        private readonly IMemoryAddress _memoryAddress = Substitute.For<IMemoryAddress>();
+        private readonly MemoryAddress _memoryAddress = new();
         
         [Theory]
         [InlineData(null, null, 0, 0)]
@@ -43,7 +40,7 @@ namespace OpenTracker.UnitTests.Models.AutoTracking.Values.Single
         public void CurrentValue_ShouldEqualExpected(
             int? expected, byte? memoryAddressValue, byte maximum, int adjustment)
         {
-            _memoryAddress.Value.Returns(memoryAddressValue);
+            _memoryAddress.Value = memoryAddressValue;
             var sut = new AutoTrackAddressValue(_memoryAddress, maximum, adjustment);
 
             Assert.Equal(expected, sut.CurrentValue);
@@ -52,23 +49,14 @@ namespace OpenTracker.UnitTests.Models.AutoTracking.Values.Single
         [Fact]
         public void MemoryAddressChanged_ShouldRaisePropertyChanged()
         {
-            _memoryAddress.Value.Returns((byte?)null);
-            var sut = new AutoTrackAddressValue(_memoryAddress, 255, 0);
-            _memoryAddress.Value.Returns((byte?)1);
+            _memoryAddress.Value = null;
             
-            Assert.PropertyChanged(sut, nameof(IAutoTrackValue.CurrentValue),
-                () => _memoryAddress.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
-                    _memoryAddress, new PropertyChangedEventArgs(nameof(IMemoryAddress.Value))));
-        }
-
-        [Fact]
-        public void AutofacTest()
-        {
-            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-            var factory = scope.Resolve<IAutoTrackAddressValue.Factory>();
-            var sut = factory(_memoryAddress, byte.MaxValue, 0);
+            var sut = new AutoTrackAddressValue(_memoryAddress, 255);
             
-            Assert.NotNull(sut as AutoTrackAddressValue);
+            Assert.PropertyChanged(
+                sut,
+                nameof(IAutoTrackValue.CurrentValue),
+                () => _memoryAddress.Value = 1);
         }
     }
 }

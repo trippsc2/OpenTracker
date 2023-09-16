@@ -1,46 +1,32 @@
-﻿using System.ComponentModel;
+﻿using System.Reactive.Linq;
 using OpenTracker.Models.Items;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 
-namespace OpenTracker.Models.AutoTracking.Values.Single
+namespace OpenTracker.Models.AutoTracking.Values.Single;
+
+/// <summary>
+/// This class represents an auto-tracking result value from an item count.
+/// </summary>
+public sealed class AutoTrackItemValue : ReactiveObject, IAutoTrackValue
 {
-    /// <summary>
-    /// This class contains the auto-tracking result value of a hidden item count.
-    /// </summary>
-    public class AutoTrackItemValue : ReactiveObject, IAutoTrackItemValue
-    {
-        private readonly IItem _item;
+    private IItem Item { get; }
 
-        public int? CurrentValue => _item.Current;
+    [ObservableAsProperty]
+    public int? CurrentValue { get; }
         
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="item">
-        ///     The <see cref="IItem"/> for which the count is represented.
-        /// </param>
-        public AutoTrackItemValue(IItem item)
-        {
-            _item = item;
+    /// <summary>
+    /// Initializes a new <see cref="AutoTrackItemValue"/> object with the specified item.
+    /// </summary>
+    /// <param name="item">
+    ///     An <see cref="IItem"/> representing the item to monitor.
+    /// </param>
+    public AutoTrackItemValue(IItem item)
+    {
+        Item = item;
 
-            _item.PropertyChanged += OnItemChanged;
-        }
-
-        /// <summary>
-        /// Subscribes to the <see cref="IItem.PropertyChanged"/> event.
-        /// </summary>
-        /// <param name="sender">
-        ///     The <see cref="object"/> from which the event was sent.
-        /// </param>
-        /// <param name="e">
-        ///     The <see cref="PropertyChangedEventArgs"/>.
-        /// </param>
-        private void OnItemChanged(object? sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(IItem.Current))
-            {
-                this.RaisePropertyChanged(nameof(CurrentValue));
-            }
-        }
+        this.WhenAnyValue(x => x.Item.Current)
+            .Select(x => (int?)x)
+            .ToPropertyEx(this, x => x.CurrentValue);
     }
 }

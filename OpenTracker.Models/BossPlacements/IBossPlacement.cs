@@ -1,14 +1,14 @@
-﻿using OpenTracker.Models.Reset;
+﻿using System.ComponentModel;
+using OpenTracker.Models.Reset;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.UndoRedo;
-using ReactiveUI;
 
 namespace OpenTracker.Models.BossPlacements
 {
     /// <summary>
     /// This interface contains boss placement data.
     /// </summary>
-    public interface IBossPlacement : IReactiveObject, IResettable, ISaveable<BossPlacementSaveData>
+    public interface IBossPlacement : INotifyPropertyChanged, IResettable, ISaveable<BossPlacementSaveData>
     {
         /// <summary>
         /// The default <see cref="BossType"/>, effective when boss shuffle is disabled.

@@ -16,7 +16,7 @@ namespace OpenTracker.Models.AutoTracking
         private readonly IMemoryAddressProvider _memoryAddressProvider;
         private readonly ISNESConnector _snesConnector;
 
-        private IMemoryAddress InGameStatus { get; }
+        private MemoryAddress InGameStatus { get; }
 
         private bool CanReadMemory => Status == ConnectionStatus.Connected;
         private bool IsInGame

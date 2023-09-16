@@ -1,11 +1,11 @@
-﻿using ReactiveUI;
+﻿using System.ComponentModel;
 
 namespace OpenTracker.Models.AutoTracking.Memory
 {
     /// <summary>
     /// This interface contains SNES memory flag data.
     /// </summary>
-    public interface IMemoryFlag : IReactiveObject
+    public interface IMemoryFlag : INotifyPropertyChanged
     {
         /// <summary>
         /// A nullable <see cref="bool"/> representing whether the flag is set.
@@ -16,7 +16,7 @@ namespace OpenTracker.Models.AutoTracking.Memory
         /// A factory for creating new <see cref="IMemoryFlag"/> objects.
         /// </summary>
         /// <param name="memoryAddress">
-        ///     The <see cref="IMemoryAddress"/> containing the flag.
+        ///     The <see cref="MemoryAddress"/> containing the flag.
         /// </param>
         /// <param name="flag">
         ///     A <see cref="byte"/> representing the bitwise flag.
@@ -24,6 +24,6 @@ namespace OpenTracker.Models.AutoTracking.Memory
         /// <returns>
         ///     A new <see cref="IMemoryFlag"/> object.
         /// </returns>
-        delegate IMemoryFlag Factory(IMemoryAddress memoryAddress, byte flag);
+        delegate IMemoryFlag Factory(MemoryAddress memoryAddress, byte flag);
     }
 }

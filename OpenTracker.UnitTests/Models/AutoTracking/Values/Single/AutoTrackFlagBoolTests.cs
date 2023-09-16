@@ -1,16 +1,13 @@
-using System.ComponentModel;
-using Autofac;
-using NSubstitute;
-using OpenTracker.Models.AutoTracking.Memory;
 using OpenTracker.Models.AutoTracking.Values;
 using OpenTracker.Models.AutoTracking.Values.Single;
+using OpenTracker.UnitTests.Models.AutoTracking.Memory;
 using Xunit;
 
 namespace OpenTracker.UnitTests.Models.AutoTracking.Values.Single
 {
     public class AutoTrackFlagBoolTests
     {
-        private readonly IMemoryFlag _memoryFlag = Substitute.For<IMemoryFlag>();
+        private readonly MockMemoryFlag _memoryFlag = new();
         
         [Theory]
         [InlineData(null, null, 0)]
@@ -24,7 +21,7 @@ namespace OpenTracker.UnitTests.Models.AutoTracking.Values.Single
         [InlineData(2, true, 2)]
         public void CurrentValue_ShouldEqualExpected(int? expected, bool? memoryFlagStatus, int trueValue)
         {
-            _memoryFlag.Status.Returns(memoryFlagStatus);
+            _memoryFlag.Status = memoryFlagStatus;
             var sut = new AutoTrackFlagBool(_memoryFlag, trueValue);
 
             Assert.Equal(expected, sut.CurrentValue);
@@ -33,23 +30,13 @@ namespace OpenTracker.UnitTests.Models.AutoTracking.Values.Single
         [Fact]
         public void FlagChanged_ShouldRaisePropertyChanged()
         {
-            _memoryFlag.Status.Returns((bool?)null);
+            _memoryFlag.Status = null;
             var sut = new AutoTrackFlagBool(_memoryFlag, 1);
-            _memoryFlag.Status.Returns(false);
             
-            Assert.PropertyChanged(sut, nameof(IAutoTrackValue.CurrentValue),
-                () => _memoryFlag.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
-                    _memoryFlag, new PropertyChangedEventArgs(nameof(IMemoryFlag.Status))));
-        }
-
-        [Fact]
-        public void AutofacTest()
-        {
-            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-            var factory = scope.Resolve<IAutoTrackFlagBool.Factory>();
-            var sut = factory(_memoryFlag, 1);
-            
-            Assert.NotNull(sut as AutoTrackFlagBool);
+            Assert.PropertyChanged(
+                sut,
+                nameof(IAutoTrackValue.CurrentValue),
+                () => _memoryFlag.Status = false);
         }
     }
 }

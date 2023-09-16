@@ -5,7 +5,6 @@ using NSubstitute;
 using OpenTracker.Models.AutoTracking.Memory;
 using OpenTracker.Models.AutoTracking.Values.Multiple;
 using OpenTracker.Models.AutoTracking.Values.Single;
-using OpenTracker.Models.AutoTracking.Values.Static;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Items.Factories;
 using OpenTracker.Models.Requirements.AutoTracking;
@@ -18,8 +17,7 @@ namespace OpenTracker.UnitTests.Models.Items.Factories
     public class ItemAutoTrackValueFactoryTests
     {
         private readonly IItemDictionary _items = Substitute.For<IItemDictionary>();
-        private readonly IMemoryAddressProvider _memoryAddressProvider = new MemoryAddressProvider(() =>
-            Substitute.For<IMemoryAddress>());
+        private readonly IMemoryAddressProvider _memoryAddressProvider = new MemoryAddressProvider();
 
         private readonly IGenericKeysRequirementDictionary _genericKeysRequirements =
             Substitute.For<IGenericKeysRequirementDictionary>();
@@ -29,22 +27,6 @@ namespace OpenTracker.UnitTests.Models.Items.Factories
         private readonly IRaceIllegalTrackingRequirement _raceIllegalTrackingRequirement =
             Substitute.For<IRaceIllegalTrackingRequirement>();
         
-        private readonly IAutoTrackAddressBool.Factory _boolFactory = (address, comparison, trueValue) => 
-            new AutoTrackAddressBool(address, comparison, trueValue);
-        private readonly IAutoTrackAddressValue.Factory _valueFactory = (address, maximum, adjustment) => 
-            new AutoTrackAddressValue(address, maximum, adjustment);
-        private readonly IAutoTrackConditionalValue.Factory _conditionalFactory = (condition, trueValue, falseValue) => 
-            new AutoTrackConditionalValue(condition, trueValue, falseValue);
-        private readonly IAutoTrackFlagBool.Factory _flagBoolFactory = (flag, trueValue) => 
-            new AutoTrackFlagBool(flag, trueValue);
-        private readonly IAutoTrackItemValue.Factory _itemValueFactory = item => new AutoTrackItemValue(item);
-        private readonly IAutoTrackMultipleDifference.Factory _differenceFactory = (value1, value2) => 
-            new AutoTrackMultipleDifference(value1, value2);
-        private readonly IAutoTrackMultipleOverride.Factory _overrideFactory = values => 
-            new AutoTrackMultipleOverride(values);
-        private readonly IAutoTrackMultipleSum.Factory _sumFactory = values => 
-            new AutoTrackMultipleSum(values);
-        private readonly IAutoTrackStaticValue.Factory _staticFactory = value => new AutoTrackStaticValue(value);
         private readonly IMemoryFlag.Factory _memoryFlagFactory = (_, _) => Substitute.For<IMemoryFlag>();
 
         private readonly ItemAutoTrackValueFactory _sut;
@@ -55,8 +37,7 @@ namespace OpenTracker.UnitTests.Models.Items.Factories
             
             _sut = new ItemAutoTrackValueFactory(
                 _items, _memoryAddressProvider, _genericKeysRequirements, _keyDropShuffleRequirements,
-                _raceIllegalTrackingRequirement, _boolFactory, _valueFactory, _conditionalFactory, _flagBoolFactory,
-                _itemValueFactory, _differenceFactory, _overrideFactory, _sumFactory, _staticFactory,
+                _raceIllegalTrackingRequirement,
                 _memoryFlagFactory);
         }
 

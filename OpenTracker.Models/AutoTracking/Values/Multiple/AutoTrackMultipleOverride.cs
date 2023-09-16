@@ -1,62 +1,55 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
+using System.Reactive.Linq;
+using DynamicData;
+using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 
-namespace OpenTracker.Models.AutoTracking.Values.Multiple
+namespace OpenTracker.Models.AutoTracking.Values.Multiple;
+
+/// <summary>
+/// This class represents an auto-tracking result value of an ordered priority list of auto-tracking result values.
+/// </summary>
+public sealed class AutoTrackMultipleOverride : ReactiveObject, IAutoTrackValue
 {
+    private readonly SourceList<IAutoTrackValue> _values = new();
+
+    [ObservableAsProperty]
+    public int? CurrentValue { get; }
+
     /// <summary>
-    /// This class contains the auto-tracking result value of an ordered priority list of results.
+    /// Initializes a new <see cref="AutoTrackMultipleOverride"/> object with the specified enumerable of
+    /// auto-tracker values.
     /// </summary>
-    public class AutoTrackMultipleOverride : AutoTrackValueBase, IAutoTrackMultipleOverride
+    /// <param name="values">
+    ///     An <see cref="IEnumerable{T}"/> of <see cref="IAutoTrackValue"/> representing the auto-trackers in order
+    ///     of priority.
+    /// </param>
+    public AutoTrackMultipleOverride(IEnumerable<IAutoTrackValue> values)
     {
-        private readonly IList<IAutoTrackValue> _values;
-        
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="values">
-        ///     The <see cref="IList{T}"/> of <see cref="IAutoTrackValue"/>.
-        /// </param>
-        public AutoTrackMultipleOverride(IList<IAutoTrackValue> values)
+        _values.AddRange(values);
+
+        _values
+            .Connect()
+            .WhenPropertyChanged(x => x.CurrentValue)
+            .Select(_ => GetNewValue())
+            .ToPropertyEx(this, x => x.CurrentValue);
+    }
+
+    private int? GetNewValue()
+    {
+        var valuesNotNull = _values.Items
+            .Where(x => x.CurrentValue.HasValue)
+            .ToList();
+
+        if (valuesNotNull.Count == 0)
         {
-            _values = values;
-
-            UpdateValue();
-
-            foreach (var value in values)
-            {
-                value.PropertyChanged += OnValueChanged;
-            }
+            return null;
         }
 
-        /// <summary>
-        /// Subscribes to the <see cref="IAutoTrackValue.PropertyChanged"/> event.
-        /// </summary>
-        /// <param name="sender">
-        ///     The <see cref="object"/> from which the event was sent.
-        /// </param>
-        /// <param name="e">
-        ///     The <see cref="PropertyChangedEventArgs"/>.
-        /// </param>
-        private void OnValueChanged(object? sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(IAutoTrackValue.CurrentValue))
-            {
-                UpdateValue();
-            }
-        }
-
-        protected override int? GetNewValue()
-        {
-            var valuesNotNull = _values.Where(x => x.CurrentValue.HasValue).ToList();
-
-            if (valuesNotNull.Count == 0)
-            {
-                return null;
-            }
-
-            return valuesNotNull.Where(value => value.CurrentValue > 0).Select(
-                value => value.CurrentValue!.Value).FirstOrDefault();
-        }
+        return valuesNotNull
+            .Where(value => value.CurrentValue > 0)
+            .Select(value => value.CurrentValue!.Value)
+            .FirstOrDefault();
     }
 }

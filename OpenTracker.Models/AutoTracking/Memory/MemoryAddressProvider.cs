@@ -9,27 +9,20 @@ namespace OpenTracker.Models.AutoTracking.Memory
     /// </summary>
     public class MemoryAddressProvider : IMemoryAddressProvider
     {
-        private readonly IMemoryAddress.Factory _addressFactory;
-        
-        public IDictionary<MemorySegmentType, IList<IMemoryAddress>> MemorySegments { get; } = 
-            new Dictionary<MemorySegmentType, IList<IMemoryAddress>>();
-        public IDictionary<ulong, IMemoryAddress> MemoryAddresses { get; } = new Dictionary<ulong, IMemoryAddress>();
+        public IDictionary<MemorySegmentType, IList<MemoryAddress>> MemorySegments { get; } =
+            new Dictionary<MemorySegmentType, IList<MemoryAddress>>();
+        public IDictionary<ulong, MemoryAddress> MemoryAddresses { get; } = new Dictionary<ulong, MemoryAddress>();
 
         /// <summary>
-        ///     Constructor
+        /// Initializes a new <see cref="MemoryAddressProvider"/> object.
         /// </summary>
-        /// <param name="addressFactory">
-        ///     An Autofac factory for creating memory addresses.
-        /// </param>
-        public MemoryAddressProvider(IMemoryAddress.Factory addressFactory)
+        public MemoryAddressProvider()
         {
-            _addressFactory = addressFactory;
-
             var memorySegmentTypeCounts = new Dictionary<MemorySegmentType, int>();
 
             foreach (MemorySegmentType type in Enum.GetValues(typeof(MemorySegmentType)))
             {
-                MemorySegments.Add(type, new List<IMemoryAddress>());
+                MemorySegments.Add(type, new List<MemoryAddress>());
                 memorySegmentTypeCounts.Add(type, GetMemorySegmentCount(type));
             }
 
@@ -46,7 +39,7 @@ namespace OpenTracker.Models.AutoTracking.Memory
                 }
             }
             
-            MemoryAddresses.Add(0x7e0010, _addressFactory());
+            MemoryAddresses.Add(0x7e0010, new MemoryAddress());
         }
 
         public ulong GetMemorySegmentStart(MemorySegmentType type)
@@ -88,7 +81,7 @@ namespace OpenTracker.Models.AutoTracking.Memory
         /// </param>
         private void CreateMemoryAddress(MemorySegmentType type, ulong offset)
         {
-            var memoryAddress = _addressFactory();
+            var memoryAddress = new MemoryAddress();
             var memorySegment = MemorySegments[type];
             memorySegment.Add(memoryAddress);
             var address = GetMemorySegmentStart(type);

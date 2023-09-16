@@ -1,4 +1,3 @@
-using Autofac;
 using OpenTracker.Models.AutoTracking.Values.Static;
 using Xunit;
 
@@ -15,16 +14,6 @@ namespace OpenTracker.UnitTests.Models.AutoTracking.Values.Static
             var sut = new AutoTrackStaticValue(value);
             
             Assert.Equal(expected, sut.CurrentValue);
-        }
-
-        [Fact]
-        public void AutofacTest()
-        {
-            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-            var factory = scope.Resolve<IAutoTrackStaticValue.Factory>();
-            var sut = factory(1);
-            
-            Assert.NotNull(sut as AutoTrackStaticValue);
         }
     }
 }
