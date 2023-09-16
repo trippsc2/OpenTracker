@@ -3,31 +3,30 @@ using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
 
-namespace OpenTracker.Models.Locations.Map.Connections
+namespace OpenTracker.Models.Locations.Map.Connections;
+
+/// <summary>
+///     This interface contains the collection container for map connections.
+/// </summary>
+public interface IMapConnectionCollection : IObservableCollection<IMapConnection>,
+    ISaveable<IList<ConnectionSaveData>>
 {
     /// <summary>
-    ///     This interface contains the collection container for map connections.
+    ///     A factory for creating the connection collection.
     /// </summary>
-    public interface IMapConnectionCollection : IObservableCollection<IMapConnection>,
-        ISaveable<IList<ConnectionSaveData>>
-    {
-        /// <summary>
-        ///     A factory for creating the connection collection.
-        /// </summary>
-        /// <returns>
-        ///     The connection collection.
-        /// </returns>
-        delegate IMapConnectionCollection Factory();
+    /// <returns>
+    ///     The connection collection.
+    /// </returns>
+    delegate IMapConnectionCollection Factory();
 
-        /// <summary>
-        ///     Creates an undoable action to add a connection and sends it to the undo/redo manager.
-        /// </summary>
-        /// <param name="location1">
-        ///     The first map location of the connection.
-        /// </param>
-        /// <param name="location2">
-        ///     The second map location of the connection.
-        /// </param>
-        IUndoable AddConnection(IMapLocation location1, IMapLocation location2);
-    }
+    /// <summary>
+    ///     Creates an undoable action to add a connection and sends it to the undo/redo manager.
+    /// </summary>
+    /// <param name="location1">
+    ///     The first map location of the connection.
+    /// </param>
+    /// <param name="location2">
+    ///     The second map location of the connection.
+    /// </param>
+    IUndoable AddConnection(IMapLocation location1, IMapLocation location2);
 }

@@ -1,12 +1,11 @@
 using Avalonia.Media;
 
-namespace OpenTracker.ViewModels.Capture
+namespace OpenTracker.ViewModels.Capture;
+
+public interface ICaptureWindowVM : ICaptureControlVM
 {
-    public interface ICaptureWindowVM : ICaptureControlVM
-    {
-        bool IsOpen { get; }
-        double? Height { get; set; }
-        double? Width { get; set; }
-        SolidColorBrush? BackgroundColor { get; set; }
-    }
+    bool IsOpen { get; }
+    double? Height { get; set; }
+    double? Width { get; set; }
+    SolidColorBrush? BackgroundColor { get; set; }
 }

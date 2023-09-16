@@ -1,47 +1,46 @@
 ﻿using OpenTracker.Models.Modes;
 
-namespace OpenTracker.Models.UndoRedo.Mode
+namespace OpenTracker.Models.UndoRedo.Mode;
+
+/// <summary>
+/// This class contains the <see cref="IUndoable"/> action to change the <see cref="IMode.BigKeyShuffle"/> property.
+/// </summary>
+public class ChangeBigKeyShuffle : IChangeBigKeyShuffle
 {
+    private readonly IMode _mode;
+
+    private readonly bool _newValue;
+
+    private bool _previousValue;
+
     /// <summary>
-    /// This class contains the <see cref="IUndoable"/> action to change the <see cref="IMode.BigKeyShuffle"/> property.
+    /// Constructor
     /// </summary>
-    public class ChangeBigKeyShuffle : IChangeBigKeyShuffle
+    /// <param name="mode">
+    ///     The <see cref="IMode"/> data.
+    /// </param>
+    /// <param name="newValue">
+    ///     A <see cref="bool"/> representing the new <see cref="IMode.BigKeyShuffle"/> value.
+    /// </param>
+    public ChangeBigKeyShuffle(IMode mode, bool newValue)
     {
-        private readonly IMode _mode;
+        _mode = mode;
+        _newValue = newValue;
+    }
 
-        private readonly bool _newValue;
+    public bool CanExecute()
+    {
+        return true;
+    }
 
-        private bool _previousValue;
+    public void ExecuteDo()
+    {
+        _previousValue = _mode.BigKeyShuffle;
+        _mode.BigKeyShuffle = _newValue;
+    }
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="mode">
-        ///     The <see cref="IMode"/> data.
-        /// </param>
-        /// <param name="newValue">
-        ///     A <see cref="bool"/> representing the new <see cref="IMode.BigKeyShuffle"/> value.
-        /// </param>
-        public ChangeBigKeyShuffle(IMode mode, bool newValue)
-        {
-            _mode = mode;
-            _newValue = newValue;
-        }
-
-        public bool CanExecute()
-        {
-            return true;
-        }
-
-        public void ExecuteDo()
-        {
-            _previousValue = _mode.BigKeyShuffle;
-            _mode.BigKeyShuffle = _newValue;
-        }
-
-        public void ExecuteUndo()
-        {
-            _mode.BigKeyShuffle = _previousValue;
-        }
+    public void ExecuteUndo()
+    {
+        _mode.BigKeyShuffle = _previousValue;
     }
 }

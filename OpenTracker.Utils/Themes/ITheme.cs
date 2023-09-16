@@ -1,12 +1,11 @@
 using Avalonia.Styling;
 
-namespace OpenTracker.Utils.Themes
-{
-    public interface ITheme
-    {
-        string Name { get; }
-        IStyle Style { get; }
+namespace OpenTracker.Utils.Themes;
 
-        delegate ITheme Factory(string name, IStyle style);
-    }
+public interface ITheme
+{
+    string Name { get; }
+    IStyle Style { get; }
+
+    delegate ITheme Factory(string name, IStyle style);
 }

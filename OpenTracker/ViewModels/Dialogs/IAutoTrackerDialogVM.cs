@@ -1,10 +1,9 @@
-﻿namespace OpenTracker.ViewModels.Dialogs
+﻿namespace OpenTracker.ViewModels.Dialogs;
+
+/// <summary>
+/// This interface contains the autotracker dialog window ViewModel.
+/// </summary>
+public interface IAutoTrackerDialogVM
 {
-    /// <summary>
-    /// This interface contains the autotracker dialog window ViewModel.
-    /// </summary>
-    public interface IAutoTrackerDialogVM
-    {
-        bool IsOpen { get; set; }
-    }
+    bool IsOpen { get; set; }
 }

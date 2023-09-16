@@ -1,7 +1,6 @@
-﻿namespace OpenTracker.Utils
+﻿namespace OpenTracker.Utils;
+
+public interface IModelWrapper
 {
-    public interface IModelWrapper
-    {
-        object Model { get; }
-    }
+    object Model { get; }
 }

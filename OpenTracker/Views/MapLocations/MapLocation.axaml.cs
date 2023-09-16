@@ -1,18 +1,17 @@
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
-namespace OpenTracker.Views.MapLocations
-{
-    public class MapLocation : UserControl
-    {
-        public MapLocation()
-        {
-            InitializeComponent();
-        }
+namespace OpenTracker.Views.MapLocations;
 
-        private void InitializeComponent()
-        {
-            AvaloniaXamlLoader.Load(this);
-        }
+public class MapLocation : UserControl
+{
+    public MapLocation()
+    {
+        InitializeComponent();
+    }
+
+    private void InitializeComponent()
+    {
+        AvaloniaXamlLoader.Load(this);
     }
 }

@@ -1,8 +1,7 @@
 ﻿using OpenTracker.Utils;
 
-namespace OpenTracker.ViewModels.Maps
+namespace OpenTracker.ViewModels.Maps;
+
+public interface IMapConnectionCollection : IObservableCollection<IMapConnectionVM>
 {
-    public interface IMapConnectionCollection : IObservableCollection<IMapConnectionVM>
-    {
-    }
 }

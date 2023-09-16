@@ -1,21 +1,20 @@
-﻿namespace OpenTracker.Models.BossPlacements
+﻿namespace OpenTracker.Models.BossPlacements;
+
+/// <summary>
+/// This enum type defines the boss type values.
+/// </summary>
+public enum BossType
 {
-    /// <summary>
-    /// This enum type defines the boss type values.
-    /// </summary>
-    public enum BossType
-    {
-        Test,
-        Armos,
-        Lanmolas,
-        Moldorm,
-        HelmasaurKing,
-        Arrghus,
-        Mothula,
-        Blind,
-        Kholdstare,
-        Vitreous,
-        Trinexx,
-        Aga
-    }
+    Test,
+    Armos,
+    Lanmolas,
+    Moldorm,
+    HelmasaurKing,
+    Arrghus,
+    Mothula,
+    Blind,
+    Kholdstare,
+    Vitreous,
+    Trinexx,
+    Aga
 }

@@ -2,25 +2,24 @@
 using OpenTracker.Models.Markings;
 using OpenTracker.Utils;
 
-namespace OpenTracker.ViewModels.ToolTips
+namespace OpenTracker.ViewModels.ToolTips;
+
+public class MapLocationToolTipNotes :
+    ViewModelCollection<IMapLocationToolTipMarkingVM, IMarking>, IMapLocationToolTipNotes
 {
-    public class MapLocationToolTipNotes :
-        ViewModelCollection<IMapLocationToolTipMarkingVM, IMarking>, IMapLocationToolTipNotes
+    private readonly IMapLocationToolTipMarkingVM.Factory _factory;
+
+    public delegate IMapLocationToolTipNotes Factory(ILocation location);
+
+    public MapLocationToolTipNotes(
+        IMapLocationToolTipMarkingVM.Factory factory, ILocation location)
+        : base(location.Notes)
     {
-        private readonly IMapLocationToolTipMarkingVM.Factory _factory;
+        _factory = factory;
+    }
 
-        public delegate IMapLocationToolTipNotes Factory(ILocation location);
-
-        public MapLocationToolTipNotes(
-            IMapLocationToolTipMarkingVM.Factory factory, ILocation location)
-            : base(location.Notes)
-        {
-            _factory = factory;
-        }
-
-        protected override IMapLocationToolTipMarkingVM CreateViewModel(IMarking model)
-        {
-            return _factory(model);
-        }
+    protected override IMapLocationToolTipMarkingVM CreateViewModel(IMarking model)
+    {
+        return _factory(model);
     }
 }

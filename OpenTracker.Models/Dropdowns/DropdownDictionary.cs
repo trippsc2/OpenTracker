@@ -4,57 +4,56 @@ using System.Linq;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Utils;
 
-namespace OpenTracker.Models.Dropdowns
+namespace OpenTracker.Models.Dropdowns;
+
+/// <summary>
+/// This class contains the <see cref="IDictionary{TKey,TValue}"/> container of <see cref="IDropdown"/> objects
+/// index by <see cref="DropdownID"/>.
+/// </summary>
+public class DropdownDictionary : LazyDictionary<DropdownID, IDropdown>, IDropdownDictionary
 {
+    private readonly Lazy<IDropdownFactory> _factory;
+
     /// <summary>
-    /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container of <see cref="IDropdown"/> objects
-    /// index by <see cref="DropdownID"/>.
+    /// Constructor
     /// </summary>
-    public class DropdownDictionary : LazyDictionary<DropdownID, IDropdown>, IDropdownDictionary
+    /// <param name="factory">
+    ///     An Autofac factory for creating the <see cref="IDropdownFactory"/> object.
+    /// </param>
+    public DropdownDictionary(IDropdownFactory.Factory factory) : base(new Dictionary<DropdownID, IDropdown>())
     {
-        private readonly Lazy<IDropdownFactory> _factory;
+        _factory = new Lazy<IDropdownFactory>(() => factory());
+    }
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="factory">
-        ///     An Autofac factory for creating the <see cref="IDropdownFactory"/> object.
-        /// </param>
-        public DropdownDictionary(IDropdownFactory.Factory factory) : base(new Dictionary<DropdownID, IDropdown>())
+    protected override IDropdown Create(DropdownID key)
+    {
+        return _factory.Value.GetDropdown(key);
+    }
+
+    public void Reset()
+    {
+        foreach (var dropdown in Values)
         {
-            _factory = new Lazy<IDropdownFactory>(() => factory());
+            dropdown.Reset();
         }
+    }
 
-        protected override IDropdown Create(DropdownID key)
+    public IDictionary<DropdownID, DropdownSaveData> Save()
+    {
+        return Keys.ToDictionary(
+            type => type, type => this[type].Save());
+    }
+
+    public void Load(IDictionary<DropdownID, DropdownSaveData>? saveData)
+    {
+        if (saveData is null)
         {
-            return _factory.Value.GetDropdown(key);
+            return;
         }
-
-        public void Reset()
-        {
-            foreach (var dropdown in Values)
-            {
-                dropdown.Reset();
-            }
-        }
-
-        public IDictionary<DropdownID, DropdownSaveData> Save()
-        {
-            return Keys.ToDictionary(
-                type => type, type => this[type].Save());
-        }
-
-        public void Load(IDictionary<DropdownID, DropdownSaveData>? saveData)
-        {
-            if (saveData is null)
-            {
-                return;
-            }
             
-            foreach (var item in saveData.Keys)
-            {
-                this[item].Load(saveData[item]);
-            }
+        foreach (var item in saveData.Keys)
+        {
+            this[item].Load(saveData[item]);
         }
     }
 }

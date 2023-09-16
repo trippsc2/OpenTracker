@@ -1,9 +1,8 @@
 ﻿using OpenTracker.Models.Locations;
 
-namespace OpenTracker.ViewModels.ToolTips
+namespace OpenTracker.ViewModels.ToolTips;
+
+public interface IMapLocationToolTipVM
 {
-    public interface IMapLocationToolTipVM
-    {
-        delegate IMapLocationToolTipVM Factory(ILocation location);
-    }
+    delegate IMapLocationToolTipVM Factory(ILocation location);
 }

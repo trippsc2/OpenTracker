@@ -2,11 +2,10 @@
 using OpenTracker.ViewModels.MapLocations;
 using OpenTracker.ViewModels.Maps;
 
-namespace OpenTracker.ViewModels.Areas
+namespace OpenTracker.ViewModels.Areas;
+
+public interface IMapAreaFactory
 {
-    public interface IMapAreaFactory
-    {
-        List<IMapVM> GetMapControlVMs();
-        List<IMapLocationVM> GetMapLocationControlVMs();
-    }
+    List<IMapVM> GetMapControlVMs();
+    List<IMapLocationVM> GetMapLocationControlVMs();
 }

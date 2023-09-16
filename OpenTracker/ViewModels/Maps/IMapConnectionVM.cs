@@ -1,10 +1,9 @@
 ﻿using OpenTracker.Models.Locations.Map.Connections;
 using OpenTracker.Utils;
 
-namespace OpenTracker.ViewModels.Maps
+namespace OpenTracker.ViewModels.Maps;
+
+public interface IMapConnectionVM : IModelWrapper
 {
-    public interface IMapConnectionVM : IModelWrapper
-    {
-        delegate IMapConnectionVM Factory(IMapConnection connection);
-    }
+    delegate IMapConnectionVM Factory(IMapConnection connection);
 }

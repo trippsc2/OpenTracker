@@ -4,91 +4,90 @@ using OpenTracker.Models.Sections;
 using OpenTracker.Models.UndoRedo.Sections;
 using Xunit;
 
-namespace OpenTracker.UnitTests.Models.UndoRedo.Sections
+namespace OpenTracker.UnitTests.Models.UndoRedo.Sections;
+
+public class UncollectSectionTests
 {
-    public class UncollectSectionTests
+    private readonly ISection _section = Substitute.For<ISection>();
+    private readonly UncollectSection _sut;
+
+    public UncollectSectionTests()
     {
-        private readonly ISection _section = Substitute.For<ISection>();
-        private readonly UncollectSection _sut;
+        _sut = new UncollectSection(_section);
+    }
 
-        public UncollectSectionTests()
-        {
-            _sut = new UncollectSection(_section);
-        }
+    [Fact]
+    public void CanExecute_ShouldCallCanBeUncleared()
+    {
+        _ = _sut.CanExecute();
 
-        [Fact]
-        public void CanExecute_ShouldCallCanBeUncleared()
-        {
-            _ = _sut.CanExecute();
+        _section.Received().CanBeUncleared();
+    }
 
-            _section.Received().CanBeUncleared();
-        }
-
-        [Theory]
-        [InlineData(false, false)]
-        [InlineData(true, true)]
-        public void CanExecute_ShouldReturnTrue_WhenCanBeClearedReturnsTrue(bool expected, bool canBeUncleared)
-        {
-            _section.CanBeUncleared().Returns(canBeUncleared);
+    [Theory]
+    [InlineData(false, false)]
+    [InlineData(true, true)]
+    public void CanExecute_ShouldReturnTrue_WhenCanBeClearedReturnsTrue(bool expected, bool canBeUncleared)
+    {
+        _section.CanBeUncleared().Returns(canBeUncleared);
             
-            Assert.Equal(expected, _sut.CanExecute());
-        }
+        Assert.Equal(expected, _sut.CanExecute());
+    }
 
-        [Theory]
-        [InlineData(1, 0)]
-        [InlineData(2, 1)]
-        [InlineData(3, 2)]
-        public void ExecuteDo_ShouldSubtractAvailableBy1(int expected, int starting)
-        {
-            _section.Available.Returns(starting);
-            _sut.ExecuteDo();
+    [Theory]
+    [InlineData(1, 0)]
+    [InlineData(2, 1)]
+    [InlineData(3, 2)]
+    public void ExecuteDo_ShouldSubtractAvailableBy1(int expected, int starting)
+    {
+        _section.Available.Returns(starting);
+        _sut.ExecuteDo();
             
-            Assert.Equal(expected, _section.Available);
-        }
+        Assert.Equal(expected, _section.Available);
+    }
 
-        [Fact]
-        public void ExecuteDo_ShouldSetUserManipulatedToTrue()
-        {
-            _sut.ExecuteDo();
+    [Fact]
+    public void ExecuteDo_ShouldSetUserManipulatedToTrue()
+    {
+        _sut.ExecuteDo();
             
-            Assert.True(_section.UserManipulated);
-        }
+        Assert.True(_section.UserManipulated);
+    }
 
-        [Theory]
-        [InlineData(0, 0)]
-        [InlineData(1, 1)]
-        [InlineData(2, 2)]
-        public void ExecuteUndo_ShouldRestorePreviousAvailableValue(int expected, int starting)
-        {
-            _section.Available.Returns(starting);
+    [Theory]
+    [InlineData(0, 0)]
+    [InlineData(1, 1)]
+    [InlineData(2, 2)]
+    public void ExecuteUndo_ShouldRestorePreviousAvailableValue(int expected, int starting)
+    {
+        _section.Available.Returns(starting);
             
-            _sut.ExecuteDo();
-            _sut.ExecuteUndo();
+        _sut.ExecuteDo();
+        _sut.ExecuteUndo();
             
-            Assert.Equal(expected, _section.Available);
-        }
+        Assert.Equal(expected, _section.Available);
+    }
 
-        [Theory]
-        [InlineData(false, false)]
-        [InlineData(true, true)]
-        public void ExecuteUndo_ShouldRestorePreviousUserManipulated(bool expected, bool starting)
-        {
-            _section.UserManipulated.Returns(starting);
+    [Theory]
+    [InlineData(false, false)]
+    [InlineData(true, true)]
+    public void ExecuteUndo_ShouldRestorePreviousUserManipulated(bool expected, bool starting)
+    {
+        _section.UserManipulated.Returns(starting);
             
-            _sut.ExecuteDo();
-            _sut.ExecuteUndo();
+        _sut.ExecuteDo();
+        _sut.ExecuteUndo();
             
-            Assert.Equal(expected, _section.UserManipulated);
-        }
+        Assert.Equal(expected, _section.UserManipulated);
+    }
 
-        [Fact]
-        public void AutofacTest()
-        {
-            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-            var factory = scope.Resolve<IUncollectSection.Factory>();
-            var sut = factory(_section);
+    [Fact]
+    public void AutofacTest()
+    {
+        using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+        var factory = scope.Resolve<IUncollectSection.Factory>();
+        var sut = factory(_section);
             
-            Assert.NotNull(sut as UncollectSection);
-        }
+        Assert.NotNull(sut as UncollectSection);
     }
 }

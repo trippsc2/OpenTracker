@@ -2,28 +2,27 @@
 using OpenTracker.Models.Accessibility;
 using ReactiveUI;
 
-namespace OpenTracker.Models.Requirements.Static
+namespace OpenTracker.Models.Requirements.Static;
+
+/// <summary>
+/// This class contains unchanging <see cref="IRequirement"/> data.
+/// </summary>
+public class StaticRequirement : ReactiveObject, IStaticRequirement
 {
-    /// <summary>
-    /// This class contains unchanging <see cref="IRequirement"/> data.
-    /// </summary>
-    public class StaticRequirement : ReactiveObject, IStaticRequirement
-    {
-        public bool Met => true;
+    public bool Met => true;
         
-        public AccessibilityLevel Accessibility { get; }
+    public AccessibilityLevel Accessibility { get; }
 
-        public event EventHandler? ChangePropagated;
+    public event EventHandler? ChangePropagated;
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="accessibility">
-        ///     The <see cref="AccessibilityLevel"/>.
-        /// </param>
-        public StaticRequirement(AccessibilityLevel accessibility)
-        {
-            Accessibility = accessibility;
-        }
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    /// <param name="accessibility">
+    ///     The <see cref="AccessibilityLevel"/>.
+    /// </param>
+    public StaticRequirement(AccessibilityLevel accessibility)
+    {
+        Accessibility = accessibility;
     }
 }

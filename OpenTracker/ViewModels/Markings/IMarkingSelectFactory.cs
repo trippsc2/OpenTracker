@@ -2,11 +2,10 @@
 using OpenTracker.Models.Markings;
 using OpenTracker.Models.Sections;
 
-namespace OpenTracker.ViewModels.Markings
+namespace OpenTracker.ViewModels.Markings;
+
+public interface IMarkingSelectFactory
 {
-    public interface IMarkingSelectFactory
-    {
-        IMarkingSelectVM GetMarkingSelectVM(ISection section);
-        INoteMarkingSelectVM GetNoteMarkingSelectVM(IMarking marking, ILocation location);
-    }
+    IMarkingSelectVM GetMarkingSelectVM(ISection section);
+    INoteMarkingSelectVM GetNoteMarkingSelectVM(IMarking marking, ILocation location);
 }

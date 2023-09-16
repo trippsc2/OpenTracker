@@ -1,44 +1,43 @@
 ﻿using OpenTracker.Models.SaveLoad;
 using ReactiveUI;
 
-namespace OpenTracker.Models.SequenceBreaks
+namespace OpenTracker.Models.SequenceBreaks;
+
+/// <summary>
+/// This class contains sequence break data.
+/// </summary>
+public class SequenceBreak : ReactiveObject, ISequenceBreak
 {
-    /// <summary>
-    /// This class contains sequence break data.
-    /// </summary>
-    public class SequenceBreak : ReactiveObject, ISequenceBreak
+    private bool _enabled;
+    public bool Enabled
     {
-        private bool _enabled;
-        public bool Enabled
-        {
-            get => _enabled;
-            set => this.RaiseAndSetIfChanged(ref _enabled, value);
-        }
+        get => _enabled;
+        set => this.RaiseAndSetIfChanged(ref _enabled, value);
+    }
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="starting">
-        ///     A <see cref="bool"/> representing the starting <see cref="Enabled"/> property value.
-        /// </param>
-        public SequenceBreak(bool starting = true)
-        {
-            Enabled = starting;
-        }
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    /// <param name="starting">
+    ///     A <see cref="bool"/> representing the starting <see cref="Enabled"/> property value.
+    /// </param>
+    public SequenceBreak(bool starting = true)
+    {
+        Enabled = starting;
+    }
 
-        public SequenceBreakSaveData Save()
-        {
-            return new() {Enabled = Enabled};
-        }
+    public SequenceBreakSaveData Save()
+    {
+        return new() {Enabled = Enabled};
+    }
 
-        public void Load(SequenceBreakSaveData? saveData)
+    public void Load(SequenceBreakSaveData? saveData)
+    {
+        if (saveData is null)
         {
-            if (saveData is null)
-            {
-                return;
-            }
+            return;
+        }
             
-            Enabled = saveData.Enabled;
-        }
+        Enabled = saveData.Enabled;
     }
 }

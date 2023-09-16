@@ -1,8 +1,7 @@
 ﻿using OpenTracker.Utils;
 
-namespace OpenTracker.ViewModels.PinnedLocations
+namespace OpenTracker.ViewModels.PinnedLocations;
+
+public interface IPinnedLocationVMCollection : IObservableCollection<IPinnedLocationVM>
 {
-    public interface IPinnedLocationVMCollection : IObservableCollection<IPinnedLocationVM>
-    {
-    }
 }

@@ -4,29 +4,28 @@ using OpenTracker.Models.Requirements;
 using OpenTracker.Utils;
 using ReactiveUI;
 
-namespace OpenTracker.ViewModels.Menus
+namespace OpenTracker.ViewModels.Menus;
+
+public class MenuItemCheckBoxVM : ViewModelBase, IMenuItemIconVM
 {
-    public class MenuItemCheckBoxVM : ViewModelBase, IMenuItemIconVM
+    private readonly IRequirement _requirement;
+
+    public bool Checked => _requirement.Met;
+
+    public delegate MenuItemCheckBoxVM Factory(IRequirement requirement);
+
+    public MenuItemCheckBoxVM(IRequirement requirement)
     {
-        private readonly IRequirement _requirement;
+        _requirement = requirement;
 
-        public bool Checked => _requirement.Met;
+        _requirement.PropertyChanged += OnRequirementChanged;
+    }
 
-        public delegate MenuItemCheckBoxVM Factory(IRequirement requirement);
-
-        public MenuItemCheckBoxVM(IRequirement requirement)
+    private async void OnRequirementChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(IRequirement.Met))
         {
-            _requirement = requirement;
-
-            _requirement.PropertyChanged += OnRequirementChanged;
-        }
-
-        private async void OnRequirementChanged(object? sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(IRequirement.Met))
-            {
-                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Checked)));
-            }
+            await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Checked)));
         }
     }
 }

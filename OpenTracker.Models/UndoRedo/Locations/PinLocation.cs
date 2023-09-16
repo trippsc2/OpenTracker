@@ -1,61 +1,60 @@
 ﻿using OpenTracker.Models.Locations;
 
-namespace OpenTracker.Models.UndoRedo.Locations
+namespace OpenTracker.Models.UndoRedo.Locations;
+
+/// <summary>
+/// This class contains the <see cref="IUndoable"/> action to pin a <see cref="ILocation"/>.
+/// </summary>
+public class PinLocation : IPinLocation
 {
+    private readonly IPinnedLocationCollection _pinnedLocations;
+
+    private readonly ILocation _location;
+    private int? _existingIndex;
+
     /// <summary>
-    /// This class contains the <see cref="IUndoable"/> action to pin a <see cref="ILocation"/>.
+    /// Constructor
     /// </summary>
-    public class PinLocation : IPinLocation
+    /// <param name="pinnedLocations">
+    ///     The <see cref="IPinnedLocationCollection"/>.
+    /// </param>
+    /// <param name="location">
+    ///     The <see cref="ILocation"/>.
+    /// </param>
+    public PinLocation(IPinnedLocationCollection pinnedLocations, ILocation location)
     {
-        private readonly IPinnedLocationCollection _pinnedLocations;
+        _pinnedLocations = pinnedLocations;
+        _location = location;
+    }
 
-        private readonly ILocation _location;
-        private int? _existingIndex;
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="pinnedLocations">
-        ///     The <see cref="IPinnedLocationCollection"/>.
-        /// </param>
-        /// <param name="location">
-        ///     The <see cref="ILocation"/>.
-        /// </param>
-        public PinLocation(IPinnedLocationCollection pinnedLocations, ILocation location)
+    public bool CanExecute()
+    {
+        if (!_pinnedLocations.Contains(_location))
         {
-            _pinnedLocations = pinnedLocations;
-            _location = location;
+            return true;
         }
 
-        public bool CanExecute()
-        {
-            if (!_pinnedLocations.Contains(_location))
-            {
-                return true;
-            }
+        return _pinnedLocations.IndexOf(_location) != 0;
+    }
 
-            return _pinnedLocations.IndexOf(_location) != 0;
-        }
-
-        public void ExecuteDo()
+    public void ExecuteDo()
+    {
+        if (_pinnedLocations.Contains(_location))
         {
-            if (_pinnedLocations.Contains(_location))
-            {
-                _existingIndex = _pinnedLocations.IndexOf(_location);
-                _pinnedLocations.Remove(_location);
-            }
-            
-            _pinnedLocations.Insert(0, _location);
-        }
-
-        public void ExecuteUndo()
-        {
+            _existingIndex = _pinnedLocations.IndexOf(_location);
             _pinnedLocations.Remove(_location);
+        }
+            
+        _pinnedLocations.Insert(0, _location);
+    }
 
-            if (_existingIndex.HasValue)
-            {
-                _pinnedLocations.Insert(_existingIndex.Value, _location);
-            }
+    public void ExecuteUndo()
+    {
+        _pinnedLocations.Remove(_location);
+
+        if (_existingIndex.HasValue)
+        {
+            _pinnedLocations.Insert(_existingIndex.Value, _location);
         }
     }
 }

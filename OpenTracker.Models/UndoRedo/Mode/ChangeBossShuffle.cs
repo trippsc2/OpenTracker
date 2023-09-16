@@ -1,47 +1,46 @@
 ﻿using OpenTracker.Models.Modes;
 
-namespace OpenTracker.Models.UndoRedo.Mode
+namespace OpenTracker.Models.UndoRedo.Mode;
+
+/// <summary>
+/// This class contains the <see cref="IUndoable"/> action to change the <see cref="IMode.BossShuffle"/> property.
+/// </summary>
+public class ChangeBossShuffle : IChangeBossShuffle
 {
+    private readonly IMode _mode;
+
+    private readonly bool _newValue;
+
+    private bool _previousValue;
+
     /// <summary>
-    /// This class contains the <see cref="IUndoable"/> action to change the <see cref="IMode.BossShuffle"/> property.
+    /// Constructor
     /// </summary>
-    public class ChangeBossShuffle : IChangeBossShuffle
+    /// <param name="mode">
+    ///     The <see cref="IMode"/> data.
+    /// </param>
+    /// <param name="newValue">
+    ///     A <see cref="bool"/> representing the new <see cref="IMode.BossShuffle"/> value.
+    /// </param>
+    public ChangeBossShuffle(IMode mode, bool newValue)
     {
-        private readonly IMode _mode;
+        _mode = mode;
+        _newValue = newValue;
+    }
 
-        private readonly bool _newValue;
+    public bool CanExecute()
+    {
+        return true;
+    }
 
-        private bool _previousValue;
+    public void ExecuteDo()
+    {
+        _previousValue = _mode.BossShuffle;
+        _mode.BossShuffle = _newValue;
+    }
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="mode">
-        ///     The <see cref="IMode"/> data.
-        /// </param>
-        /// <param name="newValue">
-        ///     A <see cref="bool"/> representing the new <see cref="IMode.BossShuffle"/> value.
-        /// </param>
-        public ChangeBossShuffle(IMode mode, bool newValue)
-        {
-            _mode = mode;
-            _newValue = newValue;
-        }
-
-        public bool CanExecute()
-        {
-            return true;
-        }
-
-        public void ExecuteDo()
-        {
-            _previousValue = _mode.BossShuffle;
-            _mode.BossShuffle = _newValue;
-        }
-
-        public void ExecuteUndo()
-        {
-            _mode.BossShuffle = _previousValue;
-        }
+    public void ExecuteUndo()
+    {
+        _mode.BossShuffle = _previousValue;
     }
 }

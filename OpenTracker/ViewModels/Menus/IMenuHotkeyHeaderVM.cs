@@ -1,10 +1,9 @@
-namespace OpenTracker.ViewModels.Menus
+namespace OpenTracker.ViewModels.Menus;
+
+public interface IMenuHotkeyHeaderVM
 {
-    public interface IMenuHotkeyHeaderVM
-    {
-        string Hotkey { get; }
-        string Header { get; }
+    string Hotkey { get; }
+    string Header { get; }
         
-        delegate IMenuHotkeyHeaderVM Factory(string hotkey, string header);
-    }
+    delegate IMenuHotkeyHeaderVM Factory(string hotkey, string header);
 }

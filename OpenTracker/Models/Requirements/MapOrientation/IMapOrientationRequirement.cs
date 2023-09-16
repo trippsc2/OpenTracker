@@ -1,21 +1,20 @@
 using Avalonia.Layout;
 
-namespace OpenTracker.Models.Requirements.MapOrientation
+namespace OpenTracker.Models.Requirements.MapOrientation;
+
+/// <summary>
+///     This interface contains map orientation setting requirement data.
+/// </summary>
+public interface IMapOrientationRequirement : IRequirement
 {
     /// <summary>
-    ///     This interface contains map orientation setting requirement data.
+    ///     A factory for creating new map orientation requirements.
     /// </summary>
-    public interface IMapOrientationRequirement : IRequirement
-    {
-        /// <summary>
-        ///     A factory for creating new map orientation requirements.
-        /// </summary>
-        /// <param name="expectedValue">
-        ///     The expected orientation value.
-        /// </param>
-        /// <returns>
-        ///     A new map orientation requirement.
-        /// </returns>
-        delegate IMapOrientationRequirement Factory(Orientation? expectedValue);
-    }
+    /// <param name="expectedValue">
+    ///     The expected orientation value.
+    /// </param>
+    /// <returns>
+    ///     A new map orientation requirement.
+    /// </returns>
+    delegate IMapOrientationRequirement Factory(Orientation? expectedValue);
 }

@@ -1,10 +1,9 @@
 ﻿using OpenTracker.Models.Locations;
 using OpenTracker.Utils;
 
-namespace OpenTracker.ViewModels.ToolTips
+namespace OpenTracker.ViewModels.ToolTips;
+
+public interface IMapLocationToolTipNotes : IObservableCollection<IMapLocationToolTipMarkingVM>
 {
-    public interface IMapLocationToolTipNotes : IObservableCollection<IMapLocationToolTipMarkingVM>
-    {
-        delegate IMapLocationToolTipNotes Factory(ILocation location);
-    }
+    delegate IMapLocationToolTipNotes Factory(ILocation location);
 }

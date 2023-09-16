@@ -1,7 +1,6 @@
-﻿namespace OpenTracker.ViewModels.Dialogs
+﻿namespace OpenTracker.ViewModels.Dialogs;
+
+public interface IErrorBoxDialogVM
 {
-    public interface IErrorBoxDialogVM
-    {
-        delegate IErrorBoxDialogVM Factory(string title, string text);
-    }
+    delegate IErrorBoxDialogVM Factory(string title, string text);
 }

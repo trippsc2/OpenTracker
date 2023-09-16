@@ -3,30 +3,29 @@ using OpenTracker.Models.Dungeons.Mutable;
 using OpenTracker.Models.Nodes;
 using ReactiveUI;
 
-namespace OpenTracker.Models.Dungeons.Items
+namespace OpenTracker.Models.Dungeons.Items;
+
+/// <summary>
+/// This interface contains mutable dungeon item data.
+/// </summary>
+public interface IDungeonItem : IReactiveObject
 {
     /// <summary>
-    /// This interface contains mutable dungeon item data.
+    /// The <see cref="AccessibilityLevel"/> of the dungeon item.
     /// </summary>
-    public interface IDungeonItem : IReactiveObject
-    {
-        /// <summary>
-        /// The <see cref="AccessibilityLevel"/> of the dungeon item.
-        /// </summary>
-        AccessibilityLevel Accessibility { get; }
+    AccessibilityLevel Accessibility { get; }
 
-        /// <summary>
-        /// A factory for creating new <see cref="IDungeonItem"/> objects.
-        /// </summary>
-        /// <param name="dungeonData">
-        ///     The <see cref="IMutableDungeon"/> parent class.
-        /// </param>
-        /// <param name="node">
-        ///     The <see cref="INode"/> to which this item belongs.
-        /// </param>
-        /// <returns>
-        ///     A new <see cref="IDungeonItem"/> object.
-        /// </returns>
-        delegate IDungeonItem Factory(IMutableDungeon dungeonData, INode node);
-    }
+    /// <summary>
+    /// A factory for creating new <see cref="IDungeonItem"/> objects.
+    /// </summary>
+    /// <param name="dungeonData">
+    ///     The <see cref="IMutableDungeon"/> parent class.
+    /// </param>
+    /// <param name="node">
+    ///     The <see cref="INode"/> to which this item belongs.
+    /// </param>
+    /// <returns>
+    ///     A new <see cref="IDungeonItem"/> object.
+    /// </returns>
+    delegate IDungeonItem Factory(IMutableDungeon dungeonData, INode node);
 }

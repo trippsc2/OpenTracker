@@ -1,7 +1,6 @@
-﻿namespace OpenTracker.ViewModels.Dialogs
+﻿namespace OpenTracker.ViewModels.Dialogs;
+
+public interface IMessageBoxDialogVM
 {
-    public interface IMessageBoxDialogVM
-    {
-        delegate IMessageBoxDialogVM Factory(string title, string text);
-    }
+    delegate IMessageBoxDialogVM Factory(string title, string text);
 }

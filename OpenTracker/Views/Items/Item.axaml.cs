@@ -1,18 +1,17 @@
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
-namespace OpenTracker.Views.Items
-{
-    public class Item : UserControl
-    {
-        public Item()
-        {
-            InitializeComponent();
-        }
+namespace OpenTracker.Views.Items;
 
-        private void InitializeComponent()
-        {
-            AvaloniaXamlLoader.Load(this);
-        }
+public class Item : UserControl
+{
+    public Item()
+    {
+        InitializeComponent();
+    }
+
+    private void InitializeComponent()
+    {
+        AvaloniaXamlLoader.Load(this);
     }
 }

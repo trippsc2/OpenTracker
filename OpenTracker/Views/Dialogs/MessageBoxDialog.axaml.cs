@@ -2,21 +2,20 @@
 using Avalonia.Markup.Xaml;
 using OpenTracker.Utils.Dialog;
 
-namespace OpenTracker.Views.Dialogs
-{
-    public class MessageBoxDialog : DialogWindowBase<bool>
-    {
-        public MessageBoxDialog()
-        {
-            InitializeComponent();
-#if DEBUG
-            this.AttachDevTools();
-#endif
-        }
+namespace OpenTracker.Views.Dialogs;
 
-        private void InitializeComponent()
-        {
-            AvaloniaXamlLoader.Load(this);
-        }
+public class MessageBoxDialog : DialogWindowBase<bool>
+{
+    public MessageBoxDialog()
+    {
+        InitializeComponent();
+#if DEBUG
+        this.AttachDevTools();
+#endif
+    }
+
+    private void InitializeComponent()
+    {
+        AvaloniaXamlLoader.Load(this);
     }
 }

@@ -5,65 +5,64 @@ using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Models.UndoRedo.Connections;
 
-namespace OpenTracker.Models.Locations.Map.Connections
+namespace OpenTracker.Models.Locations.Map.Connections;
+
+/// <summary>
+/// This class contains the <see cref="ObservableCollection{T}"/> container for <see cref="IMapConnection"/>
+/// objects.
+/// </summary>
+public class MapConnectionCollection : ObservableCollection<IMapConnection>, IMapConnectionCollection
 {
+    private readonly ILocationDictionary _locations;
+
+    private readonly IMapConnection.Factory _connectionFactory;
+    private readonly IAddMapConnection.Factory _addConnectionFactory;
+
     /// <summary>
-    /// This class contains the <see cref="ObservableCollection{T}"/> container for <see cref="IMapConnection"/>
-    /// objects.
+    /// Constructor
     /// </summary>
-    public class MapConnectionCollection : ObservableCollection<IMapConnection>, IMapConnectionCollection
+    /// <param name="locations">
+    ///     The <see cref="ILocationDictionary"/>.
+    /// </param>
+    /// <param name="connectionFactory">
+    ///     An Autofac factory for creating new <see cref="IMapConnection"/> objects.
+    /// </param>
+    /// <param name="addConnectionFactory">
+    ///     An Autofac factory for creating new <see cref="IAddMapConnection"/> objects.
+    /// </param>
+    public MapConnectionCollection(
+        ILocationDictionary locations, IMapConnection.Factory connectionFactory,
+        IAddMapConnection.Factory addConnectionFactory)
     {
-        private readonly ILocationDictionary _locations;
+        _locations = locations;
+        _connectionFactory = connectionFactory;
+        _addConnectionFactory = addConnectionFactory;
+    }
 
-        private readonly IMapConnection.Factory _connectionFactory;
-        private readonly IAddMapConnection.Factory _addConnectionFactory;
+    public IUndoable AddConnection(IMapLocation location1, IMapLocation location2)
+    {
+        return _addConnectionFactory(_connectionFactory(location1, location2));
+    }
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="locations">
-        ///     The <see cref="ILocationDictionary"/>.
-        /// </param>
-        /// <param name="connectionFactory">
-        ///     An Autofac factory for creating new <see cref="IMapConnection"/> objects.
-        /// </param>
-        /// <param name="addConnectionFactory">
-        ///     An Autofac factory for creating new <see cref="IAddMapConnection"/> objects.
-        /// </param>
-        public MapConnectionCollection(
-            ILocationDictionary locations, IMapConnection.Factory connectionFactory,
-            IAddMapConnection.Factory addConnectionFactory)
+    public IList<ConnectionSaveData> Save()
+    {
+        return this.Select(connection => connection.Save()).ToList();
+    }
+
+    public void Load(IList<ConnectionSaveData>? saveData)
+    {
+        if (saveData == null)
         {
-            _locations = locations;
-            _connectionFactory = connectionFactory;
-            _addConnectionFactory = addConnectionFactory;
+            return;
         }
 
-        public IUndoable AddConnection(IMapLocation location1, IMapLocation location2)
+        Clear();
+
+        foreach (var connection in saveData)
         {
-            return _addConnectionFactory(_connectionFactory(location1, location2));
-        }
-
-        public IList<ConnectionSaveData> Save()
-        {
-            return this.Select(connection => connection.Save()).ToList();
-        }
-
-        public void Load(IList<ConnectionSaveData>? saveData)
-        {
-            if (saveData == null)
-            {
-                return;
-            }
-
-            Clear();
-
-            foreach (var connection in saveData)
-            {
-                Add(_connectionFactory(
-                    _locations[connection.Location1].MapLocations[connection.Index1],
-                    _locations[connection.Location2].MapLocations[connection.Index2]));
-            }
+            Add(_connectionFactory(
+                _locations[connection.Location1].MapLocations[connection.Index1],
+                _locations[connection.Location2].MapLocations[connection.Index2]));
         }
     }
 }

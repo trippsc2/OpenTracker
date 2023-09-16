@@ -3,50 +3,49 @@ using System.Linq;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Utils;
 
-namespace OpenTracker.Models.SequenceBreaks
+namespace OpenTracker.Models.SequenceBreaks;
+
+/// <summary>
+/// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for <see cref="ISequenceBreak"/>
+/// objects indexed by <see cref="SequenceBreakType"/>.
+/// </summary>
+public class SequenceBreakDictionary : LazyDictionary<SequenceBreakType, ISequenceBreak>,
+    ISequenceBreakDictionary
 {
+    private readonly ISequenceBreak.Factory _factory;
+
     /// <summary>
-    /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for <see cref="ISequenceBreak"/>
-    /// objects indexed by <see cref="SequenceBreakType"/>.
+    /// Constructor
     /// </summary>
-    public class SequenceBreakDictionary : LazyDictionary<SequenceBreakType, ISequenceBreak>,
-        ISequenceBreakDictionary
+    /// <param name="factory">
+    ///     A factory for creating new <see cref="ISequenceBreak"/> objects.
+    /// </param>
+    public SequenceBreakDictionary(ISequenceBreak.Factory factory)
+        : base(new Dictionary<SequenceBreakType, ISequenceBreak>())
     {
-        private readonly ISequenceBreak.Factory _factory;
+        _factory = factory;
+    }
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="factory">
-        ///     A factory for creating new <see cref="ISequenceBreak"/> objects.
-        /// </param>
-        public SequenceBreakDictionary(ISequenceBreak.Factory factory)
-            : base(new Dictionary<SequenceBreakType, ISequenceBreak>())
+    public Dictionary<SequenceBreakType, SequenceBreakSaveData> Save()
+    {
+        return Keys.ToDictionary(type => type, type => this[type].Save());
+    }
+
+    public void Load(Dictionary<SequenceBreakType, SequenceBreakSaveData>? saveData)
+    {
+        if (saveData == null)
         {
-            _factory = factory;
+            return;
         }
 
-        public Dictionary<SequenceBreakType, SequenceBreakSaveData> Save()
+        foreach (var type in saveData.Keys)
         {
-            return Keys.ToDictionary(type => type, type => this[type].Save());
+            this[type].Load(saveData[type]);
         }
+    }
 
-        public void Load(Dictionary<SequenceBreakType, SequenceBreakSaveData>? saveData)
-        {
-            if (saveData == null)
-            {
-                return;
-            }
-
-            foreach (var type in saveData.Keys)
-            {
-                this[type].Load(saveData[type]);
-            }
-        }
-
-        protected override ISequenceBreak Create(SequenceBreakType key)
-        {
-            return _factory();
-        }
+    protected override ISequenceBreak Create(SequenceBreakType key)
+    {
+        return _factory();
     }
 }

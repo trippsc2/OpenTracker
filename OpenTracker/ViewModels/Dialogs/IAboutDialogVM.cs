@@ -1,6 +1,5 @@
-﻿namespace OpenTracker.ViewModels.Dialogs
+﻿namespace OpenTracker.ViewModels.Dialogs;
+
+public interface IAboutDialogVM
 {
-    public interface IAboutDialogVM
-    {
-    }
 }

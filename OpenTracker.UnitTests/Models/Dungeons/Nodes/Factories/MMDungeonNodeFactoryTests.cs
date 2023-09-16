@@ -18,74 +18,74 @@ using OpenTracker.Models.Requirements.Complex;
 using OpenTracker.Models.Requirements.Item;
 using Xunit;
 
-namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
+namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories;
+
+public class MMDungeonNodeFactoryTests
 {
-    public class MMDungeonNodeFactoryTests
-    {
-        private readonly IBossRequirementDictionary _bossRequirements;
-        private readonly IComplexRequirementDictionary _complexRequirements;
-        private readonly IItemRequirementDictionary _itemRequirements;
+    private readonly IBossRequirementDictionary _bossRequirements;
+    private readonly IComplexRequirementDictionary _complexRequirements;
+    private readonly IItemRequirementDictionary _itemRequirements;
         
-        private readonly IOverworldNodeDictionary _overworldNodes;
+    private readonly IOverworldNodeDictionary _overworldNodes;
 
-        private readonly List<INode> _entryFactoryCalls = new();
-        private readonly List<(INode fromNode, INode toNode, IRequirement? requirement)> _connectionFactoryCalls = new();
+    private readonly List<INode> _entryFactoryCalls = new();
+    private readonly List<(INode fromNode, INode toNode, IRequirement? requirement)> _connectionFactoryCalls = new();
 
-        private readonly MMDungeonNodeFactory _sut;
+    private readonly MMDungeonNodeFactory _sut;
 
-        private static readonly Dictionary<DungeonNodeID, OverworldNodeID> ExpectedEntryValues = new();
-        private static readonly Dictionary<DungeonNodeID, List<DungeonNodeID>> ExpectedNoRequirementValues = new();
-        private static readonly Dictionary<DungeonNodeID,
-            List<(DungeonNodeID fromNodeID, BossPlacementID bossID)>> ExpectedBossValues = new();
-        private static readonly Dictionary<DungeonNodeID,
-            List<(DungeonNodeID fromNodeID, ComplexRequirementType type)>> ExpectedComplexValues = new();
-        private static readonly Dictionary<DungeonNodeID,
-            List<(DungeonNodeID fromNodeID, ItemType type, int count)>> ExpectedItemValues = new();
-        private static readonly Dictionary<DungeonNodeID,
-            List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>> ExpectedKeyDoorValues = new();
+    private static readonly Dictionary<DungeonNodeID, OverworldNodeID> ExpectedEntryValues = new();
+    private static readonly Dictionary<DungeonNodeID, List<DungeonNodeID>> ExpectedNoRequirementValues = new();
+    private static readonly Dictionary<DungeonNodeID,
+        List<(DungeonNodeID fromNodeID, BossPlacementID bossID)>> ExpectedBossValues = new();
+    private static readonly Dictionary<DungeonNodeID,
+        List<(DungeonNodeID fromNodeID, ComplexRequirementType type)>> ExpectedComplexValues = new();
+    private static readonly Dictionary<DungeonNodeID,
+        List<(DungeonNodeID fromNodeID, ItemType type, int count)>> ExpectedItemValues = new();
+    private static readonly Dictionary<DungeonNodeID,
+        List<(DungeonNodeID fromNodeID, KeyDoorID keyDoor)>> ExpectedKeyDoorValues = new();
 
-        public MMDungeonNodeFactoryTests()
+    public MMDungeonNodeFactoryTests()
+    {
+        _bossRequirements = new BossRequirementDictionary(
+            Substitute.For<IBossPlacementDictionary>(),
+            _ => Substitute.For<IBossRequirement>());
+        _complexRequirements = new ComplexRequirementDictionary(
+            () => Substitute.For<IComplexRequirementFactory>());
+        _itemRequirements = new ItemRequirementDictionary(
+            Substitute.For<IItemDictionary>(), (_, _) => Substitute.For<IItemRequirement>());
+
+        _overworldNodes = new OverworldNodeDictionary(() => Substitute.For<IOverworldNodeFactory>());
+
+        IEntryNodeConnection EntryFactory(INode fromNode)
         {
-            _bossRequirements = new BossRequirementDictionary(
-                Substitute.For<IBossPlacementDictionary>(),
-                _ => Substitute.For<IBossRequirement>());
-            _complexRequirements = new ComplexRequirementDictionary(
-                () => Substitute.For<IComplexRequirementFactory>());
-            _itemRequirements = new ItemRequirementDictionary(
-                Substitute.For<IItemDictionary>(), (_, _) => Substitute.For<IItemRequirement>());
-
-            _overworldNodes = new OverworldNodeDictionary(() => Substitute.For<IOverworldNodeFactory>());
-
-            IEntryNodeConnection EntryFactory(INode fromNode)
-            {
-                _entryFactoryCalls.Add(fromNode);
-                return Substitute.For<IEntryNodeConnection>();
-            }
-
-            INodeConnection ConnectionFactory(INode fromNode, INode toNode, IRequirement? requirement)
-            {
-                _connectionFactoryCalls.Add((fromNode, toNode, requirement));
-                return Substitute.For<INodeConnection>();
-            }
-
-            _sut = new MMDungeonNodeFactory(
-                _bossRequirements, _complexRequirements, _itemRequirements, _overworldNodes, EntryFactory,
-                ConnectionFactory);
+            _entryFactoryCalls.Add(fromNode);
+            return Substitute.For<IEntryNodeConnection>();
         }
 
-        private static void PopulateExpectedValues()
+        INodeConnection ConnectionFactory(INode fromNode, INode toNode, IRequirement? requirement)
         {
-            ExpectedEntryValues.Clear();
-            ExpectedNoRequirementValues.Clear();
-            ExpectedBossValues.Clear();
-            ExpectedComplexValues.Clear();
-            ExpectedItemValues.Clear();
-            ExpectedKeyDoorValues.Clear();
+            _connectionFactoryCalls.Add((fromNode, toNode, requirement));
+            return Substitute.For<INodeConnection>();
+        }
+
+        _sut = new MMDungeonNodeFactory(
+            _bossRequirements, _complexRequirements, _itemRequirements, _overworldNodes, EntryFactory,
+            ConnectionFactory);
+    }
+
+    private static void PopulateExpectedValues()
+    {
+        ExpectedEntryValues.Clear();
+        ExpectedNoRequirementValues.Clear();
+        ExpectedBossValues.Clear();
+        ExpectedComplexValues.Clear();
+        ExpectedItemValues.Clear();
+        ExpectedKeyDoorValues.Clear();
             
-            foreach (DungeonNodeID id in Enum.GetValues(typeof(DungeonNodeID)))
+        foreach (DungeonNodeID id in Enum.GetValues(typeof(DungeonNodeID)))
+        {
+            switch (id)
             {
-                switch (id)
-                {
                 case DungeonNodeID.MM:
                     ExpectedEntryValues.Add(id, OverworldNodeID.MMEntry);
                     break;
@@ -279,161 +279,160 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
                             (DungeonNodeID.MMBossRoom, BossPlacementID.MMBoss)
                         });
                     break;
-                }
             }
         }
+    }
 
-        [Fact]
-        public void PopulateNodeConnections_ShouldThrowException_WhenNodeIDIsUnexpected()
-        {
-            var dungeonData = Substitute.For<IMutableDungeon>();
-            var node = Substitute.For<IDungeonNode>();
-            var connections = new List<INodeConnection>();
-            const DungeonNodeID id = (DungeonNodeID)int.MaxValue;
+    [Fact]
+    public void PopulateNodeConnections_ShouldThrowException_WhenNodeIDIsUnexpected()
+    {
+        var dungeonData = Substitute.For<IMutableDungeon>();
+        var node = Substitute.For<IDungeonNode>();
+        var connections = new List<INodeConnection>();
+        const DungeonNodeID id = (DungeonNodeID)int.MaxValue;
 
-            Assert.Throws<ArgumentOutOfRangeException>(() =>
-                _sut.PopulateNodeConnections(dungeonData, id, node, connections));
-        }
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            _sut.PopulateNodeConnections(dungeonData, id, node, connections));
+    }
         
-        [Theory]
-        [MemberData(nameof(PopulateNodeConnections_ShouldCreateExpectedEntryConnectionsData))]
-        public void PopulateNodeConnections_ShouldCreateExpectedEntryConnections(
-            DungeonNodeID id, OverworldNodeID fromNodeID)
-        {
-            var dungeonData = Substitute.For<IMutableDungeon>();
-            var node = Substitute.For<IDungeonNode>();
-            var connections = new List<INodeConnection>();
-            _sut.PopulateNodeConnections(dungeonData, id, node, connections);
+    [Theory]
+    [MemberData(nameof(PopulateNodeConnections_ShouldCreateExpectedEntryConnectionsData))]
+    public void PopulateNodeConnections_ShouldCreateExpectedEntryConnections(
+        DungeonNodeID id, OverworldNodeID fromNodeID)
+    {
+        var dungeonData = Substitute.For<IMutableDungeon>();
+        var node = Substitute.For<IDungeonNode>();
+        var connections = new List<INodeConnection>();
+        _sut.PopulateNodeConnections(dungeonData, id, node, connections);
 
-            Assert.Contains(_entryFactoryCalls, x => x == _overworldNodes[fromNodeID]);
-        }
+        Assert.Contains(_entryFactoryCalls, x => x == _overworldNodes[fromNodeID]);
+    }
 
-        public static IEnumerable<object[]> PopulateNodeConnections_ShouldCreateExpectedEntryConnectionsData()
-        {
-            PopulateExpectedValues();
+    public static IEnumerable<object[]> PopulateNodeConnections_ShouldCreateExpectedEntryConnectionsData()
+    {
+        PopulateExpectedValues();
 
-            return ExpectedEntryValues.Keys.Select(id => new object[] {id, ExpectedEntryValues[id]}).ToList();
-        }
+        return ExpectedEntryValues.Keys.Select(id => new object[] {id, ExpectedEntryValues[id]}).ToList();
+    }
         
-        [Theory]
-        [MemberData(nameof(PopulateNodeConnections_ShouldCreateExpectedNoRequirementConnectionsData))]
-        public void PopulateNodeConnections_ShouldCreateExpectedNoRequirementConnections(
-            DungeonNodeID id, DungeonNodeID fromNodeID)
-        {
-            var dungeonData = Substitute.For<IMutableDungeon>();
-            var node = Substitute.For<IDungeonNode>();
-            var connections = new List<INodeConnection>();
-            _sut.PopulateNodeConnections(dungeonData, id, node, connections);
+    [Theory]
+    [MemberData(nameof(PopulateNodeConnections_ShouldCreateExpectedNoRequirementConnectionsData))]
+    public void PopulateNodeConnections_ShouldCreateExpectedNoRequirementConnections(
+        DungeonNodeID id, DungeonNodeID fromNodeID)
+    {
+        var dungeonData = Substitute.For<IMutableDungeon>();
+        var node = Substitute.For<IDungeonNode>();
+        var connections = new List<INodeConnection>();
+        _sut.PopulateNodeConnections(dungeonData, id, node, connections);
 
-            Assert.Contains(_connectionFactoryCalls, x =>
-                x.fromNode == dungeonData.Nodes[fromNodeID] && x.requirement == null);
-        }
+        Assert.Contains(_connectionFactoryCalls, x =>
+            x.fromNode == dungeonData.Nodes[fromNodeID] && x.requirement == null);
+    }
 
-        public static IEnumerable<object[]> PopulateNodeConnections_ShouldCreateExpectedNoRequirementConnectionsData()
-        {
-            PopulateExpectedValues();
+    public static IEnumerable<object[]> PopulateNodeConnections_ShouldCreateExpectedNoRequirementConnectionsData()
+    {
+        PopulateExpectedValues();
 
-            return (from id in ExpectedNoRequirementValues.Keys
-                from value in ExpectedNoRequirementValues[id]
-                select new object[] {id, value}).ToList();
-        }
+        return (from id in ExpectedNoRequirementValues.Keys
+            from value in ExpectedNoRequirementValues[id]
+            select new object[] {id, value}).ToList();
+    }
 
-        [Theory]
-        [MemberData(nameof(PopulateNodeConnections_ShouldCreateExpectedBossConnectionsData))]
-        public void PopulateNodeConnections_ShouldCreateExpectedBossConnections(
-            DungeonNodeID id, DungeonNodeID fromNodeID, BossPlacementID bossID)
-        {
-            var dungeonData = Substitute.For<IMutableDungeon>();
-            var node = Substitute.For<IDungeonNode>();
-            var connections = new List<INodeConnection>();
-            _sut.PopulateNodeConnections(dungeonData, id, node, connections);
+    [Theory]
+    [MemberData(nameof(PopulateNodeConnections_ShouldCreateExpectedBossConnectionsData))]
+    public void PopulateNodeConnections_ShouldCreateExpectedBossConnections(
+        DungeonNodeID id, DungeonNodeID fromNodeID, BossPlacementID bossID)
+    {
+        var dungeonData = Substitute.For<IMutableDungeon>();
+        var node = Substitute.For<IDungeonNode>();
+        var connections = new List<INodeConnection>();
+        _sut.PopulateNodeConnections(dungeonData, id, node, connections);
 
-            Assert.Contains(_connectionFactoryCalls, x =>
-                x.fromNode == dungeonData.Nodes[fromNodeID] && x.requirement == _bossRequirements[bossID]);
-        }
+        Assert.Contains(_connectionFactoryCalls, x =>
+            x.fromNode == dungeonData.Nodes[fromNodeID] && x.requirement == _bossRequirements[bossID]);
+    }
 
-        public static IEnumerable<object[]> PopulateNodeConnections_ShouldCreateExpectedBossConnectionsData()
-        {
-            PopulateExpectedValues();
+    public static IEnumerable<object[]> PopulateNodeConnections_ShouldCreateExpectedBossConnectionsData()
+    {
+        PopulateExpectedValues();
 
-            return (from id in ExpectedBossValues.Keys from value in ExpectedBossValues[id]
-                select new object[] {id, value.fromNodeID, value.bossID}).ToList();
-        }
+        return (from id in ExpectedBossValues.Keys from value in ExpectedBossValues[id]
+            select new object[] {id, value.fromNodeID, value.bossID}).ToList();
+    }
 
-        [Theory]
-        [MemberData(nameof(PopulateNodeConnections_ShouldCreateExpectedComplexConnectionsData))]
-        public void PopulateNodeConnections_ShouldCreateExpectedComplexConnections(
-            DungeonNodeID id, DungeonNodeID fromNodeID, ComplexRequirementType type)
-        {
-            var dungeonData = Substitute.For<IMutableDungeon>();
-            var node = Substitute.For<IDungeonNode>();
-            var connections = new List<INodeConnection>();
-            _sut.PopulateNodeConnections(dungeonData, id, node, connections);
+    [Theory]
+    [MemberData(nameof(PopulateNodeConnections_ShouldCreateExpectedComplexConnectionsData))]
+    public void PopulateNodeConnections_ShouldCreateExpectedComplexConnections(
+        DungeonNodeID id, DungeonNodeID fromNodeID, ComplexRequirementType type)
+    {
+        var dungeonData = Substitute.For<IMutableDungeon>();
+        var node = Substitute.For<IDungeonNode>();
+        var connections = new List<INodeConnection>();
+        _sut.PopulateNodeConnections(dungeonData, id, node, connections);
 
-            Assert.Contains(_connectionFactoryCalls, x =>
-                x.fromNode == dungeonData.Nodes[fromNodeID] && x.requirement == _complexRequirements[type]);
-        }
+        Assert.Contains(_connectionFactoryCalls, x =>
+            x.fromNode == dungeonData.Nodes[fromNodeID] && x.requirement == _complexRequirements[type]);
+    }
 
-        public static IEnumerable<object[]> PopulateNodeConnections_ShouldCreateExpectedComplexConnectionsData()
-        {
-            PopulateExpectedValues();
+    public static IEnumerable<object[]> PopulateNodeConnections_ShouldCreateExpectedComplexConnectionsData()
+    {
+        PopulateExpectedValues();
 
-            return (from id in ExpectedComplexValues.Keys from value in ExpectedComplexValues[id]
-                select new object[] {id, value.fromNodeID, value.type}).ToList();
-        }
+        return (from id in ExpectedComplexValues.Keys from value in ExpectedComplexValues[id]
+            select new object[] {id, value.fromNodeID, value.type}).ToList();
+    }
 
-        [Theory]
-        [MemberData(nameof(PopulateNodeConnections_ShouldCreateExpectedItemConnectionsData))]
-        public void PopulateNodeConnections_ShouldCreateExpectedItemConnections(
-            DungeonNodeID id, DungeonNodeID fromNodeID, ItemType type, int count)
-        {
-            var dungeonData = Substitute.For<IMutableDungeon>();
-            var node = Substitute.For<IDungeonNode>();
-            var connections = new List<INodeConnection>();
-            _sut.PopulateNodeConnections(dungeonData, id, node, connections);
+    [Theory]
+    [MemberData(nameof(PopulateNodeConnections_ShouldCreateExpectedItemConnectionsData))]
+    public void PopulateNodeConnections_ShouldCreateExpectedItemConnections(
+        DungeonNodeID id, DungeonNodeID fromNodeID, ItemType type, int count)
+    {
+        var dungeonData = Substitute.For<IMutableDungeon>();
+        var node = Substitute.For<IDungeonNode>();
+        var connections = new List<INodeConnection>();
+        _sut.PopulateNodeConnections(dungeonData, id, node, connections);
 
-            Assert.Contains(_connectionFactoryCalls, x =>
-                x.fromNode == dungeonData.Nodes[fromNodeID] && x.requirement == _itemRequirements[(type, count)]);
-        }
+        Assert.Contains(_connectionFactoryCalls, x =>
+            x.fromNode == dungeonData.Nodes[fromNodeID] && x.requirement == _itemRequirements[(type, count)]);
+    }
 
-        public static IEnumerable<object[]> PopulateNodeConnections_ShouldCreateExpectedItemConnectionsData()
-        {
-            PopulateExpectedValues();
+    public static IEnumerable<object[]> PopulateNodeConnections_ShouldCreateExpectedItemConnectionsData()
+    {
+        PopulateExpectedValues();
 
-            return (from id in ExpectedItemValues.Keys from value in ExpectedItemValues[id]
-                select new object[] {id, value.fromNodeID, value.type, value.count}).ToList();
-        }
+        return (from id in ExpectedItemValues.Keys from value in ExpectedItemValues[id]
+            select new object[] {id, value.fromNodeID, value.type, value.count}).ToList();
+    }
 
-        [Theory]
-        [MemberData(nameof(PopulateNodeConnections_ShouldCreateExpectedKeyDoorConnectionsData))]
-        public void PopulateNodeConnections_ShouldCreateExpectedKeyDoorConnections(
-            DungeonNodeID id, DungeonNodeID fromNodeID, KeyDoorID keyDoor)
-        {
-            var dungeonData = Substitute.For<IMutableDungeon>();
-            var node = Substitute.For<IDungeonNode>();
-            var connections = new List<INodeConnection>();
-            _sut.PopulateNodeConnections(dungeonData, id, node, connections);
+    [Theory]
+    [MemberData(nameof(PopulateNodeConnections_ShouldCreateExpectedKeyDoorConnectionsData))]
+    public void PopulateNodeConnections_ShouldCreateExpectedKeyDoorConnections(
+        DungeonNodeID id, DungeonNodeID fromNodeID, KeyDoorID keyDoor)
+    {
+        var dungeonData = Substitute.For<IMutableDungeon>();
+        var node = Substitute.For<IDungeonNode>();
+        var connections = new List<INodeConnection>();
+        _sut.PopulateNodeConnections(dungeonData, id, node, connections);
 
-            Assert.Contains(_connectionFactoryCalls, x =>
-                x.fromNode == dungeonData.Nodes[fromNodeID] &&
-                x.requirement == dungeonData.KeyDoors[keyDoor].Requirement);
-        }
+        Assert.Contains(_connectionFactoryCalls, x =>
+            x.fromNode == dungeonData.Nodes[fromNodeID] &&
+            x.requirement == dungeonData.KeyDoors[keyDoor].Requirement);
+    }
         
-        public static IEnumerable<object[]> PopulateNodeConnections_ShouldCreateExpectedKeyDoorConnectionsData()
-        {
-            PopulateExpectedValues();
+    public static IEnumerable<object[]> PopulateNodeConnections_ShouldCreateExpectedKeyDoorConnectionsData()
+    {
+        PopulateExpectedValues();
 
-            return (from id in ExpectedKeyDoorValues.Keys from value in ExpectedKeyDoorValues[id]
-                select new object[] {id, value.fromNodeID, value.keyDoor}).ToList();
-        }
+        return (from id in ExpectedKeyDoorValues.Keys from value in ExpectedKeyDoorValues[id]
+            select new object[] {id, value.fromNodeID, value.keyDoor}).ToList();
+    }
 
-        [Fact]
-        public void AutofacTest()
-        {
-            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-            var sut = scope.Resolve<IMMDungeonNodeFactory>();
+    [Fact]
+    public void AutofacTest()
+    {
+        using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+        var sut = scope.Resolve<IMMDungeonNodeFactory>();
             
-            Assert.NotNull(sut as MMDungeonNodeFactory);
-        }
+        Assert.NotNull(sut as MMDungeonNodeFactory);
     }
 }

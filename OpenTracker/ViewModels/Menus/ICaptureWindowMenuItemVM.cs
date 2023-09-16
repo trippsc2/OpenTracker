@@ -1,9 +1,8 @@
 using OpenTracker.ViewModels.Capture;
 
-namespace OpenTracker.ViewModels.Menus
+namespace OpenTracker.ViewModels.Menus;
+
+public interface ICaptureWindowMenuItemVM : IMenuItemVM
 {
-    public interface ICaptureWindowMenuItemVM : IMenuItemVM
-    {
-        new delegate ICaptureWindowMenuItemVM Factory(ICaptureWindowVM captureWindow);
-    }
+    new delegate ICaptureWindowMenuItemVM Factory(ICaptureWindowVM captureWindow);
 }
