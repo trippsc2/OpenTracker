@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Threading;
 using Autofac;
@@ -11,7 +12,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.AutoTracking.SNESConnectors.Requests;
 
-public class ReadMemoryRequestTests
+[ExcludeFromCodeCoverage]
+public sealed class ReadMemoryRequestTests
 {
     private const ulong Address = 0x7ef010;
     private const int BytesToRead = 2;

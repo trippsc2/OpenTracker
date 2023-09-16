@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Avalonia.Layout;
+using OpenTracker.Autofac;
 using OpenTracker.Utils;
 
 namespace OpenTracker.Models.Requirements.ItemsPanelOrientation;
@@ -7,7 +8,8 @@ namespace OpenTracker.Models.Requirements.ItemsPanelOrientation;
 /// <summary>
 ///     This class contains the dictionary container for items panel orientation requirements.
 /// </summary>
-public class ItemsPanelOrientationRequirementDictionary : LazyDictionary<Orientation, IRequirement>,
+[DependencyInjection(SingleInstance = true)]
+public sealed class ItemsPanelOrientationRequirementDictionary : LazyDictionary<Orientation, IRequirement>,
     IItemsPanelOrientationRequirementDictionary
 {
     private readonly IItemsPanelOrientationRequirement.Factory _factory;

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Settings;
 
 namespace OpenTracker.Models.Requirements.AlwaysDisplayDungeonItems;
@@ -6,7 +7,8 @@ namespace OpenTracker.Models.Requirements.AlwaysDisplayDungeonItems;
 /// <summary>
 /// This class contains the <see cref="ILayoutSettings.AlwaysDisplayDungeonItems"/> <see cref="IRequirement"/> data.
 /// </summary>
-public class AlwaysDisplayDungeonItemsRequirement : BooleanRequirement, IAlwaysDisplayDungeonItemsRequirement
+[DependencyInjection]
+public sealed class AlwaysDisplayDungeonItemsRequirement : BooleanRequirement, IAlwaysDisplayDungeonItemsRequirement
 {
     private readonly ILayoutSettings _layoutSettings;
     private readonly bool _expectedValue;

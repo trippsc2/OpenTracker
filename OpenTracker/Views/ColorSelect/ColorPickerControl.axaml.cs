@@ -3,7 +3,7 @@ using Avalonia.Markup.Xaml;
 
 namespace OpenTracker.Views.ColorSelect;
 
-public class ColorPickerControl : UserControl
+public sealed class ColorPickerControl : UserControl
 {
     public ColorPickerControl()
     {

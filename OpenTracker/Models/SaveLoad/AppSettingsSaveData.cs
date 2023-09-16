@@ -6,7 +6,7 @@ using OpenTracker.Models.Accessibility;
 
 namespace OpenTracker.Models.SaveLoad;
 
-public class AppSettingsSaveData
+public sealed class AppSettingsSaveData
 {
     // ReSharper disable once UnusedAutoPropertyAccessor.Global
     public Version? Version { get; init; }

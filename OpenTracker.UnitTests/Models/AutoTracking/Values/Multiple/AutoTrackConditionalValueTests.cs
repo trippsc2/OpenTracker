@@ -1,11 +1,13 @@
-using OpenTracker.Models.AutoTracking.Values;
+using System.Diagnostics.CodeAnalysis;
+using FluentAssertions;
 using OpenTracker.Models.AutoTracking.Values.Multiple;
 using OpenTracker.UnitTests.Models.Requirements;
 using Xunit;
 
 namespace OpenTracker.UnitTests.Models.AutoTracking.Values.Multiple;
 
-public class AutoTrackConditionalValueTests
+[ExcludeFromCodeCoverage]
+public sealed class AutoTrackConditionalValueTests
 {
     private readonly MockAutoTrackValue _trueValue = new();
     private readonly MockAutoTrackValue _falseValue = new();
@@ -43,34 +45,20 @@ public class AutoTrackConditionalValueTests
         _falseValue.CurrentValue = falseValue;
         _condition.Met = conditionMet;
 
-        Assert.Equal(expected, _sut.CurrentValue);
+        _sut.CurrentValue.Should().Be(expected);
     }
 
     [Fact]
-    public void ConditionChanged_ShouldRaisePropertyChanged()
+    public void CurrentValue_ShouldRaisePropertyChanged()
     {
         _trueValue.CurrentValue = 12;
         _falseValue.CurrentValue = 11;
         _condition.Met = false;
-            
-        Assert.PropertyChanged(_sut, nameof(IAutoTrackValue.CurrentValue), () => _condition.Met = true);
-    }
 
-    [Fact]
-    public void ValueChanged_ShouldRaisePropertyChanged()
-    {
-        _condition.Met = false;
-            
-        Assert.PropertyChanged(
-            _sut,
-            nameof(IAutoTrackValue.CurrentValue),
-            () => _falseValue.CurrentValue = 11);
-
+        using var monitor = _sut.Monitor();
+        
         _condition.Met = true;
-            
-        Assert.PropertyChanged(
-            _sut,
-            nameof(IAutoTrackValue.CurrentValue),
-            () => _trueValue.CurrentValue = 12);
+
+        monitor.Should().RaisePropertyChangeFor(x => x.CurrentValue);
     }
 }

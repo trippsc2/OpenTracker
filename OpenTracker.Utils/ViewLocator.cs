@@ -1,36 +1,42 @@
+using System;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
-using System;
-using System.Linq;
-using System.Reflection;
+using Splat;
 
 namespace OpenTracker.Utils;
 
 public class ViewLocator : IDataTemplate
 {
-    public static bool SupportsRecycling =>
-        false;
-
     public IControl Build(object data)
     {
-        var assembly = Assembly.GetEntryAssembly() ??
-                       throw new NullReferenceException();
-        var viewTypes = assembly.GetTypes();
-        var viewName = data.GetType().FullName!.Replace("ViewModel", "View").Replace("VM", "");
-        var type = viewTypes.SingleOrDefault(t => t.FullName == viewName);
-
-        if (type != null)
+        if (data is not ViewModel viewModel)
         {
-            return (Control)Activator.CreateInstance(type)!;
+            return new Panel();
         }
-        else
+
+        var type = viewModel.GetType();
+
+        try
         {
-            return new TextBlock { Text = "Not Found: " + viewName };
+            var viewType = viewModel.GetViewType();
+            
+            var view = Locator.Current.GetService(viewType);
+
+            if (view is not IControl)
+            {
+                throw new Exception();
+            }
+
+            return (IControl) Locator.Current.GetService(viewType)!;
+        }
+        catch
+        {
+            return new TextBlock { Text = "Cannot Create View for: " + type.Name };
         }
     }
 
     public bool Match(object data)
     {
-        return data is ViewModelBase;
+        return data is ViewModel;
     }
 }

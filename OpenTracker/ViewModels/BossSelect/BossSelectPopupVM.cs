@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Reactive;
 using System.Threading.Tasks;
 using Avalonia.Threading;
+using OpenTracker.Autofac;
 using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
@@ -14,7 +15,8 @@ namespace OpenTracker.ViewModels.BossSelect;
 /// <summary>
 /// This class contains the boss select popup control ViewModel data.
 /// </summary>
-public class BossSelectPopupVM : ViewModelBase, IBossSelectPopupVM
+[DependencyInjection]
+public sealed class BossSelectPopupVM : ViewModel, IBossSelectPopupVM
 {
     private readonly ILayoutSettings _layoutSettings;
     private readonly IUndoRedoManager _undoRedoManager;

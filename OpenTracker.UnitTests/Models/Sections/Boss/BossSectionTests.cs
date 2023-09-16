@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using Autofac;
+using FluentAssertions;
 using NSubstitute;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.AutoTracking.Values;
@@ -23,8 +24,7 @@ public class BossSectionTests
     private readonly IUncollectSection.Factory _uncollectSectionFactory = section =>
         new UncollectSection(section);
 
-    private readonly IBossAccessibilityProvider _accessibilityProvider =
-        Substitute.For<IBossAccessibilityProvider>();
+    private readonly BossAccessibilityProvider _accessibilityProvider = new();
     private readonly IBossPlacement _bossPlacement = Substitute.For<IBossPlacement>();
     private readonly IAutoTrackValue _autoTrackValue = Substitute.For<IAutoTrackValue>();
     private readonly IRequirement _requirement = Substitute.For<IRequirement>();
@@ -70,12 +70,11 @@ public class BossSectionTests
         var sut = new BossSection(
             _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _accessibilityProvider, "Test",
             _bossPlacement, _autoTrackValue, _requirement);
-        _accessibilityProvider.Accessibility.Returns(AccessibilityLevel.Normal);
-            
-        Assert.PropertyChanged(sut, nameof(ISection.Accessibility), () =>
-            _accessibilityProvider.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
-                _accessibilityProvider,
-                new PropertyChangedEventArgs(nameof(IBossAccessibilityProvider.Accessibility))));
+        using var monitor = sut.Monitor();
+        
+        _accessibilityProvider.Accessibility = AccessibilityLevel.Normal;
+
+        monitor.Should().RaisePropertyChangeFor(x => x.Accessibility);
     }
 
     [Theory]
@@ -86,7 +85,7 @@ public class BossSectionTests
     public void Accessibility_ShouldEqualExpected(
         AccessibilityLevel expected, AccessibilityLevel providerAccessibility)
     {
-        _accessibilityProvider.Accessibility.Returns(providerAccessibility);
+        _accessibilityProvider.Accessibility = providerAccessibility;
             
         var sut = new BossSection(
             _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _accessibilityProvider, "Test",
@@ -233,20 +232,6 @@ public class BossSectionTests
         sut.Load(saveData);
             
         Assert.Equal(expected, sut.UserManipulated);
-    }
-
-    [Fact]
-    public void AccessibilityProviderChanged_ShouldUpdateAccessibility()
-    {
-        var sut = new BossSection(
-            _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _accessibilityProvider, "Test",
-            _bossPlacement, _autoTrackValue, _requirement);
-        _accessibilityProvider.Accessibility.Returns(AccessibilityLevel.Normal);
-        _accessibilityProvider.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
-            _accessibilityProvider,
-            new PropertyChangedEventArgs(nameof(IBossAccessibilityProvider.Accessibility)));
-
-        Assert.Equal(AccessibilityLevel.Normal, sut.Accessibility);
     }
 
     [Fact]

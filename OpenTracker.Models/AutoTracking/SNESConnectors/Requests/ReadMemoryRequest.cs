@@ -10,7 +10,7 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors.Requests;
 /// <summary>
 /// This class contains the request to read a sequence of memory addresses. 
 /// </summary>
-public class ReadMemoryRequest : RequestBase<byte[]>, IReadMemoryRequest
+public sealed class ReadMemoryRequest : RequestBase<byte[]>, IReadMemoryRequest
 {
     private readonly int _bytesToRead;
         

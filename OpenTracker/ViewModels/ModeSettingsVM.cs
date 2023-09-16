@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Reactive;
 using Avalonia.Input;
 using Avalonia.Threading;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
@@ -13,7 +14,8 @@ namespace OpenTracker.ViewModels;
 /// <summary>
 /// This class contains the mode settings popup control ViewModel data.
 /// </summary>
-public class ModeSettingsVM : ViewModelBase, IModeSettingsVM
+[DependencyInjection(SingleInstance = true)]
+public sealed class ModeSettingsVM : ViewModel, IModeSettingsVM
 {
     private readonly IMode _mode;
     private readonly IUndoRedoManager _undoRedoManager;

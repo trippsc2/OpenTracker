@@ -1,4 +1,3 @@
-using Autofac;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Dungeons.AccessibilityProvider;
 using Xunit;
@@ -28,17 +27,7 @@ public class BossAccessibilityProviderTests
     {
         _sut.Accessibility = AccessibilityLevel.None;
             
-        Assert.PropertyChanged(_sut, nameof(IBossAccessibilityProvider.Accessibility), () => 
+        Assert.PropertyChanged(_sut, nameof(BossAccessibilityProvider.Accessibility), () => 
             _sut.Accessibility = AccessibilityLevel.Inspect);
-    }
-
-    [Fact]
-    public void AutofacTest()
-    {
-        using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-        var factory = scope.Resolve<IBossAccessibilityProvider.Factory>();
-        var sut = factory();
-            
-        Assert.NotNull(sut as BossAccessibilityProvider);
     }
 }

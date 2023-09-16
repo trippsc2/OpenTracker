@@ -1,9 +1,11 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using Avalonia.ReactiveUI;
+using OpenTracker.ViewModels.PinnedLocations.Sections;
 
 namespace OpenTracker.Views.PinnedLocations.Sections;
 
-public class PrizeSectionIcon : UserControl
+public sealed class PrizeSectionIcon : ReactiveUserControl<PrizeSectionIconVM>
 {
     public PrizeSectionIcon()
     {

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Utils;
 using ReactiveUI;
@@ -8,7 +9,8 @@ namespace OpenTracker.Models.Settings;
 /// <summary>
 /// This class contains color settings data.
 /// </summary>
-public class ColorSettings : ReactiveObject, IColorSettings
+[DependencyInjection(SingleInstance = true)]
+public sealed class ColorSettings : ReactiveObject, IColorSettings
 {
     private string _emphasisFontColor = "#ff00ff00";
     public string EmphasisFontColor

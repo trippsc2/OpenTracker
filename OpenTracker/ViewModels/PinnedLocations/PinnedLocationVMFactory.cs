@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Locations;
 using OpenTracker.ViewModels.PinnedLocations.Notes;
 using OpenTracker.ViewModels.PinnedLocations.Sections;
@@ -8,7 +9,8 @@ namespace OpenTracker.ViewModels.PinnedLocations;
 /// <summary>
 /// This is the class for creating pinned location control ViewModel classes.
 /// </summary>
-public class PinnedLocationVMFactory : IPinnedLocationVMFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class PinnedLocationVMFactory : IPinnedLocationVMFactory
 {
     private readonly ISectionVMFactory _sectionFactory;
     private readonly IPinnedLocationNoteAreaVM.Factory _noteFactory;

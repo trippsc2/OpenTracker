@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Settings;
 
 namespace OpenTracker.Models.Requirements.DisplaysMapsCompasses;
@@ -6,7 +7,8 @@ namespace OpenTracker.Models.Requirements.DisplaysMapsCompasses;
 /// <summary>
 ///     This class contains display maps/compasses setting requirement data.
 /// </summary>
-public class DisplayMapsCompassesRequirement : BooleanRequirement, IDisplayMapsCompassesRequirement
+[DependencyInjection]
+public sealed class DisplayMapsCompassesRequirement : BooleanRequirement, IDisplayMapsCompassesRequirement
 {
     private readonly ILayoutSettings _layoutSettings;
     private readonly bool _expectedValue;

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using OpenTracker.Autofac;
 using OpenTracker.Utils;
 
 namespace OpenTracker.ViewModels.Items;
@@ -7,7 +8,8 @@ namespace OpenTracker.ViewModels.Items;
 /// <summary>
 /// This class contains the dictionary container for all large item control ViewModel data.
 /// </summary>
-public class ItemVMDictionary : LazyDictionary<LargeItemType, IItemVM>, IItemVMDictionary
+[DependencyInjection(SingleInstance = true)]
+public sealed class ItemVMDictionary : LazyDictionary<LargeItemType, IItemVM>, IItemVMDictionary
 {
     private readonly Lazy<IItemVMFactory> _factory;
         

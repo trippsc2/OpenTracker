@@ -21,7 +21,7 @@ public interface IPrizeSection : IBossSection
     /// A factory for creating new <see cref="IPrizeSection"/> objects.
     /// </summary>
     /// <param name="accessibilityProvider">
-    ///     The <see cref="IBossAccessibilityProvider"/>.
+    ///     The <see cref="BossAccessibilityProvider"/>.
     /// </param>
     /// <param name="name">
     ///     A <see cref="string"/> representing the section name.
@@ -39,7 +39,7 @@ public interface IPrizeSection : IBossSection
     ///     A new <see cref="IPrizeSection"/> object.
     /// </returns>
     new delegate IPrizeSection Factory(
-        IBossAccessibilityProvider accessibilityProvider, string name, IBossPlacement bossPlacement,
+        BossAccessibilityProvider accessibilityProvider, string name, IBossPlacement bossPlacement,
         IPrizePlacement prizePlacement, IAutoTrackValue? autoTrackValue = null);
 
     /// <summary>

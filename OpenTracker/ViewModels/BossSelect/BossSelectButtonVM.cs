@@ -1,4 +1,5 @@
-﻿using OpenTracker.Models.BossPlacements;
+﻿using OpenTracker.Autofac;
+using OpenTracker.Models.BossPlacements;
 using OpenTracker.Utils;
 
 namespace OpenTracker.ViewModels.BossSelect;
@@ -6,7 +7,8 @@ namespace OpenTracker.ViewModels.BossSelect;
 /// <summary>
 /// This class contains the boss select button control ViewModel data.
 /// </summary>
-public class BossSelectButtonVM : ViewModelBase, IBossSelectButtonVM
+[DependencyInjection]
+public sealed class BossSelectButtonVM : ViewModel, IBossSelectButtonVM
 {
     public BossType? Boss { get; }
     public string ImageSource { get; }

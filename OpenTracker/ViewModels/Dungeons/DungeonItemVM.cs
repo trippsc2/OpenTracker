@@ -2,6 +2,7 @@ using System.ComponentModel;
 using System.Reactive;
 using Avalonia.Input;
 using Avalonia.Threading;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Utils;
 using OpenTracker.ViewModels.Items;
@@ -12,7 +13,8 @@ namespace OpenTracker.ViewModels.Dungeons;
 /// <summary>
 /// This class contains the small item control ViewModel data.
 /// </summary>
-public class DungeonItemVM : ViewModelBase, IDungeonItemVM
+[DependencyInjection]
+public sealed class DungeonItemVM : ViewModel, IDungeonItemVM
 {
     private readonly IRequirement? _requirement;
 

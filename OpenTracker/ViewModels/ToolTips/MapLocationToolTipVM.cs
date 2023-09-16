@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using Avalonia.Threading;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Settings;
 using OpenTracker.Utils;
@@ -10,7 +11,8 @@ namespace OpenTracker.ViewModels.ToolTips;
 /// <summary>
 /// This class contains the map location tooltip control ViewModel data.
 /// </summary>
-public class MapLocationToolTipVM : ViewModelBase, IMapLocationToolTipVM
+[DependencyInjection]
+public sealed class MapLocationToolTipVM : ViewModel, IMapLocationToolTipVM
 {
     private readonly ILayoutSettings _layoutSettings;
     private readonly ILocation _location;

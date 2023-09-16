@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using OpenTracker.Models.Accessibility;
 using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Accessibility;
 
-public class AccessibilityLevelTests
+[ExcludeFromCodeCoverage]
+public sealed class AccessibilityLevelTests
 {
     [Fact]
     public void Min_ShouldThrowException_WhenProvidingNoValues()

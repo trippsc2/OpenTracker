@@ -1,27 +1,31 @@
-using System.ComponentModel;
 using System.Reactive;
+using System.Reactive.Linq;
 using Avalonia.Input;
-using Avalonia.Threading;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Dropdowns;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
 using OpenTracker.ViewModels.BossSelect;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 
 namespace OpenTracker.ViewModels.Items.Adapters;
 
-public class DropdownAdapter : ViewModelBase, IItemAdapter
+[DependencyInjection]
+public sealed class DropdownAdapter : ViewModel, IItemAdapter
 {
     private readonly IUndoRedoManager _undoRedoManager;
 
-    private readonly IDropdown _dropdown;
-    private readonly string _imageSourceBase;
+    private IDropdown Dropdown { get; }
 
-    public bool Visible => _dropdown.RequirementMet;
-    public string ImageSource => _imageSourceBase + (_dropdown.Checked ? "1" : "0") + ".png";
-    public string? Label { get; } = null;
-    public string LabelColor { get; } = "#ffffffff";
-    public IBossSelectPopupVM? BossSelect { get; } = null;
+    [ObservableAsProperty]
+    public bool Visible { get; }
+    [ObservableAsProperty]
+    public string ImageSource { get; } = string.Empty;
+
+    public string? Label => null;
+    public string LabelColor => "#ffffffff";
+    public IBossSelectPopupVM? BossSelect => null;
 
     public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
 
@@ -43,34 +47,16 @@ public class DropdownAdapter : ViewModelBase, IItemAdapter
     {
         _undoRedoManager = undoRedoManager;
 
-        _dropdown = dropdown;
-        _imageSourceBase = imageSourceBase;
+        Dropdown = dropdown;
+
+        this.WhenAnyValue(x => x.Dropdown.Requirement.Met)
+            .ToPropertyEx(this, x => x.Visible);
+        
+        this.WhenAnyValue(x => x.Dropdown.Checked)
+            .Select(x => imageSourceBase + (x ? "1" : "0") + ".png")
+            .ToPropertyEx(this, x => x.ImageSource);
 
         HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
-
-        _dropdown.PropertyChanged += OnDropdownChanged;
-    }
-
-    /// <summary>
-    /// Subscribes to the PropertyChanged event on the IDropdown interface.
-    /// </summary>
-    /// <param name="sender">
-    /// The sending object of the event.
-    /// </param>
-    /// <param name="e">
-    /// The arguments of the PropertyChanged event.
-    /// </param>
-    private async void OnDropdownChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        switch (e.PropertyName)
-        {
-            case nameof(IDropdown.RequirementMet):
-                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Visible)));
-                break;
-            case nameof(IDropdown.Checked):
-                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(ImageSource)));
-                break;
-        }
     }
 
     /// <summary>
@@ -78,7 +64,7 @@ public class DropdownAdapter : ViewModelBase, IItemAdapter
     /// </summary>
     private void CheckDropdown()
     {
-        _undoRedoManager.NewAction(_dropdown.CreateCheckDropdownAction());
+        _undoRedoManager.NewAction(Dropdown.CreateCheckDropdownAction());
     }
 
     /// <summary>
@@ -86,7 +72,7 @@ public class DropdownAdapter : ViewModelBase, IItemAdapter
     /// </summary>
     private void UncheckDropdown()
     {
-        _undoRedoManager.NewAction(_dropdown.CreateUncheckDropdownAction());
+        _undoRedoManager.NewAction(Dropdown.CreateUncheckDropdownAction());
     }
 
     /// <summary>
@@ -104,6 +90,12 @@ public class DropdownAdapter : ViewModelBase, IItemAdapter
                 break;
             case MouseButton.Right:
                 UncheckDropdown();
+                break;
+            case MouseButton.None:
+            case MouseButton.Middle:
+            case MouseButton.XButton1:
+            case MouseButton.XButton2:
+            default:
                 break;
         }
     }

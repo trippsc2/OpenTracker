@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Reactive;
 using Avalonia.Threading;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Markings;
 using OpenTracker.Models.Settings;
@@ -14,7 +15,8 @@ namespace OpenTracker.ViewModels.Markings;
 /// <summary>
 /// This class contains the note marking select popup control ViewModel data.
 /// </summary>
-public class NoteMarkingSelectVM : ViewModelBase, INoteMarkingSelectVM
+[DependencyInjection]
+public sealed class NoteMarkingSelectVM : ViewModel, INoteMarkingSelectVM
 {
     private readonly ILayoutSettings _layoutSettings;
     private readonly IUndoRedoManager _undoRedoManager;

@@ -1,4 +1,5 @@
 ﻿using System.Reactive;
+using OpenTracker.Autofac;
 using OpenTracker.Utils.Dialog;
 using ReactiveUI;
 
@@ -7,7 +8,8 @@ namespace OpenTracker.ViewModels.Dialogs;
 /// <summary>
 /// This is the ViewModel for the error box dialog window.
 /// </summary>
-public class ErrorBoxDialogVM : DialogViewModelBase, IErrorBoxDialogVM
+[DependencyInjection]
+public sealed class ErrorBoxDialogVM : DialogViewModelBase
 {
     public string Title { get; }
     public string Text { get; }

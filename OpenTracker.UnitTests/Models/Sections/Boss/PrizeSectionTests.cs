@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using Autofac;
+using FluentAssertions;
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;
 using OpenTracker.Models.Accessibility;
@@ -27,8 +28,7 @@ public class PrizeSectionTests
     private readonly ITogglePrizeSection.Factory _togglePrizeSectionFactory = (section, force) =>
         new TogglePrizeSection(section, force);
 
-    private readonly IBossAccessibilityProvider _accessibilityProvider =
-        Substitute.For<IBossAccessibilityProvider>();
+    private readonly BossAccessibilityProvider _accessibilityProvider = new();
     private readonly IBossPlacement _bossPlacement = Substitute.For<IBossPlacement>();
     private readonly IPrizePlacement _prizePlacement = Substitute.For<IPrizePlacement>();
     private readonly IAutoTrackValue _autoTrackValue = Substitute.For<IAutoTrackValue>();
@@ -94,12 +94,11 @@ public class PrizeSectionTests
         var sut = new PrizeSection(
             _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
             _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue);
-        _accessibilityProvider.Accessibility.Returns(AccessibilityLevel.Normal);
-            
-        Assert.PropertyChanged(sut, nameof(ISection.Accessibility), () =>
-            _accessibilityProvider.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
-                _accessibilityProvider,
-                new PropertyChangedEventArgs(nameof(IBossAccessibilityProvider.Accessibility))));
+        using var monitor = sut.Monitor();
+        
+        _accessibilityProvider.Accessibility = AccessibilityLevel.Normal;
+        
+        monitor.Should().RaisePropertyChangeFor(x => x.Accessibility);
     }
 
     [Theory]
@@ -110,11 +109,11 @@ public class PrizeSectionTests
     public void Accessibility_ShouldEqualExpected(
         AccessibilityLevel expected, AccessibilityLevel providerAccessibility)
     {
-        _accessibilityProvider.Accessibility.Returns(providerAccessibility);
-            
         var sut = new PrizeSection(
             _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
             _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue);
+
+        _accessibilityProvider.Accessibility = providerAccessibility;
 
         Assert.Equal(expected, sut.Accessibility);
     }
@@ -182,10 +181,7 @@ public class PrizeSectionTests
         {
             Available = available
         };
-        _accessibilityProvider.Accessibility.Returns(nodeAccessibility);
-        _accessibilityProvider.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
-            _accessibilityProvider,
-            new PropertyChangedEventArgs(nameof(IBossAccessibilityProvider.Accessibility)));
+        _accessibilityProvider.Accessibility = nodeAccessibility;
             
         Assert.Equal(expected, sut.ShouldBeDisplayed);
     }
@@ -231,12 +227,8 @@ public class PrizeSectionTests
         {
             Available = available
         };
-        _accessibilityProvider.Accessibility.Returns(accessibility);
+        _accessibilityProvider.Accessibility = accessibility;
 
-        _accessibilityProvider.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
-            _accessibilityProvider,
-            new PropertyChangedEventArgs(nameof(IBossAccessibilityProvider.Accessibility)));
-            
         Assert.Equal(expected, sut.CanBeCleared(force));
     }
 
@@ -393,20 +385,6 @@ public class PrizeSectionTests
         sut.Load(saveData);
             
         Assert.Equal(expected, sut.Available);
-    }
-
-    [Fact]
-    public void AccessibilityProviderChanged_ShouldUpdateAccessibility()
-    {
-        var sut = new PrizeSection(
-            _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
-            _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue);
-        _accessibilityProvider.Accessibility.Returns(AccessibilityLevel.Normal);
-        _accessibilityProvider.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
-            _accessibilityProvider,
-            new PropertyChangedEventArgs(nameof(IBossAccessibilityProvider.Accessibility)));
-
-        Assert.Equal(AccessibilityLevel.Normal, sut.Accessibility);
     }
 
     [Theory]

@@ -9,7 +9,7 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors.Requests;
 /// <summary>
 /// This class contains the request to register the app name. 
 /// </summary>
-public class RegisterNameRequest : RequestBase<Unit>, IRegisterNameRequest
+public sealed class RegisterNameRequest : RequestBase<Unit>, IRegisterNameRequest
 {
     private const string AppName = "OpenTracker";
         

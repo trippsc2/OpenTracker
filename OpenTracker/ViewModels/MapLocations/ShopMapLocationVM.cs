@@ -3,6 +3,7 @@ using System.Reactive;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Locations.Map;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
@@ -13,7 +14,8 @@ namespace OpenTracker.ViewModels.MapLocations;
 /// <summary>
 /// This class contains the shop map location control ViewModel data.
 /// </summary>
-public class ShopMapLocationVM : ViewModelBase, IShapedMapLocationVMBase
+[DependencyInjection]
+public sealed class ShopMapLocationVM : ViewModel, IShapedMapLocationVMBase
 {
     private readonly IUndoRedoManager _undoRedoManager;
 

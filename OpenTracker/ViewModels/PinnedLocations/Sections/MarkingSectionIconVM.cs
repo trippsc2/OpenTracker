@@ -3,6 +3,7 @@ using System.Reactive;
 using System.Threading.Tasks;
 using Avalonia.Input;
 using Avalonia.Threading;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Markings;
 using OpenTracker.Models.Sections;
 using OpenTracker.Utils;
@@ -15,7 +16,8 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections;
 /// <summary>
 /// This class contains the section marking icon control ViewModel data.
 /// </summary>
-public class MarkingSectionIconVM : ViewModelBase, ISectionIconVM
+[DependencyInjection]
+public sealed class MarkingSectionIconVM : ViewModel, ISectionIconVM
 {
     private readonly IMarkingImageDictionary _markingImages;
 

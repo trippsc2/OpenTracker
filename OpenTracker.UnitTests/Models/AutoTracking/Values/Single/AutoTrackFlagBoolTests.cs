@@ -1,11 +1,13 @@
-using OpenTracker.Models.AutoTracking.Values;
+using System.Diagnostics.CodeAnalysis;
+using FluentAssertions;
 using OpenTracker.Models.AutoTracking.Values.Single;
 using OpenTracker.UnitTests.Models.AutoTracking.Memory;
 using Xunit;
 
 namespace OpenTracker.UnitTests.Models.AutoTracking.Values.Single;
 
-public class AutoTrackFlagBoolTests
+[ExcludeFromCodeCoverage]
+public sealed class AutoTrackFlagBoolTests
 {
     private readonly MockMemoryFlag _memoryFlag = new();
         
@@ -24,7 +26,7 @@ public class AutoTrackFlagBoolTests
         _memoryFlag.Status = memoryFlagStatus;
         var sut = new AutoTrackFlagBool(_memoryFlag, trueValue);
 
-        Assert.Equal(expected, sut.CurrentValue);
+        sut.CurrentValue.Should().Be(expected);
     }
 
     [Fact]
@@ -32,10 +34,11 @@ public class AutoTrackFlagBoolTests
     {
         _memoryFlag.Status = null;
         var sut = new AutoTrackFlagBool(_memoryFlag, 1);
-            
-        Assert.PropertyChanged(
-            sut,
-            nameof(IAutoTrackValue.CurrentValue),
-            () => _memoryFlag.Status = false);
+        
+        using var monitor = sut.Monitor();
+        
+        _memoryFlag.Status = false;
+        
+        monitor.Should().RaisePropertyChangeFor(x => x.CurrentValue);
     }
 }

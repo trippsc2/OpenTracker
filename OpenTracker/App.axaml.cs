@@ -11,6 +11,7 @@ using OpenTracker.Utils;
 using OpenTracker.Utils.Themes;
 using OpenTracker.ViewModels;
 using OpenTracker.Views;
+using Splat.Autofac;
 
 namespace OpenTracker;
 
@@ -66,16 +67,17 @@ public class App : Application
             desktop.ShutdownMode = ShutdownMode.OnMainWindowClose;
             CopyDefaultThemesToAppData();
 
-            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var container = ContainerConfig.Configure();
+            var autofacResolver = container.Resolve<AutofacDependencyResolver>();
+            autofacResolver.SetLifetimeScope(container);
+                
+            using var scope = container.BeginLifetimeScope();
 
             var themeManagerFactory = scope.Resolve<IThemeManager.Factory>();
             var themeManager = themeManagerFactory(this, AppPath.AppDataThemesPath);
             var saveLoadManager = scope.Resolve<ISaveLoadManager>();
             saveLoadManager.OpenSequenceBreaks(AppPath.SequenceBreakPath);
-            desktop.MainWindow = new MainWindow()
-            {
-                DataContext = scope.Resolve<IMainWindowVM>()
-            };
+            desktop.MainWindow = new MainWindow { DataContext = scope.Resolve<MainWindowVM>() };
                 
             SetThemeToLastOrDefault(themeManager);
 

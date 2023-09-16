@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Sections;
 using OpenTracker.Models.Sections.Boolean;
 using OpenTracker.Models.Sections.Boss;
@@ -11,7 +12,8 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections;
 /// <summary>
 /// This is the class containing creation logic for section control ViewModel classes.
 /// </summary>
-public class SectionVMFactory : ISectionVMFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class SectionVMFactory : ISectionVMFactory
 {
     private readonly MarkingSectionIconVM.Factory _markingFactory;
     private readonly ISectionIconVM.Factory _iconFactory;

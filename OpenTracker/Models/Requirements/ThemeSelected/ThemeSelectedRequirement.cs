@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using OpenTracker.Autofac;
 using OpenTracker.Utils.Themes;
 
 namespace OpenTracker.Models.Requirements.ThemeSelected;
@@ -6,7 +7,8 @@ namespace OpenTracker.Models.Requirements.ThemeSelected;
 /// <summary>
 ///     This class contains theme selected requirement data.
 /// </summary>
-public class ThemeSelectedRequirement : BooleanRequirement, IThemeSelectedRequirement
+[DependencyInjection]
+public sealed class ThemeSelectedRequirement : BooleanRequirement, IThemeSelectedRequirement
 {
     private readonly IThemeManager _themeManager;
     private readonly ITheme _expectedValue;

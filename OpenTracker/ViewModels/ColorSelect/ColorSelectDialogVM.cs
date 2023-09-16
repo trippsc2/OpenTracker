@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using OpenTracker.Autofac;
 using OpenTracker.Utils.Dialog;
 
 namespace OpenTracker.ViewModels.ColorSelect;
@@ -7,7 +8,8 @@ namespace OpenTracker.ViewModels.ColorSelect;
 /// <summary>
 /// This class contains the color select dialog window ViewModel data.
 /// </summary>
-public class ColorSelectDialogVM : DialogViewModelBase, IColorSelectDialogVM
+[DependencyInjection(SingleInstance = true)]
+public sealed class ColorSelectDialogVM : DialogViewModelBase
 {
     public ObservableCollection<IColorSelectControlVM> FontColors { get; } =
         new();

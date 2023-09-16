@@ -2,6 +2,7 @@ using System.ComponentModel;
 using System.Reactive;
 using Avalonia.Input;
 using Avalonia.Threading;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Sections;
 using OpenTracker.Models.Sections.Boss;
 using OpenTracker.Models.UndoRedo;
@@ -14,7 +15,8 @@ namespace OpenTracker.ViewModels.Items.Adapters;
 /// <summary>
 /// This class contains the logic to adapt prize data to an item control.
 /// </summary>
-public class StaticPrizeAdapter : ViewModelBase, IItemAdapter
+[DependencyInjection]
+public sealed class StaticPrizeAdapter : ViewModel, IItemAdapter
 {
     private readonly IUndoRedoManager _undoRedoManager;
         

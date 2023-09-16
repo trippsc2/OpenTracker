@@ -1,59 +1,34 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:vm="clr-namespace:OpenTracker.ViewModels.UIPanels;assembly=OpenTracker"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
-             xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
              mc:Ignorable="d" x:Class="OpenTracker.Views.UIPanels.UIPanel">
-  
-  <Design.DataContext>
-    <vm:UIPanelVM />
-  </Design.DataContext>
-  
+
   <UserControl.Resources>
     <SolidColorBrush x:Key="StandardBackground" Color="{DynamicResource LocationsPanelColor}" />
     <SolidColorBrush x:Key="AlternativeBackground" Color="{DynamicResource ItemsPanelColor}" />
   </UserControl.Resources>
   
-  <Border Classes="ControlBorder" Margin="1"
-          IsVisible="{Binding Visible}">
+  <Border x:Name="ControlBorder" Classes="ControlBorder" Margin="1">
     <DockPanel>
       
       <Border DockPanel.Dock="Top" Classes="UIPanelTitle">
         <DockPanel>
-          <TextBlock DockPanel.Dock="Left" Classes="UIPanelTitleText"
-                     Text="{Binding Title}" />
-          <ContentControl Content="{Binding ModeSettings}" />
+          <TextBlock x:Name="TitleText" DockPanel.Dock="Left" Classes="UIPanelTitleText" />
+          <ContentControl x:Name="ModeSettings" />
         </DockPanel>
       </Border>
       
-      <LayoutTransformControl>
-        
+      <LayoutTransformControl x:Name="LayoutTransformControl">
         <LayoutTransformControl.LayoutTransform>
-          <ScaleTransform ScaleX="{Binding Scale}"
-                          ScaleY="{Binding Scale}" />
+          <ScaleTransform />
         </LayoutTransformControl.LayoutTransform>
         
-        <Border Classes="UIPanelBody">
-          <i:Interaction.Behaviors>
-            <ia:DataTriggerBehavior Binding="{Binding AlternateBodyColor}"
-                                    ComparisonCondition="Equal" Value="True">
-              <ia:ChangePropertyAction PropertyName="Background"
-                                       Value="{DynamicResource StandardBackground}" />
-            </ia:DataTriggerBehavior>
-            <ia:DataTriggerBehavior Binding="{Binding AlternateBodyColor}"
-                                    ComparisonCondition="NotEqual" Value="True">
-              <ia:ChangePropertyAction PropertyName="Background"
-                                       Value="{DynamicResource AlternativeBackground}" />
-            </ia:DataTriggerBehavior>
-          </i:Interaction.Behaviors>
-          <ContentControl Content="{Binding Body}" />
+        <Border x:Name="BodyBorder" Classes="UIPanelBody">
+          <ContentControl x:Name="Body" />
         </Border>
-        
       </LayoutTransformControl>
       
     </DockPanel>
   </Border>
-  
 </UserControl>

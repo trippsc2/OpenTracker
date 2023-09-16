@@ -1,9 +1,11 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using Avalonia.ReactiveUI;
+using OpenTracker.ViewModels.Dungeons;
 
 namespace OpenTracker.Views.Dungeons;
 
-public class VerticalDungeonPanel : UserControl
+public sealed class VerticalDungeonPanel : ReactiveUserControl<VerticalDungeonPanelVM>
 {
     public VerticalDungeonPanel()
     {

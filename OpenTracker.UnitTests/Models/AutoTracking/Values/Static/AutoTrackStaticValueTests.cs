@@ -1,9 +1,12 @@
+using System.Diagnostics.CodeAnalysis;
+using FluentAssertions;
 using OpenTracker.Models.AutoTracking.Values.Static;
 using Xunit;
 
 namespace OpenTracker.UnitTests.Models.AutoTracking.Values.Static;
 
-public class AutoTrackStaticValueTests
+[ExcludeFromCodeCoverage]
+public sealed class AutoTrackStaticValueTests
 {
     [Theory]
     [InlineData(0, 0)]
@@ -12,7 +15,7 @@ public class AutoTrackStaticValueTests
     public void CurrentValue_ShouldEqualExpected(int? expected, int value)
     {
         var sut = new AutoTrackStaticValue(value);
-            
-        Assert.Equal(expected, sut.CurrentValue);
+
+        sut.CurrentValue.Should().Be(expected);
     }
 }

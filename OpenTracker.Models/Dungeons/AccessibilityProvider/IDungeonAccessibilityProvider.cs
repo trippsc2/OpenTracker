@@ -24,9 +24,9 @@ public interface IDungeonAccessibilityProvider : IReactiveObject
     int Accessible { get; }
         
     /// <summary>
-    /// A <see cref="IList{T}"/> of <see cref="IBossAccessibilityProvider"/> for the dungeon.
+    /// A <see cref="IList{T}"/> of <see cref="BossAccessibilityProvider"/> for the dungeon.
     /// </summary>
-    IList<IBossAccessibilityProvider> BossAccessibilityProviders { get; }
+    List<BossAccessibilityProvider> BossAccessibilityProviders { get; }
 
     /// <summary>
     /// A factory for creating new <see cref="IDungeonAccessibilityProvider"/> objects.

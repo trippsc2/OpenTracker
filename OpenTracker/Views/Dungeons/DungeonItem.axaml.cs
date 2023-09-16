@@ -1,9 +1,11 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using Avalonia.ReactiveUI;
+using OpenTracker.ViewModels.Dungeons;
 
 namespace OpenTracker.Views.Dungeons;
 
-public class DungeonItem : UserControl
+public sealed class DungeonItem : ReactiveUserControl<DungeonItemVM>
 {
     public DungeonItem()
     {

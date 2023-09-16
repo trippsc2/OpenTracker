@@ -1,10 +1,12 @@
-﻿using OpenTracker.Models.Locations;
+﻿using OpenTracker.Autofac;
+using OpenTracker.Models.Locations;
 using OpenTracker.Models.Markings;
 using OpenTracker.Utils;
 
 namespace OpenTracker.ViewModels.ToolTips;
 
-public class MapLocationToolTipNotes :
+[DependencyInjection]
+public sealed class MapLocationToolTipNotes :
     ViewModelCollection<IMapLocationToolTipMarkingVM, IMarking>, IMapLocationToolTipNotes
 {
     private readonly IMapLocationToolTipMarkingVM.Factory _factory;

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Avalonia.Layout;
+using OpenTracker.Autofac;
 using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.Locations;
@@ -23,7 +24,8 @@ using OpenTracker.ViewModels.Items.Adapters;
 
 namespace OpenTracker.ViewModels.Dungeons;
 
-public class DungeonVMFactory : IDungeonVMFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class DungeonVMFactory : IDungeonVMFactory
 {
     private readonly IDungeonDictionary _dungeons;
     private readonly ILocationDictionary _locations;

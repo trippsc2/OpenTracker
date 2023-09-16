@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Reactive;
 using Avalonia.Threading;
+using OpenTracker.Autofac;
 using OpenTracker.Models.SequenceBreaks;
 using OpenTracker.Utils;
 using ReactiveUI;
@@ -10,7 +11,8 @@ namespace OpenTracker.ViewModels.SequenceBreaks;
 /// <summary>
 /// This is the ViewModel of the sequence break control.
 /// </summary>
-public class SequenceBreakControlVM : ViewModelBase, ISequenceBreakControlVM
+[DependencyInjection]
+public sealed class SequenceBreakControlVM : ViewModel, ISequenceBreakControlVM
 {
     private readonly ISequenceBreak _sequenceBreak;
 

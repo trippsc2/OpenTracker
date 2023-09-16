@@ -34,7 +34,7 @@ public class PrizeSection : BossSection, IPrizeSection
     ///     An Autofac factory for creating new <see cref="ITogglePrizeSection"/> objects.
     /// </param>
     /// <param name="accessibilityProvider">
-    ///     The <see cref="IBossAccessibilityProvider"/>.
+    ///     The <see cref="BossAccessibilityProvider"/>.
     /// </param>
     /// <param name="name">
     ///     A <see cref="string"/> representing the section name.
@@ -51,7 +51,7 @@ public class PrizeSection : BossSection, IPrizeSection
     public PrizeSection(
         ISaveLoadManager saveLoadManager, ICollectSection.Factory collectSectionFactory,
         IUncollectSection.Factory uncollectSectionFactory, ITogglePrizeSection.Factory togglePrizeSectionFactory,
-        IBossAccessibilityProvider accessibilityProvider, string name, IBossPlacement bossPlacement,
+        BossAccessibilityProvider accessibilityProvider, string name, IBossPlacement bossPlacement,
         IPrizePlacement prizePlacement, IAutoTrackValue? autoTrackValue = null)
         : base(saveLoadManager, collectSectionFactory, uncollectSectionFactory, accessibilityProvider, name,
             bossPlacement, autoTrackValue)

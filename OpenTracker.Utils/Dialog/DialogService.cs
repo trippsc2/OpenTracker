@@ -1,6 +1,7 @@
 ﻿using Avalonia;
 using System;
 using System.Linq;
+using System.Reactive;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -12,7 +13,7 @@ namespace OpenTracker.Utils.Dialog;
 public class DialogService : IDialogService
 {
     private readonly IMainWindowProvider _mainWindowProvider;
-
+    
     /// <summary>
     /// Constructor
     /// </summary>
@@ -59,49 +60,56 @@ public class DialogService : IDialogService
     /// <summary>
     /// Returns a new instance of the View class for the provided ViewModel.
     /// </summary>
+    /// <typeparam name="TViewModel">
+    ///     The type of the ViewModel for the created View class.
+    /// </typeparam>
     /// <typeparam name="TResult">
-    /// The type of the result of the dialog window.
+    ///     The type of the result of the dialog window.
     /// </typeparam>
     /// <param name="viewModel">
     /// The ViewModel for the created View class.
     /// </param>
     /// A new instance of the View class.
     /// <returns></returns>
-    private static DialogWindowBase<TResult> CreateView<TResult>(object viewModel)
+    private static DialogWindowBase<TViewModel, TResult> CreateView<TViewModel, TResult>(TViewModel viewModel)
+        where TViewModel : DialogViewModelBase<TResult>
     {
         var viewType = GetViewType(viewModel) ??
                        throw new InvalidOperationException(
                            $"View for {viewModel.GetType().FullName!} was not found!");
 
-        var result = Activator.CreateInstance(viewType) ??
-                     throw new NullReferenceException();
+        var view = Activator.CreateInstance(viewType);
 
-        return (DialogWindowBase<TResult>)result;
+        return (DialogWindowBase<TViewModel, TResult>)view!;
     }
 
     /// <summary>
     /// Asynchronously create and show a dialog window for the specified ViewModel.
     /// </summary>
+    /// <typeparam name="TViewModel">
+    ///     The type of the ViewModel for the created View class.
+    /// </typeparam>
     /// <typeparam name="TResult">
-    /// The type of the result of the dialog window.
+    ///     The type of the result of the dialog window.
     /// </typeparam>
     /// <param name="viewModel">
-    /// The ViewModel.
+    ///     The ViewModel.
     /// </param>
     /// <param name="locking">
-    /// A boolean representing whether the dialog window should lock the parent window.
+    ///     A boolean representing whether the dialog window should lock the parent window.
     /// </param>
     /// <returns>
-    /// A task returning the result of the dialog.
+    ///     A task returning the result of the dialog.
     /// </returns>
-    public async Task<TResult> ShowDialogAsync<TResult>(object viewModel, bool locking = true)
+    public async Task<TResult> ShowDialogAsync<TViewModel, TResult>(TViewModel viewModel, bool locking = true)
+        where TViewModel : DialogViewModelBase<TResult>
     {
-        if (((DialogViewModelBase<TResult>)viewModel).IsOpen)
+        if (viewModel.IsOpen)
         {
             return default!;
         }
 
-        var window = CreateView<TResult>(viewModel);
+        var window = CreateView<TViewModel, TResult>(viewModel);
         Bind(window, viewModel);
 
         return await ShowDialogAsync(window, locking);
@@ -110,6 +118,9 @@ public class DialogService : IDialogService
     /// <summary>
     /// Asynchronously show the specified Window and return the result.
     /// </summary>
+    /// <typeparam name="TViewModel">
+    ///     The type of the ViewModel for the created View class.
+    /// </typeparam>
     /// <typeparam name="TResult">
     /// The type of the result of the dialog.
     /// </typeparam>
@@ -122,7 +133,8 @@ public class DialogService : IDialogService
     /// <returns>
     /// A task returning the result of the dialog window.
     /// </returns>
-    private async Task<TResult> ShowDialogAsync<TResult>(DialogWindowBase<TResult> window, bool locking)
+    private async Task<TResult> ShowDialogAsync<TViewModel, TResult>(DialogWindowBase<TViewModel, TResult> window, bool locking)
+        where TViewModel : DialogViewModelBase<TResult>
     {
         var mainWindow = _mainWindowProvider.GetMainWindow();
 
@@ -152,6 +164,9 @@ public class DialogService : IDialogService
     /// <returns>
     /// A task for asynchronous operation.
     /// </returns>
-    public Task ShowDialogAsync(object viewModel, bool locking = true) =>
-        ShowDialogAsync<object>(viewModel, locking);
+    public Task ShowDialogAsync<TViewModel>(TViewModel viewModel, bool locking = true)
+        where TViewModel : DialogViewModelBase
+    {
+        return ShowDialogAsync<TViewModel, Unit>(viewModel, locking);
+    }
 }

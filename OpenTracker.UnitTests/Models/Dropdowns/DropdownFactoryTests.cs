@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
+using FluentAssertions;
 using NSubstitute;
 using OpenTracker.Models.Dropdowns;
 using OpenTracker.Models.Modes;
@@ -11,7 +13,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Dropdowns;
 
-public class DropdownFactoryTests
+[ExcludeFromCodeCoverage]
+public sealed class DropdownFactoryTests
 {
     private readonly IAggregateRequirementDictionary _aggregateRequirements =
         Substitute.For<IAggregateRequirementDictionary>();
@@ -81,23 +84,16 @@ public class DropdownFactoryTests
     }
 
     [Fact]
-    public void AutofacTest()
+    public void AutofacResolve_ShouldResolveInterfaceToSingleInstance()
     {
         using var scope = ContainerConfig.Configure().BeginLifetimeScope();
         var factory = scope.Resolve<IDropdownFactory.Factory>();
-        var sut = factory();
+        var sut1 = factory();
             
-        Assert.NotNull(sut as DropdownFactory);
-    }
+        sut1.Should().BeOfType<DropdownFactory>();
+        
+        var sut2 = factory();
 
-    [Fact]
-    public void AutofacSingleInstanceTest()
-    {
-        using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-        var factory = scope.Resolve<IDropdownFactory.Factory>();
-        var value1 = factory();
-        var value2 = factory();
-            
-        Assert.Equal(value1, value2);
+        sut1.Should().BeSameAs(sut2);
     }
 }

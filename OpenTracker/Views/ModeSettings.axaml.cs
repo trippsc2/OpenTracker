@@ -1,9 +1,11 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using Avalonia.ReactiveUI;
+using OpenTracker.ViewModels;
 
 namespace OpenTracker.Views;
 
-public class ModeSettings : UserControl
+public sealed class ModeSettings : ReactiveUserControl<ModeSettingsVM>
 {
     public ModeSettings()
     {

@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Reactive;
 using Avalonia.Input;
 using Avalonia.Threading;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
@@ -15,7 +16,8 @@ namespace OpenTracker.ViewModels.Items.Adapters;
 /// <summary>
 /// This class contains the logic to adapt generic small key data to an item control.
 /// </summary>
-public class SmallKeyAdapter : ViewModelBase, IItemAdapter
+[DependencyInjection]
+public sealed class SmallKeyAdapter : ViewModel, IItemAdapter
 {
     private readonly IColorSettings _colorSettings;
     private readonly IUndoRedoManager _undoRedoManager;

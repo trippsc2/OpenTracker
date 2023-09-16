@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Requirements.Alternative;
@@ -14,7 +15,8 @@ namespace OpenTracker.ViewModels.UIPanels;
 /// <summary>
 ///     This class contains the creation logic for UI panel controls.
 /// </summary>
-public class UIPanelFactory : IUIPanelFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class UIPanelFactory : IUIPanelFactory
 {
     private readonly IAlternativeRequirementDictionary _alternativeRequirements;
     private readonly IEntranceShuffleRequirementDictionary _entranceShuffleRequirements;

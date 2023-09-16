@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using Avalonia.Layout;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Settings;
 
 namespace OpenTracker.Models.Requirements.MapOrientation;
@@ -7,7 +8,8 @@ namespace OpenTracker.Models.Requirements.MapOrientation;
 /// <summary>
 ///     This class contains map orientation setting requirement data.
 /// </summary>
-public class MapOrientationRequirement : BooleanRequirement, IMapOrientationRequirement
+[DependencyInjection]
+public sealed class MapOrientationRequirement : BooleanRequirement, IMapOrientationRequirement
 {
     private readonly ILayoutSettings _layoutSettings;
     private readonly Orientation? _expectedValue;

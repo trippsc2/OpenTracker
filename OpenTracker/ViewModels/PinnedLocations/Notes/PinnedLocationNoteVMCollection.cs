@@ -1,11 +1,13 @@
-﻿using OpenTracker.Models.Locations;
+﻿using OpenTracker.Autofac;
+using OpenTracker.Models.Locations;
 using OpenTracker.Models.Markings;
 using OpenTracker.Utils;
 using OpenTracker.ViewModels.Markings;
 
 namespace OpenTracker.ViewModels.PinnedLocations.Notes;
 
-public class PinnedLocationNoteVMCollection : ViewModelCollection<IPinnedLocationNoteVM, IMarking>,
+[DependencyInjection(SingleInstance = true)]
+public sealed class PinnedLocationNoteVMCollection : ViewModelCollection<IPinnedLocationNoteVM, IMarking>,
     IPinnedLocationNoteVMCollection
 {
     private readonly IMarkingSelectFactory _markingSelectFactory;

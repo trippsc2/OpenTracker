@@ -1,9 +1,11 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using Avalonia.ReactiveUI;
+using OpenTracker.ViewModels.Markings;
 
 namespace OpenTracker.Views.Markings;
 
-public class MarkingSelect : UserControl
+public sealed class MarkingSelect : ReactiveUserControl<MarkingSelectVM>
 {
     public MarkingSelect()
     {

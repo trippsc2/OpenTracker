@@ -1,4 +1,5 @@
 ﻿using System;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Markings;
 
@@ -7,7 +8,8 @@ namespace OpenTracker.ViewModels.Markings.Images;
 /// <summary>
 /// This is the class containing creation logic for marking image control ViewModel classes.
 /// </summary>
-public class MarkingImageFactory : IMarkingImageFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class MarkingImageFactory : IMarkingImageFactory
 {
     private readonly IItemDictionary _items;
 

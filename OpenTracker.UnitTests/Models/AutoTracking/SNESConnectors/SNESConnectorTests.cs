@@ -1,7 +1,9 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Serialization;
 using System.Threading;
 using Autofac;
+using FluentAssertions;
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;
 using OpenTracker.Models.AutoTracking.SNESConnectors;
@@ -15,7 +17,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.AutoTracking.SNESConnectors;
 
-public class SNESConnectorTests
+[ExcludeFromCodeCoverage]
+public sealed class SNESConnectorTests
 {
     private readonly IAutoTrackerLogger _logger = Substitute.For<IAutoTrackerLogger>();
 
@@ -296,21 +299,15 @@ public class SNESConnectorTests
     }
         
     [Fact]
-    public void AutofacTest()
+    public void AutofacResolve_ShouldResolveInterfaceToSingleInstance()
     {
         using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-        var sut = scope.Resolve<ISNESConnector>();
-            
-        Assert.NotNull(sut as SNESConnector);
-    }
+        var sut1 = scope.Resolve<ISNESConnector>();
 
-    [Fact]
-    public void AutofacSingleInstanceTest()
-    {
-        using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-        var value1 = scope.Resolve<ISNESConnector>();
-        var value2 = scope.Resolve<ISNESConnector>();
-            
-        Assert.Equal(value1, value2);
+        sut1.Should().BeOfType<SNESConnector>();
+        
+        var sut2 = scope.Resolve<ISNESConnector>();
+        
+        sut1.Should().BeSameAs(sut2);
     }
 }

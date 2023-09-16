@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Settings;
 
 namespace OpenTracker.Models.Requirements.UIScale;
@@ -7,7 +8,8 @@ namespace OpenTracker.Models.Requirements.UIScale;
 /// <summary>
 ///     This class contains UI scale requirement data.
 /// </summary>
-public class UIScaleRequirement : BooleanRequirement, IUIScaleRequirement
+[DependencyInjection]
+public sealed class UIScaleRequirement : BooleanRequirement, IUIScaleRequirement
 {
     private readonly ILayoutSettings _layoutSettings;
     private readonly double _expectedValue;

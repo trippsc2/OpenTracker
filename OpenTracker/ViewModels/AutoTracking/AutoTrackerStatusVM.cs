@@ -2,6 +2,7 @@
 using System.Text;
 using System.Threading.Tasks;
 using Avalonia.Threading;
+using OpenTracker.Autofac;
 using OpenTracker.Models.AutoTracking;
 using OpenTracker.Models.AutoTracking.SNESConnectors;
 using OpenTracker.Utils;
@@ -12,7 +13,8 @@ namespace OpenTracker.ViewModels.AutoTracking;
 /// <summary>
 /// This class contains the auto-tracker status text control ViewModel data.
 /// </summary>
-public class AutoTrackerStatusVM : ViewModelBase, IAutoTrackerStatusVM
+[DependencyInjection(SingleInstance = true)]
+public sealed class AutoTrackerStatusVM : ViewModel, IAutoTrackerStatusVM
 {
     private readonly IAutoTracker _autoTracker;
 

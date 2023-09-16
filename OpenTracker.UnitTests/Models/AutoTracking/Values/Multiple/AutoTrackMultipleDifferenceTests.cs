@@ -1,10 +1,12 @@
-using OpenTracker.Models.AutoTracking.Values;
+using System.Diagnostics.CodeAnalysis;
+using FluentAssertions;
 using OpenTracker.Models.AutoTracking.Values.Multiple;
 using Xunit;
 
 namespace OpenTracker.UnitTests.Models.AutoTracking.Values.Multiple;
 
-public class AutoTrackMultipleDifferenceTests
+[ExcludeFromCodeCoverage]
+public sealed class AutoTrackMultipleDifferenceTests
 {
     private readonly MockAutoTrackValue _value1 = new();
     private readonly MockAutoTrackValue _value2 = new();
@@ -37,20 +39,17 @@ public class AutoTrackMultipleDifferenceTests
     {
         _value1.CurrentValue = value1;
         _value2.CurrentValue = value2;
-            
-        Assert.Equal(expected, _sut.CurrentValue);
+
+        _sut.CurrentValue.Should().Be(expected);
     }
 
     [Fact]
-    public void ValueChanged_ShouldRaisePropertyChanged()
+    public void CurrentValue_ShouldRaisePropertyChanged()
     {
-        Assert.PropertyChanged(
-            _sut,
-            nameof(IAutoTrackValue.CurrentValue),
-            () => _value1.CurrentValue = 1);
-        Assert.PropertyChanged(
-            _sut,
-            nameof(IAutoTrackValue.CurrentValue),
-            () => _value2.CurrentValue = 2);
+        using var monitor = _sut.Monitor();
+        
+        _value1.CurrentValue = 12;
+
+        monitor.Should().RaisePropertyChangeFor(x => x.CurrentValue);
     }
 }

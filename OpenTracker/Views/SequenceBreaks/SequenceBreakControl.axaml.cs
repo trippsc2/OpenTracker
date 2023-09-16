@@ -1,9 +1,11 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using Avalonia.ReactiveUI;
+using OpenTracker.ViewModels.SequenceBreaks;
 
 namespace OpenTracker.Views.SequenceBreaks;
 
-public class SequenceBreakControl : UserControl
+public sealed class SequenceBreakControl : ReactiveUserControl<SequenceBreakControlVM>
 {
     public SequenceBreakControl()
     {

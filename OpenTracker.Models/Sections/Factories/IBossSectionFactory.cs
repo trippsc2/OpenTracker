@@ -16,7 +16,7 @@ public interface IBossSectionFactory
     /// <see cref="LocationID"/> and section index.
     /// </summary>
     /// <param name="accessibilityProvider">
-    ///     The <see cref="IDungeonAccessibilityProvider"/>.
+    ///     The <see cref="BossAccessibilityProvider"/>.
     /// </param>
     /// <param name="autoTrackValue">
     ///     The nullable <see cref="IAutoTrackValue"/>.
@@ -31,6 +31,6 @@ public interface IBossSectionFactory
     ///     A new <see cref="IBossSection"/> or <see cref="IPrizeSection"/> object.
     /// </returns>
     IBossSection GetBossSection(
-        IBossAccessibilityProvider accessibilityProvider, IAutoTrackValue? autoTrackValue, LocationID id,
+        BossAccessibilityProvider accessibilityProvider, IAutoTrackValue? autoTrackValue, LocationID id,
         int index = 1);
 }

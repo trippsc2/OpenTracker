@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using Autofac;
 using Newtonsoft.Json;
@@ -11,7 +12,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.AutoTracking.SNESConnectors.Requests;
 
-public class GetDevicesRequestTests
+[ExcludeFromCodeCoverage]
+public sealed class GetDevicesRequestTests
 {
     private readonly IAutoTrackerLogger _logger = Substitute.For<IAutoTrackerLogger>();
 

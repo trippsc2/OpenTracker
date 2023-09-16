@@ -3,6 +3,7 @@ using System.Reactive;
 using System.Threading.Tasks;
 using Avalonia.Layout;
 using Avalonia.Threading;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
@@ -13,7 +14,8 @@ namespace OpenTracker.ViewModels.PinnedLocations.Notes;
 /// <summary>
 /// This class contains the pinned location note area control ViewModel data.
 /// </summary>
-public class PinnedLocationNoteAreaVM : ViewModelBase, IPinnedLocationNoteAreaVM
+[DependencyInjection]
+public sealed class PinnedLocationNoteAreaVM : ViewModel, IPinnedLocationNoteAreaVM
 {
     private readonly ILocation _location;
     private readonly IUndoRedoManager _undoRedoManager;

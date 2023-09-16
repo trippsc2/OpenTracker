@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using OpenTracker.Autofac;
 using OpenTracker.Utils;
 
 namespace OpenTracker.Models.Requirements.AlwaysDisplayDungeonItems;
@@ -6,6 +7,7 @@ namespace OpenTracker.Models.Requirements.AlwaysDisplayDungeonItems;
 /// <summary>
 ///     This class contains the dictionary container for always display dungeon items requirements.
 /// </summary>
+[DependencyInjection(SingleInstance = true)]
 public class AlwaysDisplayDungeonItemsRequirementDictionary : LazyDictionary<bool, IRequirement>, IAlwaysDisplayDungeonItemsRequirementDictionary
 {
     private readonly IAlwaysDisplayDungeonItemsRequirement.Factory _factory;

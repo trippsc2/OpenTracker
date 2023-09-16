@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using OpenTracker.Autofac;
 using OpenTracker.Models.SequenceBreaks;
 
 namespace OpenTracker.ViewModels.SequenceBreaks;
@@ -7,7 +8,8 @@ namespace OpenTracker.ViewModels.SequenceBreaks;
 /// <summary>
 /// This is a class for creating new sequence break controls.
 /// </summary>
-public class SequenceBreakControlFactory : ISequenceBreakControlFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class SequenceBreakControlFactory : ISequenceBreakControlFactory
 {
     private readonly ISequenceBreakDictionary _sequenceBreakDictionary;
     private readonly ISequenceBreakControlVM.Factory _factory;

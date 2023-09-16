@@ -18,7 +18,6 @@ public abstract class RequestBase<T> : IRequest<T>
         
     private readonly string _opcode;
     private readonly string _space;
-    private readonly List<string> _flags;
     private readonly List<string> _operands;
 
     public ConnectionStatus StatusRequired { get; }
@@ -42,21 +41,21 @@ public abstract class RequestBase<T> : IRequest<T>
     /// <param name="description">
     ///     A <see cref="string"/> representing the description of the request for logging.
     /// </param>
-    /// <param name="flags">
-    ///     A <see cref="IList{T}"/> of <see cref="string"/> representing the flags of the request.
-    /// </param>
     /// <param name="operands">
     ///     A <see cref="IList{T}"/> of <see cref="string"/> representing the operands of the request.
     /// </param>
     protected RequestBase(
-        IAutoTrackerLogger logger, string opcode, string space, ConnectionStatus statusRequired, string description,
-        List<string>? flags = null, List<string>? operands = null)
+        IAutoTrackerLogger logger,
+        string opcode,
+        string space,
+        ConnectionStatus statusRequired,
+        string description,
+        List<string>? operands = null)
     {
         Logger = logger;
 
         _opcode = opcode;
         _space = space;
-        _flags = flags ?? new List<string>();
         _operands = operands ?? new List<string>();
             
         StatusRequired = statusRequired;

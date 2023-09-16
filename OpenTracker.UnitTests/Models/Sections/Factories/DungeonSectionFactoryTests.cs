@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.AutoTracking.Values;
@@ -16,7 +17,21 @@ public class DungeonSectionFactoryTests
         () => Substitute.For<IDungeonFactory>());
 
     private readonly IDungeonAccessibilityProvider.Factory _accessibilityProviderFactory = _ =>
-        Substitute.For<IDungeonAccessibilityProvider>();
+    {
+        var substitute = Substitute.For<IDungeonAccessibilityProvider>();
+
+        var bossAccessibilityProviders = new List<BossAccessibilityProvider>
+        {
+            new(),
+            new(),
+            new(),
+            new()
+        };
+
+        substitute.BossAccessibilityProviders.Returns(bossAccessibilityProviders);
+
+        return substitute;
+    };
 
     private readonly ISectionAutoTrackingFactory _autoTrackingFactory =
         Substitute.For<ISectionAutoTrackingFactory>();
@@ -83,7 +98,7 @@ public class DungeonSectionFactoryTests
         _ = _sut.GetDungeonSections(id);
 
         _bossSectionFactory.Received(numberOfCalls).GetBossSection(
-            Arg.Any<IBossAccessibilityProvider>(), Arg.Any<IAutoTrackValue>(),
+            Arg.Any<BossAccessibilityProvider>(), Arg.Any<IAutoTrackValue>(),
             id, Arg.Any<int>());
     }
 
@@ -93,7 +108,7 @@ public class DungeonSectionFactoryTests
         _ = _sut.GetDungeonSections(LocationID.HyruleCastle);
 
         _bossSectionFactory.DidNotReceive().GetBossSection(
-            Arg.Any<IBossAccessibilityProvider>(), Arg.Any<IAutoTrackValue>(),
+            Arg.Any<BossAccessibilityProvider>(), Arg.Any<IAutoTrackValue>(),
             Arg.Any<LocationID>(), Arg.Any<int>());
     }
 

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Reactive;
+﻿using System.Reactive;
 using ReactiveUI;
 
 namespace OpenTracker.ViewModels.Menus;
@@ -17,5 +16,5 @@ public interface ITopMenuVM
     ReactiveCommand<Unit, Unit> Save { get; }
     ReactiveCommand<Unit, Unit> SaveAs { get; }
 
-    delegate ITopMenuVM Factory(Action closeAction);
+    delegate ITopMenuVM Factory(ReactiveCommand<Unit, Unit> closeCommand);
 }

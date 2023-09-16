@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Settings;
 
 namespace OpenTracker.Models.Requirements.ShowItemCountsOnMap;
@@ -6,7 +7,8 @@ namespace OpenTracker.Models.Requirements.ShowItemCountsOnMap;
 /// <summary>
 ///     This class contains show item counts on map setting requirement data.
 /// </summary>
-public class ShowItemCountsOnMapRequirement : BooleanRequirement, IShowItemCountsOnMapRequirement
+[DependencyInjection]
+public sealed class ShowItemCountsOnMapRequirement : BooleanRequirement, IShowItemCountsOnMapRequirement
 {
     private readonly ITrackerSettings _trackerSettings;
     private readonly bool _expectedValue;

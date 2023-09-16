@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Reactive;
 using Avalonia.Input;
 using Avalonia.Threading;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
@@ -14,7 +15,8 @@ namespace OpenTracker.ViewModels.Items.Adapters;
 /// <summary>
 /// This class contains the logic to adapts item data to an item control. 
 /// </summary>
-public class ItemAdapter : ViewModelBase, IItemAdapter
+[DependencyInjection]
+public sealed class ItemAdapter : ViewModel, IItemAdapter
 {
     private readonly IUndoRedoManager _undoRedoManager;
         

@@ -4,13 +4,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" x:Class="OpenTracker.Views.Menus.MenuHotkeyHeader">
-  
-  <Design.DataContext>
-    <vm:MenuHotkeyHeaderVM />
-  </Design.DataContext>
-  
   <DockPanel>
-    <TextBlock Classes="MenuHotkey" DockPanel.Dock="Right" Text="{Binding Hotkey}" />
-    <TextBlock Classes="Menu" Text="{Binding Header}" />
+    <TextBlock x:Name="Hotkey" Classes="MenuHotkey" DockPanel.Dock="Right" />
+    <TextBlock x:Name="Header" Classes="Menu" />
   </DockPanel>
 </UserControl>

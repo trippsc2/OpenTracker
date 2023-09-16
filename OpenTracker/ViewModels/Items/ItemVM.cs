@@ -2,6 +2,7 @@ using System.ComponentModel;
 using System.Reactive;
 using Avalonia.Input;
 using Avalonia.Threading;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Utils;
 using OpenTracker.ViewModels.BossSelect;
@@ -13,7 +14,8 @@ namespace OpenTracker.ViewModels.Items;
 /// <summary>
 /// This class contains the item control ViewModel data.
 /// </summary>
-public class ItemVM : ViewModelBase, IItemVM
+[DependencyInjection]
+public sealed class ItemVM : ViewModel, IItemVM
 {
     private readonly IItemAdapter _item;
     private readonly IRequirement? _requirement;

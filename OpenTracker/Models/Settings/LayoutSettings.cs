@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using Avalonia.Controls;
 using Avalonia.Layout;
+using OpenTracker.Autofac;
 using ReactiveUI;
 
 namespace OpenTracker.Models.Settings;
@@ -8,7 +9,8 @@ namespace OpenTracker.Models.Settings;
 /// <summary>
 /// This class contains GUI layout settings data.
 /// </summary>
-public class LayoutSettings : ReactiveObject, ILayoutSettings
+[DependencyInjection(SingleInstance = true)]
+public sealed class LayoutSettings : ReactiveObject, ILayoutSettings
 {
     private bool _displayMapsCompasses;
     public bool DisplayMapsCompasses

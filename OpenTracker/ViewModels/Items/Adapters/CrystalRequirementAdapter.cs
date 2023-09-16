@@ -4,6 +4,7 @@ using System.Reactive;
 using System.Threading.Tasks;
 using Avalonia.Input;
 using Avalonia.Threading;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Settings;
@@ -17,7 +18,8 @@ namespace OpenTracker.ViewModels.Items.Adapters;
 /// <summary>
 /// This class contains the logic to adapt crystal requirement data to an item control. 
 /// </summary>
-public class CrystalRequirementAdapter : ViewModelBase, IItemAdapter
+[DependencyInjection]
+public sealed class CrystalRequirementAdapter : ViewModel, IItemAdapter
 {
     private readonly IColorSettings _colorSettings;
     private readonly IUndoRedoManager _undoRedoManager;

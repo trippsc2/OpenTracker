@@ -1,14 +1,17 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.Threading.Tasks;
-using ReactiveUI;
 
 namespace OpenTracker.Models.AutoTracking.SNESConnectors;
 
 /// <summary>
-/// This interface contains logic for the SNES connector to (Q)USB2SNES.
+/// Represents the logic for connecting to a SNES game via (Q)USB2SNES or compatible software.
 /// </summary>
-public interface ISNESConnector : IReactiveObject
+public interface ISNESConnector : INotifyPropertyChanged
 {
+    /// <summary>
+    /// A <see cref="ConnectionStatus"/> representing the current connection status.
+    /// </summary>
     ConnectionStatus Status { get; }
 
     /// <summary>
@@ -20,7 +23,7 @@ public interface ISNESConnector : IReactiveObject
     void SetURI(string uriString);
 
     /// <summary>
-    /// Connects to the USB2SNES web socket asynchronously.
+    /// Connects to the web socket asynchronously.
     /// </summary>
     Task ConnectAsync();
 
@@ -46,7 +49,7 @@ public interface ISNESConnector : IReactiveObject
     Task AttachDeviceAsync(string device);
 
     /// <summary>
-    /// Returns the <see cref="byte"/> values of the specified memory addresses asynchronously.
+    /// Returns the values of the specified memory addresses asynchronously.
     /// </summary>
     /// <param name="address">
     ///     A <see cref="ulong"/> representing the starting memory address.

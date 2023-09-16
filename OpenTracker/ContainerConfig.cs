@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Autofac;
+using OpenTracker.Autofac;
 using OpenTracker.Models.AutoTracking;
 using OpenTracker.Models.AutoTracking.Logging;
 using OpenTracker.Models.AutoTracking.Memory;
@@ -27,14 +28,12 @@ using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.Prizes;
 using OpenTracker.Models.Requirements.Aggregate;
 using OpenTracker.Models.Requirements.Alternative;
-using OpenTracker.Models.Requirements.AlwaysDisplayDungeonItems;
 using OpenTracker.Models.Requirements.AutoTracking;
 using OpenTracker.Models.Requirements.BigKeyShuffle;
 using OpenTracker.Models.Requirements.Boss;
 using OpenTracker.Models.Requirements.BossShuffle;
 using OpenTracker.Models.Requirements.CompassShuffle;
 using OpenTracker.Models.Requirements.Complex;
-using OpenTracker.Models.Requirements.DisplaysMapsCompasses;
 using OpenTracker.Models.Requirements.EnemyShuffle;
 using OpenTracker.Models.Requirements.GenericKeys;
 using OpenTracker.Models.Requirements.GuaranteedBossItems;
@@ -43,7 +42,6 @@ using OpenTracker.Models.Requirements.Item.Crystal;
 using OpenTracker.Models.Requirements.Item.Exact;
 using OpenTracker.Models.Requirements.Item.Prize;
 using OpenTracker.Models.Requirements.Item.SmallKey;
-using OpenTracker.Models.Requirements.ItemsPanelOrientation;
 using OpenTracker.Models.Requirements.KeyDropShuffle;
 using OpenTracker.Models.Requirements.MapShuffle;
 using OpenTracker.Models.Requirements.Mode;
@@ -53,33 +51,12 @@ using OpenTracker.Models.Requirements.SmallKeyShuffle;
 using OpenTracker.Models.Requirements.TakeAnyLocations;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.SequenceBreaks;
-using OpenTracker.Models.Settings;
 using OpenTracker.Models.Reset;
 using OpenTracker.Models.Sections.Factories;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
 using OpenTracker.Utils.Dialog;
 using OpenTracker.Utils.Themes;
-using OpenTracker.ViewModels;
-using OpenTracker.ViewModels.Areas;
-using OpenTracker.ViewModels.AutoTracking;
-using OpenTracker.ViewModels.BossSelect;
-using OpenTracker.ViewModels.Capture;
-using OpenTracker.ViewModels.Capture.Design;
-using OpenTracker.ViewModels.ColorSelect;
-using OpenTracker.ViewModels.Dialogs;
-using OpenTracker.ViewModels.Dropdowns;
-using OpenTracker.ViewModels.Dungeons;
-using OpenTracker.ViewModels.Items;
-using OpenTracker.ViewModels.Items.Adapters;
-using OpenTracker.ViewModels.MapLocations;
-using OpenTracker.ViewModels.Markings;
-using OpenTracker.ViewModels.Markings.Images;
-using OpenTracker.ViewModels.Menus;
-using OpenTracker.ViewModels.PinnedLocations;
-using OpenTracker.ViewModels.PinnedLocations.Sections;
-using OpenTracker.ViewModels.SequenceBreaks;
-using OpenTracker.ViewModels.UIPanels;
 using MapConnectionCollection = OpenTracker.Models.Locations.Map.Connections.MapConnectionCollection;
 
 namespace OpenTracker;
@@ -185,98 +162,17 @@ public static class ContainerConfig
         nameof(UndoRedoManager)
     };
 
-    private static List<string> GUISkipTypes => new()
-    {
-        nameof(OrientedDungeonPanelVMBase)
-    };
-
-    private static List<string> GUISelfTypes => new()
-    {
-        nameof(BossAdapter),
-        nameof(CrystalRequirementAdapter),
-        nameof(DropdownAdapter),
-        nameof(DungeonSmallKeyAdapter),
-        nameof(ItemAdapter),
-        nameof(PairItemAdapter),
-        nameof(PrizeAdapter),
-        nameof(SmallKeyAdapter),
-        nameof(StaticPrizeAdapter),
-        nameof(EntranceMapLocationVM),
-        nameof(ShopMapLocationVM),
-        nameof(StandardMapLocationVM),
-        nameof(TakeAnyMapLocationVM),
-        nameof(MarkingSelectButtonVM),
-        nameof(MarkingSelectSpacerVM),
-        nameof(ItemMarkingImageVM),
-        nameof(MarkingImageVM),
-        nameof(MenuItemCheckBoxVM),
-        nameof(BossSectionIconVM),
-        nameof(MarkingSectionIconVM),
-        nameof(PrizeSectionIconVM)
-    };
-
-    private static List<string> GUISingleInstanceTypes => new()
-    {
-        nameof(AlwaysDisplayDungeonItemsRequirementDictionary),
-        nameof(DisplayMapsCompassesRequirementDictionary),
-        nameof(ItemsPanelOrientationRequirementDictionary),
-        nameof(AppSettings),
-        nameof(BoundsSettings),
-        nameof(ColorSettings),
-        nameof(LayoutSettings),
-        nameof(TrackerSettings),
-        nameof(MapAreaVM),
-        nameof(MapAreaFactory),
-        nameof(UIPanelAreaVM),
-        nameof(AutoTrackerDialogVM),
-        nameof(AutoTrackerLogVM),
-        nameof(AutoTrackerStatusVM),
-        nameof(BossSelectFactory),
-        nameof(CaptureDesignDialogVM),
-        nameof(CaptureManager),
-        nameof(CaptureWindowCollection),
-        nameof(ColorSelectDialogVM),
-        nameof(DropdownVMFactory),
-        nameof(DungeonPanelVM),
-        nameof(DungeonVMDictionary),
-        nameof(DungeonVMFactory),
-        nameof(HorizontalDungeonPanelVM),
-        nameof(VerticalDungeonPanelVM),
-        nameof(ItemVMDictionary),
-        nameof(ItemVMFactory),
-        nameof(MapLocationVMFactory),
-        nameof(ViewModels.Maps.MapConnectionCollection),
-        nameof(MarkingSelectFactory),
-        nameof(MarkingImageDictionary),
-        nameof(MarkingImageFactory),
-        nameof(CaptureWindowMenuCollection),
-        nameof(MenuItemFactory),
-        nameof(PinnedLocationDictionary),
-        nameof(PinnedLocationsPanelVM),
-        nameof(PinnedLocationVMCollection),
-        nameof(PinnedLocationVMFactory),
-        nameof(SectionVMFactory),
-        nameof(SequenceBreakControlFactory),
-        nameof(SequenceBreakDialogVM),
-        nameof(UIPanelFactory),
-        nameof(AboutDialogVM),
-        nameof(MainWindowVM),
-        nameof(ModeSettingsVM),
-        nameof(StatusBarVM)
-    };
-
     public static ContainerBuilder GetContainerBuilder()
     {
         var builder = new ContainerBuilder();
 
+        builder.RegisterOpenTrackerTypes();
         RegisterAssemblyTypes(
             Assembly.Load($"{nameof(OpenTracker)}.{nameof(Utils)}"), builder, UtilsSkipTypes, UtilsSelfTypes,
             UtilsSingleInstanceTypes);
         RegisterAssemblyTypes(
             Assembly.Load($"{nameof(OpenTracker)}.{nameof(Models)}"), builder, ModelsSkipTypes, ModelsSelfTypes,
             ModelsSingleInstanceTypes);
-        RegisterAssemblyTypes(
-            Assembly.Load(nameof(OpenTracker)), builder, GUISkipTypes, GUISelfTypes, GUISingleInstanceTypes);
 
         return builder;
     }

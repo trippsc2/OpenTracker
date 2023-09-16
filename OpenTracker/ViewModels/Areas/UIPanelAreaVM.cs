@@ -2,6 +2,7 @@
 using Avalonia.Controls;
 using Avalonia.Layout;
 using Avalonia.Threading;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Settings;
 using OpenTracker.Utils;
 using OpenTracker.ViewModels.UIPanels;
@@ -12,7 +13,8 @@ namespace OpenTracker.ViewModels.Areas;
 /// <summary>
 /// This class contains the UI panel section control ViewModel data.
 /// </summary>
-public class UIPanelAreaVM : ViewModelBase, IUIPanelAreaVM
+[DependencyInjection(SingleInstance = true)]
+public sealed class UIPanelAreaVM : ViewModel, IUIPanelAreaVM
 {
     private readonly ILayoutSettings _layoutSettings;
     public Dock ItemsDock => _layoutSettings.CurrentLayoutOrientation switch

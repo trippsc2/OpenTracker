@@ -2,6 +2,7 @@
 using Avalonia;
 using Avalonia.Layout;
 using Avalonia.Threading;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Locations.Map;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.Settings;
@@ -13,7 +14,8 @@ namespace OpenTracker.ViewModels.Maps;
 /// <summary>
 /// This is the ViewModel of the map control.
 /// </summary>
-public class MapVM : ViewModelBase, IMapVM
+[DependencyInjection]
+public sealed class MapVM : ViewModel, IMapVM
 {
     private readonly ILayoutSettings _layoutSettings;
     private readonly IMode _mode;

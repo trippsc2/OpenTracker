@@ -1,17 +1,19 @@
-using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
+using FluentAssertions;
 using NSubstitute;
 using OpenTracker.Models.Dropdowns;
-using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.UndoRedo.Dropdowns;
+using OpenTracker.UnitTests.Models.Requirements;
 using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Dropdowns;
 
-public class DropdownTests
+[ExcludeFromCodeCoverage]
+public sealed class DropdownTests
 {
-    private readonly IRequirement _requirement = Substitute.For<IRequirement>();
+    private readonly MockRequirement _requirement = new();
 
     private readonly ICheckDropdown.Factory _checkDropdownFactory = _ => Substitute.For<ICheckDropdown>();
     private readonly IUncheckDropdown.Factory _uncheckDropdownFactory = _ => Substitute.For<IUncheckDropdown>();
@@ -26,25 +28,17 @@ public class DropdownTests
     [Fact]
     public void Checked_ShouldRaisePropertyChanged()
     {
-        Assert.PropertyChanged(_sut, nameof(IDropdown.Checked), () => _sut.Checked = true);
-    }
-
-    [Theory]
-    [InlineData(false, false)]
-    [InlineData(true, true)]
-    public void RequirementMet_ShouldReturnTrue_WhenRequirementIsMet(bool expected, bool met)
-    {
-        _requirement.Met.Returns(met);
-            
-        Assert.Equal(expected, _sut.RequirementMet);
+        using var monitor = _sut.Monitor();
+        
+        _sut.Checked = true;
+        
+        monitor.Should().RaisePropertyChangeFor(x => x.Checked);
     }
 
     [Fact]
-    public void RequirementMet_ShouldRaisePropertyChanged()
+    public void Requirement_ShouldReturnExpected()
     {
-        Assert.PropertyChanged(_sut, nameof(IDropdown.RequirementMet),
-            () => _requirement.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
-                _requirement, new PropertyChangedEventArgs(nameof(IRequirement.Met))));
+        _sut.Requirement.Should().Be(_requirement);
     }
         
     [Fact]
@@ -69,8 +63,8 @@ public class DropdownTests
         _sut.Checked = true;
             
         _sut.Reset();
-            
-        Assert.False(_sut.Checked);
+
+        _sut.Checked.Should().BeFalse();
     }
 
     [Fact]
@@ -80,7 +74,7 @@ public class DropdownTests
 
         _sut.Load(null);
 
-        Assert.True(_sut.Checked);
+        _sut.Checked.Should().BeTrue();
     }
 
     [Fact]
@@ -92,8 +86,8 @@ public class DropdownTests
         };
             
         _sut.Load(saveData);
-            
-        Assert.True(_sut.Checked);
+
+        _sut.Checked.Should().BeTrue();
     }
 
     [Fact]
@@ -102,17 +96,21 @@ public class DropdownTests
         _sut.Checked = true;
             
         var saveData = _sut.Save();
-            
-        Assert.True(saveData.Checked);
+
+        saveData.Checked.Should().BeTrue();
     }
 
     [Fact]
-    public void AutofacTest()
+    public void AutofacResolve_ShouldResolveInterfaceToTransientInstance()
     {
         using var scope = ContainerConfig.Configure().BeginLifetimeScope();
         var factory = scope.Resolve<IDropdown.Factory>();
-        var sut = factory(_requirement);
+        var sut1 = factory(_requirement);
             
-        Assert.NotNull((sut as Dropdown));
+        sut1.Should().BeOfType<Dropdown>();
+        
+        var sut2 = factory(_requirement);
+        
+        sut1.Should().NotBeSameAs(sut2);
     }
 }

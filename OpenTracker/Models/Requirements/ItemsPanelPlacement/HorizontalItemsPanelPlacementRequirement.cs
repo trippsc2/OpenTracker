@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using Avalonia.Controls;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Settings;
 
 namespace OpenTracker.Models.Requirements.ItemsPanelPlacement;
@@ -7,7 +8,8 @@ namespace OpenTracker.Models.Requirements.ItemsPanelPlacement;
 /// <summary>
 ///     This class contains horizontal items panel placement requirement data.
 /// </summary>
-public class HorizontalItemsPanelPlacementRequirement : BooleanRequirement, IHorizontalItemsPanelPlacementRequirement
+[DependencyInjection]
+public sealed class HorizontalItemsPanelPlacementRequirement : BooleanRequirement, IHorizontalItemsPanelPlacementRequirement
 {
     private readonly ILayoutSettings _layoutSettings;
     private readonly Dock _expectedValue;

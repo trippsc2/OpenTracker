@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Reactive;
 using Avalonia.Input;
 using Avalonia.Threading;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
@@ -16,7 +17,8 @@ namespace OpenTracker.ViewModels.PinnedLocations;
 /// <summary>
 /// This class contains the pinned location control ViewModel data.
 /// </summary>
-public class PinnedLocationVM : ViewModelBase, IPinnedLocationVM
+[DependencyInjection]
+public sealed class PinnedLocationVM : ViewModel, IPinnedLocationVM
 {
     private readonly ILayoutSettings _layoutSettings;
     private readonly IUndoRedoManager _undoRedoManager;

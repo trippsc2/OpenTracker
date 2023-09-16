@@ -1,4 +1,5 @@
 ﻿using System.Reactive;
+using OpenTracker.Autofac;
 using OpenTracker.Utils.Dialog;
 using ReactiveUI;
 
@@ -7,7 +8,8 @@ namespace OpenTracker.ViewModels.Dialogs;
 /// <summary>
 /// This class contains the message box dialog window ViewModel data.
 /// </summary>
-public class MessageBoxDialogVM : DialogViewModelBase<bool>, IMessageBoxDialogVM
+[DependencyInjection]
+public sealed class MessageBoxDialogVM : DialogViewModelBase<bool>
 {
     public string Title { get; }
     public string Text { get; }

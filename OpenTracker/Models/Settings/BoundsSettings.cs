@@ -1,8 +1,11 @@
-﻿namespace OpenTracker.Models.Settings;
+﻿using OpenTracker.Autofac;
+
+namespace OpenTracker.Models.Settings;
 
 /// <summary>
 /// This class contains window bounds settings.
 /// </summary>
+[DependencyInjection(SingleInstance = true)]
 public class BoundsSettings : IBoundsSettings
 {
     public bool? Maximized { get; set; }

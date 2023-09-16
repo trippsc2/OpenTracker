@@ -30,9 +30,6 @@ public class DungeonAccessibilityProviderTests
     private readonly IMode _mode = Substitute.For<IMode>();
     private readonly IMutableDungeonQueue _mutableDungeonQueue = Substitute.For<IMutableDungeonQueue>();
 
-    private readonly IBossAccessibilityProvider.Factory _bossProviderFactory = () =>
-        Substitute.For<IBossAccessibilityProvider>();
-
     private readonly IKeyDoorIterator _keyDoorIterator = Substitute.For<IKeyDoorIterator>();
     private readonly IResultAggregator _resultAggregator = Substitute.For<IResultAggregator>();
 
@@ -96,7 +93,7 @@ public class DungeonAccessibilityProviderTests
             _bossAccessibility.Add(AccessibilityLevel.None);
         }
             
-        var sut = new DungeonAccessibilityProvider(_mode, _bossProviderFactory,
+        var sut = new DungeonAccessibilityProvider(_mode,
             _ => _mutableDungeonQueue, _dungeon, (_, _) => _keyDoorIterator,
             (_, _) => _resultAggregator);
             
@@ -112,7 +109,7 @@ public class DungeonAccessibilityProviderTests
     public void Accessible_ShouldEqualResultValue(int expected, int accessible)
     {
         _result.Accessible.Returns(accessible);
-        var sut = new DungeonAccessibilityProvider(_mode, _bossProviderFactory,
+        var sut = new DungeonAccessibilityProvider(_mode,
             _ => _mutableDungeonQueue, _dungeon, (_, _) => _keyDoorIterator,
             (_, _) => _resultAggregator);
             
@@ -123,7 +120,7 @@ public class DungeonAccessibilityProviderTests
     public void Accessible_ShouldRaisePropertyChanged()
     {
         _result.Accessible.Returns(0);
-        var sut = new DungeonAccessibilityProvider(_mode, _bossProviderFactory,
+        var sut = new DungeonAccessibilityProvider(_mode,
             _ => _mutableDungeonQueue, _dungeon, (_, _) => _keyDoorIterator,
             (_, _) => _resultAggregator);
         _result.Accessible.Returns(1);
@@ -139,7 +136,7 @@ public class DungeonAccessibilityProviderTests
     public void SequenceBreak_ShouldEqualResultValue(bool expected, bool sequenceBreak)
     {
         _result.SequenceBreak.Returns(sequenceBreak);
-        var sut = new DungeonAccessibilityProvider(_mode, _bossProviderFactory,
+        var sut = new DungeonAccessibilityProvider(_mode,
             _ => _mutableDungeonQueue, _dungeon, (_, _) => _keyDoorIterator,
             (_, _) => _resultAggregator);
             
@@ -150,7 +147,7 @@ public class DungeonAccessibilityProviderTests
     public void SequenceBreak_ShouldRaisePropertyChanged()
     {
         _result.SequenceBreak.Returns(false);
-        var sut = new DungeonAccessibilityProvider(_mode, _bossProviderFactory,
+        var sut = new DungeonAccessibilityProvider(_mode,
             _ => _mutableDungeonQueue, _dungeon, (_, _) => _keyDoorIterator,
             (_, _) => _resultAggregator);
         _result.SequenceBreak.Returns(true);
@@ -166,7 +163,7 @@ public class DungeonAccessibilityProviderTests
     public void Visible_ShouldEqualResultValue(bool expected, bool sequenceBreak)
     {
         _result.Visible.Returns(sequenceBreak);
-        var sut = new DungeonAccessibilityProvider(_mode, _bossProviderFactory,
+        var sut = new DungeonAccessibilityProvider(_mode,
             _ => _mutableDungeonQueue, _dungeon, (_, _) => _keyDoorIterator,
             (_, _) => _resultAggregator);
             
@@ -177,7 +174,7 @@ public class DungeonAccessibilityProviderTests
     public void Visible_ShouldRaisePropertyChanged()
     {
         _result.Visible.Returns(false);
-        var sut = new DungeonAccessibilityProvider(_mode, _bossProviderFactory,
+        var sut = new DungeonAccessibilityProvider(_mode,
             _ => _mutableDungeonQueue, _dungeon, (_, _) => _keyDoorIterator,
             (_, _) => _resultAggregator);
         _result.Visible.Returns(true);
@@ -191,7 +188,7 @@ public class DungeonAccessibilityProviderTests
     public void BigKeyChanged_ShouldUpdateValues()
     {
         _result.Accessible.Returns(0);
-        var sut = new DungeonAccessibilityProvider(_mode, _bossProviderFactory,
+        var sut = new DungeonAccessibilityProvider(_mode,
             _ => _mutableDungeonQueue, _dungeon, (_, _) => _keyDoorIterator,
             (_, _) => _resultAggregator);
         _result.Accessible.Returns(1);
@@ -205,7 +202,7 @@ public class DungeonAccessibilityProviderTests
     public void ModeChanged_ShouldUpdateValues_WhenMapShuffleChangedAndMapIsNotNull()
     {
         _result.Accessible.Returns(0);
-        var sut = new DungeonAccessibilityProvider(_mode, _bossProviderFactory,
+        var sut = new DungeonAccessibilityProvider(_mode,
             _ => _mutableDungeonQueue, _dungeon, (_, _) => _keyDoorIterator,
             (_, _) => _resultAggregator);
         _result.Accessible.Returns(1);
@@ -222,7 +219,7 @@ public class DungeonAccessibilityProviderTests
         _dungeon.Map.ReturnsNull();
             
         _result.Accessible.Returns(0);
-        var sut = new DungeonAccessibilityProvider(_mode, _bossProviderFactory,
+        var sut = new DungeonAccessibilityProvider(_mode,
             _ => _mutableDungeonQueue, _dungeon, (_, _) => _keyDoorIterator,
             (_, _) => _resultAggregator);
         _result.Accessible.Returns(1);
@@ -237,7 +234,7 @@ public class DungeonAccessibilityProviderTests
     public void ModeChanged_ShouldUpdateValues_WhenCompassShuffleChangedAndCompassIsNotNull()
     {
         _result.Accessible.Returns(0);
-        var sut = new DungeonAccessibilityProvider(_mode, _bossProviderFactory,
+        var sut = new DungeonAccessibilityProvider(_mode,
             _ => _mutableDungeonQueue, _dungeon, (_, _) => _keyDoorIterator,
             (_, _) => _resultAggregator);
         _result.Accessible.Returns(1);
@@ -254,7 +251,7 @@ public class DungeonAccessibilityProviderTests
         _dungeon.Compass.ReturnsNull();
             
         _result.Accessible.Returns(0);
-        var sut = new DungeonAccessibilityProvider(_mode, _bossProviderFactory,
+        var sut = new DungeonAccessibilityProvider(_mode,
             _ => _mutableDungeonQueue, _dungeon, (_, _) => _keyDoorIterator,
             (_, _) => _resultAggregator);
         _result.Accessible.Returns(1);
@@ -269,7 +266,7 @@ public class DungeonAccessibilityProviderTests
     public void ModeChanged_ShouldUpdateValues_WhenSmallShuffleChanged()
     {
         _result.Accessible.Returns(0);
-        var sut = new DungeonAccessibilityProvider(_mode, _bossProviderFactory,
+        var sut = new DungeonAccessibilityProvider(_mode,
             _ => _mutableDungeonQueue, _dungeon, (_, _) => _keyDoorIterator,
             (_, _) => _resultAggregator);
         _result.Accessible.Returns(1);
@@ -284,7 +281,7 @@ public class DungeonAccessibilityProviderTests
     public void ModeChanged_ShouldUpdateValues_WhenBigKeyShuffleChangedAndBigKeyIsNotNull()
     {
         _result.Accessible.Returns(0);
-        var sut = new DungeonAccessibilityProvider(_mode, _bossProviderFactory,
+        var sut = new DungeonAccessibilityProvider(_mode,
             _ => _mutableDungeonQueue, _dungeon, (_, _) => _keyDoorIterator,
             (_, _) => _resultAggregator);
         _result.Accessible.Returns(1);
@@ -301,7 +298,7 @@ public class DungeonAccessibilityProviderTests
         _dungeon.BigKey.ReturnsNull();
             
         _result.Accessible.Returns(0);
-        var sut = new DungeonAccessibilityProvider(_mode, _bossProviderFactory,
+        var sut = new DungeonAccessibilityProvider(_mode,
             _ => _mutableDungeonQueue, _dungeon, (_, _) => _keyDoorIterator,
             (_, _) => _resultAggregator);
         _result.Accessible.Returns(1);
@@ -318,7 +315,7 @@ public class DungeonAccessibilityProviderTests
         _dungeon.SmallKeyDrops.Add(DungeonItemID.ATBoss);
             
         _result.Accessible.Returns(0);
-        var sut = new DungeonAccessibilityProvider(_mode, _bossProviderFactory,
+        var sut = new DungeonAccessibilityProvider(_mode,
             _ => _mutableDungeonQueue, _dungeon, (_, _) => _keyDoorIterator,
             (_, _) => _resultAggregator);
         _result.Accessible.Returns(1);
@@ -335,7 +332,7 @@ public class DungeonAccessibilityProviderTests
         _dungeon.BigKeyDrops.Add(DungeonItemID.ATBoss);
             
         _result.Accessible.Returns(0);
-        var sut = new DungeonAccessibilityProvider(_mode, _bossProviderFactory,
+        var sut = new DungeonAccessibilityProvider(_mode,
             _ => _mutableDungeonQueue, _dungeon, (_, _) => _keyDoorIterator,
             (_, _) => _resultAggregator);
         _result.Accessible.Returns(1);
@@ -350,7 +347,7 @@ public class DungeonAccessibilityProviderTests
     public void ModeChanged_ShouldDoNothing_WhenKeyDropShuffleChangedAndNoKeyDropsExist()
     {
         _result.Accessible.Returns(0);
-        var sut = new DungeonAccessibilityProvider(_mode, _bossProviderFactory,
+        var sut = new DungeonAccessibilityProvider(_mode,
             _ => _mutableDungeonQueue, _dungeon, (_, _) => _keyDoorIterator,
             (_, _) => _resultAggregator);
         _result.Accessible.Returns(1);
@@ -365,7 +362,7 @@ public class DungeonAccessibilityProviderTests
     public void ModeChanged_ShouldUpdateValues_WhenGenericKeysChanged()
     {
         _result.Accessible.Returns(0);
-        var sut = new DungeonAccessibilityProvider(_mode, _bossProviderFactory,
+        var sut = new DungeonAccessibilityProvider(_mode,
             _ => _mutableDungeonQueue, _dungeon, (_, _) => _keyDoorIterator,
             (_, _) => _resultAggregator);
         _result.Accessible.Returns(1);
@@ -382,7 +379,7 @@ public class DungeonAccessibilityProviderTests
         _dungeon.Bosses.Add(DungeonItemID.ATBoss);
             
         _result.Accessible.Returns(0);
-        var sut = new DungeonAccessibilityProvider(_mode, _bossProviderFactory,
+        var sut = new DungeonAccessibilityProvider(_mode,
             _ => _mutableDungeonQueue, _dungeon, (_, _) => _keyDoorIterator,
             (_, _) => _resultAggregator);
         _result.Accessible.Returns(1);
@@ -397,7 +394,7 @@ public class DungeonAccessibilityProviderTests
     public void ModeChanged_ShouldDoNothing_WhenGuaranteedBossItemsChangedAndNoBossesExist()
     {
         _result.Accessible.Returns(0);
-        var sut = new DungeonAccessibilityProvider(_mode, _bossProviderFactory,
+        var sut = new DungeonAccessibilityProvider(_mode,
             _ => _mutableDungeonQueue, _dungeon, (_, _) => _keyDoorIterator,
             (_, _) => _resultAggregator);
         _result.Accessible.Returns(1);
@@ -412,7 +409,7 @@ public class DungeonAccessibilityProviderTests
     public void NodeChanged_ShouldUpdateValues()
     {
         _result.Accessible.Returns(0);
-        var sut = new DungeonAccessibilityProvider(_mode, _bossProviderFactory,
+        var sut = new DungeonAccessibilityProvider(_mode,
             _ => _mutableDungeonQueue, _dungeon, (_, _) => _keyDoorIterator,
             (_, _) => _resultAggregator);
         _result.Accessible.Returns(1);
@@ -437,7 +434,7 @@ public class DungeonAccessibilityProviderTests
         _dungeonData.Nodes[Arg.Any<DungeonNodeID>()].Returns(node);
             
         _result.Accessible.Returns(0);
-        var sut = new DungeonAccessibilityProvider(_mode, _bossProviderFactory,
+        var sut = new DungeonAccessibilityProvider(_mode,
             _ => _mutableDungeonQueue, _dungeon, (_, _) => _keyDoorIterator,
             (_, _) => _resultAggregator);
         _result.Accessible.Returns(1);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Dropdowns;
 using OpenTracker.ViewModels.Items;
 using OpenTracker.ViewModels.Items.Adapters;
@@ -9,7 +10,8 @@ namespace OpenTracker.ViewModels.Dropdowns;
 /// <summary>
 /// This is the class containing the creation logic for the dropdown icon ViewModels.
 /// </summary>
-public class DropdownVMFactory : IDropdownVMFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class DropdownVMFactory : IDropdownVMFactory
 {
     private readonly IDropdownDictionary _dropdowns;
     private readonly IDropdownVMDictionary _dropdownControls;

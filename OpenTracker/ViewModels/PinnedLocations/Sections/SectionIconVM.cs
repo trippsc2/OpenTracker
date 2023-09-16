@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Reactive;
 using Avalonia.Input;
 using Avalonia.Threading;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Sections;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
@@ -10,7 +11,8 @@ using ReactiveUI;
 
 namespace OpenTracker.ViewModels.PinnedLocations.Sections;
 
-public class SectionIconVM : ViewModelBase, ISectionIconVM
+[DependencyInjection]
+public sealed class SectionIconVM : ViewModel, ISectionIconVM
 {
     private readonly IUndoRedoManager _undoRedoManager;
         

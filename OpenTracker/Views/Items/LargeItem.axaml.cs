@@ -1,9 +1,11 @@
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using Avalonia.ReactiveUI;
+using OpenTracker.ViewModels.Items;
 
 namespace OpenTracker.Views.Items;
 
-public class LargeItem : UserControl
+public sealed class LargeItem : ReactiveUserControl<LargeItemVM>
 {
     public LargeItem()
     {

@@ -6,6 +6,7 @@ using Avalonia;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Locations.Map;
 using OpenTracker.Models.Modes;
@@ -20,7 +21,8 @@ namespace OpenTracker.ViewModels.MapLocations;
 /// <summary>
 /// This class contains the standard (square) map location control ViewModel data.
 /// </summary>
-public class StandardMapLocationVM : ViewModelBase, IShapedMapLocationVMBase
+[DependencyInjection]
+public sealed class StandardMapLocationVM : ViewModel, IShapedMapLocationVMBase
 {
     private readonly ITrackerSettings _trackerSettings;
     private readonly IMode _mode;

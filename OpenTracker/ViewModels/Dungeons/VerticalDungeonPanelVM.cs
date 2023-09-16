@@ -1,11 +1,13 @@
-﻿using OpenTracker.Models.Modes;
+﻿using OpenTracker.Autofac;
+using OpenTracker.Models.Modes;
 
 namespace OpenTracker.ViewModels.Dungeons;
 
 /// <summary>
 /// This class contains the vertical small items panel control ViewModel data.
 /// </summary>
-public class VerticalDungeonPanelVM : OrientedDungeonPanelVMBase, IVerticalDungeonPanelVM
+[DependencyInjection(SingleInstance = true)]
+public sealed class VerticalDungeonPanelVM : OrientedDungeonPanelVMBase, IVerticalDungeonPanelVM
 {
     /// <summary>
     /// Constructor

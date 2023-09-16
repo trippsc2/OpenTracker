@@ -3,6 +3,7 @@ using System.Reactive;
 using System.Threading.Tasks;
 using Avalonia.Input;
 using Avalonia.Threading;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Markings;
 using OpenTracker.Models.Sections;
 using OpenTracker.Utils;
@@ -12,7 +13,8 @@ using ReactiveUI;
 
 namespace OpenTracker.ViewModels.MapLocations;
 
-public class MapLocationMarkingVM : ViewModelBase, IMapLocationMarkingVM
+[DependencyInjection]
+public sealed class MapLocationMarkingVM : ViewModel, IMapLocationMarkingVM
 {
     private readonly IMarkingImageDictionary _markingImages;
 

@@ -1,4 +1,5 @@
-﻿using OpenTracker.Models.Locations;
+﻿using OpenTracker.Autofac;
+using OpenTracker.Models.Locations;
 using OpenTracker.Utils;
 
 namespace OpenTracker.ViewModels.PinnedLocations;
@@ -6,7 +7,8 @@ namespace OpenTracker.ViewModels.PinnedLocations;
 /// <summary>
 /// This is the class for the collection of pinned location ViewModels.
 /// </summary>
-public class PinnedLocationVMCollection : ViewModelCollection<IPinnedLocationVM, ILocation>,
+[DependencyInjection(SingleInstance = true)]
+public sealed class PinnedLocationVMCollection : ViewModelCollection<IPinnedLocationVM, ILocation>,
     IPinnedLocationVMCollection
 {
     private readonly IPinnedLocationDictionary _pinnedLocations;

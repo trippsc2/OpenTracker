@@ -1,9 +1,11 @@
-﻿using OpenTracker.Models.Locations.Map.Connections;
+﻿using OpenTracker.Autofac;
+using OpenTracker.Models.Locations.Map.Connections;
 using OpenTracker.Utils;
 
 namespace OpenTracker.ViewModels.Maps;
 
-public class MapConnectionCollection : ViewModelCollection<IMapConnectionVM, IMapConnection>,
+[DependencyInjection]
+public sealed class MapConnectionCollection : ViewModelCollection<IMapConnectionVM, IMapConnection>,
     IMapConnectionCollection
 {
     private readonly IMapConnectionVM.Factory _factory;

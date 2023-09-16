@@ -1,10 +1,13 @@
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
+using FluentAssertions;
 using OpenTracker.Models.AutoTracking.Memory;
 using Xunit;
 
 namespace OpenTracker.UnitTests.Models.AutoTracking.Memory;
 
-public class MemoryAddressProviderTests
+[ExcludeFromCodeCoverage]
+public sealed class MemoryAddressProviderTests
 {
     private readonly MemoryAddressProvider _sut = new();
 
@@ -15,26 +18,20 @@ public class MemoryAddressProviderTests
         memoryAddress.Value = 1;
             
         _sut.Reset();
-            
-        Assert.Null(memoryAddress.Value);
+
+        memoryAddress.Value.Should().BeNull();
     }
 
     [Fact]
-    public void AutofacTest()
+    public void AutofacResolve_ShouldResolveInterfaceToSingleInstance()
     {
         using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-        var sut = scope.Resolve<IMemoryAddressProvider>();
-            
-        Assert.NotNull(sut as MemoryAddressProvider);
-    }
+        var sut1 = scope.Resolve<IMemoryAddressProvider>();
 
-    [Fact]
-    public void AutofacSingleInstanceTest()
-    {
-        using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-        var value1 = scope.Resolve<IMemoryAddressProvider>();
-        var value2 = scope.Resolve<IMemoryAddressProvider>();
-            
-        Assert.Equal(value1, value2);
+        sut1.Should().BeOfType<MemoryAddressProvider>();
+        
+        var sut2 = scope.Resolve<IMemoryAddressProvider>();
+        
+        sut1.Should().BeSameAs(sut2);
     }
 }

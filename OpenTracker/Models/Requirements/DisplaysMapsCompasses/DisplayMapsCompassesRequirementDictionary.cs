@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using OpenTracker.Autofac;
 using OpenTracker.Utils;
 
 namespace OpenTracker.Models.Requirements.DisplaysMapsCompasses;
@@ -6,7 +7,8 @@ namespace OpenTracker.Models.Requirements.DisplaysMapsCompasses;
 /// <summary>
 ///     This class contains the dictionary container for display maps and compasses requirements.
 /// </summary>
-public class DisplayMapsCompassesRequirementDictionary : LazyDictionary<bool, IRequirement>, IDisplayMapsCompassesRequirementDictionary
+[DependencyInjection(SingleInstance = true)]
+public sealed class DisplayMapsCompassesRequirementDictionary : LazyDictionary<bool, IRequirement>, IDisplayMapsCompassesRequirementDictionary
 {
     private readonly IDisplayMapsCompassesRequirement.Factory _factory;
 

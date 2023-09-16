@@ -1,5 +1,7 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
+using FluentAssertions;
 using NSubstitute;
 using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.Modes;
@@ -8,7 +10,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.BossPlacements;
 
-public class BossPlacementFactoryTests
+[ExcludeFromCodeCoverage]
+public sealed class BossPlacementFactoryTests
 {
     private static readonly IMode Mode = Substitute.For<IMode>();
 
@@ -41,33 +44,28 @@ public class BossPlacementFactoryTests
     public void GetBossPlacement_ShouldSetDefaultBossToExpected(BossType expected, BossPlacementID id)
     {
         var bossPlacement = _sut.GetBossPlacement(id);
-            
-        Assert.Equal(expected, bossPlacement.DefaultBoss);
+
+        bossPlacement.DefaultBoss.Should().Be(expected);
     }
 
     [Fact]
     public void GetBossPlacement_ShouldThrowException_WhenIDIsOutsideExpected()
     {
-        Assert.Throws<ArgumentOutOfRangeException>(() =>
-            _ = _sut.GetBossPlacement((BossPlacementID)int.MaxValue));
+        _sut.Invoking(x => x.GetBossPlacement((BossPlacementID)int.MaxValue))
+            .Should()
+            .Throw<ArgumentOutOfRangeException>();
     }
 
     [Fact]
-    public void AutofacTest()
+    public void AutofacResolve_ShouldResolveInterfaceToSingleInstance()
     {
         using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-        var sut = scope.Resolve<IBossPlacementFactory>();
-            
-        Assert.NotNull(sut as BossPlacementFactory);
-    }
+        var sut1 = scope.Resolve<IBossPlacementFactory>();
 
-    [Fact]
-    public void AutofacSingleInstanceTest()
-    {
-        using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-        var value1 = scope.Resolve<IBossPlacementFactory>();
-        var value2 = scope.Resolve<IBossPlacementFactory>();
-            
-        Assert.Equal(value1, value2);
+        sut1.Should().BeOfType<BossPlacementFactory>();
+        
+        var sut2 = scope.Resolve<IBossPlacementFactory>();
+        
+        sut2.Should().BeSameAs(sut1);
     }
 }

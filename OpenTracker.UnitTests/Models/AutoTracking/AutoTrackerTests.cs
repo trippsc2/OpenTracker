@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;
@@ -10,7 +11,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.AutoTracking;
 
-public class AutoTrackerTests
+[ExcludeFromCodeCoverage]
+public sealed class AutoTrackerTests
 {
     private readonly ISNESConnector _snesConnector;
     private readonly IMemoryAddressProvider _memoryAddressProvider = new MemoryAddressProvider();

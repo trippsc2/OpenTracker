@@ -1,9 +1,11 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using Avalonia.ReactiveUI;
+using OpenTracker.ViewModels.Maps;
 
 namespace OpenTracker.Views.Maps;
 
-public class Map : UserControl
+public sealed class Map : ReactiveUserControl<MapVM>
 {
     public Map()
     {

@@ -1,11 +1,13 @@
 using System.Collections.Generic;
 using System.Windows.Input;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Utils;
 
 namespace OpenTracker.ViewModels.Menus;
 
-public class MenuItemVM : ViewModelBase, IMenuItemVM
+[DependencyInjection]
+public sealed class MenuItemVM : ViewModel, IMenuItemVM
 {
     // Allows for IModelWrapper to be implemented.
     public object Model { get; } = new();

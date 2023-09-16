@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using FluentAssertions;
 using OpenTracker.Models.AutoTracking.Logging;
@@ -6,6 +7,7 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.AutoTracking.Logging;
 
+[ExcludeFromCodeCoverage]
 public sealed class AutoTrackerLogServiceTests
 {
     private const LogLevel Level = LogLevel.Trace;
@@ -33,11 +35,11 @@ public sealed class AutoTrackerLogServiceTests
     {
         using var scope = ContainerConfig.Configure().BeginLifetimeScope();
         var sut1 = scope.Resolve<IAutoTrackerLogService>();
-            
-        Assert.IsType<AutoTrackerLogService>(sut1);
+
+        sut1.Should().BeOfType<AutoTrackerLogService>();
             
         var sut2 = scope.Resolve<IAutoTrackerLogService>();
-            
-        Assert.Equal(sut1, sut2);
+
+        sut1.Should().BeSameAs(sut2);
     }
 }

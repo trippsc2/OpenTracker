@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using Avalonia.Layout;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Settings;
 
 namespace OpenTracker.Models.Requirements.LayoutOrientation;
@@ -7,7 +8,8 @@ namespace OpenTracker.Models.Requirements.LayoutOrientation;
 /// <summary>
 ///     This class contains layout orientation setting requirement data.
 /// </summary>
-public class LayoutOrientationRequirement : BooleanRequirement, ILayoutOrientationRequirement
+[DependencyInjection]
+public sealed class LayoutOrientationRequirement : BooleanRequirement, ILayoutOrientationRequirement
 {
     private readonly ILayoutSettings _layoutSettings;
     private readonly Orientation? _expectedValue;

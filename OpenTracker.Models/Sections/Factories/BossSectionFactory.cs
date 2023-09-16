@@ -12,7 +12,7 @@ namespace OpenTracker.Models.Sections.Factories;
 /// <summary>
 /// This class contains the creation logic for <see cref="IBossSection"/> and <see cref="IPrizeSection"/> objects.
 /// </summary>
-public class BossSectionFactory : IBossSectionFactory
+public sealed class BossSectionFactory : IBossSectionFactory
 {
     private readonly IBossShuffleRequirementDictionary _bossShuffleRequirements;
 
@@ -55,7 +55,7 @@ public class BossSectionFactory : IBossSectionFactory
     }
 
     public IBossSection GetBossSection(
-        IBossAccessibilityProvider accessibilityProvider, IAutoTrackValue? autoTrackValue, LocationID id,
+        BossAccessibilityProvider accessibilityProvider, IAutoTrackValue? autoTrackValue, LocationID id,
         int index = 1)
     {
         switch (id)

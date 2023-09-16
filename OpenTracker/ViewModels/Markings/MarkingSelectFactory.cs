@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Markings;
 using OpenTracker.Models.Sections;
@@ -10,7 +11,8 @@ namespace OpenTracker.ViewModels.Markings;
 /// <summary>
 /// This is the class for creating marking select control ViewModel classes.
 /// </summary>
-public class MarkingSelectFactory : IMarkingSelectFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class MarkingSelectFactory : IMarkingSelectFactory
 {
     private readonly MarkingSelectButtonVM.Factory _buttonFactory;
     private readonly IMarkingSelectVM.Factory _selectFactory;

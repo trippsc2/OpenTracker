@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using Avalonia.Threading;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Sections;
 using OpenTracker.Utils;
@@ -10,7 +11,8 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections;
 /// <summary>
 /// This class contains the logic for providing the section icon image.
 /// </summary>
-public class SectionIconImageProvider : ViewModelBase, ISectionIconImageProvider
+[DependencyInjection]
+public sealed class SectionIconImageProvider : ViewModel, ISectionIconImageProvider
 {
     private readonly ISection _section;
     private readonly string _imageSourceBase;

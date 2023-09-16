@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Globalization;
 using Avalonia.Threading;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Items;
 using OpenTracker.Utils;
 using ReactiveUI;
@@ -11,7 +12,8 @@ namespace OpenTracker.ViewModels.Markings.Images;
 /// <summary>
 /// This class contains the non-static item marking image control ViewModel data.
 /// </summary>
-public class ItemMarkingImageVM : ViewModelBase, IMarkingImageVMBase
+[DependencyInjection]
+public sealed class ItemMarkingImageVM : ViewModel, IMarkingImageVMBase
 {
     private readonly IItem _item;
     private readonly string _imageSourceBase;

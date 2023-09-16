@@ -1,9 +1,11 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using Avalonia.ReactiveUI;
+using OpenTracker.ViewModels.BossSelect;
 
 namespace OpenTracker.Views.BossSelect;
 
-public class BossSelectPopup : UserControl
+public sealed class BossSelectPopup : ReactiveUserControl<BossSelectPopupVM>
 {
     public BossSelectPopup()
     {

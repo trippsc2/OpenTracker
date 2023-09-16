@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Requirements.GenericKeys;
@@ -11,7 +12,8 @@ namespace OpenTracker.ViewModels.Items;
 /// <summary>
 /// This class contains the creation logic for large item controls.
 /// </summary>
-public class ItemVMFactory : IItemVMFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class ItemVMFactory : IItemVMFactory
 {
     private readonly IItemDictionary _items;
     private readonly ILocationDictionary _locations;

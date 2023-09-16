@@ -5,6 +5,7 @@ using Avalonia;
 using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Threading;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Locations.Map;
 using OpenTracker.Models.Locations.Map.Connections;
 using OpenTracker.Models.Modes;
@@ -19,7 +20,8 @@ namespace OpenTracker.ViewModels.Maps;
 /// <summary>
 /// This class contains map connection control ViewModel data.
 /// </summary>
-public class MapConnectionVM : ViewModelBase, IMapConnectionVM
+[DependencyInjection]
+public sealed class MapConnectionVM : ViewModel, IMapConnectionVM
 {
     private readonly IColorSettings _colorSettings;
     private readonly IMode _mode;

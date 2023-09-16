@@ -1,18 +1,10 @@
 ﻿<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="clr-namespace:OpenTracker.ViewModels;assembly=OpenTracker"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" x:Class="OpenTracker.Views.MainWindow"
         Icon="avares://OpenTracker/Assets/Images/triforce.png" UseLayoutRounding="True" WindowStartupLocation="Manual"
-        Background="{DynamicResource ThemeBackgroundBrush}"
-        Title="{Binding Title}"
-        Height="{Binding Height}"
-        Width="{Binding Width}">
-	
-	<Design.DataContext>
-		<vm:MainWindowVM />
-	</Design.DataContext>
+        Background="{DynamicResource ThemeBackgroundBrush}">
 	
 	<Window.KeyBindings>
 		<KeyBinding Gesture="Ctrl+o" Command="{Binding Open}" />
@@ -27,11 +19,10 @@
 	</Window.KeyBindings>
 
   <DockPanel>
-    <ContentControl Content="{Binding TopMenu}" DockPanel.Dock="Top" />
-    <ContentControl Content="{Binding StatusBar}" DockPanel.Dock="Bottom" />
-		<ContentControl Content="{Binding UIPanel}"
-		                DockPanel.Dock="{Binding UIDock, Mode=OneWay}" />
-		<ContentControl Content="{Binding MapArea}" />
+    <ContentControl x:Name="TopMenu" DockPanel.Dock="Top" />
+    <ContentControl x:Name="StatusBar" DockPanel.Dock="Bottom" />
+		<ContentControl x:Name="UIPanel" />
+		<ContentControl x:Name="MapArea" />
 	</DockPanel>
 
 </Window>

@@ -1,4 +1,5 @@
-﻿using OpenTracker.Models.Markings;
+﻿using OpenTracker.Autofac;
+using OpenTracker.Models.Markings;
 using OpenTracker.Utils;
 using OpenTracker.ViewModels.Markings.Images;
 
@@ -7,7 +8,8 @@ namespace OpenTracker.ViewModels.Markings;
 /// <summary>
 /// This class contains the marking select button control ViewModel data.
 /// </summary>
-public class MarkingSelectButtonVM : ViewModelBase, IMarkingSelectItemVMBase
+[DependencyInjection]
+public sealed class MarkingSelectButtonVM : ViewModel, IMarkingSelectItemVMBase
 {
     public MarkType? Marking { get; }
     public IMarkingImageVMBase? Image { get; }

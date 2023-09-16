@@ -9,7 +9,7 @@ namespace OpenTracker.Models.BossPlacements;
 /// <summary>
 /// This class contains the dictionary container for <see cref="IBossPlacement"/> objects.
 /// </summary>
-public class BossPlacementDictionary : LazyDictionary<BossPlacementID, IBossPlacement>,
+public sealed class BossPlacementDictionary : LazyDictionary<BossPlacementID, IBossPlacement>,
     IBossPlacementDictionary
 {
     private readonly Lazy<IBossPlacementFactory> _factory;

@@ -1,14 +1,16 @@
 ﻿using System.ComponentModel;
 using System.Reactive;
+using System.Reactive.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
 using Avalonia.Threading;
+using OpenTracker.Autofac;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.Settings;
 using OpenTracker.Utils;
-using OpenTracker.Utils.Dialog;
 using OpenTracker.ViewModels.Areas;
 using OpenTracker.ViewModels.Menus;
 using ReactiveUI;
@@ -18,7 +20,8 @@ namespace OpenTracker.ViewModels;
 /// <summary>
 /// This class contains the main window ViewModel data.
 /// </summary>
-public class MainWindowVM : DialogViewModelBase, IMainWindowVM
+[DependencyInjection(SingleInstance = true)]
+public sealed class MainWindowVM : ViewModel
 {
     private readonly IAppSettings _appSettings;
     private readonly IBoundsSettings _boundsSettings;
@@ -79,6 +82,8 @@ public class MainWindowVM : DialogViewModelBase, IMainWindowVM
     public IStatusBarVM StatusBar { get; }
     public IUIPanelAreaVM UIPanel { get; }
     public IMapAreaVM MapArea { get; }
+    
+    public Interaction<Unit, Unit> RequestClose { get; } = new(RxApp.MainThreadScheduler);
 
     public ReactiveCommand<Unit, Unit> Open { get; }
     public ReactiveCommand<Unit, Unit> Save { get; }
@@ -87,6 +92,8 @@ public class MainWindowVM : DialogViewModelBase, IMainWindowVM
     public ReactiveCommand<Unit, Unit> Undo { get; }
     public ReactiveCommand<Unit, Unit> Redo { get; }
     public ReactiveCommand<Unit, Unit> ToggleDisplayAllLocations { get; }
+    
+    public ReactiveCommand<Unit, Unit> CloseCommand { get; }
 
     /// <summary>
     /// Constructor
@@ -127,8 +134,10 @@ public class MainWindowVM : DialogViewModelBase, IMainWindowVM
         _boundsSettings = boundsSettings;
         _layoutSettings = layoutSettings;
         _saveLoadManager = saveLoadManager;
+        
+        CloseCommand = ReactiveCommand.CreateFromTask(CloseAsync);
 
-        TopMenu = topMenu(() => Close());
+        TopMenu = topMenu(CloseCommand);
         StatusBar = statusBar;
         UIPanel = uiPanel;
         MapArea = mapArea;
@@ -233,5 +242,10 @@ public class MainWindowVM : DialogViewModelBase, IMainWindowVM
         _boundsSettings.Height = bounds.Height;
 
         _jsonConverter.Save(_appSettings.Save(), AppPath.AppSettingsFilePath);
+    }
+
+    private async Task CloseAsync()
+    {
+        await RequestClose.Handle(Unit.Default);
     }
 }

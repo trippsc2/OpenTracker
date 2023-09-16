@@ -14,6 +14,7 @@ using OpenTracker.Models.Nodes;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Requirements.KeyDoor;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 
 namespace OpenTracker.Models.Dungeons.AccessibilityProvider;
 
@@ -28,29 +29,14 @@ public class DungeonAccessibilityProvider : ReactiveObject, IDungeonAccessibilit
     private readonly IKeyDoorIterator _keyDoorIterator;
     private readonly IResultAggregator _resultAggregator;
 
-    private bool _visible;
-    public bool Visible
-    {
-        get => _visible;
-        private set => this.RaiseAndSetIfChanged(ref _visible, value);
-    }
+    [Reactive]
+    public bool Visible { get; private set; }
+    [Reactive]
+    public bool SequenceBreak { get; private set; }
+    [Reactive]
+    public int Accessible { get; private set; }
 
-    private bool _sequenceBreak;
-    public bool SequenceBreak
-    {
-        get => _sequenceBreak;
-        private set => this.RaiseAndSetIfChanged(ref _sequenceBreak, value);
-    }
-
-    private int _accessible;
-    public int Accessible
-    {
-        get => _accessible;
-        private set => this.RaiseAndSetIfChanged(ref _accessible, value);
-    }
-
-    public IList<IBossAccessibilityProvider> BossAccessibilityProviders { get; } =
-        new List<IBossAccessibilityProvider>();
+    public List<BossAccessibilityProvider> BossAccessibilityProviders { get; } = new();
 
     private ICappedItem? Map => _dungeon.Map;
     private ICappedItem? Compass => _dungeon.Compass;
@@ -69,9 +55,6 @@ public class DungeonAccessibilityProvider : ReactiveObject, IDungeonAccessibilit
     /// <param name="mode">
     ///     The <see cref="IMode"/> data.
     /// </param>
-    /// <param name="bossProviderFactory">
-    ///     An Autofac factory for creating <see cref="IBossAccessibilityProvider"/> objects.
-    /// </param>
     /// <param name="mutableDungeonQueue">
     ///     An Autofac factory for creating <see cref="IMutableDungeonQueue"/> objects.
     /// </param>
@@ -85,8 +68,9 @@ public class DungeonAccessibilityProvider : ReactiveObject, IDungeonAccessibilit
     ///     The <see cref="IResultAggregator"/>.
     /// </param>
     public DungeonAccessibilityProvider(
-        IMode mode, IBossAccessibilityProvider.Factory bossProviderFactory,
-        IMutableDungeonQueue.Factory mutableDungeonQueue, IDungeon dungeon,
+        IMode mode, 
+        IMutableDungeonQueue.Factory mutableDungeonQueue,
+        IDungeon dungeon,
         IKeyDoorIterator.Factory keyDoorIterator, IResultAggregator.Factory resultAggregator)
     {
         _dungeon = dungeon;
@@ -97,7 +81,7 @@ public class DungeonAccessibilityProvider : ReactiveObject, IDungeonAccessibilit
 
         foreach (var _ in Bosses)
         {
-            BossAccessibilityProviders.Add(bossProviderFactory());
+            BossAccessibilityProviders.Add(new BossAccessibilityProvider());
         }
 
         mode.PropertyChanged += OnModeChanged;

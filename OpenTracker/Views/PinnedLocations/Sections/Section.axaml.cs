@@ -1,9 +1,11 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using Avalonia.ReactiveUI;
+using OpenTracker.ViewModels.PinnedLocations.Sections;
 
 namespace OpenTracker.Views.PinnedLocations.Sections;
 
-public class Section : UserControl
+public sealed class Section : ReactiveUserControl<SectionVM>
 {
     public Section()
     {

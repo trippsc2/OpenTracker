@@ -47,8 +47,7 @@ public class BossSectionFactoryTests
             SaveLoadManager, CollectSectionFactory, UncollectSectionFactory, TogglePrizeSectionFactory,
             accessibilityProvider, name, bossPlacement, prizePlacement, autoTrackValue);
 
-    private static readonly IBossAccessibilityProvider AccessibilityProvider =
-        Substitute.For<IBossAccessibilityProvider>();
+    private static readonly BossAccessibilityProvider AccessibilityProvider = new();
     private static readonly IAutoTrackValue AutoTrackValue = Substitute.For<IAutoTrackValue>();
 
     private static readonly Dictionary<(LocationID id, int index), ExpectedObject> ExpectedValues = new();

@@ -7,6 +7,8 @@ namespace OpenTracker.Utils.Dialog;
 /// </summary>
 public interface IDialogService
 {
-    Task ShowDialogAsync(object viewModel, bool locking = true);
-    Task<TResult> ShowDialogAsync<TResult>(object viewModel, bool locking = true);
+    Task ShowDialogAsync<TViewModel>(TViewModel viewModel, bool locking = true)
+        where TViewModel : DialogViewModelBase;
+    Task<TResult> ShowDialogAsync<TViewModel, TResult>(TViewModel viewModel, bool locking = true)
+        where TViewModel : DialogViewModelBase<TResult>;
 }

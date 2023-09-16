@@ -1,11 +1,13 @@
-﻿using ReactiveUI;
+﻿using OpenTracker.Autofac;
+using ReactiveUI;
 
 namespace OpenTracker.Models.Settings;
 
 /// <summary>
 /// This class contains GUI tracking settings data.
 /// </summary>
-public class TrackerSettings : ReactiveObject, ITrackerSettings
+[DependencyInjection(SingleInstance = true)]
+public sealed class TrackerSettings : ReactiveObject, ITrackerSettings
 {
     private bool _displayAllLocations;
     public bool DisplayAllLocations

@@ -1,10 +1,11 @@
 ﻿using Avalonia;
 using Avalonia.Markup.Xaml;
 using OpenTracker.Utils.Dialog;
+using OpenTracker.ViewModels.ColorSelect;
 
 namespace OpenTracker.Views.ColorSelect;
 
-public class ColorSelectDialog : DialogWindowBase
+public sealed class ColorSelectDialog : DialogWindowBase<ColorSelectDialogVM>
 {
     public ColorSelectDialog()
     {

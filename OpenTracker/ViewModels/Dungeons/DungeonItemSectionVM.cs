@@ -4,6 +4,7 @@ using System.Reactive;
 using System.Threading.Tasks;
 using Avalonia.Input;
 using Avalonia.Threading;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Sections;
 using OpenTracker.Models.Settings;
@@ -16,7 +17,8 @@ namespace OpenTracker.ViewModels.Dungeons;
 /// <summary>
 /// This class contains dungeon items small items panel control ViewModel data.
 /// </summary>
-public class DungeonItemSectionVM : ViewModelBase, IDungeonItemSectionVM
+[DependencyInjection]
+public sealed class DungeonItemSectionVM : ViewModel, IDungeonItemSectionVM
 {
     private readonly IColorSettings _colorSettings;
     private readonly IUndoRedoManager _undoRedoManager;

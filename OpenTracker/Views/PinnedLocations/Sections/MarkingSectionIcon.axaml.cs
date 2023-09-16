@@ -1,9 +1,11 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using Avalonia.ReactiveUI;
+using OpenTracker.ViewModels.PinnedLocations.Sections;
 
 namespace OpenTracker.Views.PinnedLocations.Sections;
 
-public class MarkingSectionIcon : UserControl
+public sealed class MarkingSectionIcon : ReactiveUserControl<MarkingSectionIconVM>
 {
     public MarkingSectionIcon()
     {

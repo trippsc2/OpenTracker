@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Reactive;
 using System.Threading.Tasks;
 using Avalonia.Threading;
+using OpenTracker.Autofac;
 using OpenTracker.Models.AutoTracking;
 using OpenTracker.Models.AutoTracking.Logging;
 using OpenTracker.Models.AutoTracking.SNESConnectors;
@@ -17,7 +18,8 @@ namespace OpenTracker.ViewModels.Dialogs;
 /// <summary>
 /// This class contains the auto-tracker dialog window ViewModel.
 /// </summary>
-public class AutoTrackerDialogVM : DialogViewModelBase, IAutoTrackerDialogVM
+[DependencyInjection(SingleInstance = true)]
+public sealed class AutoTrackerDialogVM : DialogViewModelBase
 {
     private readonly IAutoTracker _autoTracker;
 

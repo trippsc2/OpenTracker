@@ -7,24 +7,74 @@ using OpenTracker.ViewModels;
 using System;
 using System.ComponentModel;
 using System.Linq;
-using OpenTracker.Utils.Dialog;
+using System.Reactive.Disposables;
+using Avalonia.ReactiveUI;
+using ReactiveUI;
 
 namespace OpenTracker.Views;
 
-public class MainWindow : DialogWindowBase
+public sealed class MainWindow : ReactiveWindow<MainWindowVM>
 {
     private Orientation? _orientation;
 
-    private new IMainWindowVM? ViewModel => DataContext as IMainWindowVM;
+    private ContentControl TopMenu => this.FindControl<ContentControl>("TopMenu");
+    private ContentControl StatusBar => this.FindControl<ContentControl>("StatusBar");
+    private ContentControl UIPanel => this.FindControl<ContentControl>("UIPanel");
+    private ContentControl MapArea => this.FindControl<ContentControl>("MapArea");
 
     public MainWindow()
     {
-        BoundsProperty.Changed.AddClassHandler<MainWindow>(OnBoundsChanged);
         InitializeComponent();
-        DataContextChanged += OnDataContextChanged;
 #if DEBUG
         this.AttachDevTools();
 #endif
+        var savedBoundsLoaded = false;
+        
+        this.WhenActivated(disposables =>
+        {
+            if (!savedBoundsLoaded)
+            {
+                LoadSavedWindowSizeAndPosition();
+                savedBoundsLoaded = true;
+            }
+
+            this.OneWayBind(ViewModel,
+                    vm => vm.Title,
+                    v => v.Title)
+                .DisposeWith(disposables);
+            this.Bind(ViewModel,
+                    vm => vm.Height,
+                    v => v.Height)
+                .DisposeWith(disposables);
+            this.Bind(ViewModel,
+                    vm => vm.Width,
+                    v => v.Width)
+                .DisposeWith(disposables);
+
+            this.OneWayBind(ViewModel,
+                    vm => vm.TopMenu,
+                    v => v.TopMenu.Content)
+                .DisposeWith(disposables);
+            this.OneWayBind(ViewModel,
+                    vm => vm.StatusBar,
+                    v => v.StatusBar.Content)
+                .DisposeWith(disposables);
+            this.OneWayBind(ViewModel,
+                    vm => vm.UIPanel,
+                    v => v.UIPanel.Content)
+                .DisposeWith(disposables);
+            this.OneWayBind(ViewModel,
+                    vm => vm.MapArea,
+                    v => v.MapArea.Content)
+                .DisposeWith(disposables);
+            this.WhenAnyValue(x => x.ViewModel!.UIDock)
+                .Subscribe(x => DockPanel.SetDock(UIPanel, x))
+                .DisposeWith(disposables);
+
+            this.WhenAnyValue(x => x.Bounds)
+                .Subscribe(ChangeLayout)
+                .DisposeWith(disposables);
+        });
     }
 
     protected override void OnClosing(CancelEventArgs e)
@@ -39,29 +89,22 @@ public class MainWindow : DialogWindowBase
         AvaloniaXamlLoader.Load(this);
     }
 
-    private void OnBoundsChanged(MainWindow window, AvaloniaPropertyChangedEventArgs e)
-    {
-        ChangeLayout(Bounds);
-    }
-
-    private void OnDataContextChanged(object? sender, EventArgs e)
+    private void LoadSavedWindowSizeAndPosition()
     {
         if (ViewModel?.X is null || ViewModel?.Y is null)
         {
             return;
         }
 
-        if (!(GetScreen() is null))
+        if (GetScreen() is not null)
         {
             Position = new PixelPoint((int)Math.Floor(ViewModel.X.Value), (int)Math.Floor(ViewModel.Y.Value));
         }
 
-        if (!(ViewModel?.Maximized is null) && ViewModel.Maximized.Value)
+        if (ViewModel?.Maximized is not null && ViewModel.Maximized.Value)
         {
             WindowState = WindowState.Maximized;
         }
-            
-        ChangeLayout(Bounds);
     }
 
     private Screen? GetScreen()

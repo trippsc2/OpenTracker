@@ -5,7 +5,7 @@ namespace OpenTracker.Models.BossPlacements;
 /// <summary>
 /// This class contains the creation logic for <see cref="IBossPlacement"/> objects.
 /// </summary>
-public class BossPlacementFactory : IBossPlacementFactory
+public sealed class BossPlacementFactory : IBossPlacementFactory
 {
     private readonly IBossPlacement.Factory _factory;
 

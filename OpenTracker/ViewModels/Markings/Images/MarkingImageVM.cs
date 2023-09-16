@@ -1,11 +1,13 @@
-﻿using OpenTracker.Utils;
+﻿using OpenTracker.Autofac;
+using OpenTracker.Utils;
 
 namespace OpenTracker.ViewModels.Markings.Images;
 
 /// <summary>
 /// This class contains the static marking image control ViewModel data.
 /// </summary>
-public class MarkingImageVM : ViewModelBase, IMarkingImageVMBase
+[DependencyInjection]
+public sealed class MarkingImageVM : ViewModel, IMarkingImageVMBase
 {
     public string ImageSource { get; }
 

@@ -5,6 +5,7 @@ using Avalonia;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Locations.Map;
 using OpenTracker.Models.Locations.Map.Connections;
 using OpenTracker.Models.UndoRedo;
@@ -16,7 +17,8 @@ namespace OpenTracker.ViewModels.MapLocations;
 /// <summary>
 /// This class contains the entrance map location control ViewModel data.
 /// </summary>
-public class EntranceMapLocationVM : ViewModelBase, IEntranceMapLocationVM
+[DependencyInjection]
+public sealed class EntranceMapLocationVM : ViewModel, IEntranceMapLocationVM
 {
     private readonly IMapConnectionCollection _connections;
     private readonly IUndoRedoManager _undoRedoManager;

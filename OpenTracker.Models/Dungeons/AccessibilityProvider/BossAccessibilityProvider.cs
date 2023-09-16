@@ -1,17 +1,14 @@
 using OpenTracker.Models.Accessibility;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 
 namespace OpenTracker.Models.Dungeons.AccessibilityProvider;
 
 /// <summary>
 /// This class contains the boss accessibility provider data.
 /// </summary>
-public class BossAccessibilityProvider : ReactiveObject, IBossAccessibilityProvider
+public sealed class BossAccessibilityProvider : ReactiveObject
 {
-    private AccessibilityLevel _accessibility;
-    public AccessibilityLevel Accessibility
-    {
-        get => _accessibility;
-        set => this.RaiseAndSetIfChanged(ref _accessibility, value);
-    }
+    [Reactive]
+    public AccessibilityLevel Accessibility { get; set; }
 }

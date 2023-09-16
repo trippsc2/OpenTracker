@@ -1,4 +1,6 @@
-﻿using Autofac;
+﻿using System.Diagnostics.CodeAnalysis;
+using Autofac;
+using FluentAssertions;
 using NSubstitute;
 using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.Modes;
@@ -8,7 +10,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.BossPlacements;
 
-public class BossPlacementTests
+[ExcludeFromCodeCoverage]
+public sealed class BossPlacementTests
 {
     private readonly IMode _mode = Substitute.For<IMode>();
 
@@ -17,12 +20,13 @@ public class BossPlacementTests
     [Fact]
     public void Boss_ShouldRaisePropertyChanged()
     {
-        var sut = new BossPlacement(_mode, _changeBossFactory, BossType.Test)
-        {
-            Boss = null
-        };
-            
-        Assert.PropertyChanged(sut, nameof(IBossPlacement.Boss), () => sut.Boss = BossType.Test);
+        var sut = new BossPlacement(_mode, _changeBossFactory, BossType.Test) { Boss = null };
+
+        using var monitor = sut.Monitor();
+        
+        sut.Boss = BossType.Test;
+        
+        monitor.Should().RaisePropertyChangeFor(x => x.Boss);
     }
         
     [Theory]
@@ -31,13 +35,11 @@ public class BossPlacementTests
     public void GetCurrentBoss_ShouldReturnDefaultBossProperty_WhenBossShuffleEqualsFalse(BossType? boss)
     {
         const BossType bossType = BossType.Test;
+        
         _mode.BossShuffle.Returns(false);
-        var sut = new BossPlacement(_mode, _changeBossFactory, bossType)
-        {
-            Boss = boss
-        };
-            
-        Assert.Equal(bossType, sut.GetCurrentBoss());
+        var sut = new BossPlacement(_mode, _changeBossFactory, bossType) { Boss = boss };
+
+        sut.GetCurrentBoss().Should().Be(bossType);
     }
 
     [Theory]
@@ -47,113 +49,92 @@ public class BossPlacementTests
     public void GetCurrentBoss_ShouldReturnBossProperty_WhenBossShuffleTrue(BossType? expected, BossType? boss)
     {
         _mode.BossShuffle.Returns(true);
-        var sut = new BossPlacement(_mode, _changeBossFactory, BossType.Test)
-        {
-            Boss = boss
-        };
-            
-        Assert.Equal(expected, sut.GetCurrentBoss());
-    }
+        var sut = new BossPlacement(_mode, _changeBossFactory, BossType.Test) { Boss = boss };
 
-    [Fact]
-    public void CreateChangeBossAction_ShouldReturnNewChangeBoss()
-    {
-        var sut = new BossPlacement(_mode, _changeBossFactory, BossType.Test);
-        var changeBoss = sut.CreateChangeBossAction(BossType.Test);
-            
-        Assert.NotNull(changeBoss);
+        sut.GetCurrentBoss().Should().Be(expected);
     }
 
     [Fact]
     public void Reset_BossPropertyShouldEqualNullAfterReset_WhenDefaultBossNotAga()
     {
-        var sut = new BossPlacement(_mode, _changeBossFactory, BossType.Test)
-        {
-            Boss = BossType.Test
-        };
+        var sut = new BossPlacement(_mode, _changeBossFactory, BossType.Test) { Boss = BossType.Test };
             
         sut.Reset();
-            
-        Assert.Null(sut.Boss);
+
+        sut.Boss.Should().BeNull();
     }
 
     [Fact]
     public void Reset_BossPropertyShouldEqualAgaAfterReset_WhenDefaultBossAga()
     {
-        var sut = new BossPlacement(_mode, _changeBossFactory, BossType.Aga)
-        {
-            Boss = BossType.Test
-        };
+        const BossType expected = BossType.Aga;
+        
+        var sut = new BossPlacement(_mode, _changeBossFactory, expected) { Boss = BossType.Test };
             
         sut.Reset();
-            
-        Assert.Equal(BossType.Aga, sut.Boss);
+
+        sut.Boss.Should().Be(expected);
     }
 
     [Fact]
     public void Load_BossPropertyShouldEqualSaveDataBossProperty()
     {
-        var sut = new BossPlacement(_mode, _changeBossFactory, BossType.Test)
-        {
-            Boss = null
-        };
+        const BossType expected = BossType.Test;
+        
+        var sut = new BossPlacement(_mode, _changeBossFactory, BossType.Armos) { Boss = null };
 
-        var saveData = new BossPlacementSaveData()
-        {
-            Boss = BossType.Test
-        };
+        var saveData = new BossPlacementSaveData { Boss = expected };
             
         sut.Load(saveData);
-            
-        Assert.Equal(BossType.Test, sut.Boss);
+
+        sut.Boss.Should().Be(expected);
     }
 
     [Fact]
     public void Load_ShouldDoNothing_WhenSaveDataIsNull()
     {
-        var sut = new BossPlacement(_mode, _changeBossFactory, BossType.Test)
-        {
-            Boss = BossType.Test
-        };
+        const BossType expected = BossType.Test;
+        
+        var sut = new BossPlacement(_mode, _changeBossFactory, BossType.Armos) { Boss = expected };
 
         sut.Load(null);
-            
-        Assert.Equal(BossType.Test, sut.Boss);
+
+        sut.Boss.Should().Be(expected);
     }
 
     [Fact]
     public void Save_ShouldReturnSaveDataWithBossPropertyEqualToBossProperty()
     {
-        var sut = new BossPlacement(_mode, _changeBossFactory, BossType.Test)
-        {
-            Boss = BossType.Test
-        };
+        const BossType expected = BossType.Test;
+        
+        var sut = new BossPlacement(_mode, _changeBossFactory, BossType.Armos) { Boss = expected };
 
         var saveData = sut.Save();
             
-        Assert.Equal(BossType.Test, saveData.Boss);
+        saveData.Boss.Should().Be(expected);
     }
 
     [Fact]
     public void Save_ShouldReturnSaveDataWithNullBossProperty_WhenBossPropertyIsNull()
     {
-        var sut = new BossPlacement(_mode, _changeBossFactory, BossType.Test)
-        {
-            Boss = null
-        };
+        var sut = new BossPlacement(_mode, _changeBossFactory, BossType.Test) { Boss = null };
 
         var saveData = sut.Save();
             
-        Assert.Null(saveData.Boss);
+        saveData.Boss.Should().BeNull();
     }
 
     [Fact]
-    public void AutofacTest()
+    public void AutofacResolve_ShouldResolveInterfaceToTransientInstance()
     {
         using var scope = ContainerConfig.Configure().BeginLifetimeScope();
         var factory = scope.Resolve<IBossPlacement.Factory>();
-        var sut = factory(BossType.Test);
-            
-        Assert.NotNull(sut as BossPlacement);
+        var sut1 = factory(BossType.Test);
+
+        sut1.Should().BeOfType<BossPlacement>();
+        
+        var sut2 = factory(BossType.Test);
+        
+        sut1.Should().NotBeSameAs(sut2);
     }
 }

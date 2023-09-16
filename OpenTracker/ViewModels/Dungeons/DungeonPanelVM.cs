@@ -1,13 +1,15 @@
 using System.ComponentModel;
 using Avalonia.Layout;
 using Avalonia.Threading;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Settings;
 using OpenTracker.Utils;
 using ReactiveUI;
 
 namespace OpenTracker.ViewModels.Dungeons;
 
-public class DungeonPanelVM : ViewModelBase, IDungeonPanelVM
+[DependencyInjection]
+public sealed class DungeonPanelVM : ViewModel, IDungeonPanelVM
 {
     private readonly ILayoutSettings _layoutSettings;
 

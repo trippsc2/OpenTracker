@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Threading.Tasks;
 using Avalonia.Media;
 using Avalonia.Threading;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Sections;
 using OpenTracker.Models.Settings;
@@ -14,7 +15,8 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections;
 /// <summary>
 /// This class contains the section control ViewModel data.
 /// </summary>
-public class SectionVM : ViewModelBase, ISectionVM
+[DependencyInjection]
+public sealed class SectionVM : ViewModel, ISectionVM
 {
     private readonly IColorSettings _colorSettings;
     private readonly ISection _section;

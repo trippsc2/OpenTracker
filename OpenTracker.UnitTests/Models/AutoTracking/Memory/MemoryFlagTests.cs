@@ -1,10 +1,13 @@
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
+using FluentAssertions;
 using OpenTracker.Models.AutoTracking.Memory;
 using Xunit;
 
 namespace OpenTracker.UnitTests.Models.AutoTracking.Memory;
 
-public class MemoryFlagTests
+[ExcludeFromCodeCoverage]
+public sealed class MemoryFlagTests
 {
     private readonly MemoryAddress _memoryAddress = new();
         
@@ -36,8 +39,8 @@ public class MemoryFlagTests
     {
         _memoryAddress.Value = value;
         var sut = new MemoryFlag(_memoryAddress, flag);
-            
-        Assert.Equal(expected, sut.Status);
+
+        sut.Status.Should().Be(expected);
     }
 
     [Fact]
@@ -46,20 +49,26 @@ public class MemoryFlagTests
         _memoryAddress.Value = null;
             
         var sut = new MemoryFlag(_memoryAddress, 0x1);
+
+        using var monitor = sut.Monitor();
             
-        Assert.PropertyChanged(
-            sut,
-            nameof(IMemoryFlag.Status),
-            () => _memoryAddress.Value = 0);
+        _memoryAddress.Value = 0;
+        
+        monitor.Should().RaisePropertyChangeFor(x => x.Status);
     }
 
     [Fact]
-    public void AutofacTest()
+    public void AutofacResolve_ShouldResolveInterfaceToTransientInstance()
     {
         using var scope = ContainerConfig.Configure().BeginLifetimeScope();
         var factory = scope.Resolve<IMemoryFlag.Factory>();
-        var sut = factory(_memoryAddress, 0x1);
-            
-        Assert.NotNull(sut as MemoryFlag);
+        
+        var sut1 = factory(_memoryAddress, 0x1);
+
+        sut1.Should().BeOfType<MemoryFlag>();
+        
+        var sut2 = factory(_memoryAddress, 0x1);
+        
+        sut1.Should().NotBeSameAs(sut2);
     }
 }

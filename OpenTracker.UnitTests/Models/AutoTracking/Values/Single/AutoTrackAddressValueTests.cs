@@ -1,11 +1,13 @@
+using System.Diagnostics.CodeAnalysis;
+using FluentAssertions;
 using OpenTracker.Models.AutoTracking.Memory;
-using OpenTracker.Models.AutoTracking.Values;
 using OpenTracker.Models.AutoTracking.Values.Single;
 using Xunit;
 
 namespace OpenTracker.UnitTests.Models.AutoTracking.Values.Single;
 
-public class AutoTrackAddressValueTests
+[ExcludeFromCodeCoverage]
+public sealed class AutoTrackAddressValueTests
 {
     private readonly MemoryAddress _memoryAddress = new();
         
@@ -37,25 +39,25 @@ public class AutoTrackAddressValueTests
     [InlineData(null, (byte)1, 2, 2)]
     [InlineData(null, null, 2, 3)]
     [InlineData(null, (byte)0, 2, 3)]
-    public void CurrentValue_ShouldEqualExpected(
-        int? expected, byte? memoryAddressValue, byte maximum, int adjustment)
+    public void CurrentValue_ShouldEqualExpected(int? expected, byte? memoryAddressValue, byte maximum, int adjustment)
     {
         _memoryAddress.Value = memoryAddressValue;
         var sut = new AutoTrackAddressValue(_memoryAddress, maximum, adjustment);
 
-        Assert.Equal(expected, sut.CurrentValue);
+        sut.CurrentValue.Should().Be(expected);
     }
 
     [Fact]
-    public void MemoryAddressChanged_ShouldRaisePropertyChanged()
+    public void CurrentValue_ShouldRaisePropertyChanged()
     {
         _memoryAddress.Value = null;
             
         var sut = new AutoTrackAddressValue(_memoryAddress, 255);
-            
-        Assert.PropertyChanged(
-            sut,
-            nameof(IAutoTrackValue.CurrentValue),
-            () => _memoryAddress.Value = 1);
+
+        using var monitor = sut.Monitor();
+        
+        _memoryAddress.Value = 1;
+        
+        monitor.Should().RaisePropertyChangeFor(x => x.CurrentValue);
     }
 }

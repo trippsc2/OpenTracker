@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Avalonia.Controls;
 using Avalonia.Logging;
+using OpenTracker.Autofac;
 using Serilog;
 
 namespace OpenTracker.Models;
@@ -9,7 +10,8 @@ namespace OpenTracker.Models;
 /// <summary>
 ///     This class contains logic for converting Avalonia logs to Serilog file logs.
 /// </summary>
-public class AvaloniaSerilogSink : ILogSink
+[DependencyInjection(SingleInstance = true)]
+public sealed class AvaloniaSerilogSink : ILogSink
 {
     private readonly ILogger _logger;
 

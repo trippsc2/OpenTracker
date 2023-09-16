@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Dropdowns;
 using OpenTracker.Utils;
 using OpenTracker.ViewModels.Items;
 
 namespace OpenTracker.ViewModels.Dropdowns;
 
-public class DropdownVMDictionary : LazyDictionary<DropdownID, ILargeItemVM>, IDropdownVMDictionary
+[DependencyInjection(SingleInstance = true)]
+public sealed class DropdownVMDictionary : LazyDictionary<DropdownID, ILargeItemVM>, IDropdownVMDictionary
 {
     private readonly Lazy<IDropdownVMFactory> _factory;
         

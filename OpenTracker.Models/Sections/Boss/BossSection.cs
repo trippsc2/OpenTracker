@@ -15,7 +15,7 @@ namespace OpenTracker.Models.Sections.Boss;
 /// </summary>
 public class BossSection : SectionBase, IBossSection
 {
-    private readonly IBossAccessibilityProvider _accessibilityProvider;
+    private readonly BossAccessibilityProvider _accessibilityProvider;
 
     public IBossPlacement BossPlacement { get; }
 
@@ -48,7 +48,7 @@ public class BossSection : SectionBase, IBossSection
     /// </param>
     public BossSection(
         ISaveLoadManager saveLoadManager, ICollectSection.Factory collectSectionFactory,
-        IUncollectSection.Factory uncollectSectionFactory, IBossAccessibilityProvider accessibilityProvider,
+        IUncollectSection.Factory uncollectSectionFactory, BossAccessibilityProvider accessibilityProvider,
         string name, IBossPlacement bossPlacement, IAutoTrackValue? autoTrackValue = null,
         IRequirement? requirement = null)
         : base(saveLoadManager, collectSectionFactory, uncollectSectionFactory, name, autoTrackValue, null,
@@ -84,7 +84,7 @@ public class BossSection : SectionBase, IBossSection
     /// </param>
     private void OnAccessibilityProviderChanged(object? sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName == nameof(IBossAccessibilityProvider.Accessibility))
+        if (e.PropertyName == nameof(BossAccessibilityProvider.Accessibility))
         {
             UpdateAccessibility();
         }

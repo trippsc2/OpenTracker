@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Controls;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Locations.Map;
 using OpenTracker.Models.Modes;
@@ -13,7 +14,8 @@ using OpenTracker.ViewModels.ToolTips;
 
 namespace OpenTracker.ViewModels.MapLocations;
 
-public class MapLocationVMFactory : IMapLocationVMFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class MapLocationVMFactory : IMapLocationVMFactory
 {
     private readonly IAlternativeRequirementDictionary _alternativeRequirements;
     private readonly IEntranceShuffleRequirementDictionary _entranceShuffleRequirements;

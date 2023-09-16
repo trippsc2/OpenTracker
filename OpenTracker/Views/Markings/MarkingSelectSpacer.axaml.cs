@@ -1,9 +1,11 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using Avalonia.ReactiveUI;
+using OpenTracker.ViewModels.Markings;
 
 namespace OpenTracker.Views.Markings;
 
-public class MarkingSelectSpacer : UserControl
+public sealed class MarkingSelectSpacer : ReactiveUserControl<MarkingSelectSpacerVM>
 {
     public MarkingSelectSpacer()
     {

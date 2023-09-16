@@ -2,6 +2,7 @@ using System.ComponentModel;
 using System.Reactive;
 using Avalonia.Input;
 using Avalonia.Threading;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Locations.Map;
 using OpenTracker.Models.Settings;
@@ -10,7 +11,8 @@ using ReactiveUI;
 
 namespace OpenTracker.ViewModels.MapLocations;
 
-public class MapLocationColorProvider : ViewModelBase, IMapLocationColorProvider
+[DependencyInjection]
+public sealed class MapLocationColorProvider : ViewModel, IMapLocationColorProvider
 {
     private readonly IColorSettings _colorSettings;
     private readonly IMapLocation _mapLocation;

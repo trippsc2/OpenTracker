@@ -1,9 +1,11 @@
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using Avalonia.ReactiveUI;
+using OpenTracker.ViewModels.ColorSelect;
 
 namespace OpenTracker.Views.ColorSelect;
 
-public class ColorSelectControl : UserControl
+public sealed class ColorSelectControl : ReactiveUserControl<ColorSelectControlVM>
 {
     public ColorSelectControl()
     {

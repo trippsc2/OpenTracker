@@ -1,11 +1,13 @@
+using System.Diagnostics.CodeAnalysis;
+using FluentAssertions;
 using OpenTracker.Models.AutoTracking.Memory;
-using OpenTracker.Models.AutoTracking.Values;
 using OpenTracker.Models.AutoTracking.Values.Single;
 using Xunit;
 
 namespace OpenTracker.UnitTests.Models.AutoTracking.Values.Single;
 
-public class AutoTrackBitwiseIntegerValueTests
+[ExcludeFromCodeCoverage]
+public sealed class AutoTrackBitwiseIntegerValueTests
 {
     private readonly MemoryAddress _memoryAddress = new();
         
@@ -48,20 +50,21 @@ public class AutoTrackBitwiseIntegerValueTests
     {
         _memoryAddress.Value = memoryAddressValue;
         var sut = new AutoTrackBitwiseIntegerValue(_memoryAddress, mask, shift);
-            
-        Assert.Equal(expected, sut.CurrentValue);
+
+        sut.CurrentValue.Should().Be(expected);
     }
 
     [Fact]
-    public void MemoryAddressChanged_ShouldRaisePropertyChanged()
+    public void CurrentValue_ShouldRaisePropertyChanged()
     {
         _memoryAddress.Value = null;
             
         var sut = new AutoTrackBitwiseIntegerValue(_memoryAddress, 255, 0);
-            
-        Assert.PropertyChanged(
-            sut,
-            nameof(IAutoTrackValue.CurrentValue),
-            () => _memoryAddress.Value = 1);
+
+        using var monitor = sut.Monitor();
+        
+        _memoryAddress.Value = 1;
+        
+        monitor.Should().RaisePropertyChangeFor(x => x.CurrentValue);
     }
 }

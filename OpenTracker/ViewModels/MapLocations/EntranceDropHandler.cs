@@ -8,7 +8,7 @@ namespace OpenTracker.ViewModels.MapLocations;
 /// <summary>
 /// This class contains the entrance drop handler logic.
 /// </summary>
-public class EntranceDropHandler : IDropHandler
+public sealed class EntranceDropHandler : IDropHandler
 {
     public void Enter(object? sender, DragEventArgs e, object? sourceContext, object? targetContext)
     {

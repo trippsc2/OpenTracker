@@ -1,25 +1,24 @@
-﻿using OpenTracker.Models.Requirements;
+﻿using System.ComponentModel;
+using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Reset;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.UndoRedo;
-using ReactiveUI;
 
 namespace OpenTracker.Models.Dropdowns;
 
 /// <summary>
-/// This interface contains dropdown data.
+/// Represents a dropdown hole entrance in the UI panels, not the actual entrance.
 /// </summary>
-public interface IDropdown : IReactiveObject, IResettable, ISaveable<DropdownSaveData>
+public interface IDropdown : INotifyPropertyChanged, IResettable, ISaveable<DropdownSaveData>
 {
+    /// <summary>
+    /// A <see cref="IRequirement"/> representing the requirement for the dropdown to be visible.
+    /// </summary>
+    IRequirement Requirement { get; }
     /// <summary>
     /// A <see cref="bool"/> representing whether the dropdown is checked.
     /// </summary>
     bool Checked { get; set; }
-        
-    /// <summary>
-    /// A <see cref="bool"/> representing whether the dropdown requirement is met.
-    /// </summary>
-    bool RequirementMet { get; }
         
     /// <summary>
     /// A factory for creating a new <see cref="IDropdown"/> objects.

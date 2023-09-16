@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reactive;
 
 namespace OpenTracker.Utils.Dialog;
 
@@ -8,7 +9,7 @@ namespace OpenTracker.Utils.Dialog;
 /// <typeparam name="TResult">
 /// This is the type for reporting the result of the dialog box.
 /// </typeparam>
-public class DialogViewModelBase<TResult> : ViewModelBase
+public class DialogViewModelBase<TResult> : ViewModel
 {
     public bool IsOpen { get; set; }
 
@@ -29,6 +30,6 @@ public class DialogViewModelBase<TResult> : ViewModelBase
 /// <summary>
 /// This is the base class for all dialog window ViewModels that don't require a result.
 /// </summary>
-public class DialogViewModelBase : DialogViewModelBase<object>
+public class DialogViewModelBase : DialogViewModelBase<Unit>
 {
 }

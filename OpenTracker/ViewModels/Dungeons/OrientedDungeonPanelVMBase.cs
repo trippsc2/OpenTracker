@@ -11,7 +11,7 @@ namespace OpenTracker.ViewModels.Dungeons;
 /// <summary>
 /// This is the ViewModel for the small item panel control.
 /// </summary>
-public abstract class OrientedDungeonPanelVMBase : ViewModelBase, IOrientedDungeonPanelVMBase
+public abstract class OrientedDungeonPanelVMBase : ViewModel, IOrientedDungeonPanelVMBase
 {
     private readonly IMode _mode;
 

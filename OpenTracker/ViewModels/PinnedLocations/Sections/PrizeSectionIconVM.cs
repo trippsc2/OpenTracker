@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Avalonia.Input;
 using Avalonia.Threading;
+using OpenTracker.Autofac;
 using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.Prizes;
 using OpenTracker.Models.Sections;
@@ -18,7 +19,8 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections;
 /// <summary>
 /// This class contains the prize section icon control ViewModel data.
 /// </summary>
-public class PrizeSectionIconVM : ViewModelBase, ISectionIconVM
+[DependencyInjection]
+public sealed class PrizeSectionIconVM : ViewModel, ISectionIconVM
 {
     private readonly IPrizeDictionary _prizes;
     private readonly IUndoRedoManager _undoRedoManager;

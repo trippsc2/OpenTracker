@@ -1,22 +1,25 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using System;
+using System.Reactive;
+using Avalonia.ReactiveUI;
 
 namespace OpenTracker.Utils.Dialog;
 
 /// <summary>
 /// This is the base class for all dialog windows.
 /// </summary>
-/// <typeparam name="TResult">
-/// The type of the result of the dialog window.
+/// <typeparam name="TViewModel">
+///     The type of the ViewModel for the dialog window.
 /// </typeparam>
-public class DialogWindowBase<TResult> : Window
+/// <typeparam name="TResult">
+///     The type of the result of the dialog window.
+/// </typeparam>
+public class DialogWindowBase<TViewModel, TResult> : ReactiveWindow<TViewModel>
+    where TViewModel : DialogViewModelBase<TResult>
 {
     private Window? ParentWindow =>
         (Window?)Owner;
-
-    protected DialogViewModelBase<TResult>? ViewModel =>
-        DataContext as DialogViewModelBase<TResult>;
 
     /// <summary>
     /// Constructor
@@ -31,9 +34,7 @@ public class DialogWindowBase<TResult> : Window
     /// </summary>
     protected virtual void OnOpened()
     {
-        _ = ViewModel ?? throw new NullReferenceException();
-
-        ViewModel.IsOpen = true;
+        ViewModel!.IsOpen = true;
     }
 
     /// <summary>
@@ -165,6 +166,7 @@ public class DialogWindowBase<TResult> : Window
     }
 }
 
-public class DialogWindowBase : DialogWindowBase<object>
+public class DialogWindowBase<TViewModel> : DialogWindowBase<TViewModel, Unit>
+    where TViewModel : DialogViewModelBase
 {
 }

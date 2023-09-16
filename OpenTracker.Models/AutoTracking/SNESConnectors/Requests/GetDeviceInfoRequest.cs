@@ -10,7 +10,7 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors.Requests;
 /// <summary>
 /// This class contains the request to get device info. 
 /// </summary>
-public class GetDeviceInfoRequest : RequestBase<IEnumerable<string>>, IGetDeviceInfoRequest
+public sealed class GetDeviceInfoRequest : RequestBase<IEnumerable<string>>, IGetDeviceInfoRequest
 {
     /// <summary>
     /// Constructor

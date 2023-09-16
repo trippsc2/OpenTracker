@@ -1,9 +1,11 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using Avalonia.ReactiveUI;
+using OpenTracker.ViewModels.PinnedLocations;
 
 namespace OpenTracker.Views.PinnedLocations;
 
-public class PinnedLocation : UserControl
+public sealed class PinnedLocation : ReactiveUserControl<PinnedLocationVM>
 {
     public PinnedLocation()
     {

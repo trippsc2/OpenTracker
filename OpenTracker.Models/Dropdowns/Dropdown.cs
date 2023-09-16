@@ -7,18 +7,13 @@ using ReactiveUI.Fody.Helpers;
 
 namespace OpenTracker.Models.Dropdowns;
 
-/// <summary>
-/// This class contains dropdown data.
-/// </summary>
-public class Dropdown : ReactiveObject, IDropdown
+public sealed class Dropdown : ReactiveObject, IDropdown
 {
-    private IRequirement Requirement { get; }
 
     private readonly ICheckDropdown.Factory _checkDropdownFactory;
     private readonly IUncheckDropdown.Factory _uncheckDropdownFactory;
 
-    [ObservableAsProperty]
-    public bool RequirementMet { get; }
+    public IRequirement Requirement { get; }
     [Reactive]
     public bool Checked { get; set; }
 
@@ -38,12 +33,10 @@ public class Dropdown : ReactiveObject, IDropdown
         ICheckDropdown.Factory checkDropdownFactory, IUncheckDropdown.Factory uncheckDropdownFactory,
         IRequirement requirement)
     {
-        Requirement = requirement;
         _checkDropdownFactory = checkDropdownFactory;
         _uncheckDropdownFactory = uncheckDropdownFactory;
-
-        this.WhenAnyValue(x => x.Requirement.Met)
-            .ToPropertyEx(this, x => x.RequirementMet);
+        
+        Requirement = requirement;
     }
 
     public IUndoable CreateCheckDropdownAction()

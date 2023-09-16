@@ -1,16 +1,23 @@
+using System.Diagnostics.CodeAnalysis;
+using FluentAssertions;
 using OpenTracker.Models.AutoTracking.Memory;
 using Xunit;
 
 namespace OpenTracker.UnitTests.Models.AutoTracking.Memory;
 
-public class MemoryAddressTests
+[ExcludeFromCodeCoverage]
+public sealed class MemoryAddressTests
 {
     private readonly MemoryAddress _sut = new();
 
     [Fact]
     public void Value_ShouldRaisePropertyChanged()
     {
-        Assert.PropertyChanged(_sut, nameof(MemoryAddress.Value), () => _sut.Value = 1);
+        using var monitor = _sut.Monitor();
+        
+        _sut.Value = 1;
+        
+        monitor.Should().RaisePropertyChangeFor(x => x.Value);
     }
 
     [Fact]
@@ -18,7 +25,7 @@ public class MemoryAddressTests
     {
         _sut.Value = 1;
         _sut.Reset();
-            
-        Assert.Null(_sut.Value);
+
+        _sut.Value.Should().BeNull();
     }
 }

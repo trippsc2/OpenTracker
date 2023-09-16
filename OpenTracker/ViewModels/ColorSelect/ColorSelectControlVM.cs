@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Media;
 using Avalonia.Threading;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Settings;
 using OpenTracker.Utils;
@@ -14,7 +15,8 @@ namespace OpenTracker.ViewModels.ColorSelect;
 /// <summary>
 /// This class contains the color select control ViewModel data.
 /// </summary>
-public class ColorSelectControlVM : ViewModelBase, IColorSelectControlVM
+[DependencyInjection]
+public sealed class ColorSelectControlVM : ViewModel, IColorSelectControlVM
 {
     private readonly IColorSettings _colorSettings;
 

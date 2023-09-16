@@ -5,6 +5,7 @@ using System.IO;
 using System.Reactive;
 using System.Threading.Tasks;
 using Avalonia.Threading;
+using OpenTracker.Autofac;
 using OpenTracker.Models.AutoTracking.Logging;
 using OpenTracker.Utils;
 using OpenTracker.Utils.Dialog;
@@ -17,14 +18,13 @@ namespace OpenTracker.ViewModels.AutoTracking;
 /// <summary>
 /// This class contains the auto-tracker log control ViewModel data.
 /// </summary>
-public class AutoTrackerLogVM : ViewModelBase, IAutoTrackerLogVM
+[DependencyInjection(SingleInstance = true)]
+public class AutoTrackerLogVM : ViewModel, IAutoTrackerLogVM
 {
     private readonly IAutoTrackerLogService _logService;
 
     private readonly IDialogService _dialogService;
     private readonly IFileDialogService _fileDialogService;
-
-    private readonly IErrorBoxDialogVM.Factory _errorBoxFactory;
 
     public ObservableCollection<string> LogLevelOptions { get; } = new();
 
@@ -56,21 +56,15 @@ public class AutoTrackerLogVM : ViewModelBase, IAutoTrackerLogVM
     /// <param name="fileDialogService">
     /// The file dialog service.
     /// </param>
-    /// <param name="errorBoxFactory">
-    /// An Autofac factory for creating error box dialog windows.
-    /// </param>
     public AutoTrackerLogVM(
         IAutoTrackerLogService logService,
         IDialogService dialogService,
-        IFileDialogService fileDialogService,
-        IErrorBoxDialogVM.Factory errorBoxFactory)
+        IFileDialogService fileDialogService)
     {
         _logService = logService;
 
         _dialogService = dialogService;
         _fileDialogService = fileDialogService;
-
-        _errorBoxFactory = errorBoxFactory;
 
         foreach (LogLevel logLevel in Enum.GetValues(typeof(LogLevel)))
         {
@@ -108,7 +102,7 @@ public class AutoTrackerLogVM : ViewModelBase, IAutoTrackerLogVM
     {
         await Dispatcher.UIThread.InvokeAsync(async () =>
         {
-            await _dialogService.ShowDialogAsync(_errorBoxFactory("Error", message));
+            await _dialogService.ShowDialogAsync(new ErrorBoxDialogVM("Error", message));
         });
     }
 

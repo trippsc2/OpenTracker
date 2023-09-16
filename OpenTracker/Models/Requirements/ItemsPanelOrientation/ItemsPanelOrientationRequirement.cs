@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using Avalonia.Layout;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Settings;
 
 namespace OpenTracker.Models.Requirements.ItemsPanelOrientation;
@@ -7,7 +8,8 @@ namespace OpenTracker.Models.Requirements.ItemsPanelOrientation;
 /// <summary>
 ///     This class contains items panel orientation requirement data.
 /// </summary>
-public class ItemsPanelOrientationRequirement : BooleanRequirement, IItemsPanelOrientationRequirement
+[DependencyInjection]
+public sealed class ItemsPanelOrientationRequirement : BooleanRequirement, IItemsPanelOrientationRequirement
 {
     private readonly ILayoutSettings _layoutSettings;
     private readonly Orientation _expectedValue;

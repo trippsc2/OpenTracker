@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Settings;
 
 namespace OpenTracker.Models.Requirements.DisplayAllLocations;
@@ -6,7 +7,8 @@ namespace OpenTracker.Models.Requirements.DisplayAllLocations;
 /// <summary>
 ///     This class contains display all locations setting requirement data.
 /// </summary>
-public class DisplayAllLocationsRequirement : BooleanRequirement, IDisplayAllLocationsRequirement
+[DependencyInjection]
+public sealed class DisplayAllLocationsRequirement : BooleanRequirement, IDisplayAllLocationsRequirement
 {
     private readonly ITrackerSettings _trackerSettings;
     private readonly bool _expectedValue;

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows.Input;
 using Avalonia.Controls;
 using Avalonia.Layout;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Requirements.AlwaysDisplayDungeonItems;
 using OpenTracker.Models.Requirements.DisplayAllLocations;
 using OpenTracker.Models.Requirements.DisplaysMapsCompasses;
@@ -20,7 +21,8 @@ namespace OpenTracker.ViewModels.Menus;
 /// <summary>
 /// This class contains the creation logic for menu item controls.
 /// </summary>
-public class MenuItemFactory : IMenuItemFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class MenuItemFactory : IMenuItemFactory
 {
     private readonly IThemeManager _themeManager;
         
@@ -221,7 +223,7 @@ public class MenuItemFactory : IMenuItemFactory
 
     public List<IMenuItemVM> GetMenuItems(
         ICommand open, ICommand save, ICommand saveAs, ICommand reset, ICommand close, ICommand undo, ICommand redo,
-        ICommand autoTracker, ICommand sequenceBreaks, ICommand captureDesign, ICommand changeTheme,
+        ICommand autoTracker, ICommand sequenceBreaks, ICommand changeTheme,
         ICommand toggleDisplayAllLocations, ICommand toggleShowItemCountsOnMap, ICommand toggleDisplayMapsCompasses,
         ICommand toggleAlwaysDisplayDungeonItems, ICommand colorSelect, ICommand changeLayoutOrientation,
         ICommand changeHorizontalUIPanelPlacement, ICommand changeHorizontalItemsPlacement,

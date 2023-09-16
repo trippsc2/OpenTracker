@@ -7,6 +7,7 @@ using Avalonia.Controls;
 using Avalonia.Layout;
 using Avalonia.Threading;
 using Newtonsoft.Json;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Reset;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.Settings;
@@ -14,8 +15,6 @@ using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
 using OpenTracker.Utils.Dialog;
 using OpenTracker.Utils.Themes;
-using OpenTracker.ViewModels.Capture;
-using OpenTracker.ViewModels.Capture.Design;
 using OpenTracker.ViewModels.ColorSelect;
 using OpenTracker.ViewModels.Dialogs;
 using ReactiveUI;
@@ -25,7 +24,8 @@ namespace OpenTracker.ViewModels.Menus;
 /// <summary>
 /// This class contains the top menu control ViewModel data.
 /// </summary>
-public class TopMenuVM : ViewModelBase, ITopMenuVM
+[DependencyInjection(SingleInstance = true)]
+public sealed class TopMenuVM : ViewModel, ITopMenuVM
 {
     private readonly IAppSettings _appSettings;
     private readonly IResetManager _resetManager;
@@ -36,18 +36,13 @@ public class TopMenuVM : ViewModelBase, ITopMenuVM
     private readonly IFileDialogService _fileDialogService;
     private readonly IThemeManager _themeManager;
 
-    private readonly IAutoTrackerDialogVM _autoTrackerDialog;
-    private readonly ICaptureDesignDialogVM _captureDesignDialog;
-    private readonly ISequenceBreakDialogVM _sequenceBreakDialog;
-    private readonly IColorSelectDialogVM _colorSelectDialog;
-    private readonly IAboutDialogVM _aboutDialog;
+    private readonly AutoTrackerDialogVM _autoTrackerDialog;
+    private readonly SequenceBreakDialogVM _sequenceBreakDialog;
+    private readonly ColorSelectDialogVM _colorSelectDialog;
+    private readonly AboutDialogVM _aboutDialog;
 
-    private readonly IErrorBoxDialogVM.Factory _errorBoxFactory;
-    private readonly IMessageBoxDialogVM.Factory _messageBoxFactory;
-        
     public List<IMenuItemVM> Items { get; }
-
-
+    
     public ReactiveCommand<Unit, Unit> Open { get; }
     public ReactiveCommand<Unit, Unit> Save { get; }
     public ReactiveCommand<Unit, Unit> SaveAs { get; }
@@ -86,11 +81,6 @@ public class TopMenuVM : ViewModelBase, ITopMenuVM
     private readonly ObservableAsPropertyHelper<bool> _isOpeningSequenceBreak;
     private bool IsOpeningSequenceBreak => _isOpeningSequenceBreak.Value;
         
-    public ReactiveCommand<Unit, Unit> CaptureDesign { get; }
-
-    private readonly ObservableAsPropertyHelper<bool> _isOpeningCaptureDesign;
-    public bool IsOpeningCaptureDesign => _isOpeningCaptureDesign.Value;
-
     public ReactiveCommand<ITheme, Unit> ChangeTheme { get; }
         
     public ReactiveCommand<Unit, Unit> ToggleDisplayAllLocations { get; }
@@ -120,13 +110,12 @@ public class TopMenuVM : ViewModelBase, ITopMenuVM
     /// Constructor
     /// </summary>
     public TopMenuVM(
-        IAppSettings appSettings, ICaptureManager captureManager, IResetManager resetManager,
+        IAppSettings appSettings, IResetManager resetManager,
         ISaveLoadManager saveLoadManager, IUndoRedoManager undoRedoManager, IDialogService dialogService,
-        IFileDialogService fileDialogService, IThemeManager themeManager, IAutoTrackerDialogVM autoTrackerDialog,
-        ICaptureDesignDialogVM captureDesignDialog, IColorSelectDialogVM colorSelectDialog,
-        ISequenceBreakDialogVM sequenceBreakDialog, IAboutDialogVM aboutDialog,
-        IErrorBoxDialogVM.Factory errorBoxFactory, IMessageBoxDialogVM.Factory messageBoxFactory,
-        IMenuItemFactory factory, Action closeAction)
+        IFileDialogService fileDialogService, IThemeManager themeManager, AutoTrackerDialogVM autoTrackerDialog,
+        ColorSelectDialogVM colorSelectDialog,
+        SequenceBreakDialogVM sequenceBreakDialog, AboutDialogVM aboutDialog,
+        IMenuItemFactory factory, ReactiveCommand<Unit, Unit> closeCommand)
     {
         _appSettings = appSettings;
         _resetManager = resetManager;
@@ -138,13 +127,9 @@ public class TopMenuVM : ViewModelBase, ITopMenuVM
         _themeManager = themeManager;
 
         _autoTrackerDialog = autoTrackerDialog;
-        _captureDesignDialog = captureDesignDialog;
         _colorSelectDialog = colorSelectDialog;
         _sequenceBreakDialog = sequenceBreakDialog;
         _aboutDialog = aboutDialog;
-
-        _errorBoxFactory = errorBoxFactory;
-        _messageBoxFactory = messageBoxFactory;
 
         Open = ReactiveCommand.CreateFromTask(OpenImpl);
         Open.IsExecuting.ToProperty(this, x => x.IsOpening, out _isOpening);
@@ -158,7 +143,7 @@ public class TopMenuVM : ViewModelBase, ITopMenuVM
         Reset = ReactiveCommand.CreateFromTask(ResetImpl);
         Reset.IsExecuting.ToProperty(this, x => x.IsResetting, out _isResetting);
             
-        Close = ReactiveCommand.Create(closeAction);
+        Close = closeCommand;
 
         Undo = ReactiveCommand.CreateFromTask(UndoImpl, this.WhenAnyValue(x => x.CanUndo));
         Undo.IsExecuting.ToProperty(this, x => x.IsUndoing, out _isUndoing);
@@ -173,10 +158,6 @@ public class TopMenuVM : ViewModelBase, ITopMenuVM
         SequenceBreaks = ReactiveCommand.CreateFromTask(SequenceBreaksImpl);
         SequenceBreaks.IsExecuting.ToProperty(
             this, x => x.IsOpeningSequenceBreak, out _isOpeningSequenceBreak);
-
-        CaptureDesign = ReactiveCommand.CreateFromTask(CaptureDesignImpl);
-        CaptureDesign.IsExecuting.ToProperty(
-            this, x => x.IsOpeningCaptureDesign, out _isOpeningCaptureDesign);
 
         ChangeTheme = ReactiveCommand.Create<ITheme>(ChangeThemeImpl);
             
@@ -202,14 +183,12 @@ public class TopMenuVM : ViewModelBase, ITopMenuVM
             this, x => x.IsOpeningAbout, out _isOpeningAbout);
 
         Items = factory.GetMenuItems(
-            Open, Save, SaveAs, Reset, Close, Undo, Redo, AutoTracker, SequenceBreaks, CaptureDesign, ChangeTheme,
+            Open, Save, SaveAs, Reset, Close, Undo, Redo, AutoTracker, SequenceBreaks, ChangeTheme,
             ToggleDisplayAllLocations, ToggleShowItemCountsOnMap, ToggleDisplayMapsCompasses,
             ToggleAlwaysDisplayDungeonItems, ColorSelect, ChangeLayoutOrientation, ChangeHorizontalUIPanelPlacement,
             ChangeHorizontalItemsPlacement, ChangeVerticalUIPanelPlacement, ChangeVerticalItemsPlacement,
             ChangeMapOrientation, ChangeUIScale, About);
             
-        captureManager.GenerateInitialData();
-
         _undoRedoManager.PropertyChanged += OnUndoRedoManagerChanged;
     }
 
@@ -244,7 +223,7 @@ public class TopMenuVM : ViewModelBase, ITopMenuVM
     private async Task OpenErrorBox(string message)
     {
         await Dispatcher.UIThread.InvokeAsync(async () =>
-            await _dialogService.ShowDialogAsync(_errorBoxFactory("Error", message)));
+            await _dialogService.ShowDialogAsync(new ErrorBoxDialogVM("Error", message)));
     }
 
     /// <summary>
@@ -351,8 +330,8 @@ public class TopMenuVM : ViewModelBase, ITopMenuVM
     /// </summary>
     private async Task ResetImpl()
     {
-        var result = await _dialogService.ShowDialogAsync<bool>(
-            _messageBoxFactory("Warning",
+        var result = await _dialogService.ShowDialogAsync<MessageBoxDialogVM, bool>(
+            new MessageBoxDialogVM("Warning",
                 "Resetting the tracker will set all items and locations back to their " +
                 "starting values. This cannot be undone.\n\nDo you wish to proceed?"));
 
@@ -400,15 +379,6 @@ public class TopMenuVM : ViewModelBase, ITopMenuVM
     {
         await Dispatcher.UIThread.InvokeAsync(async () =>
             await _dialogService.ShowDialogAsync(_sequenceBreakDialog, false));
-    }
-
-    /// <summary>
-    /// Opens the Design Capture Windows dialog window.
-    /// </summary>
-    private async Task CaptureDesignImpl()
-    {
-        await Dispatcher.UIThread.InvokeAsync(async () =>
-            await _dialogService.ShowDialogAsync(_captureDesignDialog, false));
     }
 
     /// <summary>

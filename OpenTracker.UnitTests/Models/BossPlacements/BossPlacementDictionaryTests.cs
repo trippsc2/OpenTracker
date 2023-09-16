@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
+using FluentAssertions;
 using NSubstitute;
 using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.SaveLoad;
@@ -7,22 +9,18 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.BossPlacements;
 
-public class BossPlacementDictionaryTests
+[ExcludeFromCodeCoverage]
+public sealed class BossPlacementDictionaryTests
 {
-    private readonly BossPlacementDictionary _sut;
-
-    public BossPlacementDictionaryTests()
-    {
-        _sut = new BossPlacementDictionary(() => Substitute.For<IBossPlacementFactory>());
-    }
+    private readonly BossPlacementDictionary _sut = new(() => Substitute.For<IBossPlacementFactory>());
 
     [Fact]
     public void Indexer_ShouldReturnTheSameInstance()
     {
         var bossPlacement1 = _sut[BossPlacementID.ATBoss];
         var bossPlacement2 = _sut[BossPlacementID.ATBoss];
-            
-        Assert.Equal(bossPlacement1, bossPlacement2);
+
+        bossPlacement1.Should().Be(bossPlacement2);
     }
 
     [Fact]
@@ -30,8 +28,8 @@ public class BossPlacementDictionaryTests
     {
         var bossPlacement1 = _sut[BossPlacementID.ATBoss];
         var bossPlacement2 = _sut[BossPlacementID.EPBoss];
-            
-        Assert.NotEqual(bossPlacement1, bossPlacement2);
+
+        bossPlacement1.Should().NotBe(bossPlacement2);
     }
 
     [Fact]
@@ -55,12 +53,14 @@ public class BossPlacementDictionaryTests
     [Fact]
     public void Save_ShouldReturnDictionaryOfSaveData()
     {
-        var bossPlacement = _sut[BossPlacementID.ATBoss];
+        const BossPlacementID id = BossPlacementID.ATBoss;
+        
+        var bossPlacement = _sut[id];
         var bossPlacementSaveData = new BossPlacementSaveData();
         bossPlacement.Save().Returns(bossPlacementSaveData);
         var saveData = _sut.Save();
 
-        Assert.Equal(bossPlacementSaveData, saveData[BossPlacementID.ATBoss]);
+        saveData[id].Should().Be(bossPlacementSaveData);
     }
 
     [Fact]
@@ -86,21 +86,15 @@ public class BossPlacementDictionaryTests
     }
 
     [Fact]
-    public void AutofacTest()
+    public void AutofacResolve_ShouldResolveInterfaceToSingleInstance()
     {
         using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-        var sut = scope.Resolve<IBossPlacementDictionary>();
-            
-        Assert.NotNull(sut as BossPlacementDictionary);
-    }
+        var sut1 = scope.Resolve<IBossPlacementDictionary>();
 
-    [Fact]
-    public void AutofacSingleInstanceTest()
-    {
-        using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-        var value1 = scope.Resolve<IBossPlacementDictionary>();
-        var value2 = scope.Resolve<IBossPlacementDictionary>();
-            
-        Assert.Equal(value1, value2);
+        sut1.Should().BeOfType<BossPlacementDictionary>();
+        
+        var sut2 = scope.Resolve<IBossPlacementDictionary>();
+
+        sut1.Should().BeSameAs(sut2);
     }
 }

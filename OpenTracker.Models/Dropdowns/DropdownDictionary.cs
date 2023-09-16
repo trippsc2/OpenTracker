@@ -6,16 +6,12 @@ using OpenTracker.Utils;
 
 namespace OpenTracker.Models.Dropdowns;
 
-/// <summary>
-/// This class contains the <see cref="IDictionary{TKey,TValue}"/> container of <see cref="IDropdown"/> objects
-/// index by <see cref="DropdownID"/>.
-/// </summary>
-public class DropdownDictionary : LazyDictionary<DropdownID, IDropdown>, IDropdownDictionary
+public sealed class DropdownDictionary : LazyDictionary<DropdownID, IDropdown>, IDropdownDictionary
 {
     private readonly Lazy<IDropdownFactory> _factory;
 
     /// <summary>
-    /// Constructor
+    /// Initializes a new <see cref="DropdownDictionary"/> object.
     /// </summary>
     /// <param name="factory">
     ///     An Autofac factory for creating the <see cref="IDropdownFactory"/> object.
@@ -41,7 +37,8 @@ public class DropdownDictionary : LazyDictionary<DropdownID, IDropdown>, IDropdo
     public IDictionary<DropdownID, DropdownSaveData> Save()
     {
         return Keys.ToDictionary(
-            type => type, type => this[type].Save());
+            type => type,
+            type => this[type].Save());
     }
 
     public void Load(IDictionary<DropdownID, DropdownSaveData>? saveData)

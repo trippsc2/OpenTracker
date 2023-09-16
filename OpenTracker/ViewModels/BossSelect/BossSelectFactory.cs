@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using OpenTracker.Autofac;
 using OpenTracker.Models.BossPlacements;
 
 namespace OpenTracker.ViewModels.BossSelect;
@@ -7,7 +8,8 @@ namespace OpenTracker.ViewModels.BossSelect;
 /// <summary>
 /// This class contains creation logic for the boss select controls.
 /// </summary>
-public class BossSelectFactory : IBossSelectFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class BossSelectFactory : IBossSelectFactory
 {
     private readonly IBossSelectButtonVM.Factory _buttonFactory;
 

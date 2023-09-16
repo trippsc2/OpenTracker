@@ -1,9 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
 using OpenTracker.Models.AutoTracking.SNESConnectors;
 using Xunit;
 
 namespace OpenTracker.UnitTests.Models.AutoTracking.SNESConnectors;
 
-public class AddressTranslatorTests
+[ExcludeFromCodeCoverage]
+public sealed class AddressTranslatorTests
 {
     [Theory]
     [InlineData(0xF5F000U, 0x7EF000U)]

@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Locations;
 using OpenTracker.Utils;
 
 namespace OpenTracker.ViewModels.PinnedLocations;
 
-public class PinnedLocationDictionary : LazyDictionary<LocationID, IPinnedLocationVM>,
+[DependencyInjection(SingleInstance = true)]
+public sealed class PinnedLocationDictionary : LazyDictionary<LocationID, IPinnedLocationVM>,
     IPinnedLocationDictionary
 {
     private readonly ILocationDictionary _locations;

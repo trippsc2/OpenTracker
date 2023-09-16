@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Markings;
 using OpenTracker.Utils;
 
@@ -7,7 +8,8 @@ namespace OpenTracker.ViewModels.Markings.Images;
 /// <summary>
 /// This is the dictionary container for marking image control ViewModel instances.
 /// </summary>
-public class MarkingImageDictionary : LazyDictionary<MarkType, IMarkingImageVMBase>,
+[DependencyInjection(SingleInstance = true)]
+public sealed class MarkingImageDictionary : LazyDictionary<MarkType, IMarkingImageVMBase>,
     IMarkingImageDictionary
 {
     private readonly IMarkingImageFactory _factory;

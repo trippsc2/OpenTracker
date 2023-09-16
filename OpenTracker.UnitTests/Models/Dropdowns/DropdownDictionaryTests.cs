@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
+using FluentAssertions;
 using NSubstitute;
 using OpenTracker.Models.Dropdowns;
 using OpenTracker.Models.SaveLoad;
@@ -7,7 +9,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Dropdowns;
 
-public class DropdownDictionaryTests
+[ExcludeFromCodeCoverage]
+public sealed class DropdownDictionaryTests
 {
     private readonly IDropdownFactory _factory = Substitute.For<IDropdownFactory>();
     private readonly IDropdown _dropdown = Substitute.For<IDropdown>();
@@ -44,7 +47,7 @@ public class DropdownDictionaryTests
     {
         var saveData = _sut.Save();
 
-        Assert.Contains(_dropdownSaveData, saveData.Values);
+        saveData.Should().ContainValue(_dropdownSaveData);
     }
 
     [Fact]
@@ -68,21 +71,15 @@ public class DropdownDictionaryTests
     }
 
     [Fact]
-    public void AutofacTest()
+    public void AutofacResolve_ShouldResolveInterfaceToSingleInstance()
     {
         using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-        var sut = scope.Resolve<IDropdownDictionary>();
-            
-        Assert.NotNull(sut as DropdownDictionary);
-    }
+        var sut1 = scope.Resolve<IDropdownDictionary>();
 
-    [Fact]
-    public void AutofacSingleInstanceTest()
-    {
-        using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-        var value1 = scope.Resolve<IDropdownDictionary>();
-        var value2 = scope.Resolve<IDropdownDictionary>();
-            
-        Assert.Equal(value1, value2);
+        sut1.Should().BeOfType<DropdownDictionary>();
+        
+        var sut2 = scope.Resolve<IDropdownDictionary>();
+        
+        sut1.Should().BeSameAs(sut2);
     }
 }

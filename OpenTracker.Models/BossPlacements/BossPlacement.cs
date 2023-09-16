@@ -10,7 +10,7 @@ namespace OpenTracker.Models.BossPlacements;
 /// <summary>
 /// This class contains boss placement data.
 /// </summary>
-public class BossPlacement : ReactiveObject, IBossPlacement
+public sealed class BossPlacement : ReactiveObject, IBossPlacement
 {
     private readonly IMode _mode;
 

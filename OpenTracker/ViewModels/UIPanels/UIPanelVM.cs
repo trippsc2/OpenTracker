@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using Avalonia.Threading;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Settings;
 using OpenTracker.Utils;
@@ -10,7 +11,8 @@ namespace OpenTracker.ViewModels.UIPanels;
 /// <summary>
 /// This class contains the UI panel control ViewModel data.
 /// </summary>
-public class UIPanelVM : ViewModelBase, IUIPanelVM
+[DependencyInjection]
+public sealed class UIPanelVM : ViewModel, IUIPanelVM
 {
     private readonly ILayoutSettings _layoutSettings;
     private readonly IRequirement? _requirement;

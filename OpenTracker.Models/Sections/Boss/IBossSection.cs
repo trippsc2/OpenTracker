@@ -18,7 +18,7 @@ public interface IBossSection : ISection
     /// A factory for creating new <see cref="IBossSection"/> objects.
     /// </summary>
     /// <param name="accessibilityProvider">
-    ///     The <see cref="IBossAccessibilityProvider"/>.
+    ///     The <see cref="BossAccessibilityProvider"/>.
     /// </param>
     /// <param name="name">
     ///     A <see cref="string"/> representing the section name.
@@ -33,6 +33,6 @@ public interface IBossSection : ISection
     ///     A new <see cref="IBossSection"/> object.
     /// </returns>
     delegate IBossSection Factory(
-        IBossAccessibilityProvider accessibilityProvider, string name, IBossPlacement bossPlacement, 
+        BossAccessibilityProvider accessibilityProvider, string name, IBossPlacement bossPlacement, 
         IRequirement? requirement = null);
 }

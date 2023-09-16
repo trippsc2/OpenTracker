@@ -1,10 +1,11 @@
 ﻿using Avalonia;
 using Avalonia.Markup.Xaml;
 using OpenTracker.Utils.Dialog;
+using OpenTracker.ViewModels.Dialogs;
 
 namespace OpenTracker.Views.Dialogs;
 
-public class MessageBoxDialog : DialogWindowBase<bool>
+public sealed class MessageBoxDialog : DialogWindowBase<MessageBoxDialogVM, bool>
 {
     public MessageBoxDialog()
     {

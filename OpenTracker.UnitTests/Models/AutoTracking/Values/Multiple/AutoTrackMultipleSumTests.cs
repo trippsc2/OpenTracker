@@ -1,13 +1,15 @@
 using System.Collections.Generic;
-using System.ComponentModel;
-using NSubstitute;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using FluentAssertions;
 using OpenTracker.Models.AutoTracking.Values;
 using OpenTracker.Models.AutoTracking.Values.Multiple;
 using Xunit;
 
 namespace OpenTracker.UnitTests.Models.AutoTracking.Values.Multiple;
 
-public class AutoTrackMultipleSumTests
+[ExcludeFromCodeCoverage]
+public sealed class AutoTrackMultipleSumTests
 {
     [Theory]
     [InlineData(null, null, null)]
@@ -92,50 +94,37 @@ public class AutoTrackMultipleSumTests
     [InlineData(6, 2, 2, 2)]
     public void CurrentValue_ShouldEqualExpected(int? expected, params int?[] values)
     {
-        var valueList = new List<IAutoTrackValue>();
-
-        foreach (var value in values)
-        {
-            var substitute = Substitute.For<IAutoTrackValue>();
-            substitute.CurrentValue.Returns(value);
-            valueList.Add(substitute);
-        }
+        var valueList = values
+            .Select(value => new MockAutoTrackValue { CurrentValue = value })
+            .Cast<IAutoTrackValue>()
+            .ToList();
 
         var sut = new AutoTrackMultipleSum(valueList);
 
-        Assert.Equal(expected, sut.CurrentValue);
+        sut.CurrentValue.Should().Be(expected);
     }
         
     [Fact]
     public void ValueChanged_ShouldRaisePropertyChanged()
     {
-        var values = new List<IAutoTrackValue>
+        var mockValues = new List<MockAutoTrackValue>
         {
-            Substitute.For<IAutoTrackValue>(),
-            Substitute.For<IAutoTrackValue>(),
-            Substitute.For<IAutoTrackValue>()
+            new(),
+            new(),
+            new()
         };
 
-        foreach (var value in values)
+        foreach (var value in mockValues)
         {
-            value.CurrentValue.Returns(0);
+            value.CurrentValue = 0;
         }
 
-        var sut = new AutoTrackMultipleSum(values);
+        var sut = new AutoTrackMultipleSum(mockValues);
 
-        values[0].CurrentValue.Returns(1);
-        Assert.PropertyChanged(sut, nameof(IAutoTrackValue.CurrentValue),
-            () => values[0].PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
-                values[0], new PropertyChangedEventArgs(nameof(IAutoTrackValue.CurrentValue))));
+        using var monitor = sut.Monitor();
 
-        values[1].CurrentValue.Returns(2);
-        Assert.PropertyChanged(sut, nameof(IAutoTrackValue.CurrentValue),
-            () => values[1].PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
-                values[1], new PropertyChangedEventArgs(nameof(IAutoTrackValue.CurrentValue))));
+        mockValues[0].CurrentValue = 1;
 
-        values[2].CurrentValue.Returns(3);
-        Assert.PropertyChanged(sut, nameof(IAutoTrackValue.CurrentValue),
-            () => values[2].PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
-                values[2], new PropertyChangedEventArgs(nameof(IAutoTrackValue.CurrentValue))));
+        monitor.Should().RaisePropertyChangeFor(x => x.CurrentValue);
     }
 }

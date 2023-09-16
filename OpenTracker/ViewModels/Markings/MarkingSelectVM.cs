@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Reactive;
 using Avalonia.Threading;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Markings;
 using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
@@ -13,7 +14,8 @@ namespace OpenTracker.ViewModels.Markings;
 /// <summary>
 /// This class contains the marking select popup control ViewModel data.
 /// </summary>
-public class MarkingSelectVM : ViewModelBase, IMarkingSelectVM
+[DependencyInjection]
+public sealed class MarkingSelectVM : ViewModel, IMarkingSelectVM
 {
     private readonly ILayoutSettings _layoutSettings;
     private readonly IUndoRedoManager _undoRedoManager;

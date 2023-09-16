@@ -3,6 +3,7 @@ using System.Reactive;
 using System.Threading.Tasks;
 using Avalonia.Input;
 using Avalonia.Threading;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Markings;
 using OpenTracker.Utils;
 using OpenTracker.ViewModels.Markings;
@@ -14,7 +15,8 @@ namespace OpenTracker.ViewModels.PinnedLocations.Notes;
 /// <summary>
 /// This class contains pinned location note control ViewModel data.
 /// </summary>
-public class PinnedLocationNoteVM : ViewModelBase, IPinnedLocationNoteVM
+[DependencyInjection]
+public sealed class PinnedLocationNoteVM : ViewModel, IPinnedLocationNoteVM
 {
     private readonly IMarkingImageDictionary _markingImages;
         

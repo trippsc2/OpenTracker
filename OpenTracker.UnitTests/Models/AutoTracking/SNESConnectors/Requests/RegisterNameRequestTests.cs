@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Reactive;
 using System.Threading;
 using Autofac;
@@ -10,7 +11,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.AutoTracking.SNESConnectors.Requests;
 
-public class RegisterNameRequestTests
+[ExcludeFromCodeCoverage]
+public sealed class RegisterNameRequestTests
 {
     private const string AppName = "OpenTracker";
         

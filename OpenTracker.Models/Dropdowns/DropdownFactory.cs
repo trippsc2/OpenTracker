@@ -7,10 +7,7 @@ using OpenTracker.Models.Requirements.Mode;
 
 namespace OpenTracker.Models.Dropdowns;
 
-/// <summary>
-/// This class contains the creation logic for <see cref="IDropdown"/> objects.
-/// </summary>
-public class DropdownFactory : IDropdownFactory
+public sealed class DropdownFactory : IDropdownFactory
 {
     private readonly IAggregateRequirementDictionary _aggregateRequirements;
     private readonly IEntranceShuffleRequirementDictionary _entranceShuffleRequirements;
@@ -18,7 +15,7 @@ public class DropdownFactory : IDropdownFactory
     private readonly IDropdown.Factory _factory;
 
     /// <summary>
-    /// Constructor
+    /// Initializes a new <see cref="DropdownFactory"/> object.
     /// </summary>
     /// <param name="aggregateRequirements">
     ///     The <see cref="IAggregateRequirementDictionary"/>.
@@ -74,8 +71,8 @@ public class DropdownFactory : IDropdownFactory
             case DropdownID.SWSEHole:
             case DropdownID.SWSWHole:
                 return _entranceShuffleRequirements[EntranceShuffle.Insanity];
+            default:
+                throw new ArgumentOutOfRangeException(nameof(id));
         }
-
-        throw new ArgumentOutOfRangeException(nameof(id));
     }
 }

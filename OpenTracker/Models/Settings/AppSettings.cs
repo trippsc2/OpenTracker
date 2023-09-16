@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Utils;
@@ -9,7 +10,8 @@ namespace OpenTracker.Models.Settings;
 /// <summary>
 /// This class contains app settings data.
 /// </summary>
-public class AppSettings : IAppSettings
+[DependencyInjection(SingleInstance = true)]
+public sealed class AppSettings : IAppSettings
 {
     public IBoundsSettings Bounds { get; }
     public ITrackerSettings Tracker { get; }

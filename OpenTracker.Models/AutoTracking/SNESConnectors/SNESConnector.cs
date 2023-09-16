@@ -7,14 +7,12 @@ using OpenTracker.Models.AutoTracking.SNESConnectors.Requests;
 using OpenTracker.Models.AutoTracking.SNESConnectors.Socket;
 using OpenTracker.Models.Logging;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 using WebSocketSharp;
 
 namespace OpenTracker.Models.AutoTracking.SNESConnectors;
 
-/// <summary>
-/// This class contains logic for the SNES connector to (Q)USB2SNES.
-/// </summary>
-public class SNESConnector : ReactiveObject, ISNESConnector
+public sealed class SNESConnector : ReactiveObject, ISNESConnector
 {
     private readonly IAutoTrackerLogger _logger;
 
@@ -62,13 +60,9 @@ public class SNESConnector : ReactiveObject, ISNESConnector
             _socket.OnOpen += TraceWebSocketOpen;
         }
     }
-        
-    private ConnectionStatus _status;
-    public ConnectionStatus Status
-    {
-        get => _status;
-        private set => this.RaiseAndSetIfChanged(ref _status, value);
-    }
+    
+    [Reactive]
+    public ConnectionStatus Status { get; private set; }
 
     /// <summary>
     /// Constructor
@@ -189,9 +183,6 @@ public class SNESConnector : ReactiveObject, ISNESConnector
         return Task.Run(Disconnect);
     }
 
-    /// <summary>
-    /// Disconnects from the websocket and disposes of the <see cref="IWebSocketWrapper"/> object.
-    /// </summary>
     private void Disconnect()
     {
         _logger.Debug("Attempting to disconnect and dispose of WebSocket");
@@ -238,12 +229,6 @@ public class SNESConnector : ReactiveObject, ISNESConnector
         });
     }
 
-    /// <summary>
-    /// Sets the device to the specified device.
-    /// </summary>
-    /// <param name="device">
-    ///     A <see cref="string"/> representing the device.
-    /// </param>
     private void AttachDevice(string device)
     {
         Status = ConnectionStatus.Attaching;
@@ -279,21 +264,6 @@ public class SNESConnector : ReactiveObject, ISNESConnector
         });
     }
 
-    /// <summary>
-    /// Handles requests to the USB2SNES websocket.
-    /// </summary>
-    /// <param name="request">
-    ///     The <see cref="IRequest{T}"/> to be handled.
-    /// </param>
-    /// <typeparam name="T">
-    ///     The type of data to be returned by the request.
-    /// </typeparam>
-    /// <returns>
-    ///     The data resulting from the request.
-    /// </returns>
-    /// <exception cref="Exception">
-    ///     Thrown if the USB2SNES websocket is not in the required status.
-    /// </exception>
     private T? HandleRequest<T>(IRequest<T> request)
     {
         lock (_transmitLock)
@@ -311,21 +281,6 @@ public class SNESConnector : ReactiveObject, ISNESConnector
         }
     }
 
-    /// <summary>
-    /// Validates the <see cref="Status"/> property is appropriate for the specified <see cref="IRequest{T}"/>
-    /// </summary>
-    /// <param name="request">
-    ///     The <see cref="IRequest{T}"/> to be validated.
-    /// </param>
-    /// <typeparam name="T">
-    ///     The type of data to be returned by the request.
-    /// </typeparam>
-    /// <returns>
-    ///     A <see cref="bool"/> representing whether the <see cref="Status"/> is valid.
-    /// </returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    ///     Thrown when the <see cref="IRequest{T}"/> requires an unexpected <see cref="ConnectionStatus"/>.
-    /// </exception>
     private bool ValidateRequestStatus<T>(IRequest<T> request)
     {
         return request.StatusRequired switch
@@ -337,42 +292,9 @@ public class SNESConnector : ReactiveObject, ISNESConnector
         };
     }
 
-    /// <summary>
-    /// Sends the websocket request to USB2SNES and returns the processed result.
-    /// </summary>
-    /// <param name="request">
-    ///     The <see cref="IRequest{T}"/> representing the request to be sent.
-    /// </param>
-    /// <param name="sendEvent">
-    ///     A <see cref="ManualResetEvent"/> that waits for data to be received or a 2 second timeout.
-    /// </param>
-    /// <typeparam name="T">
-    ///     The type of the request response result.
-    /// </typeparam>
-    /// <returns>
-    ///     The data returned from the request.
-    /// </returns>
-    /// <exception cref="Exception">
-    ///     Thrown if the request fails to receive data.
-    /// </exception>
     private T? SendRequestAndReceiveResult<T>(IRequest<T> request, ManualResetEvent sendEvent)
     {
         T? results = default;
-            
-        void HandleMessage(object? sender, MessageEventArgs e)
-        {
-            try
-            {
-                results = request.ProcessResponseAndReturnResults(_messageEventArgsWrapperFactory(e), sendEvent);
-            }
-            catch (Exception exception)
-            {
-                HandleException(exception);
-            }
-                
-            _logger.Information("Response of request \'{Request}\' successfully received",
-                request.Description);
-        }
 
         if (request is not IRequest<Unit>)
         {
@@ -407,6 +329,21 @@ public class SNESConnector : ReactiveObject, ISNESConnector
         _logger.Information("Received response from request \'{Request}\' successfully",
             request.Description);
         return results;
+
+        void HandleMessage(object? sender, MessageEventArgs e)
+        {
+            try
+            {
+                results = request.ProcessResponseAndReturnResults(_messageEventArgsWrapperFactory(e), sendEvent);
+            }
+            catch (Exception exception)
+            {
+                HandleException(exception);
+            }
+                
+            _logger.Information("Response of request \'{Request}\' successfully received",
+                request.Description);
+        }
     }
 
     /// <summary>

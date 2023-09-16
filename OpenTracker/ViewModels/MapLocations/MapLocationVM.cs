@@ -5,6 +5,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Threading;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Locations.Map;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Settings;
@@ -17,7 +18,8 @@ namespace OpenTracker.ViewModels.MapLocations;
 /// <summary>
 /// This class contains the map location control ViewModel data.
 /// </summary>
-public class MapLocationVM : ViewModelBase, IMapLocationVM
+[DependencyInjection]
+public sealed class MapLocationVM : ViewModel, IMapLocationVM
 {
     private readonly IAppSettings _appSettings;
     private readonly IMapLocation _mapLocation;

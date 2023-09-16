@@ -1,12 +1,14 @@
 using System.ComponentModel;
 using Avalonia.Threading;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Utils;
 using ReactiveUI;
 
 namespace OpenTracker.ViewModels.Menus;
 
-public class MenuItemCheckBoxVM : ViewModelBase, IMenuItemIconVM
+[DependencyInjection]
+public sealed class MenuItemCheckBoxVM : ViewModel, IMenuItemIconVM
 {
     private readonly IRequirement _requirement;
 

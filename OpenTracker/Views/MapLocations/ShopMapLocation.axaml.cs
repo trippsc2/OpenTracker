@@ -1,9 +1,11 @@
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using Avalonia.ReactiveUI;
+using OpenTracker.ViewModels.MapLocations;
 
 namespace OpenTracker.Views.MapLocations;
 
-public class ShopMapLocation : UserControl
+public sealed class ShopMapLocation : ReactiveUserControl<ShopMapLocationVM>
 {
     public ShopMapLocation()
     {

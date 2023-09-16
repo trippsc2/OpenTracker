@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using OpenTracker.Autofac;
 using OpenTracker.Utils;
 
 namespace OpenTracker.ViewModels.Items;
@@ -6,7 +7,8 @@ namespace OpenTracker.ViewModels.Items;
 /// <summary>
 /// This class contains the large item panel body control ViewModel data.
 /// </summary>
-public class LargeItemPanelVM : ViewModelBase, ILargeItemPanelVM
+[DependencyInjection]
+public sealed class LargeItemPanelVM : ViewModel, ILargeItemPanelVM
 {
     public List<ILargeItemVM> Items { get; }
 

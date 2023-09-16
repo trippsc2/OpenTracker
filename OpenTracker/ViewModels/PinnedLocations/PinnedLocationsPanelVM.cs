@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using Avalonia.Layout;
 using Avalonia.Threading;
+using OpenTracker.Autofac;
 using OpenTracker.Models.Settings;
 using OpenTracker.Utils;
 using ReactiveUI;
@@ -10,7 +11,8 @@ namespace OpenTracker.ViewModels.PinnedLocations;
 /// <summary>
 /// This class contains the pinned location panel control ViewModel data.
 /// </summary>
-public class PinnedLocationsPanelVM : ViewModelBase, IPinnedLocationsPanelVM
+[DependencyInjection]
+public sealed class PinnedLocationsPanelVM : ViewModel, IPinnedLocationsPanelVM
 {
     private readonly ILayoutSettings _layoutSettings;
 
