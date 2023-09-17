@@ -13,6 +13,8 @@ public sealed class ErrorBoxDialogVM : DialogViewModelBase
 {
     public string Title { get; }
     public string Text { get; }
+    
+    public Interaction<Unit, Unit> RequestCloseInteraction { get; } = new(RxApp.MainThreadScheduler);
 
     public ReactiveCommand<Unit, Unit> OkCommand { get; }
 

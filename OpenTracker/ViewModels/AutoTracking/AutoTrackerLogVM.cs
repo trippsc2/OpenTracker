@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Reactive;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Avalonia.Threading;
 using OpenTracker.Autofac;
@@ -23,7 +24,6 @@ public class AutoTrackerLogVM : ViewModel, IAutoTrackerLogVM
 {
     private readonly IAutoTrackerLogService _logService;
 
-    private readonly IDialogService _dialogService;
     private readonly IFileDialogService _fileDialogService;
 
     public ObservableCollection<string> LogLevelOptions { get; } = new();
@@ -34,6 +34,8 @@ public class AutoTrackerLogVM : ViewModel, IAutoTrackerLogVM
         get => _logVisible;
         set => this.RaiseAndSetIfChanged(ref _logVisible, value);
     }
+    
+    public Interaction<ErrorBoxDialogVM, Unit> OpenErrorBoxInteraction { get; } = new(RxApp.MainThreadScheduler);
 
     public ReactiveCommand<Unit, Unit> ResetLogCommand { get; }
     public ReactiveCommand<Unit, Unit> SaveLogCommand { get; }
@@ -50,20 +52,13 @@ public class AutoTrackerLogVM : ViewModel, IAutoTrackerLogVM
     /// <param name="logService">
     /// The auto-tracking log service.
     /// </param>
-    /// <param name="dialogService">
-    /// The dialog service.
-    /// </param>
     /// <param name="fileDialogService">
     /// The file dialog service.
     /// </param>
-    public AutoTrackerLogVM(
-        IAutoTrackerLogService logService,
-        IDialogService dialogService,
-        IFileDialogService fileDialogService)
+    public AutoTrackerLogVM(IAutoTrackerLogService logService, IFileDialogService fileDialogService)
     {
         _logService = logService;
 
-        _dialogService = dialogService;
         _fileDialogService = fileDialogService;
 
         foreach (LogLevel logLevel in Enum.GetValues(typeof(LogLevel)))
@@ -98,12 +93,9 @@ public class AutoTrackerLogVM : ViewModel, IAutoTrackerLogVM
     /// <param name="message">
     /// The message to be contained in the error box.
     /// </param>
-    private async Task OpenErrorBox(string message)
+    private async Task OpenErrorBoxAsync(string message)
     {
-        await Dispatcher.UIThread.InvokeAsync(async () =>
-        {
-            await _dialogService.ShowDialogAsync(new ErrorBoxDialogVM("Error", message));
-        });
+        await OpenErrorBoxInteraction.Handle(new ErrorBoxDialogVM("Error", message));
     }
 
     /// <summary>
@@ -150,7 +142,7 @@ public class AutoTrackerLogVM : ViewModel, IAutoTrackerLogVM
                 _ => ex.Message
             };
 
-            await OpenErrorBox(message);
+            await OpenErrorBoxAsync(message);
         }
     }
 }

@@ -1,49 +1,18 @@
 ﻿<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="clr-namespace:OpenTracker.ViewModels.ColorSelect;assembly=OpenTracker"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" x:Class="OpenTracker.Views.ColorSelect.ColorSelectDialog"
         Width="420" Height="554" Padding="5" CanResize="True" WindowStartupLocation="CenterScreen"
         Icon="avares://OpenTracker/Assets/Images/triforce.png" Title="OpenTracker - Color Select">
-	
-	<Design.DataContext>
-		<vm:ColorSelectDialogVM />
-	</Design.DataContext>
-	
 	<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
 		<StackPanel Orientation="Vertical">
-			
 			<TextBlock Classes="ColorSelectTitle" Text="Font Colors" />
-			
-			<ItemsControl Items="{Binding FontColors}">
-				<ItemsControl.ItemsPanel>
-					<ItemsPanelTemplate>
-						<StackPanel Orientation="Vertical" />
-					</ItemsPanelTemplate>
-				</ItemsControl.ItemsPanel>
-			</ItemsControl>
-			
+			<ItemsControl x:Name="FontColors" />
 			<TextBlock Classes="ColorSelectTitle" Text="Accessibility Colors" />
-			
-			<ItemsControl Items="{Binding  AccessibilityColors}">
-				<ItemsControl.ItemsPanel>
-					<ItemsPanelTemplate>
-						<StackPanel Orientation="Vertical" />
-					</ItemsPanelTemplate>
-				</ItemsControl.ItemsPanel>
-			</ItemsControl>
-			
+			<ItemsControl x:Name="AccessibilityColors" />
 			<TextBlock Classes="ColorSelectTitle" Text="Connector Colors" />
-			
-			<ItemsControl Items="{Binding ConnectorColors}">
-				<ItemsControl.ItemsPanel>
-					<ItemsPanelTemplate>
-						<StackPanel Orientation="Vertical" />
-					</ItemsPanelTemplate>
-				</ItemsControl.ItemsPanel>
-			</ItemsControl>
-			
+			<ItemsControl x:Name="ConnectorColors" />
 		</StackPanel>
 	</ScrollViewer>
 </Window>

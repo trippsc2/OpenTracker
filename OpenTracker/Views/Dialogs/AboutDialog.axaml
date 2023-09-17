@@ -1,22 +1,17 @@
 ﻿<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="clr-namespace:OpenTracker.ViewModels.Dialogs;assembly=OpenTracker"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" x:Class="OpenTracker.Views.Dialogs.AboutDialog"
         CanResize="False" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterOwner"
         Icon="avares://OpenTracker/Assets/Images/triforce.png" Title="OpenTracker - About">
-  
-  <Design.DataContext>
-    <vm:AboutDialogVM />
-  </Design.DataContext>
-  
   <Border Classes="ControlBorder" Padding="10">
     <StackPanel Spacing="10" Orientation="Horizontal">
       <Image Height="64" Width="64" Source="avares://OpenTracker/Assets/Images/triforce.png" />
+      
       <StackPanel Orientation="Vertical" VerticalAlignment="Center">
         <TextBlock Classes="About" Text="OpenTracker" />
-        <TextBlock Classes="AboutVersion" Text="{Binding Version}" />
+        <TextBlock x:Name="VersionText" Classes="AboutVersion" Text="{Binding Version}" />
       </StackPanel>
     </StackPanel>
   </Border>

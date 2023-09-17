@@ -7,15 +7,11 @@
   
   <StackPanel Orientation="Vertical">
     <Grid ColumnDefinitions="Auto * Auto">
-      <ToggleButton Classes="ColorSelect"
-                    Background="{Binding Color}"
-                    IsChecked="{Binding PickerOpen, Mode=TwoWay}" />
-      <TextBlock Classes="ColorSelectLabel" Grid.Column="2"
-                 Text="{Binding Label}" />
+      <ToggleButton x:Name="ColorPickerToggleButton" Classes="ColorSelect" />
+      <TextBlock x:Name="Label" Classes="ColorSelectLabel" Grid.Column="2" />
     </Grid>
-    <Border Classes="ColorPicker"
-            IsVisible="{Binding PickerOpen}">
-      <view:ColorPickerControl DataContext="{Binding Color}" />
+    <Border x:Name="ColorPickerBorder" Classes="ColorPicker">
+      <view:ColorPickerControl x:Name="ColorPickerControl" />
     </Border>
   </StackPanel>
   

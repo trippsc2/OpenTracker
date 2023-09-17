@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reactive;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Layout;
@@ -32,7 +33,6 @@ public sealed class TopMenuVM : ViewModel, ITopMenuVM
     private readonly ISaveLoadManager _saveLoadManager;
     private readonly IUndoRedoManager _undoRedoManager;
 
-    private readonly IDialogService _dialogService;
     private readonly IFileDialogService _fileDialogService;
     private readonly IThemeManager _themeManager;
 
@@ -42,6 +42,10 @@ public sealed class TopMenuVM : ViewModel, ITopMenuVM
     private readonly AboutDialogVM _aboutDialog;
 
     public List<IMenuItemVM> Items { get; }
+    
+    public Interaction<ErrorBoxDialogVM, Unit> OpenErrorBoxInteraction { get; } = new(RxApp.MainThreadScheduler);
+    public Interaction<MessageBoxDialogVM, bool> OpenMessageBoxInteraction { get; } = new(RxApp.MainThreadScheduler);
+    public Interaction<ViewModel, Unit> OpenDialogInteraction { get; } = new(RxApp.MainThreadScheduler);
     
     public ReactiveCommand<Unit, Unit> Open { get; }
     public ReactiveCommand<Unit, Unit> Save { get; }
@@ -111,7 +115,7 @@ public sealed class TopMenuVM : ViewModel, ITopMenuVM
     /// </summary>
     public TopMenuVM(
         IAppSettings appSettings, IResetManager resetManager,
-        ISaveLoadManager saveLoadManager, IUndoRedoManager undoRedoManager, IDialogService dialogService,
+        ISaveLoadManager saveLoadManager, IUndoRedoManager undoRedoManager,
         IFileDialogService fileDialogService, IThemeManager themeManager, AutoTrackerDialogVM autoTrackerDialog,
         ColorSelectDialogVM colorSelectDialog,
         SequenceBreakDialogVM sequenceBreakDialog, AboutDialogVM aboutDialog,
@@ -122,7 +126,6 @@ public sealed class TopMenuVM : ViewModel, ITopMenuVM
         _saveLoadManager = saveLoadManager;
         _undoRedoManager = undoRedoManager;
 
-        _dialogService = dialogService;
         _fileDialogService = fileDialogService;
         _themeManager = themeManager;
 
@@ -222,8 +225,7 @@ public sealed class TopMenuVM : ViewModel, ITopMenuVM
     /// </param>
     private async Task OpenErrorBox(string message)
     {
-        await Dispatcher.UIThread.InvokeAsync(async () =>
-            await _dialogService.ShowDialogAsync(new ErrorBoxDialogVM("Error", message)));
+        await OpenErrorBoxInteraction.Handle(new ErrorBoxDialogVM("Error", message));
     }
 
     /// <summary>
@@ -330,7 +332,7 @@ public sealed class TopMenuVM : ViewModel, ITopMenuVM
     /// </summary>
     private async Task ResetImpl()
     {
-        var result = await _dialogService.ShowDialogAsync<MessageBoxDialogVM, bool>(
+        var result = await OpenMessageBoxInteraction.Handle(
             new MessageBoxDialogVM("Warning",
                 "Resetting the tracker will set all items and locations back to their " +
                 "starting values. This cannot be undone.\n\nDo you wish to proceed?"));
@@ -368,8 +370,7 @@ public sealed class TopMenuVM : ViewModel, ITopMenuVM
     /// </summary>
     private async Task AutoTrackerImpl()
     {
-        await Dispatcher.UIThread.InvokeAsync(async () =>
-            await _dialogService.ShowDialogAsync(_autoTrackerDialog, false));
+        await OpenDialogInteraction.Handle(_autoTrackerDialog);
     }
 
     /// <summary>
@@ -377,8 +378,7 @@ public sealed class TopMenuVM : ViewModel, ITopMenuVM
     /// </summary>
     private async Task SequenceBreaksImpl()
     {
-        await Dispatcher.UIThread.InvokeAsync(async () =>
-            await _dialogService.ShowDialogAsync(_sequenceBreakDialog, false));
+        await OpenDialogInteraction.Handle(_sequenceBreakDialog);
     }
 
     /// <summary>
@@ -506,8 +506,7 @@ public sealed class TopMenuVM : ViewModel, ITopMenuVM
     /// </summary>
     private async Task ColorSelectImpl()
     {
-        await Dispatcher.UIThread.InvokeAsync(async () =>
-            await _dialogService.ShowDialogAsync(_colorSelectDialog, false));
+        await OpenDialogInteraction.Handle(_colorSelectDialog);
     }
 
     /// <summary>
@@ -515,7 +514,6 @@ public sealed class TopMenuVM : ViewModel, ITopMenuVM
     /// </summary>
     private async Task AboutImpl()
     {
-        await Dispatcher.UIThread.InvokeAsync(async () =>
-            await _dialogService.ShowDialogAsync(_aboutDialog, false));
+        await OpenDialogInteraction.Handle(_aboutDialog);
     }
 }

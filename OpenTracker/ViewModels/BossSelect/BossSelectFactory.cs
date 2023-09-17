@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reactive;
 using OpenTracker.Autofac;
 using OpenTracker.Models.BossPlacements;
+using ReactiveUI;
 
 namespace OpenTracker.ViewModels.BossSelect;
 
@@ -30,21 +32,26 @@ public sealed class BossSelectFactory : IBossSelectFactory
     /// <param name="bossPlacement">
     /// The boss placement.
     /// </param>
+    /// <param name="changeBossCommand">
+    ///
+    /// </param>
     /// <returns>
     /// An observable collection of boss select button control ViewModel instances.
     /// </returns>
-    public List<IBossSelectButtonVM> GetBossSelectButtonVMs(IBossPlacement bossPlacement)
+    public List<IBossSelectButtonVM> GetBossSelectButtonVMs(
+        IBossPlacement bossPlacement,
+        ReactiveCommand<BossType?, Unit> changeBossCommand)
     {
         var buttons = new List<IBossSelectButtonVM>
         {
-            _buttonFactory(bossPlacement, null)
+            _buttonFactory(bossPlacement, null, changeBossCommand)
         };
 
         foreach (BossType boss in Enum.GetValues(typeof(BossType)))
         {
             if (boss != BossType.Aga && boss != BossType.Test)
             {
-                buttons.Add(_buttonFactory(bossPlacement, boss));
+                buttons.Add(_buttonFactory(bossPlacement, boss, changeBossCommand));
             }
         }
 

@@ -1,4 +1,6 @@
-﻿using OpenTracker.Models.BossPlacements;
+﻿using System.Reactive;
+using OpenTracker.Models.BossPlacements;
+using ReactiveUI;
 
 namespace OpenTracker.ViewModels.BossSelect;
 
@@ -7,5 +9,9 @@ namespace OpenTracker.ViewModels.BossSelect;
 /// </summary>
 public interface IBossSelectButtonVM
 {
-    delegate IBossSelectButtonVM Factory(IBossPlacement bossPlacement, BossType? boss);
+    ReactiveCommand<BossType?, Unit> ChangeBossCommand { get; }
+    delegate IBossSelectButtonVM Factory(
+        IBossPlacement bossPlacement,
+        BossType? boss,
+        ReactiveCommand<BossType?, Unit> changeBossCommand);
 }

@@ -4,11 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:cp="clr-namespace:ThemeEditor.Controls.ColorPicker;assembly=ThemeEditor.Controls.ColorPicker"
              mc:Ignorable="d" x:Class="OpenTracker.Views.ColorSelect.ColorPickerControl">
-	
 	<Design.DataContext>
 		<SolidColorBrush />
 	</Design.DataContext>
 	
 	<cp:ColorPicker Color="{Binding Path=Color, Mode=TwoWay}" />
-	
 </UserControl>

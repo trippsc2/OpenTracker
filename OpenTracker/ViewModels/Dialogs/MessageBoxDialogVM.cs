@@ -1,6 +1,8 @@
 ﻿using System.Reactive;
+using System.Reactive.Linq;
+using System.Threading.Tasks;
 using OpenTracker.Autofac;
-using OpenTracker.Utils.Dialog;
+using OpenTracker.Utils;
 using ReactiveUI;
 
 namespace OpenTracker.ViewModels.Dialogs;
@@ -9,10 +11,12 @@ namespace OpenTracker.ViewModels.Dialogs;
 /// This class contains the message box dialog window ViewModel data.
 /// </summary>
 [DependencyInjection]
-public sealed class MessageBoxDialogVM : DialogViewModelBase<bool>
+public sealed class MessageBoxDialogVM : ViewModel
 {
     public string Title { get; }
     public string Text { get; }
+    
+    public Interaction<bool, Unit> RequestCloseInteraction { get; } = new(RxApp.MainThreadScheduler);
 
     public ReactiveCommand<Unit, Unit> YesCommand { get; }
     public ReactiveCommand<Unit, Unit> NoCommand { get; }
@@ -28,8 +32,8 @@ public sealed class MessageBoxDialogVM : DialogViewModelBase<bool>
     /// </param>
     public MessageBoxDialogVM(string title, string text)
     {
-        YesCommand = ReactiveCommand.Create(Yes);
-        NoCommand = ReactiveCommand.Create(No);
+        YesCommand = ReactiveCommand.CreateFromTask(YesAsync);
+        NoCommand = ReactiveCommand.CreateFromTask(NoAsync);
 
         Title = title;
         Text = text;
@@ -38,16 +42,16 @@ public sealed class MessageBoxDialogVM : DialogViewModelBase<bool>
     /// <summary>
     /// Selects Yes to the dialog.
     /// </summary>
-    private void Yes()
+    private async Task YesAsync()
     {
-        Close(true);
+        await RequestCloseInteraction.Handle(true);
     }
 
     /// <summary>
     /// Selects No to the dialog.
     /// </summary>
-    private void No()
+    private async Task NoAsync()
     {
-        Close();
+        await RequestCloseInteraction.Handle(false);
     }
 }

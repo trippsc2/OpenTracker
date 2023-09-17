@@ -7,6 +7,7 @@ using OpenTracker.ViewModels;
 using System;
 using System.ComponentModel;
 using System.Linq;
+using System.Reactive;
 using System.Reactive.Disposables;
 using Avalonia.ReactiveUI;
 using ReactiveUI;
@@ -74,7 +75,24 @@ public sealed class MainWindow : ReactiveWindow<MainWindowVM>
             this.WhenAnyValue(x => x.Bounds)
                 .Subscribe(ChangeLayout)
                 .DisposeWith(disposables);
+
+            if (ViewModel is null)
+            {
+                return;
+            }
+            
+            ViewModel!.RequestCloseInteraction.RegisterHandler(interaction =>
+                {
+                    interaction.SetOutput(Unit.Default);
+                    Close(interaction.Input);
+                })
+                .DisposeWith(disposables);
         });
+    }
+
+    private void InitializeComponent()
+    {
+        AvaloniaXamlLoader.Load(this);
     }
 
     protected override void OnClosing(CancelEventArgs e)
@@ -82,11 +100,6 @@ public sealed class MainWindow : ReactiveWindow<MainWindowVM>
         ViewModel?.OnClose(WindowState == WindowState.Maximized, Bounds, Position);
 
         base.OnClosing(e);
-    }
-
-    private void InitializeComponent()
-    {
-        AvaloniaXamlLoader.Load(this);
     }
 
     private void LoadSavedWindowSizeAndPosition()

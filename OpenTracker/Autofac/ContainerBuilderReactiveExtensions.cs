@@ -29,10 +29,25 @@ public static class ContainerBuilderReactiveExtensions
         {
             return;
         }
+
+        var attribute = type.GetCustomAttribute<DependencyInjectionAttribute>();
+
+        var singleInstance = false;
+
+        if (attribute is not null)
+        {
+            singleInstance = attribute.SingleInstance;
+        }
         
         var viewForInterface = GetGenericViewForInterface(type);
         if (viewForInterface is null)
         {
+            return;
+        }
+        
+        if (singleInstance)
+        {
+            builder.RegisterType(type).As(viewForInterface).SingleInstance();
             return;
         }
         

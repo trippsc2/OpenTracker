@@ -7,5 +7,5 @@ namespace OpenTracker.ViewModels.Dialogs;
 [DependencyInjection(SingleInstance = true)]
 public sealed class AboutDialogVM : DialogViewModelBase
 {
-    public static string Version { get; } = $"v{Assembly.GetExecutingAssembly().GetName().Version}";
+    public string Version { get; } = $"v{Assembly.GetExecutingAssembly().GetName().Version}";
 }

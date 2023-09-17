@@ -56,19 +56,22 @@ public sealed class BossSelectPopupVM : ViewModel, IBossSelectPopupVM
     /// The boss placement to be manipulated.
     /// </param>
     public BossSelectPopupVM(
-        ILayoutSettings layoutSettings, IUndoRedoManager undoRedoManager, IBossSelectFactory factory,
+        ILayoutSettings layoutSettings, IUndoRedoManager undoRedoManager, IBossSelectFactory.Factory factory,
         IBossPlacement bossPlacement)
     {
         _layoutSettings = layoutSettings;
 
         _bossPlacement = bossPlacement;
         _undoRedoManager = undoRedoManager;
+        
+        var bossSelectFactory = factory(this);
 
-        Buttons = factory.GetBossSelectButtonVMs(_bossPlacement);
 
         ChangeBoss = ReactiveCommand.CreateFromTask<BossType?>(ChangeBossImpl);
         ChangeBoss.IsExecuting.ToProperty(
             this, x => x.IsChangingBoss, out _isChangingBoss);
+
+        Buttons = bossSelectFactory.GetBossSelectButtonVMs(_bossPlacement, ChangeBoss);
 
         _layoutSettings.PropertyChanged += OnAppSettingsChanged;
     }

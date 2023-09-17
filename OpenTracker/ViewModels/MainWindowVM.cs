@@ -83,7 +83,7 @@ public sealed class MainWindowVM : ViewModel
     public IUIPanelAreaVM UIPanel { get; }
     public IMapAreaVM MapArea { get; }
     
-    public Interaction<Unit, Unit> RequestClose { get; } = new(RxApp.MainThreadScheduler);
+    public Interaction<Unit, Unit> RequestCloseInteraction { get; } = new(RxApp.MainThreadScheduler);
 
     public ReactiveCommand<Unit, Unit> Open { get; }
     public ReactiveCommand<Unit, Unit> Save { get; }
@@ -246,6 +246,6 @@ public sealed class MainWindowVM : ViewModel
 
     private async Task CloseAsync()
     {
-        await RequestClose.Handle(Unit.Default);
+        await RequestCloseInteraction.Handle(Unit.Default);
     }
 }
