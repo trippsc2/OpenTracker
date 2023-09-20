@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Dungeons.KeyDoors;
@@ -7,7 +8,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Dungeons.KeyDoors;
 
-public class KeyDoorDictionaryTests
+[ExcludeFromCodeCoverage]
+public sealed class KeyDoorDictionaryTests
 {
     private readonly IKeyDoorFactory _factory = Substitute.For<IKeyDoorFactory>();
     private readonly IMutableDungeon _dungeonData = Substitute.For<IMutableDungeon>();

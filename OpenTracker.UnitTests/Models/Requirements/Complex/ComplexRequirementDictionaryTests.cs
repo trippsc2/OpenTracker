@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Requirements.Complex;
@@ -5,7 +6,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Requirements.Complex;
 
-public class ComplexRequirementDictionaryTests
+[ExcludeFromCodeCoverage]
+public sealed class ComplexRequirementDictionaryTests
 {
     // ReSharper disable once CollectionNeverUpdated.Local
     private readonly ComplexRequirementDictionary _sut;

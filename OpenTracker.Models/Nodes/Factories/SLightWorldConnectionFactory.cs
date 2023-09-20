@@ -10,13 +10,15 @@ using OpenTracker.Models.Requirements.Item;
 using OpenTracker.Models.Requirements.Mode;
 using OpenTracker.Models.Requirements.SequenceBreak;
 using OpenTracker.Models.SequenceBreaks;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Nodes.Factories;
 
 /// <summary>
 /// This class contains the creation logic for south light world <see cref="INodeConnection"/> objects.
 /// </summary>
-public class SLightWorldConnectionFactory : ISLightWorldConnectionFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class SLightWorldConnectionFactory : ISLightWorldConnectionFactory
 {
     private readonly IAlternativeRequirementDictionary _alternativeRequirements;
     private readonly IComplexRequirementDictionary _complexRequirements;

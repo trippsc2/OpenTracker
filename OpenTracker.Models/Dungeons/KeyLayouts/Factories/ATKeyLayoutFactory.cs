@@ -4,13 +4,15 @@ using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Requirements.Aggregate;
 using OpenTracker.Models.Requirements.KeyDropShuffle;
 using OpenTracker.Models.Requirements.SmallKeyShuffle;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories;
 
 /// <summary>
 /// This class contains the creation logic for Agahnim's Tower key layouts.
 /// </summary>
-public class ATKeyLayoutFactory : IATKeyLayoutFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class ATKeyLayoutFactory : IATKeyLayoutFactory
 {
     private readonly IAggregateRequirementDictionary _aggregateRequirements;
     private readonly IKeyDropShuffleRequirementDictionary _keyDropShuffleRequirements;

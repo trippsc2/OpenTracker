@@ -13,6 +13,7 @@ using OpenTracker.Models.Modes;
 using OpenTracker.Models.Nodes;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Requirements.KeyDoor;
+using OpenTracker.Utils.Autofac;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 
@@ -21,7 +22,8 @@ namespace OpenTracker.Models.Dungeons.AccessibilityProvider;
 /// <summary>
 /// This class contains the logic for updating the dungeon accessibility.
 /// </summary>
-public class DungeonAccessibilityProvider : ReactiveObject, IDungeonAccessibilityProvider
+[DependencyInjection]
+public sealed class DungeonAccessibilityProvider : ReactiveObject, IDungeonAccessibilityProvider
 {
     private readonly IDungeon _dungeon;
     private readonly IMutableDungeonQueue _mutableDungeonQueue;

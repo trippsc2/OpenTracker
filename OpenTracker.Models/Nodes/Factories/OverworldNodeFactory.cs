@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using OpenTracker.Models.Nodes.Connections;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Nodes.Factories;
 
 /// <summary>
 /// This class contains creation logic for <see cref="IStartNode"/> and <see cref="IOverworldNode"/> objects.
 /// </summary>
-public class OverworldNodeFactory : IOverworldNodeFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class OverworldNodeFactory : IOverworldNodeFactory
 {
     private readonly IStartConnectionFactory _startConnectionFactory;
     private readonly ILightWorldConnectionFactory _lightWorldConnectionFactory;

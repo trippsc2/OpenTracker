@@ -1,4 +1,5 @@
 ﻿using OpenTracker.Models.SaveLoad;
+using OpenTracker.Utils.Autofac;
 using ReactiveUI;
 
 namespace OpenTracker.Models.SequenceBreaks;
@@ -6,7 +7,8 @@ namespace OpenTracker.Models.SequenceBreaks;
 /// <summary>
 /// This class contains sequence break data.
 /// </summary>
-public class SequenceBreak : ReactiveObject, ISequenceBreak
+[DependencyInjection]
+public sealed class SequenceBreak : ReactiveObject, ISequenceBreak
 {
     private bool _enabled;
     public bool Enabled

@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Requirements.GuaranteedBossItems;
@@ -5,7 +6,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Requirements.GuaranteedBossItems;
 
-public class GuaranteedBossItemsRequirementDictionaryTests
+[ExcludeFromCodeCoverage]
+public sealed class GuaranteedBossItemsRequirementDictionaryTests
 {
     // ReSharper disable once CollectionNeverUpdated.Local
     private readonly GuaranteedBossItemsRequirementDictionary _sut;

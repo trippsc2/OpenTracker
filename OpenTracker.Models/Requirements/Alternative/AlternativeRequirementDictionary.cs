@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Requirements.Alternative;
 
@@ -8,7 +9,8 @@ namespace OpenTracker.Models.Requirements.Alternative;
 /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for
 /// <see cref="IAlternativeRequirement"/> objects indexed by <see cref="HashSet{T}"/> of <see cref="IRequirement"/>.
 /// </summary>
-public class AlternativeRequirementDictionary : LazyDictionary<HashSet<IRequirement>, IRequirement>,
+[DependencyInjection(SingleInstance = true)]
+public sealed class AlternativeRequirementDictionary : LazyDictionary<HashSet<IRequirement>, IRequirement>,
     IAlternativeRequirementDictionary
 {
     private readonly IAlternativeRequirement.Factory _factory;

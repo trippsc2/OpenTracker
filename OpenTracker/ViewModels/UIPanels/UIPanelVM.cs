@@ -1,10 +1,11 @@
-using System.ComponentModel;
-using Avalonia.Threading;
-using OpenTracker.Autofac;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Settings;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 
 namespace OpenTracker.ViewModels.UIPanels;
 
@@ -14,16 +15,18 @@ namespace OpenTracker.ViewModels.UIPanels;
 [DependencyInjection]
 public sealed class UIPanelVM : ViewModel, IUIPanelVM
 {
-    private readonly ILayoutSettings _layoutSettings;
-    private readonly IRequirement? _requirement;
-
-    public bool Visible => _requirement is null || _requirement.Met;
-    public double Scale => _layoutSettings.UIScale;
-
+    private ILayoutSettings LayoutSettings { get; }
+    private IRequirement? Requirement { get; }
     public string Title { get; }
     public IModeSettingsVM? ModeSettings { get; }
     public bool AlternateBodyColor { get; }
-    public IUIPanelBodyVMBase Body { get; }
+    public IViewModel Body { get; }
+
+    [ObservableAsProperty]
+    public bool Visible { get; }
+    [ObservableAsProperty]
+    public double Scale { get; }
+
 
     /// <summary>
     /// Constructor
@@ -47,56 +50,33 @@ public sealed class UIPanelVM : ViewModel, IUIPanelVM
     /// The body control of the panel.
     /// </param>
     public UIPanelVM(
-        ILayoutSettings layoutSettings, IRequirement? requirement, string title, IModeSettingsVM? modeSettings,
-        bool alternateBodyColor, IUIPanelBodyVMBase body)
+        ILayoutSettings layoutSettings,
+        IRequirement? requirement,
+        string title,
+        IModeSettingsVM? modeSettings,
+        bool alternateBodyColor,
+        IViewModel body)
     {
-        _layoutSettings = layoutSettings;
-        _requirement = requirement;
-            
+        LayoutSettings = layoutSettings;
+        Requirement = requirement;
         Title = title;
         ModeSettings = modeSettings;
         AlternateBodyColor = alternateBodyColor;
         Body = body;
-
-        _layoutSettings.PropertyChanged += OnLayoutSettingsChanged;
-
-        if (_requirement is not null)
+        
+        this.WhenActivated(disposables =>
         {
-            _requirement.PropertyChanged += OnRequirementChanged;
-        }
-    }
-
-    /// <summary>
-    /// Subscribes to the PropertyChanged event on the ILayoutSettings interface.
-    /// </summary>
-    /// <param name="sender">
-    /// The sending object of the event.
-    /// </param>
-    /// <param name="e">
-    /// The arguments of the PropertyChanged event.
-    /// </param>
-    private async void OnLayoutSettingsChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName == nameof(ILayoutSettings.UIScale))
-        {
-            await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Scale)));
-        }
-    }
-
-    /// <summary>
-    /// Subscribes to the PropertyChanged event on the IRequirement interface.
-    /// </summary>
-    /// <param name="sender">
-    /// The sending object of the event.
-    /// </param>
-    /// <param name="e">
-    /// The arguments of the PropertyChanged event.
-    /// </param>
-    private async void OnRequirementChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName == nameof(IRequirement.Met))
-        {
-            await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Visible)));
-        }
+            this.WhenAnyValue(
+                    x => x.Requirement,
+                    x => x.Requirement!.Met,
+                    (x, _) => x?.Met ?? true)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .ToPropertyEx(this, x => x.Visible, initialValue: true)
+                .DisposeWith(disposables);
+            this.WhenAnyValue(x => x.LayoutSettings.UIScale)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .ToPropertyEx(this, x => x.Scale)
+                .DisposeWith(disposables);
+        });
     }
 }

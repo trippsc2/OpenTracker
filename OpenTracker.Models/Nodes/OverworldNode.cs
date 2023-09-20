@@ -5,6 +5,7 @@ using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.Nodes.Connections;
 using OpenTracker.Models.Nodes.Factories;
+using OpenTracker.Utils.Autofac;
 using ReactiveUI;
 
 namespace OpenTracker.Models.Nodes;
@@ -12,7 +13,8 @@ namespace OpenTracker.Models.Nodes;
 /// <summary>
 /// This class contains requirement node data.
 /// </summary>
-public class OverworldNode : ReactiveObject, IOverworldNode
+[DependencyInjection]
+public sealed class OverworldNode : ReactiveObject, IOverworldNode
 {
     private readonly IMode _mode;
     private readonly IOverworldNodeFactory _factory;

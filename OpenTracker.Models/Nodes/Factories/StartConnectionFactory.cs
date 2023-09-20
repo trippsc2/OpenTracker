@@ -7,13 +7,15 @@ using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Requirements.Alternative;
 using OpenTracker.Models.Requirements.Item;
 using OpenTracker.Models.Requirements.Mode;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Nodes.Factories;
 
 /// <summary>
 /// This class contains the creation logic for starting <see cref="INodeConnection"/> objects.
 /// </summary>
-public class StartConnectionFactory : IStartConnectionFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class StartConnectionFactory : IStartConnectionFactory
 {
     private readonly IAlternativeRequirementDictionary _alternativeRequirements;
     private readonly IEntranceShuffleRequirementDictionary _entranceShuffleRequirements;

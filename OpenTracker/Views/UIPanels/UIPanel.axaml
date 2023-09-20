@@ -2,30 +2,34 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" x:Class="OpenTracker.Views.UIPanels.UIPanel">
+             xmlns:vm="clr-namespace:OpenTracker.ViewModels.UIPanels"
+             mc:Ignorable="d" x:Class="OpenTracker.Views.UIPanels.UIPanel"
+             x:DataType="vm:UIPanelVM" x:CompileBindings="True">
 
   <UserControl.Resources>
+    <!-- ReSharper disable once Xaml.RedundantResource -->
     <SolidColorBrush x:Key="StandardBackground" Color="{DynamicResource LocationsPanelColor}" />
+    <!-- ReSharper disable once Xaml.RedundantResource -->
     <SolidColorBrush x:Key="AlternativeBackground" Color="{DynamicResource ItemsPanelColor}" />
   </UserControl.Resources>
   
-  <Border x:Name="ControlBorder" Classes="ControlBorder" Margin="1">
+  <Border Classes="ControlBorder" Margin="1" IsVisible="{Binding Visible}">
     <DockPanel>
-      
       <Border DockPanel.Dock="Top" Classes="UIPanelTitle">
         <DockPanel>
-          <TextBlock x:Name="TitleText" DockPanel.Dock="Left" Classes="UIPanelTitleText" />
-          <ContentControl x:Name="ModeSettings" />
+          <TextBlock DockPanel.Dock="Left" Classes="UIPanelTitleText" Text="{Binding Title}" />
+          <ContentControl Content="{Binding ModeSettings}" />
         </DockPanel>
       </Border>
       
-      <LayoutTransformControl x:Name="LayoutTransformControl">
+      <LayoutTransformControl>
         <LayoutTransformControl.LayoutTransform>
-          <ScaleTransform />
+          <ScaleTransform ScaleX="{Binding Scale}"
+                          ScaleY="{Binding Scale}" />
         </LayoutTransformControl.LayoutTransform>
         
         <Border x:Name="BodyBorder" Classes="UIPanelBody">
-          <ContentControl x:Name="Body" />
+          <ContentControl Content="{Binding Body}" />
         </Border>
       </LayoutTransformControl>
       

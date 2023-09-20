@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Requirements;
+using OpenTracker.Utils.Autofac;
 using ReactiveUI;
 
 namespace OpenTracker.Models.Nodes.Connections;
@@ -9,7 +10,8 @@ namespace OpenTracker.Models.Nodes.Connections;
 /// <summary>
 /// This class contains dungeon entry node connection data.
 /// </summary>
-public class EntryNodeConnection : ReactiveObject, IEntryNodeConnection
+[DependencyInjection]
+public sealed class EntryNodeConnection : ReactiveObject, IEntryNodeConnection
 {
     private readonly INode _fromNode;
 

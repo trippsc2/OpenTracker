@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using OpenTracker.Models.Dungeons.Mutable;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Dungeons.KeyDoors;
 
@@ -9,8 +10,8 @@ namespace OpenTracker.Models.Dungeons.KeyDoors;
 /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for <see cref="IKeyDoor"/> objects
 /// indexed by <see cref="KeyDoorID"/>.
 /// </summary>
-public class KeyDoorDictionary : LazyDictionary<KeyDoorID, IKeyDoor>,
-    IKeyDoorDictionary
+[DependencyInjection]
+public sealed class KeyDoorDictionary : LazyDictionary<KeyDoorID, IKeyDoor>, IKeyDoorDictionary
 {
     private readonly IMutableDungeon _dungeonData;
     private readonly Lazy<IKeyDoorFactory> _factory;

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Avalonia.Layout;
-using OpenTracker.Autofac;
 using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.Locations;
@@ -19,6 +18,7 @@ using OpenTracker.Models.Requirements.MapShuffle;
 using OpenTracker.Models.Requirements.SmallKeyShuffle;
 using OpenTracker.Models.Sections.Boss;
 using OpenTracker.Models.Sections.Item;
+using OpenTracker.Utils.Autofac;
 using OpenTracker.ViewModels.Items;
 using OpenTracker.ViewModels.Items.Adapters;
 

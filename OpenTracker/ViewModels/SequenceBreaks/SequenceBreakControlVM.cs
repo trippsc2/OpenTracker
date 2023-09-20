@@ -1,10 +1,11 @@
-﻿using System.ComponentModel;
-using System.Reactive;
-using Avalonia.Threading;
-using OpenTracker.Autofac;
+﻿using System.Reactive;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using OpenTracker.Models.SequenceBreaks;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 
 namespace OpenTracker.ViewModels.SequenceBreaks;
 
@@ -14,14 +15,15 @@ namespace OpenTracker.ViewModels.SequenceBreaks;
 [DependencyInjection]
 public sealed class SequenceBreakControlVM : ViewModel, ISequenceBreakControlVM
 {
-    private readonly ISequenceBreak _sequenceBreak;
-
-    public bool Enabled => _sequenceBreak.Enabled;
+    private ISequenceBreak SequenceBreak { get; }
 
     public string Text { get; }
     public string ToolTipText { get; }
 
-    public ReactiveCommand<Unit, Unit> ToggleEnabled { get; }
+    [ObservableAsProperty]
+    public bool Enabled { get; }
+
+    public ReactiveCommand<Unit, Unit> ToggleEnabledCommand { get; }
 
     /// <summary>
     /// Constructor
@@ -37,38 +39,23 @@ public sealed class SequenceBreakControlVM : ViewModel, ISequenceBreakControlVM
     /// </param>
     public SequenceBreakControlVM(ISequenceBreak sequenceBreak, string text, string toolTipText)
     {
-        _sequenceBreak = sequenceBreak;
-            
+        SequenceBreak = sequenceBreak;
         Text = text;
         ToolTipText = toolTipText;
-
-        ToggleEnabled = ReactiveCommand.Create(ToggleEnabledImpl);
-
-        _sequenceBreak.PropertyChanged += OnSequenceBreakChanged;
-    }
-
-    /// <summary>
-    /// Subscribes to the PropertyChanged event on the ISequenceBreak interface.
-    /// </summary>
-    /// <param name="sender">
-    /// The sending object of the event.
-    /// </param>
-    /// <param name="e">
-    /// The arguments of the PropertyChanged event.
-    /// </param>
-    private async void OnSequenceBreakChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName == nameof(ISequenceBreak.Enabled))
+        
+        ToggleEnabledCommand = ReactiveCommand.Create(ToggleEnabled);
+        
+        this.WhenActivated(disposables =>
         {
-            await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Enabled)));
-        }
+            this.WhenAnyValue(x => x.SequenceBreak.Enabled)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .ToPropertyEx(this, x => x.Enabled)
+                .DisposeWith(disposables);
+        });
     }
 
-    /// <summary>
-    /// Toggles whether the sequence break is enabled.
-    /// </summary>
-    private void ToggleEnabledImpl()
+    private void ToggleEnabled()
     {
-        _sequenceBreak.Enabled = !_sequenceBreak.Enabled;
+        SequenceBreak.Enabled = !SequenceBreak.Enabled;
     }
 }

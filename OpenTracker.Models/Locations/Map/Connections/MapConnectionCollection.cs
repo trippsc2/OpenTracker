@@ -4,6 +4,7 @@ using System.Linq;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Models.UndoRedo.Connections;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Locations.Map.Connections;
 
@@ -11,7 +12,8 @@ namespace OpenTracker.Models.Locations.Map.Connections;
 /// This class contains the <see cref="ObservableCollection{T}"/> container for <see cref="IMapConnection"/>
 /// objects.
 /// </summary>
-public class MapConnectionCollection : ObservableCollection<IMapConnection>, IMapConnectionCollection
+[DependencyInjection(SingleInstance = true)]
+public sealed class MapConnectionCollection : ObservableCollection<IMapConnection>, IMapConnectionCollection
 {
     private readonly ILocationDictionary _locations;
 

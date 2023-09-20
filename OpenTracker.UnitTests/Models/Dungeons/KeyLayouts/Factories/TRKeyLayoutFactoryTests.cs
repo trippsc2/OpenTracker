@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using ExpectedObjects;
 using NSubstitute;
 using OpenTracker.Models.Dungeons;
@@ -17,7 +18,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Dungeons.KeyLayouts.Factories;
 
-public class TRKeyLayoutFactoryTests
+[ExcludeFromCodeCoverage]
+public sealed class TRKeyLayoutFactoryTests
 {
     private static readonly IAggregateRequirementDictionary AggregateRequirements =
         new AggregateRequirementDictionary(requirements =>

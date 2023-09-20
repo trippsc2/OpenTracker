@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.BossPlacements;
@@ -6,7 +7,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Requirements.Boss;
 
-public class BossTypeRequirementDictionaryTests
+[ExcludeFromCodeCoverage]
+public sealed class BossTypeRequirementDictionaryTests
 {
     private readonly IBossTypeRequirementFactory _factory = Substitute.For<IBossTypeRequirementFactory>();
 

@@ -1,13 +1,14 @@
-using System.ComponentModel;
 using System.Globalization;
 using System.Reactive;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using Avalonia.Input;
-using Avalonia.Threading;
-using OpenTracker.Autofac;
 using OpenTracker.Models.Sections;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 
 namespace OpenTracker.ViewModels.PinnedLocations.Sections;
 
@@ -16,15 +17,17 @@ public sealed class SectionIconVM : ViewModel, ISectionIconVM
 {
     private readonly IUndoRedoManager _undoRedoManager;
         
-    private readonly ISectionIconImageProvider _imageProvider;
-    private readonly ISection _section;
-
-    public string ImageSource => _imageProvider.ImageSource;
-
+    private ISectionIconImageProvider ImageProvider { get; }
+    private ISection Section { get; }
+    
     public bool LabelVisible { get; }
-    public string Label => _section.Available.ToString(CultureInfo.InvariantCulture);
+
+    [ObservableAsProperty]
+    public string ImageSource { get; } = string.Empty;
+    [ObservableAsProperty]
+    public string Label => Section.Available.ToString(CultureInfo.InvariantCulture);
         
-    public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
+    public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
 
     /// <summary>
     /// Constructor
@@ -42,81 +45,38 @@ public sealed class SectionIconVM : ViewModel, ISectionIconVM
     /// A boolean representing whether the label is visible.
     /// </param>
     public SectionIconVM(
-        IUndoRedoManager undoRedoManager, ISectionIconImageProvider imageProvider, ISection section,
+        IUndoRedoManager undoRedoManager,
+        ISectionIconImageProvider imageProvider,
+        ISection section,
         bool labelVisible)
     {
-        _imageProvider = imageProvider;
-        _section = section;
+        ImageProvider = imageProvider;
+        Section = section;
 
         LabelVisible = labelVisible;
         _undoRedoManager = undoRedoManager;
 
-        HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
-
-        _imageProvider.PropertyChanged += OnImageProviderChanged;
-        _section.PropertyChanged += OnSectionChanged;
-    }
-
-    /// <summary>
-    /// Subscribes to the PropertyChanged event on the ISectionIconImageProvider interface.
-    /// </summary>
-    /// <param name="sender">
-    /// The sending object of the event.
-    /// </param>
-    /// <param name="e">
-    /// The arguments of the PropertyChanged event.
-    /// </param>
-    private async void OnImageProviderChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName == nameof(ISectionIconImageProvider.ImageSource))
+        HandleClickCommand = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClick);
+        
+        this.WhenActivated(disposables =>
         {
-            await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(ImageSource)));
-        }
+            ImageProvider.Activator
+                .Activate()
+                .DisposeWith(disposables);
+
+            this.WhenAnyValue(x => x.ImageProvider.ImageSource)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .ToPropertyEx(this, x => x.ImageSource)
+                .DisposeWith(disposables);
+            this.WhenAnyValue(x => x.Section.Available)
+                .Select(x => x.ToString().ToLowerInvariant())
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .ToPropertyEx(this, x => x.Label)
+                .DisposeWith(disposables);
+        });
     }
 
-    /// <summary>
-    /// Subscribes to the PropertyChanged event on the ISection interface.
-    /// </summary>
-    /// <param name="sender">
-    /// The sending object of the event.
-    /// </param>
-    /// <param name="e">
-    /// The arguments of the PropertyChanged event.
-    /// </param>
-    private async void OnSectionChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName == nameof(ISection.Available))
-        {
-            await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Label)));
-        }
-    }
-
-    /// <summary>
-    /// Creates an undoable action to collect the section and sends it to the undo/redo manager.
-    /// </summary>
-    /// <param name="force">
-    /// A boolean representing whether the logic should be ignored.
-    /// </param>
-    private void CollectSection(bool force)
-    {
-        _undoRedoManager.NewAction(_section.CreateCollectSectionAction(force));
-    }
-
-    /// <summary>
-    /// Creates an undoable action to un-collect the section and send it to the undo/redo manager.
-    /// </summary>
-    private void UncollectSection()
-    {
-        _undoRedoManager.NewAction(_section.CreateUncollectSectionAction());
-    }
-
-    /// <summary>
-    /// Handles clicking the control.
-    /// </summary>
-    /// <param name="e">
-    /// The PointerReleased event args.
-    /// </param>
-    private void HandleClickImpl(PointerReleasedEventArgs e)
+    private void HandleClick(PointerReleasedEventArgs e)
     {
         switch (e.InitialPressMouseButton)
         {
@@ -126,6 +86,26 @@ public sealed class SectionIconVM : ViewModel, ISectionIconVM
             case MouseButton.Right:
                 UncollectSection();
                 break;
+            case MouseButton.None:
+            case MouseButton.Middle:
+            case MouseButton.XButton1:
+            case MouseButton.XButton2:
+            default:
+                break;
         }
     }
+
+    private void CollectSection(bool force)
+    {
+        _undoRedoManager.NewAction(Section.CreateCollectSectionAction(force));
+    }
+
+    /// <summary>
+    /// Creates an undoable action to un-collect the section and send it to the undo/redo manager.
+    /// </summary>
+    private void UncollectSection()
+    {
+        _undoRedoManager.NewAction(Section.CreateUncollectSectionAction());
+    }
+
 }

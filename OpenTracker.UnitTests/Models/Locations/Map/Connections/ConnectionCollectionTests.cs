@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Locations;
@@ -10,7 +11,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Locations.Map.Connections;
 
-public class ConnectionCollectionTests
+[ExcludeFromCodeCoverage]
+public sealed class ConnectionCollectionTests
 {
     private readonly ILocationDictionary _locations = Substitute.For<ILocationDictionary>();
         

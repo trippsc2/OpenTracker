@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;
@@ -24,7 +25,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Dungeons.AccessibilityProviders;
 
-public class DungeonAccessibilityProviderTests
+[ExcludeFromCodeCoverage]
+public sealed class DungeonAccessibilityProviderTests
 {
     private readonly IDungeon _dungeon = Substitute.For<IDungeon>();
     private readonly IMode _mode = Substitute.For<IMode>();

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Requirements;
@@ -7,7 +8,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Requirements.Alternative;
 
-public class AlternativeRequirementDictionaryTests
+[ExcludeFromCodeCoverage]
+public sealed class AlternativeRequirementDictionaryTests
 {
     private readonly List<IRequirement> _testRequirements = new()
     {

@@ -4,40 +4,23 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:i="using:Avalonia.Xaml.Interactivity"
-             xmlns:ia="using:Avalonia.Xaml.Interactions.Core"
              xmlns:iadd="using:Avalonia.Xaml.Interactions.DragAndDrop"
-             mc:Ignorable="d" x:Class="OpenTracker.Views.MapLocations.EntranceMapLocation">
-  
-  <Design.DataContext>
-    <vm:EntranceMapLocationVM />
-  </Design.DataContext>
-  
+             mc:Ignorable="d" x:Class="OpenTracker.Views.MapLocations.EntranceMapLocation"
+             x:DataType="vm:EntranceMapLocationVM" x:CompileBindings="True">
   <UserControl.Resources>
     <vm:EntranceDropHandler x:Key="EntranceDropHandler" />
   </UserControl.Resources>
   
-  <Panel>
-    
+  <Panel x:Name="Panel">
     <i:Interaction.Behaviors>
-      
       <iadd:ContextDragBehavior Context="{Binding}" />
       <iadd:ContextDropBehavior Context="{Binding MapLocation}"
                                 Handler="{StaticResource EntranceDropHandler}" />
-
-      <ia:EventTriggerBehavior EventName="PointerReleased">
-        <ia:InvokeCommandAction Command="{Binding HandleClick}" PassEventArgsToCommand="True" />
-      </ia:EventTriggerBehavior>
-      
-      <ia:EventTriggerBehavior EventName="DoubleTapped">
-        <ia:InvokeCommandAction Command="{Binding HandleDoubleClick}" />
-      </ia:EventTriggerBehavior>
-      
     </i:Interaction.Behaviors>
 
-    <Polygon Points="{Binding Points}" StrokeThickness="5"
+    <Polygon StrokeThickness="5"
+             Points="{Binding Points}"
              Fill="{Binding Color}"
              Stroke="{Binding BorderColor}" />
-    
   </Panel>
-  
 </UserControl>

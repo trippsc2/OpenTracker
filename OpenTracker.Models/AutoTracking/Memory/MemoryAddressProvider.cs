@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.AutoTracking.Memory;
 
+[DependencyInjection(SingleInstance = true)]
 public sealed class MemoryAddressProvider : IMemoryAddressProvider
 {
     public Dictionary<MemorySegmentType, List<MemoryAddress>> MemorySegments { get; }

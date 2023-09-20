@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Accessibility;
@@ -11,7 +12,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Dungeons.KeyLayouts;
 
-public class BigKeyLayoutTests
+[ExcludeFromCodeCoverage]
+public sealed class BigKeyLayoutTests
 {
     private readonly IList<DungeonItemID> _bigKeyLocations = new List<DungeonItemID>();
     private readonly IList<IKeyLayout> _children = new List<IKeyLayout>();

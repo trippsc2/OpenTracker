@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Autofac;
 using ExpectedObjects;
@@ -22,7 +23,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Sections.Factories;
 
-public class SectionAutoTrackingFactoryTests
+[ExcludeFromCodeCoverage]
+public sealed class SectionAutoTrackingFactoryTests
 {
     private static readonly IMemoryAddressProvider MemoryAddressProvider = new MemoryAddressProvider();
     private static readonly IItemDictionary Items = new ItemDictionary(() => Substitute.For<IItemFactory>());

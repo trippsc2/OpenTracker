@@ -9,13 +9,15 @@ using OpenTracker.Models.Requirements.Alternative;
 using OpenTracker.Models.Requirements.Mode;
 using OpenTracker.Models.Requirements.TakeAnyLocations;
 using OpenTracker.Models.Sections.Boolean;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Sections.Factories;
 
 /// <summary>
 /// This class contains the creation logic for <see cref="ITakeAnySection"/> objects.
 /// </summary>
-public class TakeAnySectionFactory : ITakeAnySectionFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class TakeAnySectionFactory : ITakeAnySectionFactory
 {
     private readonly IAggregateRequirementDictionary _aggregateRequirements;
     private readonly IAlternativeRequirementDictionary _alternativeRequirements;

@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Requirements.SequenceBreak;
@@ -6,7 +7,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Requirements.SequenceBreak;
 
-public class SequenceBreakRequirementDictionaryTests
+[ExcludeFromCodeCoverage]
+public sealed class SequenceBreakRequirementDictionaryTests
 {
     private readonly ISequenceBreakDictionary _sequenceBreaks = Substitute.For<ISequenceBreakDictionary>();
 

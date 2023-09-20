@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Requirements.CompassShuffle;
 
@@ -7,8 +8,9 @@ namespace OpenTracker.Models.Requirements.CompassShuffle;
 /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for
 /// <see cref="ICompassShuffleRequirement"/> objects indexed by <see cref="bool"/>.
 /// </summary>
-public class CompassShuffleRequirementDictionary : LazyDictionary<bool, IRequirement>,
-    ICompassShuffleRequirementDictionary
+[DependencyInjection(SingleInstance = true)]
+public sealed class CompassShuffleRequirementDictionary
+    : LazyDictionary<bool, IRequirement>, ICompassShuffleRequirementDictionary
 {
     private readonly ICompassShuffleRequirement.Factory _factory;
         

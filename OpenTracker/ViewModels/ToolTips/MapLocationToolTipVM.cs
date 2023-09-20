@@ -1,10 +1,11 @@
-﻿using System.ComponentModel;
-using Avalonia.Threading;
-using OpenTracker.Autofac;
+﻿using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Settings;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 
 namespace OpenTracker.ViewModels.ToolTips;
 
@@ -14,14 +15,16 @@ namespace OpenTracker.ViewModels.ToolTips;
 [DependencyInjection]
 public sealed class MapLocationToolTipVM : ViewModel, IMapLocationToolTipVM
 {
-    private readonly ILayoutSettings _layoutSettings;
-    private readonly ILocation _location;
-
-    public double Scale => _layoutSettings.UIScale;
-    public string Name => _location.Name;
-
+    private ILayoutSettings LayoutSettings { get; }
+    private ILocation Location { get; }
     public IMapLocationToolTipMarkingVM? SectionMarking { get; }
     public IMapLocationToolTipNotes Notes { get; }
+    
+    [ObservableAsProperty]
+    public double Scale { get; }
+    [ObservableAsProperty]
+    public string Name { get; } = string.Empty;
+
 
     /// <summary>
     /// Constructor
@@ -39,38 +42,33 @@ public sealed class MapLocationToolTipVM : ViewModel, IMapLocationToolTipVM
     /// The map location.
     /// </param>
     public MapLocationToolTipVM(
-        ILayoutSettings layoutSettings, IMapLocationToolTipMarkingVM.Factory markingFactory,
-        IMapLocationToolTipNotes.Factory notesFactory, ILocation location)
+        ILayoutSettings layoutSettings,
+        IMapLocationToolTipMarkingVM.Factory markingFactory,
+        IMapLocationToolTipNotes.Factory notesFactory,
+        ILocation location)
     {
-        _layoutSettings = layoutSettings;
-        _location = location;
+        LayoutSettings = layoutSettings;
+        Location = location;
 
-        var section = _location.Sections[0];
+        var section = Location.Sections[0];
             
         if (section.Marking is not null)
         {
             SectionMarking = markingFactory(section.Marking);
         }
 
-        Notes = notesFactory(_location);
-
-        _layoutSettings.PropertyChanged += OnLayoutChanged;
-    }
-
-    /// <summary>
-    /// Subscribes to the PropertyChanged event on the LayoutSettings class.
-    /// </summary>
-    /// <param name="sender">
-    /// The sending object of the event.
-    /// </param>
-    /// <param name="e">
-    /// The arguments of the PropertyChanged event.
-    /// </param>
-    private async void OnLayoutChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName == nameof(LayoutSettings.UIScale))
+        Notes = notesFactory(Location);
+        
+        this.WhenActivated(disposables =>
         {
-            await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Scale)));
-        }
+            this.WhenAnyValue(x => x.LayoutSettings.UIScale)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .ToPropertyEx(this, x => x.Scale)
+                .DisposeWith(disposables);
+            this.WhenAnyValue(x => x.Location.Name)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .ToPropertyEx(this, x => x.Name)
+                .DisposeWith(disposables);
+        });
     }
 }

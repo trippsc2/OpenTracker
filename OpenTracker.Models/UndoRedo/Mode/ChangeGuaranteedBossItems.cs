@@ -1,4 +1,5 @@
 ﻿using OpenTracker.Models.Modes;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.UndoRedo.Mode;
 
@@ -6,7 +7,8 @@ namespace OpenTracker.Models.UndoRedo.Mode;
 /// This class contains the <see cref="IUndoable"/> action to change the <see cref="IMode.GuaranteedBossItems"/>
 /// property.
 /// </summary>
-public class ChangeGuaranteedBossItems : IChangeGuaranteedBossItems
+[DependencyInjection]
+public sealed class ChangeGuaranteedBossItems : IChangeGuaranteedBossItems
 {
     private readonly IMode _mode;
     private readonly bool _newValue;

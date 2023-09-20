@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Autofac;
 using ExpectedObjects;
@@ -21,7 +22,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Nodes.Factories;
 
-public class DWDeathMountainConnectionFactoryTests
+[ExcludeFromCodeCoverage]
+public sealed class DWDeathMountainConnectionFactoryTests
 {
     private static readonly IAlternativeRequirementDictionary AlternativeRequirements =
         Substitute.For<IAlternativeRequirementDictionary>();

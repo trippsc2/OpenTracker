@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Accessibility;
@@ -10,7 +11,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Requirements.Item.SmallKey;
 
-public class SmallKeyRequirementTests
+[ExcludeFromCodeCoverage]
+public sealed class SmallKeyRequirementTests
 {
     private readonly ISmallKeyItem _item = Substitute.For<ISmallKeyItem>();
         

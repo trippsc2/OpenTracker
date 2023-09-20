@@ -1,13 +1,14 @@
 ﻿using System.Collections.Specialized;
 using System.Reactive;
-using System.Threading.Tasks;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using Avalonia.Layout;
-using Avalonia.Threading;
-using OpenTracker.Autofac;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 
 namespace OpenTracker.ViewModels.PinnedLocations.Notes;
 
@@ -21,17 +22,12 @@ public sealed class PinnedLocationNoteAreaVM : ViewModel, IPinnedLocationNoteAre
     private readonly IUndoRedoManager _undoRedoManager;
 
     public IPinnedLocationNoteVMCollection Notes { get; }
-    public HorizontalAlignment Alignment =>
-        Notes.Count == 0 ? HorizontalAlignment.Center : HorizontalAlignment.Left;
+    
+    [ObservableAsProperty]
+    public HorizontalAlignment Alignment { get; }
 
-    public ReactiveCommand<Unit, Unit> Add { get; }
-
-    private bool _canAdd;
-    private bool CanAdd
-    {
-        get => _canAdd;
-        set => this.RaiseAndSetIfChanged(ref _canAdd, value);
-    }
+    [Reactive]
+    public ReactiveCommand<Unit, Unit> AddCommand { get; private set; } = default!;
 
     /// <summary>
     /// Constructor
@@ -46,54 +42,41 @@ public sealed class PinnedLocationNoteAreaVM : ViewModel, IPinnedLocationNoteAre
     /// An Autofac factory for creating the notes collection.
     /// </param>
     public PinnedLocationNoteAreaVM(
-        ILocation location, IUndoRedoManager undoRedoManager, IPinnedLocationNoteVMCollection.Factory notesFactory)
+        ILocation location,
+        IUndoRedoManager undoRedoManager,
+        IPinnedLocationNoteVMCollection.Factory notesFactory)
     {
         _location = location;
         _undoRedoManager = undoRedoManager;
-
         Notes = notesFactory(location);
+        
+        this.WhenActivated(disposables =>
+        {
+            var collectionChanged = Observable
+                .FromEventPattern<NotifyCollectionChangedEventHandler, NotifyCollectionChangedEventArgs>(
+                    handler => Notes.CollectionChanged += handler,
+                    handler => Notes.CollectionChanged -= handler);
 
-        Add = ReactiveCommand.Create(AddImpl, this.WhenAnyValue(x => x.CanAdd));
+            collectionChanged
+                .Select(_ => Notes.Count == 0 ? HorizontalAlignment.Center : HorizontalAlignment.Left)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .ToPropertyEx(this, x => x.Alignment)
+                .DisposeWith(disposables);
 
-        Notes.CollectionChanged += OnNotesChanged;
+            var canAdd = collectionChanged
+                .Select(_ => Notes.Count < 4)
+                .ObserveOn(RxApp.MainThreadScheduler);
 
-        UpdateCanAdd();
-    }
-
-    /// <summary>
-    /// Subscribes to the CollectionChanged event on the IPinnedLocationNoteVMCollection interface.
-    /// </summary>
-    /// <param name="sender">
-    /// The sending object of the event.
-    /// </param>
-    /// <param name="e">
-    /// The arguments of the CollectionChanged event.
-    /// </param>
-    private async void OnNotesChanged(object? sender, NotifyCollectionChangedEventArgs e)
-    {
-        await UpdateCanAddAsync();
-    }
-
-    /// <summary>
-    /// Updates the CanAdd property for whether a note can be added.
-    /// </summary>
-    private void UpdateCanAdd()
-    {
-        CanAdd = Notes.Count < 4;
-    }
-
-    /// <summary>
-    /// Updates the CanAdd property for whether a note can be added asynchronously.
-    /// </summary>
-    private async Task UpdateCanAddAsync()
-    {
-        await Dispatcher.UIThread.InvokeAsync(UpdateCanAdd);
+            AddCommand = ReactiveCommand
+                .Create(Add, canAdd)
+                .DisposeWith(disposables);
+        });
     }
 
     /// <summary>
     /// Adds a new note to the location.
     /// </summary>
-    private void AddImpl()
+    private void Add()
     {
         _undoRedoManager.NewAction(_location.CreateAddNoteAction());
     }

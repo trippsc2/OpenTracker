@@ -1,18 +1,16 @@
-﻿using System.ComponentModel;
-using System.Linq;
+﻿using System.Linq;
 using System.Reactive;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using Avalonia.Input;
-using Avalonia.Threading;
-using OpenTracker.Autofac;
-using OpenTracker.Models.PrizePlacements;
+using OpenTracker.Models.Items;
 using OpenTracker.Models.Prizes;
-using OpenTracker.Models.Sections;
 using OpenTracker.Models.Sections.Boss;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 
 namespace OpenTracker.ViewModels.PinnedLocations.Sections;
 
@@ -25,34 +23,12 @@ public sealed class PrizeSectionIconVM : ViewModel, ISectionIconVM
     private readonly IPrizeDictionary _prizes;
     private readonly IUndoRedoManager _undoRedoManager;
 
-    private readonly IPrizeSection _section;
+    private IPrizeSection Section { get; }
 
-    public string ImageSource
-    {
-        get
-        {
-            var sb = new StringBuilder();
-            sb.Append("avares://OpenTracker/Assets/Images/Prizes/");
-
-            if (_section.PrizePlacement.Prize == null)
-            {
-                sb.Append("unknown");
-            }
-            else
-            {
-                sb.Append(
-                    _prizes.FirstOrDefault(
-                            x => x.Value == _section.PrizePlacement.Prize).Key.ToString()
-                        .ToLowerInvariant());
-            }
-
-            sb.Append(_section.IsAvailable() ? "0.png" : "1.png");
-
-            return sb.ToString();
-        }
-    }
+    [ObservableAsProperty]
+    public string ImageSource { get; } = string.Empty;
         
-    public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
+    public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
 
     public delegate PrizeSectionIconVM Factory(IPrizeSection section);
 
@@ -73,95 +49,66 @@ public sealed class PrizeSectionIconVM : ViewModel, ISectionIconVM
         _prizes = prizes;
         _undoRedoManager = undoRedoManager;
 
-        _section = section;
+        Section = section;
             
-        HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
-
-        _section.PropertyChanged += OnSectionChanged;
-        _section.PrizePlacement.PropertyChanged += OnPrizeChanged; 
-    }
-
-    /// <summary>
-    /// Subscribes to the PropertyChanged event on the ISection interface.
-    /// </summary>
-    /// <param name="sender">
-    /// The sending object of the event.
-    /// </param>
-    /// <param name="e">
-    /// The arguments of the PropertyChanged event.
-    /// </param>
-    private async void OnSectionChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName == nameof(ISection.Available))
+        HandleClickCommand = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClick);
+        
+        this.WhenActivated(disposables =>
         {
-            await UpdateImage();
-        }
+            this.WhenAnyValue(
+                    x => x.Section.PrizePlacement.Prize,
+                    x => x.Section.Available,
+                    GetImageSource)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .ToPropertyEx(this, x => x.ImageSource)
+                .DisposeWith(disposables);
+        });
     }
 
-    /// <summary>
-    /// Subscribes to the PropertyChanged event on the IPrizePlacement interface.
-    /// </summary>
-    /// <param name="sender">
-    /// The sending object of the event.
-    /// </param>
-    /// <param name="e">
-    /// The arguments of the PropertyChanged event.
-    /// </param>
-    private async void OnPrizeChanged(object? sender, PropertyChangedEventArgs e)
+    private string GetImageSource(IItem? prizeItem, int _)
     {
-        if (e.PropertyName == nameof(IPrizePlacement.Prize))
-        {
-            await UpdateImage();
-        }
+        return $"avares://OpenTracker/Assets/Images/Prizes/{GetPrizeItemTypeName(prizeItem)}{GetImageSourceSuffix()}";
     }
 
-    /// <summary>
-    /// Raises the PropertyChanged event for the ImageSource property.
-    /// </summary>
-    private async Task UpdateImage()
+    private string GetPrizeItemTypeName(IItem? prizeItem)
     {
-        await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(ImageSource)));
+        return prizeItem is not null
+            ? _prizes.First(x => x.Value == prizeItem).Key.ToString().ToLowerInvariant()
+            : "unknown";
     }
 
-    /// <summary>
-    /// Creates an undoable action to toggle the prize section and sends it to the undo/redo manager.
-    /// </summary>
-    /// <param name="force">
-    /// A boolean representing whether the logic should be ignored.
-    /// </param>
-    private void TogglePrize(bool force = false)
+    private string GetImageSourceSuffix()
     {
-        _undoRedoManager.NewAction(_section.CreateTogglePrizeSectionAction(force));
+        return Section.IsAvailable() ? "0.png" : "1.png";
     }
 
-    /// <summary>
-    /// Creates an undoable action to change the prize and sends it to the undo/redo manager.
-    /// </summary>
-    private void ChangePrize()
-    {
-        _undoRedoManager.NewAction(_section.PrizePlacement.CreateChangePrizeAction());
-    }
-
-    /// <summary>
-    /// Handles clicking the control.
-    /// </summary>
-    /// <param name="e">
-    /// The PointerReleased event args.
-    /// </param>
-    private void HandleClickImpl(PointerReleasedEventArgs e)
+    private void HandleClick(PointerReleasedEventArgs e)
     {
         switch (e.InitialPressMouseButton)
         {
             case MouseButton.Left:
-            {
                 TogglePrize((e.KeyModifiers & KeyModifiers.Control) > 0);
-            }
                 break;
             case MouseButton.Right:
-            {
                 ChangePrize();
-            }
+                break;
+            case MouseButton.None:
+            case MouseButton.Middle:
+            case MouseButton.XButton1:
+            case MouseButton.XButton2:
+            default:
                 break;
         }
     }
+
+    private void TogglePrize(bool force = false)
+    {
+        _undoRedoManager.NewAction(Section.CreateTogglePrizeSectionAction(force));
+    }
+
+    private void ChangePrize()
+    {
+        _undoRedoManager.NewAction(Section.PrizePlacement.CreateChangePrizeAction());
+    }
+
 }

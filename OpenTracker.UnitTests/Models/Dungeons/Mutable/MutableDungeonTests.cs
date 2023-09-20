@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Accessibility;
@@ -16,7 +17,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Dungeons.Mutable;
 
-public class MutableDungeonTests
+[ExcludeFromCodeCoverage]
+public sealed class MutableDungeonTests
 {
     private readonly IMode _mode = Substitute.For<IMode>();
 

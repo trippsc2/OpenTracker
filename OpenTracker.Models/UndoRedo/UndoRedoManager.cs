@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using OpenTracker.Models.SaveLoad;
+using OpenTracker.Utils.Autofac;
 using ReactiveUI;
 
 namespace OpenTracker.Models.UndoRedo;
@@ -7,7 +8,8 @@ namespace OpenTracker.Models.UndoRedo;
 /// <summary>
 /// This class contains logic managing <see cref="IUndoable"/> actions.
 /// </summary>
-public class UndoRedoManager : ReactiveObject, IUndoRedoManager
+[DependencyInjection(SingleInstance = true)]
+public sealed class UndoRedoManager : ReactiveObject, IUndoRedoManager
 {
     private readonly ISaveLoadManager _saveLoadManager;
 

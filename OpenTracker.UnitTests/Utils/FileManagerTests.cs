@@ -1,10 +1,12 @@
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using OpenTracker.Utils;
 using Xunit;
 
 namespace OpenTracker.UnitTests.Utils;
 
-public class FileManagerTests
+[ExcludeFromCodeCoverage]
+public sealed class FileManagerTests
 {
     [Fact]
     public void AutofacTest()

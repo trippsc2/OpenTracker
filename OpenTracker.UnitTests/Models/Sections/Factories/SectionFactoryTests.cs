@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using NSubstitute;
 using OpenTracker.Models.AutoTracking.Values;
 using OpenTracker.Models.Locations;
@@ -7,7 +8,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Sections.Factories;
 
-public class SectionFactoryTests
+[ExcludeFromCodeCoverage]
+public sealed class SectionFactoryTests
 {
     private readonly IDropdownSectionFactory _dropdownSectionFactory = Substitute.For<IDropdownSectionFactory>();
     private readonly IDungeonSectionFactory _dungeonSectionFactory = Substitute.For<IDungeonSectionFactory>();

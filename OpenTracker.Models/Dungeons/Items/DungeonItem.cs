@@ -4,6 +4,7 @@ using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Dungeons.Mutable;
 using OpenTracker.Models.Dungeons.Nodes;
 using OpenTracker.Models.Nodes;
+using OpenTracker.Utils.Autofac;
 using ReactiveUI;
 
 namespace OpenTracker.Models.Dungeons.Items;
@@ -11,7 +12,8 @@ namespace OpenTracker.Models.Dungeons.Items;
 /// <summary>
 /// This class contains mutable dungeon item data.
 /// </summary>
-public class DungeonItem : ReactiveObject, IDungeonItem
+[DependencyInjection]
+public sealed class DungeonItem : ReactiveObject, IDungeonItem
 {
     private readonly IMutableDungeon _dungeonData;
     private readonly INode _node;

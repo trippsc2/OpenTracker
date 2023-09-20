@@ -1,12 +1,14 @@
 ﻿using System;
 using OpenTracker.Models.Locations;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.UndoRedo.Locations;
 
 /// <summary>
 /// This class contains undoable action data to unpin a location.
 /// </summary>
-public class UnpinLocation : IUnpinLocation
+[DependencyInjection]
+public sealed class UnpinLocation : IUnpinLocation
 {
     private readonly IPinnedLocationCollection _pinnedLocations;
 

@@ -4,12 +4,14 @@ using System.Globalization;
 using System.Threading;
 using OpenTracker.Models.AutoTracking.SNESConnectors.Socket;
 using OpenTracker.Models.Logging;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.AutoTracking.SNESConnectors.Requests;
 
 /// <summary>
 /// This class contains the request to read a sequence of memory addresses. 
 /// </summary>
+[DependencyInjection]
 public sealed class ReadMemoryRequest : RequestBase<byte[]>, IReadMemoryRequest
 {
     private readonly int _bytesToRead;

@@ -6,13 +6,15 @@ using OpenTracker.Models.Requirements.BigKeyShuffle;
 using OpenTracker.Models.Requirements.GuaranteedBossItems;
 using OpenTracker.Models.Requirements.KeyDropShuffle;
 using OpenTracker.Models.Requirements.SmallKeyShuffle;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories;
 
 /// <summary>
 /// This class contains the creation logic for Misery Mire key layouts.
 /// </summary>
-public class MMKeyLayoutFactory : IMMKeyLayoutFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class MMKeyLayoutFactory : IMMKeyLayoutFactory
 {
     private readonly IAggregateRequirementDictionary _aggregateRequirements;
     private readonly IBigKeyShuffleRequirementDictionary _bigKeyShuffleRequirements;

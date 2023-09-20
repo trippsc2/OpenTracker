@@ -3,13 +3,15 @@ using System.ComponentModel;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.Modes;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Requirements.Boss;
 
 /// <summary>
 /// This class contains <see cref="IBossPlacement"/> requirement data.
 /// </summary>
-public class BossRequirement : AccessibilityRequirement, IBossRequirement
+[DependencyInjection]
+public sealed class BossRequirement : AccessibilityRequirement, IBossRequirement
 {
     private readonly IBossTypeRequirementDictionary _bossTypeRequirements;
     private readonly IBossPlacement _bossPlacement;

@@ -1,13 +1,15 @@
-using System.ComponentModel;
 using System.Reactive;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using Avalonia.Input;
-using Avalonia.Threading;
-using OpenTracker.Autofac;
+using Avalonia.Media;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 using OpenTracker.ViewModels.BossSelect;
 using OpenTracker.ViewModels.Items.Adapters;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 
 namespace OpenTracker.ViewModels.Items;
 
@@ -17,18 +19,23 @@ namespace OpenTracker.ViewModels.Items;
 [DependencyInjection]
 public sealed class ItemVM : ViewModel, IItemVM
 {
-    private readonly IItemAdapter _item;
-    private readonly IRequirement? _requirement;
+    private IItemAdapter Item { get; }
+    private IRequirement? Requirement { get; }
 
-    public bool Visible => _requirement is null || _requirement.Met;
-    public string ImageSource => _item.ImageSource;
-    public bool LabelVisible => _item.Label is not null;
-    public string? Label => _item.Label;
-    public string LabelColor => _item.LabelColor;
-
-    public IBossSelectPopupVM? BossSelect => _item.BossSelect;
-
-    public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
+    [ObservableAsProperty]
+    public bool Visible { get; } = true;
+    [ObservableAsProperty]
+    public string ImageSource { get; } = string.Empty;
+    [ObservableAsProperty]
+    public bool LabelVisible { get; }
+    [ObservableAsProperty]
+    public string? Label { get; }
+    [ObservableAsProperty]
+    public SolidColorBrush? LabelColor { get; }
+    [ObservableAsProperty]
+    public BossSelectPopupVM? BossSelect { get; }
+    
+    public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
 
     /// <summary>
     /// Constructor
@@ -41,62 +48,45 @@ public sealed class ItemVM : ViewModel, IItemVM
     /// </param>
     public ItemVM(IItemAdapter item, IRequirement? requirement)
     {
-        _item = item;
-        _requirement = requirement;
+        Item = item;
+        Requirement = requirement;
+
+        HandleClickCommand = Item.HandleClickCommand;
+        
+        this.WhenActivated(disposables =>
+        {
+            item.Activator
+                .Activate()
+                .DisposeWith(disposables);
             
-        HandleClick = _item.HandleClick;
-
-        _item.PropertyChanged += OnAdapterChanged;
-
-        if (_requirement is not null)
-        {
-            _requirement.PropertyChanged += OnRequirementChanged;
-        }
-    }
-
-    /// <summary>
-    /// Subscribes to the PropertyChanged event on the IItemAdapter interface.
-    /// </summary>
-    /// <param name="sender">
-    /// The sending object of the event.
-    /// </param>
-    /// <param name="e">
-    /// The arguments of the PropertyChanged event.
-    /// </param>
-    private async void OnAdapterChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        switch (e.PropertyName)
-        {
-            case nameof(IItemAdapter.ImageSource):
-                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(ImageSource)));
-                break;
-            case nameof(IItemAdapter.Label):
-                await Dispatcher.UIThread.InvokeAsync(() =>
-                {
-                    this.RaisePropertyChanged(nameof(LabelVisible));
-                    this.RaisePropertyChanged(nameof(Label));
-                });
-                break;
-            case nameof(IItemAdapter.LabelColor):
-                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(LabelColor)));
-                break;
-        }
-    }
-
-    /// <summary>
-    /// Subscribes to the PropertyChanged event on the IRequirement interface.
-    /// </summary>
-    /// <param name="sender">
-    /// The sending object of the event.
-    /// </param>
-    /// <param name="e">
-    /// The arguments of the PropertyChanged event.
-    /// </param>
-    private async void OnRequirementChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName == nameof(IRequirement.Met))
-        {
-            await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Visible)));
-        }
+            this.WhenAnyValue(
+                    x => x.Requirement,
+                    x => x.Requirement!.Met,
+                    (_, _) => Requirement?.Met ?? true)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .ToPropertyEx(this, x => x.Visible, initialValue: true)
+                .DisposeWith(disposables);
+            this.WhenAnyValue(x => x.Item.ImageSource)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .ToPropertyEx(this, x => x.ImageSource)
+                .DisposeWith(disposables);
+            this.WhenAnyValue(x => x.Item.Label)
+                .Select(x => x is not null)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .ToPropertyEx(this, x => x.LabelVisible)
+                .DisposeWith(disposables);
+            this.WhenAnyValue(x => x.Item.Label)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .ToPropertyEx(this, x => x.Label)
+                .DisposeWith(disposables);
+            this.WhenAnyValue(x => x.Item.LabelColor)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .ToPropertyEx(this, x => x.LabelColor)
+                .DisposeWith(disposables);
+            this.WhenAnyValue(x => x.Item.BossSelect)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .ToPropertyEx(this, x => x.BossSelect)
+                .DisposeWith(disposables);
+        });
     }
 }

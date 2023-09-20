@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Requirements.AlwaysDisplayDungeonItems;
@@ -5,7 +6,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Requirements.AlwaysDisplayDungeonItems;
 
-public class AlwaysDisplayDungeonItemsRequirementDictionaryTests
+[ExcludeFromCodeCoverage]
+public sealed class AlwaysDisplayDungeonItemsRequirementDictionaryTests
 {
     // ReSharper disable once CollectionNeverUpdated.Local
     private readonly AlwaysDisplayDungeonItemsRequirementDictionary _sut;

@@ -1,11 +1,13 @@
 ﻿using OpenTracker.Models.Locations.Map.Connections;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.UndoRedo.Connections;
 
 /// <summary>
 /// This class contains the <see cref="IUndoable"/> action to add a new <see cref="IMapConnection"/> to the map.
 /// </summary>
-public class AddMapConnection : IAddMapConnection
+[DependencyInjection]
+public sealed class AddMapConnection : IAddMapConnection
 {
     private readonly IMapConnectionCollection _mapConnections;
     private readonly IMapConnection _mapConnection;

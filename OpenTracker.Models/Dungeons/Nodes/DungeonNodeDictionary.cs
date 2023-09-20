@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using OpenTracker.Models.Dungeons.Mutable;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Dungeons.Nodes;
 
@@ -8,7 +9,8 @@ namespace OpenTracker.Models.Dungeons.Nodes;
 /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container of <see cref="IDungeonNode"/> indexed
 /// by <see cref="DungeonNodeID"/>.
 /// </summary>
-public class DungeonNodeDictionary : LazyDictionary<DungeonNodeID, IDungeonNode>, IDungeonNodeDictionary
+[DependencyInjection]
+public sealed class DungeonNodeDictionary : LazyDictionary<DungeonNodeID, IDungeonNode>, IDungeonNodeDictionary
 {
     private readonly IDungeonNode.Factory _factory;
 

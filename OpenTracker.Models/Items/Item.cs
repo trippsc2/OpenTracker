@@ -4,6 +4,7 @@ using OpenTracker.Models.AutoTracking.Values;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Models.UndoRedo.Items;
+using OpenTracker.Utils.Autofac;
 using ReactiveUI;
 
 namespace OpenTracker.Models.Items;
@@ -11,6 +12,7 @@ namespace OpenTracker.Models.Items;
 /// <summary>
 /// This class contains item data.
 /// </summary>
+[DependencyInjection]
 public class Item : ReactiveObject, IItem
 {
     private readonly ISaveLoadManager _saveLoadManager;

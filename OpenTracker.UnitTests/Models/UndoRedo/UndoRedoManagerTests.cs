@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.SaveLoad;
@@ -6,7 +7,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.UndoRedo;
 
-public class UndoRedoManagerTests
+[ExcludeFromCodeCoverage]
+public sealed class UndoRedoManagerTests
 {
     private readonly ISaveLoadManager _saveLoadManager = Substitute.For<ISaveLoadManager>();
     private readonly UndoRedoManager _sut;

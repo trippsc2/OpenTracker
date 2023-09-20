@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Markings;
@@ -6,7 +7,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.UndoRedo.Markings;
 
-public class ChangeMarkingTests
+[ExcludeFromCodeCoverage]
+public sealed class ChangeMarkingTests
 {
     private readonly IMarking _marking = Substitute.For<IMarking>();
     private const MarkType NewMarking = MarkType.HCLeft;

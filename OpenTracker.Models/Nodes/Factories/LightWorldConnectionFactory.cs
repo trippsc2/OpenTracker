@@ -10,13 +10,15 @@ using OpenTracker.Models.Requirements.Item.Prize;
 using OpenTracker.Models.Requirements.Mode;
 using OpenTracker.Models.Requirements.SequenceBreak;
 using OpenTracker.Models.SequenceBreaks;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Nodes.Factories;
 
 /// <summary>
 /// This class contains the creation logic for general light world <see cref="INodeConnection"/> objects. 
 /// </summary>
-public class LightWorldConnectionFactory : ILightWorldConnectionFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class LightWorldConnectionFactory : ILightWorldConnectionFactory
 {
     private readonly IComplexRequirementDictionary _complexRequirements;
     private readonly IItemRequirementDictionary _itemRequirements;

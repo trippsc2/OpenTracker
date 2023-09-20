@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using OpenTracker.Models.Dungeons.KeyDoors;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Dungeons.State;
 
 /// <summary>
 /// This class contains dungeon state data.
 /// </summary>
-public class DungeonState : IDungeonState
+[DependencyInjection]
+public sealed class DungeonState : IDungeonState
 {
     public IList<KeyDoorID> UnlockedDoors { get; }
     public int KeysCollected { get; }

@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories;
 
 /// <summary>
 /// This class contains creation logic for key layout data.
 /// </summary>
-public class KeyLayoutFactory : IKeyLayoutFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class KeyLayoutFactory : IKeyLayoutFactory
 {
     private readonly IHCKeyLayoutFactory _hcFactory;
     private readonly IATKeyLayoutFactory _atFactory;

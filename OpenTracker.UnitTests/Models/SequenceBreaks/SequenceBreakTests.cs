@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.SequenceBreaks;
@@ -5,7 +6,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.SequenceBreaks;
 
-public class SequenceBreakTests
+[ExcludeFromCodeCoverage]
+public sealed class SequenceBreakTests
 {
     [Theory]
     [InlineData(false, false)]

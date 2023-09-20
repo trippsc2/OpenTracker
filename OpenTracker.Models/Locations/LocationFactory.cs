@@ -1,11 +1,13 @@
 ﻿using System;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Locations;
 
 /// <summary>
 /// This class contains creation logic for <see cref="ILocation"/> objects.
 /// </summary>
-public class LocationFactory : ILocationFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class LocationFactory : ILocationFactory
 {
     private readonly ILocation.Factory _factory;
 

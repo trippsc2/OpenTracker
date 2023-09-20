@@ -1,12 +1,14 @@
 ﻿using System.ComponentModel;
 using OpenTracker.Models.Items;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Requirements.Item;
 
 /// <summary>
 /// This class contains <see cref="IItem"/> <see cref="IRequirement"/> data.
 /// </summary>
-public class ItemRequirement : BooleanRequirement, IItemRequirement
+[DependencyInjection]
+public sealed class ItemRequirement : BooleanRequirement, IItemRequirement
 {
     private readonly IItem _item;
     private readonly int _count;

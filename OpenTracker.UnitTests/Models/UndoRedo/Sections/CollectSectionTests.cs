@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Markings;
@@ -7,7 +8,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.UndoRedo.Sections;
 
-public class CollectSectionTests
+[ExcludeFromCodeCoverage]
+public sealed class CollectSectionTests
 {
     private readonly ISection _section = Substitute.For<ISection>();
 

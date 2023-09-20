@@ -6,13 +6,15 @@ using OpenTracker.Models.Markings;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Requirements.SmallKeyShuffle;
 using OpenTracker.Models.Sections.Item;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Sections.Factories;
 
 /// <summary>
 /// This class contains the creation logic for <see cref="IDungeonItemSection"/> objects.
 /// </summary>
-public class DungeonItemSectionFactory : IDungeonItemSectionFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class DungeonItemSectionFactory : IDungeonItemSectionFactory
 {
     private readonly ISmallKeyShuffleRequirementDictionary _smallKeyShuffleRequirements;
         

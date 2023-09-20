@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Requirements.ShopShuffle;
 
@@ -7,7 +8,8 @@ namespace OpenTracker.Models.Requirements.ShopShuffle;
 /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for
 /// <see cref="IShopShuffleRequirement"/> objects indexed by <see cref="bool"/>.
 /// </summary>
-public class ShopShuffleRequirementDictionary : LazyDictionary<bool, IRequirement>,
+[DependencyInjection(SingleInstance = true)]
+public sealed class ShopShuffleRequirementDictionary : LazyDictionary<bool, IRequirement>,
     IShopShuffleRequirementDictionary
 {
     private readonly IShopShuffleRequirement.Factory _factory;

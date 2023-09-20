@@ -1,4 +1,5 @@
 ﻿using OpenTracker.Models.Modes;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.UndoRedo.Mode;
 
@@ -6,7 +7,8 @@ namespace OpenTracker.Models.UndoRedo.Mode;
 /// This class contains the <see cref="IUndoable"/> action to change the <see cref="IMode.KeyDropShuffle"/>
 /// property.
 /// </summary>
-public class ChangeKeyDropShuffle : IChangeKeyDropShuffle
+[DependencyInjection]
+public sealed class ChangeKeyDropShuffle : IChangeKeyDropShuffle
 {
     private readonly IMode _mode;
     private readonly bool _newValue;

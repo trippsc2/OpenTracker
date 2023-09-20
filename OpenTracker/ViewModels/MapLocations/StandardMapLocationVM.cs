@@ -1,20 +1,19 @@
-using System.ComponentModel;
-using System.Globalization;
 using System.Reactive;
-using System.Threading.Tasks;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using Avalonia;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.Threading;
-using OpenTracker.Autofac;
-using OpenTracker.Models.Locations;
+using Avalonia.Media;
 using OpenTracker.Models.Locations.Map;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.Sections.Item;
 using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 
 namespace OpenTracker.ViewModels.MapLocations;
 
@@ -24,68 +23,35 @@ namespace OpenTracker.ViewModels.MapLocations;
 [DependencyInjection]
 public sealed class StandardMapLocationVM : ViewModel, IShapedMapLocationVMBase
 {
-    private readonly ITrackerSettings _trackerSettings;
-    private readonly IMode _mode;
     private readonly IUndoRedoManager _undoRedoManager;
+    
+    private IMode Mode { get; }
+    private ITrackerSettings TrackerSettings { get; }
+    private IMapLocationColorProvider ColorProvider { get; }
+    private IMapLocation MapLocation { get; }
+    private bool IsDungeon { get; }
 
-    private readonly IMapLocationColorProvider _colorProvider;
-    private readonly IMapLocation _mapLocation;
-        
-    private readonly bool _dungeon;
+    [ObservableAsProperty]
+    public double Size { get; }
+    [ObservableAsProperty]
+    public double OffsetX { get; }
+    [ObservableAsProperty]
+    public double OffsetY { get; }
+    [ObservableAsProperty]
+    public SolidColorBrush BorderColor { get; } = default!;
+    [ObservableAsProperty]
+    public SolidColorBrush Color { get; } = default!;
+    [ObservableAsProperty]
+    public Thickness BorderSize { get; }
+    [ObservableAsProperty]
+    public string? Label { get; }
+    [ObservableAsProperty]
+    public bool LabelVisible { get; }
 
-    public double OffsetX => -(Size / 2);
-    public double OffsetY => -(Size / 2);
-
-    public double Size
-    {
-        get
-        {
-            if (_mode.EntranceShuffle > EntranceShuffle.Dungeon ||
-                _dungeon && _mode.EntranceShuffle == EntranceShuffle.Dungeon)
-            {
-                return 40.0;
-            }
-
-            if (_mapLocation.Location.Total > 1)
-            {
-                return _dungeon ? 130.0 : 90.0;
-            }
-
-            return 70.0;
-        }
-    }
-
-    public string BorderColor => _colorProvider.BorderColor;
-    public string Color => _colorProvider.Color;
-
-    public Thickness BorderSize => Size > 40.0 ? new Thickness(9) : new Thickness(5);
-        
-    public string? Label
-    {
-        get
-        {
-            if (_mapLocation.Location.Available == 0)
-            {
-                return null;
-            }
-                
-            if (_mapLocation.Location.Available == _mapLocation.Location.Accessible ||
-                _mapLocation.Location.Accessible == 0)
-            {
-                return _mapLocation.Location.Available.ToString(CultureInfo.InvariantCulture);
-            }
-
-            return $"{ _mapLocation.Location.Accessible.ToString(CultureInfo.InvariantCulture) }/" +
-                   _mapLocation.Location.Available.ToString(CultureInfo.InvariantCulture);
-        }
-    }
-
-    public bool LabelVisible => _trackerSettings.ShowItemCountsOnMap && Size > 70.0 && Label is not null;
-        
-    public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
-    public ReactiveCommand<RoutedEventArgs, Unit> HandleDoubleClick { get; }
-    public ReactiveCommand<PointerEventArgs, Unit> HandlePointerEnter { get; }
-    public ReactiveCommand<PointerEventArgs, Unit> HandlePointerLeave { get; }
+    public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
+    public ReactiveCommand<RoutedEventArgs, Unit> HandleDoubleClickCommand { get; }
+    public ReactiveCommand<PointerEventArgs, Unit> HandlePointerEnterCommand { get; }
+    public ReactiveCommand<PointerEventArgs, Unit> HandlePointerLeaveCommand { get; }
 
     public delegate StandardMapLocationVM Factory(IMapLocation mapLocation);
 
@@ -108,181 +74,95 @@ public sealed class StandardMapLocationVM : ViewModel, IShapedMapLocationVMBase
     /// The map location data.
     /// </param>
     public StandardMapLocationVM(
-        ITrackerSettings trackerSettings, IMode mode, IUndoRedoManager undoRedoManager,
-        IMapLocationColorProvider.Factory colorProvider, IMapLocation mapLocation)
+        ITrackerSettings trackerSettings,
+        IMode mode,
+        IUndoRedoManager undoRedoManager,
+        IMapLocationColorProvider.Factory colorProvider,
+        IMapLocation mapLocation)
     {
-        _trackerSettings = trackerSettings;
-        _mode = mode;
+        TrackerSettings = trackerSettings;
         _undoRedoManager = undoRedoManager;
 
-        _colorProvider = colorProvider(mapLocation);
-        _mapLocation = mapLocation;
+        Mode = mode;
+        ColorProvider = colorProvider(mapLocation);
+        MapLocation = mapLocation;
+        IsDungeon = MapLocation.Location.Sections[0] is IDungeonItemSection;
+        
+        HandleClickCommand = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClick);
+        HandleDoubleClickCommand = ReactiveCommand.Create<RoutedEventArgs>(HandleDoubleClick);
+        HandlePointerEnterCommand = ColorProvider.HandlePointerEnterCommand;
+        HandlePointerLeaveCommand = ColorProvider.HandlePointerLeaveCommand;
 
-        _dungeon = _mapLocation.Location.Sections[0] is IDungeonItemSection;
+        this.WhenActivated(disposables =>
+        {
+            ColorProvider.Activator
+                .Activate()
+                .DisposeWith(disposables);
             
-        HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
-        HandleDoubleClick = ReactiveCommand.Create<RoutedEventArgs>(HandleDoubleClickImpl);
-        HandlePointerEnter = _colorProvider.HandlePointerEnter;
-        HandlePointerLeave = _colorProvider.HandlePointerLeave;
+            this.WhenAnyValue(
+                    x => x.Mode.EntranceShuffle,
+                    x => x.IsDungeon,
+                    x => x.MapLocation.Location.Total,
+                    (entranceShuffle, isDungeon, total) => 
+                        entranceShuffle > EntranceShuffle.Dungeon || isDungeon && entranceShuffle == EntranceShuffle.Dungeon
+                            ? 40.0
+                            : total > 1
+                                ? isDungeon
+                                    ? 130.0
+                                    : 90.0
+                                : 70.0)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .ToPropertyEx(this, x => x.Size)
+                .DisposeWith(disposables);
+            var offset = this
+                .WhenAnyValue(x => x.Size)
+                .Select(x => -(x / 2))
+                .ObserveOn(RxApp.MainThreadScheduler);
 
-        PropertyChanged += OnPropertyChanged;
-        _trackerSettings.PropertyChanged += OnTrackerSettingsChanged;
-        _mode.PropertyChanged += OnModeChanged;
-        _colorProvider.PropertyChanged += OnColorProviderChanged;
-        _mapLocation.Location.PropertyChanged += OnLocationChanged;
-    }
-        
-    /// <summary>
-    /// Subscribes to the PropertyChanged event on this object.
-    /// </summary>
-    /// <param name="sender">
-    /// The sending object of the event.
-    /// </param>
-    /// <param name="e">
-    /// The arguments of the PropertyChanged event.
-    /// </param>
-    private async void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        switch (e.PropertyName)
-        {
-            case nameof(Size):
-            {
-                await UpdateOffsets();
-                await Dispatcher.UIThread.InvokeAsync(() =>
-                {
-                    this.RaisePropertyChanged(nameof(OffsetX));
-                    this.RaisePropertyChanged(nameof(OffsetY));
-                    this.RaisePropertyChanged(nameof(BorderSize));
-                    this.RaisePropertyChanged(nameof(LabelVisible));
-                });
-            }
-                break;
-            case nameof(Label):
-                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(LabelVisible)));
-                break;
-        }
-    }
+            offset
+                .ToPropertyEx(this, x => x.OffsetX)
+                .DisposeWith(disposables);
+            offset
+                .ToPropertyEx(this, x => x.OffsetY)
+                .DisposeWith(disposables);
 
-    /// <summary>
-    /// Subscribes to the PropertyChanged event on the IMapLocationColorProvider interface.
-    /// </summary>
-    /// <param name="sender">
-    /// The sending object of the event.
-    /// </param>
-    /// <param name="e">
-    /// The arguments of the PropertyChanged event.
-    /// </param>
-    private async void OnColorProviderChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        switch (e.PropertyName)
-        {
-            case nameof(IMapLocationColorProvider.BorderColor):
-                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(BorderColor)));
-                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(LabelVisible)));
-                break;
-            case nameof(IMapLocationColorProvider.Color):
-                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Color)));
-                break;
-        }
-    }
-
-    /// <summary>
-    /// Subscribes to the PropertyChanged event on the ITrackerSettings interface.
-    /// </summary>
-    /// <param name="sender">
-    /// The sending object of the event.
-    /// </param>
-    /// <param name="e">
-    /// The arguments of the PropertyChanged event.
-    /// </param>
-    private async void OnTrackerSettingsChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName == nameof(ITrackerSettings.ShowItemCountsOnMap))
-        {
-            await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(LabelVisible)));
-        }
-    }
-        
-    /// <summary>
-    /// Subscribes to the PropertyChanged event on the IMode interface.
-    /// </summary>
-    /// <param name="sender">
-    /// The sending object of the event.
-    /// </param>
-    /// <param name="e">
-    /// The arguments of the PropertyChanged event.
-    /// </param>
-    private async void OnModeChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName != nameof(IMode.EntranceShuffle))
-        {
-            return;
-        }
-
-        await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Size)));
-    }
-
-    /// <summary>
-    /// Subscribes to the PropertyChanged event on the ILocation interface.
-    /// </summary>
-    /// <param name="sender">
-    /// The sending object of the event.
-    /// </param>
-    /// <param name="e">
-    /// The arguments of the PropertyChanged event.
-    /// </param>
-    private async void OnLocationChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        switch (e.PropertyName)
-        {
-            case nameof(ILocation.Accessible):
-            case nameof(ILocation.Available):
-                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Label)));
-                break;
-            case nameof(ILocation.Total):
-                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Size)));
-                break;
-        }
-    }
-
-    /// <summary>
-    /// Raises the PropertyChanged event for the OffsetX and OffsetY properties.
-    /// </summary>
-    private async Task UpdateOffsets()
-    {
-        await Dispatcher.UIThread.InvokeAsync(() =>
-        {
-            this.RaisePropertyChanged(nameof(OffsetX));
-            this.RaisePropertyChanged(nameof(OffsetY));
+            this.WhenAnyValue(x => x.ColorProvider.BorderColor)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .ToPropertyEx(this, x => x.BorderColor)
+                .DisposeWith(disposables);
+            this.WhenAnyValue(x => x.ColorProvider.Color)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .ToPropertyEx(this, x => x.Color)
+                .DisposeWith(disposables);
+            this.WhenAnyValue(x => x.Size)
+                .Select(x => x > 40.0 ? new Thickness(9) : new Thickness(5))
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .ToPropertyEx(this, x => x.BorderSize)
+                .DisposeWith(disposables);
+            this.WhenAnyValue(
+                    x => x.MapLocation.Location.Available,
+                    x => x.MapLocation.Location.Accessible,
+                    (available, accessible) => available == 0
+                        ? null
+                        : available == accessible
+                            ? available.ToString().ToLowerInvariant()
+                            : $"{accessible.ToString().ToLowerInvariant()}/{available.ToString().ToLowerInvariant()}")
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .ToPropertyEx(this, x => x.Label)
+                .DisposeWith(disposables);
+            this.WhenAnyValue(
+                    x => x.TrackerSettings.ShowItemCountsOnMap,
+                    x => x.Size,
+                    x => x.Label,
+                    (showItemCountsOnMap, size, label) =>
+                        showItemCountsOnMap && size > 70.0 && label is not null)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .ToPropertyEx(this, x => x.LabelVisible)
+                .DisposeWith(disposables);
         });
     }
 
-    /// <summary>
-    /// Creates an undoable action to clear the location and sends it to the undo/redo manager.
-    /// </summary>
-    /// <param name="force">
-    /// A boolean representing whether the logic should be ignored.
-    /// </param>
-    private void ClearLocation(bool force)
-    {
-        _undoRedoManager.NewAction(_mapLocation.Location.CreateClearLocationAction(force));
-    }
-
-    /// <summary>
-    /// Creates an undoable action to pin the location and sends it to the undo/redo manager.
-    /// </summary>
-    private void PinLocation()
-    {
-        _undoRedoManager.NewAction(_mapLocation.Location.CreatePinLocationAction());
-    }
-
-    /// <summary>
-    /// Handles clicking the control.
-    /// </summary>
-    /// <param name="e">
-    /// The pointer released event args.
-    /// </param>
-    private void HandleClickImpl(PointerReleasedEventArgs e)
+    private void HandleClick(PointerReleasedEventArgs e)
     {
         if (e.InitialPressMouseButton == MouseButton.Right)
         {
@@ -290,14 +170,18 @@ public sealed class StandardMapLocationVM : ViewModel, IShapedMapLocationVMBase
         }
     }
 
-    /// <summary>
-    /// Handles double clicking the control.
-    /// </summary>
-    /// <param name="e">
-    /// The pointer released event args.
-    /// </param>
-    private void HandleDoubleClickImpl(RoutedEventArgs e)
+    private void HandleDoubleClick(RoutedEventArgs e)
     {
         PinLocation();
+    }
+
+    private void ClearLocation(bool force)
+    {
+        _undoRedoManager.NewAction(MapLocation.Location.CreateClearLocationAction(force));
+    }
+
+    private void PinLocation()
+    {
+        _undoRedoManager.NewAction(MapLocation.Location.CreatePinLocationAction());
     }
 }

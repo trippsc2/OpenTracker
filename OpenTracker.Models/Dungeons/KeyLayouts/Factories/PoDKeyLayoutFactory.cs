@@ -4,13 +4,15 @@ using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Requirements.Aggregate;
 using OpenTracker.Models.Requirements.BigKeyShuffle;
 using OpenTracker.Models.Requirements.SmallKeyShuffle;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories;
 
 /// <summary>
 /// This class contains the creation logic for Palace of Darkness key layouts.
 /// </summary>
-public class PoDKeyLayoutFactory : IPoDKeyLayoutFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class PoDKeyLayoutFactory : IPoDKeyLayoutFactory
 {
     private readonly IAggregateRequirementDictionary _aggregateRequirements;
     private readonly IBigKeyShuffleRequirementDictionary _bigKeyShuffleRequirements;

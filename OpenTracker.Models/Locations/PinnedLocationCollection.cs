@@ -1,13 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Locations;
 
 /// <summary>
 /// This class contains the <see cref="ObservableCollection{T}"/> container for pinned location data.
 /// </summary>
-public class PinnedLocationCollection : ObservableCollection<ILocation>, IPinnedLocationCollection
+[DependencyInjection(SingleInstance = true)]
+public sealed class PinnedLocationCollection : ObservableCollection<ILocation>, IPinnedLocationCollection
 {
     private readonly ILocationDictionary _locations;
 

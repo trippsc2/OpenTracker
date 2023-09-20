@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.BossPlacements;
 
 /// <summary>
 /// This class contains the dictionary container for <see cref="IBossPlacement"/> objects.
 /// </summary>
+[DependencyInjection(SingleInstance = true)]
 public sealed class BossPlacementDictionary : LazyDictionary<BossPlacementID, IBossPlacement>,
     IBossPlacementDictionary
 {

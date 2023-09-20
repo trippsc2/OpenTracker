@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Items;
@@ -6,7 +7,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.UndoRedo.Items;
 
-public class AddItemTests
+[ExcludeFromCodeCoverage]
+public sealed class AddItemTests
 {
     private readonly IItem _item = Substitute.For<IItem>();
     private readonly AddItem _sut;

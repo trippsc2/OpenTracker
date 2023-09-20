@@ -10,13 +10,15 @@ using OpenTracker.Models.Requirements.Item.Prize;
 using OpenTracker.Models.Requirements.Mode;
 using OpenTracker.Models.Requirements.SequenceBreak;
 using OpenTracker.Models.SequenceBreaks;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Nodes.Factories;
 
 /// <summary>
 /// This class contains the creation logic for overworld dungeon entry <see cref="INodeConnection"/> objects.
 /// </summary>
-public class DungeonEntryConnectionFactory : IDungeonEntryConnectionFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class DungeonEntryConnectionFactory : IDungeonEntryConnectionFactory
 {
     private readonly IComplexRequirementDictionary _complexRequirements;
     private readonly IEntranceShuffleRequirementDictionary _entranceShuffleRequirements;

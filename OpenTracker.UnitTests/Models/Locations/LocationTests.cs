@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using ExpectedObjects;
 using NSubstitute;
@@ -19,7 +20,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Locations;
 
-public class LocationTests
+[ExcludeFromCodeCoverage]
+public sealed class LocationTests
 {
     private const string Name = "Test";
         
@@ -649,8 +651,8 @@ public class LocationTests
     [Fact]
     public void Save_ShouldReturnExpectedSectionSaveData()
     {
-        var section1 = Substitute.For<SectionSaveData>();
-        var section2 = Substitute.For<SectionSaveData>();
+        var section1 = new SectionSaveData();
+        var section2 = new SectionSaveData();
 
         _sections[0].Save().Returns(section1);
         _sections[1].Save().Returns(section2);

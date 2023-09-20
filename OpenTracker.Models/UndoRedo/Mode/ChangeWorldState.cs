@@ -1,11 +1,13 @@
 ﻿using OpenTracker.Models.Modes;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.UndoRedo.Mode;
 
 /// <summary>
 /// This class contains the <see cref="IUndoable"/> action to change the <see cref="IMode.WorldState"/> property.
 /// </summary>
-public class ChangeWorldState : IChangeWorldState
+[DependencyInjection]
+public sealed class ChangeWorldState : IChangeWorldState
 {
     private readonly IMode _mode;
     private readonly WorldState _newValue;

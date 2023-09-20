@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Requirements.EnemyShuffle;
@@ -5,7 +6,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Requirements.EnemyShuffle;
 
-public class EnemyShuffleRequirementDictionaryTests
+[ExcludeFromCodeCoverage]
+public sealed class EnemyShuffleRequirementDictionaryTests
 {
     // ReSharper disable once CollectionNeverUpdated.Local
     private readonly EnemyShuffleRequirementDictionary _sut;

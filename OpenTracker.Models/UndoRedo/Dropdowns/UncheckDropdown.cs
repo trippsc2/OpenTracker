@@ -1,11 +1,13 @@
 ﻿using OpenTracker.Models.Dropdowns;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.UndoRedo.Dropdowns;
 
 /// <summary>
 /// This class contains the <see cref="IUndoable"/> action to uncheck a <see cref="IDropdown"/>.
 /// </summary>
-public class UncheckDropdown : IUncheckDropdown
+[DependencyInjection]
+public sealed class UncheckDropdown : IUncheckDropdown
 {
     private readonly IDropdown _dropdown;
 

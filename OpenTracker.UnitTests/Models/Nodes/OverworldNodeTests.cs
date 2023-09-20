@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using NSubstitute;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Modes;
@@ -11,7 +12,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Nodes;
 
-public class OverworldNodeTests
+[ExcludeFromCodeCoverage]
+public sealed class OverworldNodeTests
 {
     private readonly IMode _mode = Substitute.For<IMode>();
     private readonly List<INodeConnection> _nodeConnections = new()

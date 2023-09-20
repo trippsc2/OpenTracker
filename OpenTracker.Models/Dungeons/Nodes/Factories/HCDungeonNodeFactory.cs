@@ -5,13 +5,15 @@ using OpenTracker.Models.Dungeons.Mutable;
 using OpenTracker.Models.Nodes;
 using OpenTracker.Models.Nodes.Connections;
 using OpenTracker.Models.Requirements.Complex;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Dungeons.Nodes.Factories;
 
 /// <summary>
 /// This class contains the creation logic for Hyrule Castle nodes.
 /// </summary>
-public class HCDungeonNodeFactory : IHCDungeonNodeFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class HCDungeonNodeFactory : IHCDungeonNodeFactory
 {
     private readonly IComplexRequirementDictionary _complexRequirements;
         

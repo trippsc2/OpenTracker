@@ -11,7 +11,7 @@ namespace OpenTracker.Models.SaveLoad;
 /// <summary>
 /// This class contains save data.
 /// </summary>
-public class SaveData
+public sealed class SaveData
 {
     // ReSharper disable once UnusedAutoPropertyAccessor.Global
     public Version? Version { get; init; }

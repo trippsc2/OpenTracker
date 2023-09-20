@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Locations;
@@ -9,7 +10,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Locations.Map.Connections;
 
-public class ConnectionTests
+[ExcludeFromCodeCoverage]
+public sealed class ConnectionTests
 {
     private readonly IRemoveMapConnection.Factory _removeConnectionFactory = _ => Substitute.For<IRemoveMapConnection>();
         

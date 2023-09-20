@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;
 using OpenTracker.Models.BossPlacements;
@@ -16,7 +17,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.SaveLoad;
 
-public class SaveLoadManagerTests
+[ExcludeFromCodeCoverage]
+public sealed class SaveLoadManagerTests
 {
     private readonly IJsonConverter _jsonConverter = Substitute.For<IJsonConverter>();
 

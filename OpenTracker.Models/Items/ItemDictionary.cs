@@ -4,6 +4,7 @@ using System.Linq;
 using OpenTracker.Models.Items.Factories;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Items;
 
@@ -11,7 +12,8 @@ namespace OpenTracker.Models.Items;
 /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for <see cref="IItem"/> objects
 /// indexed by <see cref="ItemType"/>.
 /// </summary>
-public class ItemDictionary : LazyDictionary<ItemType, IItem>, IItemDictionary
+[DependencyInjection(SingleInstance = true)]
+public sealed class ItemDictionary : LazyDictionary<ItemType, IItem>, IItemDictionary
 {
     private readonly Lazy<IItemFactory> _factory;
 

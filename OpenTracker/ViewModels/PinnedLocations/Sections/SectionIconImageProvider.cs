@@ -1,10 +1,11 @@
-using System.ComponentModel;
-using Avalonia.Threading;
-using OpenTracker.Autofac;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Sections;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 
 namespace OpenTracker.ViewModels.PinnedLocations.Sections;
 
@@ -14,19 +15,21 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections;
 [DependencyInjection]
 public sealed class SectionIconImageProvider : ViewModel, ISectionIconImageProvider
 {
-    private readonly ISection _section;
     private readonly string _imageSourceBase;
 
+    private ISection Section { get; }
+    
+    [ObservableAsProperty]
     public string ImageSource
     {
         get
         {
-            if (!_section.IsAvailable())
+            if (!Section.IsAvailable())
             {
                 return $"{_imageSourceBase}2.png";
             }
 
-            switch (_section.Accessibility)
+            switch (Section.Accessibility)
             {
                 case AccessibilityLevel.None:
                 case AccessibilityLevel.Inspect:
@@ -52,27 +55,36 @@ public sealed class SectionIconImageProvider : ViewModel, ISectionIconImageProvi
     /// </param>
     public SectionIconImageProvider(ISection section, string imageSourceBase)
     {
-        _section = section;
         _imageSourceBase = imageSourceBase;
-
-        _section.PropertyChanged += OnSectionChanged;
+        Section = section;
+        
+        this.WhenActivated(disposables =>
+        {
+            this.WhenAnyValue(
+                    x => x.Section.Available,
+                    x => x.Section.Accessibility,
+                    GetImageSource)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .ToPropertyEx(this, x => x.ImageSource)
+                .DisposeWith(disposables);
+        });
     }
 
-    /// <summary>
-    /// Subscribes to the PropertyChanged event on the ISection interface.
-    /// </summary>
-    /// <param name="sender">
-    /// The sending object of the event.
-    /// </param>
-    /// <param name="e">
-    /// The arguments of the PropertyChanged event.
-    /// </param>
-    private async void OnSectionChanged(object? sender, PropertyChangedEventArgs e)
+    private string GetImageSource(int _, AccessibilityLevel accessibility)
     {
-        if (e.PropertyName == nameof(ISection.Accessibility) ||
-            e.PropertyName == nameof(ISection.Available))
+        if (!Section.IsAvailable())
         {
-            await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(ImageSource)));
-        } 
+            return $"{_imageSourceBase}2.png";
+        }
+        
+        return accessibility switch
+        {
+            AccessibilityLevel.None => $"{_imageSourceBase}0.png",
+            AccessibilityLevel.Inspect => $"{_imageSourceBase}0.png",
+            AccessibilityLevel.Partial => $"{_imageSourceBase}1.png",
+            AccessibilityLevel.SequenceBreak => $"{_imageSourceBase}1.png",
+            AccessibilityLevel.Normal => $"{_imageSourceBase}1.png",
+            _ => $"{_imageSourceBase}2.png"
+        };
     }
 }

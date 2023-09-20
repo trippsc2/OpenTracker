@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using OpenTracker.Autofac;
 using OpenTracker.Models.Dropdowns;
+using OpenTracker.Utils.Autofac;
 using OpenTracker.ViewModels.Items;
 using OpenTracker.ViewModels.Items.Adapters;
 

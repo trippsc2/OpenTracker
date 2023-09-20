@@ -1,13 +1,15 @@
 using System;
 using OpenTracker.Models.AutoTracking.Values;
 using OpenTracker.Models.Items.Keys;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Items.Factories;
 
 /// <summary>
 /// This class contains the creation logic for <see cref="ISmallKeyItem"/> and <see cref="IBigKeyItem"/> objects.
 /// </summary>
-public class KeyItemFactory : IKeyItemFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class KeyItemFactory : IKeyItemFactory
 {
     private readonly IItemDictionary _items;
 

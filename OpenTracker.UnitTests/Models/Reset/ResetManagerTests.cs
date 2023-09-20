@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.AutoTracking;
@@ -13,7 +14,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Reset;
 
-public class ResetManagerTests
+[ExcludeFromCodeCoverage]
+public sealed class ResetManagerTests
 {
     private readonly IAutoTracker _autoTracker = Substitute.For<IAutoTracker>();
     private readonly IBossPlacementDictionary _bossPlacements = Substitute.For<IBossPlacementDictionary>();

@@ -1,12 +1,14 @@
 ﻿using System.ComponentModel;
 using OpenTracker.Models.Modes;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Requirements.BigKeyShuffle;
 
 /// <summary>
 /// This class contains <see cref="IMode.BigKeyShuffle"/> requirement data.
 /// </summary>
-public class BigKeyShuffleRequirement : BooleanRequirement, IBigKeyShuffleRequirement
+[DependencyInjection]
+public sealed class BigKeyShuffleRequirement : BooleanRequirement, IBigKeyShuffleRequirement
 {
     private readonly IMode _mode;
     private readonly bool _expectedValue;

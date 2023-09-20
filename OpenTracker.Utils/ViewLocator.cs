@@ -5,7 +5,7 @@ using Splat;
 
 namespace OpenTracker.Utils;
 
-public class ViewLocator : IDataTemplate
+public sealed class ViewLocator : IDataTemplate
 {
     public IControl Build(object data)
     {

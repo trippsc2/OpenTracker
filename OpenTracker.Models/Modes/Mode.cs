@@ -2,6 +2,7 @@
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Models.UndoRedo.Mode;
+using OpenTracker.Utils.Autofac;
 using ReactiveUI;
 
 namespace OpenTracker.Models.Modes;
@@ -9,7 +10,8 @@ namespace OpenTracker.Models.Modes;
 /// <summary>
 /// This class contains game mode settings data.
 /// </summary>
-public class Mode : ReactiveObject, IMode
+[DependencyInjection(SingleInstance = true)]
+public sealed class Mode : ReactiveObject, IMode
 {
     private readonly IChangeItemPlacement.Factory _changeItemPlacementFactory;
     private readonly IChangeMapShuffle.Factory _changeMapShuffleFactory;

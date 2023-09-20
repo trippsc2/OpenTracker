@@ -1,7 +1,7 @@
 ﻿using System;
-using OpenTracker.Autofac;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Markings;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.ViewModels.Markings.Images;
 

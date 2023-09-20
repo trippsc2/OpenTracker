@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Reflection;
 using OpenTracker.Utils;
@@ -6,7 +7,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Utils;
 
-public class AppPathTests
+[ExcludeFromCodeCoverage]
+public sealed class AppPathTests
 {
     [Fact]
     public void AvaloniaLogFilePath_ShouldReturnExpected()

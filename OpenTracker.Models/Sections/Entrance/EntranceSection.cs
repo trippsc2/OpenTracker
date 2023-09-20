@@ -5,13 +5,15 @@ using OpenTracker.Models.Nodes;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.UndoRedo.Sections;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Sections.Entrance;
 
 /// <summary>
 /// This class contains entrance shuffle data.
 /// </summary>
-public class EntranceSection : EntranceSectionBase
+[DependencyInjection]
+public sealed class EntranceSection : EntranceSectionBase
 {
     private readonly INode _node;
 

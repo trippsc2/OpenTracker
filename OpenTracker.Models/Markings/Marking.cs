@@ -1,5 +1,6 @@
 ﻿using OpenTracker.Models.UndoRedo;
 using OpenTracker.Models.UndoRedo.Markings;
+using OpenTracker.Utils.Autofac;
 using ReactiveUI;
 
 namespace OpenTracker.Models.Markings;
@@ -7,7 +8,8 @@ namespace OpenTracker.Models.Markings;
 /// <summary>
 /// This class contains marking data.
 /// </summary>
-public class Marking : ReactiveObject, IMarking
+[DependencyInjection]
+public sealed class Marking : ReactiveObject, IMarking
 {
     private readonly IChangeMarking.Factory _changeMarkingFactory;
         

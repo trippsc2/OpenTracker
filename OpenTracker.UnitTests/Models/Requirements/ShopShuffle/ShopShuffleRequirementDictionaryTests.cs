@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Requirements.ShopShuffle;
@@ -5,7 +6,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Requirements.ShopShuffle;
 
-public class ShopShuffleRequirementDictionaryTests
+[ExcludeFromCodeCoverage]
+public sealed class ShopShuffleRequirementDictionaryTests
 {
     // ReSharper disable once CollectionNeverUpdated.Local
     private readonly ShopShuffleRequirementDictionary _sut;

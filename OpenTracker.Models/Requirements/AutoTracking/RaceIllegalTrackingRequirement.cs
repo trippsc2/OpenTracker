@@ -1,12 +1,14 @@
 ﻿using System.ComponentModel;
 using OpenTracker.Models.AutoTracking;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Requirements.AutoTracking;
 
 /// <summary>
 /// This class contains <see cref="IAutoTracker.RaceIllegalTracking"/> requirement data.
 /// </summary>
-public class RaceIllegalTrackingRequirement : BooleanRequirement, IRaceIllegalTrackingRequirement
+[DependencyInjection]
+public sealed class RaceIllegalTrackingRequirement : BooleanRequirement, IRaceIllegalTrackingRequirement
 {
     private readonly IAutoTracker _autoTracker;
     private readonly bool _expectedValue;

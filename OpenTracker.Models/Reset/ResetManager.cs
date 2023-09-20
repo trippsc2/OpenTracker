@@ -6,13 +6,15 @@ using OpenTracker.Models.Locations;
 using OpenTracker.Models.Locations.Map.Connections;
 using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.UndoRedo;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Reset;
 
 /// <summary>
 /// This class contains logic for resetting the tracker.
 /// </summary>
-public class ResetManager : IResetManager
+[DependencyInjection(SingleInstance = true)]
+public sealed class ResetManager : IResetManager
 {
     private readonly IAutoTracker _autoTracker;
     private readonly IBossPlacementDictionary _bossPlacements;

@@ -17,6 +17,5 @@ class Program
             .Configure<App>()
             .UsePlatformDetect()
             .LogToTrace()
-            .UseReactiveUI()
-            .With(new AvaloniaNativePlatformOptions { UseGpu = false });
+            .UseReactiveUI();
 }

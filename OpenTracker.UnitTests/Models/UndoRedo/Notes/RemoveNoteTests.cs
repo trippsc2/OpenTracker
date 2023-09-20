@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Locations;
@@ -7,7 +8,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.UndoRedo.Notes;
 
-public class RemoveNoteTests
+[ExcludeFromCodeCoverage]
+public sealed class RemoveNoteTests
 {
     private readonly IMarking _note = Substitute.For<IMarking>();
     private readonly ILocationNoteCollection _notes;

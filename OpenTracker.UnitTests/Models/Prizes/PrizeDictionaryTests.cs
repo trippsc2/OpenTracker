@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Items;
@@ -6,7 +7,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Prizes;
 
-public class PrizeDictionaryTests
+[ExcludeFromCodeCoverage]
+public sealed class PrizeDictionaryTests
 {
     // ReSharper disable once CollectionNeverUpdated.Local
     private readonly PrizeDictionary _sut = new((_, _) => Substitute.For<IItem>());

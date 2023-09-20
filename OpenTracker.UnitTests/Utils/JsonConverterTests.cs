@@ -1,10 +1,12 @@
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using OpenTracker.Utils;
 using Xunit;
 
 namespace OpenTracker.UnitTests.Utils;
 
-public class JsonConverterTests
+[ExcludeFromCodeCoverage]
+public sealed class JsonConverterTests
 {
     [Fact]
     public void AutofacTest()

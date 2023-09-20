@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel;
-using OpenTracker.Autofac;
 using OpenTracker.Models.Settings;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Requirements.UIScale;
 

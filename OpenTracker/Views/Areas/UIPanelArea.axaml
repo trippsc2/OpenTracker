@@ -2,11 +2,16 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" x:Class="OpenTracker.Views.Areas.UIPanelArea">
+             xmlns:vm="clr-namespace:OpenTracker.ViewModels.Areas"
+             mc:Ignorable="d" x:Class="OpenTracker.Views.Areas.UIPanelArea"
+             x:DataType="vm:UIPanelAreaVM" x:CompileBindings="True">
 	<DockPanel Margin="1">
-    <ContentControl x:Name="Dropdowns" />
-    <ContentControl x:Name="Dungeons" />
-    <ContentControl x:Name="Items" />
-		<ContentControl x:Name="Locations" />
+    <ContentControl DockPanel.Dock="{Binding ItemsDock}"
+                    Content="{Binding Dropdowns}" />
+    <ContentControl DockPanel.Dock="{Binding ItemsDock}"
+                    Content="{Binding Dungeons}" />
+    <ContentControl DockPanel.Dock="{Binding ItemsDock}"
+                    Content="{Binding Items}"/>
+		<ContentControl Content="{Binding Locations}" />
 	</DockPanel>
 </UserControl>

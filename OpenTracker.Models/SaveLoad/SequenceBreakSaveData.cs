@@ -3,7 +3,7 @@
 /// <summary>
 /// This class contains sequence break save data.
 /// </summary>
-public class SequenceBreakSaveData
+public sealed class SequenceBreakSaveData
 {
     public bool Enabled { get; init; }
 }

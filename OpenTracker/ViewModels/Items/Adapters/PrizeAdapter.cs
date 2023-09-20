@@ -1,18 +1,18 @@
-using System.ComponentModel;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
-using System.Text;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using Avalonia.Input;
-using Avalonia.Threading;
-using OpenTracker.Autofac;
-using OpenTracker.Models.PrizePlacements;
+using Avalonia.Media;
 using OpenTracker.Models.Prizes;
-using OpenTracker.Models.Sections;
 using OpenTracker.Models.Sections.Boss;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 using OpenTracker.ViewModels.BossSelect;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 
 namespace OpenTracker.ViewModels.Items.Adapters;
 
@@ -22,110 +22,65 @@ namespace OpenTracker.ViewModels.Items.Adapters;
 [DependencyInjection]
 public sealed class PrizeAdapter : ViewModel, IItemAdapter
 {
-    private readonly IPrizeDictionary _prizes;
+    private static readonly Dictionary<(PrizeType? prize, bool isAvailable), string> ImageSourceValues = new()
+    {
+        { (null, true), "avares://OpenTracker/Assets/Images/Prizes/unknown0.png" },
+        { (null, false), "avares://OpenTracker/Assets/Images/Prizes/unknown1.png" },
+        { (PrizeType.Aga1, true), "avares://OpenTracker/Assets/Images/Prizes/aga10.png" },
+        { (PrizeType.Aga1, false), "avares://OpenTracker/Assets/Images/Prizes/aga11.png" },
+        { (PrizeType.Aga2, true), "avares://OpenTracker/Assets/Images/Prizes/aga20.png" },
+        { (PrizeType.Aga2, false), "avares://OpenTracker/Assets/Images/Prizes/aga11.png" },
+        { (PrizeType.Crystal, true), "avares://OpenTracker/Assets/Images/Prizes/crystal0.png" },
+        { (PrizeType.Crystal, false), "avares://OpenTracker/Assets/Images/Prizes/crystal1.png" },
+        { (PrizeType.GreenPendant, true), "avares://OpenTracker/Assets/Images/Prizes/greenpendant0.png" },
+        { (PrizeType.GreenPendant, false), "avares://OpenTracker/Assets/Images/Prizes/greenpendant1.png" },
+        { (PrizeType.Pendant, true), "avares://OpenTracker/Assets/Images/Prizes/pendant0.png" },
+        { (PrizeType.Pendant, false), "avares://OpenTracker/Assets/Images/Prizes/pendant1.png" },
+        { (PrizeType.RedCrystal, true), "avares://OpenTracker/Assets/Images/Prizes/redcrystal0.png" },
+        { (PrizeType.RedCrystal, false), "avares://OpenTracker/Assets/Images/Prizes/redcrystal1.png" }
+    };
+
     private readonly IUndoRedoManager _undoRedoManager;
 
-    private readonly IPrizeSection _section;
+    private IPrizeSection Section { get; }
 
-    public string ImageSource
-    {
-        get
-        {
-            var sb = new StringBuilder();
-            sb.Append("avares://OpenTracker/Assets/Images/Prizes/");
+    public string? Label => null;
+    public SolidColorBrush? LabelColor => null;
+    public BossSelectPopupVM? BossSelect => null;
 
-            sb.Append(_section.PrizePlacement.Prize is null ?
-                "unknown" : _prizes.FirstOrDefault(
-                        x => x.Value == _section.PrizePlacement.Prize).Key.ToString()
-                    .ToLowerInvariant());
+    [ObservableAsProperty]
+    public string ImageSource { get; } = string.Empty;
 
-            sb.Append(_section.IsAvailable() ? "0" : "1");
-            sb.Append(".png");
-
-            return sb.ToString();
-        }
-    }
-        
-    public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
+    public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
 
     public delegate PrizeAdapter Factory(IPrizeSection section);
-
-    public string? Label { get; } = null;
-    public string LabelColor { get; } = "#ffffffff";
-        
-    public IBossSelectPopupVM? BossSelect { get; } = null;
-
+    
     public PrizeAdapter(IPrizeDictionary prizes, IUndoRedoManager undoRedoManager, IPrizeSection section)
     {
-        _prizes = prizes;
         _undoRedoManager = undoRedoManager;
 
-        _section = section;
-            
-        HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
-
-        _section.PropertyChanged += OnSectionChanged;
-        _section.PrizePlacement.PropertyChanged += OnPrizeChanged;
-    }
+        Section = section;
         
+        HandleClickCommand = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClick); 
 
-    /// <summary>
-    /// Subscribes to the PropertyChanged event on the IPrizePlacement interface.
-    /// </summary>
-    /// <param name="sender">
-    /// The sending object of the event.
-    /// </param>
-    /// <param name="e">
-    /// The arguments of the PropertyChanged event.
-    /// </param>
-    private async void OnPrizeChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName == nameof(IPrizePlacement.Prize))
+        this.WhenActivated(disposables =>
         {
-            await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(ImageSource)));
-        }
+            this.WhenAnyValue(
+                    x => x.Section.PrizePlacement.Prize,
+                    x => x.Section.Available,
+                    (item, _) =>
+                        (item is not null
+                            ? (PrizeType?) prizes.First(x => x.Value == item).Key
+                            : null,
+                            Section.IsAvailable()))
+                .Select(x => ImageSourceValues[x])
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .ToPropertyEx(this, x => x.ImageSource)
+                .DisposeWith(disposables);
+        });
     }
 
-    /// <summary>
-    /// Subscribes to the PropertyChanged event on the ISection interface.
-    /// </summary>
-    /// <param name="sender">
-    /// The sending object of the event.
-    /// </param>
-    /// <param name="e">
-    /// The arguments of the PropertyChanged event.
-    /// </param>
-    private async void OnSectionChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName == nameof(ISection.Available))
-        {
-            await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(ImageSource)));
-        }
-    }
-
-    /// <summary>
-    /// Creates an undoable action to toggle the prize section and sends it to the undo/redo manager.
-    /// </summary>
-    private void TogglePrize()
-    {
-        _undoRedoManager.NewAction(_section.CreateTogglePrizeSectionAction(true));
-    }
-
-    /// <summary>
-    /// Creates an undoable action to change the prize and sends it to the undo/redo manager.
-    /// </summary>
-    private void ChangePrize()
-    {
-        _undoRedoManager.NewAction(_section.PrizePlacement.CreateChangePrizeAction());
-    }
-
-    /// <summary>
-    /// Handles clicking the control.
-    /// </summary>
-    /// <param name="e">
-    /// The pointer released event args.
-    /// </param>
-    private void HandleClickImpl(PointerReleasedEventArgs e)
+    private void HandleClick(PointerReleasedEventArgs e)
     {
         switch (e.InitialPressMouseButton)
         {
@@ -135,6 +90,23 @@ public sealed class PrizeAdapter : ViewModel, IItemAdapter
             case MouseButton.Right:
                 ChangePrize();
                 break;
+            case MouseButton.None:
+            case MouseButton.Middle:
+            case MouseButton.XButton1:
+            case MouseButton.XButton2:
+            default:
+                break;
         }
     }
+
+    private void TogglePrize()
+    {
+        _undoRedoManager.NewAction(Section.CreateTogglePrizeSectionAction(true));
+    }
+
+    private void ChangePrize()
+    {
+        _undoRedoManager.NewAction(Section.PrizePlacement.CreateChangePrizeAction());
+    }
+
 }

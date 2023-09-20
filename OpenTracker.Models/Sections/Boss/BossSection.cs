@@ -6,6 +6,7 @@ using OpenTracker.Models.Dungeons.AccessibilityProvider;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.UndoRedo.Sections;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Sections.Boss;
 
@@ -13,6 +14,7 @@ namespace OpenTracker.Models.Sections.Boss;
 /// This class contains boss section data.  It will be used directly for GT LW boss re-fights and as a base class
 /// for final bosses that provide a prize.
 /// </summary>
+[DependencyInjection]
 public class BossSection : SectionBase, IBossSection
 {
     private readonly BossAccessibilityProvider _accessibilityProvider;
@@ -32,7 +34,7 @@ public class BossSection : SectionBase, IBossSection
     ///     An Autofac factory for creating new <see cref="IUncollectSection"/> objects.
     /// </param>
     /// <param name="accessibilityProvider">
-    ///     The <see cref="IBossAccessibilityProvider"/>.
+    ///     The <see cref="BossAccessibilityProvider"/>.
     /// </param>
     /// <param name="name">
     ///     A <see cref="string"/> representing the section name.
@@ -74,7 +76,7 @@ public class BossSection : SectionBase, IBossSection
     }
 
     /// <summary>
-    /// Subscribes to the <see cref="IBossAccessibilityProvider.PropertyChanged"/> event.
+    /// Subscribes to the <see cref="BossAccessibilityProvider.PropertyChanged"/> event.
     /// </summary>
     /// <param name="sender">
     ///     The <see cref="object"/> from which the event is sent.

@@ -1,7 +1,7 @@
 using System.ComponentModel;
 using Avalonia.Controls;
-using OpenTracker.Autofac;
 using OpenTracker.Models.Settings;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Requirements.ItemsPanelPlacement;
 

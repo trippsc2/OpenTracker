@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Requirements.Static;
 
@@ -8,7 +9,8 @@ namespace OpenTracker.Models.Requirements.Static;
 /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for <see cref="IStaticRequirement"/>
 /// objects indexed by <see cref="AccessibilityLevel"/>.
 /// </summary>
-public class StaticRequirementDictionary : LazyDictionary<AccessibilityLevel, IRequirement>,
+[DependencyInjection(SingleInstance = true)]
+public sealed class StaticRequirementDictionary : LazyDictionary<AccessibilityLevel, IRequirement>,
     IStaticRequirementDictionary
 {
     private readonly IStaticRequirement.Factory _factory;

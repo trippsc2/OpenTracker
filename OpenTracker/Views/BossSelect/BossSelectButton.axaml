@@ -2,8 +2,23 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" x:Class="OpenTracker.Views.BossSelect.BossSelectButton">
-	<Button x:Name="Button" Background="{DynamicResource ThemeBackgroundBrush}" BorderThickness="0">
-		<Image x:Name="Image" Height="32" Width="32" />
+             xmlns:vm="clr-namespace:OpenTracker.ViewModels.BossSelect"
+             xmlns:vc="clr-namespace:OpenTracker.ValueConverters"
+             mc:Ignorable="d" x:Class="OpenTracker.Views.BossSelect.BossSelectButton"
+             x:DataType="vm:BossSelectButtonVM" x:CompileBindings="True">
+	<UserControl.Resources>
+		<vc:BitmapValueConverter x:Key="BitmapValueConverter" />
+	</UserControl.Resources>
+	
+	<UserControl.Styles>
+		<Style Selector="Button.BossSelect">
+			<Setter Property="Background" Value="{DynamicResource ThemeBackgroundBrush}" />
+			<Setter Property="BorderThickness" Value="0" />
+		</Style>
+	</UserControl.Styles>
+	
+	<Button Classes="BossSelect" Command="{Binding ChangeBossCommand}">
+		<Image Height="32" Width="32"
+		       Source="{Binding ImageSource, Converter={StaticResource BitmapValueConverter}}" />
 	</Button>
 </UserControl>

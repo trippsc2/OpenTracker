@@ -1,6 +1,5 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Layout;
 using Avalonia.Markup.Xaml;
 using Avalonia.Platform;
 using OpenTracker.ViewModels;
@@ -9,20 +8,16 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Disposables;
+using System.Reactive.Linq;
+using Avalonia.Input;
 using Avalonia.ReactiveUI;
+using ReactiveMarbles.ObservableEvents;
 using ReactiveUI;
 
 namespace OpenTracker.Views;
 
 public sealed class MainWindow : ReactiveWindow<MainWindowVM>
 {
-    private Orientation? _orientation;
-
-    private ContentControl TopMenu => this.FindControl<ContentControl>("TopMenu");
-    private ContentControl StatusBar => this.FindControl<ContentControl>("StatusBar");
-    private ContentControl UIPanel => this.FindControl<ContentControl>("UIPanel");
-    private ContentControl MapArea => this.FindControl<ContentControl>("MapArea");
-
     public MainWindow()
     {
         InitializeComponent();
@@ -39,43 +34,6 @@ public sealed class MainWindow : ReactiveWindow<MainWindowVM>
                 savedBoundsLoaded = true;
             }
 
-            this.OneWayBind(ViewModel,
-                    vm => vm.Title,
-                    v => v.Title)
-                .DisposeWith(disposables);
-            this.Bind(ViewModel,
-                    vm => vm.Height,
-                    v => v.Height)
-                .DisposeWith(disposables);
-            this.Bind(ViewModel,
-                    vm => vm.Width,
-                    v => v.Width)
-                .DisposeWith(disposables);
-
-            this.OneWayBind(ViewModel,
-                    vm => vm.TopMenu,
-                    v => v.TopMenu.Content)
-                .DisposeWith(disposables);
-            this.OneWayBind(ViewModel,
-                    vm => vm.StatusBar,
-                    v => v.StatusBar.Content)
-                .DisposeWith(disposables);
-            this.OneWayBind(ViewModel,
-                    vm => vm.UIPanel,
-                    v => v.UIPanel.Content)
-                .DisposeWith(disposables);
-            this.OneWayBind(ViewModel,
-                    vm => vm.MapArea,
-                    v => v.MapArea.Content)
-                .DisposeWith(disposables);
-            this.WhenAnyValue(x => x.ViewModel!.UIDock)
-                .Subscribe(x => DockPanel.SetDock(UIPanel, x))
-                .DisposeWith(disposables);
-
-            this.WhenAnyValue(x => x.Bounds)
-                .Subscribe(ChangeLayout)
-                .DisposeWith(disposables);
-
             if (ViewModel is null)
             {
                 return;
@@ -86,6 +44,49 @@ public sealed class MainWindow : ReactiveWindow<MainWindowVM>
                     interaction.SetOutput(Unit.Default);
                     Close(interaction.Input);
                 })
+                .DisposeWith(disposables);
+            
+            this.WhenAnyValue(x => x.Bounds)
+                .InvokeCommand(ViewModel.ChangeLayoutCommand)
+                .DisposeWith(disposables);
+
+            var keyDownObservable = this.Events()
+                .KeyDown;
+
+            keyDownObservable
+                .Where(x => x.Key == Key.O && x.KeyModifiers == KeyModifiers.Control)
+                .Select(_ => Unit.Default)
+                .InvokeCommand(ViewModel.OpenCommand)
+                .DisposeWith(disposables);
+            keyDownObservable
+                .Where(x => x.Key == Key.S && x.KeyModifiers == KeyModifiers.Control)
+                .Select(_ => Unit.Default)
+                .InvokeCommand(ViewModel.SaveCommand)
+                .DisposeWith(disposables);
+            keyDownObservable
+                .Where(x => x.Key == Key.S && x.KeyModifiers == (KeyModifiers.Control | KeyModifiers.Shift))
+                .Select(_ => Unit.Default)
+                .InvokeCommand(ViewModel.SaveAsCommand)
+                .DisposeWith(disposables);
+            keyDownObservable
+                .Where(x => x.Key == Key.Z && x.KeyModifiers == KeyModifiers.Control)
+                .Select(_ => Unit.Default)
+                .InvokeCommand(ViewModel.UndoCommand)
+                .DisposeWith(disposables);
+            keyDownObservable
+                .Where(x => x.Key == Key.Y && x.KeyModifiers == KeyModifiers.Control)
+                .Select(_ => Unit.Default)
+                .InvokeCommand(ViewModel.RedoCommand)
+                .DisposeWith(disposables);
+            keyDownObservable
+                .Where(x => x.Key == Key.F5)
+                .Select(_ => Unit.Default)
+                .InvokeCommand(ViewModel.ResetCommand)
+                .DisposeWith(disposables);
+            keyDownObservable
+                .Where(x => x.Key == Key.F11)
+                .Select(_ => Unit.Default)
+                .InvokeCommand(ViewModel.ToggleDisplayAllLocationsCommand)
                 .DisposeWith(disposables);
         });
     }
@@ -131,19 +132,5 @@ public sealed class MainWindow : ReactiveWindow<MainWindowVM>
             screen => screen.Bounds.X <= ViewModel.X.Value && screen.Bounds.Y <= ViewModel.Y.Value &&
                       screen.Bounds.X + screen.Bounds.Width > ViewModel.X.Value &&
                       screen.Bounds.Y + screen.Bounds.Height > ViewModel.Y.Value);
-    }
-
-    private void ChangeLayout(Rect bounds)
-    {
-        var orientation = bounds.Height >= bounds.Width ? Orientation.Vertical : Orientation.Horizontal;
-
-        if (_orientation == orientation)
-        {
-            return;
-        }
-            
-        _orientation = orientation;
-
-        ViewModel?.ChangeLayout(orientation);
     }
 }

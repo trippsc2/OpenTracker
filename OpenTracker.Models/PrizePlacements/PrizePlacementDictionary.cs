@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.PrizePlacements;
 
@@ -10,7 +11,8 @@ namespace OpenTracker.Models.PrizePlacements;
 /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for <see cref="IPrizePlacement"/>
 /// objects indexed by <see cref="PrizePlacementID"/>.
 /// </summary>
-public class PrizePlacementDictionary : LazyDictionary<PrizePlacementID, IPrizePlacement>,
+[DependencyInjection(SingleInstance = true)]
+public sealed class PrizePlacementDictionary : LazyDictionary<PrizePlacementID, IPrizePlacement>,
     IPrizePlacementDictionary
 {
     private readonly Lazy<IPrizePlacementFactory> _factory;

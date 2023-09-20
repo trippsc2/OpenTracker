@@ -1,12 +1,14 @@
 ﻿using System.Collections.Generic;
 using OpenTracker.Models.Accessibility;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Dungeons.Result;
 
 /// <summary>
 /// This class contains dungeon accessibility result data.
 /// </summary>
-public class DungeonResult : IDungeonResult
+[DependencyInjection]
+public sealed class DungeonResult : IDungeonResult
 {
     public IList<AccessibilityLevel> BossAccessibility { get; }
     public int Accessible { get; }

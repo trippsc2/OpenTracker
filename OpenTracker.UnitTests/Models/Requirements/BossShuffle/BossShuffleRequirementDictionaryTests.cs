@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Requirements.BossShuffle;
@@ -5,7 +6,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Requirements.BossShuffle;
 
-public class BossShuffleRequirementDictionaryTests
+[ExcludeFromCodeCoverage]
+public sealed class BossShuffleRequirementDictionaryTests
 {
     // ReSharper disable once CollectionNeverUpdated.Local
     private readonly BossShuffleRequirementDictionary _sut;

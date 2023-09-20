@@ -1,12 +1,14 @@
 ﻿using System.ComponentModel;
 using OpenTracker.Models.Modes;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Requirements.CompassShuffle;
 
 /// <summary>
 /// This class contains <see cref="IMode.CompassShuffle"/> requirement data.
 /// </summary>
-public class CompassShuffleRequirement : BooleanRequirement, ICompassShuffleRequirement
+[DependencyInjection]
+public sealed class CompassShuffleRequirement : BooleanRequirement, ICompassShuffleRequirement
 {
     private readonly IMode _mode;
     private readonly bool _expectedValue;

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Accessibility;
@@ -13,7 +14,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Dungeons.Nodes;
 
-public class DungeonNodeTests
+[ExcludeFromCodeCoverage]
+public sealed class DungeonNodeTests
 {
     private readonly IDungeonNodeFactory _factory = Substitute.For<IDungeonNodeFactory>();
     private readonly IMutableDungeon _dungeonData = Substitute.For<IMutableDungeon>();

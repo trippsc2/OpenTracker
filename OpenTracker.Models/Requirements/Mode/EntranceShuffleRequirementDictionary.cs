@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using OpenTracker.Models.Modes;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Requirements.Mode;
 
@@ -8,7 +9,8 @@ namespace OpenTracker.Models.Requirements.Mode;
 /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for
 /// <see cref="IEntranceShuffleRequirement"/> objects indexed by <see cref="EntranceShuffle"/>.
 /// </summary>
-public class EntranceShuffleRequirementDictionary : LazyDictionary<EntranceShuffle, IRequirement>,
+[DependencyInjection(SingleInstance = true)]
+public sealed class EntranceShuffleRequirementDictionary : LazyDictionary<EntranceShuffle, IRequirement>,
     IEntranceShuffleRequirementDictionary
 {
     private readonly IEntranceShuffleRequirement.Factory _factory;

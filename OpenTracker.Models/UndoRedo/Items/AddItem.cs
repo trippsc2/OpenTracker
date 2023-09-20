@@ -1,11 +1,13 @@
 ﻿using OpenTracker.Models.Items;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.UndoRedo.Items;
 
 /// <summary>
 /// This class contains the <see cref="IUndoable"/> action to add an <see cref="IItem"/>.
 /// </summary>
-public class AddItem : IAddItem
+[DependencyInjection]
+public sealed class AddItem : IAddItem
 {
     private readonly IItem _item;
 

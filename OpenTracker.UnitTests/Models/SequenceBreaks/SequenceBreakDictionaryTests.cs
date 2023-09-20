@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.SaveLoad;
@@ -7,7 +8,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.SequenceBreaks;
 
-public class SequenceBreakDictionaryTests
+[ExcludeFromCodeCoverage]
+public sealed class SequenceBreakDictionaryTests
 {
     // ReSharper disable once CollectionNeverUpdated.Local
     private readonly SequenceBreakDictionary _sut = new(_ => Substitute.For<ISequenceBreak>());

@@ -2,40 +2,58 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:OpenTracker.ViewModels.Dialogs"
         mc:Ignorable="d" x:Class="OpenTracker.Views.Dialogs.AutoTrackerDialog"
         WindowStartupLocation="CenterOwner"
         Icon="avares://OpenTracker/Assets/Images/triforce.png"
         Title="OpenTracker - Auto-Tracker"
         Padding="40 10"
-        SizeToContent="WidthAndHeight">
-  <StackPanel DockPanel.Dock="Top" Orientation="Vertical">
+        SizeToContent="WidthAndHeight"
+        x:DataType="vm:AutoTrackerDialogVM" x:CompileBindings="True">
+  <StackPanel Orientation="Vertical">
     <StackPanel Margin="10" Orientation="Horizontal" HorizontalAlignment="Center">
       <TextBlock Classes="AutoTrackerLabel" Text="USB2SNES URI:" />
-      <TextBox x:Name="UriTextBox" Classes="AutoTrackerURI" />
-      <Button x:Name="ConnectButton" Classes="AutoTrackerConnect" Content="Connect" />
+      <TextBox Classes="AutoTrackerURI"
+               Text="{Binding UriString}"
+               IsEnabled="{Binding UriTextBoxEnabled}" />
+      <Button Classes="AutoTrackerConnect"
+              Content="Connect"
+              Command="{Binding ConnectCommand}" />
     </StackPanel>
     
     <StackPanel Margin="10" Orientation="Horizontal" HorizontalAlignment="Center">
-      <Button x:Name="GetDevicesButton" Classes="AutoTracker" Content="Get Devices" />
-      <Button x:Name="DisconnectButton" Classes="AutoTracker" Content="Disconnect" />
+      <Button Classes="AutoTracker"
+              Content="Get Devices"
+              Command="{Binding GetDevicesCommand}" />
+      <Button Classes="AutoTracker"
+              Content="Disconnect"
+              Command="{Binding DisconnectCommand}" />
     </StackPanel>
 
     <StackPanel Margin="10" Orientation="Horizontal" HorizontalAlignment="Center">
       <TextBlock Classes="AutoTrackerLabel" Text="Device:" />
-      <ComboBox x:Name="DevicesComboBox" Classes="AutoTrackerDevices" />
+      <ComboBox Classes="AutoTrackerDevices"
+                Items="{Binding Devices}"
+                SelectedItem="{Binding Device}"
+                IsEnabled="{Binding DevicesComboBoxEnabled}" />
     </StackPanel>
 
-    <CheckBox x:Name="RaceIllegalTrackingCheckBox"
-              Classes="AutoTracker"
+    <CheckBox Classes="AutoTracker"
               HorizontalAlignment="Center"
+              IsChecked="{Binding RaceIllegalTracking}"
+              Command="{Binding ToggleRaceIllegalTrackingCommand}"
               ToolTip.Tip="This enables auto-tracking of dungeon items.&#x0a;
                 This may not work correctly in all randomizer versions."
               Content="Race Illegal Tracking" />
 
     <StackPanel Margin="10" Orientation="Horizontal" HorizontalAlignment="Center">
-      <Button x:Name="StartButton" Classes="AutoTrackerStart" Content="Start Auto-Tracking" />
+      <Button Classes="AutoTrackerStart"
+              Content="Start Auto-Tracking"
+              Command="{Binding StartCommand}" />
     </StackPanel>
 
-    <ContentControl x:Name="StatusContentControl" Margin="10" HorizontalAlignment="Center" />
+    <ContentControl Margin="10"
+                    HorizontalAlignment="Center"
+                    Content="{Binding Status}" />
   </StackPanel>
 </Window>

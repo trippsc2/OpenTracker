@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Locations;
@@ -7,7 +8,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.UndoRedo.Locations;
 
-public class UnpinLocationTests
+[ExcludeFromCodeCoverage]
+public sealed class UnpinLocationTests
 {
     private readonly IPinnedLocationCollection _pinnedLocations = Substitute.For<IPinnedLocationCollection>();
     private readonly ILocation _location = Substitute.For<ILocation>();

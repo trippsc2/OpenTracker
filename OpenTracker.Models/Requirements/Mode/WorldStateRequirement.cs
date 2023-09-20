@@ -1,12 +1,14 @@
 ﻿using System.ComponentModel;
 using OpenTracker.Models.Modes;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Requirements.Mode;
 
 /// <summary>
 /// This class contains <see cref="IMode.WorldState"/> <see cref="IRequirement"/> data.
 /// </summary>
-public class WorldStateRequirement : BooleanRequirement, IWorldStateRequirement
+[DependencyInjection]
+public sealed class WorldStateRequirement : BooleanRequirement, IWorldStateRequirement
 {
     private readonly IMode _mode;
     private readonly WorldState _expectedValue;

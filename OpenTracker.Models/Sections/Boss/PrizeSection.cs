@@ -6,13 +6,15 @@ using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Models.UndoRedo.Sections;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Sections.Boss;
 
 /// <summary>
 /// This class contains end of dungeon boss section with prize data.
 /// </summary>
-public class PrizeSection : BossSection, IPrizeSection
+[DependencyInjection]
+public sealed class PrizeSection : BossSection, IPrizeSection
 {
     private readonly ITogglePrizeSection.Factory _togglePrizeSectionFactory;
 

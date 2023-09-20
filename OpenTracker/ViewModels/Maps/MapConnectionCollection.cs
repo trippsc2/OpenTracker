@@ -1,6 +1,6 @@
-﻿using OpenTracker.Autofac;
-using OpenTracker.Models.Locations.Map.Connections;
+﻿using OpenTracker.Models.Locations.Map.Connections;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.ViewModels.Maps;
 

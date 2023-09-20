@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using OpenTracker.Models.Prizes;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Requirements.Item.Prize;
 
@@ -8,7 +9,8 @@ namespace OpenTracker.Models.Requirements.Item.Prize;
 /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for <see cref="IItemRequirement"/>
 /// objects indexed by <see cref="PrizeType"/> and count.
 /// </summary>
-public class PrizeRequirementDictionary : LazyDictionary<(PrizeType type, int count), IRequirement>,
+[DependencyInjection(SingleInstance = true)]
+public sealed class PrizeRequirementDictionary : LazyDictionary<(PrizeType type, int count), IRequirement>,
     IPrizeRequirementDictionary
 {
     private readonly IPrizeDictionary _prizes;

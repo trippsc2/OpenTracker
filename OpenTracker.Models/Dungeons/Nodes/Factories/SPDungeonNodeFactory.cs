@@ -8,13 +8,15 @@ using OpenTracker.Models.Nodes;
 using OpenTracker.Models.Nodes.Connections;
 using OpenTracker.Models.Requirements.Boss;
 using OpenTracker.Models.Requirements.Item;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Dungeons.Nodes.Factories;
 
 /// <summary>
 /// This class contains the creation logic for Swamp Palace nodes.
 /// </summary>
-public class SPDungeonNodeFactory : ISPDungeonNodeFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class SPDungeonNodeFactory : ISPDungeonNodeFactory
 {
     private readonly IBossRequirementDictionary _bossRequirements;
     private readonly IItemRequirementDictionary _itemRequirements;

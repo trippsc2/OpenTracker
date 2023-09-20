@@ -16,8 +16,8 @@ namespace OpenTracker.Utils;
 /// <typeparam name="TValue">
 /// The type of the value of the dictionary.
 /// </typeparam>
-[Serializable()]
-public class ObservableDictionary<TKey, TValue> : IDictionary<TKey, TValue>, INotifyCollectionChanged,
+[Serializable]
+public abstract class ObservableDictionary<TKey, TValue> : IDictionary<TKey, TValue>, INotifyCollectionChanged,
     INotifyPropertyChanged
     where TKey : notnull
 {

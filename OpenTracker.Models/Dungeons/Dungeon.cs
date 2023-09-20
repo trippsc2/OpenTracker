@@ -10,6 +10,7 @@ using OpenTracker.Models.Items;
 using OpenTracker.Models.Items.Keys;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.Nodes;
+using OpenTracker.Utils.Autofac;
 using ReactiveUI;
 
 namespace OpenTracker.Models.Dungeons;
@@ -17,7 +18,8 @@ namespace OpenTracker.Models.Dungeons;
 /// <summary>
 /// This class contains the immutable dungeon data.
 /// </summary>
-public class Dungeon : ReactiveObject, IDungeon
+[DependencyInjection]
+public sealed class Dungeon : ReactiveObject, IDungeon
 {
     private readonly IMode _mode;
         

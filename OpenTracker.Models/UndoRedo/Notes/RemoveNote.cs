@@ -1,12 +1,14 @@
 ﻿using OpenTracker.Models.Locations;
 using OpenTracker.Models.Markings;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.UndoRedo.Notes;
 
 /// <summary>
 /// This class contains the <see cref="IUndoable"/> action to remove a note to a <see cref="ILocation"/>.
 /// </summary>
-public class RemoveNote : IRemoveNote
+[DependencyInjection]
+public sealed class RemoveNote : IRemoveNote
 {
     private readonly ILocation _location;
     private readonly IMarking _note;

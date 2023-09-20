@@ -3,7 +3,7 @@ using System.Linq;
 using System.Reflection;
 using Autofac;
 
-namespace OpenTracker.Autofac;
+namespace OpenTracker.Utils.Autofac;
 
 /// <summary>
 /// Extends <see cref="ContainerBuilder"/> to register types with the <see cref="DependencyInjectionAttribute"/>

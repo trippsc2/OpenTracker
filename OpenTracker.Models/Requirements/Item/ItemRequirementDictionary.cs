@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using OpenTracker.Models.Items;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Requirements.Item;
 
@@ -8,7 +9,8 @@ namespace OpenTracker.Models.Requirements.Item;
 /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for <see cref="IItemRequirement"/>
 /// objects indexed by <see cref="ItemType"/> and count.
 /// </summary>
-public class ItemRequirementDictionary : LazyDictionary<(ItemType type, int count), IRequirement>,
+[DependencyInjection(SingleInstance = true)]
+public sealed class ItemRequirementDictionary : LazyDictionary<(ItemType type, int count), IRequirement>,
     IItemRequirementDictionary
 {
     private readonly IItemDictionary _items;

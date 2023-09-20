@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Accessibility;
@@ -10,7 +11,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Requirements.Aggregate;
 
-public class AggregateRequirementTests
+[ExcludeFromCodeCoverage]
+public sealed class AggregateRequirementTests
 {
     private readonly List<IRequirement> _requirements = new()
     {

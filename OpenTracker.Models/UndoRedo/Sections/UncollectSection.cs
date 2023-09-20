@@ -1,11 +1,13 @@
 ﻿using OpenTracker.Models.Sections;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.UndoRedo.Sections;
 
 /// <summary>
 /// This class contains the <see cref="IUndoable"/> action to uncollect a <see cref="ISection"/>.
 /// </summary>
-public class UncollectSection : IUncollectSection
+[DependencyInjection]
+public sealed class UncollectSection : IUncollectSection
 {
     private readonly ISection _section;
 

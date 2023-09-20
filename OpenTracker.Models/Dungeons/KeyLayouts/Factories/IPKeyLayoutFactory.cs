@@ -9,13 +9,15 @@ using OpenTracker.Models.Requirements.GuaranteedBossItems;
 using OpenTracker.Models.Requirements.KeyDropShuffle;
 using OpenTracker.Models.Requirements.Mode;
 using OpenTracker.Models.Requirements.SmallKeyShuffle;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories;
 
 /// <summary>
 /// This class contains the creation logic for Ice Palace key layouts.
 /// </summary>
-public class IPKeyLayoutFactory : IIPKeyLayoutFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class IPKeyLayoutFactory : IIPKeyLayoutFactory
 {
     private readonly IAggregateRequirementDictionary _aggregateRequirements;
     private readonly IAlternativeRequirementDictionary _alternativeRequirements;

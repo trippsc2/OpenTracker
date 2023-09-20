@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Markings;
@@ -6,7 +7,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Markings;
 
-public class MarkingTests
+[ExcludeFromCodeCoverage]
+public sealed class MarkingTests
 {
     private readonly IChangeMarking.Factory _changeMarkingFactory = (_, _) => Substitute.For<IChangeMarking>();
         

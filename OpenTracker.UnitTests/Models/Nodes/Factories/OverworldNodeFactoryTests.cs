@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Autofac;
 using NSubstitute;
@@ -10,7 +11,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Nodes.Factories;
 
-public class OverworldNodeFactoryTests
+[ExcludeFromCodeCoverage]
+public sealed class OverworldNodeFactoryTests
 {
     private static readonly IStartConnectionFactory StartConnectionFactory =
         Substitute.For<IStartConnectionFactory>();

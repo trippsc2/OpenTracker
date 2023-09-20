@@ -1,4 +1,5 @@
 using System.IO;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Utils;
 
@@ -6,7 +7,8 @@ namespace OpenTracker.Utils;
 /// This class contains the logic for manipulating the file system, abstracted to allow for non-destructive unit
 /// tests.
 /// </summary>
-public class FileManager : IFileManager
+[DependencyInjection(SingleInstance = true)]
+public sealed class FileManager : IFileManager
 {
     public void EnsureFileDoesNotExist(string path)
     {

@@ -3,12 +3,14 @@ using System.Reactive;
 using System.Threading;
 using OpenTracker.Models.AutoTracking.SNESConnectors.Socket;
 using OpenTracker.Models.Logging;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.AutoTracking.SNESConnectors.Requests;
 
 /// <summary>
 /// This class contains the request to register the app name. 
 /// </summary>
+[DependencyInjection]
 public sealed class RegisterNameRequest : RequestBase<Unit>, IRegisterNameRequest
 {
     private const string AppName = "OpenTracker";

@@ -1,6 +1,6 @@
 using System;
 
-namespace OpenTracker.Autofac;
+namespace OpenTracker.Utils.Autofac;
 
 [AttributeUsage(AttributeTargets.Class, Inherited = false)]
 public sealed class DependencyInjectionAttribute : Attribute

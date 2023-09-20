@@ -3,13 +3,15 @@ using System.Linq;
 using OpenTracker.Models.Dungeons.Items;
 using OpenTracker.Models.Dungeons.State;
 using OpenTracker.Models.Requirements;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Dungeons.KeyLayouts;
 
 /// <summary>
 /// This class contains the big key layout data.
 /// </summary>
-public class BigKeyLayout : IBigKeyLayout
+[DependencyInjection]
+public sealed class BigKeyLayout : IBigKeyLayout
 {
     private readonly IList<DungeonItemID> _bigKeyLocations;
     private readonly IList<IKeyLayout> _children;

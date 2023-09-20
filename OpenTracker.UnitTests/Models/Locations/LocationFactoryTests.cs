@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Autofac;
 using NSubstitute;
@@ -8,7 +9,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Locations;
 
-public class LocationFactoryTests
+[ExcludeFromCodeCoverage]
+public sealed class LocationFactoryTests
 {
     [Fact]
     public void GetLocation_ShouldThrowException_WhenIDIsUnexpected()

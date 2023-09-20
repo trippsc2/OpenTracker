@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using ExpectedObjects;
 using NSubstitute;
@@ -8,7 +9,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Modes;
 
-public class ModeTests
+[ExcludeFromCodeCoverage]
+public sealed class ModeTests
 {
     private readonly Mode _sut = new Mode(
         _ => Substitute.For<IChangeItemPlacement>(),

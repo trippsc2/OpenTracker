@@ -1,7 +1,10 @@
-﻿using OpenTracker.Autofac;
+﻿using System.Reactive;
 using OpenTracker.Models.Markings;
+using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 using OpenTracker.ViewModels.Markings.Images;
+using ReactiveUI;
 
 namespace OpenTracker.ViewModels.Markings;
 
@@ -11,27 +14,51 @@ namespace OpenTracker.ViewModels.Markings;
 [DependencyInjection]
 public sealed class MarkingSelectButtonVM : ViewModel, IMarkingSelectItemVMBase
 {
-    public MarkType? Marking { get; }
+    private readonly IUndoRedoManager _undoRedoManager;
+    
+    private readonly IMarking _marking;
+    private readonly MarkType? _mark;
+    
     public IMarkingImageVMBase? Image { get; }
 
-    public delegate MarkingSelectButtonVM Factory(MarkType? marking);
+    public ReactiveCommand<Unit, Unit> ChangeMarkCommand { get; }
+
+    public delegate MarkingSelectButtonVM Factory(IMarking marking, MarkType? mark);
 
     /// <summary>
     /// Constructor
     /// </summary>
+    /// <param name="undoRedoManager">
+    ///     The <see cref="IUndoRedoManager"/>
+    /// </param>
     /// <param name="markingImages">
-    /// The marking image control dictionary.
+    ///     The marking image control dictionary.
     /// </param>
     /// <param name="marking">
-    /// The marking to be represented by this button.
+    ///     The marking to be represented by this button.
     /// </param>
-    public MarkingSelectButtonVM(IMarkingImageDictionary markingImages, MarkType? marking)
+    /// <param name="mark"></param>
+    public MarkingSelectButtonVM(IUndoRedoManager undoRedoManager, IMarkingImageDictionary markingImages, IMarking marking, MarkType? mark)
     {
-        Marking = marking;
+        _undoRedoManager = undoRedoManager;
+        _marking = marking;
+        _mark = mark;
 
-        if (!(Marking is null))
+        if (_mark is not null)
         {
-            Image = markingImages[Marking.Value];
+            Image = markingImages[_mark.Value];
         }
+        
+        ChangeMarkCommand = ReactiveCommand.Create(ChangeMark);
+    }
+    
+    private void ChangeMark()
+    {
+        if (_mark is null)
+        {
+            return;
+        }
+        
+        _undoRedoManager.NewAction(_marking.CreateChangeMarkingAction(_mark.Value));
     }
 }

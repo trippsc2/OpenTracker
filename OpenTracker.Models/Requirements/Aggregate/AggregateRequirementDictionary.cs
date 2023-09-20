@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Requirements.Aggregate;
 
@@ -8,7 +9,8 @@ namespace OpenTracker.Models.Requirements.Aggregate;
 /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for
 /// <see cref="IAggregateRequirement"/> objects indexed by <see cref="HashSet{T}"/> of <see cref="IRequirement"/>.
 /// </summary>
-public class AggregateRequirementDictionary : LazyDictionary<HashSet<IRequirement>, IRequirement>,
+[DependencyInjection(SingleInstance = true)]
+public sealed class AggregateRequirementDictionary : LazyDictionary<HashSet<IRequirement>, IRequirement>,
     IAggregateRequirementDictionary
 {
     private readonly IAggregateRequirement.Factory _factory;

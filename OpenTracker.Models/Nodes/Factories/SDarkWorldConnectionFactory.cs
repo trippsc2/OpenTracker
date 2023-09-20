@@ -10,13 +10,15 @@ using OpenTracker.Models.Requirements.Item.Prize;
 using OpenTracker.Models.Requirements.Mode;
 using OpenTracker.Models.Requirements.SequenceBreak;
 using OpenTracker.Models.SequenceBreaks;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Nodes.Factories;
 
 /// <summary>
 /// This class contains the creation logic for south dark work <see cref="INodeConnection"/> objects.
 /// </summary>
-public class SDarkWorldConnectionFactory : ISDarkWorldConnectionFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class SDarkWorldConnectionFactory : ISDarkWorldConnectionFactory
 {
     private readonly IComplexRequirementDictionary _complexRequirements;
     private readonly IItemRequirementDictionary _itemRequirements;

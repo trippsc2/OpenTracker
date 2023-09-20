@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using OpenTracker.Autofac;
 using OpenTracker.Models.Sections;
 using OpenTracker.Models.Sections.Boolean;
 using OpenTracker.Models.Sections.Boss;
 using OpenTracker.Models.Sections.Entrance;
 using OpenTracker.Models.Sections.Item;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.ViewModels.PinnedLocations.Sections;
 

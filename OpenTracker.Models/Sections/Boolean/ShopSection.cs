@@ -2,13 +2,15 @@ using OpenTracker.Models.Nodes;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.UndoRedo.Sections;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Sections.Boolean;
 
 /// <summary>
 /// This class contains shop section data.
 /// </summary>
-public class ShopSection : BooleanSectionBase, IShopSection
+[DependencyInjection]
+public sealed class ShopSection : BooleanSectionBase, IShopSection
 {
     /// <summary>
     /// Constructor

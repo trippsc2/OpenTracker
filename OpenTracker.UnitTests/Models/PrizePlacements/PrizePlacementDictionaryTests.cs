@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.PrizePlacements;
@@ -7,14 +8,10 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.PrizePlacements;
 
-public class PrizePlacementDictionaryTests
+[ExcludeFromCodeCoverage]
+public sealed class PrizePlacementDictionaryTests
 {
-    private readonly PrizePlacementDictionary _sut;
-
-    public PrizePlacementDictionaryTests()
-    {
-        _sut = new PrizePlacementDictionary(() => Substitute.For<IPrizePlacementFactory>());
-    }
+    private readonly PrizePlacementDictionary _sut = new(() => Substitute.For<IPrizePlacementFactory>());
 
     [Fact]
     public void Indexer_ShouldReturnTheSameInstance()

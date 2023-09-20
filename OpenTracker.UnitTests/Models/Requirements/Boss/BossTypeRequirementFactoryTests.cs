@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Autofac;
 using ExpectedObjects;
@@ -23,7 +24,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Requirements.Boss;
 
-public class BossTypeRequirementFactoryTests
+[ExcludeFromCodeCoverage]
+public sealed class BossTypeRequirementFactoryTests
 {
     // ReSharper disable once CollectionNeverUpdated.Local
     private static readonly IAggregateRequirementDictionary AggregateRequirements =

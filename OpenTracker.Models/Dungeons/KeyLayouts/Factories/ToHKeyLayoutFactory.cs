@@ -5,13 +5,15 @@ using OpenTracker.Models.Requirements.Aggregate;
 using OpenTracker.Models.Requirements.BigKeyShuffle;
 using OpenTracker.Models.Requirements.GuaranteedBossItems;
 using OpenTracker.Models.Requirements.SmallKeyShuffle;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories;
 
 /// <summary>
 /// This class contains the creation logic for Tower of Hera key layouts.
 /// </summary>
-public class ToHKeyLayoutFactory : IToHKeyLayoutFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class ToHKeyLayoutFactory : IToHKeyLayoutFactory
 {
     private readonly IAggregateRequirementDictionary _aggregateRequirements;
     private readonly IBigKeyShuffleRequirementDictionary _bigKeyShuffleRequirements;

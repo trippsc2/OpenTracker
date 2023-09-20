@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using OpenTracker.Models.Locations;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Sections.Factories;
 
 /// <summary>
 /// This class contains creation logic for section data.
 /// </summary>
-public class SectionFactory : ISectionFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class SectionFactory : ISectionFactory
 {
     private readonly IDropdownSectionFactory _dropdownSectionFactory;
     private readonly IDungeonSectionFactory _dungeonSectionFactory;

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Dungeons;
@@ -10,7 +11,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Dungeons.KeyLayouts;
 
-public class SmallKeyLayoutTests
+[ExcludeFromCodeCoverage]
+public sealed class SmallKeyLayoutTests
 {
     private readonly IList<DungeonItemID> _smallKeyLocations = new List<DungeonItemID>();
     private readonly IList<IKeyLayout> _children = new List<IKeyLayout>();

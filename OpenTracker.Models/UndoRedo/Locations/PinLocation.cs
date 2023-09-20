@@ -1,11 +1,13 @@
 ﻿using OpenTracker.Models.Locations;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.UndoRedo.Locations;
 
 /// <summary>
 /// This class contains the <see cref="IUndoable"/> action to pin a <see cref="ILocation"/>.
 /// </summary>
-public class PinLocation : IPinLocation
+[DependencyInjection]
+public sealed class PinLocation : IPinLocation
 {
     private readonly IPinnedLocationCollection _pinnedLocations;
 

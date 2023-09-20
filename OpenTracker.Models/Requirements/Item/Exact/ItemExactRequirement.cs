@@ -1,13 +1,15 @@
 ﻿using System;
 using System.ComponentModel;
 using OpenTracker.Models.Items;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Requirements.Item.Exact;
 
 /// <summary>
 /// This class contains <see cref="IItem"/> exact value <see cref="IRequirement"/> data.
 /// </summary>
-public class ItemExactRequirement : BooleanRequirement, IItemExactRequirement
+[DependencyInjection]
+public sealed class ItemExactRequirement : BooleanRequirement, IItemExactRequirement
 {
     private readonly IItem _item;
     private readonly int _count;

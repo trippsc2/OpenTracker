@@ -6,12 +6,14 @@ using System.Threading.Tasks;
 using OpenTracker.Models.AutoTracking.SNESConnectors.Requests;
 using OpenTracker.Models.AutoTracking.SNESConnectors.Socket;
 using OpenTracker.Models.Logging;
+using OpenTracker.Utils.Autofac;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using WebSocketSharp;
 
 namespace OpenTracker.Models.AutoTracking.SNESConnectors;
 
+[DependencyInjection(SingleInstance = true)]
 public sealed class SNESConnector : ReactiveObject, ISNESConnector
 {
     private readonly IAutoTrackerLogger _logger;

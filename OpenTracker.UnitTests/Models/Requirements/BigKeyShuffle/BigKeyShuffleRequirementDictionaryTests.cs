@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Requirements.BigKeyShuffle;
@@ -5,7 +6,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Requirements.BigKeyShuffle;
 
-public class BigKeyShuffleRequirementDictionaryTests
+[ExcludeFromCodeCoverage]
+public sealed class BigKeyShuffleRequirementDictionaryTests
 {
     // ReSharper disable once CollectionNeverUpdated.Local
     private readonly BigKeyShuffleRequirementDictionary _sut;

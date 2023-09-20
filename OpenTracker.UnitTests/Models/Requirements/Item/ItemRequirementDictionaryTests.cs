@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Items;
@@ -6,7 +7,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Requirements.Item;
 
-public class ItemRequirementDictionaryTests
+[ExcludeFromCodeCoverage]
+public sealed class ItemRequirementDictionaryTests
 {
     private readonly IItemDictionary _items = Substitute.For<IItemDictionary>();
 

@@ -13,6 +13,7 @@ using OpenTracker.Models.Sections.Item;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Models.UndoRedo.Locations;
 using OpenTracker.Models.UndoRedo.Notes;
+using OpenTracker.Utils.Autofac;
 using ReactiveUI;
 
 namespace OpenTracker.Models.Locations;
@@ -20,7 +21,8 @@ namespace OpenTracker.Models.Locations;
 /// <summary>
 /// This class contains location data.
 /// </summary>
-public class Location : ReactiveObject, ILocation
+[DependencyInjection]
+public sealed class Location : ReactiveObject, ILocation
 {
     private readonly IMarking.Factory _markingFactory;
     private readonly IClearLocation.Factory _clearLocationFactory;

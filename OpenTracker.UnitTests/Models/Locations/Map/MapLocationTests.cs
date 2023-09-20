@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Locations;
@@ -8,7 +9,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Locations.Map;
 
-public class MapLocationTests
+[ExcludeFromCodeCoverage]
+public sealed class MapLocationTests
 {
     private readonly ILocation _location = Substitute.For<ILocation>();
     private readonly IRequirement _requirement = Substitute.For<IRequirement>();

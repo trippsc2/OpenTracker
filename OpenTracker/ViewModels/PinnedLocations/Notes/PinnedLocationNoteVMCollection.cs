@@ -1,7 +1,7 @@
-﻿using OpenTracker.Autofac;
-using OpenTracker.Models.Locations;
+﻿using OpenTracker.Models.Locations;
 using OpenTracker.Models.Markings;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 using OpenTracker.ViewModels.Markings;
 
 namespace OpenTracker.ViewModels.PinnedLocations.Notes;

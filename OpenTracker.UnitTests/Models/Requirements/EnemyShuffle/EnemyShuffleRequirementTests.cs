@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Accessibility;
@@ -10,7 +11,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Requirements.EnemyShuffle;
 
-public class EnemyShuffleRequirementTests
+[ExcludeFromCodeCoverage]
+public sealed class EnemyShuffleRequirementTests
 {
     private readonly IMode _mode = Substitute.For<IMode>();
 

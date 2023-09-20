@@ -6,13 +6,15 @@ using OpenTracker.Models.Dungeons.Nodes;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Items.Keys;
 using OpenTracker.Models.Nodes;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Dungeons;
 
 /// <summary>
 /// This class contains the creation logic for <see cref="IDungeon"/> objects.
 /// </summary>
-public class DungeonFactory : IDungeonFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class DungeonFactory : IDungeonFactory
 {
     private readonly IItemDictionary _items;
     private readonly IOverworldNodeDictionary _overworldNodes;

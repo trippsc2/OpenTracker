@@ -1,17 +1,19 @@
-using System.ComponentModel;
-using System.Globalization;
 using System.Reactive;
-using System.Threading.Tasks;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using Avalonia.Input;
-using Avalonia.Threading;
-using OpenTracker.Autofac;
+using Avalonia.Media;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 using OpenTracker.ViewModels.BossSelect;
+using Reactive.Bindings;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
+using ReactiveCommand = ReactiveUI.ReactiveCommand;
 
 namespace OpenTracker.ViewModels.Items.Adapters;
 
@@ -21,21 +23,23 @@ namespace OpenTracker.ViewModels.Items.Adapters;
 [DependencyInjection]
 public sealed class CrystalRequirementAdapter : ViewModel, IItemAdapter
 {
-    private readonly IColorSettings _colorSettings;
+    private static readonly SolidColorBrush NonEmphasisColor = SolidColorBrush.Parse("#ffffff");
+    
     private readonly IUndoRedoManager _undoRedoManager;
 
-    private readonly ICrystalRequirementItem _item;
-        
-    public string ImageSource { get; }
-        
-    public string Label => _item.Known ? (7 - _item.Current).ToString(CultureInfo.InvariantCulture) : "?";
-    public string LabelColor =>
-        _item.Known ? _item.Current == 0 ? _colorSettings.EmphasisFontColor : "#ffffffff" :
-            _colorSettings.AccessibilityColors[AccessibilityLevel.SequenceBreak];
+    private ReactiveProperty<SolidColorBrush> EmphasisFontColor { get; }
+    private ReactiveProperty<SolidColorBrush> UnknownFontColor { get; }
+    private ICrystalRequirementItem Item { get; }
 
-    public IBossSelectPopupVM? BossSelect { get; } = null;
-        
-    public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
+    public string ImageSource { get; }
+    public BossSelectPopupVM? BossSelect => null;
+
+    [ObservableAsProperty]
+    public string Label { get; } = "?";
+    [ObservableAsProperty]
+    public SolidColorBrush LabelColor { get; } = NonEmphasisColor;
+    
+    public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
 
     public delegate CrystalRequirementAdapter Factory(ICrystalRequirementItem item, string imageSource);
 
@@ -55,88 +59,46 @@ public sealed class CrystalRequirementAdapter : ViewModel, IItemAdapter
     /// The image source of the crystal requirement.
     /// </param>
     public CrystalRequirementAdapter(
-        IColorSettings colorSettings, IUndoRedoManager undoRedoManager, ICrystalRequirementItem item,
+        IColorSettings colorSettings,
+        IUndoRedoManager undoRedoManager,
+        ICrystalRequirementItem item,
         string imageSource)
     {
-        _colorSettings = colorSettings;
         _undoRedoManager = undoRedoManager;
-
-        _item = item;
+        EmphasisFontColor = colorSettings.EmphasisFontColor;
+        UnknownFontColor = colorSettings.AccessibilityColors[AccessibilityLevel.SequenceBreak];
+        Item = item;
 
         ImageSource = imageSource;
+        
+        HandleClickCommand = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClick);    
 
-        HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
-
-        _item.PropertyChanged += OnItemChanged;
-        _colorSettings.PropertyChanged += OnColorsChanged;
-        _colorSettings.AccessibilityColors.PropertyChanged += OnColorsChanged;
-    }
-
-
-    /// <summary>
-    /// Subscribes to the PropertyChanged event on the ICrystalRequirementItem interface.
-    /// </summary>
-    /// <param name="sender">
-    /// The sending object of the event.
-    /// </param>
-    /// <param name="e">
-    /// The arguments of the PropertyChanged event.
-    /// </param>
-    private async void OnItemChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName == nameof(ICrystalRequirementItem.Current) ||
-            e.PropertyName == nameof(ICrystalRequirementItem.Known))
+        this.WhenActivated(disposables =>
         {
-            await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Label)));
-            await UpdateTextColor();
-        }
+            this.WhenAnyValue(
+                    x => x.Item.Known,
+                    x => x.Item.Current,
+                    (known, current) => known ? (7 - current).ToString() : "?")
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .ToPropertyEx(this, x => x.Label)
+                .DisposeWith(disposables);
+            this.WhenAnyValue(
+                    x => x.Item.Known,
+                    x => x.Item.Current,
+                    x => x.EmphasisFontColor.Value,
+                    x => x.UnknownFontColor.Value,
+                    (known, current, emphasisColor, unknownFontColor) => known
+                        ? current == 0
+                            ? emphasisColor
+                            : NonEmphasisColor
+                        : unknownFontColor)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .ToPropertyEx(this, x => x.LabelColor)
+                .DisposeWith(disposables);
+        });
     }
 
-    /// <summary>
-    /// Subscribes to the PropertyChanged event on the IColorSettings interface.
-    /// </summary>
-    /// <param name="sender">
-    /// The sending object of the event.
-    /// </param>
-    /// <param name="e">
-    /// The arguments of the PropertyChanged event.
-    /// </param>
-    private async void OnColorsChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        await UpdateTextColor();
-    }
-
-    /// <summary>
-    /// Raises the PropertyChanged event for the TextColor property.
-    /// </summary>
-    private async Task UpdateTextColor()
-    {
-        await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(LabelColor)));
-    }
-
-    /// <summary>
-    /// Creates an undoable action to add to the crystal requirement item and sends it to the undo/redo manager.
-    /// </summary>
-    private void AddItem()
-    {
-        _undoRedoManager.NewAction(_item.CreateAddItemAction());
-    }
-
-    /// <summary>
-    /// Creates an undoable action to remove to the crystal requirement item and sends it to the undo/redo manager.
-    /// </summary>
-    private void RemoveItem()
-    {
-        _undoRedoManager.NewAction(_item.CreateRemoveItemAction());
-    }
-
-    /// <summary>
-    /// Handles clicking the control.
-    /// </summary>
-    /// <param name="e">
-    /// The pointer released event args.
-    /// </param>
-    private void HandleClickImpl(PointerReleasedEventArgs e)
+    private void HandleClick(PointerReleasedEventArgs e)
     {
         switch (e.InitialPressMouseButton)
         {
@@ -146,6 +108,23 @@ public sealed class CrystalRequirementAdapter : ViewModel, IItemAdapter
             case MouseButton.Right:
                 RemoveItem();
                 break;
+            case MouseButton.None:
+            case MouseButton.Middle:
+            case MouseButton.XButton1:
+            case MouseButton.XButton2:
+            default:
+                break;
         }
     }
+
+    private void AddItem()
+    {
+        _undoRedoManager.NewAction(Item.CreateAddItemAction());
+    }
+
+    private void RemoveItem()
+    {
+        _undoRedoManager.NewAction(Item.CreateRemoveItemAction());
+    }
+
 }

@@ -1,5 +1,5 @@
-﻿using OpenTracker.Autofac;
-using OpenTracker.Models.Modes;
+﻿using OpenTracker.Models.Modes;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.ViewModels.Dungeons;
 

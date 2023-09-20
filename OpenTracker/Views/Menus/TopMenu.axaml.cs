@@ -1,4 +1,5 @@
-﻿using System.Reactive;
+﻿using System.Collections.Generic;
+using System.Reactive;
 using System.Reactive.Disposables;
 using System.Threading.Tasks;
 using Avalonia;
@@ -17,46 +18,116 @@ namespace OpenTracker.Views.Menus;
 
 public sealed class TopMenu : ReactiveUserControl<TopMenuVM>
 {
-    private Menu Menu => this.FindControl<Menu>("Menu");
-    
     public TopMenu()
     {
         InitializeComponent();
 
         this.WhenActivated(disposables =>
         {
-            this.OneWayBind(ViewModel,
-                    vm => vm.Items,
-                    v => v.Menu.Items)
-                .DisposeWith(disposables);
-
             if (ViewModel is null)
             {
                 return;
             }
+
+            ViewModel!.OpenFileDialogInteraction
+                .RegisterHandler(async interaction =>
+                {
+                    interaction.SetOutput(await OpenFileDialogAsync().ConfigureAwait(true));
+                })
+                .DisposeWith(disposables);
+
+            ViewModel!.SaveFileDialogInteraction
+                .RegisterHandler(async interaction =>
+                {
+                    interaction.SetOutput(await SaveFileDialogAsync().ConfigureAwait(true));
+                })
+                .DisposeWith(disposables);
             
-            ViewModel!.OpenErrorBoxInteraction.RegisterHandler(async interaction =>
-            {
-                await OpenErrorBoxAsync(interaction.Input).ConfigureAwait(true);
-                interaction.SetOutput(Unit.Default);
-            });
+            ViewModel!.OpenErrorBoxInteraction
+                .RegisterHandler(async interaction =>
+                {
+                    await OpenErrorBoxAsync(interaction.Input).ConfigureAwait(true);
+                    interaction.SetOutput(Unit.Default);
+                })
+                .DisposeWith(disposables);
             
-            ViewModel!.OpenMessageBoxInteraction.RegisterHandler(async interaction =>
-            {
-                interaction.SetOutput(await OpenMessageBoxAsync(interaction.Input).ConfigureAwait(true));
-            });
+            ViewModel!.OpenMessageBoxInteraction
+                .RegisterHandler(async interaction =>
+                {
+                    interaction.SetOutput(await OpenMessageBoxAsync(interaction.Input).ConfigureAwait(true));
+                })
+                .DisposeWith(disposables);
             
-            ViewModel!.OpenDialogInteraction.RegisterHandler(interaction =>
-            {
-                OpenDialogAsync(interaction.Input);
-                interaction.SetOutput(Unit.Default);
-            });
+            ViewModel!.OpenDialogInteraction
+                .RegisterHandler(interaction =>
+                {
+                    OpenDialogAsync(interaction.Input);
+                    interaction.SetOutput(Unit.Default);
+                })
+                .DisposeWith(disposables);
+
+            ViewModel!.RequestCloseInteraction
+                .RegisterHandler(interaction =>
+                {
+                    interaction.SetOutput(Unit.Default);
+                    var mainWindow = GetMainWindow();
+                    
+                    if (mainWindow is null)
+                    { 
+                        return;
+                    }
+                    
+                    mainWindow.Close();
+                })
+                .DisposeWith(disposables);
         });
     }
 
     private void InitializeComponent()
     {
         AvaloniaXamlLoader.Load(this);
+    }
+
+    private static async Task<string?> OpenFileDialogAsync()
+    {
+        var mainWindow = GetMainWindow();
+
+        if (mainWindow is null)
+        {
+            return null;
+        }
+        
+        var dialog = new OpenFileDialog
+        {
+            AllowMultiple = false,
+            Filters = new List<FileDialogFilter> { new() { Name = "JSON", Extensions = new List<string> {"json"} } }
+        };
+
+        var result = await dialog.ShowAsync(mainWindow).ConfigureAwait(true);
+        
+        if (result is null || result.Length == 0)
+        {
+            return null;
+        }
+
+        return result[0];
+    }
+
+    private static async Task<string?> SaveFileDialogAsync()
+    {
+        var mainWindow = GetMainWindow();
+
+        if (mainWindow is null)
+        {
+            return null;
+        }
+        
+        var dialog = new SaveFileDialog
+        {
+            Filters = new List<FileDialogFilter> { new() { Name = "JSON", Extensions = new List<string> {"json"} } }
+        };
+        
+        return await dialog.ShowAsync(mainWindow).ConfigureAwait(true);
     }
 
     private static async Task OpenErrorBoxAsync(ErrorBoxDialogVM viewModel)

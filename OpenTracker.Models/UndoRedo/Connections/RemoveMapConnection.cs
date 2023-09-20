@@ -1,4 +1,5 @@
 ﻿using OpenTracker.Models.Locations.Map.Connections;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.UndoRedo.Connections;
 
@@ -6,7 +7,8 @@ namespace OpenTracker.Models.UndoRedo.Connections;
 /// This class contains the <see cref="IUndoable"/> action to remove a new <see cref="IMapConnection"/> from the
 /// map.
 /// </summary>
-public class RemoveMapConnection : IRemoveMapConnection
+[DependencyInjection]
+public sealed class RemoveMapConnection : IRemoveMapConnection
 {
     private readonly IMapConnectionCollection _mapConnections;
     private readonly IMapConnection _mapConnection;

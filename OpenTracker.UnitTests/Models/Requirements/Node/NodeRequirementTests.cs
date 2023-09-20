@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Accessibility;
@@ -10,7 +11,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Requirements.Node;
 
-public class NodeRequirementTests
+[ExcludeFromCodeCoverage]
+public sealed class NodeRequirementTests
 {
     private readonly INode _node = Substitute.For<INode>();
 

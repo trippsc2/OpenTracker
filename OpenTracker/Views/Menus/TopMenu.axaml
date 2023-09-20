@@ -2,11 +2,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" x:Class="OpenTracker.Views.Menus.TopMenu">
+             xmlns:vm="clr-namespace:OpenTracker.ViewModels.Menus"
+             mc:Ignorable="d" x:Class="OpenTracker.Views.Menus.TopMenu"
+             x:DataType="vm:TopMenuVM" x:CompileBindings="True">
   <Border Classes="ControlBorder" BorderThickness="0 0 0 1">
-    <Menu x:Name="Menu">
+    <Menu Items="{Binding Items}">
       <Menu.Styles>
-        <Style Selector="MenuItem">
+        <Style Selector="MenuItem" x:DataType="vm:MenuItemVM">
           <Setter Property="Header" Value="{Binding Header}" />
           <Setter Property="Icon" Value="{Binding Icon}" />
           <Setter Property="Command" Value="{Binding Command}" />

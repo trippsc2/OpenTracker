@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reactive;
-using OpenTracker.Autofac;
+using System.Linq;
 using OpenTracker.Models.BossPlacements;
-using ReactiveUI;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.ViewModels.BossSelect;
 
@@ -13,7 +12,7 @@ namespace OpenTracker.ViewModels.BossSelect;
 [DependencyInjection(SingleInstance = true)]
 public sealed class BossSelectFactory : IBossSelectFactory
 {
-    private readonly IBossSelectButtonVM.Factory _buttonFactory;
+    private readonly BossSelectButtonVM.Factory _buttonFactory;
 
     /// <summary>
     /// Constructor
@@ -21,7 +20,7 @@ public sealed class BossSelectFactory : IBossSelectFactory
     /// <param name="buttonFactory">
     /// An Autofac factory for creating boss select button controls.
     /// </param>
-    public BossSelectFactory(IBossSelectButtonVM.Factory buttonFactory)
+    public BossSelectFactory(BossSelectButtonVM.Factory buttonFactory)
     {
         _buttonFactory = buttonFactory;
     }
@@ -32,28 +31,22 @@ public sealed class BossSelectFactory : IBossSelectFactory
     /// <param name="bossPlacement">
     /// The boss placement.
     /// </param>
-    /// <param name="changeBossCommand">
-    ///
-    /// </param>
     /// <returns>
     /// An observable collection of boss select button control ViewModel instances.
     /// </returns>
-    public List<IBossSelectButtonVM> GetBossSelectButtonVMs(
-        IBossPlacement bossPlacement,
-        ReactiveCommand<BossType?, Unit> changeBossCommand)
+    public List<BossSelectButtonVM> GetBossSelectButtonVMs(IBossPlacement bossPlacement)
     {
-        var buttons = new List<IBossSelectButtonVM>
+        var buttons = new List<BossSelectButtonVM>
         {
-            _buttonFactory(bossPlacement, null, changeBossCommand)
+            _buttonFactory(bossPlacement, null)
         };
 
-        foreach (BossType boss in Enum.GetValues(typeof(BossType)))
-        {
-            if (boss != BossType.Aga && boss != BossType.Test)
-            {
-                buttons.Add(_buttonFactory(bossPlacement, boss, changeBossCommand));
-            }
-        }
+        var bossButtons = Enum
+            .GetValues<BossType>()
+            .Where(boss => boss != BossType.Aga && boss != BossType.Test)
+            .Select(boss => _buttonFactory(bossPlacement, boss));
+        
+        buttons.AddRange(bossButtons);
 
         return buttons;
     }

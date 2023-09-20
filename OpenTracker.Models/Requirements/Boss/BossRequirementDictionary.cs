@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using OpenTracker.Models.BossPlacements;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Requirements.Boss;
 
@@ -8,7 +9,8 @@ namespace OpenTracker.Models.Requirements.Boss;
 /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for <see cref="IBossRequirement"/>
 /// objects indexed by <see cref="BossPlacementID"/>.
 /// </summary>
-public class BossRequirementDictionary : LazyDictionary<BossPlacementID, IRequirement>, IBossRequirementDictionary
+[DependencyInjection(SingleInstance = true)]
+public sealed class BossRequirementDictionary : LazyDictionary<BossPlacementID, IRequirement>, IBossRequirementDictionary
 {
     private readonly IBossPlacementDictionary _bossPlacements;
 

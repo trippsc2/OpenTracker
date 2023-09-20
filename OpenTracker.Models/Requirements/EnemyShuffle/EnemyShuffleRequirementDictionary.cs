@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Requirements.EnemyShuffle;
 
@@ -7,7 +8,8 @@ namespace OpenTracker.Models.Requirements.EnemyShuffle;
 /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for
 /// <see cref="IEnemyShuffleRequirement"/> objects indexed by <see cref="bool"/>.
 /// </summary>
-public class EnemyShuffleRequirementDictionary : LazyDictionary<bool, IRequirement>,
+[DependencyInjection(SingleInstance = true)]
+public sealed class EnemyShuffleRequirementDictionary : LazyDictionary<bool, IRequirement>,
     IEnemyShuffleRequirementDictionary
 {
     private readonly IEnemyShuffleRequirement.Factory _factory;

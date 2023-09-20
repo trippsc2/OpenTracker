@@ -3,7 +3,7 @@
 /// <summary>
 /// This class contains dropdown save data.
 /// </summary>
-public class DropdownSaveData
+public sealed class DropdownSaveData
 {
     public bool Checked { get; init; }
 }

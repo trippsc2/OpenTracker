@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using NSubstitute;
 using OpenTracker.Models.AutoTracking.Values;
 using OpenTracker.Models.Items;
@@ -11,7 +12,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Items.Factories;
 
-public class ItemFactoryTests
+[ExcludeFromCodeCoverage]
+public sealed class ItemFactoryTests
 {
     private readonly IItemAutoTrackValueFactory _autoTrackValueFactory =
         Substitute.For<IItemAutoTrackValueFactory>();

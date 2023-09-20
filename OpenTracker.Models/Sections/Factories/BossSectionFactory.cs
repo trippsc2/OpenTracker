@@ -6,12 +6,14 @@ using OpenTracker.Models.Locations;
 using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.Requirements.BossShuffle;
 using OpenTracker.Models.Sections.Boss;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Sections.Factories;
 
 /// <summary>
 /// This class contains the creation logic for <see cref="IBossSection"/> and <see cref="IPrizeSection"/> objects.
 /// </summary>
+[DependencyInjection(SingleInstance = true)]
 public sealed class BossSectionFactory : IBossSectionFactory
 {
     private readonly IBossShuffleRequirementDictionary _bossShuffleRequirements;

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Requirements.SmallKeyShuffle;
 
@@ -7,7 +8,8 @@ namespace OpenTracker.Models.Requirements.SmallKeyShuffle;
 /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for
 /// <see cref="ISmallKeyShuffleRequirement"/> objects indexed by <see cref="bool"/>.
 /// </summary>
-public class SmallKeyShuffleRequirementDictionary : LazyDictionary<bool, IRequirement>, ISmallKeyShuffleRequirementDictionary
+[DependencyInjection(SingleInstance = true)]
+public sealed class SmallKeyShuffleRequirementDictionary : LazyDictionary<bool, IRequirement>, ISmallKeyShuffleRequirementDictionary
 {
     private readonly ISmallKeyShuffleRequirement.Factory _factory;
         

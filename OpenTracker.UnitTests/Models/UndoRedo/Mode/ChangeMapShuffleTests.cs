@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Modes;
@@ -6,7 +7,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.UndoRedo.Mode;
 
-public class ChangeMapShuffleTests
+[ExcludeFromCodeCoverage]
+public sealed class ChangeMapShuffleTests
 {
     private readonly IMode _mode = Substitute.For<IMode>();
 

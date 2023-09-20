@@ -1,12 +1,14 @@
 ﻿using System.ComponentModel;
 using OpenTracker.Models.Modes;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Requirements.KeyDropShuffle;
 
 /// <summary>
 /// This class contains the <see cref="IMode.KeyDropShuffle"/> <see cref="IRequirement"/> data.
 /// </summary>
-public class KeyDropShuffleRequirement : BooleanRequirement, IKeyDropShuffleRequirement
+[DependencyInjection]
+public sealed class KeyDropShuffleRequirement : BooleanRequirement, IKeyDropShuffleRequirement
 {
     private readonly IMode _mode;
     private readonly bool _expectedValue;

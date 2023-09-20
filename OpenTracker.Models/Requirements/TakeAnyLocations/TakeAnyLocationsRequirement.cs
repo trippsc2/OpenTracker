@@ -1,12 +1,14 @@
 ﻿using System.ComponentModel;
 using OpenTracker.Models.Modes;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Requirements.TakeAnyLocations;
 
 /// <summary>
 /// This class contains the <see cref="IMode.TakeAnyLocations"/> <see cref="IRequirement"/> data.
 /// </summary>
-public class TakeAnyLocationsRequirement : BooleanRequirement, ITakeAnyLocationsRequirement
+[DependencyInjection]
+public sealed class TakeAnyLocationsRequirement : BooleanRequirement, ITakeAnyLocationsRequirement
 {
     private readonly IMode _mode;
     private readonly bool _expectedValue;

@@ -1,12 +1,12 @@
-﻿using System.ComponentModel;
-using System.Text;
-using System.Threading.Tasks;
-using Avalonia.Threading;
-using OpenTracker.Autofac;
+﻿using System.Collections.Generic;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using OpenTracker.Models.AutoTracking;
 using OpenTracker.Models.AutoTracking.SNESConnectors;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 
 namespace OpenTracker.ViewModels.AutoTracking;
 
@@ -14,23 +14,39 @@ namespace OpenTracker.ViewModels.AutoTracking;
 /// This class contains the auto-tracker status text control ViewModel data.
 /// </summary>
 [DependencyInjection(SingleInstance = true)]
-public sealed class AutoTrackerStatusVM : ViewModel, IAutoTrackerStatusVM
+public sealed class AutoTrackerStatusVM : ViewModel
 {
-    private readonly IAutoTracker _autoTracker;
-
-    private string _statusTextColor = "#ffffff";
-    public string StatusTextColor
+    private static readonly Dictionary<ConnectionStatus, string> StatusTextColorValues = new()
     {
-        get => _statusTextColor;
-        private set => this.RaiseAndSetIfChanged(ref _statusTextColor, value);
-    }
-
-    private string _statusText = "NOT CONNECTED";
-    public string StatusText
+        { ConnectionStatus.NotConnected, "#ffffff" },
+        { ConnectionStatus.SelectDevice, "#ffffff" },
+        { ConnectionStatus.Connecting, "#ffff00" },
+        { ConnectionStatus.Attaching, "#ffff00" },
+        { ConnectionStatus.Connected, "#00ff00" },
+        { ConnectionStatus.Error, "#ff3030" }
+    };
+    private static readonly Dictionary<(ConnectionStatus status, bool raceIllegal), string> StatusTextValues = new()
     {
-        get => _statusText;
-        private set => this.RaiseAndSetIfChanged(ref _statusText, value);
-    }
+        { (ConnectionStatus.NotConnected, false), "NOT CONNECTED" },
+        { (ConnectionStatus.NotConnected, true), "NOT CONNECTED" },
+        { (ConnectionStatus.SelectDevice, false), "SELECT DEVICE" },
+        { (ConnectionStatus.SelectDevice, true), "SELECT DEVICE" },
+        { (ConnectionStatus.Connecting, false), "CONNECTING" },
+        { (ConnectionStatus.Connecting, true), "CONNECTING" },
+        { (ConnectionStatus.Attaching, false), "ATTACHING" },
+        { (ConnectionStatus.Attaching, true), "ATTACHING" },
+        { (ConnectionStatus.Connected, false), "CONNECTED (RACE ILLEGAL)" },
+        { (ConnectionStatus.Connected, true), "#CONNECTED (RACE LEGAL)" },
+        { (ConnectionStatus.Error, false), "ERROR" },
+        { (ConnectionStatus.Error, true), "ERROR" }
+    };
+    
+    private IAutoTracker AutoTracker { get; }
+
+    [ObservableAsProperty]
+    public string StatusTextColor { get; } = "#ffffff";
+    [ObservableAsProperty]
+    public string StatusText { get; } = "NOT CONNECTED";
 
     /// <summary>
     /// Constructor
@@ -40,121 +56,22 @@ public sealed class AutoTrackerStatusVM : ViewModel, IAutoTrackerStatusVM
     /// </param>
     public AutoTrackerStatusVM(IAutoTracker autoTracker)
     {
-        _autoTracker = autoTracker;
-
-        _autoTracker.PropertyChanged += OnAutoTrackerChanged;
-
-        switch (_autoTracker.Status)
+        AutoTracker = autoTracker;
+        
+        this.WhenActivated(disposables =>
         {
-            case ConnectionStatus.NotConnected:
-            {
-                StatusTextColor = "#ffffff";
-                StatusText = "NOT CONNECTED";
-            }
-                break;
-            case ConnectionStatus.SelectDevice:
-            {
-                StatusTextColor = "#ffffff";
-                StatusText = "SELECT DEVICE";
-            }
-                break;
-            case ConnectionStatus.Connecting:
-            {
-                StatusTextColor = "#ffff00";
-                StatusText = "CONNECTING";
-            }
-                break;
-            case ConnectionStatus.Attaching:
-            {
-                StatusTextColor = "#ffff00";
-                StatusText = "ATTACHING";
-            }
-                break;
-            case ConnectionStatus.Connected:
-            {
-                StatusTextColor = "#00ff00";
-                var sb = new StringBuilder();
-                sb.Append("CONNECTED (");
-                sb.Append(_autoTracker.RaceIllegalTracking ? "RACE ILLEGAL)" : "RACE LEGAL)");
-                StatusText = sb.ToString();
-            }
-                break;
-            case ConnectionStatus.Error:
-            {
-                StatusTextColor = "#ff3030";
-                StatusText = "ERROR";
-            }
-                break;
-        }
-    }
-
-    /// <summary>
-    /// Subscribes to the PropertyChanged event on the AutoTracker class.
-    /// </summary>
-    /// <param name="sender">
-    /// The sending object of the event.
-    /// </param>
-    /// <param name="e">
-    /// The arguments of the PropertyChanged event.
-    /// </param>
-    private async void OnAutoTrackerChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName == nameof(IAutoTracker.RaceIllegalTracking) ||
-            e.PropertyName == nameof(IAutoTracker.Status))
-        {
-            await UpdateStatusText();
-        }
-    }
-
-    /// <summary>
-    /// Updates the status text and text color based on the status of the SNES connector.
-    /// </summary>
-    private async Task UpdateStatusText()
-    {
-        await Dispatcher.UIThread.InvokeAsync(() =>
-        {
-            switch (_autoTracker.Status)
-            {
-                case ConnectionStatus.NotConnected:
-                {
-                    StatusTextColor = "#ffffff";
-                    StatusText = "NOT CONNECTED";
-                }
-                    break;
-                case ConnectionStatus.SelectDevice:
-                {
-                    StatusTextColor = "#ffffff";
-                    StatusText = "SELECT DEVICE";
-                }
-                    break;
-                case ConnectionStatus.Connecting:
-                {
-                    StatusTextColor = "#ffff00";
-                    StatusText = "CONNECTING";
-                }
-                    break;
-                case ConnectionStatus.Attaching:
-                {
-                    StatusTextColor = "#ffff00";
-                    StatusText = "ATTACHING";
-                }
-                    break;
-                case ConnectionStatus.Connected:
-                {
-                    StatusTextColor = "#00ff00";
-                    var sb = new StringBuilder();
-                    sb.Append("CONNECTED (");
-                    sb.Append(_autoTracker.RaceIllegalTracking ? "RACE ILLEGAL)" : "RACE LEGAL)");
-                    StatusText = sb.ToString();
-                }
-                    break;
-                case ConnectionStatus.Error:
-                {
-                    StatusTextColor = "#ff3030";
-                    StatusText = "ERROR";
-                }
-                    break;
-            }
+            this.WhenAnyValue(x => x.AutoTracker.Status)
+                .Select(x => StatusTextColorValues[x])
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .ToPropertyEx(this, x => x.StatusTextColor)
+                .DisposeWith(disposables);
+            this.WhenAnyValue(
+                    x => x.AutoTracker.Status,
+                    x => x.AutoTracker.RaceIllegalTracking)
+                .Select(x => StatusTextValues[x])
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .ToPropertyEx(this, x => x.StatusText)
+                .DisposeWith(disposables);
         });
     }
 }

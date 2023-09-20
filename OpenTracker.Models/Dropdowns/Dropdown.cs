@@ -2,11 +2,13 @@
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Models.UndoRedo.Dropdowns;
+using OpenTracker.Utils.Autofac;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 
 namespace OpenTracker.Models.Dropdowns;
 
+[DependencyInjection]
 public sealed class Dropdown : ReactiveObject, IDropdown
 {
 

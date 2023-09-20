@@ -8,13 +8,15 @@ using OpenTracker.Models.Dungeons.Nodes;
 using OpenTracker.Models.Dungeons.Result;
 using OpenTracker.Models.Dungeons.State;
 using OpenTracker.Models.Modes;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Dungeons.Mutable;
 
 /// <summary>
 /// This class contains the mutable dungeon data.
 /// </summary>
-public class MutableDungeon : IMutableDungeon
+[DependencyInjection]
+public sealed class MutableDungeon : IMutableDungeon
 {
     private readonly IMode _mode;
     private readonly IDungeon _dungeon;

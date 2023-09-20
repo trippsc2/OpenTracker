@@ -1,10 +1,12 @@
+using System.Diagnostics.CodeAnalysis;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Dungeons.AccessibilityProvider;
 using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Dungeons.AccessibilityProviders;
 
-public class BossAccessibilityProviderTests
+[ExcludeFromCodeCoverage]
+public sealed class BossAccessibilityProviderTests
 {
     private readonly BossAccessibilityProvider _sut = new();
 

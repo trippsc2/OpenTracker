@@ -8,6 +8,14 @@ namespace OpenTracker.ViewModels.MapLocations;
 public interface IMapLocationVM
 {
     delegate IMapLocationVM Factory(
-        IMapLocation mapLocation, IRequirement? dockRequirement, Dock metDock, Dock unmetDock,
-        IMapLocationMarkingVM? marking, IShapedMapLocationVMBase location, IMapLocationToolTipVM toolTip);
+        IMapLocation mapLocation,
+        IRequirement? dockRequirement,
+        IMapLocationMarkingVM? marking,
+        IShapedMapLocationVMBase location,
+        IMapLocationToolTipVM toolTip,
+        Dock metDock,
+        Dock unmetDock);
+
+    double CanvasX { get; }
+    double CanvasY { get; }
 }

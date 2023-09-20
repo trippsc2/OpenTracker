@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using OpenTracker.Models.Dungeons;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Requirements.Item.SmallKey;
 
@@ -8,7 +9,8 @@ namespace OpenTracker.Models.Requirements.Item.SmallKey;
 /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for <see cref="ISmallKeyRequirement"/>
 /// objects indexed by <see cref="DungeonID"/> and count.
 /// </summary>
-public class SmallKeyRequirementDictionary : LazyDictionary<(DungeonID id, int count), IRequirement>,
+[DependencyInjection(SingleInstance = true)]
+public sealed class SmallKeyRequirementDictionary : LazyDictionary<(DungeonID id, int count), IRequirement>,
     ISmallKeyRequirementDictionary
 {
     private readonly IDungeonDictionary _dungeons;

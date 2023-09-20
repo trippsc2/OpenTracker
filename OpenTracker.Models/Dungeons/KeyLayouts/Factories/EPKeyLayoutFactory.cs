@@ -6,13 +6,15 @@ using OpenTracker.Models.Requirements.Alternative;
 using OpenTracker.Models.Requirements.BigKeyShuffle;
 using OpenTracker.Models.Requirements.KeyDropShuffle;
 using OpenTracker.Models.Requirements.SmallKeyShuffle;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories;
 
 /// <summary>
 /// This class contains the creation logic for Eastern Palace key layouts.
 /// </summary>
-public class EPKeyLayoutFactory : IEPKeyLayoutFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class EPKeyLayoutFactory : IEPKeyLayoutFactory
 {
     private readonly IAggregateRequirementDictionary _aggregateRequirements;
     private readonly IAlternativeRequirementDictionary _alternativeRequirements;

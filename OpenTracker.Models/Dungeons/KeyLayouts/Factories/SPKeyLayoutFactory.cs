@@ -6,13 +6,15 @@ using OpenTracker.Models.Requirements.BigKeyShuffle;
 using OpenTracker.Models.Requirements.GuaranteedBossItems;
 using OpenTracker.Models.Requirements.KeyDropShuffle;
 using OpenTracker.Models.Requirements.SmallKeyShuffle;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories;
 
 /// <summary>
 /// This class contains the creation logic for Swamp Palace key layouts.
 /// </summary>
-public class SPKeyLayoutFactory : ISPKeyLayoutFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class SPKeyLayoutFactory : ISPKeyLayoutFactory
 {
     private readonly IAggregateRequirementDictionary _aggregateRequirements;
     private readonly IBigKeyShuffleRequirementDictionary _bigKeyShuffleRequirements;

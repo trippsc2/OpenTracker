@@ -1,12 +1,14 @@
 ﻿using System.ComponentModel;
 using OpenTracker.Models.Modes;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Requirements.BossShuffle;
 
 /// <summary>
 /// This class contains <see cref="IMode.BossShuffle"/> requirement data.
 /// </summary>
-public class BossShuffleRequirement : BooleanRequirement, IBossShuffleRequirement
+[DependencyInjection]
+public sealed class BossShuffleRequirement : BooleanRequirement, IBossShuffleRequirement
 {
     private readonly IMode _mode;
     private readonly bool _expectedValue;

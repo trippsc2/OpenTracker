@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Accessibility;
@@ -15,7 +16,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Sections.Item;
 
-public class DungeonItemSectionTests
+[ExcludeFromCodeCoverage]
+public sealed class DungeonItemSectionTests
 {
     private readonly ISaveLoadManager _saveLoadManager = Substitute.For<ISaveLoadManager>();
 

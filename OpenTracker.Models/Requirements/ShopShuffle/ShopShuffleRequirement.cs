@@ -1,12 +1,14 @@
 ﻿using System.ComponentModel;
 using OpenTracker.Models.Modes;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Requirements.ShopShuffle;
 
 /// <summary>
 /// This class contains <see cref="IMode.ShopShuffle"/> <see cref="IRequirement"/> data.
 /// </summary>
-public class ShopShuffleRequirement : BooleanRequirement, IShopShuffleRequirement
+[DependencyInjection]
+public sealed class ShopShuffleRequirement : BooleanRequirement, IShopShuffleRequirement
 {
     private readonly IMode _mode;
     private readonly bool _expectedValue;

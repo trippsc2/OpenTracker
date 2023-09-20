@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Requirements.GenericKeys;
@@ -5,7 +6,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Requirements.GenericKeys;
 
-public class GenericKeysRequirementDictionaryTests
+[ExcludeFromCodeCoverage]
+public sealed class GenericKeysRequirementDictionaryTests
 {
     // ReSharper disable once CollectionNeverUpdated.Local
     private readonly GenericKeysRequirementDictionary _sut;

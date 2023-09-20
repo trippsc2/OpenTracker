@@ -2,13 +2,15 @@
 using OpenTracker.Models.Dungeons.Mutable;
 using OpenTracker.Models.Dungeons.Nodes;
 using OpenTracker.Models.Nodes;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Dungeons.KeyDoors;
 
 /// <summary>
 /// This class contains creation logic for <see cref="IKeyDoor"/> objects.
 /// </summary>
-public class KeyDoorFactory : IKeyDoorFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class KeyDoorFactory : IKeyDoorFactory
 {
     private readonly IKeyDoor.Factory _factory;
 

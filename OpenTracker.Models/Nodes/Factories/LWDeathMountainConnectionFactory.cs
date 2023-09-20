@@ -10,13 +10,15 @@ using OpenTracker.Models.Requirements.Item;
 using OpenTracker.Models.Requirements.Mode;
 using OpenTracker.Models.Requirements.SequenceBreak;
 using OpenTracker.Models.SequenceBreaks;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Nodes.Factories;
 
 /// <summary>
 /// This class contains the creation logic for light world death mountain <see cref="INodeConnection"/> objects.
 /// </summary>
-public class LWDeathMountainConnectionFactory : ILWDeathMountainConnectionFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class LWDeathMountainConnectionFactory : ILWDeathMountainConnectionFactory
 {
     private readonly IAlternativeRequirementDictionary _alternativeRequirements;
     private readonly IComplexRequirementDictionary _complexRequirements;

@@ -6,13 +6,15 @@ using OpenTracker.Models.Nodes;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.UndoRedo.Sections;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Sections.Entrance;
 
 /// <summary>
 /// This class contains dropdown section data.
 /// </summary>
-public class DropdownSection : EntranceSectionBase, IDropdownSection
+[DependencyInjection]
+public sealed class DropdownSection : EntranceSectionBase, IDropdownSection
 {
     private readonly IMode _mode;
 

@@ -6,13 +6,15 @@ using OpenTracker.Models.Dungeons.Items;
 using OpenTracker.Models.Dungeons.Mutable;
 using OpenTracker.Models.Dungeons.Result;
 using OpenTracker.Models.Dungeons.State;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Dungeons.AccessibilityProvider;
 
 /// <summary>
 /// This class contains the logic for aggregating dungeon results into final values.
 /// </summary>
-public class ResultAggregator : IResultAggregator
+[DependencyInjection]
+public sealed class ResultAggregator : IResultAggregator
 {
     private readonly IDungeonResult.Factory _resultFactory;
 

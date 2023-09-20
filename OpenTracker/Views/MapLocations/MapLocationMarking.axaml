@@ -1,31 +1,15 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:vm="clr-namespace:OpenTracker.ViewModels.MapLocations;assembly=OpenTracker"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:i="using:Avalonia.Xaml.Interactivity"
-             xmlns:ia="using:Avalonia.Xaml.Interactions.Core"
-             mc:Ignorable="d" x:Class="OpenTracker.Views.MapLocations.MapLocationMarking">
-  
-  <Design.DataContext>
-    <vm:MapLocationMarkingVM />
-  </Design.DataContext>
-  
-  <Panel Width="56" Height="56">
-
-    <i:Interaction.Behaviors>
-      <ia:EventTriggerBehavior EventName="PointerReleased">
-        <ia:InvokeCommandAction Command="{Binding HandleClick}" PassEventArgsToCommand="True" />
-      </ia:EventTriggerBehavior>
-    </i:Interaction.Behaviors>
-    
+             xmlns:vm="clr-namespace:OpenTracker.ViewModels.MapLocations"
+             mc:Ignorable="d" x:Class="OpenTracker.Views.MapLocations.MapLocationMarking"
+             x:DataType="vm:MapLocationMarkingVM" x:CompileBindings="True">
+  <Panel x:Name="Panel" Width="56" Height="56">
     <Border Width="56" Height="56" Background="#99000000">
-      <ContentControl Content="{Binding Image}"
-                      Width="56" Height="56" />
+      <ContentControl Width="56" Height="56" Content="{Binding Image}" />
     </Border>
 
     <ContentControl Content="{Binding MarkingSelect}" />
-    
   </Panel>
-  
 </UserControl>

@@ -7,13 +7,15 @@ using OpenTracker.Models.Nodes;
 using OpenTracker.Models.Nodes.Connections;
 using OpenTracker.Models.Requirements.Boss;
 using OpenTracker.Models.Requirements.Complex;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Dungeons.Nodes.Factories;
 
 /// <summary>
 /// This class contains the creation logic for Agahnim's Tower nodes.
 /// </summary>
-public class ATDungeonNodeFactory : IATDungeonNodeFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class ATDungeonNodeFactory : IATDungeonNodeFactory
 {
     private readonly IBossRequirementDictionary _bossRequirements;
     private readonly IComplexRequirementDictionary _complexRequirements;

@@ -2,6 +2,7 @@
 using System.Linq;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.SequenceBreaks;
 
@@ -9,7 +10,8 @@ namespace OpenTracker.Models.SequenceBreaks;
 /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for <see cref="ISequenceBreak"/>
 /// objects indexed by <see cref="SequenceBreakType"/>.
 /// </summary>
-public class SequenceBreakDictionary : LazyDictionary<SequenceBreakType, ISequenceBreak>,
+[DependencyInjection(SingleInstance = true)]
+public sealed class SequenceBreakDictionary : LazyDictionary<SequenceBreakType, ISequenceBreak>,
     ISequenceBreakDictionary
 {
     private readonly ISequenceBreak.Factory _factory;

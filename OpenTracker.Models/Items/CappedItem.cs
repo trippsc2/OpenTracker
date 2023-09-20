@@ -3,12 +3,14 @@ using OpenTracker.Models.AutoTracking.Values;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Models.UndoRedo.Items;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Items;
 
 /// <summary>
 /// This class contains item data with a maximum value.
 /// </summary>
+[DependencyInjection]
 public class CappedItem : Item, ICappedItem
 {
     private readonly ICycleItem.Factory _cycleItemFactory;

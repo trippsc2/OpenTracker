@@ -8,7 +8,7 @@ namespace OpenTracker.Models.AutoTracking.Values.Multiple;
 /// <summary>
 /// This class represents an auto-tracking result value that changes based on a condition.
 /// </summary>
-public class AutoTrackConditionalValue : ReactiveObject, IAutoTrackValue
+public sealed class AutoTrackConditionalValue : ReactiveObject, IAutoTrackValue
 {
     private IRequirement Condition { get; }
     private IAutoTrackValue? TrueValue { get; }

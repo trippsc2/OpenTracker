@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.PrizePlacements;
@@ -6,7 +7,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.UndoRedo.Prize;
 
-public class ChangePrizeTests
+[ExcludeFromCodeCoverage]
+public sealed class ChangePrizeTests
 {
     private readonly IPrizePlacement _prizePlacement = Substitute.For<IPrizePlacement>();
     private readonly ChangePrize _sut;

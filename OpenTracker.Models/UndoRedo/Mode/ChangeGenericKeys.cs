@@ -1,11 +1,13 @@
 ﻿using OpenTracker.Models.Modes;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.UndoRedo.Mode;
 
 /// <summary>
 /// This class contains the <see cref="IUndoable"/> action to change the <see cref="IMode.GenericKeys"/> property.
 /// </summary>
-public class ChangeGenericKeys : IChangeGenericKeys
+[DependencyInjection]
+public sealed class ChangeGenericKeys : IChangeGenericKeys
 {
     private readonly IMode _mode;
     private readonly bool _newValue;

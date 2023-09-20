@@ -5,12 +5,14 @@ using OpenTracker.Models.Requirements.Aggregate;
 using OpenTracker.Models.Requirements.BigKeyShuffle;
 using OpenTracker.Models.Requirements.KeyDropShuffle;
 using OpenTracker.Models.Requirements.SmallKeyShuffle;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories;
 
 /// <summary>
 /// This class contains the creation logic for Desert Palace key layouts.
 /// </summary>
+[DependencyInjection(SingleInstance = true)]
 public class DPKeyLayoutFactory : IDPKeyLayoutFactory
 {
     private readonly IAggregateRequirementDictionary _aggregateRequirements;

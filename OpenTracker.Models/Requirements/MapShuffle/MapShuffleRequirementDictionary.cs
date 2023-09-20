@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Requirements.MapShuffle;
 
@@ -7,7 +8,8 @@ namespace OpenTracker.Models.Requirements.MapShuffle;
 /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for
 /// <see cref="IMapShuffleRequirement"/> objects indexed by <see cref="bool"/>.
 /// </summary>
-public class MapShuffleRequirementDictionary : LazyDictionary<bool, IRequirement>, IMapShuffleRequirementDictionary
+[DependencyInjection(SingleInstance = true)]
+public sealed class MapShuffleRequirementDictionary : LazyDictionary<bool, IRequirement>, IMapShuffleRequirementDictionary
 {
     private readonly IMapShuffleRequirement.Factory _factory;
         

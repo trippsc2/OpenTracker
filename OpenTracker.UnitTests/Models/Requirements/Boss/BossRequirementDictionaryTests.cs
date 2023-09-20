@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.BossPlacements;
@@ -6,7 +7,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Requirements.Boss;
 
-public class BossRequirementDictionaryTests
+[ExcludeFromCodeCoverage]
+public sealed class BossRequirementDictionaryTests
 {
     private readonly IBossPlacementDictionary _bossPlacements = Substitute.For<IBossPlacementDictionary>();
 

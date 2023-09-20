@@ -1,14 +1,15 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel;
-using System.Threading.Tasks;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using Avalonia.Media;
-using Avalonia.Threading;
-using OpenTracker.Autofac;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Sections;
 using OpenTracker.Models.Settings;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
+using Reactive.Bindings;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 
 namespace OpenTracker.ViewModels.PinnedLocations.Sections;
 
@@ -18,13 +19,15 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections;
 [DependencyInjection]
 public sealed class SectionVM : ViewModel, ISectionVM
 {
-    private readonly IColorSettings _colorSettings;
-    private readonly ISection _section;
+    private ISection Section { get; }
 
-    public Color FontColor => Color.Parse(_colorSettings.AccessibilityColors[_section.Accessibility]);
-    public bool Visible => _section.IsActive;
-    public string Name => _section.Name;
-    public bool NormalAccessibility => _section.Accessibility == AccessibilityLevel.Normal;
+    public string Name { get; }
+    [ObservableAsProperty]
+    private ReactiveProperty<SolidColorBrush> AccessibilityColor { get; } = default!;
+    [ObservableAsProperty]
+    public SolidColorBrush? FontColor { get; }
+    [ObservableAsProperty]
+    public bool Visible { get; }
 
     public List<ISectionIconVM> Icons { get; }
 
@@ -42,59 +45,28 @@ public sealed class SectionVM : ViewModel, ISectionVM
     /// </param>
     public SectionVM(IColorSettings colorSettings, ISection section, List<ISectionIconVM> icons)
     {
-        _colorSettings = colorSettings;
-        _section = section;
+        Section = section;
         Icons = icons;
+        
+        Name = Section.Name;
 
-        _colorSettings.AccessibilityColors.PropertyChanged += OnColorChanged;
-        _section.PropertyChanged += OnSectionChanged;
-    }
-
-    /// <summary>
-    /// Subscribes to the PropertyChanged event on the ObservableCollection for the accessibility colors.
-    /// </summary>
-    /// <param name="sender">
-    /// The sending object of the event.
-    /// </param>
-    /// <param name="e">
-    /// The arguments of the PropertyChanged event.
-    /// </param>
-    private async void OnColorChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        await UpdateTextColor();
-    }
-
-    /// <summary>
-    /// Subscribes to the PropertyChanged event on the ISection interface.
-    /// </summary>
-    /// <param name="sender">
-    /// The sending object of the event.
-    /// </param>
-    /// <param name="e">
-    /// The arguments of the PropertyChanged event.
-    /// </param>
-    private async void OnSectionChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        switch (e.PropertyName)
+        this.WhenActivated(disposables =>
         {
-            case nameof(ISection.Accessibility):
-                await UpdateTextColor();
-                break;
-            case nameof(ISection.IsActive):
-                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Visible)));
-                break;
-        }
-    }
-
-    /// <summary>
-    /// Raises the PropertyChanged event for the FontColor and NormalAccessibility properties.
-    /// </summary>
-    private async Task UpdateTextColor()
-    {
-        await Dispatcher.UIThread.InvokeAsync(() =>
-        {
-            this.RaisePropertyChanged(nameof(FontColor));
-            this.RaisePropertyChanged(nameof(NormalAccessibility));
+            this.WhenAnyValue(x => x.Section.Accessibility)
+                .Select(x => colorSettings.AccessibilityColors[x])
+                .ToPropertyEx(this, x => x.AccessibilityColor)
+                .DisposeWith(disposables);
+            this.WhenAnyValue(
+                    x => x.Section.Accessibility,
+                    x => x.AccessibilityColor,
+                    x => x.AccessibilityColor.Value,
+                    (accessibility, _, color) => accessibility != AccessibilityLevel.Normal ? color : null)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .ToPropertyEx(this, x => x.FontColor)
+                .DisposeWith(disposables);
+            this.WhenAnyValue(x => x.Section.IsActive)
+                .ToPropertyEx(this, x => x.Visible)
+                .DisposeWith(disposables);
         });
     }
 }

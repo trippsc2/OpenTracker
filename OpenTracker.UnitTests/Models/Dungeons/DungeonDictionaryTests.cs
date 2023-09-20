@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Dungeons;
@@ -5,7 +6,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Dungeons;
 
-public class DungeonDictionaryTests
+[ExcludeFromCodeCoverage]
+public sealed class DungeonDictionaryTests
 {
     private readonly IDungeonFactory _factory = Substitute.For<IDungeonFactory>();
         

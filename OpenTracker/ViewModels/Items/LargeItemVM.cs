@@ -1,7 +1,7 @@
 using System.Reactive;
 using Avalonia.Input;
-using OpenTracker.Autofac;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 using ReactiveUI;
 
 namespace OpenTracker.ViewModels.Items;
@@ -13,8 +13,8 @@ namespace OpenTracker.ViewModels.Items;
 public sealed class LargeItemVM : ViewModel, ILargeItemVM
 {
     public IItemVM Item { get; }
-        
-    public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
+
+    public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
 
     /// <summary>
     /// Constructor
@@ -25,6 +25,7 @@ public sealed class LargeItemVM : ViewModel, ILargeItemVM
     public LargeItemVM(IItemVM item)
     {
         Item = item;
-        HandleClick = Item.HandleClick;
+        
+        HandleClickCommand = Item.HandleClickCommand;
     }
 }

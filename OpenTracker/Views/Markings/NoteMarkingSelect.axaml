@@ -1,18 +1,30 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:vm="clr-namespace:OpenTracker.ViewModels.Markings;assembly=OpenTracker"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" x:Class="OpenTracker.Views.Markings.NoteMarkingSelect">
+             xmlns:vm="clr-namespace:OpenTracker.ViewModels.Markings"
+             mc:Ignorable="d" x:Class="OpenTracker.Views.Markings.NoteMarkingSelect"
+             x:DataType="vm:NoteMarkingSelectVM" x:CompileBindings="True">
+  <UserControl.Styles>
+    <Style Selector="Popup.NoteMarkingSelect">
+      <Setter Property="IsLightDismissEnabled" Value="True" />
+      <Setter Property="PlacementMode" Value="Pointer" />
+    </Style>
+    
+    <Style Selector="WrapPanel.NoteMarkingSelect">
+      <Setter Property="ItemHeight" Value="40" />
+      <Setter Property="ItemWidth" Value="34" />
+      <Setter Property="Margin" Value="0 0 0 10" />
+      <Setter Property="MaxHeight" Value="200" />
+      <Setter Property="MaxWidth" Value="238" />
+      <Setter Property="Orientation" Value="Horizontal" />
+      <Setter Property="HorizontalAlignment" Value="Left" />
+      <Setter Property="VerticalAlignment" Value="Top" />
+    </Style>
+  </UserControl.Styles>
   
-  <Design.DataContext>
-    <vm:NoteMarkingSelectVM />
-  </Design.DataContext>
-  
-  <Popup IsOpen="{Binding PopupOpen, Mode=TwoWay}"
-         IsLightDismissEnabled="True" PlacementMode="Pointer">
+  <Popup Classes="NoteMarkingSelect" IsOpen="{Binding PopupOpen, Mode=TwoWay}">
     <LayoutTransformControl>
-
       <LayoutTransformControl.LayoutTransform>
         <ScaleTransform ScaleX="{Binding Scale}"
                         ScaleY="{Binding Scale}" />
@@ -20,23 +32,20 @@
 
       <Border Classes="Popup">
         <StackPanel Orientation="Vertical">
-
           <ItemsControl Items="{Binding Buttons}">
             <ItemsControl.ItemsPanel>
               <ItemsPanelTemplate>
-                <WrapPanel ItemWidth="34" ItemHeight="40" MaxWidth="238" MaxHeight="200" Margin="0 0 0 10"
-                           Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" />
+                <WrapPanel Classes="NoteMarkingSelect" />
               </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
           </ItemsControl>
-
+          
           <Border Classes="Separator" Margin="0 2" />
           <Button Classes="MarkingSelect"
-                  Command="{Binding RemoveNote}">Remove</Button>
-
+                  Content="Remove"
+                  Command="{Binding RemoveNoteCommand}" />
         </StackPanel>
       </Border>
-
     </LayoutTransformControl>
   </Popup>
 </UserControl>

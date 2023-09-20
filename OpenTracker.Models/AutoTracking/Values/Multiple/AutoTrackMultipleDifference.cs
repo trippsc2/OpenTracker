@@ -8,7 +8,7 @@ namespace OpenTracker.Models.AutoTracking.Values.Multiple;
 /// <summary>
 /// This class represents an auto-tracking result value from subtracting a pair of values.
 /// </summary>
-public class AutoTrackMultipleDifference : ReactiveObject, IAutoTrackValue
+public sealed class AutoTrackMultipleDifference : ReactiveObject, IAutoTrackValue
 {
     private IAutoTrackValue Value1 { get; }
     private IAutoTrackValue Value2 { get; }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Autofac;
 using ExpectedObjects;
@@ -17,7 +18,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Nodes.Factories;
 
-public class StartConnectionFactoryTests
+[ExcludeFromCodeCoverage]
+public sealed class StartConnectionFactoryTests
 {
     private static readonly IAlternativeRequirementDictionary AlternativeRequirements =
         new AlternativeRequirementDictionary(

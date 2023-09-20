@@ -1,11 +1,13 @@
 ﻿using OpenTracker.Models.Markings;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.UndoRedo.Markings;
 
 /// <summary>
 /// This class contains <see cref="IUndoable"/> action to change a <see cref="IMarking"/>.
 /// </summary>
-public class ChangeMarking : IChangeMarking
+[DependencyInjection]
+public sealed class ChangeMarking : IChangeMarking
 {
     private readonly IMarking _marking;
     private readonly MarkType _newValue;

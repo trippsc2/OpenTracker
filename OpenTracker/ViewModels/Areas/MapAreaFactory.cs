@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using OpenTracker.Autofac;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Locations.Map;
+using OpenTracker.Utils.Autofac;
 using OpenTracker.ViewModels.MapLocations;
 using OpenTracker.ViewModels.Maps;
 

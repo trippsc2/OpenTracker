@@ -1,15 +1,15 @@
-﻿using System.ComponentModel;
-using System.Reactive;
-using System.Threading.Tasks;
+﻿using System.Reactive;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using Avalonia.Input;
-using Avalonia.Threading;
-using OpenTracker.Autofac;
 using OpenTracker.Models.Markings;
 using OpenTracker.Models.Sections;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 using OpenTracker.ViewModels.Markings;
 using OpenTracker.ViewModels.Markings.Images;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 
 namespace OpenTracker.ViewModels.PinnedLocations.Sections;
 
@@ -19,19 +19,12 @@ namespace OpenTracker.ViewModels.PinnedLocations.Sections;
 [DependencyInjection]
 public sealed class MarkingSectionIconVM : ViewModel, ISectionIconVM
 {
-    private readonly IMarkingImageDictionary _markingImages;
-
-    private readonly IMarking _marking;
-
-    private IMarkingImageVMBase? _image;
-    public IMarkingImageVMBase Image
-    {
-        get => _image!;
-        private set => this.RaiseAndSetIfChanged(ref _image, value);
-    }
-
+    private IMarking Marking { get; }
     public IMarkingSelectVM MarkingSelect { get; }
-        
+    
+    [ObservableAsProperty]
+    public IMarkingImageVMBase Image { get; } = default!;
+    
     public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
 
     public delegate MarkingSectionIconVM Factory(ISection section);
@@ -51,70 +44,27 @@ public sealed class MarkingSectionIconVM : ViewModel, ISectionIconVM
     public MarkingSectionIconVM(
         IMarkingImageDictionary markingImages, IMarkingSelectFactory markingSelectFactory, ISection section)
     {
-        _markingImages = markingImages;
-        _marking = section.Marking!;
+        Marking = section.Marking!;
 
         MarkingSelect = markingSelectFactory.GetMarkingSelectVM(section);
             
         HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
-
-        _marking.PropertyChanged += OnMarkingChanged;
-
-        UpdateImage();
-    }
-
-    /// <summary>
-    /// Subscribes to the PropertyChanged event on the IMarking interface.
-    /// </summary>
-    /// <param name="sender">
-    /// The sending object of the event.
-    /// </param>
-    /// <param name="e">
-    /// The arguments of the PropertyChanged event.
-    /// </param>
-    private async void OnMarkingChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName == nameof(IMarking.Mark))
+        
+        this.WhenActivated(disposables =>
         {
-            await UpdateImageAsync();
-        }
+            this.WhenAnyValue(x => x.Marking.Mark)
+                .Select(x => markingImages[x])
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .ToPropertyEx(this, x => x.Image)
+                .DisposeWith(disposables);
+        });
     }
 
-    /// <summary>
-    /// Updates the image.
-    /// </summary>
-    private void UpdateImage()
-    {
-        Image = _markingImages[_marking.Mark];
-    }
-
-    /// <summary>
-    /// Updates the image asynchronously.
-    /// </summary>
-    private async Task UpdateImageAsync()
-    {
-        await Dispatcher.UIThread.InvokeAsync(UpdateImage);
-    }
-
-    /// <summary>
-    /// Opens the marking select popup.
-    /// </summary>
-    private void OpenMarkingSelect()
-    {
-        MarkingSelect.PopupOpen = true;
-    }
-
-    /// <summary>
-    /// Handles clicking the control.
-    /// </summary>
-    /// <param name="e">
-    /// The PointerReleased event args.
-    /// </param>
     private void HandleClickImpl(PointerReleasedEventArgs e)
     {
         if (e.InitialPressMouseButton == MouseButton.Left)
         {
-            OpenMarkingSelect();
+            MarkingSelect.PopupOpen = true;
         }
     }
 }

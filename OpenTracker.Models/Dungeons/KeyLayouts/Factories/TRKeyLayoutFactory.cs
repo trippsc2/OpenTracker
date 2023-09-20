@@ -8,13 +8,15 @@ using OpenTracker.Models.Requirements.BigKeyShuffle;
 using OpenTracker.Models.Requirements.KeyDropShuffle;
 using OpenTracker.Models.Requirements.Mode;
 using OpenTracker.Models.Requirements.SmallKeyShuffle;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories;
 
 /// <summary>
 /// This class contains the creation logic for Turtle Rock key layouts.
 /// </summary>
-public class TRKeyLayoutFactory : ITRKeyLayoutFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class TRKeyLayoutFactory : ITRKeyLayoutFactory
 {
     private readonly IAggregateRequirementDictionary _aggregateRequirements;
     private readonly IAlternativeRequirementDictionary _alternativeRequirements;

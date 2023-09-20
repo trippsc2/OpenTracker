@@ -5,13 +5,15 @@ using OpenTracker.Models.Requirements.Aggregate;
 using OpenTracker.Models.Requirements.BigKeyShuffle;
 using OpenTracker.Models.Requirements.KeyDropShuffle;
 using OpenTracker.Models.Requirements.SmallKeyShuffle;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Dungeons.KeyLayouts.Factories;
 
 /// <summary>
 /// This class contains the creation logic for Thieves Town key layouts.
 /// </summary>
-public class TTKeyLayoutFactory : ITTKeyLayoutFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class TTKeyLayoutFactory : ITTKeyLayoutFactory
 {
     private readonly IAggregateRequirementDictionary _aggregateRequirements;
     private readonly IBigKeyShuffleRequirementDictionary _bigKeyShuffleRequirements;

@@ -1,12 +1,14 @@
 ﻿using System.ComponentModel;
 using OpenTracker.Models.Modes;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Requirements.MapShuffle;
 
 /// <summary>
 /// This class contains the <see cref="IMode.MapShuffle"/> <see cref="IRequirement"/> data.
 /// </summary>
-public class MapShuffleRequirement : BooleanRequirement, IMapShuffleRequirement
+[DependencyInjection]
+public sealed class MapShuffleRequirement : BooleanRequirement, IMapShuffleRequirement
 {
     private readonly IMode _mode;
     private readonly bool _expectedValue;

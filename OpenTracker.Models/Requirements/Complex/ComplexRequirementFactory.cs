@@ -18,13 +18,15 @@ using OpenTracker.Models.Requirements.SequenceBreak;
 using OpenTracker.Models.Requirements.SmallKeyShuffle;
 using OpenTracker.Models.Requirements.Static;
 using OpenTracker.Models.SequenceBreaks;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Requirements.Complex;
 
 /// <summary>
 /// This class contains the creation logic for complex <see cref="IRequirement"/> objects.
 /// </summary>
-public class ComplexRequirementFactory : IComplexRequirementFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class ComplexRequirementFactory : IComplexRequirementFactory
 {
     private readonly IAggregateRequirementDictionary _aggregateRequirements;
     private readonly IAlternativeRequirementDictionary _alternativeRequirements;

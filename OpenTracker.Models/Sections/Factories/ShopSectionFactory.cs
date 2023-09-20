@@ -10,13 +10,15 @@ using OpenTracker.Models.Requirements.Mode;
 using OpenTracker.Models.Requirements.ShopShuffle;
 using OpenTracker.Models.Requirements.TakeAnyLocations;
 using OpenTracker.Models.Sections.Boolean;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Sections.Factories;
 
 /// <summary>
 /// This class contains the creation logic for <see cref="IShopSection"/> objects.
 /// </summary>
-public class ShopSectionFactory : IShopSectionFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class ShopSectionFactory : IShopSectionFactory
 {
     private readonly IAggregateRequirementDictionary _aggregateRequirements;
     private readonly IAlternativeRequirementDictionary _alternativeRequirements;

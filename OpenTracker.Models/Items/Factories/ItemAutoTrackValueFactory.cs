@@ -7,13 +7,15 @@ using OpenTracker.Models.AutoTracking.Values.Static;
 using OpenTracker.Models.Requirements.AutoTracking;
 using OpenTracker.Models.Requirements.GenericKeys;
 using OpenTracker.Models.Requirements.KeyDropShuffle;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Items.Factories;
 
 /// <summary>
 /// This class contains creation logic for item <see cref="IAutoTrackValue"/> objects.
 /// </summary>
-public class ItemAutoTrackValueFactory : IItemAutoTrackValueFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class ItemAutoTrackValueFactory : IItemAutoTrackValueFactory
 {
     private readonly IItemDictionary _items;
     private readonly IMemoryAddressProvider _memoryAddressProvider;

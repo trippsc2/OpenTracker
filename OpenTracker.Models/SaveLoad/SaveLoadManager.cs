@@ -12,6 +12,7 @@ using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.SaveLoad.Converters;
 using OpenTracker.Models.SequenceBreaks;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 using ReactiveUI;
 
 namespace OpenTracker.Models.SaveLoad;
@@ -19,7 +20,8 @@ namespace OpenTracker.Models.SaveLoad;
 /// <summary>
 /// This class contains logic managing saving and loading game data.
 /// </summary>
-public class SaveLoadManager : ReactiveObject, ISaveLoadManager
+[DependencyInjection(SingleInstance = true)]
+public sealed class SaveLoadManager : ReactiveObject, ISaveLoadManager
 {
     private readonly IJsonConverter _jsonConverter;
         

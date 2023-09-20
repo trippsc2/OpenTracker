@@ -1,12 +1,13 @@
-using System.ComponentModel;
 using System.Reactive;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using Avalonia.Input;
-using Avalonia.Threading;
-using OpenTracker.Autofac;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 using OpenTracker.ViewModels.Items;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 
 namespace OpenTracker.ViewModels.Dungeons;
 
@@ -16,12 +17,13 @@ namespace OpenTracker.ViewModels.Dungeons;
 [DependencyInjection]
 public sealed class DungeonItemVM : ViewModel, IDungeonItemVM
 {
-    private readonly IRequirement? _requirement;
-
-    public bool Visible => _requirement is null || _requirement.Met;
+    private IRequirement? Requirement { get; }
     public IItemVM? Item { get; }
-        
-    public ReactiveCommand<PointerReleasedEventArgs, Unit>? HandleClick { get; }
+    
+    [ObservableAsProperty]
+    public bool Visible => Requirement?.Met ?? true;
+
+    public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
 
     /// <summary>
     /// Constructor
@@ -34,28 +36,21 @@ public sealed class DungeonItemVM : ViewModel, IDungeonItemVM
     /// </param>
     public DungeonItemVM(IRequirement? requirement, IItemVM? item)
     {
-        _requirement = requirement;
-            
+        Requirement = requirement;
         Item = item;
 
-        if (_requirement is not null)
+        HandleClickCommand = Item?.HandleClickCommand ??
+                             ReactiveCommand.Create<PointerReleasedEventArgs>(_ => { });
+        
+        this.WhenActivated(disposables =>
         {
-            _requirement.PropertyChanged += OnRequirementChanged;
-        }
-
-        if (Item is null)
-        {
-            return;
-        }
-            
-        HandleClick = Item.HandleClick;
-    }
-
-    private async void OnRequirementChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName == nameof(IRequirement.Met))
-        {
-            await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Visible)));
-        }
+            this.WhenAnyValue(
+                    x => x.Requirement,
+                    x => x.Requirement!.Met,
+                    (_, _) => Requirement?.Met ?? true)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .ToPropertyEx(this, x => x.Visible, initialValue: true)
+                .DisposeWith(disposables);
+        });
     }
 }

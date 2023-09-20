@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.AutoTracking.Memory;
@@ -14,7 +15,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Items.Factories;
 
-public class ItemAutoTrackValueFactoryTests
+[ExcludeFromCodeCoverage]
+public sealed class ItemAutoTrackValueFactoryTests
 {
     private readonly IItemDictionary _items = Substitute.For<IItemDictionary>();
     private readonly IMemoryAddressProvider _memoryAddressProvider = new MemoryAddressProvider();

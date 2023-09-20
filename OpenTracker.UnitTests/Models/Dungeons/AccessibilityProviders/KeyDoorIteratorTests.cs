@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Dungeons;
@@ -13,7 +14,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Dungeons.AccessibilityProviders;
 
-public class KeyDoorIteratorTests
+[ExcludeFromCodeCoverage]
+public sealed class KeyDoorIteratorTests
 {
     private readonly IDungeonState.Factory _stateFactory =
         (unlockedDoors, keysCollected, bigKeyCollected, sequenceBreak) => new DungeonState(

@@ -1,13 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using OpenTracker.Models.Accessibility;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Requirements.Alternative;
 
 /// <summary>
 /// This class contains logic for a set of <see cref="IRequirement"/> alternatives.
 /// </summary>
-public class AlternativeRequirement : AccessibilityRequirement, IAlternativeRequirement
+[DependencyInjection]
+public sealed class AlternativeRequirement : AccessibilityRequirement, IAlternativeRequirement
 {
     private readonly IList<IRequirement> _requirements;
 

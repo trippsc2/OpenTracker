@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Prizes;
@@ -7,7 +8,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Requirements.Item.Prize;
 
-public class PrizeRequirementDictionaryTests
+[ExcludeFromCodeCoverage]
+public sealed class PrizeRequirementDictionaryTests
 {
     private readonly IPrizeDictionary _prizes = Substitute.For<IPrizeDictionary>();
 

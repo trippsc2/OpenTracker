@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Autofac;
 using NSubstitute;
@@ -22,7 +23,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories;
 
-public class IPDungeonNodeFactoryTests
+[ExcludeFromCodeCoverage]
+public sealed class IPDungeonNodeFactoryTests
 {
     private readonly IBossRequirementDictionary _bossRequirements;
     private readonly IComplexRequirementDictionary _complexRequirements;

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Accessibility;
@@ -10,7 +11,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Nodes.Connections;
 
-public class NodeConnectionTests
+[ExcludeFromCodeCoverage]
+public sealed class NodeConnectionTests
 {
     private readonly INode _fromNode = Substitute.For<INode>();
     private readonly INode _toNode = Substitute.For<INode>();

@@ -9,13 +9,15 @@ using OpenTracker.Models.Nodes.Connections;
 using OpenTracker.Models.Requirements.Boss;
 using OpenTracker.Models.Requirements.BossShuffle;
 using OpenTracker.Models.Requirements.Item;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Dungeons.Nodes.Factories;
 
 /// <summary>
 /// This class contains the creation logic for Thieves' Town nodes.
 /// </summary>
-public class TTDungeonNodeFactory : ITTDungeonNodeFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class TTDungeonNodeFactory : ITTDungeonNodeFactory
 {
     private readonly IBossRequirementDictionary _bossRequirements;
     private readonly IBossShuffleRequirementDictionary _bossShuffleRequirements;

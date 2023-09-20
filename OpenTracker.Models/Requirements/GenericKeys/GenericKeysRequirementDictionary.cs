@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Requirements.GenericKeys;
 
@@ -7,7 +8,8 @@ namespace OpenTracker.Models.Requirements.GenericKeys;
 /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for
 /// <see cref="IGenericKeysRequirement"/> objects indexed by <see cref="bool"/>.
 /// </summary>
-public class GenericKeysRequirementDictionary : LazyDictionary<bool, IRequirement>,
+[DependencyInjection(SingleInstance = true)]
+public sealed class GenericKeysRequirementDictionary : LazyDictionary<bool, IRequirement>,
     IGenericKeysRequirementDictionary
 {
     private readonly IGenericKeysRequirement.Factory _factory;

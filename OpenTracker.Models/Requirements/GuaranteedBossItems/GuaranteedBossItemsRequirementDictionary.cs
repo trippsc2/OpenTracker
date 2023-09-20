@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Requirements.GuaranteedBossItems;
 
@@ -7,7 +8,8 @@ namespace OpenTracker.Models.Requirements.GuaranteedBossItems;
 /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for
 /// <see cref="IGuaranteedBossItemsRequirement"/> objects indexed by <see cref="bool"/>.
 /// </summary>
-public class GuaranteedBossItemsRequirementDictionary : LazyDictionary<bool, IRequirement>,
+[DependencyInjection(SingleInstance = true)]
+public sealed class GuaranteedBossItemsRequirementDictionary : LazyDictionary<bool, IRequirement>,
     IGuaranteedBossItemsRequirementDictionary
 {
     private readonly IGuaranteedBossItemsRequirement.Factory _factory;

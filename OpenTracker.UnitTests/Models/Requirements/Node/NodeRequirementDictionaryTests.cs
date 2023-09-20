@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Nodes;
@@ -6,7 +7,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Requirements.Node;
 
-public class NodeRequirementDictionaryTests
+[ExcludeFromCodeCoverage]
+public sealed class NodeRequirementDictionaryTests
 {
     private readonly IOverworldNodeDictionary _overworldNodes = Substitute.For<IOverworldNodeDictionary>();
 

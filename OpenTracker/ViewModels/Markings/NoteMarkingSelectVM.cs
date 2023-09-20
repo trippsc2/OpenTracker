@@ -1,14 +1,16 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System;
+using System.Collections.Generic;
 using System.Reactive;
-using Avalonia.Threading;
-using OpenTracker.Autofac;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Markings;
 using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 
 namespace OpenTracker.ViewModels.Markings;
 
@@ -18,28 +20,25 @@ namespace OpenTracker.ViewModels.Markings;
 [DependencyInjection]
 public sealed class NoteMarkingSelectVM : ViewModel, INoteMarkingSelectVM
 {
-    private readonly ILayoutSettings _layoutSettings;
     private readonly IUndoRedoManager _undoRedoManager;
 
-    private readonly IMarking _marking;
+    private ILayoutSettings LayoutSettings { get; }
     private readonly ILocation _location;
 
-    public double Scale => _layoutSettings.UIScale;
-
+    private IMarking Marking { get; }
     public List<IMarkingSelectItemVMBase> Buttons { get; }
 
-    private bool _popupOpen;
-    public bool PopupOpen
-    {
-        get => _popupOpen;
-        set => this.RaiseAndSetIfChanged(ref _popupOpen, value);
-    }
+    [Reactive]
+    public bool PopupOpen { get; set; }
+    [ObservableAsProperty]
+    public double Scale => LayoutSettings.UIScale;
 
-    public ReactiveCommand<MarkType?, Unit> ChangeMarking { get; }
-    public ReactiveCommand<Unit, Unit> RemoveNote { get; }
+    public ReactiveCommand<Unit, Unit> RemoveNoteCommand { get; }
 
     public delegate INoteMarkingSelectVM Factory(
-        IMarking marking, List<IMarkingSelectItemVMBase> buttons, ILocation location);
+        IMarking marking,
+        List<IMarkingSelectItemVMBase> buttons,
+        ILocation location);
 
     /// <summary>
     /// Constructor
@@ -60,63 +59,36 @@ public sealed class NoteMarkingSelectVM : ViewModel, INoteMarkingSelectVM
     /// The location.
     /// </param>
     public NoteMarkingSelectVM(
-        ILayoutSettings layoutSettings, IUndoRedoManager undoRedoManager, IMarking marking,
-        List<IMarkingSelectItemVMBase> buttons, ILocation location)
+        ILayoutSettings layoutSettings,
+        IUndoRedoManager undoRedoManager,
+        IMarking marking,
+        List<IMarkingSelectItemVMBase> buttons,
+        ILocation location)
     {
-        _layoutSettings = layoutSettings;
         _undoRedoManager = undoRedoManager;
-
-        _marking = marking;
         _location = location;
-
+        LayoutSettings = layoutSettings;
+        Marking = marking;
         Buttons = buttons;
-
-        ChangeMarking = ReactiveCommand.Create<MarkType?>(ChangeMarkingImpl);
-        RemoveNote = ReactiveCommand.Create(RemoveNoteImpl);
-
-        _layoutSettings.PropertyChanged += OnLayoutChanged;
-    }
-
-    /// <summary>
-    /// Subscribes to the PropertyChanged event on the ILayoutSettings interface.
-    /// </summary>
-    /// <param name="sender">
-    /// The sending object of the event.
-    /// </param>
-    /// <param name="e">
-    /// The arguments of the PropertyChanged event.
-    /// </param>
-    private async void OnLayoutChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName == nameof(ILayoutSettings.UIScale))
+        
+        RemoveNoteCommand = ReactiveCommand.Create(RemoveNote);
+        
+        this.WhenActivated(disposables =>
         {
-            await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Scale)));
-        }
+            this.WhenAnyValue(x => x.LayoutSettings.UIScale)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .ToPropertyEx(this, x => x.Scale)
+                .DisposeWith(disposables);
+            this.WhenAnyValue(x => x.Marking.Mark)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(_ => PopupOpen = false)
+                .DisposeWith(disposables);
+        });
     }
 
-    /// <summary>
-    /// Remove the note.
-    /// </summary>
-    private void RemoveNoteImpl()
+    private void RemoveNote()
     {
-        _undoRedoManager.NewAction(_location.CreateRemoveNoteAction(_marking));
-        PopupOpen = false;
-    }
-
-    /// <summary>
-    /// Changes the marking of the section to the specified marking.
-    /// </summary>
-    /// <param name="marking">
-    /// The marking to be set.
-    /// </param>
-    private void ChangeMarkingImpl(MarkType? marking)
-    {
-        if (marking == null)
-        {
-            return;
-        }
-
-        _undoRedoManager.NewAction(_marking.CreateChangeMarkingAction(marking.Value));
+        _undoRedoManager.NewAction(_location.CreateRemoveNoteAction(Marking));
         PopupOpen = false;
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using OpenTracker.Autofac;
 using OpenTracker.Models.Locations;
+using OpenTracker.Utils.Autofac;
 using OpenTracker.ViewModels.PinnedLocations.Notes;
 using OpenTracker.ViewModels.PinnedLocations.Sections;
 

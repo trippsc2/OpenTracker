@@ -4,12 +4,14 @@ using System.Threading;
 using Newtonsoft.Json;
 using OpenTracker.Models.AutoTracking.SNESConnectors.Socket;
 using OpenTracker.Models.Logging;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.AutoTracking.SNESConnectors.Requests;
 
 /// <summary>
 /// This class contains the request to get device info. 
 /// </summary>
+[DependencyInjection]
 public sealed class GetDeviceInfoRequest : RequestBase<IEnumerable<string>>, IGetDeviceInfoRequest
 {
     /// <summary>

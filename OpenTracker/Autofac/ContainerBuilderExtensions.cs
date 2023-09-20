@@ -1,5 +1,6 @@
 using System.Reflection;
 using Autofac;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Autofac;
 
@@ -12,11 +13,9 @@ public static class ContainerBuilderExtensions
     {
         var assembly = Assembly.GetExecutingAssembly();
         
-        builder
+        return builder
             .ConfigureAvalonia()
             .RegisterTypesWithAttribute(assembly)
             .RegisterReactiveViewTypes(assembly);
-        
-        return builder;
     }
 }

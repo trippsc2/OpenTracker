@@ -1,12 +1,14 @@
 ﻿using System;
 using OpenTracker.Models.Items.Keys;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Items.Factories;
 
 /// <summary>
 /// This class contains creation logic for <see cref="IItem"/> objects.
 /// </summary>
-public class ItemFactory : IItemFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class ItemFactory : IItemFactory
 {
     private readonly Lazy<IItemAutoTrackValueFactory> _autoTrackValueFactory;
 

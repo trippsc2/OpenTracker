@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Requirements.MapShuffle;
@@ -5,7 +6,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Requirements.MapShuffle;
 
-public class MapShuffleRequirementDictionaryTests
+[ExcludeFromCodeCoverage]
+public sealed class MapShuffleRequirementDictionaryTests
 {
     // ReSharper disable once CollectionNeverUpdated.Local
     private readonly MapShuffleRequirementDictionary _sut;

@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Dropdowns;
@@ -6,7 +7,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.UndoRedo.Dropdowns;
 
-public class CheckDropdownTests
+[ExcludeFromCodeCoverage]
+public sealed class CheckDropdownTests
 {
     private readonly IDropdown _dropdown = Substitute.For<IDropdown>();
     private readonly CheckDropdown _sut;

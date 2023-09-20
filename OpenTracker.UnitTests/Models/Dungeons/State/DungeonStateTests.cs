@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using NSubstitute;
 using OpenTracker.Models.Dungeons.KeyDoors;
 using OpenTracker.Models.Dungeons.State;
@@ -6,7 +7,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Dungeons.State;
 
-public class DungeonStateTests
+[ExcludeFromCodeCoverage]
+public sealed class DungeonStateTests
 {
     [Fact]
     public void Ctor_ShouldSetUnlockedDoors()

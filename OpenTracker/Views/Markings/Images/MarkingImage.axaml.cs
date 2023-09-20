@@ -8,7 +8,7 @@ public sealed class MarkingImage : ReactiveUserControl<MarkingImageVM>
 {
     public MarkingImage()
     {
-        this.InitializeComponent();
+        InitializeComponent();
     }
 
     private void InitializeComponent()

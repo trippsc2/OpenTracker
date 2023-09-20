@@ -6,13 +6,15 @@ using OpenTracker.Models.Nodes;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.UndoRedo.Sections;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Sections.Item;
 
 /// <summary>
 /// This class contains item sections with marking data.
 /// </summary>
-public class ItemSection : ItemSectionBase
+[DependencyInjection]
+public sealed class ItemSection : ItemSectionBase
 {
     private readonly INode? _visibleNode;
     private readonly INode _node;

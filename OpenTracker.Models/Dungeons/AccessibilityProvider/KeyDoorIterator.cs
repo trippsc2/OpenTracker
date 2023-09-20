@@ -7,13 +7,15 @@ using OpenTracker.Models.Dungeons.Mutable;
 using OpenTracker.Models.Dungeons.State;
 using OpenTracker.Models.Items.Keys;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Dungeons.AccessibilityProvider;
 
 /// <summary>
 /// This class contains the logic for iterating through key doors in a dungeon.
 /// </summary>
-public class KeyDoorIterator : IKeyDoorIterator
+[DependencyInjection]
+public sealed class KeyDoorIterator : IKeyDoorIterator
 {
     private readonly ConstrainedTaskScheduler _taskScheduler;
         

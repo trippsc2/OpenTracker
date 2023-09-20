@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using OpenTracker.Models.Requirements;
+using OpenTracker.Utils.Autofac;
 using ReactiveUI;
 
 namespace OpenTracker.Models.Locations.Map;
@@ -7,7 +8,8 @@ namespace OpenTracker.Models.Locations.Map;
 /// <summary>
 /// This class contains map location data.
 /// </summary>
-public class MapLocation : ReactiveObject, IMapLocation
+[DependencyInjection]
+public sealed class MapLocation : ReactiveObject, IMapLocation
 {
     private readonly IRequirement? _requirement;
 

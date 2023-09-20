@@ -3,6 +3,7 @@ using OpenTracker.Models.SaveLoad;
 using OpenTracker.Utils;
 using System.Collections.Generic;
 using System.Linq;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Locations;
 
@@ -10,7 +11,8 @@ namespace OpenTracker.Models.Locations;
 /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for <see cref="ILocation"/> objects
 /// indexed by <see cref="LocationID"/>.
 /// </summary>
-public class LocationDictionary : LazyDictionary<LocationID, ILocation>, ILocationDictionary
+[DependencyInjection(SingleInstance = true)]
+public sealed class LocationDictionary : LazyDictionary<LocationID, ILocation>, ILocationDictionary
 {
     private readonly Lazy<ILocationFactory> _factory;
 

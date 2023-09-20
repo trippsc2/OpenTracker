@@ -1,13 +1,15 @@
 ﻿using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Models.UndoRedo.Connections;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Locations.Map.Connections;
 
 /// <summary>
 /// This class contains the map location connection data.
 /// </summary>
-public class MapConnection : IMapConnection
+[DependencyInjection]
+public sealed class MapConnection : IMapConnection
 {
     private readonly IRemoveMapConnection.Factory _removeConnectionFactory;
         

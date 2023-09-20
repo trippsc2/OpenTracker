@@ -5,7 +5,7 @@ namespace OpenTracker.Models.SaveLoad;
 /// <summary>
 /// This class contains mode setting save data.
 /// </summary>
-public class ModeSaveData
+public sealed class ModeSaveData
 {
     public ItemPlacement ItemPlacement { get; init; } = ItemPlacement.Advanced;
     public bool MapShuffle { get; init; }

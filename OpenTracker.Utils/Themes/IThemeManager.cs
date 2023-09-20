@@ -9,8 +9,8 @@ namespace OpenTracker.Utils.Themes;
 /// </summary>
 public interface IThemeManager : IReactiveObject
 {
-    List<ITheme> Themes { get; }
-    ITheme SelectedTheme { get; set; }
+    List<Theme> Themes { get; }
+    Theme SelectedTheme { get; set; }
     void LoadSelectedTheme(string file);
     void SaveSelectedTheme(string file);
 

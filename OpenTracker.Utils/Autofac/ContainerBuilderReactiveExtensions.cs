@@ -4,7 +4,7 @@ using System.Reflection;
 using Autofac;
 using ReactiveUI;
 
-namespace OpenTracker.Autofac;
+namespace OpenTracker.Utils.Autofac;
 
 /// <summary>
 /// Extends <see cref="ContainerBuilder"/> to register ReactiveUI view types.

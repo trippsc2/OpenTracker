@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Autofac;
 using ExpectedObjects;
@@ -21,7 +22,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Sections.Factories;
 
-public class TakeAnySectionFactoryTests
+[ExcludeFromCodeCoverage]
+public sealed class TakeAnySectionFactoryTests
 {
     private static readonly IAggregateRequirementDictionary AggregateRequirements =
         new AggregateRequirementDictionary(requirements =>

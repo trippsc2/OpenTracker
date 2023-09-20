@@ -1,15 +1,16 @@
-using System.ComponentModel;
-using System.Globalization;
 using System.Reactive;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using Avalonia.Input;
-using Avalonia.Threading;
-using OpenTracker.Autofac;
+using Avalonia.Media;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 using OpenTracker.ViewModels.BossSelect;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 
 namespace OpenTracker.ViewModels.Items.Adapters;
 
@@ -19,19 +20,23 @@ namespace OpenTracker.ViewModels.Items.Adapters;
 [DependencyInjection]
 public sealed class SmallKeyAdapter : ViewModel, IItemAdapter
 {
-    private readonly IColorSettings _colorSettings;
+    private static readonly SolidColorBrush NormalLabelColor = SolidColorBrush.Parse("#ffffff");
+    
     private readonly IUndoRedoManager _undoRedoManager;
 
-    private readonly IItem _item;
+    private IColorSettings ColorSettings { get; }
+    private IItem Item { get; }
+    
+    public BossSelectPopupVM? BossSelect => null;
 
-    public string ImageSource =>
-        $"avares://OpenTracker/Assets/Images/Items/smallkey{(_item.Current > 0 ? "1" : "0")}.png";
-    public string Label => _item.Current.ToString(CultureInfo.InvariantCulture) + (_item.CanAdd() ? "" : "*");
-    public string LabelColor => _item.CanAdd() ? "#ffffffff" : _colorSettings.EmphasisFontColor;
-        
-    public IBossSelectPopupVM? BossSelect { get; } = null;
-        
-    public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
+    [ObservableAsProperty]
+    public string ImageSource { get; } = string.Empty;
+    [ObservableAsProperty]
+    public string Label { get; } = string.Empty;
+    [ObservableAsProperty]
+    public SolidColorBrush LabelColor { get; } = NormalLabelColor;
+
+    public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
 
     public delegate SmallKeyAdapter Factory(IItem item);
 
@@ -49,61 +54,40 @@ public sealed class SmallKeyAdapter : ViewModel, IItemAdapter
     /// </param>
     public SmallKeyAdapter(IColorSettings colorSettings, IUndoRedoManager undoRedoManager, IItem item)
     {
-        _colorSettings = colorSettings;
         _undoRedoManager = undoRedoManager;
+        ColorSettings = colorSettings;
+        Item = item;
+        
+        HandleClickCommand = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClick);
 
-        _item = item;
-            
-        HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
-
-        _item.PropertyChanged += OnItemChanged;
-    }
-
-    /// <summary>
-    /// Subscribes to the PropertyChanged event on the IItem interface.
-    /// </summary>
-    /// <param name="sender">
-    /// The sending object of the event.
-    /// </param>
-    /// <param name="e">
-    /// The arguments of the PropertyChanged event.
-    /// </param>
-    private async void OnItemChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName == nameof(IItem.Current))
+        this.WhenActivated(disposables =>
         {
-            await Dispatcher.UIThread.InvokeAsync(() =>
-            {
-                this.RaisePropertyChanged(nameof(ImageSource));
-                this.RaisePropertyChanged(nameof(Label));
-                this.RaisePropertyChanged(nameof(LabelColor));
-            });
-        }
+            var itemCurrent = this
+                .WhenAnyValue(x => x.Item.Current);
+
+            itemCurrent
+                .Select(x => x > 0
+                    ? "avares://OpenTracker/Assets/Images/Items/smallkey1.png"
+                    : "avares://OpenTracker/Assets/Images/Items/smallkey0.png")
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .ToPropertyEx(this, x => x.ImageSource)
+                .DisposeWith(disposables);
+            itemCurrent
+                .Select(x => x + (Item.CanAdd() ? "" : "*"))
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .ToPropertyEx(this, x => x.Label)
+                .DisposeWith(disposables);
+            this.WhenAnyValue(
+                    x => x.Item.Current,
+                    x => x.ColorSettings.EmphasisFontColor.Value,
+                    (_, emphasisFontColor) => Item.CanAdd() ? emphasisFontColor : NormalLabelColor)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .ToPropertyEx(this, x => x.LabelColor)
+                .DisposeWith(disposables);
+        });
     }
 
-    /// <summary>
-    /// Creates an undoable action to add an item and sends it to the undo/redo manager.
-    /// </summary>
-    private void AddItem()
-    {
-        _undoRedoManager.NewAction(_item.CreateAddItemAction());
-    }
-
-    /// <summary>
-    /// Creates an undoable action to remove an item and sends it to the undo/redo manager.
-    /// </summary>
-    private void RemoveItem()
-    {
-        _undoRedoManager.NewAction(_item.CreateRemoveItemAction());
-    }
-
-    /// <summary>
-    /// Handles clicking the control.
-    /// </summary>
-    /// <param name="e">
-    /// The pointer released event args.
-    /// </param>
-    private void HandleClickImpl(PointerReleasedEventArgs e)
+    private void HandleClick(PointerReleasedEventArgs e)
     {
         switch (e.InitialPressMouseButton)
         {
@@ -113,6 +97,23 @@ public sealed class SmallKeyAdapter : ViewModel, IItemAdapter
             case MouseButton.Right:
                 RemoveItem();
                 break;
+            case MouseButton.None:
+            case MouseButton.Middle:
+            case MouseButton.XButton1:
+            case MouseButton.XButton2:
+            default:
+                break;
         }
     }
+
+    private void AddItem()
+    {
+        _undoRedoManager.NewAction(Item.CreateAddItemAction());
+    }
+
+    private void RemoveItem()
+    {
+        _undoRedoManager.NewAction(Item.CreateRemoveItemAction());
+    }
+
 }

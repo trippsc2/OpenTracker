@@ -2,19 +2,25 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vc="clr-namespace:OpenTracker.ValueConverters;assembly=OpenTracker"
-             mc:Ignorable="d" x:Class="OpenTracker.Views.Maps.Map">
-	
+             xmlns:vm="clr-namespace:OpenTracker.ViewModels.Maps"
+             xmlns:vc="clr-namespace:OpenTracker.ValueConverters"
+             mc:Ignorable="d" x:Class="OpenTracker.Views.Maps.Map"
+             x:DataType="vm:MapVM" x:CompileBindings="True">
 	<UserControl.Resources>
 		<vc:BitmapValueConverter x:Key="BitmapValueConverter" />
 	</UserControl.Resources>
-
-  <Border BorderBrush="{DynamicResource ThemeBorderLowBrush}" BorderThickness="3"
-          Margin="{Binding Margin}">
+	
+	<UserControl.Styles>
+		<Style Selector="Border.Map">
+			<Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderLowBrush}" />
+			<Setter Property="BorderThickness" Value="3" />
+		</Style>
+	</UserControl.Styles>
+	
+	<Border Classes="Map" Margin="{Binding Margin}">
 		<Panel>
-			<Image Source="{Binding ImageSource, Converter={StaticResource BitmapValueConverter}}"
-			       Height="2007" Width="2007" />
+			<Image Height="2007" Width="2007" 
+			       Source="{Binding ImageSource, Converter={StaticResource BitmapValueConverter}}" />
     </Panel>
 	</Border>
-
 </UserControl>

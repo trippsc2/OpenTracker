@@ -2,13 +2,15 @@ using OpenTracker.Models.Nodes;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.UndoRedo.Sections;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Sections.Boolean;
 
 /// <summary>
 /// This class contains take any section data.
 /// </summary>
-public class TakeAnySection : BooleanSectionBase, ITakeAnySection
+[DependencyInjection]
+public sealed class TakeAnySection : BooleanSectionBase, ITakeAnySection
 {
     /// <summary>
     /// Constructor

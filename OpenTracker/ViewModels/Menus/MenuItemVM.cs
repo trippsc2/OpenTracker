@@ -1,27 +1,26 @@
 using System.Collections.Generic;
 using System.Windows.Input;
-using OpenTracker.Autofac;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Utils;
+using ReactiveUI.Fody.Helpers;
 
 namespace OpenTracker.ViewModels.Menus;
 
-[DependencyInjection]
-public sealed class MenuItemVM : ViewModel, IMenuItemVM
+public sealed class MenuItemVM : ViewModel
 {
-    // Allows for IModelWrapper to be implemented.
-    public object Model { get; } = new();
-        
     public IMenuItemIconVM? Icon { get; }
     public object Header { get; }
-    public ICommand? Command { get; }
+    [Reactive]
+    public ICommand? Command { get; set; }
     public object? CommandParameter { get; }
-    public IList<IMenuItemVM> Items { get; }
+    public List<MenuItemVM> Items { get; }
 
     public MenuItemVM(
-        MenuItemCheckBoxVM.Factory checkBoxFactory, IMenuHotkeyHeaderVM.Factory hotkeyFactory, string header,
-        IRequirement? checkBoxRequirement = null, string? hotkey = null, ICommand? command = null,
-        object? commandParameter = null, IList<IMenuItemVM>? items = null)
+        string header,
+        IRequirement? checkBoxRequirement = null,
+        string? hotkey = null,
+        object? commandParameter = null,
+        List<MenuItemVM>? items = null)
     {
         if (hotkey is null)
         {
@@ -29,18 +28,21 @@ public sealed class MenuItemVM : ViewModel, IMenuItemVM
         }
         else
         {
-            Header = hotkeyFactory(hotkey, header);
+            Header = new MenuHotkeyHeaderVM
+            {
+                Header = header,
+                Hotkey = hotkey
+            };
         }
 
-        Command = command;
         CommandParameter = commandParameter;
-        Items = items ?? new List<IMenuItemVM>();
+        Items = items ?? new List<MenuItemVM>();
 
         if (checkBoxRequirement is null)
         {
             return;
         }
 
-        Icon = checkBoxFactory(checkBoxRequirement);
+        Icon = new MenuItemCheckBoxVM(checkBoxRequirement);
     }
 }

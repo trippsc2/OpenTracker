@@ -1,11 +1,13 @@
 ﻿using OpenTracker.Models.Prizes;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.PrizePlacements;
 
 /// <summary>
 /// This class contains the creation logic for <see cref="IPrizePlacement"/> objects.
 /// </summary>
-public class PrizePlacementFactory : IPrizePlacementFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class PrizePlacementFactory : IPrizePlacementFactory
 {
     private readonly IPrizeDictionary _prizes;
     private readonly IPrizePlacement.Factory _factory;

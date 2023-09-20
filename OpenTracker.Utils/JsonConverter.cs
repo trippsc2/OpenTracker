@@ -1,12 +1,14 @@
 ﻿using Newtonsoft.Json;
 using System.IO;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Utils;
 
 /// <summary>
 ///     This class contains the logic for converting objects to and from JSON.
 /// </summary>
-public class JsonConverter : IJsonConverter
+[DependencyInjection(SingleInstance = true)]
+public sealed class JsonConverter : IJsonConverter
 {
     public void Save<T>(T saveData, string path)
     {

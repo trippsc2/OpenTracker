@@ -11,13 +11,15 @@ using OpenTracker.Models.Requirements.Complex;
 using OpenTracker.Models.Requirements.Item;
 using OpenTracker.Models.Requirements.SequenceBreak;
 using OpenTracker.Models.SequenceBreaks;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Dungeons.Nodes.Factories;
 
 /// <summary>
 /// This class contains the creation logic for Ganon's Tower nodes.
 /// </summary>
-public class GTDungeonNodeFactory : IGTDungeonNodeFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class GTDungeonNodeFactory : IGTDungeonNodeFactory
 {
     private readonly IBossRequirementDictionary _bossRequirements;
     private readonly IComplexRequirementDictionary _complexRequirements;

@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Dropdowns;
 
+[DependencyInjection(SingleInstance = true)]
 public sealed class DropdownDictionary : LazyDictionary<DropdownID, IDropdown>, IDropdownDictionary
 {
     private readonly Lazy<IDropdownFactory> _factory;

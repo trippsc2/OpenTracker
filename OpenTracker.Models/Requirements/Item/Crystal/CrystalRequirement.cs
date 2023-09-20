@@ -2,13 +2,15 @@
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Prizes;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Requirements.Item.Crystal;
 
 /// <summary>
 /// This class contains GT crystal <see cref="IRequirement"/> data.
 /// </summary>
-public class CrystalRequirement : AccessibilityRequirement, ICrystalRequirement
+[DependencyInjection]
+public sealed class CrystalRequirement : AccessibilityRequirement, ICrystalRequirement
 {
     private readonly ICrystalRequirementItem _gtCrystal;
     private readonly IItem _crystal;

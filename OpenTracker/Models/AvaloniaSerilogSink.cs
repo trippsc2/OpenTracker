@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Avalonia.Controls;
 using Avalonia.Logging;
-using OpenTracker.Autofac;
+using OpenTracker.Utils.Autofac;
 using Serilog;
 
 namespace OpenTracker.Models;

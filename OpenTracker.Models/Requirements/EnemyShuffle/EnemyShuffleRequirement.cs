@@ -1,12 +1,14 @@
 ﻿using System.ComponentModel;
 using OpenTracker.Models.Modes;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Requirements.EnemyShuffle;
 
 /// <summary>
 /// This class contains <see cref="IMode.EnemyShuffle"/> requirement data.
 /// </summary>
-public class EnemyShuffleRequirement : BooleanRequirement, IEnemyShuffleRequirement
+[DependencyInjection]
+public sealed class EnemyShuffleRequirement : BooleanRequirement, IEnemyShuffleRequirement
 {
     private readonly IMode _mode;
     private readonly bool _expectedValue;

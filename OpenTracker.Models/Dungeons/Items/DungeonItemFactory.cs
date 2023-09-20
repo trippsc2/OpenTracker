@@ -2,13 +2,15 @@
 using OpenTracker.Models.Dungeons.Mutable;
 using OpenTracker.Models.Dungeons.Nodes;
 using OpenTracker.Models.Nodes;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Dungeons.Items;
 
 /// <summary>
 /// This class contains the creation logic for <see cref="IDungeonItem"/> objects.
 /// </summary>
-public class DungeonItemFactory : IDungeonItemFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class DungeonItemFactory : IDungeonItemFactory
 {
     private readonly IDungeonItem.Factory _factory;
 

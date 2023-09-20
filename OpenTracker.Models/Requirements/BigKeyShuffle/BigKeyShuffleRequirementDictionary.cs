@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Requirements.BigKeyShuffle;
 
@@ -7,7 +8,8 @@ namespace OpenTracker.Models.Requirements.BigKeyShuffle;
 /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for
 /// <see cref="IBigKeyShuffleRequirement"/> objects indexed by <see cref="bool"/>.
 /// </summary>
-public class BigKeyShuffleRequirementDictionary : LazyDictionary<bool, IRequirement>,
+[DependencyInjection(SingleInstance = true)]
+public sealed class BigKeyShuffleRequirementDictionary : LazyDictionary<bool, IRequirement>,
     IBigKeyShuffleRequirementDictionary
 {
     private readonly IBigKeyShuffleRequirement.Factory _factory;

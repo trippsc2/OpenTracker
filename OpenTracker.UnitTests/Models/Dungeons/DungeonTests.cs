@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Dungeons;
@@ -16,7 +17,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Dungeons;
 
-public class DungeonTests
+[ExcludeFromCodeCoverage]
+public sealed class DungeonTests
 {
     private readonly IMode _mode = Substitute.For<IMode>();
     private readonly IKeyLayoutFactory _keyLayoutFactory = Substitute.For<IKeyLayoutFactory>();

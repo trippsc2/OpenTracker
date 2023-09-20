@@ -1,10 +1,12 @@
 using System.Reactive;
+using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using Avalonia.Input;
-using OpenTracker.Autofac;
+using Avalonia.Media;
 using OpenTracker.Models.Dropdowns;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 using OpenTracker.ViewModels.BossSelect;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -18,16 +20,16 @@ public sealed class DropdownAdapter : ViewModel, IItemAdapter
 
     private IDropdown Dropdown { get; }
 
+    public string? Label => null;
+    public SolidColorBrush? LabelColor => null;
+    public BossSelectPopupVM? BossSelect => null;
+
     [ObservableAsProperty]
     public bool Visible { get; }
     [ObservableAsProperty]
     public string ImageSource { get; } = string.Empty;
 
-    public string? Label => null;
-    public string LabelColor => "#ffffffff";
-    public IBossSelectPopupVM? BossSelect => null;
-
-    public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
+    public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
 
     public delegate DropdownAdapter Factory(IDropdown dropdown, string imageSourceBase);
 
@@ -49,39 +51,23 @@ public sealed class DropdownAdapter : ViewModel, IItemAdapter
 
         Dropdown = dropdown;
 
-        this.WhenAnyValue(x => x.Dropdown.Requirement.Met)
-            .ToPropertyEx(this, x => x.Visible);
+        HandleClickCommand = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClick);
         
-        this.WhenAnyValue(x => x.Dropdown.Checked)
-            .Select(x => imageSourceBase + (x ? "1" : "0") + ".png")
-            .ToPropertyEx(this, x => x.ImageSource);
-
-        HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
+        this.WhenActivated(disposables =>
+        {
+            this.WhenAnyValue(x => x.Dropdown.Requirement.Met)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .ToPropertyEx(this, x => x.Visible)
+                .DisposeWith(disposables);
+            this.WhenAnyValue(x => x.Dropdown.Checked)
+                .Select(x => imageSourceBase + (x ? "1" : "0") + ".png")
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .ToPropertyEx(this, x => x.ImageSource)
+                .DisposeWith(disposables);
+        });
     }
 
-    /// <summary>
-    /// Creates a new undoable action to check the dropdown to the undo/redo manager.
-    /// </summary>
-    private void CheckDropdown()
-    {
-        _undoRedoManager.NewAction(Dropdown.CreateCheckDropdownAction());
-    }
-
-    /// <summary>
-    /// Creates a new undoable action to uncheck the dropdown to the undo/redo manager.
-    /// </summary>
-    private void UncheckDropdown()
-    {
-        _undoRedoManager.NewAction(Dropdown.CreateUncheckDropdownAction());
-    }
-
-    /// <summary>
-    /// Handles the dropdown being clicked.
-    /// </summary>
-    /// <param name="e">
-    /// The pointer released event args.
-    /// </param>
-    private void HandleClickImpl(PointerReleasedEventArgs e)
+    private void HandleClick(PointerReleasedEventArgs e)
     {
         switch (e.InitialPressMouseButton)
         {
@@ -99,4 +85,15 @@ public sealed class DropdownAdapter : ViewModel, IItemAdapter
                 break;
         }
     }
+
+    private void CheckDropdown()
+    {
+        _undoRedoManager.NewAction(Dropdown.CreateCheckDropdownAction());
+    }
+
+    private void UncheckDropdown()
+    {
+        _undoRedoManager.NewAction(Dropdown.CreateUncheckDropdownAction());
+    }
+
 }

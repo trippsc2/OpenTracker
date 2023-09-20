@@ -1,14 +1,14 @@
-﻿using System.ComponentModel;
-using System.Reactive;
-using System.Threading.Tasks;
+﻿using System.Reactive;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using Avalonia.Input;
-using Avalonia.Threading;
-using OpenTracker.Autofac;
 using OpenTracker.Models.Markings;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 using OpenTracker.ViewModels.Markings;
 using OpenTracker.ViewModels.Markings.Images;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 
 namespace OpenTracker.ViewModels.PinnedLocations.Notes;
 
@@ -18,22 +18,16 @@ namespace OpenTracker.ViewModels.PinnedLocations.Notes;
 [DependencyInjection]
 public sealed class PinnedLocationNoteVM : ViewModel, IPinnedLocationNoteVM
 {
-    private readonly IMarkingImageDictionary _markingImages;
-        
-    private readonly IMarking _marking;
+    private IMarking Marking { get; }
 
-    public object Model => _marking;
+    public object Model => Marking;
 
     public INoteMarkingSelectVM MarkingSelect { get; }
 
-    private IMarkingImageVMBase? _image;
-    public IMarkingImageVMBase Image
-    {
-        get => _image!;
-        set => this.RaiseAndSetIfChanged(ref _image, value);
-    }
+    [ObservableAsProperty]
+    public IMarkingImageVMBase Image { get; } = default!;
 
-    public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
+    public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
 
     /// <summary>
     /// Constructor
@@ -48,72 +42,30 @@ public sealed class PinnedLocationNoteVM : ViewModel, IPinnedLocationNoteVM
     /// The note marking select control.
     /// </param>
     public PinnedLocationNoteVM(
-        IMarkingImageDictionary markingImages, IMarking marking, INoteMarkingSelectVM markingSelect)
+        IMarkingImageDictionary markingImages,
+        IMarking marking,
+        INoteMarkingSelectVM markingSelect)
     {
-        _markingImages = markingImages;
-
-        _marking = marking;
+        Marking = marking;
         MarkingSelect = markingSelect;
             
-        HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
-
-        _marking.PropertyChanged += OnMarkingChanged;
-
-        UpdateImage();
-    }
-
-    /// <summary>
-    /// Subscribes to the PropertyChanged event on the IMarking interface.
-    /// </summary>
-    /// <param name="sender">
-    /// The sending object of the event.
-    /// </param>
-    /// <param name="e">
-    /// The arguments of the PropertyChanged event.
-    /// </param>
-    private async void OnMarkingChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName == nameof(IMarking.Mark))
+        HandleClickCommand = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClick);
+        
+        this.WhenActivated(disposables =>
         {
-            await UpdateImageAsync();
-        }
+            this.WhenAnyValue(x => x.Marking.Mark)
+                .Select(x => markingImages[x])
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .ToPropertyEx(this, x => x.Image)
+                .DisposeWith(disposables);
+        });
     }
 
-    /// <summary>
-    /// Updates the image.
-    /// </summary>
-    private void UpdateImage()
-    {
-        Image = _markingImages[_marking.Mark];
-    }
-
-    /// <summary>
-    /// Updates the image asynchronously.
-    /// </summary>
-    private async Task UpdateImageAsync()
-    {
-        await Dispatcher.UIThread.InvokeAsync(UpdateImage);
-    }
-
-    /// <summary>
-    /// Opens the marking select popup.
-    /// </summary>
-    private void OpenMarkingSelect()
-    {
-        MarkingSelect.PopupOpen = true;
-    }
-
-    /// <summary>
-    /// Handles clicking the control.
-    /// </summary>
-    /// <param name="e">
-    /// The PointerReleased event args.
-    /// </param>
-    private void HandleClickImpl(PointerReleasedEventArgs e)
+    private void HandleClick(PointerReleasedEventArgs e)
     {
         if (e.InitialPressMouseButton == MouseButton.Left)
         {
-            OpenMarkingSelect();
+            MarkingSelect.PopupOpen = true;
         }
     }
 }

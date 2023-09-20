@@ -1,10 +1,11 @@
-﻿using System.ComponentModel;
+﻿using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using Avalonia.Layout;
-using Avalonia.Threading;
-using OpenTracker.Autofac;
 using OpenTracker.Models.Settings;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 
 namespace OpenTracker.ViewModels.PinnedLocations;
 
@@ -14,11 +15,13 @@ namespace OpenTracker.ViewModels.PinnedLocations;
 [DependencyInjection]
 public sealed class PinnedLocationsPanelVM : ViewModel, IPinnedLocationsPanelVM
 {
-    private readonly ILayoutSettings _layoutSettings;
-
-    public Orientation Orientation => _layoutSettings.CurrentLayoutOrientation;
+    private ILayoutSettings LayoutSettings { get; }
 
     public IPinnedLocationVMCollection Locations { get; }
+
+    [ObservableAsProperty]
+    public Orientation Orientation { get; }
+
 
     /// <summary>
     /// Constructor
@@ -31,27 +34,15 @@ public sealed class PinnedLocationsPanelVM : ViewModel, IPinnedLocationsPanelVM
     /// </param>
     public PinnedLocationsPanelVM(ILayoutSettings layoutSettings, IPinnedLocationVMCollection locations)
     {
-        _layoutSettings = layoutSettings;
-
+        LayoutSettings = layoutSettings;
         Locations = locations;
-
-        _layoutSettings.PropertyChanged += OnLayoutChanged;
-    }
-
-    /// <summary>
-    /// Subscribes to the PropertyChanged event on the ILayoutSettings interface.
-    /// </summary>
-    /// <param name="sender">
-    /// The sending object of the event.
-    /// </param>
-    /// <param name="e">
-    /// The arguments of the PropertyChanged event.
-    /// </param>
-    private async void OnLayoutChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName == nameof(ILayoutSettings.CurrentLayoutOrientation))
+        
+        this.WhenActivated(disposables =>
         {
-            await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Orientation)));
-        }
+            this.WhenAnyValue(x => x.LayoutSettings.CurrentLayoutOrientation)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .ToPropertyEx(this, x => x.Orientation)
+                .DisposeWith(disposables);
+        });
     }
 }

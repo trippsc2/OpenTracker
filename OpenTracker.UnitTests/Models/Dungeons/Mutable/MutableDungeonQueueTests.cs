@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Dungeons;
@@ -7,7 +8,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Dungeons.Mutable;
 
-public class MutableDungeonQueueTests
+[ExcludeFromCodeCoverage]
+public sealed class MutableDungeonQueueTests
 {
     private readonly IDungeon _dungeon = Substitute.For<IDungeon>();
     private readonly IMutableDungeon _dungeonData = Substitute.For<IMutableDungeon>();

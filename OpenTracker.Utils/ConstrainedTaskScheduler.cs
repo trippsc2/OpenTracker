@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Utils;
 
-public class ConstrainedTaskScheduler : TaskScheduler
+[DependencyInjection(SingleInstance = true)]
+public sealed class ConstrainedTaskScheduler : TaskScheduler
 {
     [ThreadStatic]
     private static bool _currentThreadIsProcessingItems;

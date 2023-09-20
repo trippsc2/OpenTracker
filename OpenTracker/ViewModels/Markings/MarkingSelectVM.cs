@@ -1,13 +1,15 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System;
+using System.Collections.Generic;
 using System.Reactive;
-using Avalonia.Threading;
-using OpenTracker.Autofac;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using OpenTracker.Models.Markings;
 using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 
 namespace OpenTracker.ViewModels.Markings;
 
@@ -17,25 +19,20 @@ namespace OpenTracker.ViewModels.Markings;
 [DependencyInjection]
 public sealed class MarkingSelectVM : ViewModel, IMarkingSelectVM
 {
-    private readonly ILayoutSettings _layoutSettings;
     private readonly IUndoRedoManager _undoRedoManager;
         
-    private readonly IMarking _marking;
-
-    public double Scale => _layoutSettings.UIScale;
-    public List<IMarkingSelectItemVMBase> Buttons { get; }
+    private ILayoutSettings LayoutSettings { get; }
+    private IMarking Marking { get; }
     public double Width { get; }
     public double Height { get; }
+    public List<IMarkingSelectItemVMBase> Buttons { get; }
 
-    private bool _popupOpen;
-    public bool PopupOpen
-    {
-        get => _popupOpen;
-        set => this.RaiseAndSetIfChanged(ref _popupOpen, value);
-    }
+    [Reactive]
+    public bool PopupOpen { get; set; }
+    [ObservableAsProperty]
+    public double Scale { get; }
 
-    public ReactiveCommand<MarkType?, Unit> ChangeMarking { get; }
-    public ReactiveCommand<Unit, Unit> ClearMarking { get; }
+    public ReactiveCommand<Unit, Unit> ClearMarkingCommand { get; }
 
     /// <summary>
     /// Constructor
@@ -62,61 +59,32 @@ public sealed class MarkingSelectVM : ViewModel, IMarkingSelectVM
         ILayoutSettings layoutSettings, IUndoRedoManager undoRedoManager, IMarking marking,
         List<IMarkingSelectItemVMBase> buttons, double width, double height)
     {
-        _layoutSettings = layoutSettings;
+        LayoutSettings = layoutSettings;
         _undoRedoManager = undoRedoManager;
 
-        _marking = marking;
+        Marking = marking;
 
         Buttons = buttons;
         Width = width;
         Height = height;
 
-        ChangeMarking = ReactiveCommand.Create<MarkType?>(ChangeMarkingImpl);
-        ClearMarking = ReactiveCommand.Create(ClearMarkingImpl);
-
-        _layoutSettings.PropertyChanged += OnLayoutChanged;
-    }
-
-    /// <summary>
-    /// Subscribes to the PropertyChanged event on the ILayoutSettings interface.
-    /// </summary>
-    /// <param name="sender">
-    /// The sending object of the event.
-    /// </param>
-    /// <param name="e">
-    /// The arguments of the PropertyChanged event.
-    /// </param>
-    private async void OnLayoutChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName == nameof(ILayoutSettings.UIScale))
+        ClearMarkingCommand = ReactiveCommand.Create(ClearMarking);
+        
+        this.WhenActivated(disposables =>
         {
-            await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Scale)));
-        }
+            this.WhenAnyValue(x => x.LayoutSettings.UIScale)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .ToPropertyEx(this, x => x.Scale)
+                .DisposeWith(disposables);
+            this.WhenAnyValue(x => x.Marking.Mark)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(_ => PopupOpen = false)
+                .DisposeWith(disposables);
+        });
     }
 
-    /// <summary>
-    /// Clears the marking of the section.
-    /// </summary>
-    private void ClearMarkingImpl()
+    private void ClearMarking()
     {
-        _undoRedoManager.NewAction(_marking.CreateChangeMarkingAction(MarkType.Unknown));
-        PopupOpen = false;
-    }
-
-    /// <summary>
-    /// Changes the marking of the section to the specified marking.
-    /// </summary>
-    /// <param name="marking">
-    /// The marking to be set.
-    /// </param>
-    private void ChangeMarkingImpl(MarkType? marking)
-    {
-        if (!marking.HasValue)
-        {
-            return;
-        }
-
-        _undoRedoManager.NewAction(_marking.CreateChangeMarkingAction(marking.Value));
-        PopupOpen = false;
+        _undoRedoManager.NewAction(Marking.CreateChangeMarkingAction(MarkType.Unknown));
     }
 }

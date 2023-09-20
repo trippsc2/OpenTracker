@@ -10,13 +10,15 @@ using OpenTracker.Models.Requirements.Item.Crystal;
 using OpenTracker.Models.Requirements.Item.Exact;
 using OpenTracker.Models.Requirements.Item.Prize;
 using OpenTracker.Models.Requirements.Mode;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Nodes.Factories;
 
 /// <summary>
 /// This class contains the creation logic for northeast light world <see cref="INodeConnection"/> objects.
 /// </summary>
-public class NELightWorldConnectionFactory : INELightWorldConnectionFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class NELightWorldConnectionFactory : INELightWorldConnectionFactory
 {
     private readonly ICrystalRequirement _crystalRequirement;
     private readonly IComplexRequirementDictionary _complexRequirements;

@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using OpenTracker.Autofac;
+using System.Linq;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Markings;
 using OpenTracker.Models.Sections;
 using OpenTracker.Models.Sections.Entrance;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.ViewModels.Markings;
 
@@ -18,32 +19,28 @@ public sealed class MarkingSelectFactory : IMarkingSelectFactory
     private readonly IMarkingSelectVM.Factory _selectFactory;
     private readonly INoteMarkingSelectVM.Factory _noteSelectFactory;
 
-    private List<IMarkingSelectItemVMBase> NonEntranceMarkingSelect { get; } =
-        new();
-    private List<IMarkingSelectItemVMBase> EntranceMarkingSelect { get; } =
-        new();
-
     public MarkingSelectFactory(
-        MarkingSelectButtonVM.Factory buttonFactory, IMarkingSelectVM.Factory selectFactory,
+        MarkingSelectButtonVM.Factory buttonFactory,
+        IMarkingSelectVM.Factory selectFactory,
         INoteMarkingSelectVM.Factory noteSelectFactory)
     {
         _buttonFactory = buttonFactory;
         _selectFactory = selectFactory;
         _noteSelectFactory = noteSelectFactory;
-
-        PopulateNonEntranceMarkingSelect();
-        PopulateEntranceMarkingSelect();
     }
 
     /// <summary>
     /// Populates the observable collection of marking select button control ViewModel
     /// instances for non-entrance markings.
     /// </summary>
-    private void PopulateNonEntranceMarkingSelect()
+    /// <param name="marking"></param>
+    private List<IMarkingSelectItemVMBase> GetNonEntranceMarkingSelect(IMarking marking)
     {
-        for (int i = 0; i < Enum.GetValues(typeof(MarkType)).Length; i++)
+        var markingSelectButtons = new List<IMarkingSelectItemVMBase>();
+        
+        foreach (var markType in Enum.GetValues<MarkType>())
         {
-            switch ((MarkType)i)
+            switch (markType)
             {
                 case MarkType.Sword:
                 case MarkType.Shield:
@@ -80,24 +77,79 @@ public sealed class MarkingSelectFactory : IMarkingSelectFactory
                 case MarkType.Mirror:
                 case MarkType.HalfMagic:
                 case MarkType.BigKey:
-                {
-                    NonEntranceMarkingSelect.Add(_buttonFactory((MarkType)i));
-                }
+                    markingSelectButtons.Add(_buttonFactory(marking, markType));
+                    break;
+                case MarkType.Unknown:
+                case MarkType.HCLeft:
+                case MarkType.HCFront:
+                case MarkType.HCRight:
+                case MarkType.EP:
+                case MarkType.DPLeft:
+                case MarkType.DPFront:
+                case MarkType.DPRight:
+                case MarkType.DPBack:
+                case MarkType.ToH:
+                case MarkType.PoD:
+                case MarkType.Aga:
+                case MarkType.SP:
+                case MarkType.SW:
+                case MarkType.TT:
+                case MarkType.IP:
+                case MarkType.MM:
+                case MarkType.TRFront:
+                case MarkType.TRLeft:
+                case MarkType.TRRight:
+                case MarkType.TRBack:
+                case MarkType.GT:
+                case MarkType.Ganon:
+                case MarkType.Sanctuary:
+                case MarkType.OldWoman:
+                case MarkType.Brothers:
+                case MarkType.OldManFront:
+                case MarkType.OldManBack:
+                case MarkType.SpectacleRockTop:
+                case MarkType.SpectacleRockBottomLeft:
+                case MarkType.SpectacleRockBottomRight:
+                case MarkType.ParadoxCaveTop:
+                case MarkType.ParadoxCaveBottomLeft:
+                case MarkType.ParadoxCaveBottomRight:
+                case MarkType.SpiralCaveTop:
+                case MarkType.SpiralCaveBottom:
+                case MarkType.FairyAscensionTop:
+                case MarkType.FairyAscensionBottom:
+                case MarkType.SickKid:
+                case MarkType.Library:
+                case MarkType.Sahasrahla:
+                case MarkType.PotionShop:
+                case MarkType.MagicBat:
+                case MarkType.Blacksmith:
+                case MarkType.BigBomb:
+                case MarkType.SpikeCave:
+                case MarkType.MimicCave:
+                case MarkType.Dam:
+                case MarkType.MountainCave:
+                case MarkType.BumperCave:
+                case MarkType.SuperBunnyCaveBottom:
+                case MarkType.SuperBunnyCaveTop:
+                default:
                     break;
             }
         }
+
+        return markingSelectButtons;
     }
 
     /// <summary>
     /// Populates the observable collection of marking select button control ViewModel
     /// instances for entrance markings.
     /// </summary>
-    private void PopulateEntranceMarkingSelect()
+    /// <param name="marking"></param>
+    private List<IMarkingSelectItemVMBase> GetEntranceMarkingSelect(IMarking marking)
     {
-        for (int i = 1; i < Enum.GetValues(typeof(MarkType)).Length; i++)
-        {
-            EntranceMarkingSelect.Add(_buttonFactory((MarkType)i));
-        }
+        return Enum.GetValues<MarkType>()
+            .Select(markType => _buttonFactory(marking, markType))
+            .Cast<IMarkingSelectItemVMBase>()
+            .ToList();
     }
 
     /// <summary>
@@ -110,10 +162,9 @@ public sealed class MarkingSelectFactory : IMarkingSelectFactory
     /// <returns>
     /// A new marking select popup control ViewModel instance.
     /// </returns>
-    private IMarkingSelectVM GetNonEntranceMarkingSelectPopupVM(
-        IMarking marking)
+    private IMarkingSelectVM GetNonEntranceMarkingSelectPopupVM(IMarking marking)
     {
-        return _selectFactory(marking, NonEntranceMarkingSelect, 238.0, 200.0);
+        return _selectFactory(marking, GetNonEntranceMarkingSelect(marking), 238.0, 200.0);
     }
 
     /// <summary>
@@ -126,10 +177,9 @@ public sealed class MarkingSelectFactory : IMarkingSelectFactory
     /// <returns>
     /// A new marking select popup control ViewModel instance.
     /// </returns>
-    private IMarkingSelectVM GetEntranceMarkingSelectPopupVM(
-        IMarking marking)
+    private IMarkingSelectVM GetEntranceMarkingSelectPopupVM(IMarking marking)
     {
-        return _selectFactory(marking, EntranceMarkingSelect, 374.0, 320.0);
+        return _selectFactory(marking, GetEntranceMarkingSelect(marking), 374.0, 320.0);
     }
 
     /// <summary>
@@ -164,9 +214,8 @@ public sealed class MarkingSelectFactory : IMarkingSelectFactory
     /// <returns>
     /// A new marking select popup control ViewModel instance.
     /// </returns>
-    public INoteMarkingSelectVM GetNoteMarkingSelectVM(
-        IMarking marking, ILocation location)
+    public INoteMarkingSelectVM GetNoteMarkingSelectVM(IMarking marking, ILocation location)
     {
-        return _noteSelectFactory(marking, NonEntranceMarkingSelect, location);
+        return _noteSelectFactory(marking, GetNonEntranceMarkingSelect(marking), location);
     }
 }

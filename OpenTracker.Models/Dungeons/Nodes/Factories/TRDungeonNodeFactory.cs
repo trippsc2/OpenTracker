@@ -9,13 +9,15 @@ using OpenTracker.Models.Nodes.Connections;
 using OpenTracker.Models.Requirements.Boss;
 using OpenTracker.Models.Requirements.Complex;
 using OpenTracker.Models.Requirements.Item;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Dungeons.Nodes.Factories;
 
 /// <summary>
 /// This class contains the creation logic for Turtle Rock nodes.
 /// </summary>
-public class TRDungeonNodeFactory : ITRDungeonNodeFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class TRDungeonNodeFactory : ITRDungeonNodeFactory
 {
     private readonly IBossRequirementDictionary _bossRequirements;
     private readonly IComplexRequirementDictionary _complexRequirements;

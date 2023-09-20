@@ -1,12 +1,14 @@
 ﻿using OpenTracker.Models.Locations;
 using OpenTracker.Models.Markings;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.UndoRedo.Notes;
 
 /// <summary>
 /// This class contains the <see cref="IUndoable"/> action to add a note to a <see cref="ILocation"/>.
 /// </summary>
-public class AddNote : IAddNote
+[DependencyInjection]
+public sealed class AddNote : IAddNote
 {
     private readonly IMarking.Factory _factory;
     private readonly ILocationNoteCollection _notes;

@@ -1,4 +1,5 @@
 ﻿using OpenTracker.Models.BossPlacements;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.UndoRedo.Boss;
 
@@ -6,7 +7,8 @@ namespace OpenTracker.Models.UndoRedo.Boss;
 /// This class contains the <see cref="IUndoable"/> action to change the <see cref="BossType"/> of a
 /// <see cref="IBossPlacement"/>.
 /// </summary>
-public class ChangeBoss : IChangeBoss
+[DependencyInjection]
+public sealed class ChangeBoss : IChangeBoss
 {
     private readonly IBossPlacement _bossPlacement;
     private readonly BossType? _newValue;

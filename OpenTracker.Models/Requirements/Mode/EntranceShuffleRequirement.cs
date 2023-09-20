@@ -1,12 +1,14 @@
 ﻿using System.ComponentModel;
 using OpenTracker.Models.Modes;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Requirements.Mode;
 
 /// <summary>
 /// This class contains <see cref="IMode.EntranceShuffle"/> <see cref="IRequirement"/> data.
 /// </summary>
-public class EntranceShuffleRequirement : BooleanRequirement, IEntranceShuffleRequirement
+[DependencyInjection]
+public sealed class EntranceShuffleRequirement : BooleanRequirement, IEntranceShuffleRequirement
 {
     private readonly IMode _mode;
     private readonly EntranceShuffle _expectedValue;

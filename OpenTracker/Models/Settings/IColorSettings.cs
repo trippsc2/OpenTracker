@@ -1,5 +1,7 @@
-﻿using OpenTracker.Models.Accessibility;
-using OpenTracker.Utils;
+﻿using System.Collections.Generic;
+using Avalonia.Media;
+using OpenTracker.Models.Accessibility;
+using Reactive.Bindings;
 using ReactiveUI;
 
 namespace OpenTracker.Models.Settings;
@@ -9,7 +11,7 @@ namespace OpenTracker.Models.Settings;
 /// </summary>
 public interface IColorSettings : IReactiveObject
 {
-    ObservableDictionary<AccessibilityLevel, string> AccessibilityColors { get; }
-    string ConnectorColor { get; set; }
-    string EmphasisFontColor { get; set; }
+    ReactiveProperty<SolidColorBrush> EmphasisFontColor { get; }
+    Dictionary<AccessibilityLevel, ReactiveProperty<SolidColorBrush>> AccessibilityColors { get; }
+    ReactiveProperty<SolidColorBrush> ConnectorColor { get; }
 }

@@ -4,13 +4,15 @@ using System.Linq;
 using OpenTracker.Models.Dungeons.Items;
 using OpenTracker.Models.Dungeons.State;
 using OpenTracker.Models.Requirements;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Dungeons.KeyLayouts;
 
 /// <summary>
 /// This class contains small key layout data.
 /// </summary>
-public class SmallKeyLayout : ISmallKeyLayout
+[DependencyInjection]
+public sealed class SmallKeyLayout : ISmallKeyLayout
 {
     private readonly int _count;
     private readonly IList<DungeonItemID> _smallKeyLocations;

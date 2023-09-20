@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Concurrent;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Dungeons.Mutable;
 
 /// <summary>
 /// This class contains the queue of <see cref="IMutableDungeon"/> objects for the specified dungeon.
 /// </summary>
-public class MutableDungeonQueue : ConcurrentQueue<IMutableDungeon>, IMutableDungeonQueue
+[DependencyInjection]
+public sealed class MutableDungeonQueue : ConcurrentQueue<IMutableDungeon>, IMutableDungeonQueue
 {
     /// <summary>
     /// Constructor

@@ -1,10 +1,12 @@
 ﻿using System;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.BossPlacements;
 
 /// <summary>
 /// This class contains the creation logic for <see cref="IBossPlacement"/> objects.
 /// </summary>
+[DependencyInjection(SingleInstance = true)]
 public sealed class BossPlacementFactory : IBossPlacementFactory
 {
     private readonly IBossPlacement.Factory _factory;

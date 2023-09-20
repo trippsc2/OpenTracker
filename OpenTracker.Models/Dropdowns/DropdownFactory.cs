@@ -4,9 +4,11 @@ using OpenTracker.Models.Modes;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Requirements.Aggregate;
 using OpenTracker.Models.Requirements.Mode;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Dropdowns;
 
+[DependencyInjection(SingleInstance = true)]
 public sealed class DropdownFactory : IDropdownFactory
 {
     private readonly IAggregateRequirementDictionary _aggregateRequirements;

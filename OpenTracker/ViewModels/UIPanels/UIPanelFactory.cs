@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
-using OpenTracker.Autofac;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Requirements.Alternative;
 using OpenTracker.Models.Requirements.Mode;
+using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 using OpenTracker.ViewModels.Dropdowns;
 using OpenTracker.ViewModels.Dungeons;
 using OpenTracker.ViewModels.Items;
@@ -154,7 +155,7 @@ public sealed class UIPanelFactory : IUIPanelFactory
     /// <returns>
     /// The body content control.
     /// </returns>
-    private IUIPanelBodyVMBase GetUIPanelBodyContent(UIPanelType type)
+    private IViewModel GetUIPanelBodyContent(UIPanelType type)
     {
         return type switch
         {
@@ -178,7 +179,10 @@ public sealed class UIPanelFactory : IUIPanelFactory
     public IUIPanelVM GetUIPanelVM(UIPanelType type)
     {
         return _factory(
-            GetUIPanelRequirement(type), GetUIPanelTitle(type), type == UIPanelType.Item ? _modeSettings : null,
-            GetUIPanelAlternateBodyColor(type), GetUIPanelBodyContent(type));
+            GetUIPanelRequirement(type),
+            GetUIPanelTitle(type),
+            type == UIPanelType.Item ? _modeSettings : null,
+            GetUIPanelAlternateBodyColor(type),
+            GetUIPanelBodyContent(type));
     }
 }

@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Requirements.TakeAnyLocations;
@@ -5,7 +6,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Requirements.TakeAnyLocations;
 
-public class TakeAnyLocationsRequirementDictionaryTests
+[ExcludeFromCodeCoverage]
+public sealed class TakeAnyLocationsRequirementDictionaryTests
 {
     // ReSharper disable once CollectionNeverUpdated.Local
     private readonly TakeAnyLocationsRequirementDictionary _sut;

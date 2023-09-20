@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel;
-using Avalonia.Threading;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Modes;
 using OpenTracker.Utils;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 
 namespace OpenTracker.ViewModels.Dungeons;
 
@@ -13,9 +14,7 @@ namespace OpenTracker.ViewModels.Dungeons;
 /// </summary>
 public abstract class OrientedDungeonPanelVMBase : ViewModel, IOrientedDungeonPanelVMBase
 {
-    private readonly IMode _mode;
-
-    public bool ATItemsVisible => _mode.SmallKeyShuffle;
+    private IMode Mode { get; }
 
     public List<IDungeonItemVM> HCItems { get; }
     public List<IDungeonItemVM> ATItems { get; }
@@ -31,6 +30,9 @@ public abstract class OrientedDungeonPanelVMBase : ViewModel, IOrientedDungeonPa
     public List<IDungeonItemVM> TRItems { get; }
     public List<IDungeonItemVM> GTItems { get; }
 
+    [ObservableAsProperty]
+    public bool ATItemsVisible { get; }
+
     /// <summary>
     /// Constructor
     /// </summary>
@@ -42,7 +44,7 @@ public abstract class OrientedDungeonPanelVMBase : ViewModel, IOrientedDungeonPa
     /// </param>
     protected OrientedDungeonPanelVMBase(IMode mode, IDungeonVMDictionary dungeonItems)
     {
-        _mode = mode;
+        Mode = mode;
 
         HCItems = dungeonItems[LocationID.HyruleCastle];
         ATItems = dungeonItems[LocationID.AgahnimTower];
@@ -58,23 +60,12 @@ public abstract class OrientedDungeonPanelVMBase : ViewModel, IOrientedDungeonPa
         TRItems = dungeonItems[LocationID.TurtleRock];
         GTItems = dungeonItems[LocationID.GanonsTower];
 
-        _mode.PropertyChanged += OnModeChanged;
-    }
-
-    /// <summary>
-    /// Subscribes to the PropertyChanged event on the Mode class.
-    /// </summary>
-    /// <param name="sender">
-    /// The sending object of the event.
-    /// </param>
-    /// <param name="e">
-    /// The arguments of the PropertyChanged event.
-    /// </param>
-    private async void OnModeChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName == nameof(IMode.SmallKeyShuffle))
+        this.WhenActivated(disposables =>
         {
-            await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(ATItemsVisible)));
-        }
+            this.WhenAnyValue(x => x.Mode.SmallKeyShuffle)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .ToPropertyEx(this, x => x.ATItemsVisible)
+                .DisposeWith(disposables);
+        });
     }
 }

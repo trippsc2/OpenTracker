@@ -1,4 +1,4 @@
-﻿using OpenTracker.Autofac;
+﻿using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Settings;
 

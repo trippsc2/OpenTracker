@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.BossPlacements;
@@ -6,7 +7,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.UndoRedo.Boss;
 
-public class ChangeBossTests
+[ExcludeFromCodeCoverage]
+public sealed class ChangeBossTests
 {
     private readonly IBossPlacement _bossPlacement = Substitute.For<IBossPlacement>();
 

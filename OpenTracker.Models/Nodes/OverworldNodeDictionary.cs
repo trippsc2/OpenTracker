@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using OpenTracker.Models.Nodes.Factories;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Nodes;
 
@@ -9,8 +10,8 @@ namespace OpenTracker.Models.Nodes;
 /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for <see cref="INode"/> objects
 /// indexed by <see cref="OverworldNodeID"/>.
 /// </summary>
-public class OverworldNodeDictionary : LazyDictionary<OverworldNodeID, INode>,
-    IOverworldNodeDictionary
+[DependencyInjection(SingleInstance = true)]
+public sealed class OverworldNodeDictionary : LazyDictionary<OverworldNodeID, INode>, IOverworldNodeDictionary
 {
     private readonly Lazy<IOverworldNodeFactory> _factory;
 

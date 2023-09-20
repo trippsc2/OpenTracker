@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Sections;
@@ -6,7 +7,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.UndoRedo.Sections;
 
-public class TogglePrizeSectionTests
+[ExcludeFromCodeCoverage]
+public sealed class TogglePrizeSectionTests
 {
     private readonly ISection _section = Substitute.For<ISection>();
 

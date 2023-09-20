@@ -1,43 +1,35 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:vm="clr-namespace:OpenTracker.ViewModels.PinnedLocations;assembly=OpenTracker"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:i="using:Avalonia.Xaml.Interactivity"
-             xmlns:ia="using:Avalonia.Xaml.Interactions.Core"
-             mc:Ignorable="d" x:Class="OpenTracker.Views.PinnedLocations.PinnedLocation">
-  
-  <Design.DataContext>
-    <vm:PinnedLocationVM />
-  </Design.DataContext>
-  
-  <LayoutTransformControl>
+             xmlns:vm="clr-namespace:OpenTracker.ViewModels.PinnedLocations"
+             mc:Ignorable="d" x:Class="OpenTracker.Views.PinnedLocations.PinnedLocation"
+             x:DataType="vm:PinnedLocationVM" x:CompileBindings="True">
+  <UserControl.Styles>
+    <Style Selector="Border.PinnedLocation">
+      <Setter Property="Background" Value="{DynamicResource ThemeControlLowBrush}" />
+      <Setter Property="Margin" Value="1" />
+    </Style>
+    
+    <Style Selector="Image.Close">
+      <Setter Property="Source" Value="avares://OpenTracker/Assets/Images/close.png" />
+    </Style>
+  </UserControl.Styles>
 
+  <LayoutTransformControl>
     <LayoutTransformControl.LayoutTransform>
-      <ScaleTransform ScaleX="{Binding Scale}"
-                      ScaleY="{Binding Scale}" />
+      <ScaleTransform ScaleX="{Binding Scale}" ScaleY="{Binding Scale}" />
     </LayoutTransformControl.LayoutTransform>
 
-    <Border Classes="ControlBorder PinnedLocation" Margin="1">
+    <Border Classes="ControlBorder PinnedLocation">
       <StackPanel Margin="4">
-
         <DockPanel HorizontalAlignment="Stretch" VerticalAlignment="Center">
-          
-          <TextBlock Classes="LocationName"
-                     Text="{Binding Name}" />
-          
-          <Image DockPanel.Dock="Right" Classes="Close" Source="avares://OpenTracker/Assets/Images/close.png">
-            <i:Interaction.Behaviors>
-              <ia:EventTriggerBehavior EventName="PointerReleased">
-                <ia:InvokeCommandAction Command="{Binding HandleClick}" PassEventArgsToCommand="True" />
-              </ia:EventTriggerBehavior>
-            </i:Interaction.Behaviors>
-          </Image>
-          
+          <TextBlock Classes="LocationName" Text="{Binding Name}" />
+          <Image x:Name="CloseImage" DockPanel.Dock="Right" Classes="Close" />
         </DockPanel>
 
         <Border Classes="Separator" Margin="0 2" />
-
+        
         <ItemsControl Items="{Binding Sections}">
           <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
@@ -45,11 +37,9 @@
             </ItemsPanelTemplate>
           </ItemsControl.ItemsPanel>
         </ItemsControl>
-
+        
         <ContentControl Content="{Binding Notes}" />
-
       </StackPanel>
     </Border>
-    
   </LayoutTransformControl>
 </UserControl>

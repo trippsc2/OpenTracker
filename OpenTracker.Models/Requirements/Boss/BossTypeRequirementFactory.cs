@@ -13,13 +13,15 @@ using OpenTracker.Models.Requirements.Mode;
 using OpenTracker.Models.Requirements.SequenceBreak;
 using OpenTracker.Models.Requirements.Static;
 using OpenTracker.Models.SequenceBreaks;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Requirements.Boss;
 
 /// <summary>
 /// This class contains the creation logic for <see cref="IRequirement"/> objects for boss type requirements.
 /// </summary>
-public class BossTypeRequirementFactory : IBossTypeRequirementFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class BossTypeRequirementFactory : IBossTypeRequirementFactory
 {
     private readonly IAggregateRequirementDictionary _aggregateRequirements;
     private readonly IAlternativeRequirementDictionary _alternativeRequirements;

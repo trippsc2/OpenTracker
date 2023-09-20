@@ -1,25 +1,23 @@
-using System.ComponentModel;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using Avalonia.Layout;
-using Avalonia.Threading;
-using OpenTracker.Autofac;
 using OpenTracker.Models.Settings;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 
 namespace OpenTracker.ViewModels.Dungeons;
 
 [DependencyInjection]
 public sealed class DungeonPanelVM : ViewModel, IDungeonPanelVM
 {
-    private readonly ILayoutSettings _layoutSettings;
+    private ILayoutSettings LayoutSettings { get; }
 
-    private readonly IHorizontalDungeonPanelVM _horizontalSmallItemPanel;
-    private readonly IVerticalDungeonPanelVM _verticalSmallItemPanel;
-
-    public Orientation Orientation => _layoutSettings.CurrentLayoutOrientation;
-
-    public IOrientedDungeonPanelVMBase Items =>
-        Orientation == Orientation.Horizontal ? _horizontalSmallItemPanel : _verticalSmallItemPanel;
+    [ObservableAsProperty]
+    public Orientation Orientation { get; }
+    [ObservableAsProperty]
+    public IOrientedDungeonPanelVMBase Items { get; } = default!;
 
     /// <summary>
     /// Constructor
@@ -34,49 +32,30 @@ public sealed class DungeonPanelVM : ViewModel, IDungeonPanelVM
     /// The vertical small item panel control.
     /// </param>
     public DungeonPanelVM(
-        ILayoutSettings layoutSettings, IHorizontalDungeonPanelVM horizontalSmallItemPanel,
+        ILayoutSettings layoutSettings,
+        IHorizontalDungeonPanelVM horizontalSmallItemPanel,
         IVerticalDungeonPanelVM verticalSmallItemPanel)
     {
-        _layoutSettings = layoutSettings;
-
-        _horizontalSmallItemPanel = horizontalSmallItemPanel;
-        _verticalSmallItemPanel = verticalSmallItemPanel;
-
-        PropertyChanged += OnPropertyChanged;
-        _layoutSettings.PropertyChanged += OnLayoutChanged;
-    }
-
-    /// <summary>
-    /// Subscribes to the PropertyChanged event on this class.
-    /// </summary>
-    /// <param name="sender">
-    /// The sending object of the event.
-    /// </param>
-    /// <param name="e">
-    /// The arguments of the PropertyChanged event.
-    /// </param>
-    private async void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName == nameof(Orientation))
+        LayoutSettings = layoutSettings;
+        
+        this.WhenActivated(disposables =>
         {
-            await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Items)));
-        }
-    }
+            var layoutOrientation = this
+                .WhenAnyValue(x => x.LayoutSettings.CurrentLayoutOrientation);
+                
+            layoutOrientation
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .ToPropertyEx(this, x => x.Orientation)
+                .DisposeWith(disposables);
 
-    /// <summary>
-    /// Subscribes to the PropertyChanged event on the ILayoutSettings interface.
-    /// </summary>
-    /// <param name="sender">
-    /// The sending object of the event.
-    /// </param>
-    /// <param name="e">
-    /// The arguments of the PropertyChanged event.
-    /// </param>
-    private async void OnLayoutChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName == nameof(ILayoutSettings.CurrentLayoutOrientation))
-        {
-            await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Orientation)));
-        }
+            layoutOrientation
+                .Select<Orientation, IOrientedDungeonPanelVMBase>(x =>
+                    x == Orientation.Horizontal
+                        ? horizontalSmallItemPanel
+                        : verticalSmallItemPanel)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .ToPropertyEx(this, x => x.Items)
+                .DisposeWith(disposables);
+        });
     }
 }

@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Requirements;
+using OpenTracker.Utils.Autofac;
 using ReactiveUI;
 
 namespace OpenTracker.Models.Nodes.Connections;
@@ -9,7 +10,8 @@ namespace OpenTracker.Models.Nodes.Connections;
 /// <summary>
 /// This class contains node connection data.
 /// </summary>
-public class NodeConnection : ReactiveObject, INodeConnection
+[DependencyInjection]
+public sealed class NodeConnection : ReactiveObject, INodeConnection
 {
     private readonly INode _fromNode;
     private readonly INode _toNode;

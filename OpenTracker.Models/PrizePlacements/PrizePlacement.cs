@@ -6,6 +6,7 @@ using OpenTracker.Models.Prizes;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Models.UndoRedo.Prize;
+using OpenTracker.Utils.Autofac;
 using ReactiveUI;
 
 namespace OpenTracker.Models.PrizePlacements;
@@ -13,7 +14,8 @@ namespace OpenTracker.Models.PrizePlacements;
 /// <summary>
 /// This class contains prize placement data.
 /// </summary>
-public class PrizePlacement : ReactiveObject, IPrizePlacement
+[DependencyInjection]
+public sealed class PrizePlacement : ReactiveObject, IPrizePlacement
 {
     private readonly IPrizeDictionary _prizes;
 

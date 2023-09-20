@@ -10,13 +10,15 @@ using OpenTracker.Models.Requirements.Complex;
 using OpenTracker.Models.Requirements.Item;
 using OpenTracker.Models.Requirements.Item.Prize;
 using OpenTracker.Models.Requirements.Mode;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Nodes.Factories;
 
 /// <summary>
 /// This class contains the creation logic for northwest light world <see cref="INodeConnection"/> objects. 
 /// </summary>
-public class NWLightWorldConnectionFactory : INWLightWorldConnectionFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class NWLightWorldConnectionFactory : INWLightWorldConnectionFactory
 {
     private readonly IAlternativeRequirementDictionary _alternativeRequirements;
     private readonly IComplexRequirementDictionary _complexRequirements;

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Avalonia.Layout;
-using OpenTracker.Autofac;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Requirements.ItemsPanelOrientation;
 

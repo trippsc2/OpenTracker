@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Locations.Map.Connections;
@@ -6,7 +7,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.UndoRedo.Connections;
 
-public class AddConnectionTests
+[ExcludeFromCodeCoverage]
+public sealed class AddConnectionTests
 {
     private readonly IMapConnection _connection = Substitute.For<IMapConnection>();
     private readonly IMapConnectionCollection _connections = Substitute.For<IMapConnectionCollection>();

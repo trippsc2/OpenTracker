@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.Dungeons.AccessibilityProvider;
 using OpenTracker.Models.Locations;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Sections.Factories;
 
 /// <summary>
 /// This class contains the creation logic for dungeon sections.
 /// </summary>
-public class DungeonSectionFactory : IDungeonSectionFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class DungeonSectionFactory : IDungeonSectionFactory
 {
     private readonly IDungeonDictionary _dungeons;
 

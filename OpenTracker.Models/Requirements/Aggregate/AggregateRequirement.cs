@@ -1,13 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using OpenTracker.Models.Accessibility;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Requirements.Aggregate;
 
 /// <summary>
 /// This class contains logic aggregating a set of <see cref="IRequirement"/>.
 /// </summary>
-public class AggregateRequirement : AccessibilityRequirement, IAggregateRequirement
+[DependencyInjection]
+public sealed class AggregateRequirement : AccessibilityRequirement, IAggregateRequirement
 {
     private readonly IList<IRequirement> _requirements;
 

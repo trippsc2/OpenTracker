@@ -1,13 +1,15 @@
 ﻿using System.ComponentModel;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Nodes;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Requirements.Node;
 
 /// <summary>
 /// This class containing <see cref="INode"/> <see cref="IRequirement"/> data.
 /// </summary>
-public class NodeRequirement : AccessibilityRequirement, INodeRequirement
+[DependencyInjection]
+public sealed class NodeRequirement : AccessibilityRequirement, INodeRequirement
 {
     private readonly INode _node;
 

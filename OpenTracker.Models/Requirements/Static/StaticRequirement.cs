@@ -1,5 +1,6 @@
 ﻿using System;
 using OpenTracker.Models.Accessibility;
+using OpenTracker.Utils.Autofac;
 using ReactiveUI;
 
 namespace OpenTracker.Models.Requirements.Static;
@@ -7,7 +8,8 @@ namespace OpenTracker.Models.Requirements.Static;
 /// <summary>
 /// This class contains unchanging <see cref="IRequirement"/> data.
 /// </summary>
-public class StaticRequirement : ReactiveObject, IStaticRequirement
+[DependencyInjection]
+public sealed class StaticRequirement : ReactiveObject, IStaticRequirement
 {
     public bool Met => true;
         

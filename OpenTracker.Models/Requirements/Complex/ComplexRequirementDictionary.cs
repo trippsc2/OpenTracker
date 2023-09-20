@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Requirements.Complex;
 
@@ -8,7 +9,8 @@ namespace OpenTracker.Models.Requirements.Complex;
 /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for <see cref="IRequirement"/> objects
 /// indexed by <see cref="ComplexRequirementType"/>.
 /// </summary>
-public class ComplexRequirementDictionary : LazyDictionary<ComplexRequirementType, IRequirement>,
+[DependencyInjection(SingleInstance = true)]
+public sealed class ComplexRequirementDictionary : LazyDictionary<ComplexRequirementType, IRequirement>,
     IComplexRequirementDictionary
 {
     private readonly Lazy<IComplexRequirementFactory> _factory;

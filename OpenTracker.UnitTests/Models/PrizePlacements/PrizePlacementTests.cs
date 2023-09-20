@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Items;
@@ -10,7 +11,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.PrizePlacements;
 
-public class PrizePlacementTests
+[ExcludeFromCodeCoverage]
+public sealed class PrizePlacementTests
 {
     private readonly IPrizeDictionary _prizes = new PrizeDictionary(
         (_, _) => Substitute.For<IItem>());

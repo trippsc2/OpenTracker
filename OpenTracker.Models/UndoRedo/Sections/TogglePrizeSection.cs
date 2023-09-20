@@ -1,12 +1,14 @@
 ﻿using OpenTracker.Models.Sections;
 using OpenTracker.Models.Sections.Boss;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.UndoRedo.Sections;
 
 /// <summary>
 /// This class contains the <see cref="IUndoable"/> action to toggle the <see cref="IPrizeSection"/>.
 /// </summary>
-public class TogglePrizeSection : ITogglePrizeSection
+[DependencyInjection]
+public sealed class TogglePrizeSection : ITogglePrizeSection
 {
     private readonly ISection _section;
     private readonly bool _force;

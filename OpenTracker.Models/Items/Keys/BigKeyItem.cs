@@ -6,6 +6,7 @@ using OpenTracker.Models.Modes;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Models.UndoRedo.Items;
+using OpenTracker.Utils.Autofac;
 using ReactiveUI;
 
 namespace OpenTracker.Models.Items.Keys;
@@ -13,7 +14,8 @@ namespace OpenTracker.Models.Items.Keys;
 /// <summary>
 /// This class contains the big key item data.
 /// </summary>
-public class BigKeyItem : Item, IBigKeyItem
+[DependencyInjection]
+public sealed class BigKeyItem : Item, IBigKeyItem
 {
     private readonly IMode _mode;
 

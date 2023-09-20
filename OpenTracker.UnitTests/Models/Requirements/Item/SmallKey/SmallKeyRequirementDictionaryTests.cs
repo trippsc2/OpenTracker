@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Dungeons;
@@ -6,7 +7,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Requirements.Item.SmallKey;
 
-public class SmallKeyRequirementDictionaryTests
+[ExcludeFromCodeCoverage]
+public sealed class SmallKeyRequirementDictionaryTests
 {
     private readonly IDungeonDictionary _dungeons = Substitute.For<IDungeonDictionary>();
 

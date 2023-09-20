@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Modes;
@@ -6,7 +7,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.UndoRedo.Mode;
 
-public class ChangeItemPlacementTests
+[ExcludeFromCodeCoverage]
+public sealed class ChangeItemPlacementTests
 {
     private readonly IMode _mode = Substitute.For<IMode>();
 

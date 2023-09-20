@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using NSubstitute;
 using OpenTracker.Models.Dungeons.Items;
 using OpenTracker.Models.Dungeons.KeyLayouts;
@@ -8,7 +9,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Dungeons.KeyLayouts;
 
-public class EndKeyLayoutTests
+[ExcludeFromCodeCoverage]
+public sealed class EndKeyLayoutTests
 {
     private readonly IRequirement _requirement = Substitute.For<IRequirement>();
 

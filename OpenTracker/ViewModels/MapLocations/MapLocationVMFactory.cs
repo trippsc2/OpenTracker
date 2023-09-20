@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Controls;
-using OpenTracker.Autofac;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Locations.Map;
 using OpenTracker.Models.Modes;
@@ -10,6 +9,7 @@ using OpenTracker.Models.Requirements.Alternative;
 using OpenTracker.Models.Requirements.Mode;
 using OpenTracker.Models.Sections.Boolean;
 using OpenTracker.Models.Sections.Entrance;
+using OpenTracker.Utils.Autofac;
 using OpenTracker.ViewModels.ToolTips;
 
 namespace OpenTracker.ViewModels.MapLocations;
@@ -220,7 +220,12 @@ public sealed class MapLocationVMFactory : IMapLocationVMFactory
         var id = location.ID;
 
         return _locationFactory(
-            mapLocation, GetDockRequirement(id), GetMetDock(id), GetUnmetDock(id), GetMarking(location),
-            GetLocation(mapLocation), _toolTipFactory(location));
+            mapLocation,
+            GetDockRequirement(id),
+            GetMarking(location),
+            GetLocation(mapLocation),
+            _toolTipFactory(location),
+            GetMetDock(id),
+            GetUnmetDock(id));
     }
 }

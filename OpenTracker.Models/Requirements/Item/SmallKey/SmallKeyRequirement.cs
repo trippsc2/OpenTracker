@@ -1,12 +1,14 @@
 ﻿using System.ComponentModel;
 using OpenTracker.Models.Items.Keys;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Requirements.Item.SmallKey;
 
 /// <summary>
 /// This class contains small key <see cref="IRequirement"/> data.
 /// </summary>
-public class SmallKeyRequirement : BooleanRequirement, ISmallKeyRequirement
+[DependencyInjection]
+public sealed class SmallKeyRequirement : BooleanRequirement, ISmallKeyRequirement
 {
     private readonly ISmallKeyItem _item;
     private readonly int _count;

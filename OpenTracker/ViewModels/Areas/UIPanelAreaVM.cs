@@ -1,12 +1,13 @@
-﻿using System.ComponentModel;
+﻿using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using Avalonia.Controls;
 using Avalonia.Layout;
-using Avalonia.Threading;
-using OpenTracker.Autofac;
 using OpenTracker.Models.Settings;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 using OpenTracker.ViewModels.UIPanels;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 
 namespace OpenTracker.ViewModels.Areas;
 
@@ -16,12 +17,10 @@ namespace OpenTracker.ViewModels.Areas;
 [DependencyInjection(SingleInstance = true)]
 public sealed class UIPanelAreaVM : ViewModel, IUIPanelAreaVM
 {
-    private readonly ILayoutSettings _layoutSettings;
-    public Dock ItemsDock => _layoutSettings.CurrentLayoutOrientation switch
-    {
-        Orientation.Horizontal => _layoutSettings.HorizontalItemsPlacement,
-        _ => _layoutSettings.VerticalItemsPlacement
-    };
+    private ILayoutSettings LayoutSettings { get; }
+
+    [ObservableAsProperty]
+    public Dock ItemsDock { get; }
 
     public IUIPanelVM Dropdowns { get; }
     public IUIPanelVM Items { get; }
@@ -37,35 +36,26 @@ public sealed class UIPanelAreaVM : ViewModel, IUIPanelAreaVM
     /// <param name="factory">
     /// A factory for creating UI panel controls.
     /// </param>
-    public UIPanelAreaVM(
-        ILayoutSettings layoutSettings, IUIPanelFactory factory)
+    public UIPanelAreaVM(ILayoutSettings layoutSettings, IUIPanelFactory factory)
     {
-        _layoutSettings = layoutSettings;
+        LayoutSettings = layoutSettings;
 
         Dropdowns = factory.GetUIPanelVM(UIPanelType.Dropdown);
         Items = factory.GetUIPanelVM(UIPanelType.Item);
         Dungeons = factory.GetUIPanelVM(UIPanelType.Dungeon);
         Locations = factory.GetUIPanelVM(UIPanelType.Location);
-
-        _layoutSettings.PropertyChanged += OnLayoutChanged;
-    }
-
-    /// <summary>
-    /// Subscribes to the PropertyChanged event on the ILayoutSettings interface.
-    /// </summary>
-    /// <param name="sender">
-    /// The sending object of the event.
-    /// </param>
-    /// <param name="e">
-    /// The arguments of the PropertyChanged event.
-    /// </param>
-    private async void OnLayoutChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName == nameof(ILayoutSettings.CurrentLayoutOrientation) ||
-            e.PropertyName == nameof(ILayoutSettings.HorizontalItemsPlacement) ||
-            e.PropertyName == nameof(ILayoutSettings.VerticalItemsPlacement))
+        
+        this.WhenActivated(disposables =>
         {
-            await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(ItemsDock)));
-        }
+            this.WhenAnyValue(
+                    x => x.LayoutSettings.CurrentLayoutOrientation,
+                    x => x.LayoutSettings.HorizontalItemsPlacement,
+                    x => x.LayoutSettings.VerticalItemsPlacement,
+                    (orientation, horizontal, vertical) =>
+                        orientation == Orientation.Horizontal ? horizontal : vertical)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .ToPropertyEx(this, x => x.ItemsDock)
+                .DisposeWith(disposables);
+        });
     }
 }

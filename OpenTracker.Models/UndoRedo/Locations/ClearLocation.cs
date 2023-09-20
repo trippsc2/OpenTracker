@@ -2,13 +2,15 @@
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Markings;
 using OpenTracker.Models.Sections;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.UndoRedo.Locations;
 
 /// <summary>
 /// This class contains the <see cref="IUndoable"/> action to clear a <see cref="ILocation"/>.
 /// </summary>
-public class ClearLocation : IClearLocation
+[DependencyInjection]
+public sealed class ClearLocation : IClearLocation
 {
     private readonly ILocation _location;
     private readonly bool _force;

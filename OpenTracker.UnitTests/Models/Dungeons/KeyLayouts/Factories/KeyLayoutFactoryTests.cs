@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Dungeons;
@@ -7,7 +8,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Dungeons.KeyLayouts.Factories;
 
-public class KeyLayoutFactoryTests
+[ExcludeFromCodeCoverage]
+public sealed class KeyLayoutFactoryTests
 {
     private readonly IHCKeyLayoutFactory _hcFactory = Substitute.For<IHCKeyLayoutFactory>();
     private readonly IATKeyLayoutFactory _atFactory = Substitute.For<IATKeyLayoutFactory>();

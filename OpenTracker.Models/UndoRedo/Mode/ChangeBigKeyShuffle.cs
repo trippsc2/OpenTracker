@@ -1,11 +1,13 @@
 ﻿using OpenTracker.Models.Modes;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.UndoRedo.Mode;
 
 /// <summary>
 /// This class contains the <see cref="IUndoable"/> action to change the <see cref="IMode.BigKeyShuffle"/> property.
 /// </summary>
-public class ChangeBigKeyShuffle : IChangeBigKeyShuffle
+[DependencyInjection]
+public sealed class ChangeBigKeyShuffle : IChangeBigKeyShuffle
 {
     private readonly IMode _mode;
 

@@ -5,13 +5,15 @@ using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Requirements.Aggregate;
 using OpenTracker.Models.Requirements.Alternative;
 using OpenTracker.Models.Requirements.Mode;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Locations.Map;
 
 /// <summary>
 /// This class contains the creation logic for <see cref="IMapLocation"/> objects.
 /// </summary>
-public class MapLocationFactory : IMapLocationFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class MapLocationFactory : IMapLocationFactory
 {
     private readonly IAlternativeRequirementDictionary _alternativeRequirements;
     private readonly IAggregateRequirementDictionary _aggregateRequirements;

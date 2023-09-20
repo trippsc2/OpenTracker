@@ -1,4 +1,4 @@
-using System.Diagnostics.CodeAnalysis;
+using OpenTracker.Utils.Autofac;
 using WebSocketSharp;
 
 namespace OpenTracker.Models.AutoTracking.SNESConnectors.Socket;
@@ -6,7 +6,7 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors.Socket;
 /// <summary>
 /// This class wraps the <see cref="MessageEventArgs"/> class to allow for unit testing.
 /// </summary>
-[ExcludeFromCodeCoverage]
+[DependencyInjection]
 public class MessageEventArgsWrapper : IMessageEventArgsWrapper
 {
     private readonly MessageEventArgs _messageEventArgs;

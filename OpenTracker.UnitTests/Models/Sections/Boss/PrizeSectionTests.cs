@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using FluentAssertions;
 using NSubstitute;
@@ -17,7 +18,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Sections.Boss;
 
-public class PrizeSectionTests
+[ExcludeFromCodeCoverage]
+public sealed class PrizeSectionTests
 {
     private readonly ISaveLoadManager _saveLoadManager = Substitute.For<ISaveLoadManager>();
 

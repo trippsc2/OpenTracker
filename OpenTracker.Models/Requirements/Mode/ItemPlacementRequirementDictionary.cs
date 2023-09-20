@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using OpenTracker.Models.Modes;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Requirements.Mode;
 
@@ -8,7 +9,8 @@ namespace OpenTracker.Models.Requirements.Mode;
 /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for the
 /// <see cref="IItemPlacementRequirement"/> objects indexed by <see cref="ItemPlacement"/>.
 /// </summary>
-public class ItemPlacementRequirementDictionary : LazyDictionary<ItemPlacement, IRequirement>, IItemPlacementRequirementDictionary
+[DependencyInjection(SingleInstance = true)]
+public sealed class ItemPlacementRequirementDictionary : LazyDictionary<ItemPlacement, IRequirement>, IItemPlacementRequirementDictionary
 {
     private readonly IItemPlacementRequirement.Factory _factory;
         

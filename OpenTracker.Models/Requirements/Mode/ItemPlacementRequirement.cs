@@ -1,12 +1,14 @@
 ﻿using System.ComponentModel;
 using OpenTracker.Models.Modes;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Requirements.Mode;
 
 /// <summary>
 /// This class contains <see cref="IMode.ItemPlacement"/> <see cref="IRequirement"/> data.
 /// </summary>
-public class ItemPlacementRequirement : BooleanRequirement, IItemPlacementRequirement
+[DependencyInjection]
+public sealed class ItemPlacementRequirement : BooleanRequirement, IItemPlacementRequirement
 {
     private readonly IMode _mode;
     private readonly ItemPlacement _expectedValue;

@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Modes;
@@ -6,7 +7,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Requirements.Mode;
 
-public class EntranceShuffleRequirementDictionaryTests
+[ExcludeFromCodeCoverage]
+public sealed class EntranceShuffleRequirementDictionaryTests
 {
     // ReSharper disable once CollectionNeverUpdated.Local
     private readonly EntranceShuffleRequirementDictionary _sut;

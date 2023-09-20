@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Accessibility;
@@ -14,7 +15,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Sections.Entrance;
 
-public class DropdownSectionTests
+[ExcludeFromCodeCoverage]
+public sealed class DropdownSectionTests
 {
     private readonly ISaveLoadManager _saveLoadManager = Substitute.For<ISaveLoadManager>();
     private readonly IMode _mode = Substitute.For<IMode>();

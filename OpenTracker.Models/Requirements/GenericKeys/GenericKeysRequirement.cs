@@ -1,12 +1,14 @@
 ﻿using System.ComponentModel;
 using OpenTracker.Models.Modes;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Requirements.GenericKeys;
 
 /// <summary>
 /// This class contains <see cref="IMode.GenericKeys"/> requirement data.
 /// </summary>
-public class GenericKeysRequirement : BooleanRequirement, IGenericKeysRequirement
+[DependencyInjection]
+public sealed class GenericKeysRequirement : BooleanRequirement, IGenericKeysRequirement
 {
     private readonly IMode _mode;
     private readonly bool _expectedValue;

@@ -11,13 +11,15 @@ using OpenTracker.Models.Requirements.Complex;
 using OpenTracker.Models.Requirements.Item;
 using OpenTracker.Models.Requirements.SequenceBreak;
 using OpenTracker.Models.SequenceBreaks;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Dungeons.Nodes.Factories;
 
 /// <summary>
 /// This class contains the creation logic for Palace of Darkness nodes.
 /// </summary>
-public class PoDDungeonNodeFactory : IPoDDungeonNodeFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class PoDDungeonNodeFactory : IPoDDungeonNodeFactory
 {
     private readonly IBossRequirementDictionary _bossRequirements;
     private readonly IComplexRequirementDictionary _complexRequirements;

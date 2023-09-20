@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.AutoTracking.Values;
@@ -12,7 +13,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Items.Keys;
 
-public class BigKeyItemTests
+[ExcludeFromCodeCoverage]
+public sealed class BigKeyItemTests
 {
     private readonly IMode _mode = Substitute.For<IMode>();
     private readonly ISaveLoadManager _saveLoadManager = Substitute.For<ISaveLoadManager>();

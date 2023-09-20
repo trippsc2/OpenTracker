@@ -1,5 +1,5 @@
-﻿using OpenTracker.Autofac;
-using OpenTracker.Utils;
+﻿using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.ViewModels.Markings.Images;
 

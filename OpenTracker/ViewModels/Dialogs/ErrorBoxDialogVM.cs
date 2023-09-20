@@ -1,6 +1,8 @@
 ﻿using System.Reactive;
-using OpenTracker.Autofac;
-using OpenTracker.Utils.Dialog;
+using System.Reactive.Linq;
+using System.Threading.Tasks;
+using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 using ReactiveUI;
 
 namespace OpenTracker.ViewModels.Dialogs;
@@ -9,7 +11,7 @@ namespace OpenTracker.ViewModels.Dialogs;
 /// This is the ViewModel for the error box dialog window.
 /// </summary>
 [DependencyInjection]
-public sealed class ErrorBoxDialogVM : DialogViewModelBase
+public sealed class ErrorBoxDialogVM : ViewModel
 {
     public string Title { get; }
     public string Text { get; }
@@ -29,17 +31,14 @@ public sealed class ErrorBoxDialogVM : DialogViewModelBase
     /// </param>
     public ErrorBoxDialogVM(string title, string text)
     {
-        OkCommand = ReactiveCommand.Create(Ok);
-
         Title = title;
         Text = text;
+        
+        OkCommand = ReactiveCommand.CreateFromTask(OkAsync);
     }
 
-    /// <summary>
-    /// Selects Ok to the dialog.
-    /// </summary>
-    private void Ok()
+    private async Task OkAsync()
     {
-        Close();
+        await RequestCloseInteraction.Handle(Unit.Default);
     }
 }

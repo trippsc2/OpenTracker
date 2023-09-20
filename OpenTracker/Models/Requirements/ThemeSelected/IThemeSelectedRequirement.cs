@@ -13,5 +13,5 @@ public interface IThemeSelectedRequirement : IRequirement
     /// <param name="expectedValue">
     ///     The expected theme value.
     /// </param>
-    delegate IThemeSelectedRequirement Factory(ITheme expectedValue);
+    delegate IThemeSelectedRequirement Factory(Theme expectedValue);
 }

@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Requirements.CompassShuffle;
@@ -5,7 +6,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Requirements.CompassShuffle;
 
-public class CompassShuffleRequirementDictionaryTests
+[ExcludeFromCodeCoverage]
+public sealed class CompassShuffleRequirementDictionaryTests
 {
     // ReSharper disable once CollectionNeverUpdated.Local
     private readonly CompassShuffleRequirementDictionary _sut;

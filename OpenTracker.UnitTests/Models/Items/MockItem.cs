@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.UndoRedo;
@@ -6,6 +7,7 @@ using ReactiveUI.Fody.Helpers;
 
 namespace OpenTracker.UnitTests.Models.Items;
 
+[ExcludeFromCodeCoverage]
 public sealed class MockItem : ReactiveObject, IItem
 {
     [Reactive]

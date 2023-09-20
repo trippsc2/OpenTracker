@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Requirements.TakeAnyLocations;
 
@@ -7,7 +8,8 @@ namespace OpenTracker.Models.Requirements.TakeAnyLocations;
 /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for
 /// <see cref="ITakeAnyLocationsRequirement"/> objects indexed by <see cref="bool"/>.
 /// </summary>
-public class TakeAnyLocationsRequirementDictionary : LazyDictionary<bool, IRequirement>,
+[DependencyInjection(SingleInstance = true)]
+public sealed class TakeAnyLocationsRequirementDictionary : LazyDictionary<bool, IRequirement>,
     ITakeAnyLocationsRequirementDictionary
 {
     private readonly ITakeAnyLocationsRequirement.Factory _factory;

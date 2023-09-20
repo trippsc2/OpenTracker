@@ -1,5 +1,5 @@
 using System.ComponentModel;
-using OpenTracker.Autofac;
+using OpenTracker.Utils.Autofac;
 using OpenTracker.Utils.Themes;
 
 namespace OpenTracker.Models.Requirements.ThemeSelected;
@@ -11,7 +11,7 @@ namespace OpenTracker.Models.Requirements.ThemeSelected;
 public sealed class ThemeSelectedRequirement : BooleanRequirement, IThemeSelectedRequirement
 {
     private readonly IThemeManager _themeManager;
-    private readonly ITheme _expectedValue;
+    private readonly Theme _expectedValue;
         
     /// <summary>
     ///     Constructor
@@ -22,7 +22,7 @@ public sealed class ThemeSelectedRequirement : BooleanRequirement, IThemeSelecte
     /// <param name="expectedValue">
     ///     The expected theme value.
     /// </param>
-    public ThemeSelectedRequirement(IThemeManager themeManager, ITheme expectedValue)
+    public ThemeSelectedRequirement(IThemeManager themeManager, Theme expectedValue)
     {
         _themeManager = themeManager;
         _expectedValue = expectedValue;

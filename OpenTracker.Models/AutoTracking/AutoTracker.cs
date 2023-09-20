@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Threading.Tasks;
 using OpenTracker.Models.AutoTracking.Memory;
 using OpenTracker.Models.AutoTracking.SNESConnectors;
+using OpenTracker.Utils.Autofac;
 using ReactiveUI;
 
 namespace OpenTracker.Models.AutoTracking;
@@ -11,7 +12,8 @@ namespace OpenTracker.Models.AutoTracking;
 /// <summary>
 /// This class contains auto-tracking logic and data.
 /// </summary>
-public class AutoTracker : ReactiveObject, IAutoTracker
+[DependencyInjection(SingleInstance = true)]
+public sealed class AutoTracker : ReactiveObject, IAutoTracker
 {
     private readonly IMemoryAddressProvider _memoryAddressProvider;
     private readonly ISNESConnector _snesConnector;

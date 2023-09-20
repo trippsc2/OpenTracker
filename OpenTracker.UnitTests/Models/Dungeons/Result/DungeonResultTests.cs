@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Accessibility;
@@ -7,7 +8,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Dungeons.Result;
 
-public class DungeonResultTests
+[ExcludeFromCodeCoverage]
+public sealed class DungeonResultTests
 {
     [Fact]
     public void Ctor_ShouldSetBossAccessibility()

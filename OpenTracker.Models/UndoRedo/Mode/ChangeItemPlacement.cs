@@ -1,11 +1,13 @@
 ﻿using OpenTracker.Models.Modes;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.UndoRedo.Mode;
 
 /// <summary>
 /// This class contains the <see cref="IUndoable"/> action to change the <see cref="IMode.ItemPlacement"/> property.
 /// </summary>
-public class ChangeItemPlacement : IChangeItemPlacement
+[DependencyInjection]
+public sealed class ChangeItemPlacement : IChangeItemPlacement
 {
     private readonly IMode _mode;
     private readonly ItemPlacement _newValue;

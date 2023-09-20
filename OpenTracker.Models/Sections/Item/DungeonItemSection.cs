@@ -8,13 +8,15 @@ using OpenTracker.Models.Markings;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.UndoRedo.Sections;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Sections.Item;
 
 /// <summary>
 /// This class contains dungeon item section data.
 /// </summary>
-public class DungeonItemSection : ItemSectionBase, IDungeonItemSection
+[DependencyInjection]
+public sealed class DungeonItemSection : ItemSectionBase, IDungeonItemSection
 {
     private readonly IDungeon _dungeon;
     private readonly IDungeonAccessibilityProvider _accessibilityProvider;

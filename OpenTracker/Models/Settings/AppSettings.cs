@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
 using System.Reflection;
-using OpenTracker.Autofac;
-using OpenTracker.Models.Accessibility;
+using Avalonia.Media;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
+using Reactive.Bindings;
 
 namespace OpenTracker.Models.Settings;
 
@@ -63,7 +64,7 @@ public sealed class AppSettings : IAppSettings
     /// </returns>
     public AppSettingsSaveData Save()
     {
-        return new()
+        return new AppSettingsSaveData
         {
             Version = Assembly.GetExecutingAssembly().GetName().Version!,
             Maximized = Bounds.Maximized,
@@ -82,10 +83,12 @@ public sealed class AppSettings : IAppSettings
             HorizontalItemsPlacement = Layout.HorizontalItemsPlacement,
             VerticalItemsPlacement = Layout.VerticalItemsPlacement,
             UIScale = Layout.UIScale,
-            EmphasisFontColor = Colors.EmphasisFontColor,
-            ConnectorColor = Colors.ConnectorColor,
-            AccessibilityColors =
-                new Dictionary<AccessibilityLevel, string>(Colors.AccessibilityColors)
+            EmphasisFontColor = Colors.EmphasisFontColor.Value.ToString()?.ToLowerInvariant(),
+            ConnectorColor = Colors.ConnectorColor.Value.ToString()?.ToLowerInvariant(),
+            AccessibilityColors = Colors.AccessibilityColors
+                .ToDictionary(
+                    x => x.Key,
+                    x => x.Value.Value.ToString()!.ToLowerInvariant())
         };
     }
 
@@ -129,12 +132,12 @@ public sealed class AppSettings : IAppSettings
 
         if (saveData.EmphasisFontColor != null)
         {
-            Colors.EmphasisFontColor = saveData.EmphasisFontColor;
+            Colors.EmphasisFontColor.Value = SolidColorBrush.Parse(saveData.EmphasisFontColor);
         }
 
         if (saveData.ConnectorColor != null)
         {
-            Colors.ConnectorColor = saveData.ConnectorColor;
+            Colors.ConnectorColor.Value = SolidColorBrush.Parse(saveData.ConnectorColor);
         }
 
         if (saveData.AccessibilityColors == null)
@@ -144,13 +147,15 @@ public sealed class AppSettings : IAppSettings
 
         foreach (var color in saveData.AccessibilityColors)
         {
-            if (Colors.AccessibilityColors.ContainsKey(color.Key))
+            if (Colors.AccessibilityColors.TryGetValue(color.Key, out var accessibilityColor))
             {
-                Colors.AccessibilityColors[color.Key] = color.Value;
+                accessibilityColor.Value = SolidColorBrush.Parse(color.Value);
             }
             else
             {
-                Colors.AccessibilityColors.Add(color);
+                Colors.AccessibilityColors.Add(
+                    color.Key,
+                    new ReactiveProperty<SolidColorBrush> { Value = SolidColorBrush.Parse(color.Value) });
             }
         }
     }

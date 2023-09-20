@@ -1,12 +1,14 @@
 ﻿using System.ComponentModel;
 using OpenTracker.Models.Dungeons.KeyDoors;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Requirements.KeyDoor;
 
 /// <summary>
 /// This class contains <see cref="IKeyDoor"/> <see cref="IRequirement"/> data.
 /// </summary>
-public class KeyDoorRequirement : BooleanRequirement, IKeyDoorRequirement
+[DependencyInjection]
+public sealed class KeyDoorRequirement : BooleanRequirement, IKeyDoorRequirement
 {
     private readonly IKeyDoor _keyDoor;
 

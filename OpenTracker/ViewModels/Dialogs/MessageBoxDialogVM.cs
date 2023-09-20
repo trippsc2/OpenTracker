@@ -1,8 +1,8 @@
 ﻿using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
-using OpenTracker.Autofac;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 using ReactiveUI;
 
 namespace OpenTracker.ViewModels.Dialogs;
@@ -32,24 +32,18 @@ public sealed class MessageBoxDialogVM : ViewModel
     /// </param>
     public MessageBoxDialogVM(string title, string text)
     {
-        YesCommand = ReactiveCommand.CreateFromTask(YesAsync);
-        NoCommand = ReactiveCommand.CreateFromTask(NoAsync);
-
         Title = title;
         Text = text;
+        
+        YesCommand = ReactiveCommand.CreateFromTask(YesAsync);
+        NoCommand = ReactiveCommand.CreateFromTask(NoAsync);
     }
 
-    /// <summary>
-    /// Selects Yes to the dialog.
-    /// </summary>
     private async Task YesAsync()
     {
         await RequestCloseInteraction.Handle(true);
     }
 
-    /// <summary>
-    /// Selects No to the dialog.
-    /// </summary>
     private async Task NoAsync()
     {
         await RequestCloseInteraction.Handle(false);

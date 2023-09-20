@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using OpenTracker.Autofac;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Requirements.GenericKeys;
 using OpenTracker.Models.Sections.Boss;
+using OpenTracker.Utils.Autofac;
 using OpenTracker.ViewModels.Items.Adapters;
 
 namespace OpenTracker.ViewModels.Items;
@@ -176,11 +176,8 @@ public sealed class ItemVMFactory : IItemVMFactory
         var itemType = Enum.Parse<ItemType>(type.ToString());
 
         return _itemFactory(_pairFactory(
-            new[]
-            {
-                (ICappedItem) _items[itemType],
-                (ICappedItem) _items[itemType + 1]
-            },
+            (ICappedItem) _items[itemType],
+            (ICappedItem) _items[itemType + 1],
             $"avares://OpenTracker/Assets/Images/Items/{type.ToString().ToLowerInvariant()}"));
     }
 

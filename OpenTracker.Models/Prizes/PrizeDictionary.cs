@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using OpenTracker.Models.Items;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Prizes;
 
@@ -8,7 +9,8 @@ namespace OpenTracker.Models.Prizes;
 /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for <see cref="IItem"/> indexed by
 /// <see cref="PrizeType"/>.
 /// </summary>
-public class PrizeDictionary : LazyDictionary<PrizeType, IItem>, IPrizeDictionary
+[DependencyInjection(SingleInstance = true)]
+public sealed class PrizeDictionary : LazyDictionary<PrizeType, IItem>, IPrizeDictionary
 {
     private readonly IItem.Factory _factory;
 

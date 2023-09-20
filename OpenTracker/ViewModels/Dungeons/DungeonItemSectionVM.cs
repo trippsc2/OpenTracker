@@ -1,16 +1,19 @@
-﻿using System.ComponentModel;
-using System.Globalization;
+﻿using System;
 using System.Reactive;
-using System.Threading.Tasks;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using Avalonia.Input;
-using Avalonia.Threading;
-using OpenTracker.Autofac;
+using Avalonia.Media;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Sections;
 using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
+using Reactive.Bindings;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
+using ReactiveCommand = ReactiveUI.ReactiveCommand;
 
 namespace OpenTracker.ViewModels.Dungeons;
 
@@ -20,25 +23,23 @@ namespace OpenTracker.ViewModels.Dungeons;
 [DependencyInjection]
 public sealed class DungeonItemSectionVM : ViewModel, IDungeonItemSectionVM
 {
-    private readonly IColorSettings _colorSettings;
+    private static readonly SolidColorBrush NormalFontColor = SolidColorBrush.Parse("#ffffff");
+    
     private readonly IUndoRedoManager _undoRedoManager;
 
-    private readonly ISection _section;
+    private IColorSettings ColorSettings { get; }
+    private ISection Section { get; }
+    
+    [ObservableAsProperty]
+    public ReactiveProperty<SolidColorBrush> AccessibilityColor { get; } = default!;
+    [ObservableAsProperty]
+    public SolidColorBrush FontColor { get; } = NormalFontColor;
+    [ObservableAsProperty]
+    public string ImageSource { get; } = "avares://OpenTracker/Assets/Images/chest0.png";
+    [ObservableAsProperty]
+    public string NumberString { get; } = "0";
 
-    public string FontColor =>
-        _section.Available == 0 ? "#ffffffff" : _colorSettings.AccessibilityColors[_section.Accessibility];
-    public string ImageSource =>
-        "avares://OpenTracker/Assets/Images/chest" +
-        (_section.IsAvailable() ? _section.Accessibility switch
-        {
-            AccessibilityLevel.None => "0",
-            AccessibilityLevel.Inspect => "0",
-            _ => "1"
-        } : "2") + ".png";
-
-    public string NumberString => _section.Available.ToString(CultureInfo.InvariantCulture);
-        
-    public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
+    public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
 
     /// <summary>
     /// Constructor
@@ -54,75 +55,45 @@ public sealed class DungeonItemSectionVM : ViewModel, IDungeonItemSectionVM
     /// </param>
     public DungeonItemSectionVM(IColorSettings colorSettings, IUndoRedoManager undoRedoManager, ISection section)
     {
-        _colorSettings = colorSettings;
-
-        _section = section;
         _undoRedoManager = undoRedoManager;
+        ColorSettings = colorSettings;
+        Section = section;
+        
+        HandleClickCommand = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClick);
 
-        HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
-            
-        _colorSettings.AccessibilityColors.PropertyChanged += OnColorChanged;
-        _section.PropertyChanged += OnSectionChanged;
-    }
-
-    /// <summary>
-    /// Subscribes to the PropertyChanged event on the ObservableCollection class for the
-    /// accessibility colors.
-    /// </summary>
-    /// <param name="sender">
-    /// The sending object of the event.
-    /// </param>
-    /// <param name="e">
-    /// The arguments of the PropertyChanged event.
-    /// </param>
-    private async void OnColorChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        await UpdateTextColor();
-    }
-
-    /// <summary>
-    /// Subscribes to the PropertyChanged event on the ISection interface.
-    /// </summary>
-    /// <param name="sender">
-    /// The sending object of the event.
-    /// </param>
-    /// <param name="e">
-    /// The arguments of the PropertyChanged event.
-    /// </param>
-    private async void OnSectionChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        switch (e.PropertyName)
+        this.WhenActivated(disposables =>
         {
-            case nameof(ISection.Accessibility):
-            {
-                await UpdateTextColor();
-                await UpdateImage();
-            }
-                break;
-            case nameof(ISection.Available):
-            {
-                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(NumberString)));
-                await UpdateTextColor();
-                await UpdateImage();
-            }
-                break;
-        }
-    }
-
-    /// <summary>
-    /// Raises the PropertyChanged event for the FontColor property.
-    /// </summary>
-    private async Task UpdateTextColor()
-    {
-        await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(FontColor)));
-    }
-
-    /// <summary>
-    /// Raises the PropertyChanged event for the ImageSource property.
-    /// </summary>
-    private async Task UpdateImage()
-    {
-        await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(ImageSource)));
+            this.WhenAnyValue(x => x.Section.Accessibility)
+                .Select(x => ColorSettings.AccessibilityColors[x])
+                .ToPropertyEx(this, x => x.AccessibilityColor)
+                .DisposeWith(disposables);
+            this.WhenAnyValue(
+                    x => x.Section.Available,
+                    x => x.Section.Accessibility,
+                    x => x.AccessibilityColor,
+                    x => x.AccessibilityColor.Value,
+                    (available, _, _, color) => available == 0 ? NormalFontColor : color)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .ToPropertyEx(this, x => x.FontColor)
+                .DisposeWith(disposables);
+            this.WhenAnyValue(
+                    x => x.Section.Available,
+                    x => x.Section.Accessibility,
+                    (_, accessibility) =>
+                        Section.IsAvailable()
+                            ? accessibility is AccessibilityLevel.None or AccessibilityLevel.Inspect
+                                ? "avares://OpenTracker/Assets/Images/chest0.png"
+                                : "avares://OpenTracker/Assets/Images/chest1.png"
+                            : "avares://OpenTracker/Assets/Images/chest2.png")
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .ToPropertyEx(this, x => x.ImageSource)
+                .DisposeWith(disposables);
+            this.WhenAnyValue(x => x.Section.Available)
+                .Select(x => x.ToString())
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .ToPropertyEx(this, x => x.NumberString)
+                .DisposeWith(disposables);
+        });
     }
 
     /// <summary>
@@ -133,7 +104,7 @@ public sealed class DungeonItemSectionVM : ViewModel, IDungeonItemSectionVM
     /// </param>
     private void CollectSection(bool force)
     {
-        _undoRedoManager.NewAction(_section.CreateCollectSectionAction(force));
+        _undoRedoManager.NewAction(Section.CreateCollectSectionAction(force));
     }
 
     /// <summary>
@@ -141,7 +112,7 @@ public sealed class DungeonItemSectionVM : ViewModel, IDungeonItemSectionVM
     /// </summary>
     private void UncollectSection()
     {
-        _undoRedoManager.NewAction(_section.CreateUncollectSectionAction());
+        _undoRedoManager.NewAction(Section.CreateUncollectSectionAction());
     }
 
     /// <summary>
@@ -150,7 +121,8 @@ public sealed class DungeonItemSectionVM : ViewModel, IDungeonItemSectionVM
     /// <param name="e">
     /// The pointer released event args.
     /// </param>
-    private void HandleClickImpl(PointerReleasedEventArgs e)
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
+    private void HandleClick(PointerReleasedEventArgs e)
     {
         switch (e.InitialPressMouseButton)
         {
@@ -159,6 +131,12 @@ public sealed class DungeonItemSectionVM : ViewModel, IDungeonItemSectionVM
                 break;
             case MouseButton.Right:
                 UncollectSection();
+                break;
+            case MouseButton.None:
+            case MouseButton.Middle:
+            case MouseButton.XButton1:
+            case MouseButton.XButton2:
+            default:
                 break;
         }
     }

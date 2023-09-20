@@ -1,10 +1,12 @@
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using OpenTracker.Utils;
 using Xunit;
 
 namespace OpenTracker.UnitTests.Utils;
 
-public class ConstrainedTaskSchedulerTests
+[ExcludeFromCodeCoverage]
+public sealed class ConstrainedTaskSchedulerTests
 {
     [Fact]
     public void AutofacTest()

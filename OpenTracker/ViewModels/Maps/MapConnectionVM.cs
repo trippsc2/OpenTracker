@@ -1,19 +1,19 @@
-﻿using System.ComponentModel;
-using System.Reactive;
-using System.Threading.Tasks;
+﻿using System.Reactive;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using Avalonia;
 using Avalonia.Input;
 using Avalonia.Layout;
-using Avalonia.Threading;
-using OpenTracker.Autofac;
+using Avalonia.Media;
 using OpenTracker.Models.Locations.Map;
 using OpenTracker.Models.Locations.Map.Connections;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
-using OpenTracker.ViewModels.Areas;
+using OpenTracker.Utils.Autofac;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 
 namespace OpenTracker.ViewModels.Maps;
 
@@ -23,199 +23,113 @@ namespace OpenTracker.ViewModels.Maps;
 [DependencyInjection]
 public sealed class MapConnectionVM : ViewModel, IMapConnectionVM
 {
-    private readonly IColorSettings _colorSettings;
-    private readonly IMode _mode;
+    private static readonly SolidColorBrush HighlightedColor = SolidColorBrush.Parse("#ffffff");
+    
     private readonly IUndoRedoManager _undoRedoManager;
 
-    private readonly IMapAreaVM _mapArea;
+    private IColorSettings ColorSettings { get; }
+    private ILayoutSettings LayoutSettings { get; }
+    private IMode Mode { get; }
+    private IMapConnection Connection { get; }
 
-    private readonly IMapConnection _connection;
+    public object Model => Connection;
 
-    private bool _highlighted;
-    public bool Highlighted
-    {
-        get => _highlighted;
-        private set => this.RaiseAndSetIfChanged(ref _highlighted, value);
-    }
+    [Reactive]
+    private bool Highlighted { get; set; }
+    [ObservableAsProperty]
+    public bool Visible { get; }
+    [ObservableAsProperty]
+    public Point Start { get; }
+    [ObservableAsProperty]
+    public Point End { get; }
+    [ObservableAsProperty]
+    public SolidColorBrush Color { get; } = HighlightedColor;
 
-    public bool Visible => _mode.EntranceShuffle > EntranceShuffle.None;
-
-    public object Model => _connection;
-
-    public Point Start => _mapArea.Orientation switch
-    {
-        Orientation.Vertical => _connection.Location1.Map == MapID.DarkWorld ?
-            new Point(_connection.Location1.X + 23, _connection.Location1.Y + 2046) :
-            new Point(_connection.Location1.X + 23, _connection.Location1.Y + 13),
-        _ => _connection.Location1.Map == MapID.DarkWorld ?
-            new Point(_connection.Location1.X + 2046, _connection.Location1.Y + 23) :
-            new Point(_connection.Location1.X + 13, _connection.Location1.Y + 23)
-    };
-    public Point End =>
-        _mapArea.Orientation switch
-        {
-            Orientation.Vertical => _connection.Location2.Map == MapID.DarkWorld ?
-                new Point(_connection.Location2.X + 23, _connection.Location2.Y + 2046) :
-                new Point(_connection.Location2.X + 23, _connection.Location2.Y + 13),
-            _ => _connection.Location2.Map == MapID.DarkWorld ?
-                new Point(_connection.Location2.X + 2046, _connection.Location2.Y + 23) :
-                new Point(_connection.Location2.X + 13, _connection.Location2.Y + 23)
-        };
-    public string Color => Highlighted ? "#ffffffff" : _colorSettings.ConnectorColor;
-        
-    public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
-    public ReactiveCommand<PointerEventArgs, Unit> HandlePointerEnter { get; }
-    public ReactiveCommand<PointerEventArgs, Unit> HandlePointerLeave { get; }
+    public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
+    public ReactiveCommand<PointerEventArgs, Unit> HandlePointerEnterCommand { get; }
+    public ReactiveCommand<PointerEventArgs, Unit> HandlePointerLeaveCommand { get; }
 
     /// <summary>
     /// Constructor
     /// </summary>
     /// <param name="colorSettings">
-    /// The color settings data.
+    ///     The color settings data.
     /// </param>
+    /// <param name="layoutSettings"></param>
     /// <param name="mode">
-    /// The mode settings.
+    ///     The mode settings.
     /// </param>
     /// <param name="undoRedoManager">
-    /// The undo/redo manager.
+    ///     The undo/redo manager.
     /// </param>
     /// <param name="connection">
-    /// The connection data.
-    /// </param>
-    /// <param name="mapArea">
-    /// The map area ViewModel parent class.
+    ///     The connection data.
     /// </param>
     public MapConnectionVM(
-        IColorSettings colorSettings, IMode mode, IUndoRedoManager undoRedoManager, IMapAreaVM mapArea,
+        IColorSettings colorSettings,
+        ILayoutSettings layoutSettings,
+        IMode mode,
+        IUndoRedoManager undoRedoManager,
         IMapConnection connection)
     {
-        _colorSettings = colorSettings;
-        _mode = mode;
-        _mapArea = mapArea;
-
-        _connection = connection;
         _undoRedoManager = undoRedoManager;
-
-        HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
-        HandlePointerEnter = ReactiveCommand.Create<PointerEventArgs>(HandlePointerEnterImpl);
-        HandlePointerLeave = ReactiveCommand.Create<PointerEventArgs>(HandlePointerLeaveImpl);
-
-        PropertyChanged += OnPropertyChanged;
-        _mapArea.PropertyChanged += OnMapAreaChanged;
-        _mode.PropertyChanged += OnModeChanged;
-        _colorSettings.PropertyChanged += OnColorsChanged;
-    }
-
-    /// <summary>
-    /// Subscribes to the PropertyChanged event on itself.
-    /// </summary>
-    /// <param name="sender">
-    /// The sending object of the event.
-    /// </param>
-    /// <param name="e">
-    /// The arguments of the PropertyChanged event.
-    /// </param>
-    private async void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName == nameof(Highlighted))
+        ColorSettings = colorSettings;
+        LayoutSettings = layoutSettings;
+        Mode = mode;
+        Connection = connection;
+        
+        HandleClickCommand = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClick);
+        HandlePointerEnterCommand = ReactiveCommand.Create<PointerEventArgs>(HandlePointerEnter);
+        HandlePointerLeaveCommand = ReactiveCommand.Create<PointerEventArgs>(HandlePointerLeave);
+        
+        this.WhenActivated(disposables =>
         {
-            await UpdateColor();
-        }
+            this.WhenAnyValue(x => x.Mode.EntranceShuffle)
+                .Select(x => x > EntranceShuffle.None)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .ToPropertyEx(this, x => x.Visible)
+                .DisposeWith(disposables);
+            this.WhenAnyValue(
+                    x => x.LayoutSettings.CurrentMapOrientation,
+                    x => x.Connection.Location1.Map,
+                    x => x.Connection.Location1.X,
+                    x => x.Connection.Location1.Y,
+                    (orientation, map, x, y) => orientation == Orientation.Vertical
+                        ? map == MapID.DarkWorld
+                            ? new Point(x + 23, y + 2046)
+                            : new Point(x + 23, y + 13)
+                        : map == MapID.DarkWorld
+                            ? new Point(x + 2046, y + 23)
+                            : new Point(x + 13, y + 23))
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .ToPropertyEx(this, x => x.Start)
+                .DisposeWith(disposables);
+            this.WhenAnyValue(
+                    x => x.LayoutSettings.CurrentMapOrientation,
+                    x => x.Connection.Location2.Map,
+                    x => x.Connection.Location2.X,
+                    x => x.Connection.Location2.Y,
+                    (orientation, map, x, y) => orientation == Orientation.Vertical
+                        ? map == MapID.DarkWorld
+                            ? new Point(x + 23, y + 2046)
+                            : new Point(x + 23, y + 13)
+                        : map == MapID.DarkWorld
+                            ? new Point(x + 2046, y + 23)
+                            : new Point(x + 13, y + 23))
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .ToPropertyEx(this, x => x.End)
+                .DisposeWith(disposables);
+            this.WhenAnyValue(
+                    x => x.Highlighted,
+                    x => x.ColorSettings.ConnectorColor.Value,
+                    (highlighted, color) => highlighted ? HighlightedColor : color)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .ToPropertyEx(this, x => x.Color)
+                .DisposeWith(disposables);
+        });
     }
 
-    /// <summary>
-    /// Subscribes to the PropertyChanged event on the MapAreaControlVM class.
-    /// </summary>
-    /// <param name="sender">
-    /// The sending object of the event.
-    /// </param>
-    /// <param name="e">
-    /// The arguments of the PropertyChanged event.
-    /// </param>
-    private async void OnMapAreaChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName == nameof(MapAreaVM.Orientation))
-        {
-            await Dispatcher.UIThread.InvokeAsync(() =>
-            {
-                this.RaisePropertyChanged(nameof(Start));
-                this.RaisePropertyChanged(nameof(End));
-            });             }
-    }
-
-    /// <summary>
-    /// Subscribes to the PropertyChanged event on the Mode class.
-    /// </summary>
-    /// <param name="sender">
-    /// The sending object of the event.
-    /// </param>
-    /// <param name="e">
-    /// The arguments of the PropertyChanged event.
-    /// </param>
-    private async void OnModeChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName == nameof(Mode.EntranceShuffle))
-        {
-            await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Visible)));
-        }
-    }
-
-    /// <summary>
-    /// Subscribes to the PropertyChanged event on the ColorSettings class.
-    /// </summary>
-    /// <param name="sender">
-    /// The sending object of the event.
-    /// </param>
-    /// <param name="e">
-    /// The arguments of the PropertyChanged event.
-    /// </param>
-    private async void OnColorsChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName == nameof(ColorSettings.ConnectorColor))
-        {
-            await UpdateColor();
-        }
-    }
-
-    /// <summary>
-    /// Raises the PropertyChanged event for the Color property.
-    /// </summary>
-    private async Task UpdateColor()
-    {
-        await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Color)));
-    }
-
-    /// <summary>
-    /// Creates an undoable action to remove the connection and sends it to the undo/redo manager.
-    /// </summary>
-    private void RemoveConnection()
-    {
-        _undoRedoManager.NewAction(_connection.CreateRemoveConnectionAction());
-    }
-
-    /// <summary>
-    /// Highlights the control.
-    /// </summary>
-    private void Highlight()
-    {
-        Highlighted = true;
-    }
-
-    /// <summary>
-    /// Un-highlights the control.
-    /// </summary>
-    private void Unhighlight()
-    {
-        Highlighted = false;
-    }
-
-    /// <summary>
-    /// Handles clicking the control.
-    /// </summary>
-    /// <param name="e">
-    /// The pointer released event args.
-    /// </param>
-    private void HandleClickImpl(PointerReleasedEventArgs e)
+    private void HandleClick(PointerReleasedEventArgs e)
     {
         if (e.InitialPressMouseButton == MouseButton.Right)
         {
@@ -223,25 +137,18 @@ public sealed class MapConnectionVM : ViewModel, IMapConnectionVM
         }
     }
 
-    /// <summary>
-    /// Handles pointer entering the control.
-    /// </summary>
-    /// <param name="e">
-    /// The PointerEnter event args.
-    /// </param>
-    private void HandlePointerEnterImpl(PointerEventArgs e)
+    private void HandlePointerEnter(PointerEventArgs e)
     {
-        Highlight();
+        Highlighted = true;
     }
 
-    /// <summary>
-    /// Handles pointer leaving the control.
-    /// </summary>
-    /// <param name="e">
-    /// The PointerLeave event args.
-    /// </param>
-    private void HandlePointerLeaveImpl(PointerEventArgs e)
+    private void HandlePointerLeave(PointerEventArgs e)
     {
-        Unhighlight();
+        Highlighted = false;
+    }
+
+    private void RemoveConnection()
+    {
+        _undoRedoManager.NewAction(Connection.CreateRemoveConnectionAction());
     }
 }

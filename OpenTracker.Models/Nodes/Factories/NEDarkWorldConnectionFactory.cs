@@ -8,13 +8,15 @@ using OpenTracker.Models.Requirements.Complex;
 using OpenTracker.Models.Requirements.Item;
 using OpenTracker.Models.Requirements.Item.Prize;
 using OpenTracker.Models.Requirements.Mode;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Nodes.Factories;
 
 /// <summary>
 /// This class contains the creation logic for northeast dark world <see cref="INodeConnection"/> objects.
 /// </summary>
-public class NEDarkWorldConnectionFactory : INEDarkWorldConnectionFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class NEDarkWorldConnectionFactory : INEDarkWorldConnectionFactory
 {
     private readonly IComplexRequirementDictionary _complexRequirements;
     private readonly IItemRequirementDictionary _itemRequirements;

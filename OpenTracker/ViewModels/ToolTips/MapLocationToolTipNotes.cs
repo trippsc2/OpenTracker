@@ -1,7 +1,7 @@
-﻿using OpenTracker.Autofac;
-using OpenTracker.Models.Locations;
+﻿using OpenTracker.Models.Locations;
 using OpenTracker.Models.Markings;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.ViewModels.ToolTips;
 

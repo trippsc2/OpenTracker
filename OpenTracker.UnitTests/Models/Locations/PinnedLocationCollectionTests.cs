@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Locations;
@@ -6,7 +7,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Locations;
 
-public class PinnedLocationCollectionTests
+[ExcludeFromCodeCoverage]
+public sealed class PinnedLocationCollectionTests
 {
     private readonly ILocationDictionary _locations = Substitute.For<ILocationDictionary>();
 

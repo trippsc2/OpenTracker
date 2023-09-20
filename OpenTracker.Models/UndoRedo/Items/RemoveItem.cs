@@ -1,11 +1,13 @@
 ﻿using OpenTracker.Models.Items;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.UndoRedo.Items;
 
 /// <summary>
 /// This class contains the <see cref="IUndoable"/> action to remove an <see cref="IItem"/>.
 /// </summary>
-public class RemoveItem : IRemoveItem
+[DependencyInjection]
+public sealed class RemoveItem : IRemoveItem
 {
     private readonly IItem _item;
 

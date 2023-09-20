@@ -1,12 +1,14 @@
-using System.ComponentModel;
 using System.Reactive;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using Avalonia.Input;
-using Avalonia.Threading;
-using OpenTracker.Autofac;
+using Avalonia.Media;
 using OpenTracker.Models.BossPlacements;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 using OpenTracker.ViewModels.BossSelect;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 
 namespace OpenTracker.ViewModels.Items.Adapters;
 
@@ -16,19 +18,16 @@ namespace OpenTracker.ViewModels.Items.Adapters;
 [DependencyInjection]
 public sealed class BossAdapter : ViewModel, IItemAdapter
 {
-    private readonly IBossPlacement _bossPlacement;
-        
-    public string ImageSource =>
-        "avares://OpenTracker/Assets/Images/Bosses/" +
-        (_bossPlacement.Boss.HasValue ? $"{_bossPlacement.Boss.ToString()!.ToLowerInvariant()}1" : 
-            $"{_bossPlacement.DefaultBoss.ToString().ToLowerInvariant()}0") + ".png";
+    private IBossPlacement BossPlacement { get; }
 
-    public string? Label { get; } = null;
-    public string LabelColor { get; } = "#ffffffff";
-        
-    public IBossSelectPopupVM? BossSelect { get; }
-        
-    public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
+    public string? Label => null;
+    public SolidColorBrush? LabelColor => null;
+    public BossSelectPopupVM? BossSelect { get; }
+
+    [ObservableAsProperty]
+    public string ImageSource { get; } = string.Empty;
+    
+    public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
 
     public delegate BossAdapter Factory(IBossPlacement bossPlacement);
 
@@ -41,59 +40,33 @@ public sealed class BossAdapter : ViewModel, IItemAdapter
     /// <param name="bossPlacement">
     /// The boss placement to be represented.
     /// </param>
-    public BossAdapter(IBossSelectPopupVM.Factory bossSelectFactory, IBossPlacement bossPlacement)
+    public BossAdapter(BossSelectPopupVM.Factory bossSelectFactory, IBossPlacement bossPlacement)
     {
-        _bossPlacement = bossPlacement;
-            
-        BossSelect = bossSelectFactory(_bossPlacement);
-            
-        HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
+        BossPlacement = bossPlacement;
+        BossSelect = bossSelectFactory(BossPlacement);
 
-        _bossPlacement.PropertyChanged += OnBossChanged;
-    }
+        HandleClickCommand = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClick);
         
-
-    /// <summary>
-    /// Subscribes to the PropertyChanged event on the ISection interface.
-    /// </summary>
-    /// <param name="sender">
-    /// The sending object of the event.
-    /// </param>
-    /// <param name="e">
-    /// The arguments of the PropertyChanged event.
-    /// </param>
-    private async void OnBossChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName == nameof(IBossPlacement.Boss))
+        this.WhenActivated(disposables =>
         {
-            await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(ImageSource)));
-        }
+            this.WhenAnyValue(x => x.BossPlacement.Boss)
+                .Select(_ =>
+                    BossPlacement.Boss is null
+                        ? $"avares://OpenTracker/Assets/Images/Bosses/{BossPlacement.DefaultBoss.ToString().ToLowerInvariant()}0.png"
+                        : $"avares://OpenTracker/Assets/Images/Bosses/{BossPlacement.Boss.ToString()!.ToLowerInvariant()}1.png")
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .ToPropertyEx(this, x => x.ImageSource)
+                .DisposeWith(disposables);
+        });
     }
 
-    /// <summary>
-    /// Opens the boss select popup.
-    /// </summary>
-    private void OpenBossSelect()
+    private void HandleClick(PointerReleasedEventArgs e)
     {
-        if (BossSelect is null)
+        if (e.InitialPressMouseButton != MouseButton.Left || BossSelect is null)
         {
             return;
         }
-            
-        BossSelect.PopupOpen = true;
-    }
 
-    /// <summary>
-    /// Handles clicking the control.
-    /// </summary>
-    /// <param name="e">
-    /// The pointer released event args.
-    /// </param>
-    private void HandleClickImpl(PointerReleasedEventArgs e)
-    {
-        if (e.InitialPressMouseButton == MouseButton.Left)
-        {
-            OpenBossSelect();
-        }
+        BossSelect.PopupOpen = true;
     }
 }

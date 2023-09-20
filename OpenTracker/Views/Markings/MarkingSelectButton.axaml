@@ -1,20 +1,23 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:vm="clr-namespace:OpenTracker.ViewModels.Markings;assembly=OpenTracker"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" x:Class="OpenTracker.Views.Markings.MarkingSelectButton">
+             xmlns:vm="clr-namespace:OpenTracker.ViewModels.Markings"
+             mc:Ignorable="d" x:Class="OpenTracker.Views.Markings.MarkingSelectButton"
+             x:DataType="vm:MarkingSelectButtonVM" x:CompileBindings="True" >
+  <UserControl.Styles>
+    <Style Selector="Button.MarkingSelect">
+      <Setter Property="Background" Value="{DynamicResource ThemeBackgroundBrush}" />
+      <Setter Property="BorderThickness" Value="0" />
+    </Style>
+    
+    <Style Selector="ContentControl.MarkingSelect">
+      <Setter Property="Height" Value="32" />
+      <Setter Property="Width" Value="32" />
+    </Style>
+  </UserControl.Styles>
   
-  <Design.DataContext>
-    <vm:MarkingSelectButtonVM />
-  </Design.DataContext>
-  
-  <Button Background="{DynamicResource ThemeBackgroundBrush}" BorderThickness="0"
-          CommandParameter="{Binding Marking}">
-    <Button.Command>
-      <Binding Path="$parent[ItemsControl].DataContext.ChangeMarking" />
-    </Button.Command>
-    <ContentControl Content="{Binding Image}"
-                    Height="32" Width="32" />
+  <Button Classes="MarkingSelect" Command="{Binding ChangeMarkCommand}" >
+    <ContentControl Classes="MarkingSelect" Content="{Binding Image}" />
   </Button>
 </UserControl>

@@ -1,12 +1,14 @@
 ﻿using System.ComponentModel;
 using OpenTracker.Models.Modes;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Requirements.GuaranteedBossItems;
 
 /// <summary>
 /// This class contains <see cref="IMode.GuaranteedBossItems"/> requirement data.
 /// </summary>
-public class GuaranteedBossItemsRequirement : BooleanRequirement, IGuaranteedBossItemsRequirement
+[DependencyInjection]
+public sealed class GuaranteedBossItemsRequirement : BooleanRequirement, IGuaranteedBossItemsRequirement
 {
     private readonly IMode _mode;
     private readonly bool _expectedValue;

@@ -1,21 +1,14 @@
 using Avalonia.Styling;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Utils.Themes;
 
 /// <summary>
 /// This class contains theme data.
 /// </summary>
-public class Theme : ITheme
+[DependencyInjection]
+public sealed class Theme
 {
-    public string Name { get; }
-    public IStyle Style { get; }
-
-    /// <summary>
-    /// This class contains theme data.
-    /// </summary>
-    public Theme(string name, IStyle style)
-    {
-        Name = name;
-        Style = style;
-    }
+    public required string Name { get; init; }
+    public required IStyle Style { get; init; }
 }

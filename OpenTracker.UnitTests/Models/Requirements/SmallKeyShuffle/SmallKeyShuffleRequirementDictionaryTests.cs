@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Requirements.SmallKeyShuffle;
@@ -5,7 +6,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Requirements.SmallKeyShuffle;
 
-public class SmallKeyShuffleRequirementDictionaryTests
+[ExcludeFromCodeCoverage]
+public sealed class SmallKeyShuffleRequirementDictionaryTests
 {
     // ReSharper disable once CollectionNeverUpdated.Local
     private readonly SmallKeyShuffleRequirementDictionary _sut;

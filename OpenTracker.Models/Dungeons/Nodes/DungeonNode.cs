@@ -5,6 +5,7 @@ using OpenTracker.Models.Dungeons.Mutable;
 using OpenTracker.Models.Dungeons.Nodes.Factories;
 using OpenTracker.Models.Nodes;
 using OpenTracker.Models.Nodes.Connections;
+using OpenTracker.Utils.Autofac;
 using ReactiveUI;
 
 namespace OpenTracker.Models.Dungeons.Nodes;
@@ -12,7 +13,8 @@ namespace OpenTracker.Models.Dungeons.Nodes;
 /// <summary>
 /// This class contains the dungeon requirement node data.
 /// </summary>
-public class DungeonNode : ReactiveObject, IDungeonNode
+[DependencyInjection]
+public sealed class DungeonNode : ReactiveObject, IDungeonNode
 {
     private readonly IDungeonNodeFactory _factory;
     private readonly IMutableDungeon _dungeonData;

@@ -8,13 +8,11 @@ namespace OpenTracker.ViewModels.Menus;
 /// </summary>
 public interface ITopMenuVM
 {
-    ReactiveCommand<Unit, Unit> Reset { get; }
-    ReactiveCommand<Unit, Unit> Undo { get; }
-    ReactiveCommand<Unit, Unit> Redo { get; }
-    ReactiveCommand<Unit, Unit> ToggleDisplayAllLocations { get; }
-    ReactiveCommand<Unit, Unit> Open { get; }
-    ReactiveCommand<Unit, Unit> Save { get; }
-    ReactiveCommand<Unit, Unit> SaveAs { get; }
-
-    delegate ITopMenuVM Factory(ReactiveCommand<Unit, Unit> closeCommand);
+    ReactiveCommand<Unit, Unit> OpenCommand { get; }
+    ReactiveCommand<Unit, Unit> SaveCommand { get; }
+    ReactiveCommand<Unit, Unit> SaveAsCommand { get; }
+    ReactiveCommand<Unit, Unit> ResetCommand { get; }
+    ReactiveCommand<Unit, Unit> UndoCommand { get; }
+    ReactiveCommand<Unit, Unit> RedoCommand { get; }
+    ReactiveCommand<Unit, Unit> ToggleDisplayAllLocationsCommand { get; }
 }

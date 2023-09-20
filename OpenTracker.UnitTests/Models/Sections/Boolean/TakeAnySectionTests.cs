@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Accessibility;
@@ -12,7 +13,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Sections.Boolean;
 
-public class TakeAnySectionTests
+[ExcludeFromCodeCoverage]
+public sealed class TakeAnySectionTests
 {
     private readonly ISaveLoadManager _saveLoadManager = Substitute.For<ISaveLoadManager>();
 

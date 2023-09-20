@@ -1,11 +1,13 @@
 ﻿using OpenTracker.Models.Items;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.UndoRedo.Items;
 
 /// <summary>
 /// This class contains the <see cref="IUndoable"/> action to cycle a <see cref="ICappedItem"/>.
 /// </summary>
-public class CycleItem : ICycleItem
+[DependencyInjection]
+public sealed class CycleItem : ICycleItem
 {
     private readonly ICappedItem _item;
 

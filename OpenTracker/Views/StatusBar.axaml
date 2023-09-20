@@ -2,8 +2,17 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" x:Class="OpenTracker.Views.StatusBar">
+             xmlns:vm="clr-namespace:OpenTracker.ViewModels"
+             mc:Ignorable="d" x:Class="OpenTracker.Views.StatusBar"
+             x:DataType="vm:StatusBarVM" x:CompileBindings="True">
+  <UserControl.Styles>
+    <Style Selector="ContentControl.AutoTrackerStatusBar">
+      <Setter Property="Margin" Value="5 2" />
+      <Setter Property="HorizontalAlignment" Value="Right" />
+    </Style>
+  </UserControl.Styles>
+  
   <Border Classes="ControlBorder StatusBar" BorderThickness="0 1 0 0">
-    <ContentControl x:Name="AutoTrackerStatus" Margin="5 2" HorizontalAlignment="Right" />
+    <ContentControl Classes="AutoTrackerStatusBar" Content="{Binding AutoTrackerStatus}" />
   </Border>
 </UserControl>

@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Accessibility;
@@ -11,7 +12,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Requirements.Item.Crystal;
 
-public class CrystalRequirementTests
+[ExcludeFromCodeCoverage]
+public sealed class CrystalRequirementTests
 {
     private readonly ICrystalRequirementItem _gtCrystal = Substitute.For<ICrystalRequirementItem>();
     private readonly IItem _crystal = Substitute.For<IItem>();

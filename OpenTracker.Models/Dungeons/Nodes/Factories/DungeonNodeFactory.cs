@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using OpenTracker.Models.Dungeons.Mutable;
 using OpenTracker.Models.Nodes;
 using OpenTracker.Models.Nodes.Connections;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Dungeons.Nodes.Factories;
 
 /// <summary>
 /// This class contains the creation logic for dungeon nodes.
 /// </summary>
-public class DungeonNodeFactory : IDungeonNodeFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class DungeonNodeFactory : IDungeonNodeFactory
 {
     private readonly IHCDungeonNodeFactory _hcFactory;
     private readonly IATDungeonNodeFactory _atFactory;

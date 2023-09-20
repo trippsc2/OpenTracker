@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using OpenTracker.Models.Modes;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Requirements.Mode;
 
@@ -8,7 +9,8 @@ namespace OpenTracker.Models.Requirements.Mode;
 /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for
 /// <see cref="IWorldStateRequirement"/> objects indexed by <see cref="WorldState"/>.
 /// </summary>
-public class WorldStateRequirementDictionary : LazyDictionary<WorldState, IRequirement>,
+[DependencyInjection(SingleInstance = true)]
+public sealed class WorldStateRequirementDictionary : LazyDictionary<WorldState, IRequirement>,
     IWorldStateRequirementDictionary
 {
     private readonly IWorldStateRequirement.Factory _factory;

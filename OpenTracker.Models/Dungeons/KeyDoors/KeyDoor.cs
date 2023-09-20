@@ -3,6 +3,7 @@ using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Nodes;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Requirements.KeyDoor;
+using OpenTracker.Utils.Autofac;
 using ReactiveUI;
 
 namespace OpenTracker.Models.Dungeons.KeyDoors;
@@ -10,7 +11,8 @@ namespace OpenTracker.Models.Dungeons.KeyDoors;
 /// <summary>
 /// This class contains key door data.
 /// </summary>
-public class KeyDoor : ReactiveObject, IKeyDoor
+[DependencyInjection]
+public sealed class KeyDoor : ReactiveObject, IKeyDoor
 {
     private readonly INode _node;
 

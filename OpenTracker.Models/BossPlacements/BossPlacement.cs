@@ -2,6 +2,7 @@
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Models.UndoRedo.Boss;
+using OpenTracker.Utils.Autofac;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 
@@ -10,6 +11,7 @@ namespace OpenTracker.Models.BossPlacements;
 /// <summary>
 /// This class contains boss placement data.
 /// </summary>
+[DependencyInjection]
 public sealed class BossPlacement : ReactiveObject, IBossPlacement
 {
     private readonly IMode _mode;

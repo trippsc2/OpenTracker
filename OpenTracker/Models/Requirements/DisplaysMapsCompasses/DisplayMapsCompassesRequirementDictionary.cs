@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using OpenTracker.Autofac;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Requirements.DisplaysMapsCompasses;
 

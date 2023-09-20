@@ -1,12 +1,14 @@
 ﻿using System.ComponentModel;
 using OpenTracker.Models.Modes;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Requirements.SmallKeyShuffle;
 
 /// <summary>
 /// This class contains the <see cref="IMode.SmallKeyShuffle"/> <see cref="IRequirement"/> data.
 /// </summary>
-public class SmallKeyShuffleRequirement : BooleanRequirement, ISmallKeyShuffleRequirement
+[DependencyInjection]
+public sealed class SmallKeyShuffleRequirement : BooleanRequirement, ISmallKeyShuffleRequirement
 {
     private readonly IMode _mode;
     private readonly bool _expectedValue;

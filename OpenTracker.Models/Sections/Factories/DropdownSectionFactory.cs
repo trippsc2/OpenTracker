@@ -7,13 +7,15 @@ using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Requirements.Alternative;
 using OpenTracker.Models.Requirements.Mode;
 using OpenTracker.Models.Sections.Entrance;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Sections.Factories;
 
 /// <summary>
 /// This class contains the creation logic for <see cref="IDropdownSection"/> objects.
 /// </summary>
-public class DropdownSectionFactory : IDropdownSectionFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class DropdownSectionFactory : IDropdownSectionFactory
 {
     private readonly IAlternativeRequirementDictionary _alternativeRequirements;
     private readonly IEntranceShuffleRequirementDictionary _entranceShuffleRequirements;

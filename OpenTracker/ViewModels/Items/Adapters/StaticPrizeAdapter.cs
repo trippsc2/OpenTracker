@@ -1,14 +1,15 @@
-using System.ComponentModel;
 using System.Reactive;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using Avalonia.Input;
-using Avalonia.Threading;
-using OpenTracker.Autofac;
-using OpenTracker.Models.Sections;
+using Avalonia.Media;
 using OpenTracker.Models.Sections.Boss;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Autofac;
 using OpenTracker.ViewModels.BossSelect;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 
 namespace OpenTracker.ViewModels.Items.Adapters;
 
@@ -19,17 +20,17 @@ namespace OpenTracker.ViewModels.Items.Adapters;
 public sealed class StaticPrizeAdapter : ViewModel, IItemAdapter
 {
     private readonly IUndoRedoManager _undoRedoManager;
-        
-    private readonly IPrizeSection _section;
-    private readonly string _imageSourceBase;
 
-    public string ImageSource => _imageSourceBase + (_section.IsAvailable() ? "0.png" : "1.png");
-    public string? Label { get; } = null;
-    public string LabelColor { get; } = "#ffffffff";
+    private IPrizeSection Section { get; }
+    
+    public string? Label => null;
+    public SolidColorBrush? LabelColor => null;
+    public BossSelectPopupVM? BossSelect => null;
 
-    public IBossSelectPopupVM? BossSelect { get; } = null;
-        
-    public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
+    [ObservableAsProperty]
+    public string ImageSource { get; } = string.Empty;
+    
+    public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
 
     public delegate StaticPrizeAdapter Factory(IPrizeSection section, string imageSourceBase);
 
@@ -48,56 +49,24 @@ public sealed class StaticPrizeAdapter : ViewModel, IItemAdapter
     public StaticPrizeAdapter(IUndoRedoManager undoRedoManager, IPrizeSection section, string imageSourceBase)
     {
         _undoRedoManager = undoRedoManager;
-
-        _section = section;
-        _imageSourceBase = imageSourceBase;
-
-        HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
-
-        _section.PropertyChanged += OnSectionChanged;
-    }
-
-    /// <summary>
-    /// Subscribes to the PropertyChanged event on the IPrizeSection interface.
-    /// </summary>
-    /// <param name="sender">
-    /// The sending object of the event.
-    /// </param>
-    /// <param name="e">
-    /// The arguments of the PropertyChanged event.
-    /// </param>
-    private async void OnSectionChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName == nameof(ISection.Available))
+        var imageSourceBase1 = imageSourceBase;
+        Section = section;
+        
+        HandleClickCommand = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClick);
+        
+        this.WhenActivated(disposables =>
         {
-            await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(ImageSource)));
-        }
+            this.WhenAnyValue(x => x.Section.Available)
+                .Select(_ => Section.IsAvailable()
+                    ? $"{imageSourceBase1}0.png"
+                    : $"{imageSourceBase1}1.png")
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .ToPropertyEx(this, x => x.ImageSource)
+                .DisposeWith(disposables);
+        });
     }
 
-    /// <summary>
-    /// Creates an undoable action to collect the prize section, ignoring logic, and sends it to the undo/redo
-    /// manager.
-    /// </summary>
-    private void CollectSection()
-    {
-        _undoRedoManager.NewAction(_section.CreateCollectSectionAction(true));
-    }
-
-    /// <summary>
-    /// Creates an undoable action to un-collect the prize section and sends it to the undo/redo manager.
-    /// </summary>
-    private void UncollectSection()
-    {
-        _undoRedoManager.NewAction(_section.CreateUncollectSectionAction());
-    }
-
-    /// <summary>
-    /// Handles clicking the control.
-    /// </summary>
-    /// <param name="e">
-    /// The pointer released event args.
-    /// </param>
-    private void HandleClickImpl(PointerReleasedEventArgs e)
+    private void HandleClick(PointerReleasedEventArgs e)
     {
         switch (e.InitialPressMouseButton)
         {
@@ -107,6 +76,22 @@ public sealed class StaticPrizeAdapter : ViewModel, IItemAdapter
             case MouseButton.Right:
                 UncollectSection();
                 break;
+            case MouseButton.None:
+            case MouseButton.Middle:
+            case MouseButton.XButton1:
+            case MouseButton.XButton2:
+            default:
+                break;
         }
+    }
+
+    private void CollectSection()
+    {
+        _undoRedoManager.NewAction(Section.CreateCollectSectionAction(true));
+    }
+
+    private void UncollectSection()
+    {
+        _undoRedoManager.NewAction(Section.CreateUncollectSectionAction());
     }
 }

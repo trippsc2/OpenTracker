@@ -1,12 +1,14 @@
 using System;
 using OpenTracker.Models.AutoTracking.Values;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Items.Factories;
 
 /// <summary>
 /// This class contains the creation logic for <see cref="ICappedItem"/> objects.
 /// </summary>
-public class CappedItemFactory : ICappedItemFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class CappedItemFactory : ICappedItemFactory
 {
     private readonly ICappedItem.Factory _factory;
 

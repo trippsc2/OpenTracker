@@ -1,13 +1,15 @@
 ﻿using System.ComponentModel;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.SequenceBreaks;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Requirements.SequenceBreak;
 
 /// <summary>
 /// This class contains <see cref="ISequenceBreak"/> <see cref="IRequirement"/> data.
 /// </summary>
-public class SequenceBreakRequirement : BooleanRequirement, ISequenceBreakRequirement
+[DependencyInjection]
+public sealed class SequenceBreakRequirement : BooleanRequirement, ISequenceBreakRequirement
 {
     private readonly ISequenceBreak _sequenceBreak;
 

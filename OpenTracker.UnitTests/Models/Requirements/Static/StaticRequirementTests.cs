@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Requirements.Static;
@@ -5,7 +6,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Requirements.Static;
 
-public class StaticRequirementTests
+[ExcludeFromCodeCoverage]
+public sealed class StaticRequirementTests
 {
     [Theory]
     [InlineData(AccessibilityLevel.None, AccessibilityLevel.None)]

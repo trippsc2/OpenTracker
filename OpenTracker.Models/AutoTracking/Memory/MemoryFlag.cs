@@ -1,4 +1,5 @@
 ﻿using System.Reactive.Linq;
+using OpenTracker.Utils.Autofac;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 
@@ -7,7 +8,8 @@ namespace OpenTracker.Models.AutoTracking.Memory;
 /// <summary>
 /// This class contains SNES memory flag data.
 /// </summary>
-public class MemoryFlag : ReactiveObject, IMemoryFlag
+[DependencyInjection]
+public sealed class MemoryFlag : ReactiveObject, IMemoryFlag
 {
     private readonly byte _flag;
 

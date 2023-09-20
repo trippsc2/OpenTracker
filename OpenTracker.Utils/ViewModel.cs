@@ -6,7 +6,7 @@ namespace OpenTracker.Utils;
 /// <summary>
 /// This is the base class for all ViewModel data.
 /// </summary>
-public abstract class ViewModel : ReactiveObject, IActivatableViewModel
+public abstract class ViewModel : ReactiveObject, IViewModel
 {
     public ViewModelActivator Activator { get; } = new();
 

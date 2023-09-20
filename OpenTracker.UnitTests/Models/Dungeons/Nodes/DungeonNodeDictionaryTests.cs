@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Dungeons.Mutable;
@@ -7,7 +8,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Dungeons.Nodes;
 
-public class DungeonNodeDictionaryTests
+[ExcludeFromCodeCoverage]
+public sealed class DungeonNodeDictionaryTests
 {
     private readonly IDungeonNode.Factory _factory = _ => Substitute.For<IDungeonNode>();
         

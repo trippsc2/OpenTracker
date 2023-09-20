@@ -11,13 +11,15 @@ using OpenTracker.Models.Requirements.BigKeyShuffle;
 using OpenTracker.Models.Requirements.CompassShuffle;
 using OpenTracker.Models.Requirements.MapShuffle;
 using OpenTracker.Models.Requirements.SmallKeyShuffle;
+using OpenTracker.Utils.Autofac;
 
 namespace OpenTracker.Models.Sections.Factories;
 
 /// <summary>
 /// This class containing creation logic for section <see cref="IAutoTrackValue"/> objects.
 /// </summary>
-public class SectionAutoTrackingFactory : ISectionAutoTrackingFactory
+[DependencyInjection(SingleInstance = true)]
+public sealed class SectionAutoTrackingFactory : ISectionAutoTrackingFactory
 {
     private readonly IMemoryAddressProvider _memoryAddressProvider;
     private readonly IItemDictionary _items;

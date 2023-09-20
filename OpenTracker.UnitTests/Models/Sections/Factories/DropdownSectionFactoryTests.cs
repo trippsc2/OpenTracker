@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Autofac;
 using ExpectedObjects;
@@ -20,7 +21,8 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Sections.Factories;
 
-public class DropdownSectionFactoryTests
+[ExcludeFromCodeCoverage]
+public sealed class DropdownSectionFactoryTests
 {
     private static readonly IAlternativeRequirementDictionary AlternativeRequirements =
         new AlternativeRequirementDictionary(_ => Substitute.For<IAlternativeRequirement>());

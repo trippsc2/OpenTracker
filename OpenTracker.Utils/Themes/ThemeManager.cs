@@ -6,32 +6,27 @@ using System.Linq;
 using Avalonia.Markup.Xaml;
 using Avalonia.Markup.Xaml.Styling;
 using Avalonia.Styling;
+using OpenTracker.Utils.Autofac;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 
 namespace OpenTracker.Utils.Themes;
 
 /// <summary>
 /// This class contains the theme manager data.
 /// </summary>
-public class ThemeManager : ReactiveObject, IThemeManager
+[DependencyInjection(SingleInstance = true)]
+public sealed class ThemeManager : ReactiveObject, IThemeManager
 {
-    private readonly ITheme.Factory _themeFactory;
+    public List<Theme> Themes { get; }
+    
+    [Reactive]
+    public Theme SelectedTheme { get; set; }
 
-    public List<ITheme> Themes { get; }
-
-    private ITheme _selectedTheme;
-    public ITheme SelectedTheme
+    public ThemeManager(IStyleHost app, string path)
     {
-        get => _selectedTheme;
-        set => this.RaiseAndSetIfChanged(ref _selectedTheme, value);
-    }
-
-    public ThemeManager(ITheme.Factory themeFactory, IStyleHost app, string path)
-    {
-        _themeFactory = themeFactory;
-
         Themes = LoadThemesFromFolder(path);
-        _selectedTheme = Themes[0];
+        SelectedTheme = Themes[0];
                 
         app.Styles.Insert(0, SelectedTheme.Style);
 
@@ -39,7 +34,7 @@ public class ThemeManager : ReactiveObject, IThemeManager
             .Subscribe(x => { app.Styles[0] = x.Style; });
     }
 
-    private List<ITheme> GetDefaultThemes()
+    private static List<Theme> GetDefaultThemes()
     {
         var dark = new StyleInclude(new Uri("resm:Styles?assembly=Avalonia.ThemeManager"))
         {
@@ -51,30 +46,30 @@ public class ThemeManager : ReactiveObject, IThemeManager
             Source = new Uri("resm:Avalonia.Themes.Default.Accents.BaseLight.xaml?assembly=Avalonia.Themes.Default")
         };
 
-        return new List<ITheme>
+        return new List<Theme>
         {
-            _themeFactory("Dark", dark),
-            _themeFactory("Light", light)
+            new() {Name = "Dark", Style = dark},
+            new() {Name = "Light", Style = light}
         };
     }
 
-    private ITheme LoadTheme(string file)
+    private static Theme LoadTheme(string file)
     {
         var name = Path.GetFileNameWithoutExtension(file);
         var xaml = File.ReadAllText(file);
         var style = AvaloniaRuntimeXamlLoader.Parse<IStyle>(xaml);
 
-        return _themeFactory(name, style);
+        return new Theme {Name = name, Style = style};
     }
 
-    private List<ITheme> LoadThemesFromFolder(string path)
+    private static List<Theme> LoadThemesFromFolder(string path)
     {
         if (!Directory.Exists(path))
         {
             return GetDefaultThemes();
         }
 
-        var themes = new List<ITheme>();
+        var themes = new List<Theme>();
 
         try
         {
@@ -129,7 +124,7 @@ public class ThemeManager : ReactiveObject, IThemeManager
     {
         try
         {
-            File.WriteAllText(file, _selectedTheme.Name);
+            File.WriteAllText(file, SelectedTheme.Name);
         }
         catch (Exception e)
         {
