@@ -3,15 +3,21 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenTracker", "OpenTracker\OpenTracker.csproj", "{9D32A24F-7FF0-4632-B663-5AD2D64A6C87}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenTracker", "src\OpenTracker\OpenTracker.csproj", "{9D32A24F-7FF0-4632-B663-5AD2D64A6C87}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenTracker.Models", "OpenTracker.Models\OpenTracker.Models.csproj", "{5DB05A1F-56E3-4035-8898-5CFB22DB3568}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenTracker.Models", "src\OpenTracker.Models\OpenTracker.Models.csproj", "{5DB05A1F-56E3-4035-8898-5CFB22DB3568}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "OpenTracker.Setup", "OpenTracker.Setup\OpenTracker.Setup.vdproj", "{DB115491-340A-452D-93EB-9D843273F45D}"
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "OpenTracker.Setup", "setup\OpenTracker.Setup\OpenTracker.Setup.vdproj", "{DB115491-340A-452D-93EB-9D843273F45D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenTracker.UnitTests", "OpenTracker.UnitTests\OpenTracker.UnitTests.csproj", "{E97EA1E8-352B-4FDF-97F3-7C679BFA8D6A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenTracker.UnitTests", "tests\OpenTracker.UnitTests\OpenTracker.UnitTests.csproj", "{E97EA1E8-352B-4FDF-97F3-7C679BFA8D6A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenTracker.Utils", "OpenTracker.Utils\OpenTracker.Utils.csproj", "{05AB9FA2-4119-45E0-B4E6-C5B8CB9BA697}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenTracker.Utils", "src\OpenTracker.Utils\OpenTracker.Utils.csproj", "{05AB9FA2-4119-45E0-B4E6-C5B8CB9BA697}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{BC731C13-4204-4032-999E-21A08D897A54}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{57BC5E91-1C8E-4C18-ACD8-D65CEDAFFBBA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "setup", "setup", "{E50C9F1D-2C41-41A4-9CF9-D3BC7C26E89C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -43,5 +49,12 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {868CD9CE-E3FC-4B46-B3DA-C05258D838A4}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E97EA1E8-352B-4FDF-97F3-7C679BFA8D6A} = {57BC5E91-1C8E-4C18-ACD8-D65CEDAFFBBA}
+		{9D32A24F-7FF0-4632-B663-5AD2D64A6C87} = {BC731C13-4204-4032-999E-21A08D897A54}
+		{5DB05A1F-56E3-4035-8898-5CFB22DB3568} = {BC731C13-4204-4032-999E-21A08D897A54}
+		{05AB9FA2-4119-45E0-B4E6-C5B8CB9BA697} = {BC731C13-4204-4032-999E-21A08D897A54}
+		{DB115491-340A-452D-93EB-9D843273F45D} = {E50C9F1D-2C41-41A4-9CF9-D3BC7C26E89C}
 	EndGlobalSection
 EndGlobal
