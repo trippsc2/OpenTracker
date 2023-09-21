@@ -6,6 +6,7 @@ using OpenTracker.Models.UndoRedo;
 using OpenTracker.Models.UndoRedo.Items;
 using OpenTracker.Utils.Autofac;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 
 namespace OpenTracker.Models.Items;
 
@@ -23,12 +24,8 @@ public class Item : ReactiveObject, IItem
     private readonly int _starting;
     private readonly IAutoTrackValue? _autoTrackValue;
 
-    private int _current;
-    public int Current
-    {
-        get => _current;
-        set => this.RaiseAndSetIfChanged(ref _current, value);
-    }
+    [Reactive]
+    public int Current { get; set; }
 
     /// <summary>
     /// Constructor
@@ -61,7 +58,7 @@ public class Item : ReactiveObject, IItem
 
         Current = _starting;
 
-        if (!(_autoTrackValue is null))
+        if (_autoTrackValue is not null)
         {
             _autoTrackValue.PropertyChanged += OnAutoTrackChanged;
         }
@@ -109,7 +106,7 @@ public class Item : ReactiveObject, IItem
 
     public virtual ItemSaveData Save()
     {
-        return new()
+        return new ItemSaveData
         {
             Current = Current
         };
