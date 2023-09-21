@@ -6,7 +6,7 @@
              xmlns:vc="clr-namespace:OpenTracker.ValueConverters"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="OpenTracker.Views.Markings.Images.MarkingImage"
-             x:DataType="vm:MarkingImageVM" x:CompileBindings="True">
+             x:DataType="vm:MarkingImageVM">
 	<UserControl.Resources>
 		<vc:BitmapValueConverter x:Key="BitmapValueConverter" />
 	</UserControl.Resources>

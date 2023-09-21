@@ -1,8 +1,8 @@
-﻿using System.Collections.Specialized;
-using System.Reactive;
+﻿using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using Avalonia.Layout;
+using DynamicData.Binding;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
@@ -25,6 +25,8 @@ public sealed class PinnedLocationNoteAreaVM : ViewModel, IPinnedLocationNoteAre
     
     [ObservableAsProperty]
     public HorizontalAlignment Alignment { get; }
+    [ObservableAsProperty]
+    public bool CanAdd { get; }
 
     [Reactive]
     public ReactiveCommand<Unit, Unit> AddCommand { get; private set; } = default!;
@@ -52,19 +54,22 @@ public sealed class PinnedLocationNoteAreaVM : ViewModel, IPinnedLocationNoteAre
         
         this.WhenActivated(disposables =>
         {
-            var collectionChanged = Observable
-                .FromEventPattern<NotifyCollectionChangedEventHandler, NotifyCollectionChangedEventArgs>(
-                    handler => Notes.CollectionChanged += handler,
-                    handler => Notes.CollectionChanged -= handler);
+            var collectionChanged = Notes
+                .ToObservableChangeSet<IPinnedLocationNoteVMCollection, IPinnedLocationNoteVM>();
 
             collectionChanged
                 .Select(_ => Notes.Count == 0 ? HorizontalAlignment.Center : HorizontalAlignment.Left)
                 .ObserveOn(RxApp.MainThreadScheduler)
-                .ToPropertyEx(this, x => x.Alignment)
+                .ToPropertyEx(this, x => x.Alignment, initialValue: HorizontalAlignment.Center)
                 .DisposeWith(disposables);
 
-            var canAdd = collectionChanged
+            collectionChanged
                 .Select(_ => Notes.Count < 4)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .ToPropertyEx(this, x => x.CanAdd, initialValue: true);
+
+            var canAdd = this
+                .WhenAnyValue(x => x.CanAdd)
                 .ObserveOn(RxApp.MainThreadScheduler);
 
             AddCommand = ReactiveCommand

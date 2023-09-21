@@ -21,7 +21,7 @@ public sealed class ModeSettingsVM : ViewModel, IModeSettingsVM
     private IMode Mode { get; }
 
     [Reactive]
-    public bool PopupOpen { get; private set; }
+    public bool PopupOpen { get; set; }
 
     [ObservableAsProperty]
     public bool BasicItemPlacement {get; }
