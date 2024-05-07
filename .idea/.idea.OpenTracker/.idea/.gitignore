@@ -10,3 +10,5 @@
 =======
 /.idea.OpenTracker.iml
 >>>>>>> stream-view-ui-rework
+# GitHub Copilot persisted chat sessions
+/copilot/chatSessions
