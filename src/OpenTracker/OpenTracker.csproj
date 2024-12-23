@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ApplicationIcon>triforce.ico</ApplicationIcon>
     <Win32Resource />
     <Version>1.8.5</Version>
@@ -10,7 +10,6 @@
     <FileVersion>1.8.5</FileVersion>
     <CFBundleShortVersionString>1.8.5</CFBundleShortVersionString>
     <Nullable>enable</Nullable>
-    <RuntimeIdentifiers>osx-x64;linux-x64;debian-x64;rhel-x64;win-x64;win-x86;win7-x64;win7-x86</RuntimeIdentifiers>
     <LangVersion>default</LangVersion>
   </PropertyGroup>
   <ItemGroup>
@@ -39,7 +38,7 @@
     <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.7.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.7.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="4.7.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="7.0.4">
+    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="8.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -76,19 +75,5 @@
     <None Update="triforce.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <UpToDateCheckInput Remove="Views\Dropdowns\Dropdown.axaml" />
-    <UpToDateCheckInput Remove="Views\Maps\Locations\DungeonMapLocation.axaml" />
-    <UpToDateCheckInput Remove="Views\Maps\Locations\EntranceMapLocation.axaml" />
-    <UpToDateCheckInput Remove="Views\Maps\Locations\MapLocation.axaml" />
-    <UpToDateCheckInput Remove="Views\Maps\Locations\MarkableDungeonMapLocation.axaml" />
-    <UpToDateCheckInput Remove="Views\Maps\Locations\MarkableMapLocation.axaml" />
-    <UpToDateCheckInput Remove="Views\Maps\Locations\MarkingMapLocation.axaml" />
-    <UpToDateCheckInput Remove="Views\Maps\Locations\ShopMapLocation.axaml" />
-    <UpToDateCheckInput Remove="Views\Maps\Locations\TakeAnyMapLocation.axaml" />
-    <UpToDateCheckInput Remove="Views\Capture\CaptureWindow.axaml" />
-    <UpToDateCheckInput Remove="Views\Capture\Design\CaptureDesignDialog.axaml" />
-    <UpToDateCheckInput Remove="Views\Capture\Design\CaptureWindowDesign.axaml" />
   </ItemGroup>
 </Project>
