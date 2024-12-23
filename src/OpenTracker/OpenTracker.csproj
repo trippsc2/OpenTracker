@@ -9,6 +9,7 @@
     <Authors>Tripp</Authors>
     <AssemblyVersion>1.8.6</AssemblyVersion>
     <FileVersion>1.8.6</FileVersion>
+    <CFBundleIconFile>OpenTracker.icns</CFBundleIconFile>
     <CFBundleShortVersionString>1.8.6</CFBundleShortVersionString>
     <Nullable>enable</Nullable>
     <LangVersion>default</LangVersion>
@@ -70,13 +71,10 @@
   </ItemGroup>
   
   <ItemGroup>
-    <AvaloniaResource Update="Assets\Images\triforce.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </AvaloniaResource>
-  </ItemGroup>
-  
-  <ItemGroup>
     <None Update="Themes\*.xaml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="OpenTracker.icns">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="triforce.ico">
