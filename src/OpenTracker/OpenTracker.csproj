@@ -1,20 +1,23 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
     <ApplicationIcon>triforce.ico</ApplicationIcon>
     <Win32Resource />
-    <Version>1.8.5</Version>
+    <Version>1.8.6</Version>
     <Authors>Tripp</Authors>
-    <AssemblyVersion>1.8.5</AssemblyVersion>
-    <FileVersion>1.8.5</FileVersion>
-    <CFBundleShortVersionString>1.8.5</CFBundleShortVersionString>
+    <AssemblyVersion>1.8.6</AssemblyVersion>
+    <FileVersion>1.8.6</FileVersion>
+    <CFBundleShortVersionString>1.8.6</CFBundleShortVersionString>
     <Nullable>enable</Nullable>
     <LangVersion>default</LangVersion>
   </PropertyGroup>
+  
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
   </ItemGroup>
+  
   <ItemGroup>
     <AvaloniaResource Remove="bin\**" />
     <AvaloniaXaml Remove="bin\**" />
@@ -22,6 +25,7 @@
     <EmbeddedResource Remove="bin\**" />
     <None Remove="bin\**" />
   </ItemGroup>
+  
   <ItemGroup>
     <PackageReference Include="Autofac" Version="7.1.0" />
     <PackageReference Include="Avalonia" Version="0.10.22" />
@@ -59,15 +63,18 @@
       <Version>0.1.220</Version>
     </PackageReference>
   </ItemGroup>
+  
   <ItemGroup>
     <ProjectReference Include="..\OpenTracker.Models\OpenTracker.Models.csproj" />
     <ProjectReference Include="..\OpenTracker.Utils\OpenTracker.Utils.csproj" />
   </ItemGroup>
+  
   <ItemGroup>
     <AvaloniaResource Update="Assets\Images\triforce.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </AvaloniaResource>
   </ItemGroup>
+  
   <ItemGroup>
     <None Update="Themes\*.xaml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -76,4 +83,5 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+  
 </Project>
