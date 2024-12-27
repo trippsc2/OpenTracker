@@ -251,7 +251,6 @@ public sealed class EntranceSectionFactory : IEntranceSectionFactory
             case LocationID.DarkHyliaFortuneTeller:
             case LocationID.DarkTreesFairyCaveEntrance:
             case LocationID.DarkSahasrahlaEntrance:
-            case LocationID.PalaceOfDarknessEntrance:
             case LocationID.DarkWitchsHut:
             case LocationID.DarkFluteSpotFiveEntrance:
             case LocationID.FatFairyEntrance:
@@ -307,6 +306,7 @@ public sealed class EntranceSectionFactory : IEntranceSectionFactory
             case LocationID.SkullWoodsBack:
             case LocationID.ThievesTownEntrance:
             case LocationID.SwampPalaceEntrance:
+            case LocationID.PalaceOfDarknessEntrance:
             case LocationID.IcePalaceEntrance:
             case LocationID.MiseryMireEntrance:
             case LocationID.TowerOfHeraEntrance:
