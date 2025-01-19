@@ -35,8 +35,8 @@ public sealed class AutoTrackerStatusVM : ViewModel
         { (ConnectionStatus.Connecting, true), "CONNECTING" },
         { (ConnectionStatus.Attaching, false), "ATTACHING" },
         { (ConnectionStatus.Attaching, true), "ATTACHING" },
-        { (ConnectionStatus.Connected, false), "CONNECTED (RACE ILLEGAL)" },
-        { (ConnectionStatus.Connected, true), "#CONNECTED (RACE LEGAL)" },
+        { (ConnectionStatus.Connected, false), "CONNECTED (RACE LEGAL)" },
+        { (ConnectionStatus.Connected, true), "#CONNECTED (RACE ILLEGAL)" },
         { (ConnectionStatus.Error, false), "ERROR" },
         { (ConnectionStatus.Error, true), "ERROR" }
     };
