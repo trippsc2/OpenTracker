@@ -44,6 +44,7 @@ namespace OpenTracker.Models.Requirements.Complex
         Tablet,
         Torch,
         ToHHerapot,
+        SPSpeckyClip,
         IPIceBreaker,
         MMMedallion,
         TRMedallion,

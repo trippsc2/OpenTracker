@@ -7,6 +7,7 @@ using OpenTracker.Models.Items;
 using OpenTracker.Models.Nodes;
 using OpenTracker.Models.Nodes.Connections;
 using OpenTracker.Models.Requirements.Boss;
+using OpenTracker.Models.Requirements.Complex;
 using OpenTracker.Models.Requirements.Item;
 
 namespace OpenTracker.Models.Dungeons.Nodes.Factories
@@ -17,6 +18,7 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
     public class SPDungeonNodeFactory : ISPDungeonNodeFactory
     {
         private readonly IBossRequirementDictionary _bossRequirements;
+        private readonly IComplexRequirementDictionary _complexRequirements;
         private readonly IItemRequirementDictionary _itemRequirements;
         
         private readonly IOverworldNodeDictionary _overworldNodes;
@@ -29,6 +31,9 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
         /// </summary>
         /// <param name="bossRequirements">
         ///     The <see cref="IBossRequirementDictionary"/>.
+        /// </param>
+        /// <param name="complexRequirements">
+        ///     The <see cref="IComplexRequirementDictionary"/>
         /// </param>
         /// <param name="itemRequirements">
         ///     The <see cref="IItemRequirementDictionary"/>.
@@ -43,11 +48,12 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
         ///     An Autofac factory for creating new <see cref="INodeConnection"/> objects.
         /// </param>
         public SPDungeonNodeFactory(
-            IBossRequirementDictionary bossRequirements, IItemRequirementDictionary itemRequirements,
-            IOverworldNodeDictionary overworldNodes, IEntryNodeConnection.Factory entryFactory,
-            INodeConnection.Factory connectionFactory)
+            IBossRequirementDictionary bossRequirements, IComplexRequirementDictionary complexRequirements,
+            IItemRequirementDictionary itemRequirements, IOverworldNodeDictionary overworldNodes,
+            IEntryNodeConnection.Factory entryFactory, INodeConnection.Factory connectionFactory)
         {
             _bossRequirements = bossRequirements;
+            _complexRequirements = complexRequirements;
             _itemRequirements = itemRequirements;
 
             _overworldNodes = overworldNodes;
@@ -109,6 +115,9 @@ namespace OpenTracker.Models.Dungeons.Nodes.Factories
                     connections.Add(_connectionFactory(
                         dungeonData.Nodes[DungeonNodeID.SPB1PastLeftKeyDoor], node,
                         dungeonData.KeyDoors[KeyDoorID.SPB1LeftKeyDoor].Requirement));
+                    connections.Add(_connectionFactory(
+                        dungeonData.Nodes[DungeonNodeID.SPB1PastFirstRightKeyDoor], node,
+                        _complexRequirements[ComplexRequirementType.SPSpeckyClip]));
                     break;
                 case DungeonNodeID.SPB1KeyLedge:
                     connections.Add(_connectionFactory(

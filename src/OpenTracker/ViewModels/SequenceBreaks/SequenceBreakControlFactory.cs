@@ -87,6 +87,7 @@ namespace OpenTracker.ViewModels.SequenceBreaks
                 SequenceBreakType.Hover => "Hover",
                 SequenceBreakType.MimicClip => "Mimic Clip",
                 SequenceBreakType.ToHHerapot => "Tower of Hera - Herapot",
+                SequenceBreakType.SPSpeckyClip => "Swamp Palace - Speckyclip",
                 SequenceBreakType.IPIceBreaker => "Ice Palace - Icebreaker",
                 _ => throw new ArgumentOutOfRangeException(nameof(type))
             };

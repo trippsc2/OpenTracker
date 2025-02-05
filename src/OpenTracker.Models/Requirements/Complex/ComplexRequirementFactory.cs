@@ -382,6 +382,11 @@ namespace OpenTracker.Models.Requirements.Complex
                     _itemRequirements[(ItemType.Hookshot, 1)],
                     _sequenceBreakRequirements[SequenceBreakType.ToHHerapot]
                 }],
+                ComplexRequirementType.SPSpeckyClip => _aggregateRequirements[new HashSet<IRequirement>
+                {
+                    _itemRequirements[(ItemType.Hookshot, 1)],
+                    _sequenceBreakRequirements[SequenceBreakType.SPSpeckyClip]
+                }],
                 ComplexRequirementType.IPIceBreaker => _aggregateRequirements[new HashSet<IRequirement>
                 {
                     _itemRequirements[(ItemType.CaneOfSomaria, 1)],

@@ -50,6 +50,7 @@
         Hover,
         MimicClip,
         ToHHerapot,
+        SPSpeckyClip,
         IPIceBreaker
     }
 }
