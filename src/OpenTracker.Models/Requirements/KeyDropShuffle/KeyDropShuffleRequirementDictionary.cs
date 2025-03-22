@@ -1,32 +1,31 @@
 using System.Collections.Generic;
 using OpenTracker.Utils;
-using OpenTracker.Utils.Autofac;
 
-namespace OpenTracker.Models.Requirements.KeyDropShuffle;
-
-/// <summary>
-/// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for
-/// <see cref="KeyDropShuffleRequirement"/> objects indexed by <see cref="bool"/>.
-/// </summary>
-[DependencyInjection(SingleInstance = true)]
-public sealed class KeyDropShuffleRequirementDictionary : LazyDictionary<bool, IRequirement>, IKeyDropShuffleRequirementDictionary
+namespace OpenTracker.Models.Requirements.KeyDropShuffle
 {
-    private readonly KeyDropShuffleRequirement.Factory _factory;
-        
     /// <summary>
-    /// Constructor
+    /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for
+    /// <see cref="IKeyDropShuffleRequirement"/> objects indexed by <see cref="bool"/>.
     /// </summary>
-    /// <param name="factory">
-    ///     An Autofac factory for creating new <see cref="KeyDropShuffleRequirement"/> objects.
-    /// </param>
-    public KeyDropShuffleRequirementDictionary(KeyDropShuffleRequirement.Factory factory)
-        : base(new Dictionary<bool, IRequirement>())
+    public class KeyDropShuffleRequirementDictionary : LazyDictionary<bool, IRequirement>, IKeyDropShuffleRequirementDictionary
     {
-        _factory = factory;
-    }
+        private readonly IKeyDropShuffleRequirement.Factory _factory;
+        
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="factory">
+        ///     An Autofac factory for creating new <see cref="IKeyDropShuffleRequirement"/> objects.
+        /// </param>
+        public KeyDropShuffleRequirementDictionary(IKeyDropShuffleRequirement.Factory factory)
+            : base(new Dictionary<bool, IRequirement>())
+        {
+            _factory = factory;
+        }
 
-    protected override IRequirement Create(bool key)
-    {
-        return _factory(key);
+        protected override IRequirement Create(bool key)
+        {
+            return _factory(key);
+        }
     }
 }

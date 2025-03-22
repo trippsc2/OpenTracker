@@ -1,18 +1,18 @@
+using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using Avalonia.ReactiveUI;
-using OpenTracker.ViewModels.Items;
 
-namespace OpenTracker.Views.Items;
-
-public sealed class Item : ReactiveUserControl<ItemVM>
+namespace OpenTracker.Views.Items
 {
-    public Item()
+    public class Item : UserControl
     {
-        InitializeComponent();
-    }
+        public Item()
+        {
+            InitializeComponent();
+        }
 
-    private void InitializeComponent()
-    {
-        AvaloniaXamlLoader.Load(this);
+        private void InitializeComponent()
+        {
+            AvaloniaXamlLoader.Load(this);
+        }
     }
 }

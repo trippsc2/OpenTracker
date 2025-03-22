@@ -1,58 +1,67 @@
-﻿using System.Reactive.Linq;
+﻿using System.ComponentModel;
 using OpenTracker.Models.AutoTracking.Memory;
-using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
 
-namespace OpenTracker.Models.AutoTracking.Values.Single;
-
-/// <summary>
-/// This class represents an auto-tracking result value that is a bitwise masked SNES memory address byte value.
-/// </summary>
-public sealed class AutoTrackBitwiseIntegerValue : ReactiveObject, IAutoTrackValue
+namespace OpenTracker.Models.AutoTracking.Values.Single
 {
-    private readonly byte _mask;
-    private readonly int _shift;
-
-    private MemoryAddress Address { get; }
-        
-    [ObservableAsProperty]
-    public int? CurrentValue { get; }
-        
     /// <summary>
-    /// Initializes a new <see cref="AutoTrackBitwiseIntegerValue"/> object with the specified memory address,
-    /// bitwise mask, and bitwise shift.
+    /// This class contains the auto-tracking result value of a memory address bitwise integer.
     /// </summary>
-    /// <param name="address">
-    ///     A <see cref="MemoryAddress"/> representing the memory address to monitor.
-    /// </param>
-    /// <param name="mask">
-    ///     A <see cref="byte"/> representing the bitwise mask of relevant bits.
-    /// </param>
-    /// <param name="shift">
-    ///     An <see cref="int"/> representing the number of bitwise digits to right shift the memory address value.
-    /// </param>
-    public AutoTrackBitwiseIntegerValue(MemoryAddress address, byte mask, int shift)
+    public class AutoTrackBitwiseIntegerValue : AutoTrackValueBase, IAutoTrackBitwiseIntegerValue
     {
-        _mask = mask;
-        _shift = shift;
-
-        Address = address;
-
-        this.WhenAnyValue(x => x.Address.Value)
-            .Select(GetNewValueFromAddressValue)
-            .ToPropertyEx(this, x => x.CurrentValue);
-    }
-
-    private int? GetNewValueFromAddressValue(byte? addressValue)
-    {
-        if (addressValue is null)
+        private readonly IMemoryAddress _address;
+        private readonly byte _mask;
+        private readonly int _shift;
+        
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="address">
+        ///     The <see cref="IMemoryAddress"/> to be represented.
+        /// </param>
+        /// <param name="mask">
+        ///     A <see cref="byte"/> representing the bitwise mask of relevant bits.
+        /// </param>
+        /// <param name="shift">
+        ///     A <see cref="int"/> representing the number of bitwise digits to right shift the address value.
+        /// </param>
+        public AutoTrackBitwiseIntegerValue(IMemoryAddress address, byte mask, int shift)
         {
-            return null;
+            _address = address;
+            _mask = mask;
+            _shift = shift;
+            
+            UpdateValue();
+
+            _address.PropertyChanged += OnMemoryChanged;
         }
+
+        /// <summary>
+        /// Subscribes to the <see cref="IMemoryAddress.PropertyChanged"/> event.
+        /// </summary>
+        /// <param name="sender">
+        ///     The <see cref="object"/> from which the event was sent.
+        /// </param>
+        /// <param name="e">
+        ///     The <see cref="PropertyChangedEventArgs"/>.
+        /// </param>
+        private void OnMemoryChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(IMemoryAddress.Value))
+            {
+                UpdateValue();
+            }
+        }
+
+        protected override int? GetNewValue()
+        {
+            if (_address.Value is null)
+            {
+                return null;
+            }
             
-        var maskedValue = (byte)(addressValue & _mask);
-        var newValue = (byte)(maskedValue >> _shift);
-            
-        return newValue;
+            var maskedValue = (byte)(_address.Value & _mask);
+            var newValue = (byte)(maskedValue >> _shift);
+            return newValue;
+        }
     }
 }

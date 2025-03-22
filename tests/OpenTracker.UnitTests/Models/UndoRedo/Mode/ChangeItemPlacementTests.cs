@@ -1,57 +1,56 @@
-using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.UndoRedo.Mode;
 using Xunit;
 
-namespace OpenTracker.UnitTests.Models.UndoRedo.Mode;
-
-[ExcludeFromCodeCoverage]
-public sealed class ChangeItemPlacementTests
+namespace OpenTracker.UnitTests.Models.UndoRedo.Mode
 {
-    private readonly IMode _mode = Substitute.For<IMode>();
-
-    [Fact]
-    public void CanExecute_ShouldAlwaysReturnTrue()
+    public class ChangeItemPlacementTests
     {
-        var sut = new ChangeItemPlacement(_mode, ItemPlacement.Basic);
-            
-        Assert.True(sut.CanExecute());
-    }
+        private readonly IMode _mode = Substitute.For<IMode>();
 
-    [Theory]
-    [InlineData(ItemPlacement.Advanced, ItemPlacement.Advanced)]
-    [InlineData(ItemPlacement.Basic, ItemPlacement.Basic)]
-    public void ExecuteDo_ShouldSetItemPlacementToNewValue(ItemPlacement expected, ItemPlacement newValue)
-    {
-        var sut = new ChangeItemPlacement(_mode, newValue);
-        sut.ExecuteDo();
+        [Fact]
+        public void CanExecute_ShouldAlwaysReturnTrue()
+        {
+            var sut = new ChangeItemPlacement(_mode, ItemPlacement.Basic);
             
-        Assert.Equal(expected, _mode.ItemPlacement);
-    }
+            Assert.True(sut.CanExecute());
+        }
 
-    [Theory]
-    [InlineData(ItemPlacement.Advanced, ItemPlacement.Advanced)]
-    [InlineData(ItemPlacement.Basic, ItemPlacement.Basic)]
-    public void ExecuteUndo_ShouldSetItemPlacementToPreviousValue(
-        ItemPlacement expected, ItemPlacement previousValue)
-    {
-        _mode.ItemPlacement.Returns(previousValue);
-        var sut = new ChangeItemPlacement(_mode, ItemPlacement.Basic);
-        sut.ExecuteDo();
-        sut.ExecuteUndo();
+        [Theory]
+        [InlineData(ItemPlacement.Advanced, ItemPlacement.Advanced)]
+        [InlineData(ItemPlacement.Basic, ItemPlacement.Basic)]
+        public void ExecuteDo_ShouldSetItemPlacementToNewValue(ItemPlacement expected, ItemPlacement newValue)
+        {
+            var sut = new ChangeItemPlacement(_mode, newValue);
+            sut.ExecuteDo();
             
-        Assert.Equal(expected, _mode.ItemPlacement);
-    }
+            Assert.Equal(expected, _mode.ItemPlacement);
+        }
 
-    [Fact]
-    public void AutofacTest()
-    {
-        using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-        var factory = scope.Resolve<IChangeItemPlacement.Factory>();
-        var sut = factory(ItemPlacement.Advanced);
+        [Theory]
+        [InlineData(ItemPlacement.Advanced, ItemPlacement.Advanced)]
+        [InlineData(ItemPlacement.Basic, ItemPlacement.Basic)]
+        public void ExecuteUndo_ShouldSetItemPlacementToPreviousValue(
+            ItemPlacement expected, ItemPlacement previousValue)
+        {
+            _mode.ItemPlacement.Returns(previousValue);
+            var sut = new ChangeItemPlacement(_mode, ItemPlacement.Basic);
+            sut.ExecuteDo();
+            sut.ExecuteUndo();
             
-        Assert.NotNull(sut as ChangeItemPlacement);
+            Assert.Equal(expected, _mode.ItemPlacement);
+        }
+
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var factory = scope.Resolve<IChangeItemPlacement.Factory>();
+            var sut = factory(ItemPlacement.Advanced);
+            
+            Assert.NotNull(sut as ChangeItemPlacement);
+        }
     }
 }

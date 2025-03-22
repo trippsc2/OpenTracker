@@ -1,18 +1,18 @@
+using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using Avalonia.ReactiveUI;
-using OpenTracker.ViewModels.Menus;
 
-namespace OpenTracker.Views.Menus;
-
-public sealed class MenuItemCheckBox : ReactiveUserControl<MenuItemCheckBoxVM>
+namespace OpenTracker.Views.Menus
 {
-    public MenuItemCheckBox()
+    public class MenuItemCheckBox : UserControl
     {
-        InitializeComponent();
-    }
+        public MenuItemCheckBox()
+        {
+            InitializeComponent();
+        }
 
-    private void InitializeComponent()
-    {
-        AvaloniaXamlLoader.Load(this);
+        private void InitializeComponent()
+        {
+            AvaloniaXamlLoader.Load(this);
+        }
     }
 }

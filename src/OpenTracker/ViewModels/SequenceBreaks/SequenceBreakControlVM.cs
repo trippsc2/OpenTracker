@@ -1,61 +1,73 @@
-﻿using System.Reactive;
-using System.Reactive.Disposables;
-using System.Reactive.Linq;
+﻿using System.ComponentModel;
+using System.Reactive;
+using Avalonia.Threading;
 using OpenTracker.Models.SequenceBreaks;
 using OpenTracker.Utils;
-using OpenTracker.Utils.Autofac;
 using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
 
-namespace OpenTracker.ViewModels.SequenceBreaks;
-
-/// <summary>
-/// This is the ViewModel of the sequence break control.
-/// </summary>
-[DependencyInjection]
-public sealed class SequenceBreakControlVM : ViewModel, ISequenceBreakControlVM
+namespace OpenTracker.ViewModels.SequenceBreaks
 {
-    private ISequenceBreak SequenceBreak { get; }
-
-    public string Text { get; }
-    public string ToolTipText { get; }
-
-    [ObservableAsProperty]
-    public bool Enabled { get; }
-
-    public ReactiveCommand<Unit, Unit> ToggleEnabledCommand { get; }
-
     /// <summary>
-    /// Constructor
+    /// This is the ViewModel of the sequence break control.
     /// </summary>
-    /// <param name="sequenceBreak">
-    /// The sequence break to be represented.
-    /// </param>
-    /// <param name="text">
-    /// A string representing the name of the sequence break.
-    /// </param>
-    /// <param name="toolTipText">
-    /// A string representing the tooltip text of the sequence break.
-    /// </param>
-    public SequenceBreakControlVM(ISequenceBreak sequenceBreak, string text, string toolTipText)
+    public class SequenceBreakControlVM : ViewModelBase, ISequenceBreakControlVM
     {
-        SequenceBreak = sequenceBreak;
-        Text = text;
-        ToolTipText = toolTipText;
-        
-        ToggleEnabledCommand = ReactiveCommand.Create(ToggleEnabled);
-        
-        this.WhenActivated(disposables =>
-        {
-            this.WhenAnyValue(x => x.SequenceBreak.Enabled)
-                .ObserveOn(RxApp.MainThreadScheduler)
-                .ToPropertyEx(this, x => x.Enabled)
-                .DisposeWith(disposables);
-        });
-    }
+        private readonly ISequenceBreak _sequenceBreak;
 
-    private void ToggleEnabled()
-    {
-        SequenceBreak.Enabled = !SequenceBreak.Enabled;
+        public bool Enabled => _sequenceBreak.Enabled;
+
+        public string Text { get; }
+        public string ToolTipText { get; }
+
+        public ReactiveCommand<Unit, Unit> ToggleEnabled { get; }
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="sequenceBreak">
+        /// The sequence break to be represented.
+        /// </param>
+        /// <param name="text">
+        /// A string representing the name of the sequence break.
+        /// </param>
+        /// <param name="toolTipText">
+        /// A string representing the tooltip text of the sequence break.
+        /// </param>
+        public SequenceBreakControlVM(ISequenceBreak sequenceBreak, string text, string toolTipText)
+        {
+            _sequenceBreak = sequenceBreak;
+            
+            Text = text;
+            ToolTipText = toolTipText;
+
+            ToggleEnabled = ReactiveCommand.Create(ToggleEnabledImpl);
+
+            _sequenceBreak.PropertyChanged += OnSequenceBreakChanged;
+        }
+
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the ISequenceBreak interface.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
+        private async void OnSequenceBreakChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ISequenceBreak.Enabled))
+            {
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Enabled)));
+            }
+        }
+
+        /// <summary>
+        /// Toggles whether the sequence break is enabled.
+        /// </summary>
+        private void ToggleEnabledImpl()
+        {
+            _sequenceBreak.Enabled = !_sequenceBreak.Enabled;
+        }
     }
 }

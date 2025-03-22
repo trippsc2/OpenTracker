@@ -1,7 +1,6 @@
+using System;
 using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
 using Autofac;
-using FluentAssertions;
 using NSubstitute;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Modes;
@@ -9,88 +8,100 @@ using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Requirements.MapShuffle;
 using Xunit;
 
-namespace OpenTracker.UnitTests.Models.Requirements.MapShuffle;
-
-[ExcludeFromCodeCoverage]
-public sealed class MapShuffleRequirementTests
+namespace OpenTracker.UnitTests.Models.Requirements.MapShuffle
 {
-    private readonly IMode _mode = Substitute.For<IMode>();
-    
-    private void ChangeMapShuffle(bool newValue)
+    public class MapShuffleRequirementTests
     {
-        _mode.MapShuffle.Returns(newValue);
-        _mode.PropertyChanged += Raise
-            .Event<PropertyChangedEventHandler>(
-                _mode,
-                new PropertyChangedEventArgs(nameof(IMode.MapShuffle)));
-    }
+        private readonly IMode _mode = Substitute.For<IMode>();
 
-    [Fact]
-    public void Met_ShouldRaisePropertyChanged()
-    {
-        var sut = new MapShuffleRequirement(_mode, true);
-        using var monitor = sut.Monitor();
-        
-        ChangeMapShuffle(true);
-        
-        monitor.Should().RaisePropertyChangeFor(x => x.Met);
-    }
+        [Fact]
+        public void ModeChanged_ShouldUpdateMetValue()
+        {
+            var sut = new MapShuffleRequirement(_mode, true);
+            _mode.MapShuffle.Returns(true);
 
-    [Theory]
-    [InlineData(true, false, false)]
-    [InlineData(false, false, true)]
-    [InlineData(true, true, true)]
-    public void Met_ShouldReturnExpectedValue(bool expected, bool mapShuffle, bool requirement)
-    {
-        var sut = new MapShuffleRequirement(_mode, requirement);
-        ChangeMapShuffle(mapShuffle);
+            _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                _mode, new PropertyChangedEventArgs(nameof(IMode.MapShuffle)));
             
-        sut.Met.Should().Be(expected);
-    }
+            Assert.True(sut.Met);
+        }
 
-    [Fact]
-    public void Accessibility_ShouldRaisePropertyChanged()
-    {
-        var sut = new MapShuffleRequirement(_mode, true);
-        using var monitor = sut.Monitor();
-        
-        ChangeMapShuffle(true);
-        
-        monitor.Should().RaisePropertyChangeFor(x => x.Accessibility);
-    }
+        [Fact]
+        public void Met_ShouldRaisePropertyChanged()
+        {
+            var sut = new MapShuffleRequirement(_mode, true);
+            _mode.MapShuffle.Returns(true);
 
-    [Fact]
-    public void Accessibility_ShouldRaiseChangePropagated()
-    {
-        var sut = new MapShuffleRequirement(_mode, true);
-        using var monitor = sut.Monitor();
-        
-        ChangeMapShuffle(true);
+            Assert.PropertyChanged(sut, nameof(IRequirement.Met), 
+                () => _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                    _mode, new PropertyChangedEventArgs(nameof(IMode.MapShuffle))));
+        }
 
-        monitor.Should().Raise(nameof(IRequirement.ChangePropagated));
-    }
+        [Fact]
+        public void Met_ShouldRaiseChangePropagated()
+        {
+            var sut = new MapShuffleRequirement(_mode, true);
+            _mode.MapShuffle.Returns(true);
 
-    [Theory]
-    [InlineData(AccessibilityLevel.Normal, false, false)]
-    [InlineData(AccessibilityLevel.None, false, true)]
-    [InlineData(AccessibilityLevel.Normal, true, true)]
-    public void Accessibility_ShouldReturnExpectedValue(
-        AccessibilityLevel expected, bool mapShuffle, bool requirement)
-    {
-        var sut = new MapShuffleRequirement(_mode, requirement);
-        ChangeMapShuffle(mapShuffle);
+            var eventRaised = false;
 
-        sut.Accessibility.Should().Be(expected);
-    }
-
-    [Fact]
-    public void AutofacResolve_ShouldResolveToTransientInstance()
-    {
-        using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-        var factory = scope.Resolve<MapShuffleRequirement.Factory>();
-        var sut1 = factory(false);
-        var sut2 = factory(false);
+            void Handler(object? sender, EventArgs e)
+            {
+                eventRaised = true;
+            }
             
-        sut1.Should().NotBeSameAs(sut2);
+            sut.ChangePropagated += Handler;
+            _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                _mode, new PropertyChangedEventArgs(nameof(IMode.MapShuffle)));
+            sut.ChangePropagated -= Handler;
+            
+            Assert.True(eventRaised);
+        }
+
+        [Theory]
+        [InlineData(true, false, false)]
+        [InlineData(false, false, true)]
+        [InlineData(true, true, true)]
+        public void Met_ShouldReturnExpectedValue(bool expected, bool bossShuffle, bool requirement)
+        {
+            _mode.MapShuffle.Returns(bossShuffle);
+            var sut = new MapShuffleRequirement(_mode, requirement);
+            
+            Assert.Equal(expected, sut.Met);
+        }
+
+        [Fact]
+        public void Accessibility_ShouldRaisePropertyChanged()
+        {
+            var sut = new MapShuffleRequirement(_mode, true);
+            _mode.MapShuffle.Returns(true);
+
+            Assert.PropertyChanged(sut, nameof(IRequirement.Accessibility),
+                () => _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                    _mode, new PropertyChangedEventArgs(nameof(IMode.MapShuffle))));
+        }
+
+        [Theory]
+        [InlineData(AccessibilityLevel.Normal, false, false)]
+        [InlineData(AccessibilityLevel.None, false, true)]
+        [InlineData(AccessibilityLevel.Normal, true, true)]
+        public void Accessibility_ShouldReturnExpectedValue(
+            AccessibilityLevel expected, bool bossShuffle, bool requirement)
+        {
+            _mode.MapShuffle.Returns(bossShuffle);
+            var sut = new MapShuffleRequirement(_mode, requirement);
+            
+            Assert.Equal(expected, sut.Accessibility);
+        }
+
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var factory = scope.Resolve<IMapShuffleRequirement.Factory>();
+            var sut = factory(false);
+            
+            Assert.NotNull(sut as MapShuffleRequirement);
+        }
     }
 }

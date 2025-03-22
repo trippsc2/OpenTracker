@@ -1,7 +1,6 @@
+using System;
 using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
 using Autofac;
-using FluentAssertions;
 using NSubstitute;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Modes;
@@ -9,101 +8,107 @@ using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Requirements.Mode;
 using Xunit;
 
-namespace OpenTracker.UnitTests.Models.Requirements.Mode;
-
-[ExcludeFromCodeCoverage]
-public sealed class ItemPlacementRequirementTests
+namespace OpenTracker.UnitTests.Models.Requirements.Mode
 {
-    private readonly IMode _mode = Substitute.For<IMode>();
-    
-    private void ChangeItemPlacement(ItemPlacement newValue)
+    public class ItemPlacementRequirementTests
     {
-        _mode.ItemPlacement.Returns(newValue);
-        _mode.PropertyChanged += Raise
-            .Event<PropertyChangedEventHandler>(
-                _mode,
-                new PropertyChangedEventArgs(nameof(IMode.ItemPlacement)));
-    }
+        private readonly IMode _mode = Substitute.For<IMode>();
 
-    [Fact]
-    public void Met_ShouldRaisePropertyChanged()
-    {
-        const ItemPlacement itemPlacement = ItemPlacement.Advanced;
-        
-        var sut = new ItemPlacementRequirement(_mode, itemPlacement);
-        using var monitor = sut.Monitor();
-        
-        ChangeItemPlacement(itemPlacement);
-        
-        monitor.Should().RaisePropertyChangeFor(x => x.Met);
-    }
+        [Fact]
+        public void ModeChanged_ShouldUpdateMetValue()
+        {
+            const ItemPlacement itemPlacement = ItemPlacement.Advanced;
+            var sut = new ItemPlacementRequirement(_mode, itemPlacement);
+            _mode.ItemPlacement.Returns(itemPlacement);
 
-    [Theory]
-    [InlineData(true, ItemPlacement.Basic, ItemPlacement.Basic)]
-    [InlineData(false, ItemPlacement.Basic, ItemPlacement.Advanced)]
-    [InlineData(false, ItemPlacement.Advanced, ItemPlacement.Basic)]
-    [InlineData(true, ItemPlacement.Advanced, ItemPlacement.Advanced)]
-    public void Met_ShouldReturnExpectedValue(
-        bool expected,
-        ItemPlacement itemPlacement,
-        ItemPlacement requirement)
-    {
-        var sut = new ItemPlacementRequirement(_mode, requirement);
-        ChangeItemPlacement(itemPlacement);
-
-        sut.Met.Should().Be(expected);
-    }
-
-    [Fact]
-    public void Accessibility_ShouldRaisePropertyChanged()
-    {
-        const ItemPlacement itemPlacement = ItemPlacement.Advanced;
-        
-        var sut = new ItemPlacementRequirement(_mode, itemPlacement);
-        using var monitor = sut.Monitor();
-        
-        ChangeItemPlacement(itemPlacement);
-        
-        monitor.Should().RaisePropertyChangeFor(x => x.Accessibility);
-    }
-
-    [Fact]
-    public void Accessibility_ShouldRaiseChangePropagated()
-    {
-        const ItemPlacement itemPlacement = ItemPlacement.Advanced;
-        
-        var sut = new ItemPlacementRequirement(_mode, itemPlacement);
-        using var monitor = sut.Monitor();
-        
-        ChangeItemPlacement(itemPlacement);
-
-        monitor.Should().Raise(nameof(IRequirement.ChangePropagated));
-    }
-
-    [Theory]
-    [InlineData(AccessibilityLevel.Normal, ItemPlacement.Basic, ItemPlacement.Basic)]
-    [InlineData(AccessibilityLevel.None, ItemPlacement.Basic, ItemPlacement.Advanced)]
-    [InlineData(AccessibilityLevel.None, ItemPlacement.Advanced, ItemPlacement.Basic)]
-    [InlineData(AccessibilityLevel.Normal, ItemPlacement.Advanced, ItemPlacement.Advanced)]
-    public void Accessibility_ShouldReturnExpectedValue(
-        AccessibilityLevel expected,
-        ItemPlacement itemPlacement,
-        ItemPlacement requirement)
-    {
-        var sut = new ItemPlacementRequirement(_mode, requirement);
-        ChangeItemPlacement(itemPlacement);
+            _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                _mode, new PropertyChangedEventArgs(nameof(IMode.ItemPlacement)));
             
-        sut.Accessibility.Should().Be(expected);
-    }
+            Assert.True(sut.Met);
+        }
 
-    [Fact]
-    public void AutofacResolve_ShouldResolveToTransientInstance()
-    {
-        using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-        var factory = scope.Resolve<ItemPlacementRequirement.Factory>();
-        var sut1 = factory(ItemPlacement.Basic);
-        var sut2 = factory(ItemPlacement.Basic);
+        [Fact]
+        public void Met_ShouldRaisePropertyChanged()
+        {
+            const ItemPlacement itemPlacement = ItemPlacement.Advanced;
+            var sut = new ItemPlacementRequirement(_mode, itemPlacement);
+            _mode.ItemPlacement.Returns(itemPlacement);
+
+            Assert.PropertyChanged(sut, nameof(IRequirement.Met), 
+                () => _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                    _mode, new PropertyChangedEventArgs(nameof(IMode.ItemPlacement))));
+        }
+
+        [Fact]
+        public void Met_ShouldRaiseChangePropagated()
+        {
+            const ItemPlacement itemPlacement = ItemPlacement.Advanced;
+            var sut = new ItemPlacementRequirement(_mode, itemPlacement);
+            _mode.ItemPlacement.Returns(itemPlacement);
+
+            var eventRaised = false;
+
+            void Handler(object? sender, EventArgs e)
+            {
+                eventRaised = true;
+            }
             
-        sut1.Should().NotBeSameAs(sut2);
+            sut.ChangePropagated += Handler;
+            _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                _mode, new PropertyChangedEventArgs(nameof(IMode.ItemPlacement)));
+            sut.ChangePropagated -= Handler;
+            
+            Assert.True(eventRaised);
+        }
+
+        [Theory]
+        [InlineData(true, ItemPlacement.Basic, ItemPlacement.Basic)]
+        [InlineData(false, ItemPlacement.Basic, ItemPlacement.Advanced)]
+        [InlineData(false, ItemPlacement.Advanced, ItemPlacement.Basic)]
+        [InlineData(true, ItemPlacement.Advanced, ItemPlacement.Advanced)]
+        public void Met_ShouldReturnExpectedValue(
+            bool expected, ItemPlacement itemPlacement, ItemPlacement requirement)
+        {
+            _mode.ItemPlacement.Returns(itemPlacement);
+            var sut = new ItemPlacementRequirement(_mode, requirement);
+            
+            Assert.Equal(expected, sut.Met);
+        }
+
+        [Fact]
+        public void Accessibility_ShouldRaisePropertyChanged()
+        {
+            const ItemPlacement itemPlacement = ItemPlacement.Advanced;
+            var sut = new ItemPlacementRequirement(_mode, itemPlacement);
+            _mode.ItemPlacement.Returns(itemPlacement);
+
+            Assert.PropertyChanged(sut, nameof(IRequirement.Accessibility), 
+                () => _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                    _mode, new PropertyChangedEventArgs(nameof(IMode.ItemPlacement))));
+        }
+
+        [Theory]
+        [InlineData(AccessibilityLevel.Normal, ItemPlacement.Basic, ItemPlacement.Basic)]
+        [InlineData(AccessibilityLevel.None, ItemPlacement.Basic, ItemPlacement.Advanced)]
+        [InlineData(AccessibilityLevel.None, ItemPlacement.Advanced, ItemPlacement.Basic)]
+        [InlineData(AccessibilityLevel.Normal, ItemPlacement.Advanced, ItemPlacement.Advanced)]
+        public void Accessibility_ShouldReturnExpectedValue(
+            AccessibilityLevel expected, ItemPlacement itemPlacement, ItemPlacement requirement)
+        {
+            _mode.ItemPlacement.Returns(itemPlacement);
+            var sut = new ItemPlacementRequirement(_mode, requirement);
+            
+            Assert.Equal(expected, sut.Accessibility);
+        }
+
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var factory = scope.Resolve<IItemPlacementRequirement.Factory>();
+            var sut = factory(ItemPlacement.Basic);
+            
+            Assert.NotNull(sut as ItemPlacementRequirement);
+        }
     }
 }

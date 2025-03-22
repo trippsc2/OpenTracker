@@ -1,11 +1,10 @@
 ﻿using System.Reflection;
-using OpenTracker.Utils;
-using OpenTracker.Utils.Autofac;
+using OpenTracker.Utils.Dialog;
 
-namespace OpenTracker.ViewModels.Dialogs;
-
-[DependencyInjection(SingleInstance = true)]
-public sealed class AboutDialogVM : ViewModel
+namespace OpenTracker.ViewModels.Dialogs
 {
-    public string Version { get; } = $"v{Assembly.GetExecutingAssembly().GetName().Version}";
+    public class AboutDialogVM : DialogViewModelBase, IAboutDialogVM
+    {
+        public static string Version { get; } = $"v{Assembly.GetExecutingAssembly().GetName().Version}";
+    }
 }

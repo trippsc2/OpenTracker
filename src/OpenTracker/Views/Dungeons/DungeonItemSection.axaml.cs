@@ -1,36 +1,18 @@
-﻿using System.Reactive.Disposables;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using Avalonia.ReactiveUI;
-using OpenTracker.ViewModels.Dungeons;
-using ReactiveMarbles.ObservableEvents;
-using ReactiveUI;
 
-namespace OpenTracker.Views.Dungeons;
-
-public sealed class DungeonItemSection : ReactiveUserControl<DungeonItemSectionVM>
+namespace OpenTracker.Views.Dungeons
 {
-    private StackPanel StackPanel => this.FindControl<StackPanel>(nameof(StackPanel));
-
-    public DungeonItemSection()
+    public class DungeonItemSection : UserControl
     {
-        InitializeComponent();
-        this.WhenActivated(disposables =>
+        public DungeonItemSection()
         {
-            if (ViewModel is null)
-            {
-                return;
-            }
-            
-            StackPanel.Events()
-                .PointerReleased
-                .InvokeCommand(ViewModel.HandleClickCommand)
-                .DisposeWith(disposables);
-        });
-    }
+            InitializeComponent();
+        }
 
-    private void InitializeComponent()
-    {
-        AvaloniaXamlLoader.Load(this);
+        private void InitializeComponent()
+        {
+            AvaloniaXamlLoader.Load(this);
+        }
     }
 }

@@ -1,237 +1,424 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Reactive;
-using System.Reactive.Disposables;
-using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Avalonia.Threading;
 using OpenTracker.Models.AutoTracking;
 using OpenTracker.Models.AutoTracking.Logging;
+using OpenTracker.Models.AutoTracking.SNESConnectors;
 using OpenTracker.Models.Logging;
-using OpenTracker.Utils;
-using OpenTracker.Utils.Autofac;
+using OpenTracker.Utils.Dialog;
 using OpenTracker.ViewModels.AutoTracking;
 using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
 
-namespace OpenTracker.ViewModels.Dialogs;
-
-/// <summary>
-/// This class contains the auto-tracker dialog window ViewModel.
-/// </summary>
-[DependencyInjection(SingleInstance = true)]
-public sealed class AutoTrackerDialogVM : ViewModel
+namespace OpenTracker.ViewModels.Dialogs
 {
-
-    private readonly DispatcherTimer _memoryCheckTimer;
-    private int _tickCount;
-    
-    private IAutoTracker AutoTracker { get; }
-    
-    public AutoTrackerStatusVM Status { get; }
-
-    [ObservableAsProperty]
-    public bool UriTextBoxEnabled { get; }
-    [ObservableAsProperty]
-    public bool DevicesComboBoxEnabled { get; }
-    [ObservableAsProperty]
-    public IList<string> Devices { get; } = new List<string>();
-    [ObservableAsProperty]
-    public bool RaceIllegalTracking { get; }
-    [Reactive]
-    public string UriString { get; set; } = "ws://localhost:8080";
-    [Reactive]
-    // ReSharper disable once UnusedAutoPropertyAccessor.Global
-    public string? Device { get; set; }
-
-    [Reactive]
-    public ReactiveCommand<Unit, Unit> ConnectCommand { get; private set; } = default!;
-    [Reactive]
-    public ReactiveCommand<Unit, Unit> GetDevicesCommand { get; private set; } = default!;
-    [Reactive]
-    public ReactiveCommand<Unit, Unit> DisconnectCommand { get; private set; } = default!;
-    [Reactive]
-    public ReactiveCommand<Unit, Unit> StartCommand { get; private set; } = default!;
-
-    [Reactive]
-    public ReactiveCommand<Unit, Unit> ToggleRaceIllegalTrackingCommand { get; private set; } = default!;
-
     /// <summary>
-    ///     Constructor
+    /// This class contains the auto-tracker dialog window ViewModel.
     /// </summary>
-    /// <param name="autoTracker">
-    ///     The auto-tracker data.
-    /// </param>
-    /// <param name="logService">
-    ///     The auto-tracker log service.
-    /// </param>
-    /// <param name="status">
-    ///     The auto-tracker status control ViewModel.
-    /// </param>
-    public AutoTrackerDialogVM(IAutoTracker autoTracker, IAutoTrackerLogService logService, AutoTrackerStatusVM status)
+    public class AutoTrackerDialogVM : DialogViewModelBase, IAutoTrackerDialogVM
     {
-        AutoTracker = autoTracker;
+        private readonly IAutoTracker _autoTracker;
 
-        Status = status;
+        private readonly DispatcherTimer _memoryCheckTimer;
+        private int _tickCount;
 
-        _memoryCheckTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
-        _memoryCheckTimer.Tick += OnMemoryCheckTimerTick;
+        public bool UriTextBoxEnabled => _autoTracker.CanConnect();
 
-        this.WhenActivated(disposables =>
+        private string _uriString = "ws://localhost:8080";
+        public string UriString
         {
-            this.WhenAnyValue(x => x.AutoTracker.Status)
-                .Select(_ => AutoTracker.CanConnect())
-                .ObserveOn(RxApp.MainThreadScheduler)
-                .ToPropertyEx(this, x => x.UriTextBoxEnabled)
-                .DisposeWith(disposables);
-            this.WhenAnyValue(
-                    x => x.AutoTracker.Devices,
-                    x => x.AutoTracker.Status,
-                    (_, _) => AutoTracker.CanStart() && Devices.Count > 0)
-                .ObserveOn(RxApp.MainThreadScheduler)
-                .ToPropertyEx(this, x => x.DevicesComboBoxEnabled)
-                .DisposeWith(disposables);
-            this.WhenAnyValue(x => x.AutoTracker.Devices)
-                .ObserveOn(RxApp.MainThreadScheduler)
-                .ToPropertyEx(this, x => x.Devices)
-                .DisposeWith(disposables);
-            this.WhenAnyValue(x => x.AutoTracker.RaceIllegalTracking)
-                .ObserveOn(RxApp.MainThreadScheduler)
-                .ToPropertyEx(this, x => x.RaceIllegalTracking)
-                .DisposeWith(disposables);
+            get => _uriString;
+            set => this.RaiseAndSetIfChanged(ref _uriString, value);
+        }
 
-            var canConnect = this
-                .WhenAnyValue(
-                    x => x.UriString,
-                    x => x.AutoTracker.Status,
-                    (_, _) => CanCreateWebSocketUri() && AutoTracker.CanConnect())
-                .ObserveOn(RxApp.MainThreadScheduler);
-            var canGetDevices = this
-                .WhenAnyValue(x => x.AutoTracker.Status)
-                .Select(_ => AutoTracker.CanGetDevices())
-                .ObserveOn(RxApp.MainThreadScheduler);
-            var canDisconnect = this
-                .WhenAnyValue(x => x.AutoTracker.Status)
-                .Select(_ => AutoTracker.CanDisconnect())
-                .ObserveOn(RxApp.MainThreadScheduler);
-            var canStart = this
-                .WhenAnyValue(
-                    x => x.Device,
-                    x => x.AutoTracker.Status,
-                    (device, _) => !string.IsNullOrEmpty(device) && AutoTracker.CanStart())
-                .ObserveOn(RxApp.MainThreadScheduler);
-            
-            ConnectCommand = ReactiveCommand
-                .CreateFromTask(ConnectAsync, canConnect)
-                .DisposeWith(disposables);
+        public bool DevicesComboBoxEnabled => _autoTracker.CanStart() && Devices.Count > 0;
+
+        public IList<string> Devices => _autoTracker.Devices;
+
+        private string? _device;
+        public string? Device
+        {
+            get => _device;
+            set => this.RaiseAndSetIfChanged(ref _device, value);
+        }
+
+        public bool RaceIllegalTracking => _autoTracker.RaceIllegalTracking;
+
+        public IAutoTrackerLogVM Log { get; }
+        public IAutoTrackerStatusVM Status { get; }
+
+        private bool _canConnect;
+        private bool CanConnect
+        {
+            get => _canConnect;
+            set => this.RaiseAndSetIfChanged(ref _canConnect, value);
+        }
+
+        private bool _canGetDevices;
+        private bool CanGetDevices
+        {
+            get => _canGetDevices;
+            set => this.RaiseAndSetIfChanged(ref _canGetDevices, value);
+        }
+
+        private bool _canDisconnect;
+        private bool CanDisconnect
+        {
+            get => _canDisconnect;
+            set => this.RaiseAndSetIfChanged(ref _canDisconnect, value);
+        }
+
+        private bool _canStart;
+        private bool CanStart
+        {
+            get => _canStart;
+            set => this.RaiseAndSetIfChanged(ref _canStart, value);
+        }
+
+        public ReactiveCommand<Unit, Unit> ConnectCommand { get; }
+        public ReactiveCommand<Unit, Unit> GetDevicesCommand { get; }
+        public ReactiveCommand<Unit, Unit> DisconnectCommand { get; }
+        public ReactiveCommand<Unit, Unit> StartCommand { get; }
+
+        public ReactiveCommand<Unit, Unit> ToggleRaceIllegalTrackingCommand { get; }
+
+        private readonly ObservableAsPropertyHelper<bool> _isConnecting;
+        private bool IsConnecting => _isConnecting.Value;
+
+        private readonly ObservableAsPropertyHelper<bool> _isGettingDevices;
+        private bool IsGettingDevices => _isGettingDevices.Value;
+
+        private readonly ObservableAsPropertyHelper<bool> _isDisconnecting;
+        private bool IsDisconnecting => _isDisconnecting.Value;
+
+        private readonly ObservableAsPropertyHelper<bool> _isStarting;
+        private bool IsStarting => _isStarting.Value;
+
+        /// <summary>
+        ///     Constructor
+        /// </summary>
+        /// <param name="autoTracker">
+        ///     The auto-tracker data.
+        /// </param>
+        /// <param name="logService">
+        ///     The auto-tracker log service.
+        /// </param>
+        /// <param name="status">
+        ///     The auto-tracker status control ViewModel.
+        /// </param>
+        /// <param name="log">
+        ///     The auto-tracker log control ViewModel.
+        /// </param>
+        public AutoTrackerDialogVM(
+            IAutoTracker autoTracker, IAutoTrackerLogService logService, IAutoTrackerStatusVM status,
+            IAutoTrackerLogVM log)
+        {
+            _autoTracker = autoTracker;
+
+            Status = status;
+            Log = log;
+
+            _memoryCheckTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromMilliseconds(500)
+            };
+
+            _memoryCheckTimer.Tick += OnMemoryCheckTimerTick;
+
+            ConnectCommand = ReactiveCommand.CreateFromTask(
+                Connect, this.WhenAnyValue(x => x.CanConnect));
+            ConnectCommand.IsExecuting.ToProperty(
+                this, x => x.IsConnecting, out _isConnecting);
             ConnectCommand.ThrownExceptions
-                .Subscribe(ex => { logService.Log(LogLevel.Fatal, ex.Message); })
-                .DisposeWith(disposables);
-            GetDevicesCommand = ReactiveCommand
-                .CreateFromTask(GetDevicesAsync, canGetDevices)
-                .DisposeWith(disposables);
+                .Subscribe(ex => { logService.Log(LogLevel.Fatal, ex.Message); });
+
+            GetDevicesCommand = ReactiveCommand.CreateFromTask(
+                GetDevices, this.WhenAnyValue(x => x.CanGetDevices));
+            GetDevicesCommand.IsExecuting.ToProperty(
+                this, x => x.IsGettingDevices, out _isGettingDevices);
             GetDevicesCommand.ThrownExceptions
-                .Subscribe(ex => { logService.Log(LogLevel.Fatal, ex.Message); })
-                .DisposeWith(disposables);
-            DisconnectCommand = ReactiveCommand
-                .CreateFromTask(StopAsync, canDisconnect)
-                .DisposeWith(disposables);
+                .Subscribe(ex => { logService.Log(LogLevel.Fatal, ex.Message); });
+
+            DisconnectCommand = ReactiveCommand.CreateFromTask(
+                Stop, this.WhenAnyValue(x => x.CanDisconnect));
+            DisconnectCommand.IsExecuting.ToProperty(
+                this, x => x.IsDisconnecting, out _isDisconnecting);
             DisconnectCommand.ThrownExceptions
-                .Subscribe(ex => { logService.Log(LogLevel.Fatal, ex.Message); })
-                .DisposeWith(disposables);
-            StartCommand = ReactiveCommand
-                .CreateFromTask(StartAsync, canStart)
-                .DisposeWith(disposables);
+                .Subscribe(ex => { logService.Log(LogLevel.Fatal, ex.Message); });
+
+            StartCommand = ReactiveCommand.CreateFromTask(
+                Start, this.WhenAnyValue(x => x.CanStart));
+            StartCommand.IsExecuting.ToProperty(
+                this, x => x.IsStarting, out _isStarting);
             StartCommand.ThrownExceptions
-                .Subscribe(ex => { logService.Log(LogLevel.Fatal, ex.Message); })
-                .DisposeWith(disposables);
+                .Subscribe(ex => { logService.Log(LogLevel.Fatal, ex.Message); });
 
-            ToggleRaceIllegalTrackingCommand = ReactiveCommand
-                .Create(ToggleRaceIllegalTracking)
-                .DisposeWith(disposables);
+            ToggleRaceIllegalTrackingCommand = ReactiveCommand.Create(ToggleRaceIllegalTracking);
 
-        });
-    }
-
-    /// <summary>
-    /// Subscribes to the dispatcher timer Tick event.
-    /// </summary>
-    /// <param name="sender">
-    /// The event sender.
-    /// </param>
-    /// <param name="e">
-    /// The Tick event args.
-    /// </param>
-    private async void OnMemoryCheckTimerTick(object? sender, EventArgs e)
-    {
-        _tickCount++;
-
-        await AutoTracker.InGameCheck();
-
-        if (_tickCount != 5)
-        {
-            return;
-        }
+            PropertyChanged += OnPropertyChanged;
+            _autoTracker.PropertyChanged += OnAutoTrackerChanged;
             
-        _tickCount = 0;
-        await AutoTracker.MemoryCheck();
-    }
-
-    private async Task ConnectAsync()
-    {
-        await AutoTracker.Connect(UriString);
-    }
-
-    private async Task GetDevicesAsync()
-    {
-        await AutoTracker.GetDevices();
-    }
-
-    private async Task StopAsync()
-    {
-        _memoryCheckTimer.Stop();
-        await AutoTracker.Disconnect();
-    }
-
-    private async Task StartAsync()
-    {    
-        await AutoTracker.Start(Device!);
-        _memoryCheckTimer.Start();
-    }
-
-    private void ToggleRaceIllegalTracking()
-    {
-        AutoTracker.RaceIllegalTracking = !AutoTracker.RaceIllegalTracking;
-    }
-
-    private bool CanCreateWebSocketUri()
-    {
-        if (!Uri.IsWellFormedUriString(UriString, UriKind.Absolute))
-        {
-            return false;
+            UpdateCommandCanExecute();
         }
 
-        var uri = new Uri(UriString);
-
-        if (!uri.IsAbsoluteUri)
+        /// <summary>
+        ///     Subscribes to the PropertyChanged event on itself.
+        /// </summary>
+        /// <param name="sender">
+        ///     The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        ///     The arguments of the PropertyChanged event.
+        /// </param>
+        private async void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
-            return false;
+            if (e.PropertyName == nameof(UriString))
+            {
+                await UpdateCanConnectAsync();
+            }
+
+            if (e.PropertyName == nameof(Device))
+            {
+                await UpdateCanStartAsync();
+            }
         }
 
-        var scheme = uri.Scheme;
-
-        if (scheme is not ("ws" or "wss"))
+        /// <summary>
+        /// Subscribes to the dispatcher timer Tick event.
+        /// </summary>
+        /// <param name="sender">
+        /// The event sender.
+        /// </param>
+        /// <param name="e">
+        /// The Tick event args.
+        /// </param>
+        private async void OnMemoryCheckTimerTick(object? sender, EventArgs e)
         {
-            return false;
+            _tickCount++;
+
+            await _autoTracker.InGameCheck();
+
+            if (_tickCount != 5)
+            {
+                return;
+            }
+            
+            _tickCount = 0;
+            await _autoTracker.MemoryCheck();
         }
 
-        var port = uri.Port;
-
-        if (port == 0)
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the IAutoTracker interface.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
+        private async void OnAutoTrackerChanged(object? sender, PropertyChangedEventArgs e)
         {
-            return false;
+            switch (e.PropertyName)
+            {
+                case nameof(IAutoTracker.RaceIllegalTracking):
+                    await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(RaceIllegalTracking)));
+                    break;
+                case nameof(IAutoTracker.Devices):
+                    await Dispatcher.UIThread.InvokeAsync(() =>
+                    {
+                        this.RaisePropertyChanged(nameof(Devices));
+                        this.RaisePropertyChanged(nameof(DevicesComboBoxEnabled));
+                    });
+                    break;
+                case nameof(IAutoTracker.Status):
+                {
+                    await UpdateCommandCanExecuteAsync();
+
+                    await Dispatcher.UIThread.InvokeAsync(() =>
+                    {
+                        if (_autoTracker.Status != ConnectionStatus.Connected &&
+                            _memoryCheckTimer.IsEnabled)
+                        {
+                            _memoryCheckTimer.Stop();
+                        }
+
+                        this.RaisePropertyChanged(nameof(UriTextBoxEnabled));
+                        this.RaisePropertyChanged(nameof(DevicesComboBoxEnabled));
+                    });
+                }
+                    break;
+            }
         }
 
-        return uri.Fragment.Length <= 0;
+        /// <summary>
+        /// Updates the "can execute" properties for all commands.
+        /// </summary>
+        private void UpdateCommandCanExecute()
+        {
+            UpdateCanConnect();
+            UpdateCanGetDevices();
+            UpdateCanDisconnect();
+            UpdateCanStart();
+        }
+
+        /// <summary>
+        /// Updates the "can execute" properties for all commands asynchronously.
+        /// </summary>
+        private async Task UpdateCommandCanExecuteAsync()
+        {
+            await UpdateCanConnectAsync();
+            await UpdateCanGetDevicesAsync();
+            await UpdateCanDisconnectAsync();
+            await UpdateCanStartAsync();
+        }
+
+        /// <summary>
+        /// Updates the CanConnect property.
+        /// </summary>
+        private void UpdateCanConnect()
+        {
+            CanConnect = CanCreateWebSocketUri() && _autoTracker.CanConnect();
+        }
+
+        /// <summary>
+        /// Updates the CanConnect property asynchronously.
+        /// </summary>
+        private async Task UpdateCanConnectAsync()
+        {
+            await Dispatcher.UIThread.InvokeAsync(UpdateCanConnect);
+        }
+
+        /// <summary>
+        /// Updates the CanGetDevices property.
+        /// </summary>
+        private void UpdateCanGetDevices()
+        {
+            CanGetDevices = _autoTracker.CanGetDevices();
+        }
+
+        /// <summary>
+        /// Updates the CanGetDevices property asynchronously.
+        /// </summary>
+        private async Task UpdateCanGetDevicesAsync()
+        {
+            await Dispatcher.UIThread.InvokeAsync(UpdateCanGetDevices);
+        }
+
+        /// <summary>
+        /// Updates the CanGetDisconnect property.
+        /// </summary>
+        private void UpdateCanDisconnect()
+        {
+            CanDisconnect = _autoTracker.CanDisconnect();
+        }
+
+        /// <summary>
+        /// Updates the CanGetDisconnect property asynchronously.
+        /// </summary>
+        private async Task UpdateCanDisconnectAsync()
+        {
+            await Dispatcher.UIThread.InvokeAsync(UpdateCanDisconnect);
+        }
+
+        /// <summary>
+        /// Updates the CanStart property.
+        /// </summary>
+        private void UpdateCanStart()
+        {
+            CanStart = !(Device is null) && Device != string.Empty && _autoTracker.CanStart();
+        }
+
+        /// <summary>
+        /// Updates the CanStart property asynchronously.
+        /// </summary>
+        private async Task UpdateCanStartAsync()
+        {
+            await Dispatcher.UIThread.InvokeAsync(UpdateCanStart);
+        }
+
+        /// <summary>
+        /// Connects to the web socket at the specified URI string.
+        /// </summary>
+        private async Task Connect()
+        {
+            await _autoTracker.Connect(UriString);
+        }
+
+        /// <summary>
+        /// Sets the value of the Devices property to an observable collection of strings representing
+        /// the devices returns by the SNES connector.
+        /// </summary>
+        /// <returns>
+        /// An observable representing the result of the command.
+        /// </returns>
+        private async Task GetDevices()
+        {
+            await _autoTracker.GetDevices();
+        }
+
+        /// <summary>
+        /// Stops auto-tracking.
+        /// </summary>
+        private async Task Stop()
+        {
+            _memoryCheckTimer.Stop();
+            await _autoTracker.Disconnect();
+        }
+
+        /// <summary>
+        /// Starts auto-tracking.
+        /// </summary>
+        private async Task Start()
+        {    
+            await _autoTracker.Start(Device!);
+            _memoryCheckTimer.Start();
+        }
+
+        /// <summary>
+        /// Toggles the race illegal tracking flag.
+        /// </summary>
+        private void ToggleRaceIllegalTracking()
+        {
+            _autoTracker.RaceIllegalTracking = !_autoTracker.RaceIllegalTracking;
+        }
+
+        /// <summary>
+        /// Returns whether the UriString property value is a valid URI to be accepted by the web socket library.
+        /// </summary>
+        /// <returns>
+        /// A boolean representing whether the UriString property value can be accepted by the web socket library.
+        /// </returns>
+        private bool CanCreateWebSocketUri()
+        {
+            if (!Uri.IsWellFormedUriString(UriString, UriKind.Absolute))
+            {
+                return false;
+            }
+
+            var uri = new Uri(UriString);
+
+            if (!uri.IsAbsoluteUri)
+            {
+                return false;
+            }
+
+            var scheme = uri.Scheme;
+
+            if (scheme is not ("ws" or "wss"))
+            {
+                return false;
+            }
+
+            var port = uri.Port;
+
+            if (port == 0)
+            {
+                return false;
+            }
+
+            return uri.Fragment.Length <= 0;
+        }
     }
 }

@@ -12,78 +12,81 @@ using OpenTracker.Utils.Themes;
 using OpenTracker.ViewModels;
 using OpenTracker.Views;
 
-namespace OpenTracker;
-
-public class App : Application
+namespace OpenTracker
 {
-    private static void CopyDefaultThemesToAppData()
+    public class App : Application
     {
-        var themePath = AppPath.AppDataThemesPath;
-
-        if (!Directory.Exists(themePath))
+        private static void CopyDefaultThemesToAppData()
         {
-            Directory.CreateDirectory(themePath);
-        }
+            var themePath = AppPath.AppDataThemesPath;
 
-        foreach (var srcTheme in Directory.GetFiles(AppPath.AppRootThemesPath))
-        {
-            var filename = Path.GetFileName(srcTheme);
-            var destTheme = Path.Combine(themePath, filename);
-
-            if (File.Exists(destTheme))
+            if (!Directory.Exists(themePath))
             {
-                File.Delete(destTheme);
+                Directory.CreateDirectory(themePath);
             }
 
-            File.Copy(srcTheme, destTheme);
-        }
-    }
-
-    private static void SetThemeToLastOrDefault(IThemeManager selector)
-    {
-        var lastThemeFilePath = AppPath.LastThemeFilePath;
-
-        if (!File.Exists(lastThemeFilePath))
-        {
-            return;
-        }
-            
-        selector.LoadSelectedTheme(lastThemeFilePath);
-    }
-
-    public override void Initialize()
-    {
-        Logger.Sink = new AvaloniaSerilogSink(
-            AppPath.AvaloniaLogFilePath, Serilog.Events.LogEventLevel.Warning);
-
-        AvaloniaXamlLoader.Load(this);
-    }
-
-    public override void OnFrameworkInitializationCompleted()
-    {
-        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-        {
-            desktop.ShutdownMode = ShutdownMode.OnMainWindowClose;
-            CopyDefaultThemesToAppData();
-
-            var container = ContainerConfig.Configure();
-            using var scope = container.BeginLifetimeScope();
-
-            var themeManagerFactory = scope.Resolve<IThemeManager.Factory>();
-            var themeManager = themeManagerFactory(this, AppPath.AppDataThemesPath);
-            var saveLoadManager = scope.Resolve<ISaveLoadManager>();
-            saveLoadManager.OpenSequenceBreaks(AppPath.SequenceBreakPath);
-            desktop.MainWindow = new MainWindow { DataContext = scope.Resolve<MainWindowVM>() };
-                
-            SetThemeToLastOrDefault(themeManager);
-
-            desktop.Exit += (_, _) =>
+            foreach (var srcTheme in Directory.GetFiles(AppPath.AppRootThemesPath))
             {
-                saveLoadManager.SaveSequenceBreaks(AppPath.SequenceBreakPath);
-                themeManager.SaveSelectedTheme(AppPath.LastThemeFilePath);
-            };
+                var filename = Path.GetFileName(srcTheme);
+                var destTheme = Path.Combine(themePath, filename);
+
+                if (File.Exists(destTheme))
+                {
+                    File.Delete(destTheme);
+                }
+
+                File.Copy(srcTheme, destTheme);
+            }
         }
 
-        base.OnFrameworkInitializationCompleted();
+        private static void SetThemeToLastOrDefault(IThemeManager selector)
+        {
+            var lastThemeFilePath = AppPath.LastThemeFilePath;
+
+            if (!File.Exists(lastThemeFilePath))
+            {
+                return;
+            }
+            
+            selector.LoadSelectedTheme(lastThemeFilePath);
+        }
+
+        public override void Initialize()
+        {
+            Logger.Sink = new AvaloniaSerilogSink(
+                AppPath.AvaloniaLogFilePath, Serilog.Events.LogEventLevel.Warning);
+
+            AvaloniaXamlLoader.Load(this);
+        }
+
+        public override void OnFrameworkInitializationCompleted()
+        {
+            if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                desktop.ShutdownMode = ShutdownMode.OnMainWindowClose;
+                CopyDefaultThemesToAppData();
+
+                using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+
+                var themeManagerFactory = scope.Resolve<IThemeManager.Factory>();
+                var themeManager = themeManagerFactory(this, AppPath.AppDataThemesPath);
+                var saveLoadManager = scope.Resolve<ISaveLoadManager>();
+                saveLoadManager.OpenSequenceBreaks(AppPath.SequenceBreakPath);
+                desktop.MainWindow = new MainWindow()
+                {
+                    DataContext = scope.Resolve<IMainWindowVM>()
+                };
+                
+                SetThemeToLastOrDefault(themeManager);
+
+                desktop.Exit += (_, _) =>
+                {
+                    saveLoadManager.SaveSequenceBreaks(AppPath.SequenceBreakPath);
+                    themeManager.SaveSelectedTheme(AppPath.LastThemeFilePath);
+                };
+            }
+
+            base.OnFrameworkInitializationCompleted();
+        }
     }
 }

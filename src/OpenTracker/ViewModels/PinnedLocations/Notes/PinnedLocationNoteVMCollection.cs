@@ -1,34 +1,33 @@
 ﻿using OpenTracker.Models.Locations;
 using OpenTracker.Models.Markings;
 using OpenTracker.Utils;
-using OpenTracker.Utils.Autofac;
 using OpenTracker.ViewModels.Markings;
 
-namespace OpenTracker.ViewModels.PinnedLocations.Notes;
-
-[DependencyInjection(SingleInstance = true)]
-public sealed class PinnedLocationNoteVMCollection : ViewModelCollection<IPinnedLocationNoteVM, IMarking>,
-    IPinnedLocationNoteVMCollection
+namespace OpenTracker.ViewModels.PinnedLocations.Notes
 {
-    private readonly IMarkingSelectFactory _markingSelectFactory;
-    private readonly IPinnedLocationNoteVM.Factory _factory;
-
-    private readonly ILocation _location;
-
-    public delegate IPinnedLocationNoteVMCollection Factory(ILocation location);
-
-    public PinnedLocationNoteVMCollection(
-        IMarkingSelectFactory markingSelectFactory, IPinnedLocationNoteVM.Factory factory, ILocation location)
-        : base(location.Notes)
+    public class PinnedLocationNoteVMCollection : ViewModelCollection<IPinnedLocationNoteVM, IMarking>,
+        IPinnedLocationNoteVMCollection
     {
-        _markingSelectFactory = markingSelectFactory;
-        _factory = factory;
+        private readonly IMarkingSelectFactory _markingSelectFactory;
+        private readonly IPinnedLocationNoteVM.Factory _factory;
 
-        _location = location;
-    }
+        private readonly ILocation _location;
 
-    protected override IPinnedLocationNoteVM CreateViewModel(IMarking model)
-    {
-        return _factory(model, _markingSelectFactory.GetNoteMarkingSelectVM(model, _location));
+        public delegate IPinnedLocationNoteVMCollection Factory(ILocation location);
+
+        public PinnedLocationNoteVMCollection(
+            IMarkingSelectFactory markingSelectFactory, IPinnedLocationNoteVM.Factory factory, ILocation location)
+            : base(location.Notes)
+        {
+            _markingSelectFactory = markingSelectFactory;
+            _factory = factory;
+
+            _location = location;
+        }
+
+        protected override IPinnedLocationNoteVM CreateViewModel(IMarking model)
+        {
+            return _factory(model, _markingSelectFactory.GetNoteMarkingSelectVM(model, _location));
+        }
     }
 }

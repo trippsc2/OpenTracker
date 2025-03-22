@@ -1,32 +1,39 @@
 ﻿using System.Collections.Generic;
-using Avalonia.Media;
 using OpenTracker.Models.Accessibility;
-using OpenTracker.Utils.Autofac;
-using Reactive.Bindings;
+using OpenTracker.Utils;
 using ReactiveUI;
 
-namespace OpenTracker.Models.Settings;
-
-/// <summary>
-/// This class contains color settings data.
-/// </summary>
-[DependencyInjection(SingleInstance = true)]
-public sealed class ColorSettings : ReactiveObject
+namespace OpenTracker.Models.Settings
 {
-    public ReactiveProperty<SolidColorBrush> EmphasisFontColor { get; } =
-        new() { Value = SolidColorBrush.Parse("#00ff00") };
-    
-    public Dictionary<AccessibilityLevel, ReactiveProperty<SolidColorBrush>> AccessibilityColors { get; } =
-        new()
+    /// <summary>
+    /// This class contains color settings data.
+    /// </summary>
+    public class ColorSettings : ReactiveObject, IColorSettings
+    {
+        private string _emphasisFontColor = "#ff00ff00";
+        public string EmphasisFontColor
         {
-            { AccessibilityLevel.None, new ReactiveProperty<SolidColorBrush> {Value = SolidColorBrush.Parse("#ff3030")} },
-            { AccessibilityLevel.Inspect, new ReactiveProperty<SolidColorBrush> {Value = SolidColorBrush.Parse("#6495ed")} },
-            { AccessibilityLevel.Partial, new ReactiveProperty<SolidColorBrush> {Value = SolidColorBrush.Parse("#ff8c00")} },
-            { AccessibilityLevel.SequenceBreak, new ReactiveProperty<SolidColorBrush> {Value = SolidColorBrush.Parse("#ffff00")} },
-            { AccessibilityLevel.Normal, new ReactiveProperty<SolidColorBrush> {Value = SolidColorBrush.Parse("#00ff00")} },
-            { AccessibilityLevel.Cleared, new ReactiveProperty<SolidColorBrush> {Value = SolidColorBrush.Parse("#ff333333")} }
-        };
-    
-    public ReactiveProperty<SolidColorBrush> ConnectorColor { get; } =
-        new() { Value = SolidColorBrush.Parse("#40e0d0") };
+            get => _emphasisFontColor;
+            set => this.RaiseAndSetIfChanged(ref _emphasisFontColor, value);
+        }
+
+        private string _connectorColor = "#ff40e0d0";
+        public string ConnectorColor
+        {
+            get => _connectorColor;
+            set => this.RaiseAndSetIfChanged(ref _connectorColor, value);
+        }
+
+        public ObservableDictionary<AccessibilityLevel, string> AccessibilityColors { get; } =
+            new(
+                new Dictionary<AccessibilityLevel, string>
+                {
+                    { AccessibilityLevel.None, "#ffff3030" },
+                    { AccessibilityLevel.Inspect, "#ff6495ed" },
+                    { AccessibilityLevel.Partial, "#ffff8c00" },
+                    { AccessibilityLevel.SequenceBreak, "#ffffff00" },
+                    { AccessibilityLevel.Normal, "#ff00ff00" },
+                    { AccessibilityLevel.Cleared, "#ff333333" }
+                });
+    }
 }

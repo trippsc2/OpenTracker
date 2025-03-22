@@ -1,16 +1,31 @@
 ﻿using System.Collections.ObjectModel;
 using OpenTracker.Models.Logging;
-using OpenTracker.Utils.Autofac;
 
-namespace OpenTracker.Models.AutoTracking.Logging;
-
-[DependencyInjection(SingleInstance = true)]
-public sealed class AutoTrackerLogService : IAutoTrackerLogService
+namespace OpenTracker.Models.AutoTracking.Logging
 {
-    public ObservableCollection<LogMessage> LogCollection { get; } = new();
-        
-    public void Log(LogLevel logLevel, string content)
+    /// <summary>
+    /// This class handles logging the auto-tracker.
+    /// </summary>
+    public class AutoTrackerLogService : IAutoTrackerLogService
     {
-        LogCollection.Add(new LogMessage { Level = logLevel, Content = content });
+        private readonly ILogMessage.Factory _messageFactory;
+        
+        public ObservableCollection<ILogMessage> LogCollection { get; } = new();
+        
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="messageFactory">
+        ///     An Autofac factory for creating <see cref="ILogMessage"/> objects.
+        /// </param>
+        public AutoTrackerLogService(ILogMessage.Factory messageFactory)
+        {
+            _messageFactory = messageFactory;
+        }
+
+        public void Log(LogLevel logLevel, string content)
+        {
+            LogCollection.Add(_messageFactory(logLevel, content));
+        }
     }
 }

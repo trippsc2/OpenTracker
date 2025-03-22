@@ -1,60 +1,68 @@
-﻿using System.Reactive.Linq;
+﻿using System.ComponentModel;
 using OpenTracker.Models.AutoTracking.Memory;
-using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
 
-namespace OpenTracker.Models.AutoTracking.Values.Single;
-
-/// <summary>
-/// This class represents an auto-tracking result value that is the direct SNES memory address byte value.
-/// </summary>
-public sealed class AutoTrackAddressValue : ReactiveObject, IAutoTrackValue
+namespace OpenTracker.Models.AutoTracking.Values.Single
 {
-    private readonly byte _maximum;
-    private readonly int _adjustment;
-        
-    private MemoryAddress Address { get; }
-        
-    [ObservableAsProperty]
-    public int? CurrentValue { get; }
-
     /// <summary>
-    /// Initializes a new <see cref="AutoTrackAddressValue"/> object with the specified memory address, maximum
-    /// value, and adjustment.
+    /// This class contains the auto-tracking result value of a memory address value.
     /// </summary>
-    /// <param name="address">
-    ///     A <see cref="MemoryAddress"/> representing the memory address to monitor.
-    /// </param>
-    /// <param name="maximum">
-    ///     A <see cref="byte"/> representing the maximum valid value of the memory address.
-    ///     If the result value is greater than this maximum, the result value will be null.
-    /// </param>
-    /// <param name="adjustment">
-    ///     An <see cref="int"/> representing the amount that the result value should be adjusted from the memory
-    ///     address value.
-    ///     This defaults to 0.
-    /// </param>
-    public AutoTrackAddressValue(MemoryAddress address, byte maximum, int adjustment = 0)
+    public class AutoTrackAddressValue : AutoTrackValueBase, IAutoTrackAddressValue
     {
-        _maximum = maximum;
-        _adjustment = adjustment;
-            
-        Address = address;
-
-        this.WhenAnyValue(x => x.Address.Value)
-            .Select(GetNewValueFromAddressValue)
-            .ToPropertyEx(this, x => x.CurrentValue);
-    }
+        private readonly IMemoryAddress _address;
+        private readonly byte _maximum;
+        private readonly int _adjustment;
         
-    private int? GetNewValueFromAddressValue(byte? addressValue)
-    {
-        if (addressValue is null)
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="address">
+        ///     The <see cref="IMemoryAddress"/> for the comparison.
+        /// </param>
+        /// <param name="maximum">
+        ///     A <see cref="byte"/> representing the maximum valid value of the memory address.
+        /// </param>
+        /// <param name="adjustment">
+        ///     A <see cref="int"/> representing the amount that the result value should be adjusted from the actual
+        ///     value.
+        /// </param>
+        public AutoTrackAddressValue(IMemoryAddress address, byte maximum, int adjustment)
         {
-            return null;
+            _address = address;
+            _maximum = maximum;
+            _adjustment = adjustment;
+
+            UpdateValue();
+            
+            _address.PropertyChanged += OnMemoryChanged;
         }
+
+        /// <summary>
+        /// Subscribes to the <see cref="IMemoryAddress.PropertyChanged"/> event.
+        /// </summary>
+        /// <param name="sender">
+        ///     The <see cref="object"/> from which the event was sent.
+        /// </param>
+        /// <param name="e">
+        ///     The <see cref="PropertyChangedEventArgs"/>.
+        /// </param>
+        private void OnMemoryChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(IMemoryAddress.Value))
+            {
+                UpdateValue();
+            }
+        }
+
+        protected override int? GetNewValue()
+        {
+            if (_address.Value is null)
+            {
+                return null;
+            }
             
-        var newValue = addressValue.Value + _adjustment;
-            
-        return newValue > _maximum ? null : newValue;
+            var newValue = _address.Value.Value + _adjustment;
+
+            return newValue > _maximum ? null : newValue;
+        }
     }
 }

@@ -1,9 +1,10 @@
-﻿using System.ComponentModel;
-using Avalonia.Layout;
+﻿using Avalonia.Layout;
+using ReactiveUI;
 
-namespace OpenTracker.ViewModels.Areas;
-
-public interface IMapAreaVM : INotifyPropertyChanged
+namespace OpenTracker.ViewModels.Areas
 {
-    Orientation Orientation { get; }
+    public interface IMapAreaVM : IReactiveObject
+    {
+        Orientation Orientation { get; }
+    }
 }

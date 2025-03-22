@@ -1,40 +1,39 @@
 using System.Collections.Generic;
 using OpenTracker.Models.BossPlacements;
 using OpenTracker.Utils;
-using OpenTracker.Utils.Autofac;
 
-namespace OpenTracker.Models.Requirements.Boss;
-
-/// <summary>
-/// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for <see cref="IBossRequirement"/>
-/// objects indexed by <see cref="BossPlacementID"/>.
-/// </summary>
-[DependencyInjection(SingleInstance = true)]
-public sealed class BossRequirementDictionary : LazyDictionary<BossPlacementID, IRequirement>, IBossRequirementDictionary
+namespace OpenTracker.Models.Requirements.Boss
 {
-    private readonly IBossPlacementDictionary _bossPlacements;
-
-    private readonly IBossRequirement.Factory _factory;
-        
     /// <summary>
-    /// Constructor
+    /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for <see cref="IBossRequirement"/>
+    /// objects indexed by <see cref="BossPlacementID"/>.
     /// </summary>
-    /// <param name="bossPlacements">
-    ///     The <see cref="IBossPlacementDictionary"/>.
-    /// </param>
-    /// <param name="factory">
-    ///     An Autofac factory for creating new <see cref="IBossRequirement"/> objects.
-    /// </param>
-    public BossRequirementDictionary(IBossPlacementDictionary bossPlacements, IBossRequirement.Factory factory)
-        : base(new Dictionary<BossPlacementID, IRequirement>())
+    public class BossRequirementDictionary : LazyDictionary<BossPlacementID, IRequirement>, IBossRequirementDictionary
     {
-        _bossPlacements = bossPlacements;
-            
-        _factory = factory;
-    }
+        private readonly IBossPlacementDictionary _bossPlacements;
 
-    protected override IRequirement Create(BossPlacementID key)
-    {
-        return _factory(_bossPlacements[key]);
+        private readonly IBossRequirement.Factory _factory;
+        
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="bossPlacements">
+        ///     The <see cref="IBossPlacementDictionary"/>.
+        /// </param>
+        /// <param name="factory">
+        ///     An Autofac factory for creating new <see cref="IBossRequirement"/> objects.
+        /// </param>
+        public BossRequirementDictionary(IBossPlacementDictionary bossPlacements, IBossRequirement.Factory factory)
+            : base(new Dictionary<BossPlacementID, IRequirement>())
+        {
+            _bossPlacements = bossPlacements;
+            
+            _factory = factory;
+        }
+
+        protected override IRequirement Create(BossPlacementID key)
+        {
+            return _factory(_bossPlacements[key]);
+        }
     }
 }

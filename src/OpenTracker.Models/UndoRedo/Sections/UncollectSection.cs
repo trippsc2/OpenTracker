@@ -1,44 +1,43 @@
 ﻿using OpenTracker.Models.Sections;
-using OpenTracker.Utils.Autofac;
 
-namespace OpenTracker.Models.UndoRedo.Sections;
-
-/// <summary>
-/// This class contains the <see cref="IUndoable"/> action to uncollect a <see cref="ISection"/>.
-/// </summary>
-[DependencyInjection]
-public sealed class UncollectSection : IUncollectSection
+namespace OpenTracker.Models.UndoRedo.Sections
 {
-    private readonly ISection _section;
-
-    private bool _previousUserManipulated;
-
     /// <summary>
-    /// Constructor
+    /// This class contains the <see cref="IUndoable"/> action to uncollect a <see cref="ISection"/>.
     /// </summary>
-    /// <param name="section">
-    ///     The <see cref="ISection"/>.
-    /// </param>
-    public UncollectSection(ISection section)
+    public class UncollectSection : IUncollectSection
     {
-        _section = section;
-    }
+        private readonly ISection _section;
 
-    public bool CanExecute()
-    {
-        return _section.CanBeUncleared();
-    }
+        private bool _previousUserManipulated;
 
-    public void ExecuteDo()
-    {
-        _previousUserManipulated = _section.UserManipulated;
-        _section.UserManipulated = true;
-        _section.Available++;
-    }
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="section">
+        ///     The <see cref="ISection"/>.
+        /// </param>
+        public UncollectSection(ISection section)
+        {
+            _section = section;
+        }
 
-    public void ExecuteUndo()
-    {
-        _section.UserManipulated = _previousUserManipulated;
-        _section.Available--;
+        public bool CanExecute()
+        {
+            return _section.CanBeUncleared();
+        }
+
+        public void ExecuteDo()
+        {
+            _previousUserManipulated = _section.UserManipulated;
+            _section.UserManipulated = true;
+            _section.Available++;
+        }
+
+        public void ExecuteUndo()
+        {
+            _section.UserManipulated = _previousUserManipulated;
+            _section.Available--;
+        }
     }
 }

@@ -1,51 +1,52 @@
 ﻿using System.Reactive;
-using System.Reactive.Linq;
-using System.Threading.Tasks;
-using OpenTracker.Utils;
-using OpenTracker.Utils.Autofac;
+using OpenTracker.Utils.Dialog;
 using ReactiveUI;
 
-namespace OpenTracker.ViewModels.Dialogs;
-
-/// <summary>
-/// This class contains the message box dialog window ViewModel data.
-/// </summary>
-[DependencyInjection]
-public sealed class MessageBoxDialogVM : ViewModel
+namespace OpenTracker.ViewModels.Dialogs
 {
-    public string Title { get; }
-    public string Text { get; }
-    
-    public Interaction<bool, Unit> RequestCloseInteraction { get; } = new(RxApp.MainThreadScheduler);
-
-    public ReactiveCommand<Unit, Unit> YesCommand { get; }
-    public ReactiveCommand<Unit, Unit> NoCommand { get; }
-        
     /// <summary>
-    /// Constructor
+    /// This class contains the message box dialog window ViewModel data.
     /// </summary>
-    /// <param name="title">
-    /// A string representing the window title.
-    /// </param>
-    /// <param name="text">
-    /// A string representing the dialog text.
-    /// </param>
-    public MessageBoxDialogVM(string title, string text)
+    public class MessageBoxDialogVM : DialogViewModelBase<bool>, IMessageBoxDialogVM
     {
-        Title = title;
-        Text = text;
+        public string Title { get; }
+        public string Text { get; }
+
+        public ReactiveCommand<Unit, Unit> YesCommand { get; }
+        public ReactiveCommand<Unit, Unit> NoCommand { get; }
         
-        YesCommand = ReactiveCommand.CreateFromTask(YesAsync);
-        NoCommand = ReactiveCommand.CreateFromTask(NoAsync);
-    }
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="title">
+        /// A string representing the window title.
+        /// </param>
+        /// <param name="text">
+        /// A string representing the dialog text.
+        /// </param>
+        public MessageBoxDialogVM(string title, string text)
+        {
+            YesCommand = ReactiveCommand.Create(Yes);
+            NoCommand = ReactiveCommand.Create(No);
 
-    private async Task YesAsync()
-    {
-        await RequestCloseInteraction.Handle(true);
-    }
+            Title = title;
+            Text = text;
+        }
 
-    private async Task NoAsync()
-    {
-        await RequestCloseInteraction.Handle(false);
+        /// <summary>
+        /// Selects Yes to the dialog.
+        /// </summary>
+        private void Yes()
+        {
+            Close(true);
+        }
+
+        /// <summary>
+        /// Selects No to the dialog.
+        /// </summary>
+        private void No()
+        {
+            Close();
+        }
     }
 }

@@ -1,50 +1,61 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
-using System.Reactive.Linq;
-using DynamicData;
-using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
 
-namespace OpenTracker.Models.AutoTracking.Values.Multiple;
-
-/// <summary>
-/// This class represents an auto-tracking result value of a group of auto-tracking result values to be summed.
-/// </summary>
-public sealed class AutoTrackMultipleSum : ReactiveObject, IAutoTrackValue
+namespace OpenTracker.Models.AutoTracking.Values.Multiple
 {
-    private readonly SourceList<IAutoTrackValue> _values = new();
-
-    [ObservableAsProperty]
-    public int? CurrentValue { get; }
-
     /// <summary>
-    /// Initializes a new <see cref="AutoTrackMultipleSum"/> object with the specified group of auto-tracking result
-    /// values.
+    /// This class contains the auto-tracking result value of a list of results to be summed.
     /// </summary>
-    /// <param name="values">
-    ///     The <see cref="IEnumerable{T}"/> of <see cref="IAutoTrackValue"/> representing the auto-tracking result
-    ///     values to be summed.
-    /// </param>
-    public AutoTrackMultipleSum(IEnumerable<IAutoTrackValue> values)
+    public class AutoTrackMultipleSum : AutoTrackValueBase, IAutoTrackMultipleSum
     {
-        _values.AddRange(values);
-
-        _values
-            .Connect()
-            .WhenPropertyChanged(x => x.CurrentValue)
-            .Select(_ => GetNewValue())
-            .ToPropertyEx(this, x => x.CurrentValue);
-    }
-
-    private int? GetNewValue()
-    {
-        if (!_values.Items.Any(x => x.CurrentValue.HasValue))
+        private readonly IList<IAutoTrackValue> _values;
+        
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="values">
+        ///     The <see cref="IList{T}"/> of <see cref="IAutoTrackValue"/>.
+        /// </param>
+        public AutoTrackMultipleSum(IList<IAutoTrackValue> values)
         {
-            return null;
+            _values = values;
+            
+            UpdateValue();
+
+            foreach (var value in values)
+            {
+                value.PropertyChanged += OnValueChanged;
+            }
         }
 
-        var newValue = _values.Items.Sum(value => value.CurrentValue ?? 0);
+        /// <summary>
+        /// Subscribes to the <see cref="IAutoTrackValue.PropertyChanged"/> event.
+        /// </summary>
+        /// <param name="sender">
+        ///     The <see cref="object"/> from which the event was sent.
+        /// </param>
+        /// <param name="e">
+        ///     The <see cref="PropertyChangedEventArgs"/>.
+        /// </param>
+        private void OnValueChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(IAutoTrackValue.CurrentValue))
+            {
+                UpdateValue();
+            }
+        }
 
-        return newValue;
+        protected override int? GetNewValue()
+        {
+            if (!_values.Any(x => x.CurrentValue.HasValue))
+            {
+                return null;
+            }
+            
+            var newValue = _values.Sum(value => value.CurrentValue ?? 0);
+
+            return newValue;
+        }
     }
 }

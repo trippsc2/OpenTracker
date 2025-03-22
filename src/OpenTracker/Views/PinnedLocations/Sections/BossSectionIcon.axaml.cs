@@ -1,36 +1,18 @@
-﻿using System.Reactive.Disposables;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using Avalonia.ReactiveUI;
-using OpenTracker.ViewModels.PinnedLocations.Sections;
-using ReactiveMarbles.ObservableEvents;
-using ReactiveUI;
 
-namespace OpenTracker.Views.PinnedLocations.Sections;
-
-public sealed class BossSectionIcon : ReactiveUserControl<BossSectionIconVM>
+namespace OpenTracker.Views.PinnedLocations.Sections
 {
-    private Panel Panel => this.FindControl<Panel>(nameof(Panel));
-
-    public BossSectionIcon()
+    public class BossSectionIcon : UserControl
     {
-        InitializeComponent();
-        this.WhenActivated(disposables =>
+        public BossSectionIcon()
         {
-            if (ViewModel is null)
-            {
-                return;
-            }
+            InitializeComponent();
+        }
 
-            Panel.Events()
-                .PointerReleased
-                .InvokeCommand(ViewModel.HandleClickCommand)
-                .DisposeWith(disposables);
-        });
-    }
-
-    private void InitializeComponent()
-    {
-        AvaloniaXamlLoader.Load(this);
+        private void InitializeComponent()
+        {
+            AvaloniaXamlLoader.Load(this);
+        }
     }
 }

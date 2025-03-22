@@ -1,16 +1,34 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:OpenTracker.ViewModels.MapLocations;assembly=OpenTracker"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vm="clr-namespace:OpenTracker.ViewModels.MapLocations"
-             mc:Ignorable="d" x:Class="OpenTracker.Views.MapLocations.StandardMapLocation"
-             x:DataType="vm:StandardMapLocationVM" x:CompileBindings="True">
-  <Panel x:Name="Panel"
-         Height="{Binding Size}"
-         Width="{Binding Size}">
-    <Border Height="{Binding Size}"
-            Width="{Binding Size}"
-            Background="{Binding Color}"
+             xmlns:i="using:Avalonia.Xaml.Interactivity"
+             xmlns:ia="using:Avalonia.Xaml.Interactions.Core"
+             mc:Ignorable="d" x:Class="OpenTracker.Views.MapLocations.StandardMapLocation">
+  
+  <Design.DataContext>
+    <vm:StandardMapLocationVM />
+  </Design.DataContext>
+  
+  <Panel Width="{Binding Size}"
+         Height="{Binding Size}">
+    
+    <i:Interaction.Behaviors>
+      
+      <ia:EventTriggerBehavior EventName="PointerReleased">
+        <ia:InvokeCommandAction Command="{Binding HandleClick}" PassEventArgsToCommand="True" />
+      </ia:EventTriggerBehavior>
+      
+      <ia:EventTriggerBehavior EventName="DoubleTapped">
+        <ia:InvokeCommandAction Command="{Binding HandleDoubleClick}" />
+      </ia:EventTriggerBehavior>
+      
+    </i:Interaction.Behaviors>
+    
+    <Border Width="{Binding Size}"
+            Height="{Binding Size}"
+            Background="{Binding Color}" 
             BorderBrush="{Binding BorderColor}"
             BorderThickness="{Binding BorderSize}">
       <Border Classes="MapLocationLabel"
@@ -20,5 +38,7 @@
                    Text="{Binding Label}" />
       </Border>
     </Border>
+    
   </Panel>
+  
 </UserControl>

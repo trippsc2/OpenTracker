@@ -1,7 +1,6 @@
+using System;
 using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
 using Autofac;
-using FluentAssertions;
 using NSubstitute;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Modes;
@@ -9,90 +8,100 @@ using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Requirements.GuaranteedBossItems;
 using Xunit;
 
-namespace OpenTracker.UnitTests.Models.Requirements.GuaranteedBossItems;
-
-[ExcludeFromCodeCoverage]
-public sealed class GuaranteedBossItemsRequirementTests
+namespace OpenTracker.UnitTests.Models.Requirements.GuaranteedBossItems
 {
-    private readonly IMode _mode = Substitute.For<IMode>();
-    
-    private void ChangeGuaranteedBossItems(bool newValue)
+    public class GuaranteedBossItemsRequirementTests
     {
-        _mode.GuaranteedBossItems.Returns(newValue);
-        _mode.PropertyChanged += Raise
-            .Event<PropertyChangedEventHandler>(
-                _mode,
-                new PropertyChangedEventArgs(nameof(IMode.GuaranteedBossItems)));
-    }
+        private readonly IMode _mode = Substitute.For<IMode>();
 
-    [Fact]
-    public void Met_ShouldRaisePropertyChanged()
-    {
-        var sut = new GuaranteedBossItemsRequirement(_mode, true);
-        using var monitor = sut.Monitor();
-        
-        ChangeGuaranteedBossItems(true);
-        
-        monitor.Should().RaisePropertyChangeFor(x => x.Met);
-    }
+        [Fact]
+        public void ModeChanged_ShouldUpdateMetValue()
+        {
+            var sut = new GuaranteedBossItemsRequirement(_mode, true);
+            _mode.GuaranteedBossItems.Returns(true);
 
-    [Theory]
-    [InlineData(true, false, false)]
-    [InlineData(false, false, true)]
-    [InlineData(true, true, true)]
-    public void Met_ShouldReturnExpectedValue(bool expected, bool guaranteedBossItems, bool requirement)
-    {
-        var sut = new GuaranteedBossItemsRequirement(_mode, requirement);
-        ChangeGuaranteedBossItems(guaranteedBossItems);
+            _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                _mode, new PropertyChangedEventArgs(nameof(IMode.GuaranteedBossItems)));
+            
+            Assert.True(sut.Met);
+        }
 
-        sut.Met.Should().Be(expected);
-    }
+        [Fact]
+        public void Met_ShouldRaisePropertyChanged()
+        {
+            var sut = new GuaranteedBossItemsRequirement(_mode, true);
+            _mode.GuaranteedBossItems.Returns(true);
 
-    [Fact]
-    public void Accessibility_ShouldRaisePropertyChanged()
-    {
-        var sut = new GuaranteedBossItemsRequirement(_mode, true);
-        using var monitor = sut.Monitor();
-        
-        ChangeGuaranteedBossItems(true);
-        
-        monitor.Should().RaisePropertyChangeFor(x => x.Accessibility);
-    }
+            Assert.PropertyChanged(sut, nameof(IRequirement.Met), 
+                () => _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                    _mode, new PropertyChangedEventArgs(nameof(IMode.GuaranteedBossItems))));
+        }
 
-    [Fact]
-    public void Accessibility_ShouldRaiseChangePropagated()
-    {
-        var sut = new GuaranteedBossItemsRequirement(_mode, true);
-        using var monitor = sut.Monitor();
-        
-        ChangeGuaranteedBossItems(true);
-        
-        monitor.Should().Raise(nameof(IRequirement.ChangePropagated));
-    }
+        [Fact]
+        public void Met_ShouldRaiseChangePropagated()
+        {
+            var sut = new GuaranteedBossItemsRequirement(_mode, true);
+            _mode.GuaranteedBossItems.Returns(true);
 
-    [Theory]
-    [InlineData(AccessibilityLevel.Normal, false, false)]
-    [InlineData(AccessibilityLevel.None, false, true)]
-    [InlineData(AccessibilityLevel.Normal, true, true)]
-    public void Accessibility_ShouldReturnExpectedValue(
-        AccessibilityLevel expected,
-        bool guaranteedBossItems,
-        bool requirement)
-    {
-        var sut = new GuaranteedBossItemsRequirement(_mode, requirement);
-        ChangeGuaranteedBossItems(guaranteedBossItems);
+            var eventRaised = false;
 
-        sut.Accessibility.Should().Be(expected);
-    }
+            void Handler(object? sender, EventArgs e)
+            {
+                eventRaised = true;
+            }
+            
+            sut.ChangePropagated += Handler;
+            _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                _mode, new PropertyChangedEventArgs(nameof(IMode.GuaranteedBossItems)));
+            sut.ChangePropagated -= Handler;
+            
+            Assert.True(eventRaised);
+        }
 
-    [Fact]
-    public void AutofacResolve_ShouldResolveToTransientInstance()
-    {
-        using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-        var factory = scope.Resolve<GuaranteedBossItemsRequirement.Factory>();
-        var sut1 = factory(false);
-        var sut2 = factory(false);
+        [Theory]
+        [InlineData(true, false, false)]
+        [InlineData(false, false, true)]
+        [InlineData(true, true, true)]
+        public void Met_ShouldReturnExpectedValue(bool expected, bool guaranteedBossItems, bool requirement)
+        {
+            _mode.GuaranteedBossItems.Returns(guaranteedBossItems);
+            var sut = new GuaranteedBossItemsRequirement(_mode, requirement);
+            
+            Assert.Equal(expected, sut.Met);
+        }
 
-        sut1.Should().NotBeSameAs(sut2);
+        [Fact]
+        public void Accessibility_ShouldRaisePropertyChanged()
+        {
+            var sut = new GuaranteedBossItemsRequirement(_mode, true);
+            _mode.GuaranteedBossItems.Returns(true);
+
+            Assert.PropertyChanged(sut, nameof(IRequirement.Accessibility),
+                () => _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                    _mode, new PropertyChangedEventArgs(nameof(IMode.GuaranteedBossItems))));
+        }
+
+        [Theory]
+        [InlineData(AccessibilityLevel.Normal, false, false)]
+        [InlineData(AccessibilityLevel.None, false, true)]
+        [InlineData(AccessibilityLevel.Normal, true, true)]
+        public void Accessibility_ShouldReturnExpectedValue(
+            AccessibilityLevel expected, bool bigKeyShuffle, bool requirement)
+        {
+            _mode.GuaranteedBossItems.Returns(bigKeyShuffle);
+            var sut = new GuaranteedBossItemsRequirement(_mode, requirement);
+            
+            Assert.Equal(expected, sut.Accessibility);
+        }
+
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var factory = scope.Resolve<IGuaranteedBossItemsRequirement.Factory>();
+            var sut = factory(false);
+            
+            Assert.NotNull(sut as GuaranteedBossItemsRequirement);
+        }
     }
 }

@@ -2,66 +2,65 @@
 using System.Collections.Generic;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Locations.Map;
-using OpenTracker.Utils.Autofac;
 using OpenTracker.ViewModels.MapLocations;
 using OpenTracker.ViewModels.Maps;
 
-namespace OpenTracker.ViewModels.Areas;
-
-/// <summary>
-/// This is the class for creating map area control ViewModel classes.
-/// </summary>
-[DependencyInjection(SingleInstance = true)]
-public sealed class MapAreaFactory : IMapAreaFactory
+namespace OpenTracker.ViewModels.Areas
 {
-    private readonly ILocationDictionary _locations;
-    private readonly IMapLocationVMFactory _locationFactory;
-    private readonly IMapVM.Factory _mapFactory;
-
-    public MapAreaFactory(
-        ILocationDictionary locations, IMapLocationVMFactory locationFactory, IMapVM.Factory mapFactory)
-    {
-        _locations = locations;
-        _locationFactory = locationFactory;
-        _mapFactory = mapFactory;
-    }
-
     /// <summary>
-    /// Returns an observable collection of map control ViewModel instances.
+    /// This is the class for creating map area control ViewModel classes.
     /// </summary>
-    /// <returns>
-    /// An observable collection of map control ViewModel instances.
-    /// </returns>
-    public List<IMapVM> GetMapControlVMs()
+    public class MapAreaFactory : IMapAreaFactory
     {
-        var maps = new List<IMapVM>();
+        private readonly ILocationDictionary _locations;
+        private readonly IMapLocationVMFactory _locationFactory;
+        private readonly IMapVM.Factory _mapFactory;
 
-        for (var i = 0; i < Enum.GetValues(typeof(MapID)).Length; i++)
+        public MapAreaFactory(
+            ILocationDictionary locations, IMapLocationVMFactory locationFactory, IMapVM.Factory mapFactory)
         {
-            maps.Add(_mapFactory((MapID)i));
+            _locations = locations;
+            _locationFactory = locationFactory;
+            _mapFactory = mapFactory;
         }
 
-        return maps;
-    }
-
-    /// <summary>
-    /// Returns an observable collection of map location control ViewModel instances.
-    /// </summary>
-    /// <returns>
-    /// An observable collection of map location control ViewModel instances.
-    /// </returns>
-    public List<IMapLocationVM> GetMapLocationControlVMs()
-    {
-        var mapLocations = new List<IMapLocationVM>();
-
-        foreach (LocationID id in Enum.GetValues(typeof(LocationID)))
+        /// <summary>
+        /// Returns an observable collection of map control ViewModel instances.
+        /// </summary>
+        /// <returns>
+        /// An observable collection of map control ViewModel instances.
+        /// </returns>
+        public List<IMapVM> GetMapControlVMs()
         {
-            foreach (var mapLocation in _locations[id].MapLocations)
+            var maps = new List<IMapVM>();
+
+            for (var i = 0; i < Enum.GetValues(typeof(MapID)).Length; i++)
             {
-                mapLocations.Add(_locationFactory.GetMapLocation(mapLocation));
+                maps.Add(_mapFactory((MapID)i));
             }
+
+            return maps;
         }
 
-        return mapLocations;
+        /// <summary>
+        /// Returns an observable collection of map location control ViewModel instances.
+        /// </summary>
+        /// <returns>
+        /// An observable collection of map location control ViewModel instances.
+        /// </returns>
+        public List<IMapLocationVM> GetMapLocationControlVMs()
+        {
+            var mapLocations = new List<IMapLocationVM>();
+
+            foreach (LocationID id in Enum.GetValues(typeof(LocationID)))
+            {
+                foreach (var mapLocation in _locations[id].MapLocations)
+                {
+                    mapLocations.Add(_locationFactory.GetMapLocation(mapLocation));
+                }
+            }
+
+            return mapLocations;
+        }
     }
 }

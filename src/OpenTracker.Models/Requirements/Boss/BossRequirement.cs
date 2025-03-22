@@ -1,67 +1,136 @@
 ﻿using System;
-using System.Reactive.Disposables;
-using System.Reactive.Linq;
+using System.ComponentModel;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.BossPlacements;
-using OpenTracker.Utils.Autofac;
-using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
+using OpenTracker.Models.Modes;
 
-namespace OpenTracker.Models.Requirements.Boss;
-
-/// <summary>
-/// This class contains <see cref="IBossPlacement"/> requirement data.
-/// </summary>
-[DependencyInjection]
-public sealed class BossRequirement : ReactiveObject, IBossRequirement
+namespace OpenTracker.Models.Requirements.Boss
 {
-    private readonly CompositeDisposable _disposables = new();
-    
-    private IBossPlacement BossPlacement { get; }
-    
-    [ObservableAsProperty]
-    private IRequirement CurrentBossRequirement { get; } = default!;
-    [ObservableAsProperty]
-    public AccessibilityLevel Accessibility { get; }
-    [ObservableAsProperty]
-    public bool Met { get; }
-    
-    public event EventHandler? ChangePropagated;
-    
     /// <summary>
-    /// Constructor
+    /// This class contains <see cref="IBossPlacement"/> requirement data.
     /// </summary>
-    /// <param name="bossTypeRequirements">
-    ///     The <see cref="IBossTypeRequirementDictionary"/>.
-    /// </param>
-    /// <param name="bossPlacement">
-    ///     The <see cref="IBossPlacement"/>.
-    /// </param>
-    public BossRequirement(IBossTypeRequirementDictionary bossTypeRequirements, IBossPlacement bossPlacement)
+    public class BossRequirement : AccessibilityRequirement, IBossRequirement
     {
-        BossPlacement = bossPlacement;
+        private readonly IBossTypeRequirementDictionary _bossTypeRequirements;
+        private readonly IBossPlacement _bossPlacement;
 
-        this.WhenAnyValue(x => x.BossPlacement.CurrentBoss)
-            .Select(x => x is not null ? bossTypeRequirements[x.Value] : bossTypeRequirements.NoBoss.Value)
-            .ToPropertyEx(this, x => x.CurrentBossRequirement)
-            .DisposeWith(_disposables);
-        this.WhenAnyValue(
-                x => x.CurrentBossRequirement,
-                x => x.CurrentBossRequirement.Accessibility,
-                (requirement, _) => requirement.Accessibility)
-            .ToPropertyEx(this, x => x.Accessibility)
-            .DisposeWith(_disposables);
-        this.WhenAnyValue(x => x.Accessibility)
-            .Select(x => x > AccessibilityLevel.None)
-            .ToPropertyEx(this, x => x.Met)
-            .DisposeWith(_disposables);
-        this.WhenAnyValue(x => x.Met)
-            .Subscribe(_ => ChangePropagated?.Invoke(this, EventArgs.Empty))
-            .DisposeWith(_disposables);
-    }
-    
-    public void Dispose()
-    {
-        _disposables.Dispose();
+        private IRequirement? _currentBossRequirement;
+        private IRequirement CurrentBossRequirement
+        {
+            get => _currentBossRequirement ?? throw new NullReferenceException();
+            set
+            {
+                if (_currentBossRequirement == value)
+                {
+                    return;
+                }
+                
+                if (_currentBossRequirement is not null)
+                {
+                    _currentBossRequirement.PropertyChanged -= OnRequirementChanged;
+                }
+
+                _currentBossRequirement = value;
+
+                if (_currentBossRequirement is not null)
+                {
+                    _currentBossRequirement.PropertyChanged += OnRequirementChanged;
+                }
+
+                UpdateValue();
+            }
+        }
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="mode">
+        ///     The <see cref="IMode"/> data.
+        /// </param>
+        /// <param name="bossTypeRequirements">
+        ///     The <see cref="IBossTypeRequirementDictionary"/>.
+        /// </param>
+        /// <param name="bossPlacement">
+        ///     The <see cref="IBossPlacement"/>.
+        /// </param>
+        public BossRequirement(
+            IMode mode, IBossTypeRequirementDictionary bossTypeRequirements, IBossPlacement bossPlacement)
+        {
+            _bossTypeRequirements = bossTypeRequirements;
+
+            _bossPlacement = bossPlacement;
+
+            mode.PropertyChanged += OnModeChanged;
+            _bossPlacement.PropertyChanged += OnBossPlacementChanged;
+            
+            UpdateRequirement();
+        }
+
+        /// <summary>
+        /// Subscribes to the <see cref="IMode.PropertyChanged"/> event.
+        /// </summary>
+        /// <param name="sender">
+        ///     The <see cref="object"/> from which the event is sent.
+        /// </param>
+        /// <param name="e">
+        ///     The <see cref="PropertyChangedEventArgs"/>.
+        /// </param>
+        private void OnModeChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(IMode.BossShuffle))
+            {
+                UpdateRequirement();
+            }
+        }
+
+        /// <summary>
+        /// Subscribes to the <see cref="IBossPlacement.PropertyChanged"/> event.
+        /// </summary>
+        /// <param name="sender">
+        ///     The <see cref="object"/> from which the event is sent.
+        /// </param>
+        /// <param name="e">
+        ///     The <see cref="PropertyChangedEventArgs"/>.
+        /// </param>
+        private void OnBossPlacementChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(IBossPlacement.Boss))
+            {
+                UpdateRequirement();
+            }
+        }
+
+        /// <summary>
+        /// Subscribes to the <see cref="IRequirement.PropertyChanged"/> event.
+        /// </summary>
+        /// <param name="sender">
+        ///     The <see cref="object"/> from which the event is sent.
+        /// </param>
+        /// <param name="e">
+        ///     The <see cref="PropertyChangedEventArgs"/>.
+        /// </param>
+        private void OnRequirementChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(IRequirement.Accessibility))
+            {
+                UpdateValue();
+            }
+        }
+
+        /// <summary>
+        /// Updates the <see cref="CurrentBossRequirement"/> property value.
+        /// </summary>
+        private void UpdateRequirement()
+        {
+            var boss = _bossPlacement.GetCurrentBoss();
+
+            CurrentBossRequirement = boss is null ? _bossTypeRequirements.NoBoss.Value
+                : _bossTypeRequirements[boss.Value];
+        }
+
+        protected override AccessibilityLevel GetAccessibility()
+        {
+            return CurrentBossRequirement.Accessibility;
+        }
     }
 }

@@ -1,96 +1,131 @@
+using System.ComponentModel;
 using System.Reactive;
-using System.Reactive.Disposables;
-using System.Reactive.Linq;
 using Avalonia.Input;
-using Avalonia.Media;
+using Avalonia.Threading;
+using OpenTracker.Models.Locations;
 using OpenTracker.Models.Locations.Map;
 using OpenTracker.Models.Settings;
 using OpenTracker.Utils;
-using OpenTracker.Utils.Autofac;
-using Reactive.Bindings;
 using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
-using ReactiveCommand = ReactiveUI.ReactiveCommand;
 
-namespace OpenTracker.ViewModels.MapLocations;
-
-[DependencyInjection]
-public sealed class MapLocationColorProvider : ViewModel, IMapLocationColorProvider
+namespace OpenTracker.ViewModels.MapLocations
 {
-    private static readonly SolidColorBrush HighlightedBorderColor = SolidColorBrush.Parse("#ffffff");
-    private static readonly SolidColorBrush NormalBorderColor = SolidColorBrush.Parse("#000000");
-    
-    private ColorSettings ColorSettings { get; }
-    private IMapLocation MapLocation { get; }
-
-    [Reactive]
-    private bool Highlighted { get; set; }
-    [ObservableAsProperty]
-    private ReactiveProperty<SolidColorBrush> AccessibilityColor { get; } = default!;
-    [ObservableAsProperty]
-    public SolidColorBrush BorderColor { get; } = NormalBorderColor;
-    [ObservableAsProperty]
-    public SolidColorBrush Color { get; } = default!;
-
-    public ReactiveCommand<PointerEventArgs, Unit> HandlePointerEnterCommand { get; }
-    public ReactiveCommand<PointerEventArgs, Unit> HandlePointerLeaveCommand { get; }
-
-    /// <summary>
-    /// Constructor
-    /// </summary>
-    /// <param name="colorSettings">
-    /// The color settings data.
-    /// </param>
-    /// <param name="mapLocation">
-    /// The map location data.
-    /// </param>
-    public MapLocationColorProvider(ColorSettings colorSettings, IMapLocation mapLocation)
+    public class MapLocationColorProvider : ViewModelBase, IMapLocationColorProvider
     {
-        ColorSettings = colorSettings;
-        MapLocation = mapLocation;
-        
-        HandlePointerEnterCommand = ReactiveCommand.Create<PointerEventArgs>(HandlePointerEnter);
-        HandlePointerLeaveCommand = ReactiveCommand.Create<PointerEventArgs>(HandlePointerLeave);
-        
-        this.WhenActivated(disposables =>
+        private readonly IColorSettings _colorSettings;
+        private readonly IMapLocation _mapLocation;
+
+        private bool _highlighted;
+        private bool Highlighted
         {
-            this.WhenAnyValue(x => x.MapLocation.Location.Accessibility)
-                .Select(x => ColorSettings.AccessibilityColors[x])
-                .ToPropertyEx(this, x => x.AccessibilityColor)
-                .DisposeWith(disposables);
-            this.WhenAnyValue(x => x.Highlighted)
-                .Select(x => x ? HighlightedBorderColor : NormalBorderColor)
-                .ObserveOn(RxApp.MainThreadScheduler)
-                .ToPropertyEx(this, x => x.BorderColor)
-                .DisposeWith(disposables);
-            this.WhenAnyValue(
-                    x => x.AccessibilityColor,
-                    x => x.AccessibilityColor.Value,
-                    (_, color) => color)
-                .ObserveOn(RxApp.MainThreadScheduler)
-                .ToPropertyEx(this, x => x.Color)
-                .DisposeWith(disposables);
-        });
-    }
+            get => _highlighted;
+            set
+            {
+                if (_highlighted == value)
+                {
+                    return;
+                }
+                
+                _highlighted = value;
+                this.RaisePropertyChanged(nameof(BorderColor));
+            }
+        }
 
-    private void HandlePointerEnter(PointerEventArgs e)
-    {
-        Highlight();
-    }
+        public string BorderColor => Highlighted ? "#ffffffff" : "#ff000000";
+        public string Color => _colorSettings.AccessibilityColors[_mapLocation.Location.Accessibility];
+        
+        public ReactiveCommand<PointerEventArgs, Unit> HandlePointerEnter { get; }
+        public ReactiveCommand<PointerEventArgs, Unit> HandlePointerLeave { get; }
 
-    private void HandlePointerLeave(PointerEventArgs e)
-    {
-        Unhighlight();
-    }
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="colorSettings">
+        /// The color settings data.
+        /// </param>
+        /// <param name="mapLocation">
+        /// The map location data.
+        /// </param>
+        public MapLocationColorProvider(IColorSettings colorSettings, IMapLocation mapLocation)
+        {
+            _colorSettings = colorSettings;
+            _mapLocation = mapLocation;
 
-    private void Highlight()
-    {
-        Highlighted = true;
-    }
+            HandlePointerEnter = ReactiveCommand.Create<PointerEventArgs>(HandlePointerEnterImpl);
+            HandlePointerLeave = ReactiveCommand.Create<PointerEventArgs>(HandlePointerLeaveImpl);
 
-    private void Unhighlight()
-    {
-        Highlighted = false;
-    }
+            _colorSettings.PropertyChanged += OnColorChanged;
+            _mapLocation.Location.PropertyChanged += OnLocationChanged;
+        }
 
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the ObservableCollection for the
+        /// accessibility colors.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
+        private async void OnColorChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Color)));
+        }
+
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the ILocation interface.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
+        private async void OnLocationChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ILocation.Accessibility))
+            {
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Color)));
+            }
+        }
+
+        /// <summary>
+        /// Highlights the control.
+        /// </summary>
+        private void Highlight()
+        {
+            Highlighted = true;
+        }
+
+        /// <summary>
+        /// Un-highlights the control.
+        /// </summary>
+        private void Unhighlight()
+        {
+            Highlighted = false;
+        }
+
+        /// <summary>
+        /// Handles pointer entering the control.
+        /// </summary>
+        /// <param name="e">
+        /// The PointerEnter event args.
+        /// </param>
+        private void HandlePointerEnterImpl(PointerEventArgs e)
+        {
+            Highlight();
+        }
+
+        /// <summary>
+        /// Handles pointer leaving the control.
+        /// </summary>
+        /// <param name="e">
+        /// The PointerLeave event args.
+        /// </param>
+        private void HandlePointerLeaveImpl(PointerEventArgs e)
+        {
+            Unhighlight();
+        }
+    }
 }

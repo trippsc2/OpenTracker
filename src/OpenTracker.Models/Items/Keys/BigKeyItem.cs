@@ -6,154 +6,153 @@ using OpenTracker.Models.Modes;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Models.UndoRedo.Items;
-using OpenTracker.Utils.Autofac;
 using ReactiveUI;
 
-namespace OpenTracker.Models.Items.Keys;
-
-/// <summary>
-/// This class contains the big key item data.
-/// </summary>
-[DependencyInjection]
-public sealed class BigKeyItem : Item, IBigKeyItem
+namespace OpenTracker.Models.Items.Keys
 {
-    private readonly IMode _mode;
-
-    private readonly ICycleItem.Factory _cycleItemFactory;
-
-    private readonly int _nonKeyDropMaximum;
-    private readonly int _keyDropMaximum;
-        
-    public int Maximum => _mode.KeyDropShuffle ? _keyDropMaximum : _nonKeyDropMaximum;
-
     /// <summary>
-    /// Constructor
+    /// This class contains the big key item data.
     /// </summary>
-    /// <param name="mode">
-    ///     The <see cref="IMode"/> data.
-    /// </param>
-    /// <param name="saveLoadManager">
-    ///     The <see cref="ISaveLoadManager"/>.
-    /// </param>
-    /// <param name="addItemFactory">
-    ///     An Autofac factory for creating new <see cref="IAddItem"/> objects.
-    /// </param>
-    /// <param name="removeItemFactory">
-    ///     An Autofac factory for creating new <see cref="IRemoveItem"/> objects.
-    /// </param>
-    /// <param name="cycleItemFactory">
-    ///     An Autofac factory for creating new <see cref="ICycleItem"/> objects.
-    /// </param>
-    /// <param name="nonKeyDropMaximum">
-    ///     A <see cref="int"/> representing the item maximum when key drop shuffle is disabled.
-    /// </param>
-    /// <param name="keyDropMaximum">
-    ///     A <see cref="int"/> representing the item maximum when key drop shuffle is enabled.
-    /// </param>
-    /// <param name="autoTrackValue">
-    ///     The nullable <see cref="IAutoTrackValue"/>.
-    /// </param>
-    public BigKeyItem(
-        IMode mode, ISaveLoadManager saveLoadManager, IAddItem.Factory addItemFactory,
-        IRemoveItem.Factory removeItemFactory, ICycleItem.Factory cycleItemFactory, int nonKeyDropMaximum,
-        int keyDropMaximum, IAutoTrackValue? autoTrackValue)
-        : base(saveLoadManager, addItemFactory, removeItemFactory, 0, autoTrackValue)
+    public class BigKeyItem : Item, IBigKeyItem
     {
-        _mode = mode;
+        private readonly IMode _mode;
 
-        _cycleItemFactory = cycleItemFactory;
+        private readonly ICycleItem.Factory _cycleItemFactory;
 
-        _nonKeyDropMaximum = nonKeyDropMaximum;
-        _keyDropMaximum = keyDropMaximum;
-            
-        _mode.PropertyChanged += OnModeChanged;
-    }
+        private readonly int _nonKeyDropMaximum;
+        private readonly int _keyDropMaximum;
+        
+        public int Maximum => _mode.KeyDropShuffle ? _keyDropMaximum : _nonKeyDropMaximum;
 
-    public override bool CanAdd()
-    {
-        return Current < Maximum;
-    }
-
-    public override void Add()
-    {
-        if (Current >= Maximum)
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="mode">
+        ///     The <see cref="IMode"/> data.
+        /// </param>
+        /// <param name="saveLoadManager">
+        ///     The <see cref="ISaveLoadManager"/>.
+        /// </param>
+        /// <param name="addItemFactory">
+        ///     An Autofac factory for creating new <see cref="IAddItem"/> objects.
+        /// </param>
+        /// <param name="removeItemFactory">
+        ///     An Autofac factory for creating new <see cref="IRemoveItem"/> objects.
+        /// </param>
+        /// <param name="cycleItemFactory">
+        ///     An Autofac factory for creating new <see cref="ICycleItem"/> objects.
+        /// </param>
+        /// <param name="nonKeyDropMaximum">
+        ///     A <see cref="int"/> representing the item maximum when key drop shuffle is disabled.
+        /// </param>
+        /// <param name="keyDropMaximum">
+        ///     A <see cref="int"/> representing the item maximum when key drop shuffle is enabled.
+        /// </param>
+        /// <param name="autoTrackValue">
+        ///     The nullable <see cref="IAutoTrackValue"/>.
+        /// </param>
+        public BigKeyItem(
+            IMode mode, ISaveLoadManager saveLoadManager, IAddItem.Factory addItemFactory,
+            IRemoveItem.Factory removeItemFactory, ICycleItem.Factory cycleItemFactory, int nonKeyDropMaximum,
+            int keyDropMaximum, IAutoTrackValue? autoTrackValue)
+            : base(saveLoadManager, addItemFactory, removeItemFactory, 0, autoTrackValue)
         {
-            throw new Exception("Cannot add item, because it is already at maximum.");
+            _mode = mode;
+
+            _cycleItemFactory = cycleItemFactory;
+
+            _nonKeyDropMaximum = nonKeyDropMaximum;
+            _keyDropMaximum = keyDropMaximum;
+            
+            _mode.PropertyChanged += OnModeChanged;
         }
 
-        base.Add();
-    }
-
-    public override void Remove()
-    {
-        if (Current <= 0)
+        public override bool CanAdd()
         {
-            throw new Exception("Cannot remove item, because it is already 0.");
+            return Current < Maximum;
         }
-            
-        base.Remove();
-    }
 
-    public IUndoable CreateCycleItemAction()
-    {
-        return _cycleItemFactory(this);
-    }
-
-    public void Cycle(bool reverse = false)
-    {
-        if (reverse)
+        public override void Add()
         {
-            if (CanRemove())
+            if (Current >= Maximum)
             {
-                Remove();
+                throw new Exception("Cannot add item, because it is already at maximum.");
+            }
+
+            base.Add();
+        }
+
+        public override void Remove()
+        {
+            if (Current <= 0)
+            {
+                throw new Exception("Cannot remove item, because it is already 0.");
+            }
+            
+            base.Remove();
+        }
+
+        public IUndoable CreateCycleItemAction()
+        {
+            return _cycleItemFactory(this);
+        }
+
+        public void Cycle(bool reverse = false)
+        {
+            if (reverse)
+            {
+                if (CanRemove())
+                {
+                    Remove();
+                    return;
+                }
+
+                Current = Maximum;
                 return;
             }
 
-            Current = Maximum;
-            return;
+            if (CanAdd())
+            {
+                Add();
+                return;
+            }
+
+            Current = 0;
         }
 
-        if (CanAdd())
+        public IList<bool> GetKeyValues()
         {
-            Add();
-            return;
-        }
-
-        Current = 0;
-    }
-
-    public IList<bool> GetKeyValues()
-    {
-        if (Maximum == 0)
-        {
-            return new List<bool> {false};
-        }
+            if (Maximum == 0)
+            {
+                return new List<bool> {false};
+            }
             
-        return _mode.BigKeyShuffle ? new List<bool> {Current > 0} 
-            : new List<bool> {false, true};
-    }
-
-    /// <summary>
-    /// Subscribes to the <see cref="IMode.PropertyChanged"/> event.
-    /// </summary>
-    /// <param name="sender">
-    ///     The <see cref="object"/> from which the event is sent.
-    /// </param>
-    /// <param name="e">
-    ///     The <see cref="PropertyChangedEventArgs"/>.
-    /// </param>
-    private void OnModeChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName != nameof(IMode.KeyDropShuffle))
-        {
-            return;
+            return _mode.BigKeyShuffle ? new List<bool> {Current > 0} 
+                : new List<bool> {false, true};
         }
+
+        /// <summary>
+        /// Subscribes to the <see cref="IMode.PropertyChanged"/> event.
+        /// </summary>
+        /// <param name="sender">
+        ///     The <see cref="object"/> from which the event is sent.
+        /// </param>
+        /// <param name="e">
+        ///     The <see cref="PropertyChangedEventArgs"/>.
+        /// </param>
+        private void OnModeChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName != nameof(IMode.KeyDropShuffle))
+            {
+                return;
+            }
             
-        if (Current > Maximum)
-        {
-            Current = Maximum;
-        }
+            if (Current > Maximum)
+            {
+                Current = Maximum;
+            }
 
-        this.RaisePropertyChanged(nameof(Maximum));
+            this.RaisePropertyChanged(nameof(Maximum));
+        }
     }
 }

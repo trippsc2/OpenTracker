@@ -1,20 +1,19 @@
 using System.Collections.Generic;
 using OpenTracker.Models.Accessibility;
-using OpenTracker.Utils.Autofac;
 using ReactiveUI;
 
-namespace OpenTracker.Models.Nodes;
-
-/// <summary>
-/// This class contains the starting node data.
-/// </summary>
-[DependencyInjection(SingleInstance = true)]
-public sealed class StartNode : ReactiveObject, IStartNode
+namespace OpenTracker.Models.Nodes
 {
-    public AccessibilityLevel Accessibility => AccessibilityLevel.Normal;
-
-    public AccessibilityLevel GetNodeAccessibility(IList<INode> excludedNodes)
+    /// <summary>
+    /// This class contains the starting node data.
+    /// </summary>
+    public class StartNode : ReactiveObject, IStartNode
     {
-        return AccessibilityLevel.Normal;
+        public AccessibilityLevel Accessibility { get; } = AccessibilityLevel.Normal;
+
+        public AccessibilityLevel GetNodeAccessibility(IList<INode> excludedNodes)
+        {
+            return AccessibilityLevel.Normal;
+        }
     }
 }

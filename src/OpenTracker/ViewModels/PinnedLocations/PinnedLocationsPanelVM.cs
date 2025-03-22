@@ -1,48 +1,56 @@
-﻿using System.Reactive.Disposables;
-using System.Reactive.Linq;
+﻿using System.ComponentModel;
 using Avalonia.Layout;
+using Avalonia.Threading;
 using OpenTracker.Models.Settings;
 using OpenTracker.Utils;
-using OpenTracker.Utils.Autofac;
 using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
 
-namespace OpenTracker.ViewModels.PinnedLocations;
-
-/// <summary>
-/// This class contains the pinned location panel control ViewModel data.
-/// </summary>
-[DependencyInjection]
-public sealed class PinnedLocationsPanelVM : ViewModel, IPinnedLocationsPanelVM
+namespace OpenTracker.ViewModels.PinnedLocations
 {
-    private LayoutSettings LayoutSettings { get; }
-
-    public IPinnedLocationVMCollection Locations { get; }
-
-    [ObservableAsProperty]
-    public Orientation Orientation { get; }
-
-
     /// <summary>
-    /// Constructor
+    /// This class contains the pinned location panel control ViewModel data.
     /// </summary>
-    /// <param name="layoutSettings">
-    /// The layout settings data.
-    /// </param>
-    /// <param name="locations">
-    /// The pinned location control collection.
-    /// </param>
-    public PinnedLocationsPanelVM(LayoutSettings layoutSettings, IPinnedLocationVMCollection locations)
+    public class PinnedLocationsPanelVM : ViewModelBase, IPinnedLocationsPanelVM
     {
-        LayoutSettings = layoutSettings;
-        Locations = locations;
-        
-        this.WhenActivated(disposables =>
+        private readonly ILayoutSettings _layoutSettings;
+
+        public Orientation Orientation => _layoutSettings.CurrentLayoutOrientation;
+
+        public IPinnedLocationVMCollection Locations { get; }
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="layoutSettings">
+        /// The layout settings data.
+        /// </param>
+        /// <param name="locations">
+        /// The pinned location control collection.
+        /// </param>
+        public PinnedLocationsPanelVM(ILayoutSettings layoutSettings, IPinnedLocationVMCollection locations)
         {
-            this.WhenAnyValue(x => x.LayoutSettings.CurrentLayoutOrientation)
-                .ObserveOn(RxApp.MainThreadScheduler)
-                .ToPropertyEx(this, x => x.Orientation)
-                .DisposeWith(disposables);
-        });
+            _layoutSettings = layoutSettings;
+
+            Locations = locations;
+
+            _layoutSettings.PropertyChanged += OnLayoutChanged;
+        }
+
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the ILayoutSettings interface.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
+        private async void OnLayoutChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ILayoutSettings.CurrentLayoutOrientation))
+            {
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Orientation)));
+            }
+        }
     }
 }

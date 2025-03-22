@@ -3,76 +3,77 @@ using Avalonia.Interactivity;
 using Avalonia.Xaml.Interactions.DragAndDrop;
 using OpenTracker.Models.Locations.Map;
 
-namespace OpenTracker.ViewModels.MapLocations;
-
-/// <summary>
-/// This class contains the entrance drop handler logic.
-/// </summary>
-public sealed class EntranceDropHandler : IDropHandler
+namespace OpenTracker.ViewModels.MapLocations
 {
-    public void Enter(object? sender, DragEventArgs e, object? sourceContext, object? targetContext)
+    /// <summary>
+    /// This class contains the entrance drop handler logic.
+    /// </summary>
+    public class EntranceDropHandler : IDropHandler
     {
-        if (Validate(sender, e, sourceContext, targetContext, null))
+        public void Enter(object? sender, DragEventArgs e, object? sourceContext, object? targetContext)
         {
-            e.DragEffects |= DragDropEffects.Link;
+            if (Validate(sender, e, sourceContext, targetContext, null))
+            {
+                e.DragEffects |= DragDropEffects.Link;
+                e.Handled = true;
+                return;
+            }
+
+            e.DragEffects = DragDropEffects.None;
             e.Handled = true;
-            return;
         }
 
-        e.DragEffects = DragDropEffects.None;
-        e.Handled = true;
-    }
-
-    public void Over(object? sender, DragEventArgs e, object? sourceContext, object? targetContext)
-    {
-        if (Validate(sender, e, sourceContext, targetContext, null))
+        public void Over(object? sender, DragEventArgs e, object? sourceContext, object? targetContext)
         {
-            e.DragEffects |= DragDropEffects.Link;
+            if (Validate(sender, e, sourceContext, targetContext, null))
+            {
+                e.DragEffects |= DragDropEffects.Link;
+                e.Handled = true;
+                return;
+            }
+
+            e.DragEffects = DragDropEffects.None;
             e.Handled = true;
-            return;
         }
 
-        e.DragEffects = DragDropEffects.None;
-        e.Handled = true;
-    }
-
-    public void Drop(object? sender, DragEventArgs e, object? sourceContext, object? targetContext)
-    {
-        if (Execute(sender, e, sourceContext, targetContext, null))
+        public void Drop(object? sender, DragEventArgs e, object? sourceContext, object? targetContext)
         {
-            e.DragEffects |= DragDropEffects.Link;
+            if (Execute(sender, e, sourceContext, targetContext, null))
+            {
+                e.DragEffects |= DragDropEffects.Link;
+                e.Handled = true;
+                return;
+            }
+
+            e.DragEffects = DragDropEffects.None;
             e.Handled = true;
-            return;
         }
 
-        e.DragEffects = DragDropEffects.None;
-        e.Handled = true;
-    }
-
-    public void Leave(object? sender, RoutedEventArgs e)
-    {
-        Cancel(sender, e);
-    }
-
-    public bool Validate(
-        object? sender, DragEventArgs e, object? sourceContext, object? targetContext, object? state)
-    {
-        return sourceContext is IEntranceMapLocationVM && targetContext is IMapLocation;
-    }
-
-    public bool Execute(
-        object? sender, DragEventArgs e, object? sourceContext, object? targetContext, object? state)
-    {
-        if (sourceContext is IEntranceMapLocationVM startEntrance && targetContext is IMapLocation finishLocation)
+        public void Leave(object? sender, RoutedEventArgs e)
         {
-            startEntrance.ConnectLocation(finishLocation);
-            return true;
+            Cancel(sender, e);
         }
 
-        return false;
-    }
+        public bool Validate(
+            object? sender, DragEventArgs e, object? sourceContext, object? targetContext, object? state)
+        {
+            return sourceContext is IEntranceMapLocationVM && targetContext is IMapLocation;
+        }
 
-    public void Cancel(object? sender, RoutedEventArgs e)
-    {
+        public bool Execute(
+            object? sender, DragEventArgs e, object? sourceContext, object? targetContext, object? state)
+        {
+            if (sourceContext is IEntranceMapLocationVM startEntrance && targetContext is IMapLocation finishLocation)
+            {
+                startEntrance.ConnectLocation(finishLocation);
+                return true;
+            }
+
+            return false;
+        }
+
+        public void Cancel(object? sender, RoutedEventArgs e)
+        {
+        }
     }
 }

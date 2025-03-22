@@ -1,49 +1,57 @@
 ﻿using System.Collections.Generic;
-using System.Reactive.Disposables;
-using System.Reactive.Linq;
+using System.ComponentModel;
 using Avalonia.Layout;
+using Avalonia.Threading;
 using OpenTracker.Models.Settings;
 using OpenTracker.Utils;
-using OpenTracker.Utils.Autofac;
 using OpenTracker.ViewModels.MapLocations;
 using OpenTracker.ViewModels.Maps;
 using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
 
-namespace OpenTracker.ViewModels.Areas;
-
-/// <summary>
-/// This is the ViewModel of the map area control.
-/// </summary>
-[DependencyInjection(SingleInstance = true)]
-public sealed class MapAreaVM : ViewModel, IMapAreaVM
+namespace OpenTracker.ViewModels.Areas
 {
-    private LayoutSettings LayoutSettings { get; }
-
-    public List<IMapVM> Maps { get; }
-    public IMapConnectionCollection Connectors { get; }
-    public List<IMapLocationVM> MapLocations { get; }
-
-    [ObservableAsProperty]
-    public Orientation Orientation { get; }
-
     /// <summary>
-    /// Constructor
+    /// This is the ViewModel of the map area control.
     /// </summary>
-    public MapAreaVM(LayoutSettings layoutSettings, IMapAreaFactory factory, IMapConnectionCollection connectors)
+    public class MapAreaVM : ViewModelBase, IMapAreaVM
     {
-        LayoutSettings = layoutSettings;
+        private readonly ILayoutSettings _layoutSettings;
 
-        Maps = factory.GetMapControlVMs();
-        Connectors = connectors;
-        MapLocations = factory.GetMapLocationControlVMs();
+        public Orientation Orientation => _layoutSettings.CurrentMapOrientation;
 
-        this.WhenActivated(disposables =>
+        public List<IMapVM> Maps { get; }
+        public IMapConnectionCollection Connectors { get; }
+        public List<IMapLocationVM> MapLocations { get; }
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        public MapAreaVM(ILayoutSettings layoutSettings, IMapAreaFactory factory, IMapConnectionCollection connectors)
         {
-            this.WhenAnyValue(x => x.LayoutSettings.CurrentMapOrientation)
-                .ObserveOn(RxApp.MainThreadScheduler)
-                .ToPropertyEx(this, x => x.Orientation)
-                .DisposeWith(disposables);
-        });
+            _layoutSettings = layoutSettings;
+
+            Maps = factory.GetMapControlVMs();
+            Connectors = connectors;
+            MapLocations = factory.GetMapLocationControlVMs();
+
+            _layoutSettings.PropertyChanged += OnLayoutChanged;
+        }
+
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the LayoutSettings class.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
+        private async void OnLayoutChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ILayoutSettings.CurrentMapOrientation))
+            {
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Orientation)));
+            }
+        }
     }
 }

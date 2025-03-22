@@ -1,28 +1,29 @@
-using OpenTracker.Utils.Autofac;
+using System.Diagnostics.CodeAnalysis;
 using WebSocketSharp;
 
-namespace OpenTracker.Models.AutoTracking.SNESConnectors.Socket;
-
-/// <summary>
-/// This class wraps the <see cref="MessageEventArgs"/> class to allow for unit testing.
-/// </summary>
-[DependencyInjection]
-public class MessageEventArgsWrapper : IMessageEventArgsWrapper
+namespace OpenTracker.Models.AutoTracking.SNESConnectors.Socket
 {
-    private readonly MessageEventArgs _messageEventArgs;
-
-    public bool IsBinary => _messageEventArgs.IsBinary;
-    public string Data => _messageEventArgs.Data;
-    public byte[] RawData => _messageEventArgs.RawData;
-
     /// <summary>
-    /// Constructor
+    /// This class wraps the <see cref="MessageEventArgs"/> class to allow for unit testing.
     /// </summary>
-    /// <param name="messageEventArgs">
-    ///     The <see cref="MessageEventArgs"/> to be wrapped.
-    /// </param>
-    public MessageEventArgsWrapper(MessageEventArgs messageEventArgs)
+    [ExcludeFromCodeCoverage]
+    public class MessageEventArgsWrapper : IMessageEventArgsWrapper
     {
-        _messageEventArgs = messageEventArgs;
+        private readonly MessageEventArgs _messageEventArgs;
+
+        public bool IsBinary => _messageEventArgs.IsBinary;
+        public string Data => _messageEventArgs.Data;
+        public byte[] RawData => _messageEventArgs.RawData;
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="messageEventArgs">
+        ///     The <see cref="MessageEventArgs"/> to be wrapped.
+        /// </param>
+        public MessageEventArgsWrapper(MessageEventArgs messageEventArgs)
+        {
+            _messageEventArgs = messageEventArgs;
+        }
     }
 }

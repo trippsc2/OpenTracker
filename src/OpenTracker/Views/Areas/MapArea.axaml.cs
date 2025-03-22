@@ -1,18 +1,18 @@
-﻿using Avalonia.Markup.Xaml;
-using Avalonia.ReactiveUI;
-using OpenTracker.ViewModels.Areas;
+﻿using Avalonia.Controls;
+using Avalonia.Markup.Xaml;
 
-namespace OpenTracker.Views.Areas;
-
-public sealed class MapArea : ReactiveUserControl<MapAreaVM>
+namespace OpenTracker.Views.Areas
 {
-    public MapArea()
+    public class MapArea : UserControl
     {
-        InitializeComponent();
-    }
+        public MapArea()
+        {
+            InitializeComponent();
+        }
 
-    private void InitializeComponent()
-    {
-        AvaloniaXamlLoader.Load(this);
+        private void InitializeComponent()
+        {
+            AvaloniaXamlLoader.Load(this);
+        }
     }
 }

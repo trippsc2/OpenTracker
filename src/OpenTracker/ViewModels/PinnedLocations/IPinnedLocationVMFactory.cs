@@ -1,8 +1,9 @@
 ﻿using OpenTracker.Models.Locations;
 
-namespace OpenTracker.ViewModels.PinnedLocations;
-
-public interface IPinnedLocationVMFactory
+namespace OpenTracker.ViewModels.PinnedLocations
 {
-    IPinnedLocationVM GetLocationControlVM(ILocation location);
+    public interface IPinnedLocationVMFactory
+    {
+        IPinnedLocationVM GetLocationControlVM(ILocation location);
+    }
 }

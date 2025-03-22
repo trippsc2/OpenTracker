@@ -1,60 +1,51 @@
-﻿using System;
-using System.Reactive.Disposables;
-using System.Reactive.Linq;
+﻿using System.ComponentModel;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Nodes;
-using OpenTracker.Utils.Autofac;
-using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
 
-namespace OpenTracker.Models.Requirements.Node;
-
-/// <summary>
-/// This class containing <see cref="INode"/> <see cref="IRequirement"/> data.
-/// </summary>
-[DependencyInjection]
-public sealed class NodeRequirement : ReactiveObject, IRequirement
+namespace OpenTracker.Models.Requirements.Node
 {
-    private readonly CompositeDisposable _disposables = new();
-    
-    private INode Node { get; }
-    
-    [ObservableAsProperty]
-    public AccessibilityLevel Accessibility { get; }
-    [ObservableAsProperty]
-    public bool Met { get; }
-
-    public event EventHandler? ChangePropagated;
-
     /// <summary>
-    /// A factory method for creating new <see cref="NodeRequirement"/> objects.
+    /// This class containing <see cref="INode"/> <see cref="IRequirement"/> data.
     /// </summary>
-    public delegate NodeRequirement Factory(INode node);
-
-    /// <summary>
-    /// Constructor
-    /// </summary>
-    /// <param name="node">
-    ///     The <see cref="INode"/>.
-    /// </param>
-    public NodeRequirement(INode node)
+    public class NodeRequirement : AccessibilityRequirement, INodeRequirement
     {
-        Node = node;
+        private readonly INode _node;
 
-        this.WhenAnyValue(x => x.Node.Accessibility)
-            .ToPropertyEx(this, x => x.Accessibility)
-            .DisposeWith(_disposables);
-        this.WhenAnyValue(x => x.Accessibility)
-            .Select(x => x > AccessibilityLevel.None)
-            .ToPropertyEx(this, x => x.Met)
-            .DisposeWith(_disposables);
-        this.WhenAnyValue(x => x.Met)
-            .Subscribe(_ => ChangePropagated?.Invoke(this, EventArgs.Empty))
-            .DisposeWith(_disposables);
-    }
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="node">
+        ///     The <see cref="INode"/>.
+        /// </param>
+        public NodeRequirement(INode node)
+        {
+            _node = node;
 
-    public void Dispose()
-    {
-        _disposables.Dispose();
+            _node.PropertyChanged += OnNodeChanged;
+
+            UpdateValue();
+        }
+
+        /// <summary>
+        /// Subscribes to the <see cref="INode.PropertyChanged"/> event on the IRequirementNode interface.
+        /// </summary>
+        /// <param name="sender">
+        ///     The <see cref="object"/> from which the event is sent.
+        /// </param>
+        /// <param name="e">
+        ///     The <see cref="PropertyChangedEventArgs"/>.
+        /// </param>
+        private void OnNodeChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(IOverworldNode.Accessibility))
+            {
+                UpdateValue();
+            }
+        }
+
+        protected override AccessibilityLevel GetAccessibility()
+        {
+            return _node.Accessibility;
+        }
     }
 }

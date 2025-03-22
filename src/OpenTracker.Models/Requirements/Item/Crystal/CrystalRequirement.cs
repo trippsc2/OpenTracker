@@ -1,89 +1,73 @@
-﻿using System;
-using System.Reactive.Disposables;
-using System.Reactive.Linq;
+﻿using System.ComponentModel;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Prizes;
-using OpenTracker.Utils.Autofac;
-using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
 
-namespace OpenTracker.Models.Requirements.Item.Crystal;
-
-/// <summary>
-/// This class contains GT crystal <see cref="IRequirement"/> data.
-/// </summary>
-[DependencyInjection]
-public sealed class CrystalRequirement : ReactiveObject, ICrystalRequirement
+namespace OpenTracker.Models.Requirements.Item.Crystal
 {
-    private readonly CompositeDisposable _disposables = new();
-    
-    private ICrystalRequirementItem GTCrystal { get; }
-    private IItem Crystal { get; }
-    private IItem RedCrystal { get; }
-    
-    [ObservableAsProperty]
-    public AccessibilityLevel Accessibility { get; }
-    [ObservableAsProperty]
-    public bool Met { get; }
-    
-    public event EventHandler? ChangePropagated;
-
     /// <summary>
-    /// Constructor
+    /// This class contains GT crystal <see cref="IRequirement"/> data.
     /// </summary>
-    /// <param name="items">
-    ///     The <see cref="IItemDictionary"/>.
-    /// </param>
-    /// <param name="prizes">
-    ///     The <see cref="IPrizeDictionary"/>.
-    /// </param>
-    public CrystalRequirement(IItemDictionary items, IPrizeDictionary prizes)
+    public class CrystalRequirement : AccessibilityRequirement, ICrystalRequirement
     {
-        GTCrystal = (ICrystalRequirementItem)items[ItemType.TowerCrystals];
-        Crystal = prizes[PrizeType.Crystal];
-        RedCrystal = prizes[PrizeType.RedCrystal];
+        private readonly ICrystalRequirementItem _gtCrystal;
+        private readonly IItem _crystal;
+        private readonly IItem _redCrystal;
 
-        this.WhenAnyValue(
-                x => x.GTCrystal.Known,
-                x => x.GTCrystal.Current,
-                x => x.Crystal.Current,
-                x => x.RedCrystal.Current,
-                GetAccessibility)
-            .ToPropertyEx(this, x => x.Accessibility)
-            .DisposeWith(_disposables);
-        this.WhenAnyValue(x => x.Accessibility)
-            .Select(x => x > AccessibilityLevel.None)
-            .ToPropertyEx(this, x => x.Met)
-            .DisposeWith(_disposables);
-        this.WhenAnyValue(x => x.Met)
-            .Subscribe(_ => ChangePropagated?.Invoke(this, EventArgs.Empty))
-            .DisposeWith(_disposables);
-    }
-    
-    public void Dispose()
-    {
-        _disposables.Dispose();
-    }
-
-    private static AccessibilityLevel GetAccessibility(
-        bool requirementKnown,
-        int gtRequirement,
-        int crystal,
-        int redCrystal)
-    {
-        if (crystal + redCrystal >= 7)
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="items">
+        ///     The <see cref="IItemDictionary"/>.
+        /// </param>
+        /// <param name="prizes">
+        ///     The <see cref="IPrizeDictionary"/>.
+        /// </param>
+        public CrystalRequirement(IItemDictionary items, IPrizeDictionary prizes)
         {
-            return AccessibilityLevel.Normal;
+            _gtCrystal = (ICrystalRequirementItem)items[ItemType.TowerCrystals];
+            _crystal = prizes[PrizeType.Crystal];
+            _redCrystal = prizes[PrizeType.RedCrystal];
+
+            _gtCrystal.PropertyChanged += OnItemChanged;
+            _crystal.PropertyChanged += OnItemChanged;
+            _redCrystal.PropertyChanged += OnItemChanged;
+
+            UpdateValue();
         }
 
-        if (requirementKnown)
+        /// <summary>
+        /// Subscribes to the <see cref="IItem.PropertyChanged"/> event.
+        /// </summary>
+        /// <param name="sender">
+        ///     The <see cref="object"/> from which the event is sent.
+        /// </param>
+        /// <param name="e">
+        ///     The <see cref="PropertyChangedEventArgs"/>.
+        /// </param>
+        private void OnItemChanged(object? sender, PropertyChangedEventArgs e)
         {
-            return gtRequirement + crystal + redCrystal >= 7
-                ? AccessibilityLevel.Normal
-                : AccessibilityLevel.None;
+            if (e.PropertyName == nameof(IItem.Current) ||
+                e.PropertyName == nameof(ICrystalRequirementItem.Known))
+            {
+                UpdateValue();
+            }
         }
 
-        return AccessibilityLevel.SequenceBreak;
+        protected override AccessibilityLevel GetAccessibility()
+        {
+            if (_crystal.Current + _redCrystal.Current >= 7)
+            {
+                return AccessibilityLevel.Normal;
+            }
+
+            if (_gtCrystal.Known)
+            {
+                return _gtCrystal.Current + _crystal.Current + _redCrystal.Current >= 7 ?
+                    AccessibilityLevel.Normal : AccessibilityLevel.None;
+            }
+
+            return AccessibilityLevel.SequenceBreak;
+        }
     }
 }

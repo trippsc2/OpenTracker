@@ -1,47 +1,46 @@
 ﻿using OpenTracker.Models.Locations;
 using OpenTracker.Models.Markings;
-using OpenTracker.Utils.Autofac;
 
-namespace OpenTracker.Models.UndoRedo.Notes;
-
-/// <summary>
-/// This class contains the <see cref="IUndoable"/> action to add a note to a <see cref="ILocation"/>.
-/// </summary>
-[DependencyInjection]
-public sealed class AddNote : IAddNote
+namespace OpenTracker.Models.UndoRedo.Notes
 {
-    private readonly IMarking.Factory _factory;
-    private readonly ILocationNoteCollection _notes;
-    private IMarking? _note;
-
     /// <summary>
-    /// Constructor
+    /// This class contains the <see cref="IUndoable"/> action to add a note to a <see cref="ILocation"/>.
     /// </summary>
-    /// <param name="factory">
-    ///     An Autofac factory for creating new <see cref="IMarking"/> objects.
-    /// </param>
-    /// <param name="location">
-    ///     The <see cref="ILocation"/>.
-    /// </param>
-    public AddNote(IMarking.Factory factory, ILocation location)
+    public class AddNote : IAddNote
     {
-        _factory = factory;
-        _notes = location.Notes;
-    }
+        private readonly IMarking.Factory _factory;
+        private readonly ILocationNoteCollection _notes;
+        private IMarking? _note;
 
-    public bool CanExecute()
-    {
-        return _notes.Count < 4;
-    }
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="factory">
+        ///     An Autofac factory for creating new <see cref="IMarking"/> objects.
+        /// </param>
+        /// <param name="location">
+        ///     The <see cref="ILocation"/>.
+        /// </param>
+        public AddNote(IMarking.Factory factory, ILocation location)
+        {
+            _factory = factory;
+            _notes = location.Notes;
+        }
 
-    public void ExecuteDo()
-    {
-        _note = _factory();
-        _notes.Add(_note);
-    }
+        public bool CanExecute()
+        {
+            return _notes.Count < 4;
+        }
 
-    public void ExecuteUndo()
-    {
-        _notes.Remove(_note!);
+        public void ExecuteDo()
+        {
+            _note = _factory();
+            _notes.Add(_note);
+        }
+
+        public void ExecuteUndo()
+        {
+            _notes.Remove(_note!);
+        }
     }
 }

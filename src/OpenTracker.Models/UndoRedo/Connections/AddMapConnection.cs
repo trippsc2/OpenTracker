@@ -1,44 +1,43 @@
 ﻿using OpenTracker.Models.Locations.Map.Connections;
-using OpenTracker.Utils.Autofac;
 
-namespace OpenTracker.Models.UndoRedo.Connections;
-
-/// <summary>
-/// This class contains the <see cref="IUndoable"/> action to add a new <see cref="IMapConnection"/> to the map.
-/// </summary>
-[DependencyInjection]
-public sealed class AddMapConnection : IAddMapConnection
+namespace OpenTracker.Models.UndoRedo.Connections
 {
-    private readonly IMapConnectionCollection _mapConnections;
-    private readonly IMapConnection _mapConnection;
-
     /// <summary>
-    /// Constructor
+    /// This class contains the <see cref="IUndoable"/> action to add a new <see cref="IMapConnection"/> to the map.
     /// </summary>
-    /// <param name="mapConnections">
-    ///     The <see cref="IMapConnectionCollection"/>.
-    /// </param>
-    /// <param name="mapConnection">
-    ///     The <see cref="IMapConnection"/>.
-    /// </param>
-    public AddMapConnection(IMapConnectionCollection mapConnections, IMapConnection mapConnection)
+    public class AddMapConnection : IAddMapConnection
     {
-        _mapConnections = mapConnections;
-        _mapConnection = mapConnection;
-    }
+        private readonly IMapConnectionCollection _mapConnections;
+        private readonly IMapConnection _mapConnection;
 
-    public bool CanExecute()
-    {
-        return !_mapConnections.Contains(_mapConnection);
-    }
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="mapConnections">
+        ///     The <see cref="IMapConnectionCollection"/>.
+        /// </param>
+        /// <param name="mapConnection">
+        ///     The <see cref="IMapConnection"/>.
+        /// </param>
+        public AddMapConnection(IMapConnectionCollection mapConnections, IMapConnection mapConnection)
+        {
+            _mapConnections = mapConnections;
+            _mapConnection = mapConnection;
+        }
 
-    public void ExecuteDo()
-    {
-        _mapConnections.Add(_mapConnection);
-    }
+        public bool CanExecute()
+        {
+            return !_mapConnections.Contains(_mapConnection);
+        }
 
-    public void ExecuteUndo()
-    {
-        _mapConnections.Remove(_mapConnection);
+        public void ExecuteDo()
+        {
+            _mapConnections.Add(_mapConnection);
+        }
+
+        public void ExecuteUndo()
+        {
+            _mapConnections.Remove(_mapConnection);
+        }
     }
 }

@@ -1,18 +1,18 @@
-﻿using Avalonia.Markup.Xaml;
-using Avalonia.ReactiveUI;
-using OpenTracker.ViewModels.BossSelect;
+﻿using Avalonia.Controls;
+using Avalonia.Markup.Xaml;
 
-namespace OpenTracker.Views.BossSelect;
-
-public sealed class BossSelectButton : ReactiveUserControl<BossSelectButtonVM>
+namespace OpenTracker.Views.BossSelect
 {
-    public BossSelectButton()
+    public class BossSelectButton : UserControl
     {
-        InitializeComponent();
-    }
+        public BossSelectButton()
+        {
+            this.InitializeComponent();
+        }
 
-    private void InitializeComponent()
-    {
-        AvaloniaXamlLoader.Load(this);
+        private void InitializeComponent()
+        {
+            AvaloniaXamlLoader.Load(this);
+        }
     }
 }

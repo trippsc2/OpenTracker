@@ -1,70 +1,119 @@
-﻿using System.Reactive;
-using System.Reactive.Disposables;
-using System.Reactive.Linq;
+﻿using System.ComponentModel;
+using System.Reactive;
+using System.Threading.Tasks;
 using Avalonia.Input;
+using Avalonia.Threading;
 using OpenTracker.Models.Markings;
 using OpenTracker.Models.Sections;
 using OpenTracker.Utils;
-using OpenTracker.Utils.Autofac;
 using OpenTracker.ViewModels.Markings;
 using OpenTracker.ViewModels.Markings.Images;
 using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
 
-namespace OpenTracker.ViewModels.PinnedLocations.Sections;
-
-/// <summary>
-/// This class contains the section marking icon control ViewModel data.
-/// </summary>
-[DependencyInjection]
-public sealed class MarkingSectionIconVM : ViewModel, ISectionIconVM
+namespace OpenTracker.ViewModels.PinnedLocations.Sections
 {
-    private IMarking Marking { get; }
-    public IMarkingSelectVM MarkingSelect { get; }
-    
-    [ObservableAsProperty]
-    public IMarkingImageVMBase Image { get; } = default!;
-    
-    public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
-
-    public delegate MarkingSectionIconVM Factory(ISection section);
-
     /// <summary>
-    /// Constructor
+    /// This class contains the section marking icon control ViewModel data.
     /// </summary>
-    /// <param name="markingImages">
-    /// The marking image control dictionary.
-    /// </param>
-    /// <param name="markingSelectFactory">
-    /// A factory for creating marking select controls.
-    /// </param>
-    /// <param name="section">
-    /// The marking to be represented.
-    /// </param>
-    public MarkingSectionIconVM(
-        IMarkingImageDictionary markingImages, IMarkingSelectFactory markingSelectFactory, ISection section)
+    public class MarkingSectionIconVM : ViewModelBase, ISectionIconVM
     {
-        Marking = section.Marking!;
+        private readonly IMarkingImageDictionary _markingImages;
 
-        MarkingSelect = markingSelectFactory.GetMarkingSelectVM(section);
-            
-        HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
-        
-        this.WhenActivated(disposables =>
+        private readonly IMarking _marking;
+
+        private IMarkingImageVMBase? _image;
+        public IMarkingImageVMBase Image
         {
-            this.WhenAnyValue(x => x.Marking.Mark)
-                .Select(x => markingImages[x])
-                .ObserveOn(RxApp.MainThreadScheduler)
-                .ToPropertyEx(this, x => x.Image)
-                .DisposeWith(disposables);
-        });
-    }
+            get => _image!;
+            private set => this.RaiseAndSetIfChanged(ref _image, value);
+        }
 
-    private void HandleClickImpl(PointerReleasedEventArgs e)
-    {
-        if (e.InitialPressMouseButton == MouseButton.Left)
+        public IMarkingSelectVM MarkingSelect { get; }
+        
+        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
+
+        public delegate MarkingSectionIconVM Factory(ISection section);
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="markingImages">
+        /// The marking image control dictionary.
+        /// </param>
+        /// <param name="markingSelectFactory">
+        /// A factory for creating marking select controls.
+        /// </param>
+        /// <param name="section">
+        /// The marking to be represented.
+        /// </param>
+        public MarkingSectionIconVM(
+            IMarkingImageDictionary markingImages, IMarkingSelectFactory markingSelectFactory, ISection section)
+        {
+            _markingImages = markingImages;
+            _marking = section.Marking!;
+
+            MarkingSelect = markingSelectFactory.GetMarkingSelectVM(section);
+            
+            HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
+
+            _marking.PropertyChanged += OnMarkingChanged;
+
+            UpdateImage();
+        }
+
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the IMarking interface.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
+        private async void OnMarkingChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(IMarking.Mark))
+            {
+                await UpdateImageAsync();
+            }
+        }
+
+        /// <summary>
+        /// Updates the image.
+        /// </summary>
+        private void UpdateImage()
+        {
+            Image = _markingImages[_marking.Mark];
+        }
+
+        /// <summary>
+        /// Updates the image asynchronously.
+        /// </summary>
+        private async Task UpdateImageAsync()
+        {
+            await Dispatcher.UIThread.InvokeAsync(UpdateImage);
+        }
+
+        /// <summary>
+        /// Opens the marking select popup.
+        /// </summary>
+        private void OpenMarkingSelect()
         {
             MarkingSelect.PopupOpen = true;
+        }
+
+        /// <summary>
+        /// Handles clicking the control.
+        /// </summary>
+        /// <param name="e">
+        /// The PointerReleased event args.
+        /// </param>
+        private void HandleClickImpl(PointerReleasedEventArgs e)
+        {
+            if (e.InitialPressMouseButton == MouseButton.Left)
+            {
+                OpenMarkingSelect();
+            }
         }
     }
 }

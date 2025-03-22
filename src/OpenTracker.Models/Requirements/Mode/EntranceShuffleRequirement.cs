@@ -1,64 +1,55 @@
-﻿using System;
-using System.Reactive.Disposables;
-using System.Reactive.Linq;
-using OpenTracker.Models.Accessibility;
+﻿using System.ComponentModel;
 using OpenTracker.Models.Modes;
-using OpenTracker.Utils.Autofac;
-using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
 
-namespace OpenTracker.Models.Requirements.Mode;
-
-/// <summary>
-/// This class contains <see cref="IMode.EntranceShuffle"/> <see cref="IRequirement"/> data.
-/// </summary>
-[DependencyInjection]
-public sealed class EntranceShuffleRequirement : ReactiveObject, IRequirement
+namespace OpenTracker.Models.Requirements.Mode
 {
-    private readonly CompositeDisposable _disposables = new();
-    
-    private IMode Mode { get; }
-    
-    [ObservableAsProperty]
-    public bool Met { get; }
-    [ObservableAsProperty]
-    public AccessibilityLevel Accessibility { get; }
-    
-    public event EventHandler? ChangePropagated;
-
     /// <summary>
-    /// A factory method for creating new <see cref="EntranceShuffleRequirement"/> objects.
+    /// This class contains <see cref="IMode.EntranceShuffle"/> <see cref="IRequirement"/> data.
     /// </summary>
-    public delegate EntranceShuffleRequirement Factory(EntranceShuffle expectedValue);
-
-    /// <summary>
-    /// Constructor
-    /// </summary>
-    /// <param name="mode">
-    ///     The <see cref="IMode"/> data.
-    /// </param>
-    /// <param name="expectedValue">
-    ///     A <see cref="EntranceShuffle"/> representing the expected <see cref="IMode.EntranceShuffle"/> value.
-    /// </param>
-    public EntranceShuffleRequirement(IMode mode, EntranceShuffle expectedValue)
+    public class EntranceShuffleRequirement : BooleanRequirement, IEntranceShuffleRequirement
     {
-        Mode = mode;
+        private readonly IMode _mode;
+        private readonly EntranceShuffle _expectedValue;
 
-        this.WhenAnyValue(x => x.Mode.EntranceShuffle)
-            .Select(x => x == expectedValue)
-            .ToPropertyEx(this, x => x.Met)
-            .DisposeWith(_disposables);
-        this.WhenAnyValue(x => x.Met)
-            .Select(x => x ? AccessibilityLevel.Normal : AccessibilityLevel.None)
-            .ToPropertyEx(this, x => x.Accessibility)
-            .DisposeWith(_disposables);
-        this.WhenAnyValue(x => x.Accessibility)
-            .Subscribe(_ => ChangePropagated?.Invoke(this, EventArgs.Empty))
-            .DisposeWith(_disposables);
-    }
-    
-    public void Dispose()
-    {
-        _disposables.Dispose();
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="mode">
+        ///     The <see cref="IMode"/> data.
+        /// </param>
+        /// <param name="expectedValue">
+        ///     A <see cref="EntranceShuffle"/> representing the expected <see cref="IMode.EntranceShuffle"/> value.
+        /// </param>
+        public EntranceShuffleRequirement(IMode mode, EntranceShuffle expectedValue)
+        {
+            _mode = mode;
+            _expectedValue = expectedValue;
+
+            _mode.PropertyChanged += OnModeChanged;
+
+            UpdateValue();
+        }
+
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the IMode interface.
+        /// </summary>
+        /// <param name="sender">
+        ///     The <see cref="object"/> from which the event is sent.
+        /// </param>
+        /// <param name="e">
+        ///     The <see cref="PropertyChangedEventArgs"/>.
+        /// </param>
+        private void OnModeChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(IMode.EntranceShuffle))
+            {
+                UpdateValue();
+            }
+        }
+
+        protected override bool ConditionMet()
+        {
+            return _mode.EntranceShuffle == _expectedValue;
+        }
     }
 }

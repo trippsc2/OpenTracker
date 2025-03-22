@@ -1,43 +1,41 @@
-using System.Diagnostics.CodeAnalysis;
 using Autofac;
-using FluentAssertions;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Requirements.Static;
 using Xunit;
 
-namespace OpenTracker.UnitTests.Models.Requirements.Static;
-
-[ExcludeFromCodeCoverage]
-public sealed class StaticRequirementTests
+namespace OpenTracker.UnitTests.Models.Requirements.Static
 {
-    [Theory]
-    [InlineData(AccessibilityLevel.None, AccessibilityLevel.None)]
-    [InlineData(AccessibilityLevel.Inspect, AccessibilityLevel.Inspect)]
-    [InlineData(AccessibilityLevel.SequenceBreak, AccessibilityLevel.SequenceBreak)]
-    [InlineData(AccessibilityLevel.Normal, AccessibilityLevel.Normal)]
-    public void Accessibility_ShouldAlwaysReturnExpected(AccessibilityLevel expected, AccessibilityLevel requirement)
+    public class StaticRequirementTests
     {
-        var sut = new StaticRequirement(requirement);
-
-        sut.Accessibility.Should().Be(expected);
-    }
-
-    [Fact]
-    public void Met_ShouldAlwaysReturnTrue()
-    {
-        var sut = new StaticRequirement(AccessibilityLevel.None);
+        [Theory]
+        [InlineData(AccessibilityLevel.None, AccessibilityLevel.None)]
+        [InlineData(AccessibilityLevel.Inspect, AccessibilityLevel.Inspect)]
+        [InlineData(AccessibilityLevel.SequenceBreak, AccessibilityLevel.SequenceBreak)]
+        [InlineData(AccessibilityLevel.Normal, AccessibilityLevel.Normal)]
+        public void Accessibility_ShouldAlwaysReturnExpected(
+            AccessibilityLevel expected, AccessibilityLevel requirement)
+        {
+            var sut = new StaticRequirement(requirement);
             
-        sut.Met.Should().BeTrue();
-    }
+            Assert.Equal(expected, sut.Accessibility);
+        }
+
+        [Fact]
+        public void Met_ShouldAlwaysReturnTrue()
+        {
+            var sut = new StaticRequirement(AccessibilityLevel.None);
+            
+            Assert.True(sut.Met);
+        }
         
-    [Fact]
-    public void AutofacResolve_ShouldResolveToTransientInstance()
-    {
-        using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-        var factory = scope.Resolve<StaticRequirement.Factory>();
-        var sut1 = factory(AccessibilityLevel.None);
-        var sut2 = factory(AccessibilityLevel.None);
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var factory = scope.Resolve<IStaticRequirement.Factory>();
+            var sut = factory(AccessibilityLevel.None);
             
-        sut1.Should().NotBeSameAs(sut2);
+            Assert.NotNull(sut as StaticRequirement);
+        }
     }
 }

@@ -1,8 +1,9 @@
 ﻿using OpenTracker.Models.Markings;
 
-namespace OpenTracker.ViewModels.Markings.Images;
-
-public interface IMarkingImageFactory
+namespace OpenTracker.ViewModels.Markings.Images
 {
-    IMarkingImageVMBase GetMarkingImageVM(MarkType type);
+    public interface IMarkingImageFactory
+    {
+        IMarkingImageVMBase GetMarkingImageVM(MarkType type);
+    }
 }

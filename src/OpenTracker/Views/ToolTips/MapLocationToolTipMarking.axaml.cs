@@ -1,18 +1,18 @@
-﻿using Avalonia.Markup.Xaml;
-using Avalonia.ReactiveUI;
-using OpenTracker.ViewModels.ToolTips;
+﻿using Avalonia.Controls;
+using Avalonia.Markup.Xaml;
 
-namespace OpenTracker.Views.ToolTips;
-
-public sealed class MapLocationToolTipMarking : ReactiveUserControl<MapLocationToolTipMarkingVM>
+namespace OpenTracker.Views.ToolTips
 {
-    public MapLocationToolTipMarking()
+    public class MapLocationToolTipMarking : UserControl
     {
-        InitializeComponent();
-    }
+        public MapLocationToolTipMarking()
+        {
+            InitializeComponent();
+        }
 
-    private void InitializeComponent()
-    {
-        AvaloniaXamlLoader.Load(this);
+        private void InitializeComponent()
+        {
+            AvaloniaXamlLoader.Load(this);
+        }
     }
 }

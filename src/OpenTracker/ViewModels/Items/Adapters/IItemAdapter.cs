@@ -1,21 +1,19 @@
 using System.Reactive;
 using Avalonia.Input;
-using Avalonia.Media;
-using OpenTracker.Utils;
 using OpenTracker.ViewModels.BossSelect;
 using ReactiveUI;
 
-namespace OpenTracker.ViewModels.Items.Adapters;
-
-/// <summary>
-/// This interface contains the logic to adapt data for an item control.
-/// </summary>
-public interface IItemAdapter : IViewModel
+namespace OpenTracker.ViewModels.Items.Adapters
 {
-    string ImageSource { get; }
-    string? Label { get; }
-    SolidColorBrush? LabelColor { get; }
-    BossSelectPopupVM? BossSelect { get; }
-    
-    ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
+    /// <summary>
+    /// This interface contains the logic to adapt data for an item control.
+    /// </summary>
+    public interface IItemAdapter : IReactiveObject
+    {
+        string ImageSource { get; }
+        string? Label { get; }
+        ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
+        string LabelColor { get; }
+        IBossSelectPopupVM? BossSelect { get; }
+    }
 }

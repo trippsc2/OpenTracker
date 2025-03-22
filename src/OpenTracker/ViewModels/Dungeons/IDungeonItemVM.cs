@@ -1,9 +1,10 @@
 using OpenTracker.Models.Requirements;
 using OpenTracker.ViewModels.Items;
 
-namespace OpenTracker.ViewModels.Dungeons;
-
-public interface IDungeonItemVM
+namespace OpenTracker.ViewModels.Dungeons
 {
-    delegate IDungeonItemVM Factory(IRequirement? requirement, IItemVM? item);
+    public interface IDungeonItemVM
+    {
+        delegate IDungeonItemVM Factory(IRequirement? requirement, IItemVM? item);
+    }
 }

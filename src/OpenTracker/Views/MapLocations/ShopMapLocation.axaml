@@ -1,20 +1,34 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:OpenTracker.ViewModels.MapLocations;assembly=OpenTracker"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vm="clr-namespace:OpenTracker.ViewModels.MapLocations"
-             mc:Ignorable="d" x:Class="OpenTracker.Views.MapLocations.ShopMapLocation"
-             x:DataType="vm:ShopMapLocationVM" x:CompileBindings="True">
-  <UserControl.Styles>
-    <Style Selector="Polygon.Shop">
-      <Setter Property="Points" Value="20,0 40,20 20,40 0,20" />
-      <Setter Property="StrokeThickness" Value="5" />
-    </Style>
-  </UserControl.Styles>
+             xmlns:i="using:Avalonia.Xaml.Interactivity"
+             xmlns:ia="using:Avalonia.Xaml.Interactions.Core"
+             mc:Ignorable="d" x:Class="OpenTracker.Views.MapLocations.ShopMapLocation">
   
-  <Panel x:Name="Panel" Width="40" Height="40">
-    <Polygon Classes="Shop"
+  <Design.DataContext>
+    <vm:ShopMapLocationVM />
+  </Design.DataContext>
+  
+  <Panel Width="40" Height="40">
+    
+    <i:Interaction.Behaviors>
+      
+      <ia:EventTriggerBehavior EventName="PointerReleased">
+        <ia:InvokeCommandAction Command="{Binding HandleClick}" PassEventArgsToCommand="True" />
+      </ia:EventTriggerBehavior>
+      
+      <ia:EventTriggerBehavior EventName="DoubleTapped">
+        <ia:InvokeCommandAction Command="{Binding HandleDoubleClick}" />
+      </ia:EventTriggerBehavior>
+      
+    </i:Interaction.Behaviors>
+
+    <Polygon Points="20,0 40,20 20,40 0,20" StrokeThickness="5"
              Fill="{Binding Color}"
              Stroke="{Binding BorderColor}" />
+    
   </Panel>
+
 </UserControl>

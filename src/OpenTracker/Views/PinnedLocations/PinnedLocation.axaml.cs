@@ -1,36 +1,18 @@
-﻿using System.Reactive.Disposables;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using Avalonia.ReactiveUI;
-using OpenTracker.ViewModels.PinnedLocations;
-using ReactiveMarbles.ObservableEvents;
-using ReactiveUI;
 
-namespace OpenTracker.Views.PinnedLocations;
-
-public sealed class PinnedLocation : ReactiveUserControl<PinnedLocationVM>
+namespace OpenTracker.Views.PinnedLocations
 {
-    private Image CloseImage => this.FindControl<Image>(nameof(CloseImage));
-
-    public PinnedLocation()
+    public class PinnedLocation : UserControl
     {
-        InitializeComponent();
-        this.WhenActivated(disposables =>
+        public PinnedLocation()
         {
-            if (ViewModel is null)
-            {
-                return;
-            }
+            InitializeComponent();
+        }
 
-            CloseImage.Events()
-                .PointerReleased
-                .InvokeCommand(ViewModel.HandleClickCommand)
-                .DisposeWith(disposables);
-        });
-    }
-
-    private void InitializeComponent()
-    {
-        AvaloniaXamlLoader.Load(this);
+        private void InitializeComponent()
+        {
+            AvaloniaXamlLoader.Load(this);
+        }
     }
 }

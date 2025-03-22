@@ -1,143 +1,164 @@
-﻿using System;
+﻿using System.ComponentModel;
+using System.Globalization;
 using System.Reactive;
-using System.Reactive.Disposables;
-using System.Reactive.Linq;
+using System.Threading.Tasks;
 using Avalonia.Input;
-using Avalonia.Media;
+using Avalonia.Threading;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Sections;
 using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
-using OpenTracker.Utils.Autofac;
-using Reactive.Bindings;
 using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
-using ReactiveCommand = ReactiveUI.ReactiveCommand;
 
-namespace OpenTracker.ViewModels.Dungeons;
-
-/// <summary>
-/// This class contains dungeon items small items panel control ViewModel data.
-/// </summary>
-[DependencyInjection]
-public sealed class DungeonItemSectionVM : ViewModel, IDungeonItemSectionVM
+namespace OpenTracker.ViewModels.Dungeons
 {
-    private static readonly SolidColorBrush NormalFontColor = SolidColorBrush.Parse("#ffffff");
-    
-    private readonly IUndoRedoManager _undoRedoManager;
-
-    private ColorSettings ColorSettings { get; }
-    private ISection Section { get; }
-    
-    [ObservableAsProperty]
-    public ReactiveProperty<SolidColorBrush> AccessibilityColor { get; } = default!;
-    [ObservableAsProperty]
-    public SolidColorBrush FontColor { get; } = NormalFontColor;
-    [ObservableAsProperty]
-    public string ImageSource { get; } = "avares://OpenTracker/Assets/Images/chest0.png";
-    [ObservableAsProperty]
-    public string NumberString { get; } = "0";
-
-    public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
-
     /// <summary>
-    /// Constructor
+    /// This class contains dungeon items small items panel control ViewModel data.
     /// </summary>
-    /// <param name="colorSettings">
-    /// The color settings data.
-    /// </param>
-    /// <param name="undoRedoManager">
-    /// The undo/redo manager.
-    /// </param>
-    /// <param name="section">
-    /// The dungeon section to be represented.
-    /// </param>
-    public DungeonItemSectionVM(ColorSettings colorSettings, IUndoRedoManager undoRedoManager, ISection section)
+    public class DungeonItemSectionVM : ViewModelBase, IDungeonItemSectionVM
     {
-        _undoRedoManager = undoRedoManager;
-        ColorSettings = colorSettings;
-        Section = section;
+        private readonly IColorSettings _colorSettings;
+        private readonly IUndoRedoManager _undoRedoManager;
+
+        private readonly ISection _section;
+
+        public string FontColor =>
+            _section.Available == 0 ? "#ffffffff" : _colorSettings.AccessibilityColors[_section.Accessibility];
+        public string ImageSource =>
+            "avares://OpenTracker/Assets/Images/chest" +
+            (_section.IsAvailable() ? _section.Accessibility switch
+            {
+                AccessibilityLevel.None => "0",
+                AccessibilityLevel.Inspect => "0",
+                _ => "1"
+            } : "2") + ".png";
+
+        public string NumberString => _section.Available.ToString(CultureInfo.InvariantCulture);
         
-        HandleClickCommand = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClick);
+        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
 
-        this.WhenActivated(disposables =>
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="colorSettings">
+        /// The color settings data.
+        /// </param>
+        /// <param name="undoRedoManager">
+        /// The undo/redo manager.
+        /// </param>
+        /// <param name="section">
+        /// The dungeon section to be represented.
+        /// </param>
+        public DungeonItemSectionVM(IColorSettings colorSettings, IUndoRedoManager undoRedoManager, ISection section)
         {
-            this.WhenAnyValue(x => x.Section.Accessibility)
-                .Select(x => ColorSettings.AccessibilityColors[x])
-                .ToPropertyEx(this, x => x.AccessibilityColor)
-                .DisposeWith(disposables);
-            this.WhenAnyValue(
-                    x => x.Section.Available,
-                    x => x.Section.Accessibility,
-                    x => x.AccessibilityColor,
-                    x => x.AccessibilityColor.Value,
-                    (available, _, _, color) => available == 0 ? NormalFontColor : color)
-                .ObserveOn(RxApp.MainThreadScheduler)
-                .ToPropertyEx(this, x => x.FontColor)
-                .DisposeWith(disposables);
-            this.WhenAnyValue(
-                    x => x.Section.Available,
-                    x => x.Section.Accessibility,
-                    (_, accessibility) =>
-                        Section.IsAvailable()
-                            ? accessibility is AccessibilityLevel.None or AccessibilityLevel.Inspect
-                                ? "avares://OpenTracker/Assets/Images/chest0.png"
-                                : "avares://OpenTracker/Assets/Images/chest1.png"
-                            : "avares://OpenTracker/Assets/Images/chest2.png")
-                .ObserveOn(RxApp.MainThreadScheduler)
-                .ToPropertyEx(this, x => x.ImageSource)
-                .DisposeWith(disposables);
-            this.WhenAnyValue(x => x.Section.Available)
-                .Select(x => x.ToString())
-                .ObserveOn(RxApp.MainThreadScheduler)
-                .ToPropertyEx(this, x => x.NumberString)
-                .DisposeWith(disposables);
-        });
-    }
+            _colorSettings = colorSettings;
 
-    /// <summary>
-    /// Creates an undoable action to collect the section and sends it to the undo/redo manager.
-    /// </summary>
-    /// <param name="force">
-    /// A boolean representing whether the logic should be ignored.
-    /// </param>
-    private void CollectSection(bool force)
-    {
-        _undoRedoManager.NewAction(Section.CreateCollectSectionAction(force));
-    }
+            _section = section;
+            _undoRedoManager = undoRedoManager;
 
-    /// <summary>
-    /// Creates an undoable action to un-collect the section and sends it to the undo/redo manager.
-    /// </summary>
-    private void UncollectSection()
-    {
-        _undoRedoManager.NewAction(Section.CreateUncollectSectionAction());
-    }
+            HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
+            
+            _colorSettings.AccessibilityColors.PropertyChanged += OnColorChanged;
+            _section.PropertyChanged += OnSectionChanged;
+        }
 
-    /// <summary>
-    /// Handles clicking the control.
-    /// </summary>
-    /// <param name="e">
-    /// The pointer released event args.
-    /// </param>
-    /// <exception cref="ArgumentOutOfRangeException"></exception>
-    private void HandleClick(PointerReleasedEventArgs e)
-    {
-        switch (e.InitialPressMouseButton)
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the ObservableCollection class for the
+        /// accessibility colors.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
+        private async void OnColorChanged(object? sender, PropertyChangedEventArgs e)
         {
-            case MouseButton.Left:
-                CollectSection((e.KeyModifiers & KeyModifiers.Control) > 0);
-                break;
-            case MouseButton.Right:
-                UncollectSection();
-                break;
-            case MouseButton.None:
-            case MouseButton.Middle:
-            case MouseButton.XButton1:
-            case MouseButton.XButton2:
-            default:
-                break;
+            await UpdateTextColor();
+        }
+
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the ISection interface.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
+        private async void OnSectionChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(ISection.Accessibility):
+                {
+                    await UpdateTextColor();
+                    await UpdateImage();
+                }
+                    break;
+                case nameof(ISection.Available):
+                {
+                    await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(NumberString)));
+                    await UpdateTextColor();
+                    await UpdateImage();
+                }
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Raises the PropertyChanged event for the FontColor property.
+        /// </summary>
+        private async Task UpdateTextColor()
+        {
+            await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(FontColor)));
+        }
+
+        /// <summary>
+        /// Raises the PropertyChanged event for the ImageSource property.
+        /// </summary>
+        private async Task UpdateImage()
+        {
+            await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(ImageSource)));
+        }
+
+        /// <summary>
+        /// Creates an undoable action to collect the section and sends it to the undo/redo manager.
+        /// </summary>
+        /// <param name="force">
+        /// A boolean representing whether the logic should be ignored.
+        /// </param>
+        private void CollectSection(bool force)
+        {
+            _undoRedoManager.NewAction(_section.CreateCollectSectionAction(force));
+        }
+
+        /// <summary>
+        /// Creates an undoable action to un-collect the section and sends it to the undo/redo manager.
+        /// </summary>
+        private void UncollectSection()
+        {
+            _undoRedoManager.NewAction(_section.CreateUncollectSectionAction());
+        }
+
+        /// <summary>
+        /// Handles clicking the control.
+        /// </summary>
+        /// <param name="e">
+        /// The pointer released event args.
+        /// </param>
+        private void HandleClickImpl(PointerReleasedEventArgs e)
+        {
+            switch (e.InitialPressMouseButton)
+            {
+                case MouseButton.Left:
+                    CollectSection((e.KeyModifiers & KeyModifiers.Control) > 0);
+                    break;
+                case MouseButton.Right:
+                    UncollectSection();
+                    break;
+            }
         }
     }
 }

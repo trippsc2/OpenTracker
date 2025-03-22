@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 
-namespace OpenTracker.ViewModels.Items;
-
-public interface IItemVMFactory
+namespace OpenTracker.ViewModels.Items
 {
-    List<ILargeItemVM> GetLargeItemControlVMs();
-    IItemVM GetLargeItemVM(LargeItemType type);
+    public interface IItemVMFactory
+    {
+        List<ILargeItemVM> GetLargeItemControlVMs();
+        IItemVM GetLargeItemVM(LargeItemType type);
 
-    delegate IItemVMFactory Factory();
+        delegate IItemVMFactory Factory();
+    }
 }

@@ -1,7 +1,6 @@
+using System;
 using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
 using Autofac;
-using FluentAssertions;
 using NSubstitute;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Requirements;
@@ -9,87 +8,104 @@ using OpenTracker.Models.Requirements.SequenceBreak;
 using OpenTracker.Models.SequenceBreaks;
 using Xunit;
 
-namespace OpenTracker.UnitTests.Models.Requirements.SequenceBreak;
-
-[ExcludeFromCodeCoverage]
-public sealed class SequenceBreakRequirementTests
+namespace OpenTracker.UnitTests.Models.Requirements.SequenceBreak
 {
-    private readonly ISequenceBreak _sequenceBreak = Substitute.For<ISequenceBreak>();
-
-    private readonly SequenceBreakRequirement _sut;
-
-    public SequenceBreakRequirementTests()
+    public class SequenceBreakRequirementTests
     {
-        _sut = new SequenceBreakRequirement(_sequenceBreak);
-    }
-    
-    private void ChangeSequenceBreakEnabled(bool newValue)
-    {
-        _sequenceBreak.Enabled.Returns(newValue);
-        _sequenceBreak.PropertyChanged += Raise
-            .Event<PropertyChangedEventHandler>(
-                _sequenceBreak,
-                new PropertyChangedEventArgs(nameof(ISequenceBreak.Enabled)));
-    }
+        private readonly ISequenceBreak _sequenceBreak = Substitute.For<ISequenceBreak>();
 
-    [Fact]
-    public void Met_ShouldRaisePropertyChanged()
-    {
-        using var monitor = _sut.Monitor();
+        private readonly SequenceBreakRequirement _sut;
+
+        public SequenceBreakRequirementTests()
+        {
+            _sut = new SequenceBreakRequirement(_sequenceBreak);
+        }
         
-        ChangeSequenceBreakEnabled(true);
-        
-        monitor.Should().RaisePropertyChangeFor(x => x.Met);
-    }
+        [Fact]
+        public void SequenceBreakChanged_ShouldUpdateValue()
+        {
+            _sequenceBreak.Enabled.Returns(true);
 
-    [Theory]
-    [InlineData(false, false)]
-    [InlineData(true, true)]
-    public void Met_ShouldMatchExpected(bool expected, bool enabled)
-    {
-        ChangeSequenceBreakEnabled(enabled);
+            _sequenceBreak.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                _sequenceBreak, new PropertyChangedEventArgs(nameof(ISequenceBreak.Enabled)));
             
-        _sut.Met.Should().Be(expected);
-    }
+            Assert.True(_sut.Met);
+        }
 
-    [Fact]
-    public void Accessibility_ShouldRaisePropertyChanged()
-    {
-        using var monitor = _sut.Monitor();
-        
-        ChangeSequenceBreakEnabled(true);
-        
-        monitor.Should().RaisePropertyChangeFor(x => x.Accessibility);
-    }
+        [Fact]
+        public void Met_ShouldRaisePropertyChanged()
+        {
+            _sequenceBreak.Enabled.Returns(true);
 
-    [Fact]
-    public void Accessibility_ShouldRaiseChangePropagated()
-    {
-        using var monitor = _sut.Monitor();
-        
-        ChangeSequenceBreakEnabled(true);
-        
-        monitor.Should().Raise(nameof(IRequirement.ChangePropagated));
-    }
+            Assert.PropertyChanged(_sut, nameof(IRequirement.Met), 
+                () => _sequenceBreak.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                    _sequenceBreak, new PropertyChangedEventArgs(nameof(ISequenceBreak.Enabled))));
+        }
 
-    [Theory]
-    [InlineData(AccessibilityLevel.None, false)]
-    [InlineData(AccessibilityLevel.SequenceBreak, true)]
-    public void Accessibility_ShouldMatchExpected(AccessibilityLevel expected, bool enabled)
-    {
-        ChangeSequenceBreakEnabled(enabled);
+        [Fact]
+        public void Met_ShouldRaiseChangePropagated()
+        {
+            _sequenceBreak.Enabled.Returns(true);
 
-        _sut.Accessibility.Should().Be(expected);
-    }
+            var eventRaised = false;
 
-    [Fact]
-    public void AutofacResolve_ShouldResolveToTransientInstance()
-    {
-        using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-        var factory = scope.Resolve<SequenceBreakRequirement.Factory>();
-        var sut1 = factory(_sequenceBreak);
-        var sut2 = factory(_sequenceBreak);
+            void Handler(object? sender, EventArgs e)
+            {
+                eventRaised = true;
+            }
             
-        sut1.Should().NotBeSameAs(sut2);
+            _sut.ChangePropagated += Handler;
+            _sequenceBreak.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                _sequenceBreak, new PropertyChangedEventArgs(nameof(ISequenceBreak.Enabled)));
+            _sut.ChangePropagated -= Handler;
+            
+            Assert.True(eventRaised);
+        }
+
+        [Theory]
+        [InlineData(false, false)]
+        [InlineData(true, true)]
+        public void Met_ShouldMatchExpected(bool expected, bool enabled)
+        {
+            _sequenceBreak.Enabled.Returns(enabled);
+            
+            _sequenceBreak.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                _sequenceBreak, new PropertyChangedEventArgs(nameof(ISequenceBreak.Enabled)));
+            
+            Assert.Equal(expected, _sut.Met);
+        }
+
+        [Fact]
+        public void Accessibility_ShouldRaisePropertyChanged()
+        {
+            _sequenceBreak.Enabled.Returns(true);
+
+            Assert.PropertyChanged(_sut, nameof(IRequirement.Accessibility), 
+                () => _sequenceBreak.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                    _sequenceBreak, new PropertyChangedEventArgs(nameof(ISequenceBreak.Enabled))));
+        }
+
+        [Theory]
+        [InlineData(AccessibilityLevel.None, false)]
+        [InlineData(AccessibilityLevel.SequenceBreak, true)]
+        public void Accessibility_ShouldMatchExpected(AccessibilityLevel expected, bool enabled)
+        {
+            _sequenceBreak.Enabled.Returns(enabled);
+            
+            _sequenceBreak.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                _sequenceBreak, new PropertyChangedEventArgs(nameof(ISequenceBreak.Enabled)));
+            
+            Assert.Equal(expected, _sut.Accessibility);
+        }
+
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var factory = scope.Resolve<ISequenceBreakRequirement.Factory>();
+            var sut = factory(_sequenceBreak);
+            
+            Assert.NotNull(sut as SequenceBreakRequirement);
+        }
     }
 }

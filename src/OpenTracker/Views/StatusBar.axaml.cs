@@ -1,18 +1,18 @@
+using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using Avalonia.ReactiveUI;
-using OpenTracker.ViewModels;
 
-namespace OpenTracker.Views;
-
-public sealed class StatusBar : ReactiveUserControl<StatusBarVM>
+namespace OpenTracker.Views
 {
-    public StatusBar()
+    public class StatusBar : UserControl
     {
-        InitializeComponent();
-    }
+        public StatusBar()
+        {
+            InitializeComponent();
+        }
 
-    private void InitializeComponent()
-    {
-        AvaloniaXamlLoader.Load(this);
+        private void InitializeComponent()
+        {
+            AvaloniaXamlLoader.Load(this);
+        }
     }
 }

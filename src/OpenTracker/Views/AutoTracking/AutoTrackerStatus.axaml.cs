@@ -1,18 +1,18 @@
+using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using Avalonia.ReactiveUI;
-using OpenTracker.ViewModels.AutoTracking;
 
-namespace OpenTracker.Views.AutoTracking;
-
-public sealed class AutoTrackerStatus : ReactiveUserControl<AutoTrackerStatusVM>
+namespace OpenTracker.Views.AutoTracking
 {
-    public AutoTrackerStatus()
+    public class AutoTrackerStatus : UserControl
     {
-        InitializeComponent();
-    }
+        public AutoTrackerStatus()
+        {
+            InitializeComponent();
+        }
 
-    private void InitializeComponent()
-    {
-        AvaloniaXamlLoader.Load(this);
+        private void InitializeComponent()
+        {
+            AvaloniaXamlLoader.Load(this);
+        }
     }
 }

@@ -1,35 +1,34 @@
 ﻿using Newtonsoft.Json;
 using System.IO;
-using OpenTracker.Utils.Autofac;
 
-namespace OpenTracker.Utils;
-
-/// <summary>
-///     This class contains the logic for converting objects to and from JSON.
-/// </summary>
-[DependencyInjection(SingleInstance = true)]
-public sealed class JsonConverter : IJsonConverter
+namespace OpenTracker.Utils
 {
-    public void Save<T>(T saveData, string path)
+    /// <summary>
+    ///     This class contains the logic for converting objects to and from JSON.
+    /// </summary>
+    public class JsonConverter : IJsonConverter
     {
-        if (File.Exists(path))
+        public void Save<T>(T saveData, string path)
         {
-            File.Delete(path);
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+
+            var json = JsonConvert.SerializeObject(saveData, Formatting.Indented);
+            File.WriteAllText(path, json);
         }
 
-        var json = JsonConvert.SerializeObject(saveData, Formatting.Indented);
-        File.WriteAllText(path, json);
-    }
-
-    public T Load<T>(string path)
-    {
-        if (!File.Exists(path))
+        public T Load<T>(string path)
         {
-            return default!;
+            if (!File.Exists(path))
+            {
+                return default!;
+            }
+
+            var content = File.ReadAllText(path);
+
+            return JsonConvert.DeserializeObject<T>(content)!;
         }
-
-        var content = File.ReadAllText(path);
-
-        return JsonConvert.DeserializeObject<T>(content)!;
     }
 }

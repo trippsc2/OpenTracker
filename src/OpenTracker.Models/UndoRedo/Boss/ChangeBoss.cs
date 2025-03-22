@@ -1,48 +1,47 @@
 ﻿using OpenTracker.Models.BossPlacements;
-using OpenTracker.Utils.Autofac;
 
-namespace OpenTracker.Models.UndoRedo.Boss;
-
-/// <summary>
-/// This class contains the <see cref="IUndoable"/> action to change the <see cref="BossType"/> of a
-/// <see cref="IBossPlacement"/>.
-/// </summary>
-[DependencyInjection]
-public sealed class ChangeBoss : IChangeBoss
+namespace OpenTracker.Models.UndoRedo.Boss
 {
-    private readonly IBossPlacement _bossPlacement;
-    private readonly BossType? _newValue;
-
-    private BossType? _previousValue;
-
     /// <summary>
-    /// Constructor
+    /// This class contains the <see cref="IUndoable"/> action to change the <see cref="BossType"/> of a
+    /// <see cref="IBossPlacement"/>.
     /// </summary>
-    /// <param name="bossPlacement">
-    ///     The <see cref="IBossPlacement"/>.
-    /// </param>
-    /// <param name="newValue">
-    ///     The new nullable <see cref="BossType"/> value.
-    /// </param>
-    public ChangeBoss(IBossPlacement bossPlacement, BossType? newValue)
+    public class ChangeBoss : IChangeBoss
     {
-        _bossPlacement = bossPlacement;
-        _newValue = newValue;
-    }
+        private readonly IBossPlacement _bossPlacement;
+        private readonly BossType? _newValue;
 
-    public bool CanExecute()
-    {
-        return true;
-    }
+        private BossType? _previousValue;
 
-    public void ExecuteDo()
-    {
-        _previousValue = _bossPlacement.Boss;
-        _bossPlacement.Boss = _newValue;
-    }
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="bossPlacement">
+        ///     The <see cref="IBossPlacement"/>.
+        /// </param>
+        /// <param name="newValue">
+        ///     The new nullable <see cref="BossType"/> value.
+        /// </param>
+        public ChangeBoss(IBossPlacement bossPlacement, BossType? newValue)
+        {
+            _bossPlacement = bossPlacement;
+            _newValue = newValue;
+        }
 
-    public void ExecuteUndo()
-    {
-        _bossPlacement.Boss = _previousValue;
+        public bool CanExecute()
+        {
+            return true;
+        }
+
+        public void ExecuteDo()
+        {
+            _previousValue = _bossPlacement.Boss;
+            _bossPlacement.Boss = _newValue;
+        }
+
+        public void ExecuteUndo()
+        {
+            _bossPlacement.Boss = _previousValue;
+        }
     }
 }

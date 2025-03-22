@@ -1,65 +1,56 @@
-﻿using System;
-using System.Reactive.Disposables;
-using System.Reactive.Linq;
+﻿using System.ComponentModel;
 using Avalonia.Layout;
-using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Settings;
-using OpenTracker.Utils.Autofac;
-using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
 
-namespace OpenTracker.Models.Requirements.ItemsPanelOrientation;
-
-/// <summary>
-///     This class contains items panel orientation requirement data.
-/// </summary>
-[DependencyInjection]
-public sealed class ItemsPanelOrientationRequirement : ReactiveObject, IRequirement
+namespace OpenTracker.Models.Requirements.ItemsPanelOrientation
 {
-    private readonly CompositeDisposable _disposables = new();
-    
-    private LayoutSettings LayoutSettings { get; }
-    
-    [ObservableAsProperty]
-    public bool Met { get; }
-    [ObservableAsProperty]
-    public AccessibilityLevel Accessibility { get; }
-    
-    public event EventHandler? ChangePropagated;
-
     /// <summary>
-    /// A factory method for creating new items panel orientation requirements.
+    ///     This class contains items panel orientation requirement data.
     /// </summary>
-    public delegate ItemsPanelOrientationRequirement Factory(Orientation expectedValue);
-
-    /// <summary>
-    ///     Constructor
-    /// </summary>
-    /// <param name="layoutSettings">
-    ///     The layout settings.
-    /// </param>
-    /// <param name="expectedValue">
-    ///     The expected orientation value.
-    /// </param>
-    public ItemsPanelOrientationRequirement(LayoutSettings layoutSettings, Orientation expectedValue)
+    public class ItemsPanelOrientationRequirement : BooleanRequirement, IItemsPanelOrientationRequirement
     {
-        LayoutSettings = layoutSettings;
+        private readonly ILayoutSettings _layoutSettings;
+        private readonly Orientation _expectedValue;
 
-        this.WhenAnyValue(x => x.LayoutSettings.CurrentLayoutOrientation)
-            .Select(x => x == expectedValue)
-            .ToPropertyEx(this, x => x.Met)
-            .DisposeWith(_disposables);
-        this.WhenAnyValue(x => x.Met)
-            .Select(x => x ? AccessibilityLevel.Normal : AccessibilityLevel.None)
-            .ToPropertyEx(this, x => x.Accessibility)
-            .DisposeWith(_disposables);
-        this.WhenAnyValue(x => x.Accessibility)
-            .Subscribe(_ => ChangePropagated?.Invoke(this, EventArgs.Empty))
-            .DisposeWith(_disposables);
-    }
-    
-    public void Dispose()
-    {
-        _disposables.Dispose();
+        /// <summary>
+        ///     Constructor
+        /// </summary>
+        /// <param name="layoutSettings">
+        ///     The layout settings.
+        /// </param>
+        /// <param name="expectedValue">
+        ///     The expected orientation value.
+        /// </param>
+        public ItemsPanelOrientationRequirement(ILayoutSettings layoutSettings, Orientation expectedValue)
+        {
+            _layoutSettings = layoutSettings;
+            _expectedValue = expectedValue;
+
+            _layoutSettings.PropertyChanged += OnLayoutChanged;
+
+            UpdateValue();
+        }
+
+        /// <summary>
+        ///     Subscribes to the PropertyChanged event on the ILayoutSettings interface.
+        /// </summary>
+        /// <param name="sender">
+        ///     The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        ///     The arguments of the PropertyChanged event.
+        /// </param>
+        private void OnLayoutChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ILayoutSettings.CurrentLayoutOrientation))
+            {
+                UpdateValue();
+            }
+        }
+
+        protected override bool ConditionMet()
+        {
+            return _layoutSettings.CurrentLayoutOrientation == _expectedValue;
+        }
     }
 }

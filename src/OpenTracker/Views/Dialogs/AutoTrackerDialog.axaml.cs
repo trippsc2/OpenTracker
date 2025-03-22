@@ -1,22 +1,22 @@
 using Avalonia;
 using Avalonia.Markup.Xaml;
-using Avalonia.ReactiveUI;
-using OpenTracker.ViewModels.Dialogs;
+using OpenTracker.Utils.Dialog;
 
-namespace OpenTracker.Views.Dialogs;
-
-public sealed class AutoTrackerDialog : ReactiveWindow<AutoTrackerDialogVM>
+namespace OpenTracker.Views.Dialogs
 {
-    public AutoTrackerDialog()
+    public class AutoTrackerDialog : DialogWindowBase
     {
-        InitializeComponent();
+        public AutoTrackerDialog()
+        {
+            InitializeComponent();
 #if DEBUG
-        this.AttachDevTools();
+            this.AttachDevTools();
 #endif
-    }
+        }
 
-    private void InitializeComponent()
-    {
-        AvaloniaXamlLoader.Load(this);
+        private void InitializeComponent()
+        {
+            AvaloniaXamlLoader.Load(this);
+        }
     }
 }

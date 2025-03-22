@@ -1,5 +1,6 @@
-namespace OpenTracker.ViewModels.Menus;
-
-public interface IMenuItemIconVM
+namespace OpenTracker.ViewModels.Menus
 {
+    public interface IMenuItemIconVM
+    {
+    }
 }

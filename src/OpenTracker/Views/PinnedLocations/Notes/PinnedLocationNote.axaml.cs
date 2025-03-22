@@ -1,36 +1,18 @@
-﻿using System.Reactive.Disposables;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using Avalonia.ReactiveUI;
-using OpenTracker.ViewModels.PinnedLocations.Notes;
-using ReactiveMarbles.ObservableEvents;
-using ReactiveUI;
 
-namespace OpenTracker.Views.PinnedLocations.Notes;
-
-public sealed class PinnedLocationNote : ReactiveUserControl<PinnedLocationNoteVM>
+namespace OpenTracker.Views.PinnedLocations.Notes
 {
-    private Panel Panel => this.FindControl<Panel>(nameof(Panel));
-
-    public PinnedLocationNote()
+    public class PinnedLocationNote : UserControl
     {
-        InitializeComponent();
-        this.WhenActivated(disposables =>
+        public PinnedLocationNote()
         {
-            if (ViewModel is null)
-            {
-                return;
-            }
+            InitializeComponent();
+        }
 
-            Panel.Events()
-                .PointerReleased
-                .InvokeCommand(ViewModel.HandleClickCommand)
-                .DisposeWith(disposables);
-        });
-    }
-
-    private void InitializeComponent()
-    {
-        AvaloniaXamlLoader.Load(this);
+        private void InitializeComponent()
+        {
+            AvaloniaXamlLoader.Load(this);
+        }
     }
 }

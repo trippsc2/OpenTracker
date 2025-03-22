@@ -1,7 +1,6 @@
+using System;
 using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
 using Autofac;
-using FluentAssertions;
 using NSubstitute;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Modes;
@@ -9,90 +8,100 @@ using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Requirements.BigKeyShuffle;
 using Xunit;
 
-namespace OpenTracker.UnitTests.Models.Requirements.BigKeyShuffle;
-
-[ExcludeFromCodeCoverage]
-public sealed class BigKeyShuffleRequirementTests
+namespace OpenTracker.UnitTests.Models.Requirements.BigKeyShuffle
 {
-    private readonly IMode _mode = Substitute.For<IMode>();
-
-    private void ChangeBigKeyShuffle(bool newValue)
+    public class BigKeyShuffleRequirementTests
     {
-        _mode.BigKeyShuffle.Returns(newValue);
-        _mode.PropertyChanged += Raise
-            .Event<PropertyChangedEventHandler>(
-                _mode,
-                new PropertyChangedEventArgs(nameof(IMode.BigKeyShuffle)));
-    }
+        private readonly IMode _mode = Substitute.For<IMode>();
 
-    [Fact]
-    public void Met_ShouldRaisePropertyChanged()
-    {
-        var sut = new BigKeyShuffleRequirement(_mode, true);
-        using var monitor = sut.Monitor();
-        
-        ChangeBigKeyShuffle(true);
-        
-        monitor.Should().RaisePropertyChangeFor(x => x.Met);
-    }
-    
-    [Theory]
-    [InlineData(true, false, false)]
-    [InlineData(false, false, true)]
-    [InlineData(true, true, true)]
-    public void Met_ShouldReturnExpectedValue(bool expected, bool bigKeyShuffle, bool requirement)
-    {
-        var sut = new BigKeyShuffleRequirement(_mode, requirement);
-        ChangeBigKeyShuffle(bigKeyShuffle);
+        [Fact]
+        public void ModeChanged_ShouldUpdateMetValue()
+        {
+            var sut = new BigKeyShuffleRequirement(_mode, true);
+            _mode.BigKeyShuffle.Returns(true);
 
-        sut.Met.Should().Be(expected);
-    }
+            _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                _mode, new PropertyChangedEventArgs(nameof(IMode.BigKeyShuffle)));
+            
+            Assert.True(sut.Met);
+        }
 
-    [Fact]
-    public void Accessibility_ShouldRaisePropertyChanged()
-    {
-        var sut = new BigKeyShuffleRequirement(_mode, true);
-        using var monitor = sut.Monitor();
-        
-        ChangeBigKeyShuffle(true);
-        
-        monitor.Should().RaisePropertyChangeFor(x => x.Accessibility);
-    }
-    
-    [Fact]
-    public void Accessibility_ShouldRaiseChangePropagated()
-    {
-        var sut = new BigKeyShuffleRequirement(_mode, true);
-        using var monitor = sut.Monitor();
-        
-        ChangeBigKeyShuffle(true);
-        
-        monitor.Should().Raise(nameof(IRequirement.ChangePropagated));
-    }
+        [Fact]
+        public void Met_ShouldRaisePropertyChanged()
+        {
+            var sut = new BigKeyShuffleRequirement(_mode, true);
+            _mode.BigKeyShuffle.Returns(true);
 
-    [Theory]
-    [InlineData(AccessibilityLevel.Normal, false, false)]
-    [InlineData(AccessibilityLevel.None, false, true)]
-    [InlineData(AccessibilityLevel.Normal, true, true)]
-    public void Accessibility_ShouldReturnExpectedValue(
-        AccessibilityLevel expected,
-        bool bigKeyShuffle,
-        bool requirement)
-    {
-        var sut = new BigKeyShuffleRequirement(_mode, requirement);
-        ChangeBigKeyShuffle(bigKeyShuffle);
+            Assert.PropertyChanged(sut, nameof(IRequirement.Met), 
+                () => _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                    _mode, new PropertyChangedEventArgs(nameof(IMode.BigKeyShuffle))));
+        }
 
-        sut.Accessibility.Should().Be(expected);
-    }
+        [Fact]
+        public void Met_ShouldRaiseChangePropagated()
+        {
+            var sut = new BigKeyShuffleRequirement(_mode, true);
+            _mode.BigKeyShuffle.Returns(true);
 
-    [Fact]
-    public void AutofacResolve_ShouldResolveToTransientInstance()
-    {
-        using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-        var factory = scope.Resolve<BigKeyShuffleRequirement.Factory>();
-        var sut1 = factory(false);
-        var sut2 = factory(false);
+            var eventRaised = false;
 
-        sut1.Should().NotBeSameAs(sut2);
+            void Handler(object? sender, EventArgs e)
+            {
+                eventRaised = true;
+            }
+            
+            sut.ChangePropagated += Handler;
+            _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                _mode, new PropertyChangedEventArgs(nameof(IMode.BigKeyShuffle)));
+            sut.ChangePropagated -= Handler;
+            
+            Assert.True(eventRaised);
+        }
+
+        [Theory]
+        [InlineData(true, false, false)]
+        [InlineData(false, false, true)]
+        [InlineData(true, true, true)]
+        public void Met_ShouldReturnExpectedValue(bool expected, bool bigKeyShuffle, bool requirement)
+        {
+            _mode.BigKeyShuffle.Returns(bigKeyShuffle);
+            var sut = new BigKeyShuffleRequirement(_mode, requirement);
+            
+            Assert.Equal(expected, sut.Met);
+        }
+
+        [Fact]
+        public void Accessibility_ShouldRaisePropertyChanged()
+        {
+            var sut = new BigKeyShuffleRequirement(_mode, true);
+            _mode.BigKeyShuffle.Returns(true);
+
+            Assert.PropertyChanged(sut, nameof(IRequirement.Accessibility),
+                () => _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                    _mode, new PropertyChangedEventArgs(nameof(IMode.BigKeyShuffle))));
+        }
+
+        [Theory]
+        [InlineData(AccessibilityLevel.Normal, false, false)]
+        [InlineData(AccessibilityLevel.None, false, true)]
+        [InlineData(AccessibilityLevel.Normal, true, true)]
+        public void Accessibility_ShouldReturnExpectedValue(
+            AccessibilityLevel expected, bool bigKeyShuffle, bool requirement)
+        {
+            _mode.BigKeyShuffle.Returns(bigKeyShuffle);
+            var sut = new BigKeyShuffleRequirement(_mode, requirement);
+            
+            Assert.Equal(expected, sut.Accessibility);
+        }
+
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var factory = scope.Resolve<IBigKeyShuffleRequirement.Factory>();
+            var sut = factory(false);
+            
+            Assert.NotNull(sut as BigKeyShuffleRequirement);
+        }
     }
 }

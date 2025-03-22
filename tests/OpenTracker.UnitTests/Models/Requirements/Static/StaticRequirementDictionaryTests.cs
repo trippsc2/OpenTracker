@@ -1,53 +1,52 @@
-using System.Diagnostics.CodeAnalysis;
 using Autofac;
+using NSubstitute;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Requirements.Static;
 using Xunit;
 
-namespace OpenTracker.UnitTests.Models.Requirements.Static;
-
-[ExcludeFromCodeCoverage]
-public sealed class StaticRequirementDictionaryTests
+namespace OpenTracker.UnitTests.Models.Requirements.Static
 {
-    // ReSharper disable once CollectionNeverUpdated.Local
-    private readonly StaticRequirementDictionary _sut;
-
-    public StaticRequirementDictionaryTests()
+    public class StaticRequirementDictionaryTests
     {
-        _sut = new StaticRequirementDictionary(Factory);
-        return;
+        // ReSharper disable once CollectionNeverUpdated.Local
+        private readonly StaticRequirementDictionary _sut;
 
-        StaticRequirement Factory(AccessibilityLevel expectedValue)
+        public StaticRequirementDictionaryTests()
         {
-            return new StaticRequirement(expectedValue);
+            static IStaticRequirement Factory(AccessibilityLevel expectedValue)
+            {
+                return Substitute.For<IStaticRequirement>();
+            }
+
+            _sut = new StaticRequirementDictionary(Factory);
         }
-    }
 
-    [Fact]
-    public void Indexer_ShouldReturnTheSameInstance()
-    {
-        const AccessibilityLevel accessibility = AccessibilityLevel.None;
-        var requirement1 = _sut[accessibility];
-        var requirement2 = _sut[accessibility];
+        [Fact]
+        public void Indexer_ShouldReturnTheSameInstance()
+        {
+            const AccessibilityLevel accessibility = AccessibilityLevel.None;
+            var requirement1 = _sut[accessibility];
+            var requirement2 = _sut[accessibility];
             
-        Assert.Equal(requirement1, requirement2);
-    }
+            Assert.Equal(requirement1, requirement2);
+        }
 
-    [Fact]
-    public void Indexer_ShouldReturnDifferentInstances()
-    {
-        var requirement1 = _sut[AccessibilityLevel.None];
-        var requirement2 = _sut[AccessibilityLevel.SequenceBreak];
+        [Fact]
+        public void Indexer_ShouldReturnDifferentInstances()
+        {
+            var requirement1 = _sut[AccessibilityLevel.None];
+            var requirement2 = _sut[AccessibilityLevel.SequenceBreak];
             
-        Assert.NotEqual(requirement1, requirement2);
-    }
+            Assert.NotEqual(requirement1, requirement2);
+        }
 
-    [Fact]
-    public void AutofacTest()
-    {
-        using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-        var sut = scope.Resolve<IStaticRequirementDictionary>();
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var sut = scope.Resolve<IStaticRequirementDictionary>();
             
-        Assert.NotNull(sut as StaticRequirementDictionary);
+            Assert.NotNull(sut as StaticRequirementDictionary);
+        }
     }
 }

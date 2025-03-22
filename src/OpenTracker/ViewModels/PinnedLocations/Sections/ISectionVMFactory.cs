@@ -1,8 +1,9 @@
 ﻿using OpenTracker.Models.Sections;
 
-namespace OpenTracker.ViewModels.PinnedLocations.Sections;
-
-public interface ISectionVMFactory
+namespace OpenTracker.ViewModels.PinnedLocations.Sections
 {
-    ISectionVM GetSectionVM(ISection section);
+    public interface ISectionVMFactory
+    {
+        ISectionVM GetSectionVM(ISection section);
+    }
 }

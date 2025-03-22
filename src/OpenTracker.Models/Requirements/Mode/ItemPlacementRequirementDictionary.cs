@@ -1,33 +1,32 @@
 using System.Collections.Generic;
 using OpenTracker.Models.Modes;
 using OpenTracker.Utils;
-using OpenTracker.Utils.Autofac;
 
-namespace OpenTracker.Models.Requirements.Mode;
-
-/// <summary>
-/// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for the
-/// <see cref="ItemPlacementRequirement"/> objects indexed by <see cref="ItemPlacement"/>.
-/// </summary>
-[DependencyInjection(SingleInstance = true)]
-public sealed class ItemPlacementRequirementDictionary : LazyDictionary<ItemPlacement, IRequirement>, IItemPlacementRequirementDictionary
+namespace OpenTracker.Models.Requirements.Mode
 {
-    private readonly ItemPlacementRequirement.Factory _factory;
-        
     /// <summary>
-    /// Constructor
+    /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for the
+    /// <see cref="IItemPlacementRequirement"/> objects indexed by <see cref="ItemPlacement"/>.
     /// </summary>
-    /// <param name="factory">
-    ///     An Autofac factory for creating new <see cref="ItemPlacementRequirement"/> objects.
-    /// </param>
-    public ItemPlacementRequirementDictionary(ItemPlacementRequirement.Factory factory)
-        : base(new Dictionary<ItemPlacement, IRequirement>())
+    public class ItemPlacementRequirementDictionary : LazyDictionary<ItemPlacement, IRequirement>, IItemPlacementRequirementDictionary
     {
-        _factory = factory;
-    }
+        private readonly IItemPlacementRequirement.Factory _factory;
+        
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="factory">
+        ///     An Autofac factory for creating new <see cref="IItemPlacementRequirement"/> objects.
+        /// </param>
+        public ItemPlacementRequirementDictionary(IItemPlacementRequirement.Factory factory)
+            : base(new Dictionary<ItemPlacement, IRequirement>())
+        {
+            _factory = factory;
+        }
 
-    protected override IRequirement Create(ItemPlacement key)
-    {
-        return _factory(key);
+        protected override IRequirement Create(ItemPlacement key)
+        {
+            return _factory(key);
+        }
     }
 }

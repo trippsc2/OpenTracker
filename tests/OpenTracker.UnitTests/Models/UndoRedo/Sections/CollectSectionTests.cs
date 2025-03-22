@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Markings;
@@ -6,110 +5,110 @@ using OpenTracker.Models.Sections;
 using OpenTracker.Models.UndoRedo.Sections;
 using Xunit;
 
-namespace OpenTracker.UnitTests.Models.UndoRedo.Sections;
-
-[ExcludeFromCodeCoverage]
-public sealed class CollectSectionTests
+namespace OpenTracker.UnitTests.Models.UndoRedo.Sections
 {
-    private readonly ISection _section = Substitute.For<ISection>();
-
-    [Theory]
-    [InlineData(false)]
-    [InlineData(true)]
-    public void CanExecute_ShouldCallCanBeCleared(bool force)
+    public class CollectSectionTests
     {
-        var sut = new CollectSection(_section, force);
-        _ = sut.CanExecute();
+        private readonly ISection _section = Substitute.For<ISection>();
 
-        _section.Received().CanBeCleared(force);
-    }
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void CanExecute_ShouldCallCanBeCleared(bool force)
+        {
+            var sut = new CollectSection(_section, force);
+            _ = sut.CanExecute();
 
-    [Theory]
-    [InlineData(false, false)]
-    [InlineData(true, true)]
-    public void CanExecute_ShouldReturnTrue_WhenCanBeClearedReturnsTrue(bool expected, bool canBeCleared)
-    {
-        var sut = new CollectSection(_section, false);
-        _section.CanBeCleared(Arg.Any<bool>()).Returns(canBeCleared);
-            
-        Assert.Equal(expected, sut.CanExecute());
-    }
+            _section.Received().CanBeCleared(force);
+        }
 
-    [Theory]
-    [InlineData(2, 3)]
-    [InlineData(1, 2)]
-    [InlineData(0, 1)]
-    public void ExecuteDo_ShouldSubtractAvailableBy1(int expected, int starting)
-    {
-        var sut = new CollectSection(_section, false);
-        _section.Available.Returns(starting);
-        sut.ExecuteDo();
+        [Theory]
+        [InlineData(false, false)]
+        [InlineData(true, true)]
+        public void CanExecute_ShouldReturnTrue_WhenCanBeClearedReturnsTrue(bool expected, bool canBeCleared)
+        {
+            var sut = new CollectSection(_section, false);
+            _section.CanBeCleared(Arg.Any<bool>()).Returns(canBeCleared);
             
-        Assert.Equal(expected, _section.Available);
-    }
+            Assert.Equal(expected, sut.CanExecute());
+        }
 
-    [Fact]
-    public void ExecuteDo_ShouldSetUserManipulatedToTrue()
-    {
-        var sut = new CollectSection(_section, false);
-        sut.ExecuteDo();
+        [Theory]
+        [InlineData(2, 3)]
+        [InlineData(1, 2)]
+        [InlineData(0, 1)]
+        public void ExecuteDo_ShouldSubtractAvailableBy1(int expected, int starting)
+        {
+            var sut = new CollectSection(_section, false);
+            _section.Available.Returns(starting);
+            sut.ExecuteDo();
             
-        Assert.True(_section.UserManipulated);
-    }
+            Assert.Equal(expected, _section.Available);
+        }
 
-    [Fact]
-    public void ExecuteUndo_ShouldRestoreMarkingToPreviousValue()
-    {
-        var marking = Substitute.For<IMarking>();
-        _section.Marking.Returns(marking);
-        var sut = new CollectSection(_section, false);
-        marking.Mark = MarkType.HCLeft;
+        [Fact]
+        public void ExecuteDo_ShouldSetUserManipulatedToTrue()
+        {
+            var sut = new CollectSection(_section, false);
+            sut.ExecuteDo();
             
-        sut.ExecuteDo();
+            Assert.True(_section.UserManipulated);
+        }
 
-        marking.Mark = MarkType.Unknown;
+        [Fact]
+        public void ExecuteUndo_ShouldRestoreMarkingToPreviousValue()
+        {
+            var marking = Substitute.For<IMarking>();
+            _section.Marking.Returns(marking);
+            var sut = new CollectSection(_section, false);
+            marking.Mark = MarkType.HCLeft;
             
-        sut.ExecuteUndo();
-            
-        Assert.Equal(MarkType.HCLeft, marking.Mark);
-    }
+            sut.ExecuteDo();
 
-    [Theory]
-    [InlineData(3, 3)]
-    [InlineData(2, 2)]
-    [InlineData(1, 1)]
-    public void ExecuteUndo_ShouldRestorePreviousAvailableValue(int expected, int starting)
-    {
-        _section.Available.Returns(starting);
-        var sut = new CollectSection(_section, false);
+            marking.Mark = MarkType.Unknown;
             
-        sut.ExecuteDo();
-        sut.ExecuteUndo();
+            sut.ExecuteUndo();
             
-        Assert.Equal(expected, _section.Available);
-    }
+            Assert.Equal(MarkType.HCLeft, marking.Mark);
+        }
 
-    [Theory]
-    [InlineData(false, false)]
-    [InlineData(true, true)]
-    public void ExecuteUndo_ShouldRestorePreviousUserManipulated(bool expected, bool starting)
-    {
-        _section.UserManipulated.Returns(starting);
-        var sut = new CollectSection(_section, false);
+        [Theory]
+        [InlineData(3, 3)]
+        [InlineData(2, 2)]
+        [InlineData(1, 1)]
+        public void ExecuteUndo_ShouldRestorePreviousAvailableValue(int expected, int starting)
+        {
+            _section.Available.Returns(starting);
+            var sut = new CollectSection(_section, false);
             
-        sut.ExecuteDo();
-        sut.ExecuteUndo();
+            sut.ExecuteDo();
+            sut.ExecuteUndo();
             
-        Assert.Equal(expected, _section.UserManipulated);
-    }
+            Assert.Equal(expected, _section.Available);
+        }
 
-    [Fact]
-    public void AutofacTest()
-    {
-        using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-        var factory = scope.Resolve<ICollectSection.Factory>();
-        var sut = factory(_section, false);
+        [Theory]
+        [InlineData(false, false)]
+        [InlineData(true, true)]
+        public void ExecuteUndo_ShouldRestorePreviousUserManipulated(bool expected, bool starting)
+        {
+            _section.UserManipulated.Returns(starting);
+            var sut = new CollectSection(_section, false);
             
-        Assert.NotNull(sut as CollectSection);
+            sut.ExecuteDo();
+            sut.ExecuteUndo();
+            
+            Assert.Equal(expected, _section.UserManipulated);
+        }
+
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var factory = scope.Resolve<ICollectSection.Factory>();
+            var sut = factory(_section, false);
+            
+            Assert.NotNull(sut as CollectSection);
+        }
     }
 }

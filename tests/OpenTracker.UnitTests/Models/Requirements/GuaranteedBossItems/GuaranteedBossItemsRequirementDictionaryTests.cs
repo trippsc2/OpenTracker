@@ -1,55 +1,50 @@
-using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
-using OpenTracker.Models.Modes;
 using OpenTracker.Models.Requirements.GuaranteedBossItems;
 using Xunit;
 
-namespace OpenTracker.UnitTests.Models.Requirements.GuaranteedBossItems;
-
-[ExcludeFromCodeCoverage]
-public sealed class GuaranteedBossItemsRequirementDictionaryTests
+namespace OpenTracker.UnitTests.Models.Requirements.GuaranteedBossItems
 {
-    private readonly IMode _mode = Substitute.For<IMode>();
-    
-    // ReSharper disable once CollectionNeverUpdated.Local
-    private readonly GuaranteedBossItemsRequirementDictionary _sut;
-
-    public GuaranteedBossItemsRequirementDictionaryTests()
+    public class GuaranteedBossItemsRequirementDictionaryTests
     {
-        _sut = new GuaranteedBossItemsRequirementDictionary(Factory);
-        return;
+        // ReSharper disable once CollectionNeverUpdated.Local
+        private readonly GuaranteedBossItemsRequirementDictionary _sut;
 
-        GuaranteedBossItemsRequirement Factory(bool expectedValue)
+        public GuaranteedBossItemsRequirementDictionaryTests()
         {
-            return new GuaranteedBossItemsRequirement(_mode, expectedValue);
+            static IGuaranteedBossItemsRequirement Factory(bool expectedValue)
+            {
+                return Substitute.For<IGuaranteedBossItemsRequirement>();
+            }
+
+            _sut = new GuaranteedBossItemsRequirementDictionary(Factory);
         }
-    }
 
-    [Fact]
-    public void Indexer_ShouldReturnTheSameInstance()
-    {
-        var requirement1 = _sut[false];
-        var requirement2 = _sut[false];
+        [Fact]
+        public void Indexer_ShouldReturnTheSameInstance()
+        {
+            var requirement1 = _sut[false];
+            var requirement2 = _sut[false];
             
-        Assert.Equal(requirement1, requirement2);
-    }
+            Assert.Equal(requirement1, requirement2);
+        }
 
-    [Fact]
-    public void Indexer_ShouldReturnTheDifferentInstances()
-    {
-        var requirement1 = _sut[false];
-        var requirement2 = _sut[true];
+        [Fact]
+        public void Indexer_ShouldReturnTheDifferentInstances()
+        {
+            var requirement1 = _sut[false];
+            var requirement2 = _sut[true];
             
-        Assert.NotEqual(requirement1, requirement2);
-    }
+            Assert.NotEqual(requirement1, requirement2);
+        }
 
-    [Fact]
-    public void AutofacTest()
-    {
-        using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-        var sut = scope.Resolve<IGuaranteedBossItemsRequirementDictionary>();
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var sut = scope.Resolve<IGuaranteedBossItemsRequirementDictionary>();
             
-        Assert.NotNull(sut as GuaranteedBossItemsRequirementDictionary);
+            Assert.NotNull(sut as GuaranteedBossItemsRequirementDictionary);
+        }
     }
 }

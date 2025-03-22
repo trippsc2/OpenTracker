@@ -1,65 +1,56 @@
-using System;
-using System.Reactive.Disposables;
-using System.Reactive.Linq;
+using System.ComponentModel;
 using Avalonia.Layout;
-using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Settings;
-using OpenTracker.Utils.Autofac;
-using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
 
-namespace OpenTracker.Models.Requirements.MapOrientation;
-
-/// <summary>
-///     This class contains map orientation setting requirement data.
-/// </summary>
-[DependencyInjection]
-public sealed class MapOrientationRequirement : ReactiveObject, IRequirement
+namespace OpenTracker.Models.Requirements.MapOrientation
 {
-    private readonly CompositeDisposable _disposables = new();
-    
-    private LayoutSettings LayoutSettings { get; }
-    
-    [ObservableAsProperty]
-    public bool Met { get; }
-    [ObservableAsProperty]
-    public AccessibilityLevel Accessibility { get; }
-    
-    public event EventHandler? ChangePropagated;
+    /// <summary>
+    ///     This class contains map orientation setting requirement data.
+    /// </summary>
+    public class MapOrientationRequirement : BooleanRequirement, IMapOrientationRequirement
+    {
+        private readonly ILayoutSettings _layoutSettings;
+        private readonly Orientation? _expectedValue;
         
-    /// <summary>
-    /// A factory method for creating new map orientation requirements.
-    /// </summary>
-    public delegate MapOrientationRequirement Factory(Orientation? expectedValue);
+        /// <summary>
+        ///     Constructor
+        /// </summary>
+        /// <param name="layoutSettings">
+        ///     The layout settings.
+        /// </param>
+        /// <param name="expectedValue">
+        ///     The expected orientation value.
+        /// </param>
+        public MapOrientationRequirement(ILayoutSettings layoutSettings, Orientation? expectedValue)
+        {
+            _layoutSettings = layoutSettings;
+            _expectedValue = expectedValue;
 
-    /// <summary>
-    ///     Constructor
-    /// </summary>
-    /// <param name="layoutSettings">
-    ///     The layout settings.
-    /// </param>
-    /// <param name="expectedValue">
-    ///     The expected orientation value.
-    /// </param>
-    public MapOrientationRequirement(LayoutSettings layoutSettings, Orientation? expectedValue)
-    {
-        LayoutSettings = layoutSettings;
+            _layoutSettings.PropertyChanged += OnLayoutChanged;
 
-        this.WhenAnyValue(x => x.LayoutSettings.MapOrientation)
-            .Select(x => x == expectedValue)
-            .ToPropertyEx(this, x => x.Met)
-            .DisposeWith(_disposables);
-        this.WhenAnyValue(x => x.Met)
-            .Select(x => x ? AccessibilityLevel.Normal : AccessibilityLevel.None)
-            .ToPropertyEx(this, x => x.Accessibility)
-            .DisposeWith(_disposables);
-        this.WhenAnyValue(x => x.Accessibility)
-            .Subscribe(_ => ChangePropagated?.Invoke(this, EventArgs.Empty))
-            .DisposeWith(_disposables);
-    }
-    
-    public void Dispose()
-    {
-        _disposables.Dispose();
+            UpdateValue();
+        }
+
+        /// <summary>
+        ///     Subscribes to the PropertyChanged event on the ILayoutSettings interface.
+        /// </summary>
+        /// <param name="sender">
+        ///     The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        ///     The arguments of the PropertyChanged event.
+        /// </param>
+        private void OnLayoutChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ILayoutSettings.MapOrientation))
+            {
+                UpdateValue();
+            }
+        }
+
+        protected override bool ConditionMet()
+        {
+            return _layoutSettings.MapOrientation == _expectedValue;
+        }
     }
 }

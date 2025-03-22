@@ -1,88 +1,99 @@
-﻿using System.Reactive;
-using System.Reactive.Disposables;
-using System.Reactive.Linq;
+﻿using System.Collections.Specialized;
+using System.Reactive;
+using System.Threading.Tasks;
 using Avalonia.Layout;
-using DynamicData.Binding;
+using Avalonia.Threading;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
-using OpenTracker.Utils.Autofac;
 using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
 
-namespace OpenTracker.ViewModels.PinnedLocations.Notes;
-
-/// <summary>
-/// This class contains the pinned location note area control ViewModel data.
-/// </summary>
-[DependencyInjection]
-public sealed class PinnedLocationNoteAreaVM : ViewModel, IPinnedLocationNoteAreaVM
+namespace OpenTracker.ViewModels.PinnedLocations.Notes
 {
-    private readonly ILocation _location;
-    private readonly IUndoRedoManager _undoRedoManager;
-
-    public IPinnedLocationNoteVMCollection Notes { get; }
-    
-    [ObservableAsProperty]
-    public HorizontalAlignment Alignment { get; }
-    [ObservableAsProperty]
-    public bool CanAdd { get; }
-
-    [Reactive]
-    public ReactiveCommand<Unit, Unit> AddCommand { get; private set; } = default!;
-
     /// <summary>
-    /// Constructor
+    /// This class contains the pinned location note area control ViewModel data.
     /// </summary>
-    /// <param name="undoRedoManager">
-    /// The undo/redo manager.
-    /// </param>
-    /// <param name="location">
-    /// The location to be represented.
-    /// </param>
-    /// <param name="notesFactory">
-    /// An Autofac factory for creating the notes collection.
-    /// </param>
-    public PinnedLocationNoteAreaVM(
-        ILocation location,
-        IUndoRedoManager undoRedoManager,
-        IPinnedLocationNoteVMCollection.Factory notesFactory)
+    public class PinnedLocationNoteAreaVM : ViewModelBase, IPinnedLocationNoteAreaVM
     {
-        _location = location;
-        _undoRedoManager = undoRedoManager;
-        Notes = notesFactory(location);
-        
-        this.WhenActivated(disposables =>
+        private readonly ILocation _location;
+        private readonly IUndoRedoManager _undoRedoManager;
+
+        public IPinnedLocationNoteVMCollection Notes { get; }
+        public HorizontalAlignment Alignment =>
+            Notes.Count == 0 ? HorizontalAlignment.Center : HorizontalAlignment.Left;
+
+        public ReactiveCommand<Unit, Unit> Add { get; }
+
+        private bool _canAdd;
+        private bool CanAdd
         {
-            var collectionChanged = Notes
-                .ToObservableChangeSet<IPinnedLocationNoteVMCollection, IPinnedLocationNoteVM>();
+            get => _canAdd;
+            set => this.RaiseAndSetIfChanged(ref _canAdd, value);
+        }
 
-            collectionChanged
-                .Select(_ => Notes.Count == 0 ? HorizontalAlignment.Center : HorizontalAlignment.Left)
-                .ObserveOn(RxApp.MainThreadScheduler)
-                .ToPropertyEx(this, x => x.Alignment, initialValue: HorizontalAlignment.Center)
-                .DisposeWith(disposables);
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="undoRedoManager">
+        /// The undo/redo manager.
+        /// </param>
+        /// <param name="location">
+        /// The location to be represented.
+        /// </param>
+        /// <param name="notesFactory">
+        /// An Autofac factory for creating the notes collection.
+        /// </param>
+        public PinnedLocationNoteAreaVM(
+            ILocation location, IUndoRedoManager undoRedoManager, IPinnedLocationNoteVMCollection.Factory notesFactory)
+        {
+            _location = location;
+            _undoRedoManager = undoRedoManager;
 
-            collectionChanged
-                .Select(_ => Notes.Count < 4)
-                .ObserveOn(RxApp.MainThreadScheduler)
-                .ToPropertyEx(this, x => x.CanAdd, initialValue: true);
+            Notes = notesFactory(location);
 
-            var canAdd = this
-                .WhenAnyValue(x => x.CanAdd)
-                .ObserveOn(RxApp.MainThreadScheduler);
+            Add = ReactiveCommand.Create(AddImpl, this.WhenAnyValue(x => x.CanAdd));
 
-            AddCommand = ReactiveCommand
-                .Create(Add, canAdd)
-                .DisposeWith(disposables);
-        });
-    }
+            Notes.CollectionChanged += OnNotesChanged;
 
-    /// <summary>
-    /// Adds a new note to the location.
-    /// </summary>
-    private void Add()
-    {
-        _undoRedoManager.NewAction(_location.CreateAddNoteAction());
+            UpdateCanAdd();
+        }
+
+        /// <summary>
+        /// Subscribes to the CollectionChanged event on the IPinnedLocationNoteVMCollection interface.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the CollectionChanged event.
+        /// </param>
+        private async void OnNotesChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        {
+            await UpdateCanAddAsync();
+        }
+
+        /// <summary>
+        /// Updates the CanAdd property for whether a note can be added.
+        /// </summary>
+        private void UpdateCanAdd()
+        {
+            CanAdd = Notes.Count < 4;
+        }
+
+        /// <summary>
+        /// Updates the CanAdd property for whether a note can be added asynchronously.
+        /// </summary>
+        private async Task UpdateCanAddAsync()
+        {
+            await Dispatcher.UIThread.InvokeAsync(UpdateCanAdd);
+        }
+
+        /// <summary>
+        /// Adds a new note to the location.
+        /// </summary>
+        private void AddImpl()
+        {
+            _undoRedoManager.NewAction(_location.CreateAddNoteAction());
+        }
     }
 }

@@ -1,46 +1,45 @@
-using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.Requirements.Boss;
 using Xunit;
 
-namespace OpenTracker.UnitTests.Models.Requirements.Boss;
-
-[ExcludeFromCodeCoverage]
-public sealed class BossTypeRequirementDictionaryTests
+namespace OpenTracker.UnitTests.Models.Requirements.Boss
 {
-    private readonly IBossTypeRequirementFactory _factory = Substitute.For<IBossTypeRequirementFactory>();
-
-    private readonly BossTypeRequirementDictionary _sut;
-
-    public BossTypeRequirementDictionaryTests()
+    public class BossTypeRequirementDictionaryTests
     {
-        _sut = new BossTypeRequirementDictionary(() => _factory);
-    }
+        private readonly IBossTypeRequirementFactory _factory = Substitute.For<IBossTypeRequirementFactory>();
 
-    [Fact]
-    public void NoBoss_ShouldCallGetBossTypeRequirement()
-    {
-        _ = _sut.NoBoss;
-    }
+        private readonly BossTypeRequirementDictionary _sut;
 
-    [Fact]
-    public void Indexer_ShouldCallGetBossTypeRequirement()
-    {
-        const BossType bossType = BossType.Aga;
-        _ = _sut[bossType];
-        _ = _sut[bossType];
+        public BossTypeRequirementDictionaryTests()
+        {
+            _sut = new BossTypeRequirementDictionary(() => _factory);
+        }
 
-        _factory.Received(1).GetBossTypeRequirement(bossType);
-    }
+        [Fact]
+        public void NoBoss_ShouldCallGetBossTypeRequirement()
+        {
+            _ = _sut.NoBoss;
+        }
+
+        [Fact]
+        public void Indexer_ShouldCallGetBossTypeRequirement()
+        {
+            const BossType bossType = BossType.Aga;
+            _ = _sut[bossType];
+            _ = _sut[bossType];
+
+            _factory.Received(1).GetBossTypeRequirement(bossType);
+        }
         
-    [Fact]
-    public void AutofacTest()
-    {
-        using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-        var sut = scope.Resolve<IBossTypeRequirementDictionary>();
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var sut = scope.Resolve<IBossTypeRequirementDictionary>();
             
-        Assert.NotNull(sut as BossTypeRequirementDictionary);
+            Assert.NotNull(sut as BossTypeRequirementDictionary);
+        }
     }
 }

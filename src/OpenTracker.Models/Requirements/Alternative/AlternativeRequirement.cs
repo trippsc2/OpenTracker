@@ -1,66 +1,66 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reactive.Disposables;
-using System.Reactive.Linq;
-using DynamicData;
-using DynamicData.Binding;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
 using OpenTracker.Models.Accessibility;
-using OpenTracker.Utils.Autofac;
-using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
 
-namespace OpenTracker.Models.Requirements.Alternative;
-
-/// <summary>
-/// This class contains logic for a set of <see cref="IRequirement"/> alternatives.
-/// </summary>
-[DependencyInjection]
-public sealed class AlternativeRequirement : ReactiveObject, IRequirement
+namespace OpenTracker.Models.Requirements.Alternative
 {
-    private readonly CompositeDisposable _disposables = new();
-    
-    [ObservableAsProperty]
-    public AccessibilityLevel Accessibility { get; }
-    [ObservableAsProperty]
-    public bool Met { get; }
-    
-    public event EventHandler? ChangePropagated;
-    
     /// <summary>
-    /// A factory method for creating new <see cref="AlternativeRequirement"/> objects.
+    /// This class contains logic for a set of <see cref="IRequirement"/> alternatives.
     /// </summary>
-    public delegate AlternativeRequirement Factory(IEnumerable<IRequirement> requirements);
-
-    /// <summary>
-    /// Constructor
-    /// </summary>
-    /// <param name="requirements">
-    ///     A <see cref="IEnumerable{T}"/> of <see cref="IRequirement"/> alternatives.
-    /// </param>
-    public AlternativeRequirement(IEnumerable<IRequirement> requirements)
+    public class AlternativeRequirement : AccessibilityRequirement, IAlternativeRequirement
     {
-        var sourceList = new SourceList<IRequirement>();
-        sourceList.AddRange(requirements);
+        private readonly IList<IRequirement> _requirements;
 
-        sourceList.Connect()
-            .AutoRefresh(x => x.Accessibility)
-            .Sort(SortExpressionComparer<IRequirement>.Descending(x => x.Accessibility))
-            .ToCollection()
-            .Select(x => x.First().Accessibility)
-            .ToPropertyEx(this, x => x.Accessibility)
-            .DisposeWith(_disposables);
-        this.WhenAnyValue(x => x.Accessibility)
-            .Select(x => x > AccessibilityLevel.None)
-            .ToPropertyEx(this, x => x.Met)
-            .DisposeWith(_disposables);
-        this.WhenAnyValue(x => x.Met)
-            .Subscribe(_ => ChangePropagated?.Invoke(this, EventArgs.Empty))
-            .DisposeWith(_disposables);
-    }
-    
-    public void Dispose()
-    {
-        _disposables.Dispose();
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="requirements">
+        ///     A <see cref="IList{T}"/> of <see cref="IRequirement"/> alternatives.
+        /// </param>
+        public AlternativeRequirement(IList<IRequirement> requirements)
+        {
+            _requirements = requirements;
+
+            foreach (var requirement in requirements)
+            {
+                requirement.PropertyChanged += OnRequirementChanged;
+            }
+
+            UpdateValue();
+        }
+
+        /// <summary>
+        /// Subscribes to the <see cref="IRequirement.PropertyChanged"/> event.
+        /// </summary>
+        /// <param name="sender">
+        ///     The <see cref="object"/> from which the event is sent.
+        /// </param>
+        /// <param name="e">
+        ///     The <see cref="PropertyChangedEventArgs"/>.
+        /// </param>
+        private void OnRequirementChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(IRequirement.Accessibility))
+            {
+                UpdateValue();
+            }
+        }
+
+        protected override AccessibilityLevel GetAccessibility()
+        {
+            var accessibility = AccessibilityLevel.None;
+
+            foreach (var requirement in _requirements)
+            {
+                accessibility = AccessibilityLevelMethods.Max(accessibility, requirement.Accessibility);
+
+                if (accessibility == AccessibilityLevel.Normal)
+                {
+                    break;
+                }
+            }
+
+            return accessibility;
+        }
     }
 }

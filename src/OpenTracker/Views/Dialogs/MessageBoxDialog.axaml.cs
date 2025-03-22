@@ -1,39 +1,22 @@
-﻿using System.Reactive;
-using System.Reactive.Disposables;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Markup.Xaml;
-using Avalonia.ReactiveUI;
-using OpenTracker.ViewModels.Dialogs;
-using ReactiveUI;
+using OpenTracker.Utils.Dialog;
 
-namespace OpenTracker.Views.Dialogs;
-
-public sealed class MessageBoxDialog : ReactiveWindow<MessageBoxDialogVM>
+namespace OpenTracker.Views.Dialogs
 {
-    public MessageBoxDialog()
+    public class MessageBoxDialog : DialogWindowBase<bool>
     {
-        InitializeComponent();
-#if DEBUG
-        this.AttachDevTools();
-#endif
-        this.WhenActivated(disposables =>
+        public MessageBoxDialog()
         {
-            if (ViewModel is null)
-            {
-                return;
-            }
-            
-            ViewModel!.RequestCloseInteraction.RegisterHandler(interaction =>
-                {
-                    interaction.SetOutput(Unit.Default);
-                    Close(interaction.Input);
-                })
-                .DisposeWith(disposables);
-        });
-    }
+            InitializeComponent();
+#if DEBUG
+            this.AttachDevTools();
+#endif
+        }
 
-    private void InitializeComponent()
-    {
-        AvaloniaXamlLoader.Load(this);
+        private void InitializeComponent()
+        {
+            AvaloniaXamlLoader.Load(this);
+        }
     }
 }

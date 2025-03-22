@@ -1,18 +1,18 @@
-﻿using Avalonia.Markup.Xaml;
-using Avalonia.ReactiveUI;
-using OpenTracker.ViewModels.PinnedLocations.Notes;
+﻿using Avalonia.Controls;
+using Avalonia.Markup.Xaml;
 
-namespace OpenTracker.Views.PinnedLocations.Notes;
-
-public sealed class PinnedLocationNoteArea : ReactiveUserControl<PinnedLocationNoteAreaVM>
+namespace OpenTracker.Views.PinnedLocations.Notes
 {
-    public PinnedLocationNoteArea()
+    public class PinnedLocationNoteArea : UserControl
     {
-        InitializeComponent();
-    }
+        public PinnedLocationNoteArea()
+        {
+            InitializeComponent();
+        }
 
-    private void InitializeComponent()
-    {
-        AvaloniaXamlLoader.Load(this);
+        private void InitializeComponent()
+        {
+            AvaloniaXamlLoader.Load(this);
+        }
     }
 }

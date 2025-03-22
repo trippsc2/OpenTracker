@@ -1,87 +1,111 @@
-using System.Diagnostics.CodeAnalysis;
+using System;
+using System.ComponentModel;
 using Autofac;
-using FluentAssertions;
+using NSubstitute;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Requirements.AlwaysDisplayDungeonItems;
 using OpenTracker.Models.Settings;
 using Xunit;
 
-namespace OpenTracker.UnitTests.Models.Requirements.AlwaysDisplayDungeonItems;
-
-[ExcludeFromCodeCoverage]
-public sealed class AlwaysDisplayDungeonItemsRequirementTests
+namespace OpenTracker.UnitTests.Models.Requirements.AlwaysDisplayDungeonItems
 {
-    private readonly LayoutSettings _layoutSettings = new();
-
-    [Fact]
-    public void Met_ShouldRaisePropertyChanged()
+    public class AlwaysDisplayDungeonItemsRequirementTests
     {
-        var sut = new AlwaysDisplayDungeonItemsRequirement(_layoutSettings, true);
-        using var monitor = sut.Monitor();
-        
-        _layoutSettings.AlwaysDisplayDungeonItems = true;
-        
-        monitor.Should().RaisePropertyChangeFor(x => x.Met);
-    }
-    
-    [Theory]
-    [InlineData(true, false, false)]
-    [InlineData(false, false, true)]
-    [InlineData(true, true, true)]
-    public void Met_ShouldReturnExpectedValue(bool expected, bool alwaysDisplayDungeonItems, bool requirement)
-    {
-        var sut = new AlwaysDisplayDungeonItemsRequirement(_layoutSettings, requirement);
-        _layoutSettings.AlwaysDisplayDungeonItems = alwaysDisplayDungeonItems;
+        private readonly ILayoutSettings _layoutSettings = Substitute.For<ILayoutSettings>();
 
-        sut.Met.Should().Be(expected);
-    }
+        [Fact]
+        public void LayoutSettingsChanged_ShouldUpdateMetValue()
+        {
+            var sut = new AlwaysDisplayDungeonItemsRequirement(_layoutSettings, true);
+            _layoutSettings.AlwaysDisplayDungeonItems.Returns(true);
 
-    [Fact]
-    public void Accessibility_ShouldRaisePropertyChanged()
-    {
-        var sut = new AlwaysDisplayDungeonItemsRequirement(_layoutSettings, true);
-        using var monitor = sut.Monitor();
-        
-        _layoutSettings.AlwaysDisplayDungeonItems = true;
-        
-        monitor.Should().RaisePropertyChangeFor(x => x.Accessibility);
-    }
+            _layoutSettings.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                _layoutSettings,
+                new PropertyChangedEventArgs(nameof(ILayoutSettings.AlwaysDisplayDungeonItems)));
+            
+            Assert.True(sut.Met);
+        }
 
-    [Fact]
-    public void Accessibility_ShouldRaiseChangePropagated()
-    {
-        var sut = new AlwaysDisplayDungeonItemsRequirement(_layoutSettings, true);
-        using var monitor = sut.Monitor();
-        
-        _layoutSettings.AlwaysDisplayDungeonItems = true;
-        
-        monitor.Should().Raise(nameof(IRequirement.ChangePropagated));
-    }
+        [Fact]
+        public void LayoutSettings_ShouldRaisePropertyChanged()
+        {
+            var sut = new AlwaysDisplayDungeonItemsRequirement(_layoutSettings, true);
+            _layoutSettings.AlwaysDisplayDungeonItems.Returns(true);
 
-    [Theory]
-    [InlineData(AccessibilityLevel.Normal, false, false)]
-    [InlineData(AccessibilityLevel.None, false, true)]
-    [InlineData(AccessibilityLevel.Normal, true, true)]
-    public void Accessibility_ShouldReturnExpectedValue(
-        AccessibilityLevel expected,
-        bool alwaysDisplayDungeonItems,
-        bool requirement)
-    {
-        var sut = new AlwaysDisplayDungeonItemsRequirement(_layoutSettings, requirement);
-        _layoutSettings.AlwaysDisplayDungeonItems = alwaysDisplayDungeonItems;
+            Assert.PropertyChanged(sut, nameof(IRequirement.Met), 
+                () => _layoutSettings.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                    _layoutSettings,
+                    new PropertyChangedEventArgs(nameof(ILayoutSettings.AlwaysDisplayDungeonItems))));
+        }
 
-        sut.Accessibility.Should().Be(expected);
-    }
+        [Fact]
+        public void Met_ShouldRaiseChangePropagated()
+        {
+            var sut = new AlwaysDisplayDungeonItemsRequirement(_layoutSettings, true);
+            _layoutSettings.AlwaysDisplayDungeonItems.Returns(true);
 
-    [Fact]
-    public void AutofacResolve_ShouldResolveInterfaceToTransientInstance()
-    {
-        using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-        var factory = scope.Resolve<AlwaysDisplayDungeonItemsRequirement.Factory>();
-        var sut1 = factory(false);
-        var sut2 = factory(false);
-        
-        sut1.Should().NotBeSameAs(sut2);
+            var eventRaised = false;
+
+            void Handler(object? sender, EventArgs e)
+            {
+                eventRaised = true;
+            }
+            
+            sut.ChangePropagated += Handler;
+            _layoutSettings.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                _layoutSettings,
+                new PropertyChangedEventArgs(nameof(ILayoutSettings.AlwaysDisplayDungeonItems)));
+            sut.ChangePropagated -= Handler;
+            
+            Assert.True(eventRaised);
+        }
+
+        [Theory]
+        [InlineData(true, false, false)]
+        [InlineData(false, false, true)]
+        [InlineData(true, true, true)]
+        public void Met_ShouldReturnExpectedValue(bool expected, bool bossShuffle, bool requirement)
+        {
+            _layoutSettings.AlwaysDisplayDungeonItems.Returns(bossShuffle);
+            var sut = new AlwaysDisplayDungeonItemsRequirement(_layoutSettings, requirement);
+            
+            Assert.Equal(expected, sut.Met);
+        }
+
+        [Fact]
+        public void Accessibility_ShouldRaisePropertyChanged()
+        {
+            var sut = new AlwaysDisplayDungeonItemsRequirement(_layoutSettings, true);
+            _layoutSettings.AlwaysDisplayDungeonItems.Returns(true);
+
+            Assert.PropertyChanged(sut, nameof(IRequirement.Accessibility),
+                () => _layoutSettings.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                    _layoutSettings,
+                    new PropertyChangedEventArgs(nameof(ILayoutSettings.AlwaysDisplayDungeonItems))));
+        }
+
+        [Theory]
+        [InlineData(AccessibilityLevel.Normal, false, false)]
+        [InlineData(AccessibilityLevel.None, false, true)]
+        [InlineData(AccessibilityLevel.Normal, true, true)]
+        public void Accessibility_ShouldReturnExpectedValue(
+            AccessibilityLevel expected, bool bigKeyShuffle, bool requirement)
+        {
+            _layoutSettings.AlwaysDisplayDungeonItems.Returns(bigKeyShuffle);
+            var sut = new AlwaysDisplayDungeonItemsRequirement(_layoutSettings, requirement);
+            
+            Assert.Equal(expected, sut.Accessibility);
+        }
+
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var factory = scope.Resolve<IAlwaysDisplayDungeonItemsRequirement.Factory>();
+            var sut = factory(false);
+            
+            Assert.NotNull(sut as AlwaysDisplayDungeonItemsRequirement);
+        }
     }
 }

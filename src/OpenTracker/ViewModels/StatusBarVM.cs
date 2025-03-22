@@ -1,25 +1,24 @@
 ﻿using OpenTracker.Utils;
-using OpenTracker.Utils.Autofac;
 using OpenTracker.ViewModels.AutoTracking;
 
-namespace OpenTracker.ViewModels;
-
-/// <summary>
-/// This is the class for the status bar ViewModel.
-/// </summary>
-[DependencyInjection(SingleInstance = true)]
-public sealed class StatusBarVM : ViewModel
+namespace OpenTracker.ViewModels
 {
-    public AutoTrackerStatusVM AutoTrackerStatus { get; }
-
     /// <summary>
-    /// Constructor
+    /// This is the class for the status bar ViewModel.
     /// </summary>
-    /// <param name="autoTrackerStatus">
-    /// The auto-tracker status.
-    /// </param>
-    public StatusBarVM(AutoTrackerStatusVM autoTrackerStatus)
+    public class StatusBarVM : ViewModelBase, IStatusBarVM
     {
-        AutoTrackerStatus = autoTrackerStatus;
+        public IAutoTrackerStatusVM AutoTrackerStatus { get; }
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="autoTrackerStatus">
+        /// The auto-tracker status.
+        /// </param>
+        public StatusBarVM(IAutoTrackerStatusVM autoTrackerStatus)
+        {
+            AutoTrackerStatus = autoTrackerStatus;
+        }
     }
 }

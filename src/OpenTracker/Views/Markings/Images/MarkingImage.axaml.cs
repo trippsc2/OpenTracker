@@ -1,18 +1,18 @@
-﻿using Avalonia.Markup.Xaml;
-using Avalonia.ReactiveUI;
-using OpenTracker.ViewModels.Markings.Images;
+﻿using Avalonia.Controls;
+using Avalonia.Markup.Xaml;
 
-namespace OpenTracker.Views.Markings.Images;
-
-public sealed class MarkingImage : ReactiveUserControl<MarkingImageVM>
+namespace OpenTracker.Views.Markings.Images
 {
-    public MarkingImage()
+    public class MarkingImage : UserControl
     {
-        InitializeComponent();
-    }
+        public MarkingImage()
+        {
+            this.InitializeComponent();
+        }
 
-    private void InitializeComponent()
-    {
-        AvaloniaXamlLoader.Load(this);
+        private void InitializeComponent()
+        {
+            AvaloniaXamlLoader.Load(this);
+        }
     }
 }

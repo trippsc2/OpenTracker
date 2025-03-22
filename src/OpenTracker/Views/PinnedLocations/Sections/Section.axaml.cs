@@ -1,18 +1,18 @@
-﻿using Avalonia.Markup.Xaml;
-using Avalonia.ReactiveUI;
-using OpenTracker.ViewModels.PinnedLocations.Sections;
+﻿using Avalonia.Controls;
+using Avalonia.Markup.Xaml;
 
-namespace OpenTracker.Views.PinnedLocations.Sections;
-
-public sealed class Section : ReactiveUserControl<SectionVM>
+namespace OpenTracker.Views.PinnedLocations.Sections
 {
-    public Section()
+    public class Section : UserControl
     {
-        InitializeComponent();
-    }
+        public Section()
+        {
+            InitializeComponent();
+        }
 
-    private void InitializeComponent()
-    {
-        AvaloniaXamlLoader.Load(this);
+        private void InitializeComponent()
+        {
+            AvaloniaXamlLoader.Load(this);
+        }
     }
 }

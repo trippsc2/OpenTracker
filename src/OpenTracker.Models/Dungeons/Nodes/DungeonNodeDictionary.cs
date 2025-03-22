@@ -1,48 +1,47 @@
 ﻿using System.Collections.Generic;
 using OpenTracker.Models.Dungeons.Mutable;
 using OpenTracker.Utils;
-using OpenTracker.Utils.Autofac;
 
-namespace OpenTracker.Models.Dungeons.Nodes;
-
-/// <summary>
-/// This class contains the <see cref="IDictionary{TKey,TValue}"/> container of <see cref="IDungeonNode"/> indexed
-/// by <see cref="DungeonNodeID"/>.
-/// </summary>
-[DependencyInjection]
-public sealed class DungeonNodeDictionary : LazyDictionary<DungeonNodeID, IDungeonNode>, IDungeonNodeDictionary
+namespace OpenTracker.Models.Dungeons.Nodes
 {
-    private readonly IDungeonNode.Factory _factory;
-
-    private readonly IMutableDungeon _dungeonData;
-
     /// <summary>
-    /// Constructor
+    /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container of <see cref="IDungeonNode"/> indexed
+    /// by <see cref="DungeonNodeID"/>.
     /// </summary>
-    /// <param name="factory">
-    ///     An Autofac factory for creating new <see cref="IDungeonNode"/> objects.
-    /// </param>
-    /// <param name="dungeonData">
-    ///     The <see cref="IMutableDungeon"/> parent class.
-    /// </param>
-    public DungeonNodeDictionary(IDungeonNode.Factory factory, IMutableDungeon dungeonData)
-        : base(new Dictionary<DungeonNodeID, IDungeonNode>())
+    public class DungeonNodeDictionary : LazyDictionary<DungeonNodeID, IDungeonNode>, IDungeonNodeDictionary
     {
-        _factory = factory;
+        private readonly IDungeonNode.Factory _factory;
 
-        _dungeonData = dungeonData;
-    }
+        private readonly IMutableDungeon _dungeonData;
 
-    public void PopulateNodes(IList<DungeonNodeID> dungeonNodes)
-    {
-        foreach (var node in dungeonNodes)
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="factory">
+        ///     An Autofac factory for creating new <see cref="IDungeonNode"/> objects.
+        /// </param>
+        /// <param name="dungeonData">
+        ///     The <see cref="IMutableDungeon"/> parent class.
+        /// </param>
+        public DungeonNodeDictionary(IDungeonNode.Factory factory, IMutableDungeon dungeonData)
+            : base(new Dictionary<DungeonNodeID, IDungeonNode>())
         {
-            _ = this[node];
-        }
-    }
+            _factory = factory;
 
-    protected override IDungeonNode Create(DungeonNodeID key)
-    {
-        return _factory(_dungeonData);
+            _dungeonData = dungeonData;
+        }
+
+        public void PopulateNodes(IList<DungeonNodeID> dungeonNodes)
+        {
+            foreach (var node in dungeonNodes)
+            {
+                _ = this[node];
+            }
+        }
+
+        protected override IDungeonNode Create(DungeonNodeID key)
+        {
+            return _factory(_dungeonData);
+        }
     }
 }

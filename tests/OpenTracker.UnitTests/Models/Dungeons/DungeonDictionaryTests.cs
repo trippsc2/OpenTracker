@@ -1,39 +1,38 @@
-using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Dungeons;
 using Xunit;
 
-namespace OpenTracker.UnitTests.Models.Dungeons;
-
-[ExcludeFromCodeCoverage]
-public sealed class DungeonDictionaryTests
+namespace OpenTracker.UnitTests.Models.Dungeons
 {
-    private readonly IDungeonFactory _factory = Substitute.For<IDungeonFactory>();
+    public class DungeonDictionaryTests
+    {
+        private readonly IDungeonFactory _factory = Substitute.For<IDungeonFactory>();
         
-    // ReSharper disable once CollectionNeverUpdated.Local
-    private readonly DungeonDictionary _sut;
+        // ReSharper disable once CollectionNeverUpdated.Local
+        private readonly DungeonDictionary _sut;
 
-    public DungeonDictionaryTests()
-    {
-        _sut = new DungeonDictionary(() => _factory);
-    }
+        public DungeonDictionaryTests()
+        {
+            _sut = new DungeonDictionary(() => _factory);
+        }
 
-    [Fact]
-    public void Index_ShouldCallGetDungeonOnFactory()
-    {
-        const DungeonID id = DungeonID.AgahnimTower;
-        _ = _sut[id];
+        [Fact]
+        public void Index_ShouldCallGetDungeonOnFactory()
+        {
+            const DungeonID id = DungeonID.AgahnimTower;
+            _ = _sut[id];
 
-        _factory.Received().GetDungeon(id);
-    }
+            _factory.Received().GetDungeon(id);
+        }
 
-    [Fact]
-    public void AutofacTest()
-    {
-        using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-        var sut = scope.Resolve<IDungeonDictionary>();
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var sut = scope.Resolve<IDungeonDictionary>();
             
-        Assert.NotNull(sut as DungeonDictionary);
+            Assert.NotNull(sut as DungeonDictionary);
+        }
     }
 }

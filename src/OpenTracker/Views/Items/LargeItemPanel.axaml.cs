@@ -1,18 +1,18 @@
-﻿using Avalonia.Markup.Xaml;
-using Avalonia.ReactiveUI;
-using OpenTracker.ViewModels.Items;
+﻿using Avalonia.Controls;
+using Avalonia.Markup.Xaml;
 
-namespace OpenTracker.Views.Items;
-
-public sealed class LargeItemPanel : ReactiveUserControl<LargeItemPanelVM>
+namespace OpenTracker.Views.Items
 {
-    public LargeItemPanel()
+    public class LargeItemPanel : UserControl
     {
-        InitializeComponent();
-    }
+        public LargeItemPanel()
+        {
+            InitializeComponent();
+        }
 
-    private void InitializeComponent()
-    {
-        AvaloniaXamlLoader.Load(this);
+        private void InitializeComponent()
+        {
+            AvaloniaXamlLoader.Load(this);
+        }
     }
 }

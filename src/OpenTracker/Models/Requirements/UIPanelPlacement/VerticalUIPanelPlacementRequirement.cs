@@ -1,65 +1,56 @@
-using System;
-using System.Reactive.Disposables;
-using System.Reactive.Linq;
+using System.ComponentModel;
 using Avalonia.Controls;
-using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Settings;
-using OpenTracker.Utils.Autofac;
-using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
 
-namespace OpenTracker.Models.Requirements.UIPanelPlacement;
-
-/// <summary>
-///     This class contains vertical UI panel placement requirement data.
-/// </summary>
-[DependencyInjection]
-public sealed class VerticalUIPanelPlacementRequirement : ReactiveObject, IRequirement
+namespace OpenTracker.Models.Requirements.UIPanelPlacement
 {
-    private readonly CompositeDisposable _disposables = new();
-    
-    private LayoutSettings LayoutSettings { get; }
-    
-    [ObservableAsProperty]
-    public bool Met { get; }
-    [ObservableAsProperty]
-    public AccessibilityLevel Accessibility { get; }
-    
-    public event EventHandler? ChangePropagated;
+    /// <summary>
+    ///     This class contains vertical UI panel placement requirement data.
+    /// </summary>
+    public class VerticalUIPanelPlacementRequirement : BooleanRequirement, IVerticalUIPanelPlacementRequirement
+    {
+        private readonly ILayoutSettings _layoutSettings;
+        private readonly Dock _expectedValue;
         
-    /// <summary>
-    /// A factory method for creating new vertical UI panel placement requirements.
-    /// </summary>
-    public delegate VerticalUIPanelPlacementRequirement Factory(Dock expectedValue);
+        /// <summary>
+        ///     Constructor
+        /// </summary>
+        /// <param name="layoutSettings">
+        ///     The layout settings data.
+        /// </param>
+        /// <param name="expectedValue">
+        ///     The expected dock value.
+        /// </param>
+        public VerticalUIPanelPlacementRequirement(ILayoutSettings layoutSettings, Dock expectedValue)
+        {
+            _layoutSettings = layoutSettings;
+            _expectedValue = expectedValue;
 
-    /// <summary>
-    ///     Constructor
-    /// </summary>
-    /// <param name="layoutSettings">
-    ///     The layout settings data.
-    /// </param>
-    /// <param name="expectedValue">
-    ///     The expected dock value.
-    /// </param>
-    public VerticalUIPanelPlacementRequirement(LayoutSettings layoutSettings, Dock expectedValue)
-    {
-        LayoutSettings = layoutSettings;
+            _layoutSettings.PropertyChanged += OnLayoutSettingsChanged;
+            
+            UpdateValue();
+        }
 
-        this.WhenAnyValue(x => x.LayoutSettings.VerticalUIPanelPlacement)
-            .Select(x => x == expectedValue)
-            .ToPropertyEx(this, x => x.Met)
-            .DisposeWith(_disposables);
-        this.WhenAnyValue(x => x.Met)
-            .Select(x => x ? AccessibilityLevel.Normal : AccessibilityLevel.None)
-            .ToPropertyEx(this, x => x.Accessibility)
-            .DisposeWith(_disposables);
-        this.WhenAnyValue(x => x.Accessibility)
-            .Subscribe(_ => ChangePropagated?.Invoke(this, EventArgs.Empty))
-            .DisposeWith(_disposables);
-    }
-    
-    public void Dispose()
-    {
-        _disposables.Dispose();
+        /// <summary>
+        ///     Subscribes to the PropertyChanged event on the ILayoutSettings interface.
+        /// </summary>
+        /// <param name="sender">
+        ///     The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        ///     The arguments of the PropertyChanged event.
+        /// </param>
+        private void OnLayoutSettingsChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ILayoutSettings.VerticalUIPanelPlacement))
+            {
+                UpdateValue();
+            }
+        }
+        
+        protected override bool ConditionMet()
+        {
+            return _layoutSettings.VerticalUIPanelPlacement == _expectedValue;
+        }
     }
 }

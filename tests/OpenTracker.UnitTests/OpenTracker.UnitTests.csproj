@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
-    <LangVersion>default</LangVersion>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -27,6 +27,5 @@
     <ProjectReference Include="..\..\src\OpenTracker.Models\OpenTracker.Models.csproj" />
     <ProjectReference Include="..\..\src\OpenTracker\OpenTracker.csproj" />
   </ItemGroup>
-
 
 </Project>

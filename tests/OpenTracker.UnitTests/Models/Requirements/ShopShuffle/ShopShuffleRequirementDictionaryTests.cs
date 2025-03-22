@@ -1,55 +1,50 @@
-using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
-using OpenTracker.Models.Modes;
 using OpenTracker.Models.Requirements.ShopShuffle;
 using Xunit;
 
-namespace OpenTracker.UnitTests.Models.Requirements.ShopShuffle;
-
-[ExcludeFromCodeCoverage]
-public sealed class ShopShuffleRequirementDictionaryTests
+namespace OpenTracker.UnitTests.Models.Requirements.ShopShuffle
 {
-    private readonly IMode _mode = Substitute.For<IMode>();
-    
-    // ReSharper disable once CollectionNeverUpdated.Local
-    private readonly ShopShuffleRequirementDictionary _sut;
-
-    public ShopShuffleRequirementDictionaryTests()
+    public class ShopShuffleRequirementDictionaryTests
     {
-        _sut = new ShopShuffleRequirementDictionary(Factory);
-        return;
+        // ReSharper disable once CollectionNeverUpdated.Local
+        private readonly ShopShuffleRequirementDictionary _sut;
 
-        ShopShuffleRequirement Factory(bool expectedValue)
+        public ShopShuffleRequirementDictionaryTests()
         {
-            return new ShopShuffleRequirement(_mode, expectedValue);
+            static IShopShuffleRequirement Factory(bool expectedValue)
+            {
+                return Substitute.For<IShopShuffleRequirement>();
+            }
+
+            _sut = new ShopShuffleRequirementDictionary(Factory);
         }
-    }
 
-    [Fact]
-    public void Indexer_ShouldReturnTheSameInstance()
-    {
-        var requirement1 = _sut[false];
-        var requirement2 = _sut[false];
+        [Fact]
+        public void Indexer_ShouldReturnTheSameInstance()
+        {
+            var requirement1 = _sut[false];
+            var requirement2 = _sut[false];
             
-        Assert.Equal(requirement1, requirement2);
-    }
+            Assert.Equal(requirement1, requirement2);
+        }
 
-    [Fact]
-    public void Indexer_ShouldReturnTheDifferentInstances()
-    {
-        var requirement1 = _sut[false];
-        var requirement2 = _sut[true];
+        [Fact]
+        public void Indexer_ShouldReturnTheDifferentInstances()
+        {
+            var requirement1 = _sut[false];
+            var requirement2 = _sut[true];
             
-        Assert.NotEqual(requirement1, requirement2);
-    }
+            Assert.NotEqual(requirement1, requirement2);
+        }
 
-    [Fact]
-    public void AutofacTest()
-    {
-        using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-        var sut = scope.Resolve<IShopShuffleRequirementDictionary>();
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var sut = scope.Resolve<IShopShuffleRequirementDictionary>();
             
-        Assert.NotNull(sut as ShopShuffleRequirementDictionary);
+            Assert.NotNull(sut as ShopShuffleRequirementDictionary);
+        }
     }
 }

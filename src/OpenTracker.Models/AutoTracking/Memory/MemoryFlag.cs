@@ -1,50 +1,71 @@
-﻿using System.Reactive.Linq;
-using OpenTracker.Utils.Autofac;
+﻿using System.ComponentModel;
 using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
 
-namespace OpenTracker.Models.AutoTracking.Memory;
-
-/// <summary>
-/// This class contains SNES memory flag data.
-/// </summary>
-[DependencyInjection]
-public sealed class MemoryFlag : ReactiveObject, IMemoryFlag
+namespace OpenTracker.Models.AutoTracking.Memory
 {
-    private readonly byte _flag;
-
-    private MemoryAddress MemoryAddress { get; }
-
-    [ObservableAsProperty]
-    public bool? Status { get; }
-
     /// <summary>
-    /// Constructor
+    /// This class contains SNES memory flag data.
     /// </summary>
-    /// <param name="memoryAddress">
-    ///     The <see cref="Memory.MemoryAddress"/> containing the flag.
-    /// </param>
-    /// <param name="flag">
-    ///     A <see cref="byte"/> representing the bitwise flag.
-    /// </param>
-    public MemoryFlag(MemoryAddress memoryAddress, byte flag)
+    public class MemoryFlag : ReactiveObject, IMemoryFlag
     {
-        _flag = flag;
-            
-        MemoryAddress = memoryAddress;
+        private readonly IMemoryAddress _memoryAddress;
+        private readonly byte _flag;
 
-        this.WhenAnyValue(x => x.MemoryAddress.Value)
-            .Select(GetNewStatusFromAddressValue)
-            .ToPropertyEx(this, x => x.Status);
-    }
-
-    private bool? GetNewStatusFromAddressValue(byte? addressValue)
-    {
-        if (addressValue is null)
+        private bool? _status;
+        public bool? Status
         {
-            return null;
+            get => _status;
+            private set => this.RaiseAndSetIfChanged(ref _status, value);
         }
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="memoryAddress">
+        ///     The <see cref="IMemoryAddress"/> containing the flag.
+        /// </param>
+        /// <param name="flag">
+        ///     A <see cref="byte"/> representing the bitwise flag.
+        /// </param>
+        public MemoryFlag(IMemoryAddress memoryAddress, byte flag)
+        {
+            _memoryAddress = memoryAddress;
+            _flag = flag;
+
+            UpdateFlag();
             
-        return (addressValue & _flag) != 0;
+            _memoryAddress.PropertyChanged += OnMemoryChanged;
+        }
+
+        /// <summary>
+        /// Subscribes to the <see cref="IMemoryAddress.PropertyChanged"/> event.
+        /// </summary>
+        /// <param name="sender">
+        ///     The <see cref="object"/> from which the event was sent.
+        /// </param>
+        /// <param name="e">
+        ///     The <see cref="PropertyChangedEventArgs"/>.
+        /// </param>
+        private void OnMemoryChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(IMemoryAddress.Value))
+            {
+                UpdateFlag();
+            }
+        }
+
+        /// <summary>
+        /// Updates the flag status.
+        /// </summary>
+        private void UpdateFlag()
+        {
+            if (_memoryAddress.Value is null)
+            {
+                Status = null;
+                return;
+            }
+            
+            Status = (_memoryAddress.Value & _flag) != 0;
+        }
     }
 }

@@ -1,39 +1,38 @@
 ﻿using OpenTracker.Models.Items;
-using OpenTracker.Utils.Autofac;
 
-namespace OpenTracker.Models.UndoRedo.Items;
-
-/// <summary>
-/// This class contains the <see cref="IUndoable"/> action to add an <see cref="IItem"/>.
-/// </summary>
-[DependencyInjection]
-public sealed class AddItem : IAddItem
+namespace OpenTracker.Models.UndoRedo.Items
 {
-    private readonly IItem _item;
-
     /// <summary>
-    /// Constructor
+    /// This class contains the <see cref="IUndoable"/> action to add an <see cref="IItem"/>.
     /// </summary>
-    /// <param name="item">
-    ///     The <see cref="IItem"/>.
-    /// </param>
-    public AddItem(IItem item)
+    public class AddItem : IAddItem
     {
-        _item = item;
-    }
+        private readonly IItem _item;
 
-    public bool CanExecute()
-    {
-        return _item.CanAdd();
-    }
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="item">
+        ///     The <see cref="IItem"/>.
+        /// </param>
+        public AddItem(IItem item)
+        {
+            _item = item;
+        }
 
-    public void ExecuteDo()
-    {
-        _item.Add();
-    }
+        public bool CanExecute()
+        {
+            return _item.CanAdd();
+        }
 
-    public void ExecuteUndo()
-    {
-        _item.Remove();
+        public void ExecuteDo()
+        {
+            _item.Add();
+        }
+
+        public void ExecuteUndo()
+        {
+            _item.Remove();
+        }
     }
 }

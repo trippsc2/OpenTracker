@@ -3,60 +3,59 @@ using System.Collections.Generic;
 using System.Linq;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Utils;
-using OpenTracker.Utils.Autofac;
 
-namespace OpenTracker.Models.BossPlacements;
-
-/// <summary>
-/// This class contains the dictionary container for <see cref="IBossPlacement"/> objects.
-/// </summary>
-[DependencyInjection(SingleInstance = true)]
-public sealed class BossPlacementDictionary : LazyDictionary<BossPlacementID, IBossPlacement>,
-    IBossPlacementDictionary
+namespace OpenTracker.Models.BossPlacements
 {
-    private readonly Lazy<IBossPlacementFactory> _factory;
-
     /// <summary>
-    /// Constructor
+    /// This class contains the dictionary container for <see cref="IBossPlacement"/> objects.
     /// </summary>
-    /// <param name="factory">
-    ///     An Autofac factory for creating the <see cref="IBossPlacementFactory"/> object.
-    /// </param>
-    public BossPlacementDictionary(IBossPlacementFactory.Factory factory)
-        : base(new Dictionary<BossPlacementID, IBossPlacement>())
+    public class BossPlacementDictionary : LazyDictionary<BossPlacementID, IBossPlacement>,
+        IBossPlacementDictionary
     {
-        _factory = new Lazy<IBossPlacementFactory>(() => factory());
-    }
+        private readonly Lazy<IBossPlacementFactory> _factory;
 
-    public void Reset()
-    {
-        foreach (var placement in Values)
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="factory">
+        ///     An Autofac factory for creating the <see cref="IBossPlacementFactory"/> object.
+        /// </param>
+        public BossPlacementDictionary(IBossPlacementFactory.Factory factory)
+            : base(new Dictionary<BossPlacementID, IBossPlacement>())
         {
-            placement.Reset();
-        }
-    }
-
-    public IDictionary<BossPlacementID, BossPlacementSaveData> Save()
-    {
-        return Keys.ToDictionary(
-            bossPlacement => bossPlacement, bossPlacement => this[bossPlacement].Save());
-    }
-
-    public void Load(IDictionary<BossPlacementID, BossPlacementSaveData>? saveData)
-    {
-        if (saveData == null)
-        {
-            return;
+            _factory = new Lazy<IBossPlacementFactory>(() => factory());
         }
 
-        foreach (var bossPlacement in saveData.Keys)
+        public void Reset()
         {
-            this[bossPlacement].Load(saveData[bossPlacement]);
+            foreach (var placement in Values)
+            {
+                placement.Reset();
+            }
         }
-    }
 
-    protected override IBossPlacement Create(BossPlacementID key)
-    {
-        return _factory.Value.GetBossPlacement(key);
+        public IDictionary<BossPlacementID, BossPlacementSaveData> Save()
+        {
+            return Keys.ToDictionary(
+                bossPlacement => bossPlacement, bossPlacement => this[bossPlacement].Save());
+        }
+
+        public void Load(IDictionary<BossPlacementID, BossPlacementSaveData>? saveData)
+        {
+            if (saveData == null)
+            {
+                return;
+            }
+
+            foreach (var bossPlacement in saveData.Keys)
+            {
+                this[bossPlacement].Load(saveData[bossPlacement]);
+            }
+        }
+
+        protected override IBossPlacement Create(BossPlacementID key)
+        {
+            return _factory.Value.GetBossPlacement(key);
+        }
     }
 }

@@ -1,8 +1,9 @@
 ﻿using OpenTracker.Models.Locations;
 
-namespace OpenTracker.ViewModels.PinnedLocations.Notes;
-
-public interface IPinnedLocationNoteAreaVM
+namespace OpenTracker.ViewModels.PinnedLocations.Notes
 {
-    delegate IPinnedLocationNoteAreaVM Factory(ILocation location);
+    public interface IPinnedLocationNoteAreaVM
+    {
+        delegate IPinnedLocationNoteAreaVM Factory(ILocation location);
+    }
 }

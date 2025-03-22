@@ -1,8 +1,6 @@
-using System.Diagnostics.CodeAnalysis;
 using System.Reactive;
 using System.Threading;
 using Autofac;
-using FluentAssertions;
 using NSubstitute;
 using OpenTracker.Models.AutoTracking.SNESConnectors;
 using OpenTracker.Models.AutoTracking.SNESConnectors.Requests;
@@ -10,68 +8,62 @@ using OpenTracker.Models.AutoTracking.SNESConnectors.Socket;
 using OpenTracker.Models.Logging;
 using Xunit;
 
-namespace OpenTracker.UnitTests.Models.AutoTracking.SNESConnectors.Requests;
-
-[ExcludeFromCodeCoverage]
-public sealed class RegisterNameRequestTests
+namespace OpenTracker.UnitTests.Models.AutoTracking.SNESConnectors.Requests
 {
-    private const string AppName = "OpenTracker";
+    public class RegisterNameRequestTests
+    {
+        private const string AppName = "OpenTracker";
         
-    private readonly IAutoTrackerLogger _logger = Substitute.For<IAutoTrackerLogger>();
+        private readonly IAutoTrackerLogger _logger = Substitute.For<IAutoTrackerLogger>();
 
-    private readonly RegisterNameRequest _sut;
+        private readonly RegisterNameRequest _sut;
 
-    public RegisterNameRequestTests()
-    {
-        _sut = new RegisterNameRequest(_logger);
-    }
+        public RegisterNameRequestTests()
+        {
+            _sut = new RegisterNameRequest(_logger);
+        }
 
-    [Fact]
-    public void Description_ShouldReturnExpected()
-    {
-        const string expected = "Register app name";
-
-        _sut.Description.Should().Be(expected);
-    }
-
-    [Fact]
-    public void StatusRequired_ShouldReturnExpected()
-    {
-        const ConnectionStatus expected = ConnectionStatus.Connected;
-
-        _sut.StatusRequired.Should().Be(expected);
-    }
-        
-    [Fact]
-    public void ToJsonString_ShouldReturnExpected()
-    {
-        const string expected = $"{{\"Opcode\":\"Name\",\"Space\":\"SNES\",\"Operands\":[\"{AppName}\"]}}";
-
-        _sut.ToJsonString().Should().Be(expected);
-    }
-
-    [Fact]
-    public void ProcessResponseAndReturnResults_ShouldAlwaysReturnDefault()
-    {
-        var messageEventArgs = Substitute.For<IMessageEventArgsWrapper>();
-
-        _sut.ProcessResponseAndReturnResults(
-                messageEventArgs,
-                new ManualResetEvent(false))
-            .Should().Be(Unit.Default);
-    }
-        
-    [Fact]
-    public void AutofacTest()
-    {
-        using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-        var factory = scope.Resolve<IRegisterNameRequest.Factory>();
-        var sut1 = factory();
+        [Fact]
+        public void Description_ShouldReturnExpected()
+        {
+            const string expected = "Register app name";
             
-        sut1.Should().BeOfType<RegisterNameRequest>();
+            Assert.Equal(expected, _sut.Description);
+        }
+
+        [Fact]
+        public void StatusRequired_ShouldReturnExpected()
+        {
+            const ConnectionStatus expected = ConnectionStatus.Connected;
+            
+            Assert.Equal(expected, _sut.StatusRequired);
+        }
         
-        var sut2 = factory();
+        [Fact]
+        public void ToJsonString_ShouldReturnExpected()
+        {
+            var expected = $"{{\"Opcode\":\"Name\",\"Space\":\"SNES\",\"Operands\":[\"{AppName}\"]}}";
+            
+            Assert.Equal(expected, _sut.ToJsonString());
+        }
+
+        [Fact]
+        public void ProcessResponseAndReturnResults_ShouldAlwaysReturnDefault()
+        {
+            var messageEventArgs = Substitute.For<IMessageEventArgsWrapper>();
+            
+            Assert.Equal(Unit.Default, _sut.ProcessResponseAndReturnResults(
+                messageEventArgs, new ManualResetEvent(false)));
+        }
         
-        sut1.Should().NotBeSameAs(sut2);
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var factory = scope.Resolve<IRegisterNameRequest.Factory>();
+            var sut = factory();
+            
+            Assert.NotNull(sut as RegisterNameRequest);
+        }
     }
 }

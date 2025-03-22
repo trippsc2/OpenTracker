@@ -1,31 +1,30 @@
 using System.Collections.Generic;
 using OpenTracker.Utils;
-using OpenTracker.Utils.Autofac;
 
-namespace OpenTracker.Models.Requirements.DisplaysMapsCompasses;
-
-/// <summary>
-///     This class contains the dictionary container for display maps and compasses requirements.
-/// </summary>
-[DependencyInjection(SingleInstance = true)]
-public sealed class DisplayMapsCompassesRequirementDictionary : LazyDictionary<bool, IRequirement>, IDisplayMapsCompassesRequirementDictionary
+namespace OpenTracker.Models.Requirements.DisplaysMapsCompasses
 {
-    private readonly DisplayMapsCompassesRequirement.Factory _factory;
-
     /// <summary>
-    ///     Constructor
+    ///     This class contains the dictionary container for display maps and compasses requirements.
     /// </summary>
-    /// <param name="factory">
-    ///     An Autofac factory for creating new display maps and compasses requirements.
-    /// </param>
-    public DisplayMapsCompassesRequirementDictionary(DisplayMapsCompassesRequirement.Factory factory)
-        : base(new Dictionary<bool, IRequirement>())
+    public class DisplayMapsCompassesRequirementDictionary : LazyDictionary<bool, IRequirement>, IDisplayMapsCompassesRequirementDictionary
     {
-        _factory = factory;
-    }
+        private readonly IDisplayMapsCompassesRequirement.Factory _factory;
 
-    protected override IRequirement Create(bool key)
-    {
-        return _factory(key);
+        /// <summary>
+        ///     Constructor
+        /// </summary>
+        /// <param name="factory">
+        ///     An Autofac factory for creating new display maps and compasses requirements.
+        /// </param>
+        public DisplayMapsCompassesRequirementDictionary(IDisplayMapsCompassesRequirement.Factory factory)
+            : base(new Dictionary<bool, IRequirement>())
+        {
+            _factory = factory;
+        }
+
+        protected override IRequirement Create(bool key)
+        {
+            return _factory(key);
+        }
     }
 }

@@ -1,41 +1,51 @@
-using System.Diagnostics.CodeAnalysis;
-using FluentAssertions;
+using System.ComponentModel;
+using Autofac;
+using NSubstitute;
+using OpenTracker.Models.AutoTracking.Values;
 using OpenTracker.Models.AutoTracking.Values.Single;
-using OpenTracker.UnitTests.Models.Items;
+using OpenTracker.Models.Items;
 using Xunit;
 
-namespace OpenTracker.UnitTests.Models.AutoTracking.Values.Single;
-
-[ExcludeFromCodeCoverage]
-public sealed class AutoTrackItemValueTests
+namespace OpenTracker.UnitTests.Models.AutoTracking.Values.Single
 {
-    private readonly MockItem _item = new();
-    private readonly AutoTrackItemValue _sut;
-
-    public AutoTrackItemValueTests()
+    public class AutoTrackItemValueTests
     {
-        _sut = new AutoTrackItemValue(_item);
-    }
+        private readonly IItem _item = Substitute.For<IItem>();
+        private readonly AutoTrackItemValue _sut;
 
-    [Theory]
-    [InlineData(0, 0)]
-    [InlineData(1, 1)]
-    [InlineData(2, 2)]
-    [InlineData(3, 3)]
-    public void CurrentValue_ShouldReturnExpected(int? expected, int itemCurrent)
-    {
-        _item.Current = itemCurrent;
+        public AutoTrackItemValueTests()
+        {
+            _sut = new AutoTrackItemValue(_item);
+        }
 
-        _sut.CurrentValue.Should().Be(expected);
-    }
+        [Theory]
+        [InlineData(0, 0)]
+        [InlineData(1, 1)]
+        [InlineData(2, 2)]
+        [InlineData(3, 3)]
+        public void ItemChanged_CurrentValueShouldEqualExpected(int? expected, int itemCurrent)
+        {
+            _item.Current.Returns(itemCurrent);
+            
+            Assert.Equal(expected, _sut.CurrentValue);
+        }
 
-    [Fact]
-    public void ItemChanged_ShouldRaisePropertyChanged()
-    {
-        using var monitor = _sut.Monitor();
-        
-        _item.Current = 1;
-        
-        monitor.Should().RaisePropertyChangeFor(x => x.CurrentValue);
+        [Fact]
+        public void ItemChanged_ShouldRaisePropertyChanged()
+        {
+            Assert.PropertyChanged(_sut, nameof(IAutoTrackValue.CurrentValue),
+                () => _item.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                    _item, new PropertyChangedEventArgs(nameof(IItem.Current))));
+        }
+
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var factory = scope.Resolve<IAutoTrackItemValue.Factory>();
+            var sut = factory(_item);
+            
+            Assert.NotNull(sut as AutoTrackItemValue);
+        }
     }
 }

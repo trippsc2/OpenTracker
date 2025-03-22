@@ -1,21 +1,30 @@
-using System.Diagnostics.CodeAnalysis;
-using FluentAssertions;
+using Autofac;
 using OpenTracker.Models.AutoTracking.Values.Static;
 using Xunit;
 
-namespace OpenTracker.UnitTests.Models.AutoTracking.Values.Static;
-
-[ExcludeFromCodeCoverage]
-public sealed class AutoTrackStaticValueTests
+namespace OpenTracker.UnitTests.Models.AutoTracking.Values.Static
 {
-    [Theory]
-    [InlineData(0, 0)]
-    [InlineData(1, 1)]
-    [InlineData(2, 2)]
-    public void CurrentValue_ShouldEqualExpected(int? expected, int value)
+    public class AutoTrackStaticValueTests
     {
-        var sut = new AutoTrackStaticValue(value);
+        [Theory]
+        [InlineData(0, 0)]
+        [InlineData(1, 1)]
+        [InlineData(2, 2)]
+        public void CurrentValue_ShouldEqualExpected(int? expected, int value)
+        {
+            var sut = new AutoTrackStaticValue(value);
+            
+            Assert.Equal(expected, sut.CurrentValue);
+        }
 
-        sut.CurrentValue.Should().Be(expected);
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var factory = scope.Resolve<IAutoTrackStaticValue.Factory>();
+            var sut = factory(1);
+            
+            Assert.NotNull(sut as AutoTrackStaticValue);
+        }
     }
 }

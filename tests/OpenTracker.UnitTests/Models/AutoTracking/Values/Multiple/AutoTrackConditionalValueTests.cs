@@ -1,64 +1,88 @@
-using System.Diagnostics.CodeAnalysis;
-using FluentAssertions;
+using System.ComponentModel;
+using Autofac;
+using NSubstitute;
+using OpenTracker.Models.AutoTracking.Values;
 using OpenTracker.Models.AutoTracking.Values.Multiple;
-using OpenTracker.UnitTests.Models.Requirements;
+using OpenTracker.Models.Requirements;
 using Xunit;
 
-namespace OpenTracker.UnitTests.Models.AutoTracking.Values.Multiple;
-
-[ExcludeFromCodeCoverage]
-public sealed class AutoTrackConditionalValueTests
+namespace OpenTracker.UnitTests.Models.AutoTracking.Values.Multiple
 {
-    private readonly MockAutoTrackValue _trueValue = new();
-    private readonly MockAutoTrackValue _falseValue = new();
-    private readonly MockBooleanRequirement _condition = new();
-        
-    private readonly AutoTrackConditionalValue _sut;
-
-    public AutoTrackConditionalValueTests()
+    public class AutoTrackConditionalValueTests
     {
-        _sut = new AutoTrackConditionalValue(_condition, _trueValue, _falseValue);
-    }
+        private readonly IAutoTrackValue _trueValue = Substitute.For<IAutoTrackValue>();
+        private readonly IAutoTrackValue _falseValue = Substitute.For<IAutoTrackValue>();
+        private readonly IRequirement _condition = Substitute.For<IRequirement>();
+        private readonly AutoTrackConditionalValue _sut;
 
-    [Theory]
-    [InlineData(null, null, null, false)]
-    [InlineData(null, 0, null, false)]
-    [InlineData(null, 1, null, false)]
-    [InlineData(0, null, 0, false)]
-    [InlineData(0, 0, 0, false)]
-    [InlineData(0, 1, 0, false)]
-    [InlineData(1, null, 1, false)]
-    [InlineData(1, 0, 1, false)]
-    [InlineData(1, 1, 1, false)]
-    [InlineData(null, null, null, true)]
-    [InlineData(0, 0, null, true)]
-    [InlineData(1, 1, null, true)]
-    [InlineData(null, null, 0, true)]
-    [InlineData(0, 0, 0, true)]
-    [InlineData(1, 1, 0, true)]
-    [InlineData(null, null, 1, true)]
-    [InlineData(0, 0, 1, true)]
-    [InlineData(1, 1, 1, true)]
-    public void CurrentValue_ShouldEqualExpected(int? expected, int? trueValue, int? falseValue, bool conditionMet)
-    {
-        _trueValue.CurrentValue = trueValue;
-        _falseValue.CurrentValue = falseValue;
-        _condition.Met = conditionMet;
+        public AutoTrackConditionalValueTests()
+        {
+            _sut = new AutoTrackConditionalValue(_condition, _trueValue, _falseValue);
+        }
 
-        _sut.CurrentValue.Should().Be(expected);
-    }
+        [Theory]
+        [InlineData(null, null, null, false)]
+        [InlineData(null, 0, null, false)]
+        [InlineData(null, 1, null, false)]
+        [InlineData(0, null, 0, false)]
+        [InlineData(0, 0, 0, false)]
+        [InlineData(0, 1, 0, false)]
+        [InlineData(1, null, 1, false)]
+        [InlineData(1, 0, 1, false)]
+        [InlineData(1, 1, 1, false)]
+        [InlineData(null, null, null, true)]
+        [InlineData(0, 0, null, true)]
+        [InlineData(1, 1, null, true)]
+        [InlineData(null, null, 0, true)]
+        [InlineData(0, 0, 0, true)]
+        [InlineData(1, 1, 0, true)]
+        [InlineData(null, null, 1, true)]
+        [InlineData(0, 0, 1, true)]
+        [InlineData(1, 1, 1, true)]
+        public void CurrentValue_ShouldEqualExpected(int? expected, int? trueValue, int? falseValue, bool conditionMet)
+        {
+            _trueValue.CurrentValue.Returns(trueValue);
+            _falseValue.CurrentValue.Returns(falseValue);
+            _condition.Met.Returns(conditionMet);
 
-    [Fact]
-    public void CurrentValue_ShouldRaisePropertyChanged()
-    {
-        _trueValue.CurrentValue = 12;
-        _falseValue.CurrentValue = 11;
-        _condition.Met = false;
+            Assert.Equal(expected, _sut.CurrentValue);
+        }
 
-        using var monitor = _sut.Monitor();
-        
-        _condition.Met = true;
+        [Fact]
+        public void ConditionChanged_ShouldRaisePropertyChanged()
+        {
+            _trueValue.CurrentValue.Returns(12);
+            _falseValue.CurrentValue.Returns(11);
+            _condition.Met.Returns(true);
+            
+            Assert.PropertyChanged(_sut, nameof(IAutoTrackValue.CurrentValue),
+                () => _condition.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                    _condition, new PropertyChangedEventArgs(nameof(IRequirement.Met))));
+        }
 
-        monitor.Should().RaisePropertyChangeFor(x => x.CurrentValue);
+        [Fact]
+        public void ValueChanged_ShouldRaisePropertyChanged()
+        {
+            _trueValue.CurrentValue.Returns(12);
+            _falseValue.CurrentValue.Returns(11);
+            _condition.Met.Returns(true);
+            
+            Assert.PropertyChanged(_sut, nameof(IAutoTrackValue.CurrentValue),
+                () => _trueValue.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                    _trueValue, new PropertyChangedEventArgs(nameof(IAutoTrackValue.CurrentValue))));
+            Assert.PropertyChanged(_sut, nameof(IAutoTrackValue.CurrentValue),
+                () => _falseValue.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                    _falseValue, new PropertyChangedEventArgs(nameof(IAutoTrackValue.CurrentValue))));
+        }
+
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var factory = scope.Resolve<IAutoTrackConditionalValue.Factory>();
+            var sut = factory(_condition, _trueValue, _falseValue);
+            
+            Assert.NotNull(sut as AutoTrackConditionalValue);
+        }
     }
 }

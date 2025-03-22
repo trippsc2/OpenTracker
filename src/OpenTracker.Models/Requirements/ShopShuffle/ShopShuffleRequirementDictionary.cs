@@ -1,33 +1,32 @@
 using System.Collections.Generic;
 using OpenTracker.Utils;
-using OpenTracker.Utils.Autofac;
 
-namespace OpenTracker.Models.Requirements.ShopShuffle;
-
-/// <summary>
-/// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for
-/// <see cref="ShopShuffleRequirement"/> objects indexed by <see cref="bool"/>.
-/// </summary>
-[DependencyInjection(SingleInstance = true)]
-public sealed class ShopShuffleRequirementDictionary : LazyDictionary<bool, IRequirement>,
-    IShopShuffleRequirementDictionary
+namespace OpenTracker.Models.Requirements.ShopShuffle
 {
-    private readonly ShopShuffleRequirement.Factory _factory;
-
     /// <summary>
-    /// Constructor
+    /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for
+    /// <see cref="IShopShuffleRequirement"/> objects indexed by <see cref="bool"/>.
     /// </summary>
-    /// <param name="factory">
-    ///     An Autofac factory for creating new <see cref="ShopShuffleRequirement"/> objects.
-    /// </param>
-    public ShopShuffleRequirementDictionary(ShopShuffleRequirement.Factory factory)
-        : base(new Dictionary<bool, IRequirement>())
+    public class ShopShuffleRequirementDictionary : LazyDictionary<bool, IRequirement>,
+        IShopShuffleRequirementDictionary
     {
-        _factory = factory;
-    }
+        private readonly IShopShuffleRequirement.Factory _factory;
 
-    protected override IRequirement Create(bool key)
-    {
-        return _factory(key);
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="factory">
+        ///     An Autofac factory for creating new <see cref="IShopShuffleRequirement"/> objects.
+        /// </param>
+        public ShopShuffleRequirementDictionary(IShopShuffleRequirement.Factory factory)
+            : base(new Dictionary<bool, IRequirement>())
+        {
+            _factory = factory;
+        }
+
+        protected override IRequirement Create(bool key)
+        {
+            return _factory(key);
+        }
     }
 }

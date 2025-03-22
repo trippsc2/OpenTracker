@@ -1,56 +1,60 @@
+using System.ComponentModel;
 using System.Reactive;
-using System.Reactive.Disposables;
-using System.Reactive.Linq;
 using Avalonia.Input;
+using Avalonia.Threading;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Utils;
-using OpenTracker.Utils.Autofac;
 using OpenTracker.ViewModels.Items;
 using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
 
-namespace OpenTracker.ViewModels.Dungeons;
-
-/// <summary>
-/// This class contains the small item control ViewModel data.
-/// </summary>
-[DependencyInjection]
-public sealed class DungeonItemVM : ViewModel, IDungeonItemVM
+namespace OpenTracker.ViewModels.Dungeons
 {
-    private IRequirement? Requirement { get; }
-    public IItemVM? Item { get; }
-    
-    [ObservableAsProperty]
-    public bool Visible => Requirement?.Met ?? true;
-
-    public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
-
     /// <summary>
-    /// Constructor
+    /// This class contains the small item control ViewModel data.
     /// </summary>
-    /// <param name="requirement">
-    /// The visibility requirement for the control.
-    /// </param>
-    /// <param name="item">
-    /// The item control.
-    /// </param>
-    public DungeonItemVM(IRequirement? requirement, IItemVM? item)
+    public class DungeonItemVM : ViewModelBase, IDungeonItemVM
     {
-        Requirement = requirement;
-        Item = item;
+        private readonly IRequirement? _requirement;
 
-        HandleClickCommand = Item?.HandleClickCommand ??
-                             ReactiveCommand.Create<PointerReleasedEventArgs>(_ => { });
+        public bool Visible => _requirement is null || _requirement.Met;
+        public IItemVM? Item { get; }
         
-        this.WhenActivated(disposables =>
+        public ReactiveCommand<PointerReleasedEventArgs, Unit>? HandleClick { get; }
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="requirement">
+        /// The visibility requirement for the control.
+        /// </param>
+        /// <param name="item">
+        /// The item control.
+        /// </param>
+        public DungeonItemVM(IRequirement? requirement, IItemVM? item)
         {
-            this.WhenAnyValue(
-                    x => x.Requirement,
-                    x => x.Requirement!.Met,
-                    (_, _) => Requirement?.Met ?? true)
-                .ObserveOn(RxApp.MainThreadScheduler)
-                .ToPropertyEx(this, x => x.Visible, initialValue: true)
-                .DisposeWith(disposables);
-        });
+            _requirement = requirement;
+            
+            Item = item;
+
+            if (_requirement is not null)
+            {
+                _requirement.PropertyChanged += OnRequirementChanged;
+            }
+
+            if (Item is null)
+            {
+                return;
+            }
+            
+            HandleClick = Item.HandleClick;
+        }
+
+        private async void OnRequirementChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(IRequirement.Met))
+            {
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Visible)));
+            }
+        }
     }
 }

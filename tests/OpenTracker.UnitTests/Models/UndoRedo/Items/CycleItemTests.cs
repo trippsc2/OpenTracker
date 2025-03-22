@@ -1,52 +1,51 @@
-using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.UndoRedo.Items;
 using Xunit;
 
-namespace OpenTracker.UnitTests.Models.UndoRedo.Items;
-
-[ExcludeFromCodeCoverage]
-public sealed class CycleItemTests
+namespace OpenTracker.UnitTests.Models.UndoRedo.Items
 {
-    private readonly ICappedItem _item = Substitute.For<ICappedItem>();
-    private readonly CycleItem _sut;
-
-    public CycleItemTests()
+    public class CycleItemTests
     {
-        _sut = new CycleItem(_item);
-    }
+        private readonly ICappedItem _item = Substitute.For<ICappedItem>();
+        private readonly CycleItem _sut;
 
-    [Fact]
-    public void CanExecute_ReturnsTrue()
-    {
-        Assert.True(_sut.CanExecute());
-    }
+        public CycleItemTests()
+        {
+            _sut = new CycleItem(_item);
+        }
 
-    [Fact]
-    public void ExecuteDo_ShouldCallCycle()
-    {
-        _sut.ExecuteDo();
+        [Fact]
+        public void CanExecute_ReturnsTrue()
+        {
+            Assert.True(_sut.CanExecute());
+        }
+
+        [Fact]
+        public void ExecuteDo_ShouldCallCycle()
+        {
+            _sut.ExecuteDo();
             
-        _item.Received().Cycle();
-    }
+            _item.Received().Cycle();
+        }
 
-    [Fact]
-    public void ExecuteUndo_ShouldCallRemove()
-    {
-        _sut.ExecuteUndo();
+        [Fact]
+        public void ExecuteUndo_ShouldCallRemove()
+        {
+            _sut.ExecuteUndo();
             
-        _item.Received().Cycle(true);
-    }
+            _item.Received().Cycle(true);
+        }
 
-    [Fact]
-    public void AutofacTest()
-    {
-        using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-        var factory = scope.Resolve<ICycleItem.Factory>();
-        var sut = factory(_item);
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var factory = scope.Resolve<ICycleItem.Factory>();
+            var sut = factory(_item);
             
-        Assert.NotNull(sut as CycleItem);
+            Assert.NotNull(sut as CycleItem);
+        }
     }
 }

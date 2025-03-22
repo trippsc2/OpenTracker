@@ -1,22 +1,22 @@
 ﻿using Avalonia;
 using Avalonia.Markup.Xaml;
-using Avalonia.ReactiveUI;
-using OpenTracker.ViewModels.ColorSelect;
+using OpenTracker.Utils.Dialog;
 
-namespace OpenTracker.Views.ColorSelect;
-
-public sealed class ColorSelectDialog : ReactiveWindow<ColorSelectDialogVM>
+namespace OpenTracker.Views.ColorSelect
 {
-    public ColorSelectDialog()
+    public class ColorSelectDialog : DialogWindowBase
     {
-        InitializeComponent();
+        public ColorSelectDialog()
+        {
+            InitializeComponent();
 #if DEBUG
-        this.AttachDevTools();
+            this.AttachDevTools();
 #endif
-    }
+        }
 
-    private void InitializeComponent()
-    {
-        AvaloniaXamlLoader.Load(this);
+        private void InitializeComponent()
+        {
+            AvaloniaXamlLoader.Load(this);
+        }
     }
 }

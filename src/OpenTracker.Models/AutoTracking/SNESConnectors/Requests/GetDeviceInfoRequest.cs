@@ -4,44 +4,44 @@ using System.Threading;
 using Newtonsoft.Json;
 using OpenTracker.Models.AutoTracking.SNESConnectors.Socket;
 using OpenTracker.Models.Logging;
-using OpenTracker.Utils.Autofac;
+using LogLevel = OpenTracker.Models.Logging.LogLevel;
 
-namespace OpenTracker.Models.AutoTracking.SNESConnectors.Requests;
-
-/// <summary>
-/// This class contains the request to get device info. 
-/// </summary>
-[DependencyInjection]
-public sealed class GetDeviceInfoRequest : RequestBase<IEnumerable<string>>, IGetDeviceInfoRequest
+namespace OpenTracker.Models.AutoTracking.SNESConnectors.Requests
 {
     /// <summary>
-    /// Constructor
+    /// This class contains the request to get device info. 
     /// </summary>
-    /// <param name="logger">
-    ///     The <see cref="IAutoTrackerLogger"/>.
-    /// </param>
-    public GetDeviceInfoRequest(IAutoTrackerLogger logger)
-        : base(logger, "Info", "SNES", ConnectionStatus.Connected, "Get device info")
+    public class GetDeviceInfoRequest : RequestBase<IEnumerable<string>>, IGetDeviceInfoRequest
     {
-    }
-
-    public override IEnumerable<string> ProcessResponseAndReturnResults(IMessageEventArgsWrapper messageEventArgs,
-        ManualResetEvent sendEvent)
-    {
-        Logger.Debug("Received response message from request \'{Description}\'",
-            Description);
-
-        var deserialized = JsonConvert.DeserializeObject<Dictionary<string, string[]>?>(messageEventArgs.Data);
-
-        if (!deserialized!.TryGetValue("Results", out var results))
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="logger">
+        ///     The <see cref="IAutoTrackerLogger"/>.
+        /// </param>
+        public GetDeviceInfoRequest(IAutoTrackerLogger logger)
+            : base(logger, "Info", "SNES", ConnectionStatus.Connected, "Get device info")
         {
-            throw new Exception(
-                $"Request \'{Description}\' is invalid and does not contain a \'Results\' key.");
         }
+
+        public override IEnumerable<string> ProcessResponseAndReturnResults(IMessageEventArgsWrapper messageEventArgs,
+            ManualResetEvent sendEvent)
+        {
+            Logger.Debug("Received response message from request \'{Description}\'",
+                Description);
+
+            var deserialized = JsonConvert.DeserializeObject<Dictionary<string, string[]>?>(messageEventArgs.Data);
+
+            if (!deserialized!.TryGetValue("Results", out var results))
+            {
+                throw new Exception(
+                    $"Request \'{Description}\' is invalid and does not contain a \'Results\' key.");
+            }
             
-        Logger.Debug("Request \'{Description}\' response successfully deserialized",
-            Description);
-        sendEvent.Set();
-        return results;
+            Logger.Debug("Request \'{Description}\' response successfully deserialized",
+                Description);
+            sendEvent.Set();
+            return results;
+        }
     }
 }

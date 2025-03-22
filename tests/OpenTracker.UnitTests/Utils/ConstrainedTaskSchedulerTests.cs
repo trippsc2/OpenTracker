@@ -1,29 +1,28 @@
-using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using OpenTracker.Utils;
 using Xunit;
 
-namespace OpenTracker.UnitTests.Utils;
-
-[ExcludeFromCodeCoverage]
-public sealed class ConstrainedTaskSchedulerTests
+namespace OpenTracker.UnitTests.Utils
 {
-    [Fact]
-    public void AutofacTest()
+    public class ConstrainedTaskSchedulerTests
     {
-        using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-        var sut = scope.Resolve<ConstrainedTaskScheduler>();
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var sut = scope.Resolve<ConstrainedTaskScheduler>();
             
-        Assert.NotNull(sut);
-    }
+            Assert.NotNull(sut);
+        }
 
-    [Fact]
-    public void AutofacSingleInstanceTest()
-    {
-        using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-        var value1 = scope.Resolve<ConstrainedTaskScheduler>();
-        var value2 = scope.Resolve<ConstrainedTaskScheduler>();
+        [Fact]
+        public void AutofacSingleInstanceTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var value1 = scope.Resolve<ConstrainedTaskScheduler>();
+            var value2 = scope.Resolve<ConstrainedTaskScheduler>();
             
-        Assert.Equal(value1, value2);
+            Assert.Equal(value1, value2);
+        }
     }
 }

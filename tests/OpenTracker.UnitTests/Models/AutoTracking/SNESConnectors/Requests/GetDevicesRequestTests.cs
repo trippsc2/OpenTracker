@@ -1,8 +1,6 @@
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using Autofac;
-using FluentAssertions;
 using Newtonsoft.Json;
 using NSubstitute;
 using OpenTracker.Models.AutoTracking.SNESConnectors;
@@ -11,95 +9,83 @@ using OpenTracker.Models.AutoTracking.SNESConnectors.Socket;
 using OpenTracker.Models.Logging;
 using Xunit;
 
-namespace OpenTracker.UnitTests.Models.AutoTracking.SNESConnectors.Requests;
-
-[ExcludeFromCodeCoverage]
-public sealed class GetDevicesRequestTests
+namespace OpenTracker.UnitTests.Models.AutoTracking.SNESConnectors.Requests
 {
-    private readonly IAutoTrackerLogger _logger = Substitute.For<IAutoTrackerLogger>();
-
-    private readonly GetDevicesRequest _sut;
-
-    public GetDevicesRequestTests()
+    public class GetDevicesRequestTests
     {
-        _sut = new GetDevicesRequest(_logger);
-    }
+        private readonly IAutoTrackerLogger _logger = Substitute.For<IAutoTrackerLogger>();
 
-    [Fact]
-    public void Description_ShouldReturnExpected()
-    {
-        const string expected = "Get device list";
+        private readonly GetDevicesRequest _sut;
 
-        _sut.Description.Should().Be(expected);
-    }
+        public GetDevicesRequestTests()
+        {
+            _sut = new GetDevicesRequest(_logger);
+        }
 
-    [Fact]
-    public void StatusRequired_ShouldReturnExpected()
-    {
-        const ConnectionStatus expected = ConnectionStatus.SelectDevice;
-
-        _sut.StatusRequired.Should().Be(expected);
-    }
-        
-    [Fact]
-    public void ToJsonString_ShouldReturnExpected()
-    {
-        const string expected = "{\"Opcode\":\"DeviceList\",\"Space\":\"SNES\"}";
+        [Fact]
+        public void Description_ShouldReturnExpected()
+        {
+            const string expected = "Get device list";
             
-        _sut.ToJsonString().Should().Be(expected);
-    }
+            Assert.Equal(expected, _sut.Description);
+        }
 
-    [Fact]
-    public void ProcessResponseAndReturnResults_ShouldReturnExpected()
-    {
-        string[] expected = {"Test"};
-        var messageEventArgs = Substitute.For<IMessageEventArgsWrapper>();
-        messageEventArgs.Data.Returns($"{{\"Results\":[\"{expected[0]}\"]}}");
-
-        _sut.ProcessResponseAndReturnResults(
-                messageEventArgs,
-                new ManualResetEvent(false))
-            .Should().BeEquivalentTo(expected);
-    }
-
-    [Fact]
-    public void ProcessResponseAndReturnResults_ShouldThrowException_WhenDataIsNotJSON()
-    {
-        var messageEventArgs = Substitute.For<IMessageEventArgsWrapper>();
-        messageEventArgs.Data.Returns("Test");
-        
-        _sut.Invoking(x => 
-                x.ProcessResponseAndReturnResults(
-                    messageEventArgs,
-                    new ManualResetEvent(false)))
-            .Should().Throw<JsonReaderException>();
-    }
-
-    [Fact]
-    public void ProcessResponseAndReturnResults_ShouldThrowException_WhenDataDoesNotContainResults()
-    {
-        string[] expected = {"Test"};
-        var messageEventArgs = Substitute.For<IMessageEventArgsWrapper>();
-        messageEventArgs.Data.Returns($"{{\"Test\":[\"{expected[0]}\"]}}");
-        
-        _sut.Invoking(x => 
-                x.ProcessResponseAndReturnResults(
-                    messageEventArgs,
-                    new ManualResetEvent(false)))
-            .Should().Throw<Exception>();
-    }
-        
-    [Fact]
-    public void AutofacResolve_ShouldResolveAsInterfaceToTransientInstance()
-    {
-        using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-        var factory = scope.Resolve<IGetDevicesRequest.Factory>();
-        var sut1 = factory();
+        [Fact]
+        public void StatusRequired_ShouldReturnExpected()
+        {
+            const ConnectionStatus expected = ConnectionStatus.SelectDevice;
             
-        sut1.Should().BeOfType<GetDevicesRequest>();
+            Assert.Equal(expected, _sut.StatusRequired);
+        }
         
-        var sut2 = factory();
+        [Fact]
+        public void ToJsonString_ShouldReturnExpected()
+        {
+            const string expected = "{\"Opcode\":\"DeviceList\",\"Space\":\"SNES\"}";
+            
+            Assert.Equal(expected, _sut.ToJsonString());
+        }
+
+        [Fact]
+        public void ProcessResponseAndReturnResults_ShouldReturnExpected()
+        {
+            string[] expected = {"Test"};
+            var messageEventArgs = Substitute.For<IMessageEventArgsWrapper>();
+            messageEventArgs.Data.Returns($"{{\"Results\":[\"{expected[0]}\"]}}");
+            
+            Assert.Equal(expected, _sut.ProcessResponseAndReturnResults(
+                messageEventArgs, new ManualResetEvent(false)));
+        }
+
+        [Fact]
+        public void ProcessResponseAndReturnResults_ShouldThrowException_WhenDataIsNotJSON()
+        {
+            var messageEventArgs = Substitute.For<IMessageEventArgsWrapper>();
+            messageEventArgs.Data.Returns("Test");
+            
+            Assert.Throws<JsonReaderException>(() => _sut.ProcessResponseAndReturnResults(
+                messageEventArgs, new ManualResetEvent(false)));
+        }
+
+        [Fact]
+        public void ProcessResponseAndReturnResults_ShouldThrowException_WhenDataDoesNotContainResults()
+        {
+            string[] expected = {"Test"};
+            var messageEventArgs = Substitute.For<IMessageEventArgsWrapper>();
+            messageEventArgs.Data.Returns($"{{\"Test\":[\"{expected[0]}\"]}}");
+            
+            Assert.Throws<Exception>(() => _sut.ProcessResponseAndReturnResults(
+                messageEventArgs, new ManualResetEvent(false)));
+        }
         
-        sut1.Should().NotBeSameAs(sut2);
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var factory = scope.Resolve<IGetDevicesRequest.Factory>();
+            var sut = factory();
+            
+            Assert.NotNull(sut as GetDevicesRequest);
+        }
     }
 }

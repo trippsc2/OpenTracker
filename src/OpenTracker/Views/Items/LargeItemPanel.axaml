@@ -1,27 +1,21 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:OpenTracker.ViewModels.Items;assembly=OpenTracker"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vm="clr-namespace:OpenTracker.ViewModels.Items"
-             mc:Ignorable="d" x:Class="OpenTracker.Views.Items.LargeItemPanel"
-             x:DataType="vm:LargeItemPanelVM" x:CompileBindings="True">
-	<UserControl.Styles>
-		<Style Selector="WrapPanel.LargeItemPanel">
-			<Setter Property="ItemHeight" Value="40" />
-			<Setter Property="ItemWidth" Value="34" />
-			<Setter Property="MaxHeight" Value="200" />
-			<Setter Property="MaxWidth" Value="238" />
-			<Setter Property="Orientation" Value="Horizontal" />
-			<Setter Property="HorizontalAlignment" Value="Left" />
-			<Setter Property="VerticalAlignment" Value="Top" />
-		</Style>
-	</UserControl.Styles>
+             mc:Ignorable="d" x:Class="OpenTracker.Views.Items.LargeItemPanel">
+	
+	<Design.DataContext>
+		<vm:LargeItemPanelVM />
+	</Design.DataContext>
 	
 	<ItemsControl Items="{Binding Items}">
 		<ItemsControl.ItemsPanel>
 			<ItemsPanelTemplate>
-				<WrapPanel Classes="LargeItemPanel" />
+				<WrapPanel ItemWidth="34" ItemHeight="40" MaxWidth="238" MaxHeight="200" Orientation="Horizontal"
+				           HorizontalAlignment="Left" VerticalAlignment="Top" />
 			</ItemsPanelTemplate>
 		</ItemsControl.ItemsPanel>
 	</ItemsControl>
+	
 </UserControl>

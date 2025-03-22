@@ -1,18 +1,17 @@
 using System.Reactive;
 using Avalonia.Input;
-using Avalonia.Media;
 using OpenTracker.Models.Locations.Map;
-using OpenTracker.Utils;
 using ReactiveUI;
 
-namespace OpenTracker.ViewModels.MapLocations;
-
-public interface IMapLocationColorProvider : IViewModel
+namespace OpenTracker.ViewModels.MapLocations
 {
-    SolidColorBrush BorderColor { get; }
-    SolidColorBrush Color { get; }
-    ReactiveCommand<PointerEventArgs, Unit> HandlePointerEnterCommand { get; }
-    ReactiveCommand<PointerEventArgs, Unit> HandlePointerLeaveCommand { get; }
+    public interface IMapLocationColorProvider : IReactiveObject
+    {
+        string BorderColor { get; }
+        string Color { get; }
+        ReactiveCommand<PointerEventArgs, Unit> HandlePointerEnter { get; }
+        ReactiveCommand<PointerEventArgs, Unit> HandlePointerLeave { get; }
 
-    delegate IMapLocationColorProvider Factory(IMapLocation mapLocation);
+        delegate IMapLocationColorProvider Factory(IMapLocation mapLocation);
+    }
 }

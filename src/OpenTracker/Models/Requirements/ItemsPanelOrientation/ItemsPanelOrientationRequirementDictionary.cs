@@ -1,33 +1,32 @@
 using System.Collections.Generic;
 using Avalonia.Layout;
 using OpenTracker.Utils;
-using OpenTracker.Utils.Autofac;
 
-namespace OpenTracker.Models.Requirements.ItemsPanelOrientation;
-
-/// <summary>
-///     This class contains the dictionary container for items panel orientation requirements.
-/// </summary>
-[DependencyInjection(SingleInstance = true)]
-public sealed class ItemsPanelOrientationRequirementDictionary : LazyDictionary<Orientation, IRequirement>,
-    IItemsPanelOrientationRequirementDictionary
+namespace OpenTracker.Models.Requirements.ItemsPanelOrientation
 {
-    private readonly ItemsPanelOrientationRequirement.Factory _factory;
-
     /// <summary>
-    ///     Constructor
+    ///     This class contains the dictionary container for items panel orientation requirements.
     /// </summary>
-    /// <param name="factory">
-    ///     An Autofac factory for creating new items panel orientation requirements.
-    /// </param>
-    public ItemsPanelOrientationRequirementDictionary(ItemsPanelOrientationRequirement.Factory factory)
-        : base(new Dictionary<Orientation, IRequirement>())
+    public class ItemsPanelOrientationRequirementDictionary : LazyDictionary<Orientation, IRequirement>,
+        IItemsPanelOrientationRequirementDictionary
     {
-        _factory = factory;
-    }
+        private readonly IItemsPanelOrientationRequirement.Factory _factory;
 
-    protected override IRequirement Create(Orientation key)
-    {
-        return _factory(key);
+        /// <summary>
+        ///     Constructor
+        /// </summary>
+        /// <param name="factory">
+        ///     An Autofac factory for creating new items panel orientation requirements.
+        /// </param>
+        public ItemsPanelOrientationRequirementDictionary(IItemsPanelOrientationRequirement.Factory factory)
+            : base(new Dictionary<Orientation, IRequirement>())
+        {
+            _factory = factory;
+        }
+
+        protected override IRequirement Create(Orientation key)
+        {
+            return _factory(key);
+        }
     }
 }

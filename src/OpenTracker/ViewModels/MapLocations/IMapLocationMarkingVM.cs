@@ -1,8 +1,9 @@
 using OpenTracker.Models.Sections;
 
-namespace OpenTracker.ViewModels.MapLocations;
-
-public interface IMapLocationMarkingVM
+namespace OpenTracker.ViewModels.MapLocations
 {
-    delegate IMapLocationMarkingVM Factory(ISection section);
+    public interface IMapLocationMarkingVM
+    {
+        delegate IMapLocationMarkingVM Factory(ISection section);
+    }
 }

@@ -2,46 +2,45 @@
 using System.Collections.Generic;
 using OpenTracker.Models.Dungeons.Mutable;
 using OpenTracker.Utils;
-using OpenTracker.Utils.Autofac;
 
-namespace OpenTracker.Models.Dungeons.Items;
-
-/// <summary>
-/// This class contains the <see cref="IDictionary{TKey,TValue}"/> container of <see cref="IDungeonItem"/> objects
-/// indexed by <see cref="DungeonItemID"/>.
-/// </summary>
-[DependencyInjection]
-public sealed class DungeonItemDictionary : LazyDictionary<DungeonItemID, IDungeonItem>, IDungeonItemDictionary
+namespace OpenTracker.Models.Dungeons.Items
 {
-    private readonly IMutableDungeon _dungeonData;
-    private readonly Lazy<IDungeonItemFactory> _factory;
-
     /// <summary>
-    /// Constructor
+    /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container of <see cref="IDungeonItem"/> objects
+    /// indexed by <see cref="DungeonItemID"/>.
     /// </summary>
-    /// <param name="factory">
-    ///     An Autofac factory for creating the <see cref="IDungeonItemFactory"/> object.
-    /// </param>
-    /// <param name="dungeonData">
-    ///     The <see cref="IMutableDungeon"/> data.
-    /// </param>
-    public DungeonItemDictionary(IDungeonItemFactory.Factory factory, IMutableDungeon dungeonData)
-        : base(new Dictionary<DungeonItemID, IDungeonItem>())
+    public class DungeonItemDictionary : LazyDictionary<DungeonItemID, IDungeonItem>, IDungeonItemDictionary
     {
-        _dungeonData = dungeonData;
-        _factory = new Lazy<IDungeonItemFactory>(() => factory());
-    }
+        private readonly IMutableDungeon _dungeonData;
+        private readonly Lazy<IDungeonItemFactory> _factory;
 
-    public void PopulateItems(IList<DungeonItemID> items)
-    {
-        foreach (var item in items)
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="factory">
+        ///     An Autofac factory for creating the <see cref="IDungeonItemFactory"/> object.
+        /// </param>
+        /// <param name="dungeonData">
+        ///     The <see cref="IMutableDungeon"/> data.
+        /// </param>
+        public DungeonItemDictionary(IDungeonItemFactory.Factory factory, IMutableDungeon dungeonData)
+            : base(new Dictionary<DungeonItemID, IDungeonItem>())
         {
-            _ = this[item];
+            _dungeonData = dungeonData;
+            _factory = new Lazy<IDungeonItemFactory>(() => factory());
         }
-    }
 
-    protected override IDungeonItem Create(DungeonItemID key)
-    {
-        return _factory.Value.GetDungeonItem(_dungeonData, key);
+        public void PopulateItems(IList<DungeonItemID> items)
+        {
+            foreach (var item in items)
+            {
+                _ = this[item];
+            }
+        }
+
+        protected override IDungeonItem Create(DungeonItemID key)
+        {
+            return _factory.Value.GetDungeonItem(_dungeonData, key);
+        }
     }
 }

@@ -1,39 +1,38 @@
 ﻿using OpenTracker.Models.PrizePlacements;
-using OpenTracker.Utils.Autofac;
 
-namespace OpenTracker.Models.UndoRedo.Prize;
-
-/// <summary>
-/// This class contains the <see cref="IUndoable"/> action to change the prize of a <see cref="IPrizePlacement"/>.
-/// </summary>
-[DependencyInjection]
-public sealed class ChangePrize : IChangePrize
+namespace OpenTracker.Models.UndoRedo.Prize
 {
-    private readonly IPrizePlacement _prizePlacement;
-
     /// <summary>
-    /// Constructor
+    /// This class contains the <see cref="IUndoable"/> action to change the prize of a <see cref="IPrizePlacement"/>.
     /// </summary>
-    /// <param name="prizePlacement">
-    ///     The <see cref="IPrizePlacement"/>.
-    /// </param>
-    public ChangePrize(IPrizePlacement prizePlacement)
+    public class ChangePrize : IChangePrize
     {
-        _prizePlacement = prizePlacement;
-    }
+        private readonly IPrizePlacement _prizePlacement;
 
-    public bool CanExecute()
-    {
-        return _prizePlacement.CanCycle();
-    }
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="prizePlacement">
+        ///     The <see cref="IPrizePlacement"/>.
+        /// </param>
+        public ChangePrize(IPrizePlacement prizePlacement)
+        {
+            _prizePlacement = prizePlacement;
+        }
 
-    public void ExecuteDo()
-    {
-        _prizePlacement.Cycle();
-    }
+        public bool CanExecute()
+        {
+            return _prizePlacement.CanCycle();
+        }
 
-    public void ExecuteUndo()
-    {
-        _prizePlacement.Cycle(true);
+        public void ExecuteDo()
+        {
+            _prizePlacement.Cycle();
+        }
+
+        public void ExecuteUndo()
+        {
+            _prizePlacement.Cycle(true);
+        }
     }
 }

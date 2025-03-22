@@ -1,11 +1,16 @@
 using OpenTracker.Utils;
-using OpenTracker.Utils.Autofac;
 
-namespace OpenTracker.ViewModels.Menus;
-
-[DependencyInjection]
-public sealed class MenuHotkeyHeaderVM : ViewModel
+namespace OpenTracker.ViewModels.Menus
 {
-    public required string Hotkey { get; init; }
-    public required string Header { get; init; }
+    public class MenuHotkeyHeaderVM : ViewModelBase, IMenuHotkeyHeaderVM
+    {
+        public string Hotkey { get; }
+        public string Header { get; }
+
+        public MenuHotkeyHeaderVM(string hotkey, string header)
+        {
+            Hotkey = hotkey;
+            Header = header;
+        }
+    }
 }

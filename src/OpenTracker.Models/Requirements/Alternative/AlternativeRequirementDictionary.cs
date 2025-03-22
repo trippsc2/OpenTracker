@@ -1,33 +1,33 @@
 using System.Collections.Generic;
+using System.Linq;
 using OpenTracker.Utils;
-using OpenTracker.Utils.Autofac;
 
-namespace OpenTracker.Models.Requirements.Alternative;
-
-/// <summary>
-/// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for
-/// <see cref="AlternativeRequirement"/> objects indexed by <see cref="HashSet{T}"/> of <see cref="IRequirement"/>.
-/// </summary>
-[DependencyInjection(SingleInstance = true)]
-public sealed class AlternativeRequirementDictionary : LazyDictionary<HashSet<IRequirement>, IRequirement>,
-    IAlternativeRequirementDictionary
+namespace OpenTracker.Models.Requirements.Alternative
 {
-    private readonly AlternativeRequirement.Factory _factory;
-        
     /// <summary>
-    /// Constructor
+    /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for
+    /// <see cref="IAlternativeRequirement"/> objects indexed by <see cref="HashSet{T}"/> of <see cref="IRequirement"/>.
     /// </summary>
-    /// <param name="factory">
-    ///     An Autofac factory for creating new <see cref="AlternativeRequirement"/> objects.
-    /// </param>
-    public AlternativeRequirementDictionary(AlternativeRequirement.Factory factory)
-        : base(new Dictionary<HashSet<IRequirement>, IRequirement>(HashSet<IRequirement>.CreateSetComparer()))
+    public class AlternativeRequirementDictionary : LazyDictionary<HashSet<IRequirement>, IRequirement>,
+        IAlternativeRequirementDictionary
     {
-        _factory = factory;
-    }
+        private readonly IAlternativeRequirement.Factory _factory;
+        
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="factory">
+        ///     An Autofac factory for creating new <see cref="IAlternativeRequirement"/> objects.
+        /// </param>
+        public AlternativeRequirementDictionary(IAlternativeRequirement.Factory factory)
+            : base(new Dictionary<HashSet<IRequirement>, IRequirement>(HashSet<IRequirement>.CreateSetComparer()))
+        {
+            _factory = factory;
+        }
 
-    protected override IRequirement Create(HashSet<IRequirement> key)
-    {
-        return _factory(key);
+        protected override IRequirement Create(HashSet<IRequirement> key)
+        {
+            return _factory(key.ToList());
+        }
     }
 }

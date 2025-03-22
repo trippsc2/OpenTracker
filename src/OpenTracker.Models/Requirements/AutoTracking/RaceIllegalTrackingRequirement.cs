@@ -1,55 +1,52 @@
-﻿using System;
-using System.Reactive.Disposables;
-using System.Reactive.Linq;
-using OpenTracker.Models.Accessibility;
+﻿using System.ComponentModel;
 using OpenTracker.Models.AutoTracking;
-using OpenTracker.Utils.Autofac;
-using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
 
-namespace OpenTracker.Models.Requirements.AutoTracking;
-
-/// <summary>
-/// This class contains <see cref="IAutoTracker.RaceIllegalTracking"/> requirement data.
-/// </summary>
-[DependencyInjection]
-public sealed class RaceIllegalTrackingRequirement : ReactiveObject, IRequirement
+namespace OpenTracker.Models.Requirements.AutoTracking
 {
-    private readonly CompositeDisposable _disposables = new();
-    
-    private IAutoTracker AutoTracker { get; }
-    
-    [ObservableAsProperty]
-    public bool Met { get; }
-    [ObservableAsProperty]
-    public AccessibilityLevel Accessibility { get; }
-    
-    public event EventHandler? ChangePropagated;
-
     /// <summary>
-    /// Constructor
+    /// This class contains <see cref="IAutoTracker.RaceIllegalTracking"/> requirement data.
     /// </summary>
-    /// <param name="autoTracker">
-    ///     The <see cref="IAutoTracker"/>.
-    /// </param>
-    public RaceIllegalTrackingRequirement(IAutoTracker autoTracker)
+    public class RaceIllegalTrackingRequirement : BooleanRequirement, IRaceIllegalTrackingRequirement
     {
-        AutoTracker = autoTracker;
+        private readonly IAutoTracker _autoTracker;
+        private readonly bool _expectedValue;
 
-        this.WhenAnyValue(x => x.AutoTracker.RaceIllegalTracking)
-            .ToPropertyEx(this, x => x.Met)
-            .DisposeWith(_disposables);
-        this.WhenAnyValue(x => x.Met)
-            .Select(x => x ? AccessibilityLevel.Normal : AccessibilityLevel.None)
-            .ToPropertyEx(this, x => x.Accessibility)
-            .DisposeWith(_disposables);
-        this.WhenAnyValue(x => x.Accessibility)
-            .Subscribe(_ => ChangePropagated?.Invoke(this, EventArgs.Empty))
-            .DisposeWith(_disposables);
-    }
-    
-    public void Dispose()
-    {
-        _disposables.Dispose();
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="autoTracker">
+        ///     The <see cref="IAutoTracker"/>.
+        /// </param>
+        public RaceIllegalTrackingRequirement(IAutoTracker autoTracker)
+        {
+            _autoTracker = autoTracker;
+            _expectedValue = true;
+
+            _autoTracker.PropertyChanged += OnAutoTrackerChanged;
+
+            UpdateValue();
+        }
+
+        /// <summary>
+        /// Subscribes to the <see cref="IAutoTracker.PropertyChanged"/> event.
+        /// </summary>
+        /// <param name="sender">
+        ///     The <see cref="object"/> from which the event is sent.
+        /// </param>
+        /// <param name="e">
+        ///     The <see cref="PropertyChangedEventArgs"/>.
+        /// </param>
+        private void OnAutoTrackerChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(IAutoTracker.RaceIllegalTracking))
+            {
+                UpdateValue();
+            }
+        }
+
+        protected override bool ConditionMet()
+        {
+            return _autoTracker.RaceIllegalTracking == _expectedValue;
+        }
     }
 }

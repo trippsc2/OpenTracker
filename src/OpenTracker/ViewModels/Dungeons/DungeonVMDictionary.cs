@@ -1,22 +1,21 @@
 using System.Collections.Generic;
 using OpenTracker.Models.Locations;
 using OpenTracker.Utils;
-using OpenTracker.Utils.Autofac;
 
-namespace OpenTracker.ViewModels.Dungeons;
-
-[DependencyInjection(SingleInstance = true)]
-public sealed class DungeonVMDictionary : LazyDictionary<LocationID, List<IDungeonItemVM>>, IDungeonVMDictionary
+namespace OpenTracker.ViewModels.Dungeons
 {
-    private readonly IDungeonVMFactory _factory;
+    public class DungeonVMDictionary : LazyDictionary<LocationID, List<IDungeonItemVM>>, IDungeonVMDictionary
+    {
+        private readonly IDungeonVMFactory _factory;
         
-    public DungeonVMDictionary(IDungeonVMFactory factory) : base(new Dictionary<LocationID, List<IDungeonItemVM>>())
-    {
-        _factory = factory;
-    }
+        public DungeonVMDictionary(IDungeonVMFactory factory) : base(new Dictionary<LocationID, List<IDungeonItemVM>>())
+        {
+            _factory = factory;
+        }
 
-    protected override List<IDungeonItemVM> Create(LocationID key)
-    {
-        return _factory.GetDungeonItemVMs(key);
+        protected override List<IDungeonItemVM> Create(LocationID key)
+        {
+            return _factory.GetDungeonItemVMs(key);
+        }
     }
 }

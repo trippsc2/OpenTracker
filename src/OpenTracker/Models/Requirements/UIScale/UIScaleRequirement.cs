@@ -1,64 +1,56 @@
 using System;
-using System.Reactive.Disposables;
-using System.Reactive.Linq;
-using OpenTracker.Models.Accessibility;
+using System.ComponentModel;
 using OpenTracker.Models.Settings;
-using OpenTracker.Utils.Autofac;
-using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
 
-namespace OpenTracker.Models.Requirements.UIScale;
-
-/// <summary>
-///     This class contains UI scale requirement data.
-/// </summary>
-[DependencyInjection]
-public sealed class UIScaleRequirement : ReactiveObject, IRequirement
+namespace OpenTracker.Models.Requirements.UIScale
 {
-    private readonly CompositeDisposable _disposables = new();
-    
-    private LayoutSettings LayoutSettings { get; }
-    
-    [ObservableAsProperty]
-    public bool Met { get; }
-    [ObservableAsProperty]
-    public AccessibilityLevel Accessibility { get; }
-    
-    public event EventHandler? ChangePropagated;
+    /// <summary>
+    ///     This class contains UI scale requirement data.
+    /// </summary>
+    public class UIScaleRequirement : BooleanRequirement, IUIScaleRequirement
+    {
+        private readonly ILayoutSettings _layoutSettings;
+        private readonly double _expectedValue;
         
-    /// <summary>
-    /// A factory method for creating new UI scale requirements.
-    /// </summary>
-    public delegate UIScaleRequirement Factory(double expectedValue);
+        /// <summary>
+        ///     Constructor
+        /// </summary>
+        /// <param name="layoutSettings">
+        ///     The layout settings data.
+        /// </param>
+        /// <param name="expectedValue">
+        ///     The expected dock value.
+        /// </param>
+        public UIScaleRequirement(ILayoutSettings layoutSettings, double expectedValue)
+        {
+            _layoutSettings = layoutSettings;
+            _expectedValue = expectedValue;
 
-    /// <summary>
-    ///     Constructor
-    /// </summary>
-    /// <param name="layoutSettings">
-    ///     The layout settings data.
-    /// </param>
-    /// <param name="expectedValue">
-    ///     The expected dock value.
-    /// </param>
-    public UIScaleRequirement(LayoutSettings layoutSettings, double expectedValue)
-    {
-        LayoutSettings = layoutSettings;
+            _layoutSettings.PropertyChanged += OnLayoutSettingsChanged;
+            
+            UpdateValue();
+        }
 
-        this.WhenAnyValue(x => x.LayoutSettings.UIScale)
-            .Select(x => Math.Abs(x - expectedValue) < 0.01)
-            .ToPropertyEx(this, x => x.Met)
-            .DisposeWith(_disposables);
-        this.WhenAnyValue(x => x.Met)
-            .Select(x => x ? AccessibilityLevel.Normal : AccessibilityLevel.None)
-            .ToPropertyEx(this, x => x.Accessibility)
-            .DisposeWith(_disposables);
-        this.WhenAnyValue(x => x.Accessibility)
-            .Subscribe(_ => ChangePropagated?.Invoke(this, EventArgs.Empty))
-            .DisposeWith(_disposables);
-    }
-    
-    public void Dispose()
-    {
-        _disposables.Dispose();
+        /// <summary>
+        ///     Subscribes to the PropertyChanged event on the ILayoutSettings interface.
+        /// </summary>
+        /// <param name="sender">
+        ///     The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        ///     The arguments of the PropertyChanged event.
+        /// </param>
+        private void OnLayoutSettingsChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ILayoutSettings.UIScale))
+            {
+                UpdateValue();
+            }
+        }
+        
+        protected override bool ConditionMet()
+        {
+            return Math.Abs(_layoutSettings.UIScale - _expectedValue) < 0.01;
+        }
     }
 }

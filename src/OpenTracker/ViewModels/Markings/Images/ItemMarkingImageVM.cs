@@ -1,46 +1,58 @@
-﻿using System.Reactive.Disposables;
-using System.Reactive.Linq;
+﻿using System;
+using System.ComponentModel;
+using System.Globalization;
+using Avalonia.Threading;
 using OpenTracker.Models.Items;
 using OpenTracker.Utils;
-using OpenTracker.Utils.Autofac;
 using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
 
-namespace OpenTracker.ViewModels.Markings.Images;
-
-/// <summary>
-/// This class contains the non-static item marking image control ViewModel data.
-/// </summary>
-[DependencyInjection]
-public sealed class ItemMarkingImageVM : ViewModel, IMarkingImageVMBase
+namespace OpenTracker.ViewModels.Markings.Images
 {
-    private IItem Item { get; }
-
-    [ObservableAsProperty]
-    public string ImageSource { get; } = string.Empty;
-
-    public delegate ItemMarkingImageVM Factory(IItem item, string imageSourceBase);
-
     /// <summary>
-    /// Constructor
+    /// This class contains the non-static item marking image control ViewModel data.
     /// </summary>
-    /// <param name="item">
-    /// The item to be represented.
-    /// </param>
-    /// <param name="imageSourceBase">
-    /// A string representing the base image source.
-    /// </param>
-    public ItemMarkingImageVM(IItem item, string imageSourceBase)
+    public class ItemMarkingImageVM : ViewModelBase, IMarkingImageVMBase
     {
-        Item = item;
-        
-        this.WhenActivated(disposables =>
+        private readonly IItem _item;
+        private readonly string _imageSourceBase;
+
+        public string ImageSource => $"{_imageSourceBase}{_item.Current.ToString(CultureInfo.InvariantCulture)}.png";
+
+        public delegate ItemMarkingImageVM Factory(IItem item, string imageSourceBase);
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="item">
+        /// The item to be represented.
+        /// </param>
+        /// <param name="imageSourceBase">
+        /// A string representing the base image source.
+        /// </param>
+        public ItemMarkingImageVM(IItem item, string imageSourceBase)
         {
-            this.WhenAnyValue(x => x.Item.Current)
-                .Select(x => $"{imageSourceBase}{x.ToString().ToLowerInvariant()}.png")
-                .ObserveOn(RxApp.MainThreadScheduler)
-                .ToPropertyEx(this, x => x.ImageSource)
-                .DisposeWith(disposables);
-        });
+            _item = item ?? throw new ArgumentNullException(nameof(item));
+            _imageSourceBase = imageSourceBase ??
+                throw new ArgumentNullException(nameof(imageSourceBase));
+
+            _item.PropertyChanged += OnItemChanged;
+        }
+
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the IItem interface.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
+        private async void OnItemChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(IItem.Current))
+            {
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(ImageSource)));
+            }
+        }
     }
 }

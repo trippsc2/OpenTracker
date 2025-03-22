@@ -1,7 +1,6 @@
+using System;
 using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
 using Autofac;
-using FluentAssertions;
 using NSubstitute;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Modes;
@@ -9,95 +8,105 @@ using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Requirements.Mode;
 using Xunit;
 
-namespace OpenTracker.UnitTests.Models.Requirements.Mode;
-
-[ExcludeFromCodeCoverage]
-public sealed class WorldStateRequirementTests
+namespace OpenTracker.UnitTests.Models.Requirements.Mode
 {
-    private readonly IMode _mode = Substitute.For<IMode>();
-
-    private void ChangeWorldState(WorldState newValue)
+    public class WorldStateRequirementTests
     {
-        _mode.WorldState.Returns(newValue);
-        _mode.PropertyChanged += Raise
-            .Event<PropertyChangedEventHandler>(
-                _mode,
-                new PropertyChangedEventArgs(nameof(IMode.WorldState)));
-    }
+        private readonly IMode _mode = Substitute.For<IMode>();
 
-    [Fact]
-    public void Met_ShouldRaisePropertyChanged()
-    {
-        const WorldState worldState = WorldState.Inverted;
-        
-        var sut = new WorldStateRequirement(_mode, worldState);
-        using var monitor = sut.Monitor();
-        
-        ChangeWorldState(worldState);
-        
-        monitor.Should().RaisePropertyChangeFor(x => x.Met);
-    }
+        [Fact]
+        public void ModeChanged_ShouldUpdateMetValue()
+        {
+            const WorldState worldState = WorldState.Inverted;
+            var sut = new WorldStateRequirement(_mode, worldState);
+            _mode.WorldState.Returns(worldState);
 
-    [Theory]
-    [InlineData(true, WorldState.StandardOpen, WorldState.StandardOpen)]
-    [InlineData(false, WorldState.StandardOpen, WorldState.Inverted)]
-    [InlineData(false, WorldState.Inverted, WorldState.StandardOpen)]
-    [InlineData(true, WorldState.Inverted, WorldState.Inverted)]
-    public void Met_ShouldReturnExpectedValue(bool expected, WorldState worldState, WorldState requirement)
-    {
-        var sut = new WorldStateRequirement(_mode, requirement);
-        ChangeWorldState(worldState);
+            _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                _mode, new PropertyChangedEventArgs(nameof(IMode.WorldState)));
             
-        sut.Met.Should().Be(expected);
-    }
+            Assert.True(sut.Met);
+        }
 
-    [Fact]
-    public void Accessibility_ShouldRaisePropertyChanged()
-    {
-        const WorldState worldState = WorldState.Inverted;
-        
-        var sut = new WorldStateRequirement(_mode, worldState);
-        using var monitor = sut.Monitor();
-        
-        ChangeWorldState(worldState);
-        
-        monitor.Should().RaisePropertyChangeFor(x => x.Accessibility);
-    }
+        [Fact]
+        public void Met_ShouldRaisePropertyChanged()
+        {
+            const WorldState worldState = WorldState.Inverted;
+            var sut = new WorldStateRequirement(_mode, worldState);
+            _mode.WorldState.Returns(worldState);
 
-    [Fact]
-    public void Accessibility_ShouldRaiseChangePropagated()
-    {
-        const WorldState worldState = WorldState.Inverted;
-        
-        var sut = new WorldStateRequirement(_mode, worldState);
-        using var monitor = sut.Monitor();
-        
-        ChangeWorldState(worldState);
+            Assert.PropertyChanged(sut, nameof(IRequirement.Met), 
+                () => _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                    _mode, new PropertyChangedEventArgs(nameof(IMode.WorldState))));
+        }
 
-        monitor.Should().Raise(nameof(IRequirement.ChangePropagated));
-    }
+        [Fact]
+        public void Met_ShouldRaiseChangePropagated()
+        {
+            const WorldState worldState = WorldState.Inverted;
+            var sut = new WorldStateRequirement(_mode, worldState);
+            _mode.WorldState.Returns(worldState);
 
-    [Theory]
-    [InlineData(AccessibilityLevel.Normal, WorldState.StandardOpen, WorldState.StandardOpen)]
-    [InlineData(AccessibilityLevel.None, WorldState.StandardOpen, WorldState.Inverted)]
-    [InlineData(AccessibilityLevel.None, WorldState.Inverted, WorldState.StandardOpen)]
-    [InlineData(AccessibilityLevel.Normal, WorldState.Inverted, WorldState.Inverted)]
-    public void Accessibility_ShouldReturnExpectedValue(AccessibilityLevel expected, WorldState worldState, WorldState requirement)
-    {
-        var sut = new WorldStateRequirement(_mode, requirement);
-        ChangeWorldState(worldState);
+            var eventRaised = false;
+
+            void Handler(object? sender, EventArgs e)
+            {
+                eventRaised = true;
+            }
             
-        sut.Accessibility.Should().Be(expected);
-    }
+            sut.ChangePropagated += Handler;
+            _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                _mode, new PropertyChangedEventArgs(nameof(IMode.WorldState)));
+            sut.ChangePropagated -= Handler;
+            
+            Assert.True(eventRaised);
+        }
 
-    [Fact]
-    public void AutofacResolve_ShouldResolveToTransientInstance()
-    {
-        using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-        var factory = scope.Resolve<WorldStateRequirement.Factory>();
-        var sut1 = factory(WorldState.StandardOpen);
-        var sut2 = factory(WorldState.StandardOpen);
-        
-        sut1.Should().NotBeSameAs(sut2);
+        [Theory]
+        [InlineData(true, WorldState.StandardOpen, WorldState.StandardOpen)]
+        [InlineData(false, WorldState.StandardOpen, WorldState.Inverted)]
+        [InlineData(false, WorldState.Inverted, WorldState.StandardOpen)]
+        [InlineData(true, WorldState.Inverted, WorldState.Inverted)]
+        public void Met_ShouldReturnExpectedValue(bool expected, WorldState worldState, WorldState requirement)
+        {
+            _mode.WorldState.Returns(worldState);
+            var sut = new WorldStateRequirement(_mode, requirement);
+            
+            Assert.Equal(expected, sut.Met);
+        }
+
+        [Fact]
+        public void Accessibility_ShouldRaisePropertyChanged()
+        {
+            const WorldState worldState = WorldState.Inverted;
+            var sut = new WorldStateRequirement(_mode, worldState);
+            _mode.WorldState.Returns(worldState);
+
+            Assert.PropertyChanged(sut, nameof(IRequirement.Accessibility), 
+                () => _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                    _mode, new PropertyChangedEventArgs(nameof(IMode.WorldState))));
+        }
+
+        [Theory]
+        [InlineData(AccessibilityLevel.Normal, WorldState.StandardOpen, WorldState.StandardOpen)]
+        [InlineData(AccessibilityLevel.None, WorldState.StandardOpen, WorldState.Inverted)]
+        [InlineData(AccessibilityLevel.None, WorldState.Inverted, WorldState.StandardOpen)]
+        [InlineData(AccessibilityLevel.Normal, WorldState.Inverted, WorldState.Inverted)]
+        public void Accessibility_ShouldReturnExpectedValue(AccessibilityLevel expected, WorldState worldState, WorldState requirement)
+        {
+            _mode.WorldState.Returns(worldState);
+            var sut = new WorldStateRequirement(_mode, requirement);
+            
+            Assert.Equal(expected, sut.Accessibility);
+        }
+
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var factory = scope.Resolve<IWorldStateRequirement.Factory>();
+            var sut = factory(WorldState.StandardOpen);
+            
+            Assert.NotNull(sut as WorldStateRequirement);
+        }
     }
 }

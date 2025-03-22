@@ -1,64 +1,55 @@
-﻿using System;
-using System.Reactive.Disposables;
-using System.Reactive.Linq;
-using OpenTracker.Models.Accessibility;
+﻿using System.ComponentModel;
 using OpenTracker.Models.Modes;
-using OpenTracker.Utils.Autofac;
-using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
 
-namespace OpenTracker.Models.Requirements.MapShuffle;
-
-/// <summary>
-/// This class contains the <see cref="IMode.MapShuffle"/> <see cref="IRequirement"/> data.
-/// </summary>
-[DependencyInjection]
-public sealed class MapShuffleRequirement : ReactiveObject, IRequirement
+namespace OpenTracker.Models.Requirements.MapShuffle
 {
-    private readonly CompositeDisposable _disposables = new();
-    
-    private IMode Mode { get; }
-    
-    [ObservableAsProperty]
-    public bool Met { get; }
-    [ObservableAsProperty]
-    public AccessibilityLevel Accessibility { get; }
-    
-    public event EventHandler? ChangePropagated;
-
     /// <summary>
-    /// A factory method for creating new <see cref="MapShuffleRequirement"/> objects.
+    /// This class contains the <see cref="IMode.MapShuffle"/> <see cref="IRequirement"/> data.
     /// </summary>
-    public delegate MapShuffleRequirement Factory(bool expectedValue);
-
-    /// <summary>
-    /// Constructor
-    /// </summary>
-    /// <param name="mode">
-    ///     The <see cref="IMode"/> data.
-    /// </param>
-    /// <param name="expectedValue">
-    ///     A <see cref="bool"/> representing the expected <see cref="IMode.MapShuffle"/> value.
-    /// </param>
-    public MapShuffleRequirement(IMode mode, bool expectedValue)
+    public class MapShuffleRequirement : BooleanRequirement, IMapShuffleRequirement
     {
-        Mode = mode;
+        private readonly IMode _mode;
+        private readonly bool _expectedValue;
 
-        this.WhenAnyValue(x => x.Mode.MapShuffle)
-            .Select(x => x == expectedValue)
-            .ToPropertyEx(this, x => x.Met)
-            .DisposeWith(_disposables);
-        this.WhenAnyValue(x => x.Met)
-            .Select(x => x ? AccessibilityLevel.Normal : AccessibilityLevel.None)
-            .ToPropertyEx(this, x => x.Accessibility)
-            .DisposeWith(_disposables);
-        this.WhenAnyValue(x => x.Accessibility)
-            .Subscribe(_ => ChangePropagated?.Invoke(this, EventArgs.Empty))
-            .DisposeWith(_disposables);
-    }
-    
-    public void Dispose()
-    {
-        _disposables.Dispose();
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="mode">
+        ///     The <see cref="IMode"/> data.
+        /// </param>
+        /// <param name="expectedValue">
+        ///     A <see cref="bool"/> representing the expected <see cref="IMode.MapShuffle"/> value.
+        /// </param>
+        public MapShuffleRequirement(IMode mode, bool expectedValue)
+        {
+            _mode = mode;
+            _expectedValue = expectedValue;
+
+            _mode.PropertyChanged += OnModeChanged;
+
+            UpdateValue();
+        }
+
+        /// <summary>
+        ///     Subscribes to the PropertyChanged event on the IMode interface.
+        /// </summary>
+        /// <param name="sender">
+        ///     The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        ///     The arguments of the PropertyChanged event.
+        /// </param>
+        private void OnModeChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(IMode.MapShuffle))
+            {
+                UpdateValue();
+            }
+        }
+
+        protected override bool ConditionMet()
+        {
+            return _mode.MapShuffle == _expectedValue;
+        }
     }
 }

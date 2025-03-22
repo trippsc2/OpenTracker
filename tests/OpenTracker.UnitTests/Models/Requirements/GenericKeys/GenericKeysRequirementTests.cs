@@ -1,7 +1,6 @@
+using System;
 using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
 using Autofac;
-using FluentAssertions;
 using NSubstitute;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Modes;
@@ -9,87 +8,100 @@ using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Requirements.GenericKeys;
 using Xunit;
 
-namespace OpenTracker.UnitTests.Models.Requirements.GenericKeys;
-
-[ExcludeFromCodeCoverage]
-public sealed class GenericKeysRequirementTests
+namespace OpenTracker.UnitTests.Models.Requirements.GenericKeys
 {
-    private readonly IMode _mode = Substitute.For<IMode>();
-
-    private void ChangeGenericKeys(bool newValue)
+    public class GenericKeysRequirementTests
     {
-        _mode.GenericKeys.Returns(newValue);
-        _mode.PropertyChanged += Raise
-            .Event<PropertyChangedEventHandler>(
+        private readonly IMode _mode = Substitute.For<IMode>();
+        
+        [Fact]
+        public void ModeChanged_ShouldUpdateMetValue()
+        {
+            var sut = new GenericKeysRequirement(_mode, true);
+            _mode.GenericKeys.Returns(true);
+
+            _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
                 _mode, new PropertyChangedEventArgs(nameof(IMode.GenericKeys)));
-    }
+            
+            Assert.True(sut.Met);
+        }
 
-    [Fact]
-    public void Met_ShouldRaisePropertyChanged()
-    {
-        var sut = new GenericKeysRequirement(_mode, true);
-        using var monitor = sut.Monitor();
-        
-        ChangeGenericKeys(true);
-        
-        monitor.Should().RaisePropertyChangeFor(x => x.Met);
-    }
+        [Fact]
+        public void Met_ShouldRaisePropertyChanged()
+        {
+            var sut = new GenericKeysRequirement(_mode, true);
+            _mode.GenericKeys.Returns(true);
 
-    [Theory]
-    [InlineData(true, false, false)]
-    [InlineData(false, false, true)]
-    [InlineData(true, true, true)]
-    public void Met_ShouldReturnExpectedValue(bool expected, bool genericKeys, bool requirement)
-    {
-        var sut = new GenericKeysRequirement(_mode, requirement);
-        ChangeGenericKeys(genericKeys);
+            Assert.PropertyChanged(sut, nameof(IRequirement.Met), 
+                () => _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                    _mode, new PropertyChangedEventArgs(nameof(IMode.GenericKeys))));
+        }
 
-        sut.Met.Should().Be(expected);
-    }
+        [Fact]
+        public void Met_ShouldRaiseChangePropagated()
+        {
+            var sut = new GenericKeysRequirement(_mode, true);
+            _mode.GenericKeys.Returns(true);
 
-    [Fact]
-    public void Accessibility_ShouldRaisePropertyChanged()
-    {
-        var sut = new GenericKeysRequirement(_mode, true);
-        using var monitor = sut.Monitor();
-        
-        ChangeGenericKeys(true);
-        
-        monitor.Should().RaisePropertyChangeFor(x => x.Accessibility);
-    }
+            var eventRaised = false;
 
-    [Fact]
-    public void Accessibility_ShouldRaiseChangePropagated()
-    {
-        var sut = new GenericKeysRequirement(_mode, true);
-        using var monitor = sut.Monitor();
-        
-        ChangeGenericKeys(true);
-        
-        monitor.Should().Raise(nameof(IRequirement.ChangePropagated));
-    }
+            void Handler(object? sender, EventArgs e)
+            {
+                eventRaised = true;
+            }
+            
+            sut.ChangePropagated += Handler;
+            _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                _mode, new PropertyChangedEventArgs(nameof(IMode.GenericKeys)));
+            sut.ChangePropagated -= Handler;
+            
+            Assert.True(eventRaised);
+        }
 
-    [Theory]
-    [InlineData(AccessibilityLevel.Normal, false, false)]
-    [InlineData(AccessibilityLevel.None, false, true)]
-    [InlineData(AccessibilityLevel.Normal, true, true)]
-    public void Accessibility_ShouldReturnExpectedValue(
-        AccessibilityLevel expected, bool genericKeys, bool requirement)
-    {
-        var sut = new GenericKeysRequirement(_mode, requirement);
-        ChangeGenericKeys(genericKeys);
+        [Theory]
+        [InlineData(true, false, false)]
+        [InlineData(false, false, true)]
+        [InlineData(true, true, true)]
+        public void Met_ShouldReturnExpectedValue(bool expected, bool genericKeys, bool requirement)
+        {
+            _mode.GenericKeys.Returns(genericKeys);
+            var sut = new GenericKeysRequirement(_mode, requirement);
+            
+            Assert.Equal(expected, sut.Met);
+        }
 
-        sut.Accessibility.Should().Be(expected);
-    }
+        [Fact]
+        public void Accessibility_ShouldRaisePropertyChanged()
+        {
+            var sut = new GenericKeysRequirement(_mode, true);
+            _mode.GenericKeys.Returns(true);
 
-    [Fact]
-    public void AutofacResolve_ShouldResolveAsTransientInstance()
-    {
-        using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-        var factory = scope.Resolve<GenericKeysRequirement.Factory>();
-        var sut1 = factory(false);
-        var sut2 = factory(false);
+            Assert.PropertyChanged(sut, nameof(IRequirement.Accessibility),
+                () => _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                    _mode, new PropertyChangedEventArgs(nameof(IMode.GenericKeys))));
+        }
 
-        sut1.Should().NotBeSameAs(sut2);
+        [Theory]
+        [InlineData(AccessibilityLevel.Normal, false, false)]
+        [InlineData(AccessibilityLevel.None, false, true)]
+        [InlineData(AccessibilityLevel.Normal, true, true)]
+        public void Accessibility_ShouldReturnExpectedValue(
+            AccessibilityLevel expected, bool bigKeyShuffle, bool requirement)
+        {
+            _mode.GenericKeys.Returns(bigKeyShuffle);
+            var sut = new GenericKeysRequirement(_mode, requirement);
+            
+            Assert.Equal(expected, sut.Accessibility);
+        }
+
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var factory = scope.Resolve<IGenericKeysRequirement.Factory>();
+            var sut = factory(false);
+            
+            Assert.NotNull(sut as GenericKeysRequirement);
+        }
     }
 }

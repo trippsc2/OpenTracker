@@ -1,8 +1,9 @@
 using OpenTracker.Models.Locations.Map;
 
-namespace OpenTracker.ViewModels.MapLocations;
-
-public interface IMapLocationVMFactory
+namespace OpenTracker.ViewModels.MapLocations
 {
-    IMapLocationVM GetMapLocation(IMapLocation mapLocation);
+    public interface IMapLocationVMFactory
+    {
+        IMapLocationVM GetMapLocation(IMapLocation mapLocation);
+    }
 }

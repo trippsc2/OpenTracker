@@ -1,20 +1,19 @@
 using System.IO;
-using OpenTracker.Utils.Autofac;
 
-namespace OpenTracker.Utils;
-
-/// <summary>
-/// This class contains the logic for manipulating the file system, abstracted to allow for non-destructive unit
-/// tests.
-/// </summary>
-[DependencyInjection(SingleInstance = true)]
-public sealed class FileManager : IFileManager
+namespace OpenTracker.Utils
 {
-    public void EnsureFileDoesNotExist(string path)
+    /// <summary>
+    /// This class contains the logic for manipulating the file system, abstracted to allow for non-destructive unit
+    /// tests.
+    /// </summary>
+    public class FileManager : IFileManager
     {
-        if (File.Exists(path))
+        public void EnsureFileDoesNotExist(string path)
         {
-            File.Delete(path);
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
         }
     }
 }

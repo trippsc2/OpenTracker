@@ -1,42 +1,41 @@
-using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Prizes;
 using Xunit;
 
-namespace OpenTracker.UnitTests.Models.Prizes;
-
-[ExcludeFromCodeCoverage]
-public sealed class PrizeDictionaryTests
+namespace OpenTracker.UnitTests.Models.Prizes
 {
-    // ReSharper disable once CollectionNeverUpdated.Local
-    private readonly PrizeDictionary _sut = new((_, _) => Substitute.For<IItem>());
+    public class PrizeDictionaryTests
+    {
+        // ReSharper disable once CollectionNeverUpdated.Local
+        private readonly PrizeDictionary _sut = new((_, _) => Substitute.For<IItem>());
         
-    [Fact]
-    public void Indexer_ShouldReturnTheSameInstance()
-    {
-        var prize1 = _sut[PrizeType.Aga1];
-        var prize2 = _sut[PrizeType.Aga1];
+        [Fact]
+        public void Indexer_ShouldReturnTheSameInstance()
+        {
+            var prize1 = _sut[PrizeType.Aga1];
+            var prize2 = _sut[PrizeType.Aga1];
             
-        Assert.Equal(prize1, prize2);
-    }
+            Assert.Equal(prize1, prize2);
+        }
 
-    [Fact]
-    public void Indexer_ShouldReturnTheDifferentInstances()
-    {
-        var prize1 = _sut[PrizeType.Aga1];
-        var prize2 = _sut[PrizeType.Aga2];
+        [Fact]
+        public void Indexer_ShouldReturnTheDifferentInstances()
+        {
+            var prize1 = _sut[PrizeType.Aga1];
+            var prize2 = _sut[PrizeType.Aga2];
             
-        Assert.NotEqual(prize1, prize2);
-    }
+            Assert.NotEqual(prize1, prize2);
+        }
 
-    [Fact]
-    public void AutofacTest()
-    {
-        using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-        var sut = scope.Resolve<IPrizeDictionary>();
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var sut = scope.Resolve<IPrizeDictionary>();
             
-        Assert.NotNull(sut as PrizeDictionary);
+            Assert.NotNull(sut as PrizeDictionary);
+        }
     }
 }

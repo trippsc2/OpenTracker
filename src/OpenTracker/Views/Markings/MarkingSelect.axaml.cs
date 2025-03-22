@@ -1,18 +1,18 @@
-﻿using Avalonia.Markup.Xaml;
-using Avalonia.ReactiveUI;
-using OpenTracker.ViewModels.Markings;
+﻿using Avalonia.Controls;
+using Avalonia.Markup.Xaml;
 
-namespace OpenTracker.Views.Markings;
-
-public sealed class MarkingSelect : ReactiveUserControl<MarkingSelectVM>
+namespace OpenTracker.Views.Markings
 {
-    public MarkingSelect()
+    public class MarkingSelect : UserControl
     {
-        InitializeComponent();
-    }
+        public MarkingSelect()
+        {
+            InitializeComponent();
+        }
 
-    private void InitializeComponent()
-    {
-        AvaloniaXamlLoader.Load(this);
+        private void InitializeComponent()
+        {
+            AvaloniaXamlLoader.Load(this);
+        }
     }
 }

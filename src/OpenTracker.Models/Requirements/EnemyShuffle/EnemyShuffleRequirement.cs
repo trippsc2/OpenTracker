@@ -1,64 +1,55 @@
-﻿using System;
-using System.Reactive.Disposables;
-using System.Reactive.Linq;
-using OpenTracker.Models.Accessibility;
+﻿using System.ComponentModel;
 using OpenTracker.Models.Modes;
-using OpenTracker.Utils.Autofac;
-using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
 
-namespace OpenTracker.Models.Requirements.EnemyShuffle;
-
-/// <summary>
-/// This class contains <see cref="IMode.EnemyShuffle"/> requirement data.
-/// </summary>
-[DependencyInjection]
-public sealed class EnemyShuffleRequirement : ReactiveObject, IRequirement
+namespace OpenTracker.Models.Requirements.EnemyShuffle
 {
-    private readonly CompositeDisposable _disposables = new();
-    
-    private IMode Mode { get; }
-    
-    [ObservableAsProperty]
-    public bool Met { get; }
-    [ObservableAsProperty]
-    public AccessibilityLevel Accessibility { get; }
-    
-    public event EventHandler? ChangePropagated;
-
     /// <summary>
-    /// A factory method for creating new <see cref="EnemyShuffleRequirement"/> objects.
+    /// This class contains <see cref="IMode.EnemyShuffle"/> requirement data.
     /// </summary>
-    public delegate EnemyShuffleRequirement Factory(bool expectedValue);
-
-    /// <summary>
-    /// Constructor
-    /// </summary>
-    /// <param name="mode">
-    ///     The <see cref="IMode"/> data.
-    /// </param>
-    /// <param name="expectedValue">
-    ///     A <see cref="bool"/> representing the expected <see cref="IMode.EnemyShuffle"/> value.
-    /// </param>
-    public EnemyShuffleRequirement(IMode mode, bool expectedValue)
+    public class EnemyShuffleRequirement : BooleanRequirement, IEnemyShuffleRequirement
     {
-        Mode = mode;
+        private readonly IMode _mode;
+        private readonly bool _expectedValue;
 
-        this.WhenAnyValue(x => x.Mode.EnemyShuffle)
-            .Select(x => x == expectedValue)
-            .ToPropertyEx(this, x => x.Met)
-            .DisposeWith(_disposables);
-        this.WhenAnyValue(x => x.Met)
-            .Select(x => x ? AccessibilityLevel.Normal : AccessibilityLevel.None)
-            .ToPropertyEx(this, x => x.Accessibility)
-            .DisposeWith(_disposables);
-        this.WhenAnyValue(x => x.Accessibility)
-            .Subscribe(_ => ChangePropagated?.Invoke(this, EventArgs.Empty))
-            .DisposeWith(_disposables);
-    }
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="mode">
+        ///     The <see cref="IMode"/> data.
+        /// </param>
+        /// <param name="expectedValue">
+        ///     A <see cref="bool"/> representing the expected <see cref="IMode.EnemyShuffle"/> value.
+        /// </param>
+        public EnemyShuffleRequirement(IMode mode, bool expectedValue)
+        {
+            _mode = mode;
+            _expectedValue = expectedValue;
+            
+            _mode.PropertyChanged += OnModeChanged;
+            
+            UpdateValue();
+        }
 
-    public void Dispose()
-    {
-        _disposables.Dispose();
+        /// <summary>
+        /// Subscribes to the <see cref="IMode.PropertyChanged"/> event.
+        /// </summary>
+        /// <param name="sender">
+        ///     The <see cref="object"/> from which the event is sent.
+        /// </param>
+        /// <param name="e">
+        ///     The <see cref="PropertyChangedEventArgs"/>.
+        /// </param>
+        private void OnModeChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(IMode.EnemyShuffle))
+            {
+                UpdateValue();
+            }
+        }
+
+        protected override bool ConditionMet()
+        {
+            return _mode.EnemyShuffle == _expectedValue;
+        }
     }
 }

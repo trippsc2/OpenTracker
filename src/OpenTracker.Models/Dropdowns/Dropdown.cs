@@ -1,76 +1,102 @@
-﻿using OpenTracker.Models.Requirements;
+﻿using System.ComponentModel;
+using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Models.UndoRedo.Dropdowns;
-using OpenTracker.Utils.Autofac;
 using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
 
-namespace OpenTracker.Models.Dropdowns;
-
-[DependencyInjection]
-public sealed class Dropdown : ReactiveObject, IDropdown
+namespace OpenTracker.Models.Dropdowns
 {
-
-    private readonly ICheckDropdown.Factory _checkDropdownFactory;
-    private readonly IUncheckDropdown.Factory _uncheckDropdownFactory;
-
-    public IRequirement Requirement { get; }
-    [Reactive]
-    public bool Checked { get; set; }
-
     /// <summary>
-    /// Constructor
+    /// This class contains dropdown data.
     /// </summary>
-    /// <param name="checkDropdownFactory">
-    ///     An Autofac factory for creating new <see cref="ICheckDropdown"/> objects.
-    /// </param>
-    /// <param name="uncheckDropdownFactory">
-    ///     An Autofac factory for creating new <see cref="IUncheckDropdown"/> objects.
-    /// </param>
-    /// <param name="requirement">
-    ///     The <see cref="IRequirement"/> for the dropdown to be relevant.
-    /// </param>
-    public Dropdown(
-        ICheckDropdown.Factory checkDropdownFactory, IUncheckDropdown.Factory uncheckDropdownFactory,
-        IRequirement requirement)
+    public class Dropdown : ReactiveObject, IDropdown
     {
-        _checkDropdownFactory = checkDropdownFactory;
-        _uncheckDropdownFactory = uncheckDropdownFactory;
-        
-        Requirement = requirement;
-    }
+        private readonly IRequirement _requirement;
 
-    public IUndoable CreateCheckDropdownAction()
-    {
-        return _checkDropdownFactory(this);
-    }
+        private readonly ICheckDropdown.Factory _checkDropdownFactory;
+        private readonly IUncheckDropdown.Factory _uncheckDropdownFactory;
 
-    public IUndoable CreateUncheckDropdownAction()
-    {
-        return _uncheckDropdownFactory(this);
-    }
+        public bool RequirementMet => _requirement.Met;
 
-    public void Reset()
-    {
-        Checked = false;
-    }
-
-    public DropdownSaveData Save()
-    {
-        return new DropdownSaveData
+        private bool _checked;
+        public bool Checked
         {
-            Checked = Checked
-        };
-    }
-
-    public void Load(DropdownSaveData? saveData)
-    {
-        if (saveData == null)
-        {
-            return;
+            get => _checked;
+            set => this.RaiseAndSetIfChanged(ref _checked, value);
         }
 
-        Checked = saveData.Checked;
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="checkDropdownFactory">
+        ///     An Autofac factory for creating new <see cref="ICheckDropdown"/> objects.
+        /// </param>
+        /// <param name="uncheckDropdownFactory">
+        ///     An Autofac factory for creating new <see cref="IUncheckDropdown"/> objects.
+        /// </param>
+        /// <param name="requirement">
+        ///     The <see cref="IRequirement"/> for the dropdown to be relevant.
+        /// </param>
+        public Dropdown(
+            ICheckDropdown.Factory checkDropdownFactory, IUncheckDropdown.Factory uncheckDropdownFactory,
+            IRequirement requirement)
+        {
+            _requirement = requirement;
+            _checkDropdownFactory = checkDropdownFactory;
+            _uncheckDropdownFactory = uncheckDropdownFactory;
+
+            _requirement.PropertyChanged += OnRequirementChanged;
+        }
+
+        public IUndoable CreateCheckDropdownAction()
+        {
+            return _checkDropdownFactory(this);
+        }
+
+        public IUndoable CreateUncheckDropdownAction()
+        {
+            return _uncheckDropdownFactory(this);
+        }
+
+        public void Reset()
+        {
+            Checked = false;
+        }
+
+        public DropdownSaveData Save()
+        {
+            return new()
+            {
+                Checked = Checked
+            };
+        }
+
+        public void Load(DropdownSaveData? saveData)
+        {
+            if (saveData == null)
+            {
+                return;
+            }
+
+            Checked = saveData.Checked;
+        }
+
+        /// <summary>
+        /// Subscribes to the <see cref="IRequirement.PropertyChanged"/> event.
+        /// </summary>
+        /// <param name="sender">
+        ///     The <see cref="object"/> from which the event is sent.
+        /// </param>
+        /// <param name="e">
+        ///     The <see cref="PropertyChangedEventArgs"/>.
+        /// </param>
+        private void OnRequirementChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(IRequirement.Met))
+            {
+                this.RaisePropertyChanged(nameof(RequirementMet));
+            }
+        }
     }
 }

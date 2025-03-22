@@ -1,36 +1,18 @@
-using System.Reactive.Disposables;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using Avalonia.ReactiveUI;
-using OpenTracker.ViewModels.MapLocations;
-using ReactiveMarbles.ObservableEvents;
-using ReactiveUI;
 
-namespace OpenTracker.Views.MapLocations;
-
-public sealed class MapLocationMarking : ReactiveUserControl<MapLocationMarkingVM>
+namespace OpenTracker.Views.MapLocations
 {
-    private Panel Panel => this.FindControl<Panel>(nameof(Panel));
-
-    public MapLocationMarking()
+    public class MapLocationMarking : UserControl
     {
-        InitializeComponent();
-        this.WhenActivated(disposables =>
+        public MapLocationMarking()
         {
-            if (ViewModel is null)
-            {
-                return;
-            }
+            InitializeComponent();
+        }
 
-            Panel.Events()
-                .PointerReleased
-                .InvokeCommand(ViewModel.HandleClickCommand)
-                .DisposeWith(disposables);
-        });
-    }
-
-    private void InitializeComponent()
-    {
-        AvaloniaXamlLoader.Load(this);
+        private void InitializeComponent()
+        {
+            AvaloniaXamlLoader.Load(this);
+        }
     }
 }

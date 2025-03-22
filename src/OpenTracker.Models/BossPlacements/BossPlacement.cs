@@ -1,99 +1,91 @@
-﻿using System.Reactive.Disposables;
-using OpenTracker.Models.Modes;
+﻿using OpenTracker.Models.Modes;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Models.UndoRedo.Boss;
-using OpenTracker.Utils.Autofac;
 using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
 
-namespace OpenTracker.Models.BossPlacements;
-
-/// <summary>
-/// This class contains boss placement data.
-/// </summary>
-[DependencyInjection]
-public sealed class BossPlacement : ReactiveObject, IBossPlacement
+namespace OpenTracker.Models.BossPlacements
 {
-    private readonly CompositeDisposable _disposables = new();
-    
-    private readonly IChangeBoss.Factory _changeBossFactory;
-
-    private IMode Mode { get; }
-    public BossType DefaultBoss { get; }
-
-    [Reactive]
-    public BossType? Boss { get; set; }
-    [ObservableAsProperty]
-    public BossType? CurrentBoss { get; }
-
     /// <summary>
-    /// Constructor
+    /// This class contains boss placement data.
     /// </summary>
-    /// <param name="mode">
-    ///     The <see cref="IMode"/>.
-    /// </param>
-    /// <param name="changeBossFactory">
-    ///     An Autofac factory for creating new <see cref="IChangeBoss"/> objects.
-    /// </param>
-    /// <param name="defaultBoss">
-    ///     The default <see cref="BossType"/> for the boss placement.
-    /// </param>
-    public BossPlacement(IMode mode, IChangeBoss.Factory changeBossFactory, BossType defaultBoss)
+    public class BossPlacement : ReactiveObject, IBossPlacement
     {
-        _changeBossFactory = changeBossFactory;
-        Mode = mode;
-        DefaultBoss = defaultBoss;
+        private readonly IMode _mode;
 
-        if (DefaultBoss == BossType.Aga)
+        private readonly IChangeBoss.Factory _changeBossFactory;
+
+        public BossType DefaultBoss { get; }
+
+        private BossType? _boss;
+        public BossType? Boss
         {
-            Boss = BossType.Aga;
+            get => _boss;
+            set => this.RaiseAndSetIfChanged(ref _boss, value);
         }
 
-        this.WhenAnyValue(
-                x => x.Mode.BossShuffle,
-                x => x.Boss,
-                (bossShuffle, boss) => bossShuffle ? boss : DefaultBoss)
-            .ToPropertyEx(this, x => x.CurrentBoss)
-            .DisposeWith(_disposables);
-    }
-
-    public void Dispose()
-    {
-        _disposables.Dispose();
-    }
-
-    public IUndoable CreateChangeBossAction(BossType? boss)
-    {
-        return _changeBossFactory(this, boss);
-    }
-
-    public void Reset()
-    {
-        if (DefaultBoss == BossType.Aga)
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="mode">
+        ///     The <see cref="IMode"/>.
+        /// </param>
+        /// <param name="changeBossFactory">
+        ///     An Autofac factory for creating new <see cref="IChangeBoss"/> objects.
+        /// </param>
+        /// <param name="defaultBoss">
+        ///     The default <see cref="BossType"/> for the boss placement.
+        /// </param>
+        public BossPlacement(IMode mode, IChangeBoss.Factory changeBossFactory, BossType defaultBoss)
         {
-            Boss = BossType.Aga;
-            return;
+            _mode = mode;
+
+            DefaultBoss = defaultBoss;
+            _changeBossFactory = changeBossFactory;
+
+            if (DefaultBoss == BossType.Aga)
+            {
+                Boss = BossType.Aga;
+            }
         }
 
-        Boss = null;
-    }
-
-    public BossPlacementSaveData Save()
-    {
-        return new BossPlacementSaveData
+        public BossType? GetCurrentBoss()
         {
-            Boss = Boss
-        };
-    }
-
-    public void Load(BossPlacementSaveData? saveData)
-    {
-        if (saveData == null)
-        {
-            return;
+            return _mode.BossShuffle ? Boss : DefaultBoss;
         }
+
+        public IUndoable CreateChangeBossAction(BossType? boss)
+        {
+            return _changeBossFactory(this, boss);
+        }
+
+        public void Reset()
+        {
+            if (DefaultBoss == BossType.Aga)
+            {
+                Boss = BossType.Aga;
+                return;
+            }
+
+            Boss = null;
+        }
+
+        public BossPlacementSaveData Save()
+        {
+            return new()
+            {
+                Boss = Boss
+            };
+        }
+
+        public void Load(BossPlacementSaveData? saveData)
+        {
+            if (saveData == null)
+            {
+                return;
+            }
             
-        Boss = saveData.Boss;
+            Boss = saveData.Boss;
+        }
     }
 }

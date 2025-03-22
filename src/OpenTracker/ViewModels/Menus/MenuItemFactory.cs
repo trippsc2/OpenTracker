@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Input;
 using Avalonia.Controls;
 using Avalonia.Layout;
 using OpenTracker.Models.Requirements.AlwaysDisplayDungeonItems;
@@ -12,219 +13,243 @@ using OpenTracker.Models.Requirements.ShowItemCountsOnMap;
 using OpenTracker.Models.Requirements.ThemeSelected;
 using OpenTracker.Models.Requirements.UIPanelPlacement;
 using OpenTracker.Models.Requirements.UIScale;
-using OpenTracker.Utils.Autofac;
 using OpenTracker.Utils.Themes;
 
-namespace OpenTracker.ViewModels.Menus;
-
-/// <summary>
-/// This class contains the creation logic for menu item controls.
-/// </summary>
-[DependencyInjection(SingleInstance = true)]
-public sealed class MenuItemFactory : IMenuItemFactory
+namespace OpenTracker.ViewModels.Menus
 {
-    private readonly IThemeManager _themeManager;
+    /// <summary>
+    /// This class contains the creation logic for menu item controls.
+    /// </summary>
+    public class MenuItemFactory : IMenuItemFactory
+    {
+        private readonly ICaptureWindowMenuCollection _captureWindowMenuItems;
+        private readonly IThemeManager _themeManager;
         
-    private readonly IAlwaysDisplayDungeonItemsRequirementDictionary _alwaysDisplayDungeonItemsRequirements;
-    private readonly IDisplayMapsCompassesRequirementDictionary _displayMapsCompassesRequirements;
+        private readonly IAlwaysDisplayDungeonItemsRequirementDictionary _alwaysDisplayDungeonItemsRequirements;
+        private readonly IDisplayMapsCompassesRequirementDictionary _displayMapsCompassesRequirements;
 
-    private readonly ThemeSelectedRequirement.Factory _themeSelectedFactory;
-    private readonly DisplayAllLocationsRequirement.Factory _displayAllLocationsFactory;
-    private readonly ShowItemCountsOnMapRequirement.Factory _showItemCountsOnMapFactory;
-    private readonly LayoutOrientationRequirement.Factory _layoutOrientationFactory;
-    private readonly HorizontalUIPanelPlacementRequirement.Factory _horizontalUIPanelPlacementFactory;
-    private readonly HorizontalItemsPanelPlacementRequirement.Factory _horizontalItemsPanelPlacementFactory;
-    private readonly VerticalUIPanelPlacementRequirement.Factory _verticalUIPanelPlacementFactory;
-    private readonly VerticalItemsPanelPlacementRequirement.Factory _verticalItemsPanelPlacementFactory;
-    private readonly MapOrientationRequirement.Factory _mapOrientationFactory;
-    private readonly UIScaleRequirement.Factory _uiScaleFactory;
+        private readonly IMenuItemVM.Factory _itemFactory;
 
-    private readonly MenuItemVM _separator;
+        private readonly IThemeSelectedRequirement.Factory _themeSelectedFactory;
+        private readonly IDisplayAllLocationsRequirement.Factory _displayAllLocationsFactory;
+        private readonly IShowItemCountsOnMapRequirement.Factory _showItemCountsOnMapFactory;
+        private readonly ILayoutOrientationRequirement.Factory _layoutOrientationFactory;
+        private readonly IHorizontalUIPanelPlacementRequirement.Factory _horizontalUIPanelPlacementFactory;
+        private readonly IHorizontalItemsPanelPlacementRequirement.Factory _horizontalItemsPanelPlacementFactory;
+        private readonly IVerticalUIPanelPlacementRequirement.Factory _verticalUIPanelPlacementFactory;
+        private readonly IVerticalItemsPanelPlacementRequirement.Factory _verticalItemsPanelPlacementFactory;
+        private readonly IMapOrientationRequirement.Factory _mapOrientationFactory;
+        private readonly IUIScaleRequirement.Factory _uiScaleFactory;
 
-    public MenuItemFactory(
-        IThemeManager themeManager,
-        IAlwaysDisplayDungeonItemsRequirementDictionary alwaysDisplayDungeonItemsRequirements,
-        IDisplayMapsCompassesRequirementDictionary displayMapsCompassesRequirements,
-        ThemeSelectedRequirement.Factory themeSelectedFactory,
-        DisplayAllLocationsRequirement.Factory displayAllLocationsFactory,
-        ShowItemCountsOnMapRequirement.Factory showItemCountsOnMapFactory,
-        LayoutOrientationRequirement.Factory layoutOrientationFactory,
-        HorizontalUIPanelPlacementRequirement.Factory horizontalUIPanelPlacementFactory,
-        HorizontalItemsPanelPlacementRequirement.Factory horizontalItemsPanelPlacementFactory,
-        VerticalUIPanelPlacementRequirement.Factory verticalUIPanelPlacementFactory,
-        VerticalItemsPanelPlacementRequirement.Factory verticalItemsPanelPlacementFactory,
-        MapOrientationRequirement.Factory mapOrientationFactory,
-        UIScaleRequirement.Factory uiScaleFactory)
-    {
-        _themeManager = themeManager;
+        public MenuItemFactory(
+            ICaptureWindowMenuCollection captureWindowMenuItems, IThemeManager themeManager,
+            IAlwaysDisplayDungeonItemsRequirementDictionary alwaysDisplayDungeonItemsRequirements,
+            IDisplayMapsCompassesRequirementDictionary displayMapsCompassesRequirements,
+            IMenuItemVM.Factory itemFactory, IThemeSelectedRequirement.Factory themeSelectedFactory,
+            IDisplayAllLocationsRequirement.Factory displayAllLocationsFactory,
+            IShowItemCountsOnMapRequirement.Factory showItemCountsOnMapFactory,
+            ILayoutOrientationRequirement.Factory layoutOrientationFactory,
+            IHorizontalUIPanelPlacementRequirement.Factory horizontalUIPanelPlacementFactory,
+            IHorizontalItemsPanelPlacementRequirement.Factory horizontalItemsPanelPlacementFactory,
+            IVerticalUIPanelPlacementRequirement.Factory verticalUIPanelPlacementFactory,
+            IVerticalItemsPanelPlacementRequirement.Factory verticalItemsPanelPlacementFactory,
+            IMapOrientationRequirement.Factory mapOrientationFactory, IUIScaleRequirement.Factory uiScaleFactory)
+        {
+            _themeManager = themeManager;
+            _captureWindowMenuItems = captureWindowMenuItems;
+            
+            _itemFactory = itemFactory;
 
-        _themeSelectedFactory = themeSelectedFactory;
-        _displayAllLocationsFactory = displayAllLocationsFactory;
-        _showItemCountsOnMapFactory = showItemCountsOnMapFactory;
-        _layoutOrientationFactory = layoutOrientationFactory;
-        _horizontalUIPanelPlacementFactory = horizontalUIPanelPlacementFactory;
-        _horizontalItemsPanelPlacementFactory = horizontalItemsPanelPlacementFactory;
-        _verticalUIPanelPlacementFactory = verticalUIPanelPlacementFactory;
-        _verticalItemsPanelPlacementFactory = verticalItemsPanelPlacementFactory;
-        _mapOrientationFactory = mapOrientationFactory;
-        _uiScaleFactory = uiScaleFactory;
-        _alwaysDisplayDungeonItemsRequirements = alwaysDisplayDungeonItemsRequirements;
-        _displayMapsCompassesRequirements = displayMapsCompassesRequirements;
-        
-        _separator = new MenuItemVM("-");
-    }
+            _themeSelectedFactory = themeSelectedFactory;
+            _displayAllLocationsFactory = displayAllLocationsFactory;
+            _showItemCountsOnMapFactory = showItemCountsOnMapFactory;
+            _layoutOrientationFactory = layoutOrientationFactory;
+            _horizontalUIPanelPlacementFactory = horizontalUIPanelPlacementFactory;
+            _horizontalItemsPanelPlacementFactory = horizontalItemsPanelPlacementFactory;
+            _verticalUIPanelPlacementFactory = verticalUIPanelPlacementFactory;
+            _verticalItemsPanelPlacementFactory = verticalItemsPanelPlacementFactory;
+            _mapOrientationFactory = mapOrientationFactory;
+            _uiScaleFactory = uiScaleFactory;
+            _alwaysDisplayDungeonItemsRequirements = alwaysDisplayDungeonItemsRequirements;
+            _displayMapsCompassesRequirements = displayMapsCompassesRequirements;
+        }
 
-    public List<MenuItemVM> GetMenuItems()
-    {
-        return new List<MenuItemVM>
+        private List<IMenuItemVM> GetFileMenuItems(
+            ICommand open, ICommand save, ICommand saveAs, ICommand reset, ICommand close)
         {
-            new("File", items: GetFileMenuItems()),
-            new("Tracker", items: GetTrackerMenuItems()),
-            new("View", items: GetViewMenuItems())
-        };
-    }
+            return new()
+            {
+                _itemFactory("Open...", hotkey: "Ctrl+O", command: open),
+                _itemFactory("Save...", hotkey: "Ctrl+S", command: save),
+                _itemFactory("Save As...", hotkey: "Ctrl+Shift+S", command: saveAs),
+                _itemFactory("Reset...", hotkey: "F5", command: reset),
+                _itemFactory("-"),
+                _itemFactory("Close", hotkey: "Alt+F4", command: close)
+            };
+        }
 
-    private List<MenuItemVM> GetFileMenuItems()
-    {
-        return new List<MenuItemVM>
+        private List<IMenuItemVM> GetTrackerMenuItems(
+            ICommand undo, ICommand redo, ICommand autoTracker, ICommand sequenceBreaks)
         {
-            new("Open...", hotkey: "Ctrl+O"),
-            new("Save...", hotkey: "Ctrl+S"),
-            new("Save As...", hotkey: "Ctrl+Shift+S"),
-            new("Reset...", hotkey: "F5"),
-            _separator,
-            new("Close", hotkey: "Alt+F4")
-        };
-    }
+            return new()
+            {
+                _itemFactory("Undo", hotkey: "Ctrl+Z", command: undo),
+                _itemFactory("Redo", hotkey: "Ctrl+Y", command: redo),
+                _itemFactory("-"),
+                _itemFactory("Auto-Tracker...", command: autoTracker),
+                _itemFactory("-"),
+                _itemFactory("Sequence Breaks...", command: sequenceBreaks)
+            };
+        }
 
-    private List<MenuItemVM> GetTrackerMenuItems()
-    {
-        return new List<MenuItemVM>
+        private List<IMenuItemVM> GetCaptureMenuItems(
+            ICaptureWindowMenuCollection captureWindowMenuItems, ICommand captureDesign)
         {
-            new("Undo", hotkey: "Ctrl+Z"),
-            new("Redo", hotkey: "Ctrl+Y"),
-            _separator,
-            new("Auto-Tracker..."),
-            _separator,
-            new("Sequence Breaks...")
-        };
-    }
+            return new()
+            {
+                _itemFactory("Windows", items: captureWindowMenuItems),
+                _itemFactory("-"),
+                _itemFactory("Design Capture Windows...", command: captureDesign)
+            };
+        }
 
-    private List<MenuItemVM> GetViewMenuItems()
-    {
-        return new List<MenuItemVM>
+        private List<IMenuItemVM> GetThemeMenuItems(ICommand changeTheme)
         {
-            new("Theme", items: GetThemeMenuItems()),
-            _separator,
-            new("Display All Locations", _displayAllLocationsFactory(true), "F11"),
-            new("Show Item Counts on Map", _showItemCountsOnMapFactory(true)),
-            _separator,
-            new("Display Maps/Compass", _displayMapsCompassesRequirements[true]),
-            new("Always Display Dungeon Items", _alwaysDisplayDungeonItemsRequirements[true]),
-            _separator,
-            new("Change Colors..."),
-            _separator,
-            new("Layout Orientation", items: GetLayoutOrientationMenuItems()),
-            new("Horizontal Orientation", items: GetHorizontalOrientationMenuItems()),
-            new("Vertical Orientation", items: GetVerticalOrientationMenuItems()),
-            new("Map Orientation", items: GetMapOrientationMenuItems()),
-            new("UI Scale", items: GetUIScaleMenuItems()),
-            _separator,
-            new("About...")
-        };
-    }
-    
-    private List<MenuItemVM> GetThemeMenuItems()
-    {
-        return _themeManager.Themes
-            .Select(theme =>
-                new MenuItemVM(theme.Name, _themeSelectedFactory(theme), commandParameter: theme))
-            .ToList();
-    }
+            return _themeManager.Themes.Select(theme => _itemFactory(
+                theme.Name, _themeSelectedFactory(theme), command: changeTheme,
+                commandParameter: theme)).ToList();
+        }
 
-    private List<MenuItemVM> GetLayoutOrientationMenuItems()
-    {
-        return new List<MenuItemVM>
+        private List<IMenuItemVM> GetViewMenuItems(
+            ICommand changeTheme, ICommand toggleDisplayAllLocations, ICommand toggleShowItemCountsOnMap,
+            ICommand toggleDisplayMapsCompasses, ICommand toggleAlwaysDisplayDungeonItems, ICommand colorSelect,
+            ICommand changeLayoutOrientation, ICommand changeHorizontalUIPanelPlacement,
+            ICommand changeHorizontalItemsPlacement, ICommand changeVerticalUIPanelPlacement,
+            ICommand changeVerticalItemsPlacement, ICommand changeMapOrientation, ICommand changeUIScale,
+            ICommand about)
         {
-            new("Dynamic", _layoutOrientationFactory(null), commandParameter: null),
-            new("Horizontal", _layoutOrientationFactory(Orientation.Horizontal), commandParameter: Orientation.Horizontal),
-            new("Vertical", _layoutOrientationFactory(Orientation.Vertical), commandParameter: Orientation.Vertical)
-        };
-    }
+            return new()
+            {
+                _itemFactory("Theme", items: GetThemeMenuItems(changeTheme)),
+                _itemFactory("-"),
+                _itemFactory("Display All Locations",
+                    _displayAllLocationsFactory(true), "F11", toggleDisplayAllLocations),
+                _itemFactory("Show Item Counts on Map",
+                    _showItemCountsOnMapFactory(true),
+                    command: toggleShowItemCountsOnMap),
+                _itemFactory("-"),
+                _itemFactory("Display Maps/Compass",
+                    _displayMapsCompassesRequirements[true],
+                    command: toggleDisplayMapsCompasses),
+                _itemFactory("Always Display Dungeon Items",
+                    _alwaysDisplayDungeonItemsRequirements[true],
+                    command: toggleAlwaysDisplayDungeonItems),
+                _itemFactory("-"),
+                _itemFactory("Change Colors...", command: colorSelect),
+                _itemFactory("-"),
+                _itemFactory("Layout Orientation", items: new List<IMenuItemVM>
+                {
+                    _itemFactory("Dynamic", _layoutOrientationFactory(null),
+                        command: changeLayoutOrientation, commandParameter: null),
+                    _itemFactory("Horizontal",
+                        _layoutOrientationFactory(Orientation.Horizontal),
+                        command: changeLayoutOrientation, commandParameter: Orientation.Horizontal),
+                    _itemFactory("Vertical",
+                        _layoutOrientationFactory(Orientation.Vertical),
+                        command: changeLayoutOrientation, commandParameter: Orientation.Vertical),
+                }),
+                _itemFactory("Horizontal Orientation", items: new List<IMenuItemVM>
+                {
+                    _itemFactory("UI Panel Placement", items: new List<IMenuItemVM>
+                    {
+                        _itemFactory("Top",
+          _horizontalUIPanelPlacementFactory(Dock.Top),
+                            command: changeHorizontalUIPanelPlacement, commandParameter: Dock.Top),
+                        _itemFactory("Bottom",
+                            _horizontalUIPanelPlacementFactory(Dock.Bottom),
+                            command: changeHorizontalUIPanelPlacement, commandParameter: Dock.Bottom)
+                    }),
+                    _itemFactory("Items Panel Placement", items: new List<IMenuItemVM>
+                    {
+                        _itemFactory("Left",
+                            _horizontalItemsPanelPlacementFactory(Dock.Left),
+                            command: changeHorizontalItemsPlacement, commandParameter: Dock.Left),
+                        _itemFactory("Right",
+                            _horizontalItemsPanelPlacementFactory(Dock.Right),
+                            command: changeHorizontalItemsPlacement, commandParameter: Dock.Right)
+                    })
+                }),
+                _itemFactory("Vertical Orientation", items: new List<IMenuItemVM>
+                {
+                    _itemFactory("UI Panel Placement", items: new List<IMenuItemVM>
+                    {
+                        _itemFactory("Left",
+                            _verticalUIPanelPlacementFactory(Dock.Left),
+                            command: changeVerticalUIPanelPlacement, commandParameter: Dock.Left),
+                        _itemFactory("Right",
+                            _verticalUIPanelPlacementFactory(Dock.Right),
+                            command: changeVerticalUIPanelPlacement, commandParameter: Dock.Right)
+                    }),
+                    _itemFactory("Items Panel Placement", items: new List<IMenuItemVM>
+                    {
+                        _itemFactory("Top",
+                            _verticalItemsPanelPlacementFactory(Dock.Top),
+                            command: changeVerticalItemsPlacement, commandParameter: Dock.Top),
+                        _itemFactory("Bottom",
+                            _verticalItemsPanelPlacementFactory(Dock.Bottom),
+                            command: changeVerticalItemsPlacement, commandParameter: Dock.Bottom)
+                    })
+                }),
+                _itemFactory("Map Orientation", items: new List<IMenuItemVM>
+                {
+                    _itemFactory("Dynamic",
+                        _mapOrientationFactory(null),
+                        command: changeMapOrientation, commandParameter: null),
+                    _itemFactory("Horizontal",
+                        _mapOrientationFactory(Orientation.Horizontal),
+                        command: changeMapOrientation, commandParameter: Orientation.Horizontal),
+                    _itemFactory("Vertical",
+                        _mapOrientationFactory(Orientation.Vertical),
+                        command: changeMapOrientation, commandParameter: Orientation.Vertical)
+                }),
+                _itemFactory("UI Scale", items: new List<IMenuItemVM>
+                {
+                    _itemFactory("100%", _uiScaleFactory(1.0),
+                        command: changeUIScale, commandParameter: 1.0),
+                    _itemFactory("125%", _uiScaleFactory(1.25),
+                        command: changeUIScale, commandParameter: 1.25),
+                    _itemFactory("150%", _uiScaleFactory(1.5),
+                        command: changeUIScale, commandParameter: 1.5),
+                    _itemFactory("175%", _uiScaleFactory(1.75),
+                        command: changeUIScale, commandParameter: 1.75),
+                    _itemFactory("200%", _uiScaleFactory(2.0),
+                        command: changeUIScale, commandParameter: 2.0)
+                }),
+                _itemFactory("-"),
+                _itemFactory("About...", command: about)
+            };
+        }
 
-    private List<MenuItemVM> GetHorizontalOrientationMenuItems()
-    {
-        return new List<MenuItemVM>
+        public List<IMenuItemVM> GetMenuItems(
+            ICommand open, ICommand save, ICommand saveAs, ICommand reset, ICommand close, ICommand undo, ICommand redo,
+            ICommand autoTracker, ICommand sequenceBreaks, ICommand captureDesign, ICommand changeTheme,
+            ICommand toggleDisplayAllLocations, ICommand toggleShowItemCountsOnMap, ICommand toggleDisplayMapsCompasses,
+            ICommand toggleAlwaysDisplayDungeonItems, ICommand colorSelect, ICommand changeLayoutOrientation,
+            ICommand changeHorizontalUIPanelPlacement, ICommand changeHorizontalItemsPlacement,
+            ICommand changeVerticalUIPanelPlacement, ICommand changeVerticalItemsPlacement,
+            ICommand changeMapOrientation, ICommand changeUIScale, ICommand about)
         {
-            new("UI Panel Placement", items: GetHorizontalUIPanelPlacementMenuItems()),
-            new("Items Panel Placement", items: GetHorizontalItemsPanelPlacementMenuItems())
-        };
-    }
-    
-    private List<MenuItemVM> GetHorizontalUIPanelPlacementMenuItems()
-    {
-        return new List<MenuItemVM>
-        {
-            new("Top", _horizontalUIPanelPlacementFactory(Dock.Top), commandParameter: Dock.Top),
-            new("Bottom", _horizontalUIPanelPlacementFactory(Dock.Bottom), commandParameter: Dock.Bottom)
-        };
-    }
-    
-    private List<MenuItemVM> GetHorizontalItemsPanelPlacementMenuItems()
-    {
-        return new List<MenuItemVM>
-        {
-            new("Left", _horizontalItemsPanelPlacementFactory(Dock.Left), commandParameter: Dock.Left),
-            new("Right", _horizontalItemsPanelPlacementFactory(Dock.Right), commandParameter: Dock.Right)
-        };
-    }
-
-    private List<MenuItemVM> GetVerticalOrientationMenuItems()
-    {
-        return new List<MenuItemVM>
-        {
-            new("UI Panel Placement", items: GetVerticalUIPanelPlacementMenuItems()),
-            new("Items Panel Placement", items: GetVerticalItemsPanelPlacementMenuItems())
-        };
-    }
-    
-    private List<MenuItemVM> GetVerticalUIPanelPlacementMenuItems()
-    {
-        return new List<MenuItemVM>
-        {
-            new("Left", _verticalUIPanelPlacementFactory(Dock.Left), commandParameter: Dock.Left),
-            new("Right", _verticalUIPanelPlacementFactory(Dock.Right), commandParameter: Dock.Right)
-        };
-    }
-    
-    private List<MenuItemVM> GetVerticalItemsPanelPlacementMenuItems()
-    {
-        return new List<MenuItemVM>
-        {
-            new("Top", _verticalItemsPanelPlacementFactory(Dock.Top), commandParameter: Dock.Top),
-            new("Bottom", _verticalItemsPanelPlacementFactory(Dock.Bottom), commandParameter: Dock.Bottom)
-        };
-    }
-    
-    private List<MenuItemVM> GetMapOrientationMenuItems()
-    {
-        return new List<MenuItemVM>
-        {
-            new("Dynamic", _mapOrientationFactory(null), commandParameter: null),
-            new("Horizontal", _mapOrientationFactory(Orientation.Horizontal), commandParameter: Orientation.Horizontal),
-            new("Vertical", _mapOrientationFactory(Orientation.Vertical), commandParameter: Orientation.Vertical)
-        };
-    }
-
-    private List<MenuItemVM> GetUIScaleMenuItems()
-    {
-        return new List<MenuItemVM>
-        {
-            new("100%", _uiScaleFactory(1.0), commandParameter: 1.0),
-            new("125%", _uiScaleFactory(1.25), commandParameter: 1.25),
-            new("150%", _uiScaleFactory(1.5), commandParameter: 1.5),
-            new("175%", _uiScaleFactory(1.75), commandParameter: 1.75),
-            new("200%", _uiScaleFactory(2.0), commandParameter: 2.0)
-        };
+            return new()
+            {
+                _itemFactory("File", items: GetFileMenuItems(open, save, saveAs, reset, close)),
+                _itemFactory("Tracker", items: GetTrackerMenuItems(undo, redo, autoTracker, sequenceBreaks)),
+                //_itemFactory("Capture", items: GetCaptureMenuItems(_captureWindowMenuItems, captureDesign)),
+                _itemFactory("View", items: GetViewMenuItems(
+                    changeTheme, toggleDisplayAllLocations, toggleShowItemCountsOnMap, toggleDisplayMapsCompasses,
+                    toggleAlwaysDisplayDungeonItems, colorSelect, changeLayoutOrientation,
+                    changeHorizontalUIPanelPlacement, changeHorizontalItemsPlacement, changeVerticalUIPanelPlacement,
+                    changeVerticalItemsPlacement, changeMapOrientation, changeUIScale, about))
+            };
+        }
     }
 }

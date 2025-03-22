@@ -1,26 +1,27 @@
 ﻿using System.Collections.ObjectModel;
 using OpenTracker.Models.Logging;
 
-namespace OpenTracker.Models.AutoTracking.Logging;
-
-/// <summary>
-/// Represents the logging service for auto-tracker.
-/// </summary>
-public interface IAutoTrackerLogService
+namespace OpenTracker.Models.AutoTracking.Logging
 {
     /// <summary>
-    /// An <see cref="ObservableCollection{T}"/> of <see cref="LogMessage"/> representing the log messages.
+    /// This interface handles logging the auto-tracker.
     /// </summary>
-    ObservableCollection<LogMessage> LogCollection { get; }
+    public interface IAutoTrackerLogService
+    {
+        /// <summary>
+        /// The <see cref="ObservableCollection{T}"/> of log messages.
+        /// </summary>
+        ObservableCollection<ILogMessage> LogCollection { get; }
 
-    /// <summary>
-    /// Logs a new message with the specified log level and content.
-    /// </summary>
-    /// <param name="logLevel">
-    ///     A <see cref="LogLevel"/> representing the log level.
-    /// </param>
-    /// <param name="content">
-    ///     A <see cref="string"/> representing the log message content.
-    /// </param>
-    void Log(LogLevel logLevel, string content);
+        /// <summary>
+        /// Logs a new message.
+        /// </summary>
+        /// <param name="logLevel">
+        ///     The <see cref="LogLevel"/> of the message.
+        /// </param>
+        /// <param name="content">
+        ///     A <see cref="string"/> representing the content of the log message.
+        /// </param>
+        void Log(LogLevel logLevel, string content);
+    }
 }

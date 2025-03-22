@@ -1,136 +1,94 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Layout;
 using Avalonia.Markup.Xaml;
 using Avalonia.Platform;
 using OpenTracker.ViewModels;
 using System;
 using System.ComponentModel;
 using System.Linq;
-using System.Reactive;
-using System.Reactive.Disposables;
-using System.Reactive.Linq;
-using Avalonia.Input;
-using Avalonia.ReactiveUI;
-using ReactiveMarbles.ObservableEvents;
-using ReactiveUI;
+using OpenTracker.Utils.Dialog;
 
-namespace OpenTracker.Views;
-
-public sealed class MainWindow : ReactiveWindow<MainWindowVM>
+namespace OpenTracker.Views
 {
-    public MainWindow()
+    public class MainWindow : DialogWindowBase
     {
-        InitializeComponent();
-#if DEBUG
-        this.AttachDevTools();
-#endif
-        var savedBoundsLoaded = false;
-        
-        this.WhenActivated(disposables =>
+        private Orientation? _orientation;
+
+        private new IMainWindowVM? ViewModel => DataContext as IMainWindowVM;
+
+        public MainWindow()
         {
-            if (!savedBoundsLoaded)
+            BoundsProperty.Changed.AddClassHandler<MainWindow>(OnBoundsChanged);
+            InitializeComponent();
+            DataContextChanged += OnDataContextChanged;
+#if DEBUG
+            this.AttachDevTools();
+#endif
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            ViewModel?.OnClose(WindowState == WindowState.Maximized, Bounds, Position);
+
+            base.OnClosing(e);
+        }
+
+        private void InitializeComponent()
+        {
+            AvaloniaXamlLoader.Load(this);
+        }
+
+        private void OnBoundsChanged(MainWindow window, AvaloniaPropertyChangedEventArgs e)
+        {
+            ChangeLayout(Bounds);
+        }
+
+        private void OnDataContextChanged(object? sender, EventArgs e)
+        {
+            if (ViewModel?.X is null || ViewModel?.Y is null)
             {
-                LoadSavedWindowSizeAndPosition();
-                savedBoundsLoaded = true;
+                return;
             }
 
-            if (ViewModel is null)
+            if (!(GetScreen() is null))
+            {
+                Position = new PixelPoint((int)Math.Floor(ViewModel.X.Value), (int)Math.Floor(ViewModel.Y.Value));
+            }
+
+            if (!(ViewModel?.Maximized is null) && ViewModel.Maximized.Value)
+            {
+                WindowState = WindowState.Maximized;
+            }
+            
+            ChangeLayout(Bounds);
+        }
+
+        private Screen? GetScreen()
+        {
+            if (ViewModel?.X is null || ViewModel?.Y is null)
+            {
+                return null;
+            }
+
+            return Screens.All.FirstOrDefault(
+                screen => screen.Bounds.X <= ViewModel.X.Value && screen.Bounds.Y <= ViewModel.Y.Value &&
+                screen.Bounds.X + screen.Bounds.Width > ViewModel.X.Value &&
+                screen.Bounds.Y + screen.Bounds.Height > ViewModel.Y.Value);
+        }
+
+        private void ChangeLayout(Rect bounds)
+        {
+            var orientation = bounds.Height >= bounds.Width ? Orientation.Vertical : Orientation.Horizontal;
+
+            if (_orientation == orientation)
             {
                 return;
             }
             
-            ViewModel!.RequestCloseInteraction.RegisterHandler(interaction =>
-                {
-                    interaction.SetOutput(Unit.Default);
-                    Close(interaction.Input);
-                })
-                .DisposeWith(disposables);
-            
-            this.WhenAnyValue(x => x.Bounds)
-                .InvokeCommand(ViewModel.ChangeLayoutCommand)
-                .DisposeWith(disposables);
+            _orientation = orientation;
 
-            var keyDownObservable = this.Events()
-                .KeyDown;
-
-            keyDownObservable
-                .Where(x => x.Key == Key.O && x.KeyModifiers == KeyModifiers.Control)
-                .Select(_ => Unit.Default)
-                .InvokeCommand(ViewModel.OpenCommand)
-                .DisposeWith(disposables);
-            keyDownObservable
-                .Where(x => x.Key == Key.S && x.KeyModifiers == KeyModifiers.Control)
-                .Select(_ => Unit.Default)
-                .InvokeCommand(ViewModel.SaveCommand)
-                .DisposeWith(disposables);
-            keyDownObservable
-                .Where(x => x.Key == Key.S && x.KeyModifiers == (KeyModifiers.Control | KeyModifiers.Shift))
-                .Select(_ => Unit.Default)
-                .InvokeCommand(ViewModel.SaveAsCommand)
-                .DisposeWith(disposables);
-            keyDownObservable
-                .Where(x => x.Key == Key.Z && x.KeyModifiers == KeyModifiers.Control)
-                .Select(_ => Unit.Default)
-                .InvokeCommand(ViewModel.UndoCommand)
-                .DisposeWith(disposables);
-            keyDownObservable
-                .Where(x => x.Key == Key.Y && x.KeyModifiers == KeyModifiers.Control)
-                .Select(_ => Unit.Default)
-                .InvokeCommand(ViewModel.RedoCommand)
-                .DisposeWith(disposables);
-            keyDownObservable
-                .Where(x => x.Key == Key.F5)
-                .Select(_ => Unit.Default)
-                .InvokeCommand(ViewModel.ResetCommand)
-                .DisposeWith(disposables);
-            keyDownObservable
-                .Where(x => x.Key == Key.F11)
-                .Select(_ => Unit.Default)
-                .InvokeCommand(ViewModel.ToggleDisplayAllLocationsCommand)
-                .DisposeWith(disposables);
-        });
-    }
-
-    private void InitializeComponent()
-    {
-        AvaloniaXamlLoader.Load(this);
-    }
-
-    protected override void OnClosing(CancelEventArgs e)
-    {
-        ViewModel?.OnClose(WindowState == WindowState.Maximized, Bounds, Position);
-
-        base.OnClosing(e);
-    }
-
-    private void LoadSavedWindowSizeAndPosition()
-    {
-        if (ViewModel?.X is null || ViewModel?.Y is null)
-        {
-            return;
+            ViewModel?.ChangeLayout(orientation);
         }
-
-        if (GetScreen() is not null)
-        {
-            Position = new PixelPoint((int)Math.Floor(ViewModel.X.Value), (int)Math.Floor(ViewModel.Y.Value));
-        }
-
-        if (ViewModel?.Maximized is not null && ViewModel.Maximized.Value)
-        {
-            WindowState = WindowState.Maximized;
-        }
-    }
-
-    private Screen? GetScreen()
-    {
-        if (ViewModel?.X is null || ViewModel?.Y is null)
-        {
-            return null;
-        }
-
-        return Screens.All.FirstOrDefault(
-            screen => screen.Bounds.X <= ViewModel.X.Value && screen.Bounds.Y <= ViewModel.Y.Value &&
-                      screen.Bounds.X + screen.Bounds.Width > ViewModel.X.Value &&
-                      screen.Bounds.Y + screen.Bounds.Height > ViewModel.Y.Value);
     }
 }

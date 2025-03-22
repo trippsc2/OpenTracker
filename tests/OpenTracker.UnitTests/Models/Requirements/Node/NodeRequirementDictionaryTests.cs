@@ -1,48 +1,47 @@
-using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Nodes;
 using OpenTracker.Models.Requirements.Node;
 using Xunit;
 
-namespace OpenTracker.UnitTests.Models.Requirements.Node;
-
-[ExcludeFromCodeCoverage]
-public sealed class NodeRequirementDictionaryTests
+namespace OpenTracker.UnitTests.Models.Requirements.Node
 {
-    private readonly IOverworldNodeDictionary _overworldNodes = Substitute.For<IOverworldNodeDictionary>();
-
-    private readonly NodeRequirementDictionary _sut;
-
-    public NodeRequirementDictionaryTests()
+    public class NodeRequirementDictionaryTests
     {
-        _sut = new NodeRequirementDictionary(_overworldNodes, node => new NodeRequirement(node));
-    }
+        private readonly IOverworldNodeDictionary _overworldNodes = Substitute.For<IOverworldNodeDictionary>();
 
-    [Fact]
-    public void Indexer_ShouldReturnTheSameInstance()
-    {
-        var requirement1 = _sut[OverworldNodeID.LightWorld];
-        var requirement2 = _sut[OverworldNodeID.LightWorld];
+        private readonly NodeRequirementDictionary _sut;
+
+        public NodeRequirementDictionaryTests()
+        {
+            _sut = new NodeRequirementDictionary(_overworldNodes, _ => Substitute.For<INodeRequirement>());
+        }
+
+        [Fact]
+        public void Indexer_ShouldReturnTheSameInstance()
+        {
+            var requirement1 = _sut[OverworldNodeID.LightWorld];
+            var requirement2 = _sut[OverworldNodeID.LightWorld];
             
-        Assert.Equal(requirement1, requirement2);
-    }
+            Assert.Equal(requirement1, requirement2);
+        }
 
-    [Fact]
-    public void Indexer_ShouldReturnDifferentInstances()
-    {
-        var requirement1 = _sut[OverworldNodeID.LightWorld];
-        var requirement2 = _sut[OverworldNodeID.LightWorldInverted];
+        [Fact]
+        public void Indexer_ShouldReturnDifferentInstances()
+        {
+            var requirement1 = _sut[OverworldNodeID.LightWorld];
+            var requirement2 = _sut[OverworldNodeID.LightWorldInverted];
             
-        Assert.NotEqual(requirement1, requirement2);
-    }
+            Assert.NotEqual(requirement1, requirement2);
+        }
         
-    [Fact]
-    public void AutofacTest()
-    {
-        using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-        var sut = scope.Resolve<INodeRequirementDictionary>();
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var sut = scope.Resolve<INodeRequirementDictionary>();
             
-        Assert.NotNull(sut as NodeRequirementDictionary);
+            Assert.NotNull(sut as NodeRequirementDictionary);
+        }
     }
 }

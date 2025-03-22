@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Autofac;
 using ExpectedObjects;
@@ -19,154 +18,152 @@ using OpenTracker.Models.Sections.Factories;
 using OpenTracker.Models.UndoRedo.Sections;
 using Xunit;
 
-namespace OpenTracker.UnitTests.Models.Sections.Factories;
-
-[ExcludeFromCodeCoverage]
-public sealed class DropdownSectionFactoryTests
+namespace OpenTracker.UnitTests.Models.Sections.Factories
 {
-    private static readonly IAlternativeRequirementDictionary AlternativeRequirements =
-        new AlternativeRequirementDictionary(
-            requirements => new AlternativeRequirement(requirements));
-    private static readonly IEntranceShuffleRequirementDictionary EntranceShuffleRequirements =
-        new EntranceShuffleRequirementDictionary(expectedValue =>
-            new EntranceShuffleRequirement(Mode, expectedValue));
-
-    private static readonly IOverworldNodeDictionary OverworldNodes = new OverworldNodeDictionary(
-        () => Substitute.For<IOverworldNodeFactory>());
-
-    private static readonly ISaveLoadManager SaveLoadManager = Substitute.For<ISaveLoadManager>();
-    private static readonly IMode Mode = Substitute.For<IMode>();
-
-    private static readonly ICollectSection.Factory CollectSectionFactory =
-        (section, force) => new CollectSection(section, force);
-    private static readonly IUncollectSection.Factory UncollectSectionFactory =
-        section => new UncollectSection(section);
-
-    private static readonly IMarking.Factory MarkingFactory = () => Substitute.For<IMarking>();
-
-    private static readonly IDropdownSection.Factory Factory = (exitNode, holeNode, requirement) =>
-        new DropdownSection(
-            SaveLoadManager, Mode, CollectSectionFactory, UncollectSectionFactory, MarkingFactory, exitNode,
-            holeNode, requirement);
-
-    private static readonly Dictionary<LocationID, ExpectedObject> ExpectedValues = new();
-
-    private readonly DropdownSectionFactory _sut = new(
-        AlternativeRequirements, EntranceShuffleRequirements, OverworldNodes, Factory);
-
-    private static void PopulateExpectedValues()
+    public class DropdownSectionFactoryTests
     {
-        ExpectedValues.Clear();
+        private static readonly IAlternativeRequirementDictionary AlternativeRequirements =
+            new AlternativeRequirementDictionary(_ => Substitute.For<IAlternativeRequirement>());
+        private static readonly IEntranceShuffleRequirementDictionary EntranceShuffleRequirements =
+            new EntranceShuffleRequirementDictionary(_ => Substitute.For<IEntranceShuffleRequirement>());
 
-        foreach (LocationID id in Enum.GetValues(typeof(LocationID)))
+        private static readonly IOverworldNodeDictionary OverworldNodes = new OverworldNodeDictionary(
+            () => Substitute.For<IOverworldNodeFactory>());
+
+        private static readonly ISaveLoadManager SaveLoadManager = Substitute.For<ISaveLoadManager>();
+        private static readonly IMode Mode = Substitute.For<IMode>();
+
+        private static readonly ICollectSection.Factory CollectSectionFactory =
+            (section, force) => new CollectSection(section, force);
+        private static readonly IUncollectSection.Factory UncollectSectionFactory =
+            section => new UncollectSection(section);
+
+        private static readonly IMarking.Factory MarkingFactory = () => Substitute.For<IMarking>();
+
+        private static readonly IDropdownSection.Factory Factory = (exitNode, holeNode, requirement) =>
+            new DropdownSection(
+                SaveLoadManager, Mode, CollectSectionFactory, UncollectSectionFactory, MarkingFactory, exitNode,
+                holeNode, requirement);
+
+        private static readonly Dictionary<LocationID, ExpectedObject> ExpectedValues = new();
+
+        private readonly DropdownSectionFactory _sut = new(
+            AlternativeRequirements, EntranceShuffleRequirements, OverworldNodes, Factory);
+
+        private static void PopulateExpectedValues()
         {
-            switch (id)
+            ExpectedValues.Clear();
+
+            foreach (LocationID id in Enum.GetValues(typeof(LocationID)))
             {
-                case LocationID.LumberjackCaveEntrance:
-                    ExpectedValues.Add(id, Factory(
-                        OverworldNodes[OverworldNodeID.LightWorld],
-                        OverworldNodes[OverworldNodeID.LumberjackCaveHole],
-                        AlternativeRequirements[new HashSet<IRequirement>
-                        {
-                            EntranceShuffleRequirements[EntranceShuffle.All],
-                            EntranceShuffleRequirements[EntranceShuffle.Insanity]
-                        }]).ToExpectedObject());
-                    break;
-                case LocationID.TheWellEntrance:
-                    ExpectedValues.Add(id, Factory(
-                        OverworldNodes[OverworldNodeID.LightWorld],
-                        OverworldNodes[OverworldNodeID.LightWorld],
-                        AlternativeRequirements[new HashSet<IRequirement>
-                        {
-                            EntranceShuffleRequirements[EntranceShuffle.All],
-                            EntranceShuffleRequirements[EntranceShuffle.Insanity]
-                        }]).ToExpectedObject());
-                    break;
-                case LocationID.MagicBatEntrance:
-                    ExpectedValues.Add(id, Factory(
-                        OverworldNodes[OverworldNodeID.LightWorld],
-                        OverworldNodes[OverworldNodeID.MagicBatLedge],
-                        AlternativeRequirements[new HashSet<IRequirement>
-                        {
-                            EntranceShuffleRequirements[EntranceShuffle.All],
-                            EntranceShuffleRequirements[EntranceShuffle.Insanity]
-                        }]).ToExpectedObject());
-                    break;
-                case LocationID.ForestHideoutEntrance:
-                case LocationID.HoulihanHole:
-                    ExpectedValues.Add(id, Factory(
-                        OverworldNodes[OverworldNodeID.LightWorld],
-                        OverworldNodes[OverworldNodeID.LightWorldNotBunny],
-                        AlternativeRequirements[new HashSet<IRequirement>
-                        {
-                            EntranceShuffleRequirements[EntranceShuffle.All],
-                            EntranceShuffleRequirements[EntranceShuffle.Insanity]
-                        }]).ToExpectedObject());
-                    break;
-                case LocationID.CastleSecretEntrance:
-                    ExpectedValues.Add(id, Factory(
-                        OverworldNodes[OverworldNodeID.CastleSecretExitArea],
-                        OverworldNodes[OverworldNodeID.LumberjackCaveHole],
-                        AlternativeRequirements[new HashSet<IRequirement>
-                        {
-                            EntranceShuffleRequirements[EntranceShuffle.All],
-                            EntranceShuffleRequirements[EntranceShuffle.Insanity]
-                        }]).ToExpectedObject());
-                    break;
-                case LocationID.SanctuaryGrave:
-                    ExpectedValues.Add(id, Factory(
-                        OverworldNodes[OverworldNodeID.LightWorld],
-                        OverworldNodes[OverworldNodeID.EscapeGrave],
-                        AlternativeRequirements[new HashSet<IRequirement>
-                        {
-                            EntranceShuffleRequirements[EntranceShuffle.All],
-                            EntranceShuffleRequirements[EntranceShuffle.Insanity]
-                        }]).ToExpectedObject());
-                    break;
-                case LocationID.GanonHole:
-                    ExpectedValues.Add(id, Factory(
-                        OverworldNodes[OverworldNodeID.LightWorldInverted],
-                        OverworldNodes[OverworldNodeID.GanonHole],
-                        AlternativeRequirements[new HashSet<IRequirement>
-                        {
-                            EntranceShuffleRequirements[EntranceShuffle.All],
-                            EntranceShuffleRequirements[EntranceShuffle.Insanity]
-                        }]).ToExpectedObject());
-                    break;
+                switch (id)
+                {
+                    case LocationID.LumberjackCaveEntrance:
+                        ExpectedValues.Add(id, Factory(
+                            OverworldNodes[OverworldNodeID.LightWorld],
+                            OverworldNodes[OverworldNodeID.LumberjackCaveHole],
+                            AlternativeRequirements[new HashSet<IRequirement>
+                            {
+                                EntranceShuffleRequirements[EntranceShuffle.All],
+                                EntranceShuffleRequirements[EntranceShuffle.Insanity]
+                            }]).ToExpectedObject());
+                        break;
+                    case LocationID.TheWellEntrance:
+                        ExpectedValues.Add(id, Factory(
+                            OverworldNodes[OverworldNodeID.LightWorld],
+                            OverworldNodes[OverworldNodeID.LightWorld],
+                            AlternativeRequirements[new HashSet<IRequirement>
+                            {
+                                EntranceShuffleRequirements[EntranceShuffle.All],
+                                EntranceShuffleRequirements[EntranceShuffle.Insanity]
+                            }]).ToExpectedObject());
+                        break;
+                    case LocationID.MagicBatEntrance:
+                        ExpectedValues.Add(id, Factory(
+                            OverworldNodes[OverworldNodeID.LightWorld],
+                            OverworldNodes[OverworldNodeID.MagicBatLedge],
+                            AlternativeRequirements[new HashSet<IRequirement>
+                            {
+                                EntranceShuffleRequirements[EntranceShuffle.All],
+                                EntranceShuffleRequirements[EntranceShuffle.Insanity]
+                            }]).ToExpectedObject());
+                        break;
+                    case LocationID.ForestHideoutEntrance:
+                    case LocationID.HoulihanHole:
+                        ExpectedValues.Add(id, Factory(
+                            OverworldNodes[OverworldNodeID.LightWorld],
+                            OverworldNodes[OverworldNodeID.LightWorldNotBunny],
+                            AlternativeRequirements[new HashSet<IRequirement>
+                            {
+                                EntranceShuffleRequirements[EntranceShuffle.All],
+                                EntranceShuffleRequirements[EntranceShuffle.Insanity]
+                            }]).ToExpectedObject());
+                        break;
+                    case LocationID.CastleSecretEntrance:
+                        ExpectedValues.Add(id, Factory(
+                            OverworldNodes[OverworldNodeID.CastleSecretExitArea],
+                            OverworldNodes[OverworldNodeID.LumberjackCaveHole],
+                            AlternativeRequirements[new HashSet<IRequirement>
+                            {
+                                EntranceShuffleRequirements[EntranceShuffle.All],
+                                EntranceShuffleRequirements[EntranceShuffle.Insanity]
+                            }]).ToExpectedObject());
+                        break;
+                    case LocationID.SanctuaryGrave:
+                        ExpectedValues.Add(id, Factory(
+                            OverworldNodes[OverworldNodeID.LightWorld],
+                            OverworldNodes[OverworldNodeID.EscapeGrave],
+                            AlternativeRequirements[new HashSet<IRequirement>
+                            {
+                                EntranceShuffleRequirements[EntranceShuffle.All],
+                                EntranceShuffleRequirements[EntranceShuffle.Insanity]
+                            }]).ToExpectedObject());
+                        break;
+                    case LocationID.GanonHole:
+                        ExpectedValues.Add(id, Factory(
+                            OverworldNodes[OverworldNodeID.LightWorldInverted],
+                            OverworldNodes[OverworldNodeID.GanonHole],
+                            AlternativeRequirements[new HashSet<IRequirement>
+                            {
+                                EntranceShuffleRequirements[EntranceShuffle.All],
+                                EntranceShuffleRequirements[EntranceShuffle.Insanity]
+                            }]).ToExpectedObject());
+                        break;
+                }
             }
         }
-    }
 
-    [Fact]
-    public void GetDropdownSection_ShouldThrowException_WhenIDIsUnexpected()
-    {
-        Assert.Throws<ArgumentOutOfRangeException>(() =>
-            _sut.GetDropdownSection((LocationID) int.MaxValue));
-    }
+        [Fact]
+        public void GetDropdownSection_ShouldThrowException_WhenIDIsUnexpected()
+        {
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+                _sut.GetDropdownSection((LocationID) int.MaxValue));
+        }
 
-    [Theory]
-    [MemberData(nameof(GetDropdownSection_ShouldReturnExpectedData))]
-    public void GetDropdownSection_ShouldReturnExpected(ExpectedObject expected, LocationID id)
-    {
-        var actual = _sut.GetDropdownSection(id);
+        [Theory]
+        [MemberData(nameof(GetDropdownSection_ShouldReturnExpectedData))]
+        public void GetDropdownSection_ShouldReturnExpected(ExpectedObject expected, LocationID id)
+        {
+            var actual = _sut.GetDropdownSection(id);
             
-        expected.ShouldEqual(actual);
-    }
+            expected.ShouldEqual(actual);
+        }
 
-    public static IEnumerable<object[]> GetDropdownSection_ShouldReturnExpectedData()
-    {
-        PopulateExpectedValues();
+        public static IEnumerable<object[]> GetDropdownSection_ShouldReturnExpectedData()
+        {
+            PopulateExpectedValues();
 
-        return ExpectedValues.Keys.Select(
-            id => new object[] {ExpectedValues[id], id}).ToList();
-    }
+            return ExpectedValues.Keys.Select(
+                id => new object[] {ExpectedValues[id], id}).ToList();
+        }
 
-    [Fact]
-    public void AutofacTest()
-    {
-        using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-        var sut = scope.Resolve<IDropdownSectionFactory>();
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var sut = scope.Resolve<IDropdownSectionFactory>();
             
-        Assert.NotNull(sut as DropdownSectionFactory);
+            Assert.NotNull(sut as DropdownSectionFactory);
+        }
     }
 }

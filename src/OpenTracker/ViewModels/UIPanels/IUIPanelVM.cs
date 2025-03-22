@@ -1,14 +1,11 @@
 using OpenTracker.Models.Requirements;
-using OpenTracker.Utils;
 
-namespace OpenTracker.ViewModels.UIPanels;
-
-public interface IUIPanelVM
+namespace OpenTracker.ViewModels.UIPanels
 {
-    public delegate IUIPanelVM Factory(
-        IRequirement? requirement,
-        string title,
-        IModeSettingsVM? modeSettings,
-        bool alternateBodyColor,
-        IViewModel body);
+    public interface IUIPanelVM
+    {
+        public delegate IUIPanelVM Factory(
+            IRequirement? requirement, string title, IModeSettingsVM? modeSettings, bool alternateBodyColor,
+            IUIPanelBodyVMBase body);
+    }
 }

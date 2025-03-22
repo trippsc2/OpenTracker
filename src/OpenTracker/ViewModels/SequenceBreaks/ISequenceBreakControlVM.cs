@@ -1,9 +1,10 @@
 ﻿using OpenTracker.Models.SequenceBreaks;
 
-namespace OpenTracker.ViewModels.SequenceBreaks;
-
-public interface ISequenceBreakControlVM
+namespace OpenTracker.ViewModels.SequenceBreaks
 {
-    delegate ISequenceBreakControlVM Factory(
-        ISequenceBreak sequenceBreak, string text, string toolTipText);
+    public interface ISequenceBreakControlVM
+    {
+        delegate ISequenceBreakControlVM Factory(
+            ISequenceBreak sequenceBreak, string text, string toolTipText);
+    }
 }

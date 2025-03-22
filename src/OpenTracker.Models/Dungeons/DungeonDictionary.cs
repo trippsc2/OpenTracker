@@ -1,32 +1,31 @@
 using System;
 using System.Collections.Generic;
 using OpenTracker.Utils;
-using OpenTracker.Utils.Autofac;
 
-namespace OpenTracker.Models.Dungeons;
-
-/// <summary>
-/// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for <see cref="IDungeon"/> objects
-/// indexed by <see cref="DungeonID"/>.
-/// </summary>
-[DependencyInjection(SingleInstance = true)]
-public sealed class DungeonDictionary : LazyDictionary<DungeonID, IDungeon>, IDungeonDictionary
+namespace OpenTracker.Models.Dungeons
 {
-    private readonly Lazy<IDungeonFactory> _factory;
-        
     /// <summary>
-    /// Constructor
+    /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for <see cref="IDungeon"/> objects
+    /// indexed by <see cref="DungeonID"/>.
     /// </summary>
-    /// <param name="factory">
-    ///     An Autofac factory for creating the <see cref="IDungeonFactory"/> object.
-    /// </param>
-    public DungeonDictionary(IDungeonFactory.Factory factory) : base(new Dictionary<DungeonID, IDungeon>())
+    public class DungeonDictionary : LazyDictionary<DungeonID, IDungeon>, IDungeonDictionary
     {
-        _factory = new Lazy<IDungeonFactory>(factory());
-    }
+        private readonly Lazy<IDungeonFactory> _factory;
+        
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="factory">
+        ///     An Autofac factory for creating the <see cref="IDungeonFactory"/> object.
+        /// </param>
+        public DungeonDictionary(IDungeonFactory.Factory factory) : base(new Dictionary<DungeonID, IDungeon>())
+        {
+            _factory = new Lazy<IDungeonFactory>(factory());
+        }
 
-    protected override IDungeon Create(DungeonID key)
-    {
-        return _factory.Value.GetDungeon(key);
+        protected override IDungeon Create(DungeonID key)
+        {
+            return _factory.Value.GetDungeon(key);
+        }
     }
 }

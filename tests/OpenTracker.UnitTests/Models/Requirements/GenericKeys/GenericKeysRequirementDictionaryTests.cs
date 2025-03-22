@@ -1,55 +1,50 @@
-using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
-using OpenTracker.Models.Modes;
 using OpenTracker.Models.Requirements.GenericKeys;
 using Xunit;
 
-namespace OpenTracker.UnitTests.Models.Requirements.GenericKeys;
-
-[ExcludeFromCodeCoverage]
-public sealed class GenericKeysRequirementDictionaryTests
+namespace OpenTracker.UnitTests.Models.Requirements.GenericKeys
 {
-    private readonly IMode _mode = Substitute.For<IMode>();
-    
-    // ReSharper disable once CollectionNeverUpdated.Local
-    private readonly GenericKeysRequirementDictionary _sut;
-
-    public GenericKeysRequirementDictionaryTests()
+    public class GenericKeysRequirementDictionaryTests
     {
-        _sut = new GenericKeysRequirementDictionary(Factory);
-        return;
+        // ReSharper disable once CollectionNeverUpdated.Local
+        private readonly GenericKeysRequirementDictionary _sut;
 
-        GenericKeysRequirement Factory(bool expectedValue)
+        public GenericKeysRequirementDictionaryTests()
         {
-            return new GenericKeysRequirement(_mode, expectedValue);
+            static IGenericKeysRequirement Factory(bool expectedValue)
+            {
+                return Substitute.For<IGenericKeysRequirement>();
+            }
+
+            _sut = new GenericKeysRequirementDictionary(Factory);
         }
-    }
 
-    [Fact]
-    public void Indexer_ShouldReturnTheSameInstance()
-    {
-        var requirement1 = _sut[false];
-        var requirement2 = _sut[false];
+        [Fact]
+        public void Indexer_ShouldReturnTheSameInstance()
+        {
+            var requirement1 = _sut[false];
+            var requirement2 = _sut[false];
             
-        Assert.Equal(requirement1, requirement2);
-    }
+            Assert.Equal(requirement1, requirement2);
+        }
 
-    [Fact]
-    public void Indexer_ShouldReturnTheDifferentInstances()
-    {
-        var requirement1 = _sut[false];
-        var requirement2 = _sut[true];
+        [Fact]
+        public void Indexer_ShouldReturnTheDifferentInstances()
+        {
+            var requirement1 = _sut[false];
+            var requirement2 = _sut[true];
             
-        Assert.NotEqual(requirement1, requirement2);
-    }
+            Assert.NotEqual(requirement1, requirement2);
+        }
 
-    [Fact]
-    public void AutofacTest()
-    {
-        using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-        var sut = scope.Resolve<IGenericKeysRequirementDictionary>();
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var sut = scope.Resolve<IGenericKeysRequirementDictionary>();
             
-        Assert.NotNull(sut as GenericKeysRequirementDictionary);
+            Assert.NotNull(sut as GenericKeysRequirementDictionary);
+        }
     }
 }

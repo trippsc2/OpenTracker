@@ -1,9 +1,10 @@
-﻿namespace OpenTracker.Models.SaveLoad;
-
-/// <summary>
-/// This class contains sequence break save data.
-/// </summary>
-public sealed class SequenceBreakSaveData
+﻿namespace OpenTracker.Models.SaveLoad
 {
-    public bool Enabled { get; init; }
+    /// <summary>
+    /// This class contains sequence break save data.
+    /// </summary>
+    public class SequenceBreakSaveData
+    {
+        public bool Enabled { get; init; }
+    }
 }

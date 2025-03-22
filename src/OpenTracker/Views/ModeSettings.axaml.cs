@@ -1,39 +1,18 @@
-﻿using System.Reactive;
-using System.Reactive.Disposables;
-using System.Reactive.Linq;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using Avalonia.ReactiveUI;
-using OpenTracker.ViewModels;
-using ReactiveMarbles.ObservableEvents;
-using ReactiveUI;
 
-namespace OpenTracker.Views;
-
-public sealed class ModeSettings : ReactiveUserControl<ModeSettingsVM>
+namespace OpenTracker.Views
 {
-    private Image ButtonImage => this.FindControl<Image>(nameof(ButtonImage));
-
-    public ModeSettings()
+    public class ModeSettings : UserControl
     {
-        InitializeComponent();
-        this.WhenActivated(disposables =>
+        public ModeSettings()
         {
-            if (ViewModel is null)
-            {
-                return;
-            }
+            this.InitializeComponent();
+        }
 
-            ButtonImage.Events()
-                .PointerReleased
-                .Select(_ => Unit.Default)
-                .InvokeCommand(ViewModel.OpenPopupCommand)
-                .DisposeWith(disposables);
-        });
-    }
-
-    private void InitializeComponent()
-    {
-        AvaloniaXamlLoader.Load(this);
+        private void InitializeComponent()
+        {
+            AvaloniaXamlLoader.Load(this);
+        }
     }
 }

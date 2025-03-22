@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
-using OpenTracker.Utils;
+using OpenTracker.ViewModels.UIPanels;
 
-namespace OpenTracker.ViewModels.Items;
-
-/// <summary>
-/// This interface contains the large item panel body control ViewModel data.
-/// </summary>
-public interface ILargeItemPanelVM : IViewModel
+namespace OpenTracker.ViewModels.Items
 {
-    delegate ILargeItemPanelVM Factory(List<ILargeItemVM> items);
+    /// <summary>
+    /// This interface contains the large item panel body control ViewModel data.
+    /// </summary>
+    public interface ILargeItemPanelVM : IUIPanelBodyVMBase
+    {
+        delegate ILargeItemPanelVM Factory(List<ILargeItemVM> items);
+    }
 }

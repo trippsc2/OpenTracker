@@ -1,33 +1,32 @@
 using System.Collections.Generic;
 using OpenTracker.Utils;
-using OpenTracker.Utils.Autofac;
 
-namespace OpenTracker.Models.Requirements.EnemyShuffle;
-
-/// <summary>
-/// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for
-/// <see cref="EnemyShuffleRequirement"/> objects indexed by <see cref="bool"/>.
-/// </summary>
-[DependencyInjection(SingleInstance = true)]
-public sealed class EnemyShuffleRequirementDictionary : LazyDictionary<bool, IRequirement>,
-    IEnemyShuffleRequirementDictionary
+namespace OpenTracker.Models.Requirements.EnemyShuffle
 {
-    private readonly EnemyShuffleRequirement.Factory _factory;
-        
     /// <summary>
-    /// Constructor
+    /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for
+    /// <see cref="IEnemyShuffleRequirement"/> objects indexed by <see cref="bool"/>.
     /// </summary>
-    /// <param name="factory">
-    ///     An Autofac factory for creating new <see cref="EnemyShuffleRequirement"/> objects.
-    /// </param>
-    public EnemyShuffleRequirementDictionary(EnemyShuffleRequirement.Factory factory)
-        : base(new Dictionary<bool, IRequirement>())
+    public class EnemyShuffleRequirementDictionary : LazyDictionary<bool, IRequirement>,
+        IEnemyShuffleRequirementDictionary
     {
-        _factory = factory;
-    }
+        private readonly IEnemyShuffleRequirement.Factory _factory;
+        
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="factory">
+        ///     An Autofac factory for creating new <see cref="IEnemyShuffleRequirement"/> objects.
+        /// </param>
+        public EnemyShuffleRequirementDictionary(IEnemyShuffleRequirement.Factory factory)
+            : base(new Dictionary<bool, IRequirement>())
+        {
+            _factory = factory;
+        }
 
-    protected override IRequirement Create(bool key)
-    {
-        return _factory(key);
+        protected override IRequirement Create(bool key)
+        {
+            return _factory(key);
+        }
     }
 }

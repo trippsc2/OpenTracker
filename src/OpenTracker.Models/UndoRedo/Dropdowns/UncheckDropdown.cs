@@ -1,39 +1,38 @@
 ﻿using OpenTracker.Models.Dropdowns;
-using OpenTracker.Utils.Autofac;
 
-namespace OpenTracker.Models.UndoRedo.Dropdowns;
-
-/// <summary>
-/// This class contains the <see cref="IUndoable"/> action to uncheck a <see cref="IDropdown"/>.
-/// </summary>
-[DependencyInjection]
-public sealed class UncheckDropdown : IUncheckDropdown
+namespace OpenTracker.Models.UndoRedo.Dropdowns
 {
-    private readonly IDropdown _dropdown;
-
     /// <summary>
-    /// Constructor
+    /// This class contains the <see cref="IUndoable"/> action to uncheck a <see cref="IDropdown"/>.
     /// </summary>
-    /// <param name="dropdown">
-    ///     The <see cref="IDropdown"/>.
-    /// </param>
-    public UncheckDropdown(IDropdown dropdown)
+    public class UncheckDropdown : IUncheckDropdown
     {
-        _dropdown = dropdown;
-    }
+        private readonly IDropdown _dropdown;
 
-    public bool CanExecute()
-    {
-        return _dropdown.Checked;
-    }
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="dropdown">
+        ///     The <see cref="IDropdown"/>.
+        /// </param>
+        public UncheckDropdown(IDropdown dropdown)
+        {
+            _dropdown = dropdown;
+        }
 
-    public void ExecuteDo()
-    {
-        _dropdown.Checked = false;
-    }
+        public bool CanExecute()
+        {
+            return _dropdown.Checked;
+        }
 
-    public void ExecuteUndo()
-    {
-        _dropdown.Checked = true;
+        public void ExecuteDo()
+        {
+            _dropdown.Checked = false;
+        }
+
+        public void ExecuteUndo()
+        {
+            _dropdown.Checked = true;
+        }
     }
 }

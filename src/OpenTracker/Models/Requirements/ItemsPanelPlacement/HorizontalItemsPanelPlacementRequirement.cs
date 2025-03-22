@@ -1,65 +1,56 @@
-using System;
-using System.Reactive.Disposables;
-using System.Reactive.Linq;
+using System.ComponentModel;
 using Avalonia.Controls;
-using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Settings;
-using OpenTracker.Utils.Autofac;
-using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
 
-namespace OpenTracker.Models.Requirements.ItemsPanelPlacement;
-
-/// <summary>
-///     This class contains horizontal items panel placement requirement data.
-/// </summary>
-[DependencyInjection]
-public sealed class HorizontalItemsPanelPlacementRequirement : ReactiveObject, IRequirement
+namespace OpenTracker.Models.Requirements.ItemsPanelPlacement
 {
-    private readonly CompositeDisposable _disposables = new();
-    
-    private LayoutSettings LayoutSettings { get; }
-    
-    [ObservableAsProperty]
-    public bool Met { get; }
-    [ObservableAsProperty]
-    public AccessibilityLevel Accessibility { get; }
-    
-    public event EventHandler? ChangePropagated;
-    
     /// <summary>
-    /// A factory method for creating new horizontal items panel placement requirements.
+    ///     This class contains horizontal items panel placement requirement data.
     /// </summary>
-    public delegate HorizontalItemsPanelPlacementRequirement Factory(Dock expectedValue);
-
-    /// <summary>
-    ///     Constructor
-    /// </summary>
-    /// <param name="layoutSettings">
-    ///     The layout settings data.
-    /// </param>
-    /// <param name="expectedValue">
-    ///     The expected dock value.
-    /// </param>
-    public HorizontalItemsPanelPlacementRequirement(LayoutSettings layoutSettings, Dock expectedValue)
+    public class HorizontalItemsPanelPlacementRequirement : BooleanRequirement, IHorizontalItemsPanelPlacementRequirement
     {
-        LayoutSettings = layoutSettings;
+        private readonly ILayoutSettings _layoutSettings;
+        private readonly Dock _expectedValue;
+        
+        /// <summary>
+        ///     Constructor
+        /// </summary>
+        /// <param name="layoutSettings">
+        ///     The layout settings data.
+        /// </param>
+        /// <param name="expectedValue">
+        ///     The expected dock value.
+        /// </param>
+        public HorizontalItemsPanelPlacementRequirement(ILayoutSettings layoutSettings, Dock expectedValue)
+        {
+            _layoutSettings = layoutSettings;
+            _expectedValue = expectedValue;
 
-        this.WhenAnyValue(x => x.LayoutSettings.HorizontalItemsPlacement)
-            .Select(x => x == expectedValue)
-            .ToPropertyEx(this, x => x.Met)
-            .DisposeWith(_disposables);
-        this.WhenAnyValue(x => x.Met)
-            .Select(x => x ? AccessibilityLevel.Normal : AccessibilityLevel.None)
-            .ToPropertyEx(this, x => x.Accessibility)
-            .DisposeWith(_disposables);
-        this.WhenAnyValue(x => x.Accessibility)
-            .Subscribe(_ => ChangePropagated?.Invoke(this, EventArgs.Empty))
-            .DisposeWith(_disposables);
-    }
+            _layoutSettings.PropertyChanged += OnLayoutSettingsChanged;
+                        
+            UpdateValue();
+        }
 
-    public void Dispose()
-    {
-        _disposables.Dispose();
+        /// <summary>
+        ///     Subscribes to the PropertyChanged event on the ILayoutSettings interface.
+        /// </summary>
+        /// <param name="sender">
+        ///     The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        ///     The arguments of the PropertyChanged event.
+        /// </param>
+        private void OnLayoutSettingsChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ILayoutSettings.HorizontalItemsPlacement))
+            {
+                UpdateValue();
+            }
+        }
+        
+        protected override bool ConditionMet()
+        {
+            return _layoutSettings.HorizontalItemsPlacement == _expectedValue;
+        }
     }
 }

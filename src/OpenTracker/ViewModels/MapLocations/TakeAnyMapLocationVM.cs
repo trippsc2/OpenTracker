@@ -1,109 +1,129 @@
+using System.ComponentModel;
 using System.Reactive;
-using System.Reactive.Disposables;
-using System.Reactive.Linq;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.Media;
+using Avalonia.Threading;
 using OpenTracker.Models.Locations.Map;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
-using OpenTracker.Utils.Autofac;
 using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
 
-namespace OpenTracker.ViewModels.MapLocations;
-
-/// <summary>
-/// This class contains the take any map location control ViewModel data.
-/// </summary>
-[DependencyInjection]
-public sealed class TakeAnyMapLocationVM : ViewModel, IShapedMapLocationVMBase
+namespace OpenTracker.ViewModels.MapLocations
 {
-    private readonly IUndoRedoManager _undoRedoManager;
-    private readonly IMapLocation _mapLocation;
-
-    private IMapLocationColorProvider ColorProvider { get; }
-
-    public double OffsetX => -20.0;
-    public double OffsetY => -20.0;
-    
-    [ObservableAsProperty]
-    public SolidColorBrush BorderColor { get; } = default!;
-    [ObservableAsProperty]
-    public SolidColorBrush Color { get; } = default!;
-
-    public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
-    public ReactiveCommand<RoutedEventArgs, Unit> HandleDoubleClickCommand { get; }
-    public ReactiveCommand<PointerEventArgs, Unit> HandlePointerEnterCommand { get; }
-    public ReactiveCommand<PointerEventArgs, Unit> HandlePointerLeaveCommand { get; }
-
-    public delegate TakeAnyMapLocationVM Factory(IMapLocation mapLocation);
-
     /// <summary>
-    /// Constructor
+    /// This class contains the take any map location control ViewModel data.
     /// </summary>
-    /// <param name="undoRedoManager">
-    /// The undo/redo manager.
-    /// </param>
-    /// <param name="colorProvider">
-    /// The map location control color provider.
-    /// </param>
-    /// <param name="mapLocation">
-    /// The map location data.
-    /// </param>
-    public TakeAnyMapLocationVM(
-        IUndoRedoManager undoRedoManager,
-        IMapLocationColorProvider.Factory colorProvider,
-        IMapLocation mapLocation)
+    public class TakeAnyMapLocationVM : ViewModelBase, IShapedMapLocationVMBase
     {
-        _undoRedoManager = undoRedoManager;
+        private readonly IUndoRedoManager _undoRedoManager;
 
-        ColorProvider = colorProvider(mapLocation);
-        _mapLocation = mapLocation;
+        private readonly IMapLocationColorProvider _colorProvider;
+        private readonly IMapLocation _mapLocation;
+
+        public double OffsetX { get; } = -20.0;
+        public double OffsetY { get; } = -20.0;
+        public string BorderColor => _colorProvider.BorderColor;
+        public string Color => _colorProvider.Color;
         
-        HandleClickCommand = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClick);
-        HandleDoubleClickCommand = ReactiveCommand.Create<RoutedEventArgs>(HandleDoubleClick);
-        HandlePointerEnterCommand = ColorProvider.HandlePointerEnterCommand;
-        HandlePointerLeaveCommand = ColorProvider.HandlePointerLeaveCommand;
-        
-        this.WhenActivated(disposables =>
-        {
-            ColorProvider.Activator
-                .Activate()
-                .DisposeWith(disposables);
-            
-            this.WhenAnyValue(x => x.ColorProvider.BorderColor)
-                .ObserveOn(RxApp.MainThreadScheduler)
-                .ToPropertyEx(this, x => x.BorderColor)
-                .DisposeWith(disposables);
-            this.WhenAnyValue(x => x.ColorProvider.Color)
-                .ObserveOn(RxApp.MainThreadScheduler)
-                .ToPropertyEx(this, x => x.Color)
-                .DisposeWith(disposables);
-        });
+        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
+        public ReactiveCommand<RoutedEventArgs, Unit> HandleDoubleClick { get; }
+        public ReactiveCommand<PointerEventArgs, Unit> HandlePointerEnter { get; }
+        public ReactiveCommand<PointerEventArgs, Unit> HandlePointerLeave { get; }
 
-    }
+        public delegate TakeAnyMapLocationVM Factory(IMapLocation mapLocation);
 
-    private void HandleClick(PointerReleasedEventArgs e)
-    {
-        if (e.InitialPressMouseButton == MouseButton.Right)
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="undoRedoManager">
+        /// The undo/redo manager.
+        /// </param>
+        /// <param name="colorProvider">
+        /// The map location control color provider.
+        /// </param>
+        /// <param name="mapLocation">
+        /// The map location data.
+        /// </param>
+        public TakeAnyMapLocationVM(
+            IUndoRedoManager undoRedoManager, IMapLocationColorProvider.Factory colorProvider, IMapLocation mapLocation)
         {
-            ClearLocation((e.KeyModifiers & KeyModifiers.Control) > 0);
+            _undoRedoManager = undoRedoManager;
+
+            _colorProvider = colorProvider(mapLocation);
+            _mapLocation = mapLocation;
+
+            HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
+            HandleDoubleClick = ReactiveCommand.Create<RoutedEventArgs>(HandleDoubleClickImpl);
+            HandlePointerEnter = _colorProvider.HandlePointerEnter;
+            HandlePointerLeave = _colorProvider.HandlePointerLeave;
+
+            _colorProvider.PropertyChanged += OnColorProviderChanged;
         }
-    }
 
-    private void HandleDoubleClick(RoutedEventArgs e)
-    {
-        PinLocation();
-    }
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the IMapLocationColorProvider interface.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
+        private async void OnColorProviderChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(IMapLocationColorProvider.BorderColor):
+                    await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(BorderColor)));
+                    break;
+                case nameof(IMapLocationColorProvider.Color):
+                    await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Color)));
+                    break;
+            }
+        }
 
-    private void ClearLocation(bool force)
-    {
-        _undoRedoManager.NewAction(_mapLocation.Location.CreateClearLocationAction(force));
-    }
+        /// <summary>
+        /// Creates an undoable action to clear the location and sends it to the undo/redo manager.
+        /// </summary>
+        /// <param name="force">
+        /// A boolean representing whether the logic should be ignored.
+        /// </param>
+        private void ClearLocation(bool force)
+        {
+            _undoRedoManager.NewAction(_mapLocation.Location.CreateClearLocationAction(force));
+        }
 
-    private void PinLocation()
-    {
-        _undoRedoManager.NewAction(_mapLocation.Location.CreatePinLocationAction());
+        /// <summary>
+        /// Creates an undoable action to pin the location and sends it to the undo/redo manager.
+        /// </summary>
+        private void PinLocation()
+        {
+            _undoRedoManager.NewAction(_mapLocation.Location.CreatePinLocationAction());
+        }
+
+        /// <summary>
+        /// Handles clicking the control.
+        /// </summary>
+        /// <param name="e">
+        /// The pointer released event args.
+        /// </param>
+        private void HandleClickImpl(PointerReleasedEventArgs e)
+        {
+            if (e.InitialPressMouseButton == MouseButton.Right)
+            {
+                ClearLocation((e.KeyModifiers & KeyModifiers.Control) > 0);
+            }
+        }
+
+        /// <summary>
+        /// Handles double clicking the control.
+        /// </summary>
+        /// <param name="e">
+        /// The pointer released event args.
+        /// </param>
+        private void HandleDoubleClickImpl(RoutedEventArgs e)
+        {
+            PinLocation();
+        }
     }
 }

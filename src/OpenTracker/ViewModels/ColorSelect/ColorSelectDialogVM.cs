@@ -1,54 +1,50 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using OpenTracker.Models.Accessibility;
-using OpenTracker.Models.Settings;
-using OpenTracker.Utils;
-using OpenTracker.Utils.Autofac;
+using OpenTracker.Utils.Dialog;
 
-namespace OpenTracker.ViewModels.ColorSelect;
-
-/// <summary>
-/// This class contains the color select dialog window ViewModel data.
-/// </summary>
-[DependencyInjection(SingleInstance = true)]
-public sealed class ColorSelectDialogVM : ViewModel
+namespace OpenTracker.ViewModels.ColorSelect
 {
-    private static readonly Dictionary<AccessibilityLevel, string> AccessibilityColorLabels = new()
-    {
-        {AccessibilityLevel.None, "None"},
-        {AccessibilityLevel.Inspect, "Inspect"},
-        {AccessibilityLevel.Partial, "Partial"},
-        {AccessibilityLevel.SequenceBreak, "Sequence Break/Possibly Accessible"},
-        {AccessibilityLevel.Normal, "Normal"}
-    };
-    
-    public ObservableCollection<ColorSelectControlVM> FontColors { get; } = new();
-    public ObservableCollection<ColorSelectControlVM> AccessibilityColors { get; } = new();
-    public ObservableCollection<ColorSelectControlVM> ConnectorColors { get; } = new();
-
     /// <summary>
-    /// Constructor
+    /// This class contains the color select dialog window ViewModel data.
     /// </summary>
-    /// <param name="colorSettings">
-    ///     The <see cref="ColorSettings"/>
-    /// </param>
-    public ColorSelectDialogVM(ColorSettings colorSettings)
+    public class ColorSelectDialogVM : DialogViewModelBase, IColorSelectDialogVM
     {
-        FontColors.Add(new ColorSelectControlVM(colorSettings.EmphasisFontColor, "Emphasis Font"));
+        public ObservableCollection<IColorSelectControlVM> FontColors { get; } =
+            new();
+        public ObservableCollection<IColorSelectControlVM> AccessibilityColors { get; } =
+            new();
+        public ObservableCollection<IColorSelectControlVM> ConnectorColors { get; } =
+            new();
 
-        foreach (var accessibilityLevel in Enum.GetValues<AccessibilityLevel>())
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="factory">
+        /// An Autofac factory for creating color select controls.
+        /// </param>
+        public ColorSelectDialogVM(IColorSelectControlVM.Factory factory)
         {
-            if (accessibilityLevel == AccessibilityLevel.Cleared)
+            foreach (ColorType type in Enum.GetValues(typeof(ColorType)))
             {
-                continue;
+                switch (type)
+                {
+                    case ColorType.EmphasisFont:
+                        FontColors.Add(factory(type));
+                        break;
+                    case ColorType.AccessibilityNone:
+                    case ColorType.AccessibilityPartial:
+                    case ColorType.AccessibilityInspect:
+                    case ColorType.AccessibilitySequenceBreak:
+                    case ColorType.AccessibilityNormal:
+                        AccessibilityColors.Add(factory(type));
+                        break;
+                    case ColorType.Connector:
+                        ConnectorColors.Add(factory(type));
+                        break;
+                    default:
+                        throw new Exception("This color type is not implemented.");
+                }
             }
-            
-            var color = colorSettings.AccessibilityColors[accessibilityLevel];
-            var label = AccessibilityColorLabels[accessibilityLevel];
-            AccessibilityColors.Add(new ColorSelectControlVM(color, label));
         }
-        
-        ConnectorColors.Add(new ColorSelectControlVM(colorSettings.ConnectorColor, "Connector"));
     }
 }

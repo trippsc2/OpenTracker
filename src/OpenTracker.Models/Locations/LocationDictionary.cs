@@ -3,58 +3,57 @@ using OpenTracker.Models.SaveLoad;
 using OpenTracker.Utils;
 using System.Collections.Generic;
 using System.Linq;
-using OpenTracker.Utils.Autofac;
 
-namespace OpenTracker.Models.Locations;
-
-/// <summary>
-/// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for <see cref="ILocation"/> objects
-/// indexed by <see cref="LocationID"/>.
-/// </summary>
-[DependencyInjection(SingleInstance = true)]
-public sealed class LocationDictionary : LazyDictionary<LocationID, ILocation>, ILocationDictionary
+namespace OpenTracker.Models.Locations
 {
-    private readonly Lazy<ILocationFactory> _factory;
-
     /// <summary>
-    /// Constructor
+    /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for <see cref="ILocation"/> objects
+    /// indexed by <see cref="LocationID"/>.
     /// </summary>
-    /// <param name="factory">
-    ///     An Autofac factory for creating the <see cref="ILocationFactory"/> object.
-    /// </param>
-    public LocationDictionary(ILocationFactory.Factory factory) : base(new Dictionary<LocationID, ILocation>())
+    public class LocationDictionary : LazyDictionary<LocationID, ILocation>, ILocationDictionary
     {
-        _factory = new Lazy<ILocationFactory>(() => factory());
-    }
+        private readonly Lazy<ILocationFactory> _factory;
 
-    public void Reset()
-    {
-        foreach (var location in Values)
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="factory">
+        ///     An Autofac factory for creating the <see cref="ILocationFactory"/> object.
+        /// </param>
+        public LocationDictionary(ILocationFactory.Factory factory) : base(new Dictionary<LocationID, ILocation>())
         {
-            location.Reset();
-        }
-    }
-
-    public IDictionary<LocationID, LocationSaveData> Save()
-    {
-        return Keys.ToDictionary(id => id, id => this[id].Save());
-    }
-
-    public void Load(IDictionary<LocationID, LocationSaveData>? saveData)
-    {
-        if (saveData == null)
-        {
-            return;
+            _factory = new Lazy<ILocationFactory>(() => factory());
         }
 
-        foreach (var id in saveData.Keys)
+        public void Reset()
         {
-            this[id].Load(saveData[id]);
+            foreach (var location in Values)
+            {
+                location.Reset();
+            }
         }
-    }
 
-    protected override ILocation Create(LocationID key)
-    { 
-        return _factory.Value.GetLocation(key);
+        public IDictionary<LocationID, LocationSaveData> Save()
+        {
+            return Keys.ToDictionary(id => id, id => this[id].Save());
+        }
+
+        public void Load(IDictionary<LocationID, LocationSaveData>? saveData)
+        {
+            if (saveData == null)
+            {
+                return;
+            }
+
+            foreach (var id in saveData.Keys)
+            {
+                this[id].Load(saveData[id]);
+            }
+        }
+
+        protected override ILocation Create(LocationID key)
+        { 
+            return _factory.Value.GetLocation(key);
+        }
     }
 }

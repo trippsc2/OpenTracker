@@ -1,60 +1,50 @@
-﻿using System;
-using System.Reactive.Disposables;
-using System.Reactive.Linq;
-using OpenTracker.Models.Accessibility;
+﻿using System.ComponentModel;
 using OpenTracker.Models.Dungeons.KeyDoors;
-using OpenTracker.Utils.Autofac;
-using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
 
-namespace OpenTracker.Models.Requirements.KeyDoor;
-
-/// <summary>
-/// This class contains <see cref="IKeyDoor"/> <see cref="IRequirement"/> data.
-/// </summary>
-[DependencyInjection]
-public sealed class KeyDoorRequirement : ReactiveObject, IRequirement
+namespace OpenTracker.Models.Requirements.KeyDoor
 {
-    private readonly CompositeDisposable _disposables = new();
-    
-    private IKeyDoor KeyDoor { get; }
-    
-    [ObservableAsProperty]
-    public bool Met { get; }
-    [ObservableAsProperty]
-    public AccessibilityLevel Accessibility { get; }
-
-    public event EventHandler? ChangePropagated;
-
     /// <summary>
-    /// A factory method for creating new <see cref="KeyDoorRequirement"/> objects.
+    /// This class contains <see cref="IKeyDoor"/> <see cref="IRequirement"/> data.
     /// </summary>
-    public delegate KeyDoorRequirement Factory(IKeyDoor keyDoor);
-
-    /// <summary>
-    /// Constructor
-    /// </summary>
-    /// <param name="keyDoor">
-    ///     The <see cref="IKeyDoor"/>.
-    /// </param>
-    public KeyDoorRequirement(IKeyDoor keyDoor)
+    public class KeyDoorRequirement : BooleanRequirement, IKeyDoorRequirement
     {
-        KeyDoor = keyDoor;
+        private readonly IKeyDoor _keyDoor;
 
-        this.WhenAnyValue(x => x.KeyDoor.Unlocked)
-            .ToPropertyEx(this, x => x.Met)
-            .DisposeWith(_disposables);
-        this.WhenAnyValue(x => x.Met)
-            .Select(x => x ? AccessibilityLevel.Normal : AccessibilityLevel.None)
-            .ToPropertyEx(this, x => x.Accessibility)
-            .DisposeWith(_disposables);
-        this.WhenAnyValue(x => x.Accessibility)
-            .Subscribe(_ => ChangePropagated?.Invoke(this, EventArgs.Empty))
-            .DisposeWith(_disposables);
-    }
-    
-    public void Dispose()
-    {
-        _disposables.Dispose();
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="keyDoor">
+        ///     The <see cref="IKeyDoor"/>.
+        /// </param>
+        public KeyDoorRequirement(IKeyDoor keyDoor)
+        {
+            _keyDoor = keyDoor;
+
+            _keyDoor.PropertyChanged += OnKeyDoorChanged;
+
+            UpdateValue();
+        }
+
+        /// <summary>
+        /// Subscribes to the <see cref="IKeyDoor.PropertyChanged"/> event.
+        /// </summary>
+        /// <param name="sender">
+        ///     The <see cref="object"/> from which the event is sent.
+        /// </param>
+        /// <param name="e">
+        ///     The <see cref="PropertyChangedEventArgs"/>.
+        /// </param>
+        private void OnKeyDoorChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(IKeyDoor.Unlocked))
+            {
+                UpdateValue();
+            }
+        }
+
+        protected override bool ConditionMet()
+        {
+            return _keyDoor.Unlocked;
+        }
     }
 }

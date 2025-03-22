@@ -1,11 +1,26 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:OpenTracker.ViewModels.Items"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:items="clr-namespace:OpenTracker.ViewModels.Items"
-             mc:Ignorable="d" x:Class="OpenTracker.Views.Items.LargeItem"
-             x:DataType="items:LargeItemVM" x:CompileBindings="True">
-  <Panel x:Name="Panel" Classes="ItemControl">
+             xmlns:i="using:Avalonia.Xaml.Interactivity"
+             xmlns:ia="using:Avalonia.Xaml.Interactions.Core"
+             mc:Ignorable="d" x:Class="OpenTracker.Views.Items.LargeItem">
+  
+  <Design.DataContext>
+    <vm:LargeItemVM />
+  </Design.DataContext>
+  
+  <Panel Classes="ItemControl">
+
+    <i:Interaction.Behaviors>
+      <ia:EventTriggerBehavior EventName="PointerReleased">
+        <ia:InvokeCommandAction Command="{Binding HandleClick}" PassEventArgsToCommand="True" />
+      </ia:EventTriggerBehavior>
+    </i:Interaction.Behaviors>
+    
     <ContentControl Content="{Binding Item}" />
+    
   </Panel>
+  
 </UserControl>

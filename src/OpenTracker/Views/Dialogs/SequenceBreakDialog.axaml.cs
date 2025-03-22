@@ -1,22 +1,22 @@
 ﻿using Avalonia;
 using Avalonia.Markup.Xaml;
-using Avalonia.ReactiveUI;
-using OpenTracker.ViewModels.Dialogs;
+using OpenTracker.Utils.Dialog;
 
-namespace OpenTracker.Views.Dialogs;
-
-public sealed class SequenceBreakDialog : ReactiveWindow<SequenceBreakDialogVM>
+namespace OpenTracker.Views.Dialogs
 {
-    public SequenceBreakDialog()
+    public class SequenceBreakDialog : DialogWindowBase
     {
-        InitializeComponent();
+        public SequenceBreakDialog()
+        {
+            InitializeComponent();
 #if DEBUG
-        this.AttachDevTools();
+            this.AttachDevTools();
 #endif
-    }
+        }
 
-    private void InitializeComponent()
-    {
-        AvaloniaXamlLoader.Load(this);
+        private void InitializeComponent()
+        {
+            AvaloniaXamlLoader.Load(this);
+        }
     }
 }

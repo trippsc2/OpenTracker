@@ -1,44 +1,42 @@
 ﻿using System.Reactive;
-using System.Reactive.Linq;
-using System.Threading.Tasks;
-using OpenTracker.Utils;
-using OpenTracker.Utils.Autofac;
+using OpenTracker.Utils.Dialog;
 using ReactiveUI;
 
-namespace OpenTracker.ViewModels.Dialogs;
-
-/// <summary>
-/// This is the ViewModel for the error box dialog window.
-/// </summary>
-[DependencyInjection]
-public sealed class ErrorBoxDialogVM : ViewModel
+namespace OpenTracker.ViewModels.Dialogs
 {
-    public string Title { get; }
-    public string Text { get; }
-    
-    public Interaction<Unit, Unit> RequestCloseInteraction { get; } = new(RxApp.MainThreadScheduler);
-
-    public ReactiveCommand<Unit, Unit> OkCommand { get; }
-
     /// <summary>
-    /// Constructor
+    /// This is the ViewModel for the error box dialog window.
     /// </summary>
-    /// <param name="title">
-    /// A string representing the window title.
-    /// </param>
-    /// <param name="text">
-    /// A string representing the dialog text.
-    /// </param>
-    public ErrorBoxDialogVM(string title, string text)
+    public class ErrorBoxDialogVM : DialogViewModelBase, IErrorBoxDialogVM
     {
-        Title = title;
-        Text = text;
-        
-        OkCommand = ReactiveCommand.CreateFromTask(OkAsync);
-    }
+        public string Title { get; }
+        public string Text { get; }
 
-    private async Task OkAsync()
-    {
-        await RequestCloseInteraction.Handle(Unit.Default);
+        public ReactiveCommand<Unit, Unit> OkCommand { get; }
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="title">
+        /// A string representing the window title.
+        /// </param>
+        /// <param name="text">
+        /// A string representing the dialog text.
+        /// </param>
+        public ErrorBoxDialogVM(string title, string text)
+        {
+            OkCommand = ReactiveCommand.Create(Ok);
+
+            Title = title;
+            Text = text;
+        }
+
+        /// <summary>
+        /// Selects Ok to the dialog.
+        /// </summary>
+        private void Ok()
+        {
+            Close();
+        }
     }
 }

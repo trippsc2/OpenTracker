@@ -3,54 +3,53 @@ using System.Linq;
 using OpenTracker.Models.Dungeons.Items;
 using OpenTracker.Models.Dungeons.State;
 using OpenTracker.Models.Requirements;
-using OpenTracker.Utils.Autofac;
 
-namespace OpenTracker.Models.Dungeons.KeyLayouts;
-
-/// <summary>
-/// This class contains the big key layout data.
-/// </summary>
-[DependencyInjection]
-public sealed class BigKeyLayout : IBigKeyLayout
+namespace OpenTracker.Models.Dungeons.KeyLayouts
 {
-    private readonly IList<DungeonItemID> _bigKeyLocations;
-    private readonly IList<IKeyLayout> _children;
-    private readonly IRequirement? _requirement;
-
     /// <summary>
-    /// Constructor
+    /// This class contains the big key layout data.
     /// </summary>
-    /// <param name="bigKeyLocations">
-    ///     The <see cref="IList{T}"/> of <see cref="DungeonItemID"/> that can contain the big key.
-    /// </param>
-    /// <param name="children">
-    ///     The <see cref="IList{T}"/> of child <see cref="IKeyLayout"/>, if this layout is possible.
-    /// </param>
-    /// <param name="requirement">
-    ///     The <see cref="IRequirement"/> for this key layout to be valid.
-    /// </param>
-    public BigKeyLayout(
-        IList<DungeonItemID> bigKeyLocations, IList<IKeyLayout> children, IRequirement? requirement = null)
+    public class BigKeyLayout : IBigKeyLayout
     {
-        _bigKeyLocations = bigKeyLocations;
-        _children = children;
-        _requirement = requirement;
-    }
+        private readonly IList<DungeonItemID> _bigKeyLocations;
+        private readonly IList<IKeyLayout> _children;
+        private readonly IRequirement? _requirement;
 
-    public bool CanBeTrue(IList<DungeonItemID> inaccessible, IList<DungeonItemID> accessible, IDungeonState state)
-    {
-        if (_requirement is not null && !_requirement.Met)
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="bigKeyLocations">
+        ///     The <see cref="IList{T}"/> of <see cref="DungeonItemID"/> that can contain the big key.
+        /// </param>
+        /// <param name="children">
+        ///     The <see cref="IList{T}"/> of child <see cref="IKeyLayout"/>, if this layout is possible.
+        /// </param>
+        /// <param name="requirement">
+        ///     The <see cref="IRequirement"/> for this key layout to be valid.
+        /// </param>
+        public BigKeyLayout(
+            IList<DungeonItemID> bigKeyLocations, IList<IKeyLayout> children, IRequirement? requirement = null)
         {
-            return false;
+            _bigKeyLocations = bigKeyLocations;
+            _children = children;
+            _requirement = requirement;
         }
 
-        switch (state.BigKeyCollected)
+        public bool CanBeTrue(IList<DungeonItemID> inaccessible, IList<DungeonItemID> accessible, IDungeonState state)
         {
-            case true when !_bigKeyLocations.Any(accessible.Contains):
-            case false when !_bigKeyLocations.Any(inaccessible.Contains):
+            if (_requirement is not null && !_requirement.Met)
+            {
                 return false;
-        }
+            }
 
-        return _children.Any(child => child.CanBeTrue(inaccessible, accessible, state));
+            switch (state.BigKeyCollected)
+            {
+                case true when !_bigKeyLocations.Any(accessible.Contains):
+                case false when !_bigKeyLocations.Any(inaccessible.Contains):
+                    return false;
+            }
+
+            return _children.Any(child => child.CanBeTrue(inaccessible, accessible, state));
+        }
     }
 }

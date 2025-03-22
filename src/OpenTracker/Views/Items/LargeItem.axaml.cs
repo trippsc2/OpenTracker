@@ -1,36 +1,18 @@
-using System.Reactive.Disposables;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using Avalonia.ReactiveUI;
-using OpenTracker.ViewModels.Items;
-using ReactiveMarbles.ObservableEvents;
-using ReactiveUI;
 
-namespace OpenTracker.Views.Items;
-
-public sealed class LargeItem : ReactiveUserControl<LargeItemVM>
+namespace OpenTracker.Views.Items
 {
-    private Panel Panel => this.FindControl<Panel>(nameof(Panel));
-
-    public LargeItem()
+    public class LargeItem : UserControl
     {
-        InitializeComponent();
-        this.WhenActivated(disposables =>
+        public LargeItem()
         {
-            if (ViewModel is null)
-            {
-                return;
-            }
-            
-            Panel.Events()
-                .PointerReleased
-                .InvokeCommand(ViewModel.HandleClickCommand)
-                .DisposeWith(disposables);
-        });
-    }
+            InitializeComponent();
+        }
 
-    private void InitializeComponent()
-    {
-        AvaloniaXamlLoader.Load(this);
+        private void InitializeComponent()
+        {
+            AvaloniaXamlLoader.Load(this);
+        }
     }
 }

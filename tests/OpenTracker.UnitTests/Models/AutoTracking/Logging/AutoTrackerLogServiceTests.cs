@@ -1,45 +1,59 @@
-using System.Diagnostics.CodeAnalysis;
 using Autofac;
-using FluentAssertions;
 using OpenTracker.Models.AutoTracking.Logging;
 using OpenTracker.Models.Logging;
 using Xunit;
 
-namespace OpenTracker.UnitTests.Models.AutoTracking.Logging;
-
-[ExcludeFromCodeCoverage]
-public sealed class AutoTrackerLogServiceTests
+namespace OpenTracker.UnitTests.Models.AutoTracking.Logging
 {
-    private const LogLevel Level = LogLevel.Trace;
-    private const string Message = "Test log message.";
+    public class AutoTrackerLogServiceTests
+    {
+        private const LogLevel Level = LogLevel.Trace;
+        private const string Message = "Test log message.";
         
-    private readonly AutoTrackerLogService _sut = new();
+        private readonly AutoTrackerLogService _sut;
+        
+        public AutoTrackerLogServiceTests()
+        {
+            _sut = new AutoTrackerLogService((logLevel, message) => new LogMessage(logLevel, message));
+        }
+        
+        [Fact]
+        public void Log_ShouldAddLogToLogCollection()
+        {
+            var logCollection = _sut.LogCollection;
+            logCollection.Clear();
+            _sut.Log(Level, Message);
 
-    [Fact]
-    public void Log_ShouldAddLogToLogCollection()
-    {
-        _sut.LogCollection.Clear();
+            Assert.Single(logCollection);
+        }
+
+        [Fact]
+        public void LogCollection_ShouldRaisePropertyChanged()
+        {
+            var logCollection = _sut.LogCollection;
+            logCollection.Clear();
             
-        _sut.Log(Level, Message);
+            Assert.PropertyChanged(
+                logCollection, "Count", () => _sut.Log(Level, Message));
+        }
 
-        _sut.LogCollection.Should().HaveCount(1);
-
-        var logMessage = _sut.LogCollection[0];
-
-        logMessage.Level.Should().Be(Level);
-        logMessage.Content.Should().Be(Message);
-    }
-
-    [Fact]
-    public void AutofacResolve_ShouldResolveAsInterfaceToSingleInstance()
-    {
-        using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-        var sut1 = scope.Resolve<IAutoTrackerLogService>();
-
-        sut1.Should().BeOfType<AutoTrackerLogService>();
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var sut = scope.Resolve<IAutoTrackerLogService>();
             
-        var sut2 = scope.Resolve<IAutoTrackerLogService>();
+            Assert.NotNull(sut as AutoTrackerLogService);
+        }
 
-        sut1.Should().BeSameAs(sut2);
+        [Fact]
+        public void AutofacSingleInstanceTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var value1 = scope.Resolve<IAutoTrackerLogService>();
+            var value2 = scope.Resolve<IAutoTrackerLogService>();
+            
+            Assert.Equal(value1, value2);
+        }
     }
 }

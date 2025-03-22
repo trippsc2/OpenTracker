@@ -1,29 +1,28 @@
-using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using OpenTracker.Utils;
 using Xunit;
 
-namespace OpenTracker.UnitTests.Utils;
-
-[ExcludeFromCodeCoverage]
-public sealed class JsonConverterTests
+namespace OpenTracker.UnitTests.Utils
 {
-    [Fact]
-    public void AutofacTest()
+    public class JsonConverterTests
     {
-        using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-        var sut = scope.Resolve<IJsonConverter>();
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var sut = scope.Resolve<IJsonConverter>();
             
-        Assert.NotNull(sut as JsonConverter);
-    }
+            Assert.NotNull(sut as JsonConverter);
+        }
         
-    [Fact]
-    public void AutofacSingleInstanceTest()
-    {
-        using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-        var value1 = scope.Resolve<IJsonConverter>();
-        var value2 = scope.Resolve<IJsonConverter>();
+        [Fact]
+        public void AutofacSingleInstanceTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var value1 = scope.Resolve<IJsonConverter>();
+            var value2 = scope.Resolve<IJsonConverter>();
             
-        Assert.Equal(value1, value2);
+            Assert.Equal(value1, value2);
+        }
     }
 }

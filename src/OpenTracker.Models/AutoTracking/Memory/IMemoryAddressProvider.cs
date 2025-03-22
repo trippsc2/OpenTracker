@@ -1,26 +1,38 @@
 using System.Collections.Generic;
 
-namespace OpenTracker.Models.AutoTracking.Memory;
-
-/// <summary>
-/// Represents the logic to provide cached memory address data.
-/// </summary>
-public interface IMemoryAddressProvider
+namespace OpenTracker.Models.AutoTracking.Memory
 {
     /// <summary>
-    /// A <see cref="Dictionary{TKey,TValue}"/> containing <see cref="List{T}"/> of <see cref="MemoryAddress"/>
-    /// indexed by <see cref="MemorySegmentType"/> representing the memory segments to polled in a single request.
+    /// This interface contains the memory address data provider.
     /// </summary>
-    Dictionary<MemorySegmentType, List<MemoryAddress>> MemorySegments { get; }
+    public interface IMemoryAddressProvider
+    {
+        /// <summary>
+        /// A <see cref="IDictionary{TKey,TValue}"/> containing the memory segments to be sent to the SNES connector
+        /// indexed by <see cref="MemorySegmentType"/>.
+        /// </summary>
+        IDictionary<MemorySegmentType, IList<IMemoryAddress>> MemorySegments { get; }
         
-    /// <summary>
-    /// A <see cref="Dictionary{TKey,TValue}"/> containing <see cref="MemoryAddress"/> indexed by
-    /// <see cref="ulong"/> representing memory address values by address.
-    /// </summary>
-    Dictionary<ulong, MemoryAddress> MemoryAddresses { get; }
+        /// <summary>
+        /// A <see cref="IDictionary{TKey,TValue}"/> containing the <see cref="IMemoryAddress"/> objects indexed by
+        /// <see cref="ulong"/> address.
+        /// </summary>
+        IDictionary<ulong, IMemoryAddress> MemoryAddresses { get; }
 
-    /// <summary>
-    /// Resets all memory addresses to their initial values.
-    /// </summary>
-    void Reset();
+        /// <summary>
+        /// Returns the starting <see cref="ulong"/> address of the specified <see cref="MemorySegmentType"/>.
+        /// </summary>
+        /// <param name="type">
+        ///     The <see cref="MemorySegmentType"/>.
+        /// </param>
+        /// <returns>
+        ///     A <see cref="ulong"/> representing the first address of the segment.
+        /// </returns>
+        ulong GetMemorySegmentStart(MemorySegmentType type);
+
+        /// <summary>
+        /// Resets all <see cref="IMemoryAddress"/> objects to their initial values.
+        /// </summary>
+        void Reset();
+    }
 }

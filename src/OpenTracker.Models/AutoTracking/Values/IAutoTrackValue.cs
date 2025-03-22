@@ -1,15 +1,15 @@
-﻿using System;
-using System.ComponentModel;
+﻿using ReactiveUI;
 
-namespace OpenTracker.Models.AutoTracking.Values;
-
-/// <summary>
-/// This interface represents an auto-tracking result value.
-/// </summary>
-public interface IAutoTrackValue : INotifyPropertyChanged
+namespace OpenTracker.Models.AutoTracking.Values
 {
     /// <summary>
-    /// A <see cref="Nullable{T}"/> of <see cref="int"/> representing the current result value.
+    /// This interface contains the auto-tracking result value data.
     /// </summary>
-    int? CurrentValue { get; }
+    public interface IAutoTrackValue : IReactiveObject
+    {
+        /// <summary>
+        /// A nullable <see cref="int"/> representing the current result value.
+        /// </summary>
+        int? CurrentValue { get; }
+    }
 }

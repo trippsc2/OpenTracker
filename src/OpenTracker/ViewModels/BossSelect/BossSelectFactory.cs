@@ -1,53 +1,52 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using OpenTracker.Models.BossPlacements;
-using OpenTracker.Utils.Autofac;
 
-namespace OpenTracker.ViewModels.BossSelect;
-
-/// <summary>
-/// This class contains creation logic for the boss select controls.
-/// </summary>
-[DependencyInjection(SingleInstance = true)]
-public sealed class BossSelectFactory : IBossSelectFactory
+namespace OpenTracker.ViewModels.BossSelect
 {
-    private readonly BossSelectButtonVM.Factory _buttonFactory;
-
     /// <summary>
-    /// Constructor
+    /// This class contains creation logic for the boss select controls.
     /// </summary>
-    /// <param name="buttonFactory">
-    /// An Autofac factory for creating boss select button controls.
-    /// </param>
-    public BossSelectFactory(BossSelectButtonVM.Factory buttonFactory)
+    public class BossSelectFactory : IBossSelectFactory
     {
-        _buttonFactory = buttonFactory;
-    }
+        private readonly IBossSelectButtonVM.Factory _buttonFactory;
 
-    /// <summary>
-    /// Returns a list of boss select button control ViewModel instances for the specified boss placement.
-    /// </summary>
-    /// <param name="bossPlacement">
-    /// The boss placement.
-    /// </param>
-    /// <returns>
-    /// An observable collection of boss select button control ViewModel instances.
-    /// </returns>
-    public List<BossSelectButtonVM> GetBossSelectButtonVMs(IBossPlacement bossPlacement)
-    {
-        var buttons = new List<BossSelectButtonVM>
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="buttonFactory">
+        /// An Autofac factory for creating boss select button controls.
+        /// </param>
+        public BossSelectFactory(IBossSelectButtonVM.Factory buttonFactory)
         {
-            _buttonFactory(bossPlacement, null)
-        };
+            _buttonFactory = buttonFactory;
+        }
 
-        var bossButtons = Enum
-            .GetValues<BossType>()
-            .Where(boss => boss != BossType.Aga && boss != BossType.Test)
-            .Select(boss => _buttonFactory(bossPlacement, boss));
-        
-        buttons.AddRange(bossButtons);
+        /// <summary>
+        /// Returns a list of boss select button control ViewModel instances for the specified boss placement.
+        /// </summary>
+        /// <param name="bossPlacement">
+        /// The boss placement.
+        /// </param>
+        /// <returns>
+        /// An observable collection of boss select button control ViewModel instances.
+        /// </returns>
+        public List<IBossSelectButtonVM> GetBossSelectButtonVMs(IBossPlacement bossPlacement)
+        {
+            var buttons = new List<IBossSelectButtonVM>
+            {
+                _buttonFactory(bossPlacement, null)
+            };
 
-        return buttons;
+            foreach (BossType boss in Enum.GetValues(typeof(BossType)))
+            {
+                if (boss != BossType.Aga && boss != BossType.Test)
+                {
+                    buttons.Add(_buttonFactory(bossPlacement, boss));
+                }
+            }
+
+            return buttons;
+        }
     }
 }

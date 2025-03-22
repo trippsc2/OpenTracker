@@ -1,74 +1,75 @@
-﻿using System.Reactive.Disposables;
-using System.Reactive.Linq;
+﻿using System.ComponentModel;
+using Avalonia.Threading;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Settings;
 using OpenTracker.Utils;
-using OpenTracker.Utils.Autofac;
 using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
 
-namespace OpenTracker.ViewModels.ToolTips;
-
-/// <summary>
-/// This class contains the map location tooltip control ViewModel data.
-/// </summary>
-[DependencyInjection]
-public sealed class MapLocationToolTipVM : ViewModel, IMapLocationToolTipVM
+namespace OpenTracker.ViewModels.ToolTips
 {
-    private LayoutSettings LayoutSettings { get; }
-    private ILocation Location { get; }
-    public IMapLocationToolTipMarkingVM? SectionMarking { get; }
-    public IMapLocationToolTipNotes Notes { get; }
-    
-    [ObservableAsProperty]
-    public double Scale { get; }
-    [ObservableAsProperty]
-    public string Name { get; } = string.Empty;
-
-
     /// <summary>
-    /// Constructor
+    /// This class contains the map location tooltip control ViewModel data.
     /// </summary>
-    /// <param name="layoutSettings">
-    /// The layout settings data.
-    /// </param>
-    /// <param name="markingFactory">
-    /// An Autofac factory for creating marking controls.
-    /// </param>
-    /// <param name="notesFactory">
-    /// An Autofac factory for creating tooltip notes controls.
-    /// </param>
-    /// <param name="location">
-    /// The map location.
-    /// </param>
-    public MapLocationToolTipVM(
-        LayoutSettings layoutSettings,
-        IMapLocationToolTipMarkingVM.Factory markingFactory,
-        IMapLocationToolTipNotes.Factory notesFactory,
-        ILocation location)
+    public class MapLocationToolTipVM : ViewModelBase, IMapLocationToolTipVM
     {
-        LayoutSettings = layoutSettings;
-        Location = location;
+        private readonly ILayoutSettings _layoutSettings;
+        private readonly ILocation _location;
 
-        var section = Location.Sections[0];
-            
-        if (section.Marking is not null)
+        public double Scale => _layoutSettings.UIScale;
+        public string Name => _location.Name;
+
+        public IMapLocationToolTipMarkingVM? SectionMarking { get; }
+        public IMapLocationToolTipNotes Notes { get; }
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="layoutSettings">
+        /// The layout settings data.
+        /// </param>
+        /// <param name="markingFactory">
+        /// An Autofac factory for creating marking controls.
+        /// </param>
+        /// <param name="notesFactory">
+        /// An Autofac factory for creating tooltip notes controls.
+        /// </param>
+        /// <param name="location">
+        /// The map location.
+        /// </param>
+        public MapLocationToolTipVM(
+            ILayoutSettings layoutSettings, IMapLocationToolTipMarkingVM.Factory markingFactory,
+            IMapLocationToolTipNotes.Factory notesFactory, ILocation location)
         {
-            SectionMarking = markingFactory(section.Marking);
+            _layoutSettings = layoutSettings;
+            _location = location;
+
+            var section = _location.Sections[0];
+            
+            if (section.Marking is not null)
+            {
+                SectionMarking = markingFactory(section.Marking);
+            }
+
+            Notes = notesFactory(_location);
+
+            _layoutSettings.PropertyChanged += OnLayoutChanged;
         }
 
-        Notes = notesFactory(Location);
-        
-        this.WhenActivated(disposables =>
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the LayoutSettings class.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
+        private async void OnLayoutChanged(object? sender, PropertyChangedEventArgs e)
         {
-            this.WhenAnyValue(x => x.LayoutSettings.UIScale)
-                .ObserveOn(RxApp.MainThreadScheduler)
-                .ToPropertyEx(this, x => x.Scale)
-                .DisposeWith(disposables);
-            this.WhenAnyValue(x => x.Location.Name)
-                .ObserveOn(RxApp.MainThreadScheduler)
-                .ToPropertyEx(this, x => x.Name)
-                .DisposeWith(disposables);
-        });
+            if (e.PropertyName == nameof(LayoutSettings.UIScale))
+            {
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Scale)));
+            }
+        }
     }
 }

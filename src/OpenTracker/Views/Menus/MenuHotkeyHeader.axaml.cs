@@ -1,18 +1,18 @@
+using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using Avalonia.ReactiveUI;
-using OpenTracker.ViewModels.Menus;
 
-namespace OpenTracker.Views.Menus;
-
-public sealed class MenuHotkeyHeader : ReactiveUserControl<MenuHotkeyHeaderVM>
+namespace OpenTracker.Views.Menus
 {
-    public MenuHotkeyHeader()
+    public class MenuHotkeyHeader : UserControl
     {
-        InitializeComponent();
-    }
+        public MenuHotkeyHeader()
+        {
+            InitializeComponent();
+        }
 
-    private void InitializeComponent()
-    {
-        AvaloniaXamlLoader.Load(this);
+        private void InitializeComponent()
+        {
+            AvaloniaXamlLoader.Load(this);
+        }
     }
 }

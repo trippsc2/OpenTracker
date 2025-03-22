@@ -2,47 +2,44 @@ using System.Collections.Generic;
 using System.Windows.Input;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Utils;
-using ReactiveUI.Fody.Helpers;
 
-namespace OpenTracker.ViewModels.Menus;
-
-public sealed class MenuItemVM : ViewModel
+namespace OpenTracker.ViewModels.Menus
 {
-    public IMenuItemIconVM? Icon { get; }
-    public object Header { get; }
-    [Reactive]
-    public ICommand? Command { get; set; }
-    public object? CommandParameter { get; }
-    public List<MenuItemVM> Items { get; }
-
-    public MenuItemVM(
-        string header,
-        IRequirement? checkBoxRequirement = null,
-        string? hotkey = null,
-        object? commandParameter = null,
-        List<MenuItemVM>? items = null)
+    public class MenuItemVM : ViewModelBase, IMenuItemVM
     {
-        if (hotkey is null)
+        // Allows for IModelWrapper to be implemented.
+        public object Model { get; } = new();
+        
+        public IMenuItemIconVM? Icon { get; }
+        public object Header { get; }
+        public ICommand? Command { get; }
+        public object? CommandParameter { get; }
+        public IList<IMenuItemVM> Items { get; }
+
+        public MenuItemVM(
+            MenuItemCheckBoxVM.Factory checkBoxFactory, IMenuHotkeyHeaderVM.Factory hotkeyFactory, string header,
+            IRequirement? checkBoxRequirement = null, string? hotkey = null, ICommand? command = null,
+            object? commandParameter = null, IList<IMenuItemVM>? items = null)
         {
-            Header = header;
-        }
-        else
-        {
-            Header = new MenuHotkeyHeaderVM
+            if (hotkey is null)
             {
-                Header = header,
-                Hotkey = hotkey
-            };
+                Header = header;
+            }
+            else
+            {
+                Header = hotkeyFactory(hotkey, header);
+            }
+
+            Command = command;
+            CommandParameter = commandParameter;
+            Items = items ?? new List<IMenuItemVM>();
+
+            if (checkBoxRequirement is null)
+            {
+                return;
+            }
+
+            Icon = checkBoxFactory(checkBoxRequirement);
         }
-
-        CommandParameter = commandParameter;
-        Items = items ?? new List<MenuItemVM>();
-
-        if (checkBoxRequirement is null)
-        {
-            return;
-        }
-
-        Icon = new MenuItemCheckBoxVM(checkBoxRequirement);
     }
 }

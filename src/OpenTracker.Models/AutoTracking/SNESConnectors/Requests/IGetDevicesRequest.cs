@@ -1,17 +1,18 @@
 using System.Collections.Generic;
 
-namespace OpenTracker.Models.AutoTracking.SNESConnectors.Requests;
-
-/// <summary>
-/// This interface contains the request to get the list of devices. 
-/// </summary>
-public interface IGetDevicesRequest : IRequest<IEnumerable<string>>
+namespace OpenTracker.Models.AutoTracking.SNESConnectors.Requests
 {
     /// <summary>
-    /// A factory for creating new <see cref="IGetDevicesRequest"/> objects.
+    /// This interface contains the request to get the list of devices. 
     /// </summary>
-    /// <returns>
-    ///     A new <see cref="IGetDevicesRequest"/> object.
-    /// </returns>
-    delegate IGetDevicesRequest Factory();
+    public interface IGetDevicesRequest : IRequest<IEnumerable<string>>
+    {
+        /// <summary>
+        /// A factory for creating new <see cref="IGetDevicesRequest"/> objects.
+        /// </summary>
+        /// <returns>
+        ///     A new <see cref="IGetDevicesRequest"/> object.
+        /// </returns>
+        delegate IGetDevicesRequest Factory();
+    }
 }

@@ -1,29 +1,32 @@
-using System.Reactive.Disposables;
-using System.Reactive.Linq;
+using System.ComponentModel;
+using Avalonia.Threading;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Utils;
 using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
 
-namespace OpenTracker.ViewModels.Menus;
-
-public sealed class MenuItemCheckBoxVM : ViewModel, IMenuItemIconVM
+namespace OpenTracker.ViewModels.Menus
 {
-    private IRequirement Requirement { get; }
-
-    [ObservableAsProperty]
-    public bool Checked { get; }
-
-    public MenuItemCheckBoxVM(IRequirement requirement)
+    public class MenuItemCheckBoxVM : ViewModelBase, IMenuItemIconVM
     {
-        Requirement = requirement;
-        
-        this.WhenActivated(disposables =>
+        private readonly IRequirement _requirement;
+
+        public bool Checked => _requirement.Met;
+
+        public delegate MenuItemCheckBoxVM Factory(IRequirement requirement);
+
+        public MenuItemCheckBoxVM(IRequirement requirement)
         {
-            this.WhenAnyValue(x => x.Requirement.Met)
-                .ObserveOn(RxApp.MainThreadScheduler)
-                .ToPropertyEx(this, x => x.Checked)
-                .DisposeWith(disposables);
-        });
+            _requirement = requirement;
+
+            _requirement.PropertyChanged += OnRequirementChanged;
+        }
+
+        private async void OnRequirementChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(IRequirement.Met))
+            {
+                await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(nameof(Checked)));
+            }
+        }
     }
 }

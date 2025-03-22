@@ -1,20 +1,37 @@
 ﻿<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:OpenTracker.ViewModels;assembly=OpenTracker"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:vm="clr-namespace:OpenTracker.ViewModels"
         mc:Ignorable="d" x:Class="OpenTracker.Views.MainWindow"
         Icon="avares://OpenTracker/Assets/Images/triforce.png" UseLayoutRounding="True" WindowStartupLocation="Manual"
         Background="{DynamicResource ThemeBackgroundBrush}"
         Title="{Binding Title}"
         Height="{Binding Height}"
-        Width="{Binding Width}"
-        x:DataType="vm:MainWindowVM" x:CompileBindings="True">
+        Width="{Binding Width}">
+	
+	<Design.DataContext>
+		<vm:MainWindowVM />
+	</Design.DataContext>
+	
+	<Window.KeyBindings>
+		<KeyBinding Gesture="Ctrl+o" Command="{Binding Open}" />
+		<KeyBinding Gesture="Ctrl+s" Command="{Binding Save}" />
+		<KeyBinding Gesture="Ctrl+Shift+s"
+		            Command="{Binding SaveAs}" />
+		<KeyBinding Gesture="Ctrl+z" Command="{Binding Undo}" />
+		<KeyBinding Gesture="Ctrl+y" Command="{Binding Redo}" />
+		<KeyBinding Gesture="F5" Command="{Binding Reset}" />
+		<KeyBinding Gesture="F11"
+		            Command="{Binding ToggleDisplayAllLocations}" />
+	</Window.KeyBindings>
+
   <DockPanel>
-    <ContentControl DockPanel.Dock="Top" Content="{Binding TopMenu}" />
-    <ContentControl DockPanel.Dock="Bottom" Content="{Binding StatusBar}" />
-		<ContentControl DockPanel.Dock="{Binding UIDock}"
-		                Content="{Binding UIPanel}" />
+    <ContentControl Content="{Binding TopMenu}" DockPanel.Dock="Top" />
+    <ContentControl Content="{Binding StatusBar}" DockPanel.Dock="Bottom" />
+		<ContentControl Content="{Binding UIPanel}"
+		                DockPanel.Dock="{Binding UIDock, Mode=OneWay}" />
 		<ContentControl Content="{Binding MapArea}" />
 	</DockPanel>
+
 </Window>

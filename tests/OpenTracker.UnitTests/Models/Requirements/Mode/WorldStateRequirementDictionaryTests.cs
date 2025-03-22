@@ -1,55 +1,51 @@
-using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.Requirements.Mode;
 using Xunit;
 
-namespace OpenTracker.UnitTests.Models.Requirements.Mode;
-
-[ExcludeFromCodeCoverage]
-public sealed class WorldStateRequirementDictionaryTests
+namespace OpenTracker.UnitTests.Models.Requirements.Mode
 {
-    private readonly IMode _mode = Substitute.For<IMode>();
-    
-    // ReSharper disable once CollectionNeverUpdated.Local
-    private readonly WorldStateRequirementDictionary _sut;
-
-    public WorldStateRequirementDictionaryTests()
+    public class WorldStateRequirementDictionaryTests
     {
-        _sut = new WorldStateRequirementDictionary(Factory);
-        return;
+        // ReSharper disable once CollectionNeverUpdated.Local
+        private readonly WorldStateRequirementDictionary _sut;
 
-        WorldStateRequirement Factory(WorldState expectedValue)
+        public WorldStateRequirementDictionaryTests()
         {
-            return new WorldStateRequirement(_mode, expectedValue);
+            static IWorldStateRequirement Factory(WorldState expectedValue)
+            {
+                return Substitute.For<IWorldStateRequirement>();
+            }
+
+            _sut = new WorldStateRequirementDictionary(Factory);
         }
-    }
 
-    [Fact]
-    public void Indexer_ShouldReturnTheSameInstance()
-    {
-        var requirement1 = _sut[WorldState.StandardOpen];
-        var requirement2 = _sut[WorldState.StandardOpen];
+        [Fact]
+        public void Indexer_ShouldReturnTheSameInstance()
+        {
+            var requirement1 = _sut[WorldState.StandardOpen];
+            var requirement2 = _sut[WorldState.StandardOpen];
             
-        Assert.Equal(requirement1, requirement2);
-    }
+            Assert.Equal(requirement1, requirement2);
+        }
 
-    [Fact]
-    public void Indexer_ShouldReturnTheDifferentInstances()
-    {
-        var requirement1 = _sut[WorldState.StandardOpen];
-        var requirement2 = _sut[WorldState.Inverted];
+        [Fact]
+        public void Indexer_ShouldReturnTheDifferentInstances()
+        {
+            var requirement1 = _sut[WorldState.StandardOpen];
+            var requirement2 = _sut[WorldState.Inverted];
             
-        Assert.NotEqual(requirement1, requirement2);
-    }
+            Assert.NotEqual(requirement1, requirement2);
+        }
 
-    [Fact]
-    public void AutofacTest()
-    {
-        using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-        var sut = scope.Resolve<IWorldStateRequirementDictionary>();
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var sut = scope.Resolve<IWorldStateRequirementDictionary>();
             
-        Assert.NotNull(sut as WorldStateRequirementDictionary);
+            Assert.NotNull(sut as WorldStateRequirementDictionary);
+        }
     }
 }

@@ -3,33 +3,33 @@ using System.Reactive;
 using System.Threading;
 using OpenTracker.Models.AutoTracking.SNESConnectors.Socket;
 using OpenTracker.Models.Logging;
-using OpenTracker.Utils.Autofac;
+using WebSocketSharp;
 
-namespace OpenTracker.Models.AutoTracking.SNESConnectors.Requests;
-
-/// <summary>
-/// This class contains the request to register the app name. 
-/// </summary>
-[DependencyInjection]
-public sealed class RegisterNameRequest : RequestBase<Unit>, IRegisterNameRequest
+namespace OpenTracker.Models.AutoTracking.SNESConnectors.Requests
 {
-    private const string AppName = "OpenTracker";
-        
     /// <summary>
-    /// Constructor
+    /// This class contains the request to register the app name. 
     /// </summary>
-    /// <param name="logger">
-    ///     The <see cref="IAutoTrackerLogger"/>.
-    /// </param>
-    public RegisterNameRequest(IAutoTrackerLogger logger)
-        : base(logger, "Name", "SNES", ConnectionStatus.Connected, "Register app name",
-            operands: new List<string> {AppName})
+    public class RegisterNameRequest : RequestBase<Unit>, IRegisterNameRequest
     {
-    }
+        private const string AppName = "OpenTracker";
+        
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="logger">
+        ///     The <see cref="IAutoTrackerLogger"/>.
+        /// </param>
+        public RegisterNameRequest(IAutoTrackerLogger logger)
+            : base(logger, "Name", "SNES", ConnectionStatus.Connected, "Register app name",
+                operands: new List<string> {AppName})
+        {
+        }
 
-    public override Unit ProcessResponseAndReturnResults(IMessageEventArgsWrapper messageEventArgs,
-        ManualResetEvent sendEvent)
-    {
-        return default;
+        public override Unit ProcessResponseAndReturnResults(IMessageEventArgsWrapper messageEventArgs,
+            ManualResetEvent sendEvent)
+        {
+            return default;
+        }
     }
 }

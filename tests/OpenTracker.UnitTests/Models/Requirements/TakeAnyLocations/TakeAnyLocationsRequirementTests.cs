@@ -1,7 +1,6 @@
+using System;
 using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
 using Autofac;
-using FluentAssertions;
 using NSubstitute;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Modes;
@@ -9,92 +8,102 @@ using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Requirements.TakeAnyLocations;
 using Xunit;
 
-namespace OpenTracker.UnitTests.Models.Requirements.TakeAnyLocations;
-
-[ExcludeFromCodeCoverage]
-public sealed class TakeAnyLocationsRequirementTests
+namespace OpenTracker.UnitTests.Models.Requirements.TakeAnyLocations
 {
-    private readonly IMode _mode = Substitute.For<IMode>();
-    
-    private void ChangeTakeAnyLocations(bool newValue)
+    public class TakeAnyLocationsRequirementTests
     {
-        _mode.TakeAnyLocations.Returns(newValue);
-        _mode.PropertyChanged += Raise
-            .Event<PropertyChangedEventHandler>(
-                _mode,
-                new PropertyChangedEventArgs(nameof(IMode.TakeAnyLocations)));
-    }
+        private readonly IMode _mode = Substitute.For<IMode>();
 
-    [Fact]
-    public void Met_ShouldRaisePropertyChanged()
-    {
-        var sut = new TakeAnyLocationsRequirement(_mode, true);
-        using var monitor = sut.Monitor();
-        
-        ChangeTakeAnyLocations(true);
-        
-        monitor.Should().RaisePropertyChangeFor(x => x.Met);
-    }
+        [Fact]
+        public void ModeChanged_ShouldUpdateMetValue()
+        {
+            var sut = new TakeAnyLocationsRequirement(_mode, true);
+            _mode.TakeAnyLocations.Returns(true);
 
-    [Theory]
-    [InlineData(true, false, false)]
-    [InlineData(false, false, true)]
-    [InlineData(false, true, false)]
-    [InlineData(true, true, true)]
-    public void Met_ShouldReturnExpectedValue(bool expected, bool takeAnyLocations, bool requirement)
-    {
-        var sut = new TakeAnyLocationsRequirement(_mode, requirement);
-        ChangeTakeAnyLocations(takeAnyLocations);
+            _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                _mode, new PropertyChangedEventArgs(nameof(IMode.TakeAnyLocations)));
             
-        sut.Met.Should().Be(expected);
-    }
+            Assert.True(sut.Met);
+        }
 
-    [Fact]
-    public void Accessibility_ShouldRaisePropertyChanged()
-    {
-        var sut = new TakeAnyLocationsRequirement(_mode, true);
-        using var monitor = sut.Monitor();
-        
-        ChangeTakeAnyLocations(true);
-        
-        monitor.Should().RaisePropertyChangeFor(x => x.Accessibility);
-    }
+        [Fact]
+        public void Met_ShouldRaisePropertyChanged()
+        {
+            var sut = new TakeAnyLocationsRequirement(_mode, true);
+            _mode.TakeAnyLocations.Returns(true);
 
-    [Fact]
-    public void Accessibility_ShouldRaiseChangePropagated()
-    {
-        var sut = new TakeAnyLocationsRequirement(_mode, true);
-        using var monitor = sut.Monitor();
-        
-        ChangeTakeAnyLocations(true);
+            Assert.PropertyChanged(sut, nameof(IRequirement.Met), 
+                () => _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                    _mode, new PropertyChangedEventArgs(nameof(IMode.TakeAnyLocations))));
+        }
 
-        monitor.Should().Raise(nameof(IRequirement.ChangePropagated));
-    }
+        [Fact]
+        public void Met_ShouldRaiseChangePropagated()
+        {
+            var sut = new TakeAnyLocationsRequirement(_mode, true);
+            _mode.TakeAnyLocations.Returns(true);
 
-    [Theory]
-    [InlineData(AccessibilityLevel.Normal, false, false)]
-    [InlineData(AccessibilityLevel.None, false, true)]
-    [InlineData(AccessibilityLevel.None, true, false)]
-    [InlineData(AccessibilityLevel.Normal, true, true)]
-    public void Accessibility_ShouldReturnExpectedValue(
-        AccessibilityLevel expected,
-        bool takeAnyLocations,
-        bool requirement)
-    {
-        var sut = new TakeAnyLocationsRequirement(_mode, requirement);
-        ChangeTakeAnyLocations(takeAnyLocations);
+            var eventRaised = false;
+
+            void Handler(object? sender, EventArgs e)
+            {
+                eventRaised = true;
+            }
             
-        sut.Accessibility.Should().Be(expected);
-    }
-
-    [Fact]
-    public void AutofacResolve_ShouldResolveToTransientInstance()
-    {
-        using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-        var factory = scope.Resolve<TakeAnyLocationsRequirement.Factory>();
-        var sut1 = factory(false);
-        var sut2 = factory(false);
+            sut.ChangePropagated += Handler;
+            _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                _mode, new PropertyChangedEventArgs(nameof(IMode.TakeAnyLocations)));
+            sut.ChangePropagated -= Handler;
             
-        sut1.Should().NotBeSameAs(sut2);
+            Assert.True(eventRaised);
+        }
+
+        [Theory]
+        [InlineData(true, false, false)]
+        [InlineData(false, false, true)]
+        [InlineData(false, true, false)]
+        [InlineData(true, true, true)]
+        public void Met_ShouldReturnExpectedValue(bool expected, bool takeAnyLocations, bool requirement)
+        {
+            _mode.TakeAnyLocations.Returns(takeAnyLocations);
+            var sut = new TakeAnyLocationsRequirement(_mode, requirement);
+            
+            Assert.Equal(expected, sut.Met);
+        }
+
+        [Fact]
+        public void Accessibility_ShouldRaisePropertyChanged()
+        {
+            var sut = new TakeAnyLocationsRequirement(_mode, true);
+            _mode.TakeAnyLocations.Returns(true);
+
+            Assert.PropertyChanged(sut, nameof(IRequirement.Accessibility), 
+                () => _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                    _mode, new PropertyChangedEventArgs(nameof(IMode.TakeAnyLocations))));
+        }
+
+        [Theory]
+        [InlineData(AccessibilityLevel.Normal, false, false)]
+        [InlineData(AccessibilityLevel.None, false, true)]
+        [InlineData(AccessibilityLevel.None, true, false)]
+        [InlineData(AccessibilityLevel.Normal, true, true)]
+        public void Accessibility_ShouldReturnExpectedValue(
+            AccessibilityLevel expected, bool takeAnyLocations, bool requirement)
+        {
+            _mode.TakeAnyLocations.Returns(takeAnyLocations);
+            var sut = new TakeAnyLocationsRequirement(_mode, requirement);
+            
+            Assert.Equal(expected, sut.Accessibility);
+        }
+
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var factory = scope.Resolve<ITakeAnyLocationsRequirement.Factory>();
+            var sut = factory(false);
+            
+            Assert.NotNull(sut as TakeAnyLocationsRequirement);
+        }
     }
 }

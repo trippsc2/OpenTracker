@@ -1,65 +1,56 @@
-﻿using System;
-using System.Reactive.Disposables;
-using System.Reactive.Linq;
-using OpenTracker.Models.Accessibility;
+﻿using System.ComponentModel;
 using OpenTracker.Models.Settings;
-using OpenTracker.Utils.Autofac;
-using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
 
-namespace OpenTracker.Models.Requirements.DisplaysMapsCompasses;
-
-/// <summary>
-///     This class contains display maps/compasses setting requirement data.
-/// </summary>
-[DependencyInjection]
-public sealed class DisplayMapsCompassesRequirement : ReactiveObject, IRequirement
+namespace OpenTracker.Models.Requirements.DisplaysMapsCompasses
 {
-    private readonly CompositeDisposable _disposables = new();
-    
-    private LayoutSettings LayoutSettings { get; }
-    
-    [ObservableAsProperty]
-    public bool Met { get; }
-    [ObservableAsProperty]
-    public AccessibilityLevel Accessibility { get; }
-
-    public event EventHandler? ChangePropagated;
-
     /// <summary>
-    /// A factory method for creating new display maps and compasses requirements.
+    ///     This class contains display maps/compasses setting requirement data.
     /// </summary>
-    public delegate DisplayMapsCompassesRequirement Factory(bool expectedValue);
-
-    /// <summary>
-    ///     Constructor
-    /// </summary>
-    /// <param name="layoutSettings">
-    ///     The layout settings.
-    /// </param>
-    /// <param name="expectedValue">
-    ///     A boolean representing the expected value.
-    /// </param>
-    public DisplayMapsCompassesRequirement(
-        LayoutSettings layoutSettings, bool expectedValue)
+    public class DisplayMapsCompassesRequirement : BooleanRequirement, IDisplayMapsCompassesRequirement
     {
-        LayoutSettings = layoutSettings;
+        private readonly ILayoutSettings _layoutSettings;
+        private readonly bool _expectedValue;
+        
+        /// <summary>
+        ///     Constructor
+        /// </summary>
+        /// <param name="layoutSettings">
+        ///     The layout settings.
+        /// </param>
+        /// <param name="expectedValue">
+        ///     A boolean representing the expected value.
+        /// </param>
+        public DisplayMapsCompassesRequirement(
+            ILayoutSettings layoutSettings, bool expectedValue)
+        {
+            _layoutSettings = layoutSettings;
+            _expectedValue = expectedValue;
 
-        this.WhenAnyValue(x => x.LayoutSettings.DisplayMapsCompasses)
-            .Select(x => x == expectedValue)
-            .ToPropertyEx(this, x => x.Met)
-            .DisposeWith(_disposables);
-        this.WhenAnyValue(x => x.Met)
-            .Select(x => x ? AccessibilityLevel.Normal : AccessibilityLevel.None)
-            .ToPropertyEx(this, x => x.Accessibility)
-            .DisposeWith(_disposables);
-        this.WhenAnyValue(x => x.Accessibility)
-            .Subscribe(_ => ChangePropagated?.Invoke(this, EventArgs.Empty))
-            .DisposeWith(_disposables);
-    }
-    
-    public void Dispose()
-    {
-        _disposables.Dispose();
+            _layoutSettings.PropertyChanged += OnLayoutChanged;
+
+            UpdateValue();
+        }
+
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the ILayoutSettings interface.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
+        private void OnLayoutChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ILayoutSettings.DisplayMapsCompasses))
+            {
+                UpdateValue();
+            }
+        }
+
+        protected override bool ConditionMet()
+        {
+            return _layoutSettings.DisplayMapsCompasses == _expectedValue;
+        }
     }
 }

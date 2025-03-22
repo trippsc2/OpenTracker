@@ -1,18 +1,28 @@
 ﻿using OpenTracker.Models.Logging;
 
-namespace OpenTracker.Models.AutoTracking.Logging;
-
-/// <summary>
-/// Represents log message data.
-/// </summary>
-public sealed class LogMessage
+namespace OpenTracker.Models.AutoTracking.Logging
 {
     /// <summary>
-    /// The <see cref="LogLevel"/> of the log message.
+    /// This class contains auto-tracking log message data.
     /// </summary>
-    public required LogLevel Level { get; init; }
-    /// <summary>
-    /// A <see cref="string"/> representing the content of the log message.
-    /// </summary>
-    public required string Content { get; init; }
+    public class LogMessage : ILogMessage
+    {
+        public LogLevel Level { get; }
+        public string Content { get; }
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="level">
+        ///     The <see cref="LogLevel"/> of the log message.
+        /// </param>
+        /// <param name="content">
+        ///     A <see cref="string"/> representing the content of the log message.
+        /// </param>
+        public LogMessage(LogLevel level, string content)
+        {
+            Level = level;
+            Content = content;
+        }
+    }
 }

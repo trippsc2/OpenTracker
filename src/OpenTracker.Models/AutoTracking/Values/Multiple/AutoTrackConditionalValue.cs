@@ -1,52 +1,92 @@
-﻿using System.Reactive.Linq;
+﻿using System.ComponentModel;
 using OpenTracker.Models.Requirements;
 using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
 
-namespace OpenTracker.Models.AutoTracking.Values.Multiple;
-
-/// <summary>
-/// This class represents an auto-tracking result value that changes based on a condition.
-/// </summary>
-public sealed class AutoTrackConditionalValue : ReactiveObject, IAutoTrackValue
+namespace OpenTracker.Models.AutoTracking.Values.Multiple
 {
-    private IRequirement Condition { get; }
-    private IAutoTrackValue? TrueValue { get; }
-    private IAutoTrackValue? FalseValue { get; }
-
-    [ObservableAsProperty]
-    public int? CurrentValue { get; }
-
     /// <summary>
-    /// Initializes a new <see cref="AutoTrackConditionalValue"/> object with the specified condition and true and false
-    /// values.
+    /// This class contains the auto-tracking result value data that is conditional.
     /// </summary>
-    /// <param name="condition">
-    ///     A <see cref="IRequirement"/> representing the condition for determining which value to use.
-    /// </param>
-    /// <param name="trueValue">
-    ///     An <see cref="IAutoTrackValue"/> representing the auto-tracking result value if the condition is met.
-    /// </param>
-    /// <param name="falseValue">
-    ///     An <see cref="IAutoTrackValue"/> representing the auto-tracking result value if the condition is not met.
-    /// </param>
-    public AutoTrackConditionalValue(
-        IRequirement condition, IAutoTrackValue? trueValue, IAutoTrackValue? falseValue)
+    public class AutoTrackConditionalValue : ReactiveObject, IAutoTrackConditionalValue
     {
-        Condition = condition;
-        TrueValue = trueValue;
-        FalseValue = falseValue;
+        private readonly IRequirement _condition;
+        private readonly IAutoTrackValue? _trueValue;
+        private readonly IAutoTrackValue? _falseValue;
 
-        this.WhenAnyValue(
-                x => x.Condition.Met,
-                x => x.TrueValue!.CurrentValue,
-                x => x.FalseValue!.CurrentValue)
-            .Select(_ => GetNewValue())
-            .ToPropertyEx(this, x => x.CurrentValue);
-    }
+        public int? CurrentValue => _condition.Met ? _trueValue?.CurrentValue : _falseValue?.CurrentValue;
 
-    private int? GetNewValue()
-    {
-        return Condition.Met ? TrueValue?.CurrentValue : FalseValue?.CurrentValue;
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="condition">
+        ///     A <see cref="IRequirement"/> condition for determining which value to use.
+        /// </param>
+        /// <param name="trueValue">
+        ///     The nullable <see cref="IAutoTrackValue"/> to be presented, if the condition is met.
+        /// </param>
+        /// <param name="falseValue">
+        ///     The nullable <see cref="IAutoTrackValue"/> to be presented, if the condition is not met.
+        /// </param>
+        public AutoTrackConditionalValue(
+            IRequirement condition, IAutoTrackValue? trueValue, IAutoTrackValue? falseValue)
+        {
+            _condition = condition;
+            _trueValue = trueValue;
+            _falseValue = falseValue;
+
+            _condition.PropertyChanged += OnRequirementChanged;
+
+            if (!(_trueValue is null))
+            {
+                _trueValue.PropertyChanged += OnValueChanged;
+            }
+
+            if (!(_falseValue is null))
+            {
+                _falseValue.PropertyChanged += OnValueChanged;
+            }
+        }
+
+        /// <summary>
+        /// Subscribes to the <see cref="IRequirement.PropertyChanged"/> event.
+        /// </summary>
+        /// <param name="sender">
+        ///     The <see cref="object"/> from which the event was sent.
+        /// </param>
+        /// <param name="e">
+        ///     The <see cref="PropertyChangedEventArgs"/>.
+        /// </param>
+        private void OnRequirementChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(IRequirement.Met))
+            {
+                UpdateValue();
+            }
+        }
+
+        /// <summary>
+        /// Subscribes to the <see cref="IAutoTrackValue.PropertyChanged"/> event.
+        /// </summary>
+        /// <param name="sender">
+        ///     The <see cref="object"/> from which the event was sent.
+        /// </param>
+        /// <param name="e">
+        ///     The <see cref="PropertyChangedEventArgs"/>.
+        /// </param>
+        private void OnValueChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(IAutoTrackValue.CurrentValue))
+            {
+                UpdateValue();
+            }
+        }
+
+        /// <summary>
+        /// Updates the value presented.
+        /// </summary>
+        private void UpdateValue()
+        {
+            this.RaisePropertyChanged(nameof(CurrentValue));
+        }
     }
 }

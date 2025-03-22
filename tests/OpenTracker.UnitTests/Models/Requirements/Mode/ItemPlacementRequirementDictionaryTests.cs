@@ -1,54 +1,51 @@
-using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.Requirements.Mode;
 using Xunit;
 
-namespace OpenTracker.UnitTests.Models.Requirements.Mode;
-
-[ExcludeFromCodeCoverage]
-public sealed class ItemPlacementRequirementDictionaryTests
+namespace OpenTracker.UnitTests.Models.Requirements.Mode
 {
-    private readonly IMode _mode = Substitute.For<IMode>();
-    
-    // ReSharper disable once CollectionNeverUpdated.Local
-    private readonly ItemPlacementRequirementDictionary _sut;
-
-    public ItemPlacementRequirementDictionaryTests()
+    public class ItemPlacementRequirementDictionaryTests
     {
-        ItemPlacementRequirement Factory(ItemPlacement expectedValue)
+        // ReSharper disable once CollectionNeverUpdated.Local
+        private readonly ItemPlacementRequirementDictionary _sut;
+
+        public ItemPlacementRequirementDictionaryTests()
         {
-            return new ItemPlacementRequirement(_mode, expectedValue);
+            static IItemPlacementRequirement Factory(ItemPlacement expectedValue)
+            {
+                return Substitute.For<IItemPlacementRequirement>();
+            }
+
+            _sut = new ItemPlacementRequirementDictionary(Factory);
         }
 
-        _sut = new ItemPlacementRequirementDictionary(Factory);
-    }
-
-    [Fact]
-    public void Indexer_ShouldReturnTheSameInstance()
-    {
-        var requirement1 = _sut[ItemPlacement.Basic];
-        var requirement2 = _sut[ItemPlacement.Basic];
+        [Fact]
+        public void Indexer_ShouldReturnTheSameInstance()
+        {
+            var requirement1 = _sut[ItemPlacement.Basic];
+            var requirement2 = _sut[ItemPlacement.Basic];
             
-        Assert.Equal(requirement1, requirement2);
-    }
+            Assert.Equal(requirement1, requirement2);
+        }
 
-    [Fact]
-    public void Indexer_ShouldReturnTheDifferentInstances()
-    {
-        var requirement1 = _sut[ItemPlacement.Basic];
-        var requirement2 = _sut[ItemPlacement.Advanced];
+        [Fact]
+        public void Indexer_ShouldReturnTheDifferentInstances()
+        {
+            var requirement1 = _sut[ItemPlacement.Basic];
+            var requirement2 = _sut[ItemPlacement.Advanced];
             
-        Assert.NotEqual(requirement1, requirement2);
-    }
+            Assert.NotEqual(requirement1, requirement2);
+        }
 
-    [Fact]
-    public void AutofacTest()
-    {
-        using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-        var sut = scope.Resolve<IItemPlacementRequirementDictionary>();
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var sut = scope.Resolve<IItemPlacementRequirementDictionary>();
             
-        Assert.NotNull(sut as ItemPlacementRequirementDictionary);
+            Assert.NotNull(sut as ItemPlacementRequirementDictionary);
+        }
     }
 }

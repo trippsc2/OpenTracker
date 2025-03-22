@@ -3,62 +3,61 @@ using System.Collections.Generic;
 using System.Linq;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Utils;
-using OpenTracker.Utils.Autofac;
 
-namespace OpenTracker.Models.PrizePlacements;
-
-/// <summary>
-/// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for <see cref="IPrizePlacement"/>
-/// objects indexed by <see cref="PrizePlacementID"/>.
-/// </summary>
-[DependencyInjection(SingleInstance = true)]
-public sealed class PrizePlacementDictionary : LazyDictionary<PrizePlacementID, IPrizePlacement>,
-    IPrizePlacementDictionary
+namespace OpenTracker.Models.PrizePlacements
 {
-    private readonly Lazy<IPrizePlacementFactory> _factory;
-
     /// <summary>
-    /// Constructor
+    /// This class contains the <see cref="IDictionary{TKey,TValue}"/> container for <see cref="IPrizePlacement"/>
+    /// objects indexed by <see cref="PrizePlacementID"/>.
     /// </summary>
-    /// <param name="factory">
-    ///     An Autofac factory for creating the <see cref="IPrizePlacementFactory"/> object.
-    /// </param>
-    public PrizePlacementDictionary(IPrizePlacementFactory.Factory factory)
-        : base(new Dictionary<PrizePlacementID, IPrizePlacement>())
+    public class PrizePlacementDictionary : LazyDictionary<PrizePlacementID, IPrizePlacement>,
+        IPrizePlacementDictionary
     {
-        _factory = new Lazy<IPrizePlacementFactory>(() => factory());
-    }
+        private readonly Lazy<IPrizePlacementFactory> _factory;
 
-    public void Reset()
-    {
-        foreach (var placement in Values)
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="factory">
+        ///     An Autofac factory for creating the <see cref="IPrizePlacementFactory"/> object.
+        /// </param>
+        public PrizePlacementDictionary(IPrizePlacementFactory.Factory factory)
+            : base(new Dictionary<PrizePlacementID, IPrizePlacement>())
         {
-            placement.Reset();
-        }
-    }
-
-    public IDictionary<PrizePlacementID, PrizePlacementSaveData> Save()
-    {
-        return Keys.ToDictionary(
-            prizePlacement => prizePlacement,
-            prizePlacement => this[prizePlacement].Save());
-    }
-
-    public void Load(IDictionary<PrizePlacementID, PrizePlacementSaveData>? saveData)
-    {
-        if (saveData == null)
-        {
-            return;
+            _factory = new Lazy<IPrizePlacementFactory>(() => factory());
         }
 
-        foreach (var prizePlacement in saveData.Keys)
+        public void Reset()
         {
-            this[prizePlacement].Load(saveData[prizePlacement]);
+            foreach (var placement in Values)
+            {
+                placement.Reset();
+            }
         }
-    }
 
-    protected override IPrizePlacement Create(PrizePlacementID key)
-    {
-        return _factory.Value.GetPrizePlacement(key);
+        public IDictionary<PrizePlacementID, PrizePlacementSaveData> Save()
+        {
+            return Keys.ToDictionary(
+                prizePlacement => prizePlacement,
+                prizePlacement => this[prizePlacement].Save());
+        }
+
+        public void Load(IDictionary<PrizePlacementID, PrizePlacementSaveData>? saveData)
+        {
+            if (saveData == null)
+            {
+                return;
+            }
+
+            foreach (var prizePlacement in saveData.Keys)
+            {
+                this[prizePlacement].Load(saveData[prizePlacement]);
+            }
+        }
+
+        protected override IPrizePlacement Create(PrizePlacementID key)
+        {
+            return _factory.Value.GetPrizePlacement(key);
+        }
     }
 }

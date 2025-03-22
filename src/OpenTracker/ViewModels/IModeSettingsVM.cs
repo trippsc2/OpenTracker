@@ -1,5 +1,6 @@
-﻿namespace OpenTracker.ViewModels;
-
-public interface IModeSettingsVM
+﻿namespace OpenTracker.ViewModels
 {
+    public interface IModeSettingsVM
+    {
+    }
 }

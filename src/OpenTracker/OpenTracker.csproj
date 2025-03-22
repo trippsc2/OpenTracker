@@ -1,24 +1,24 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  
+
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
     <ApplicationIcon>triforce.ico</ApplicationIcon>
     <Win32Resource />
-    <Version>1.8.6</Version>
+    <Version>1.8.5</Version>
     <Authors>Tripp</Authors>
-    <AssemblyVersion>1.8.6</AssemblyVersion>
-    <FileVersion>1.8.6</FileVersion>
+    <AssemblyVersion>1.8.5</AssemblyVersion>
+    <FileVersion>1.8.5</FileVersion>
     <CFBundleIconFile>OpenTracker.icns</CFBundleIconFile>
-    <CFBundleShortVersionString>1.8.6</CFBundleShortVersionString>
+    <CFBundleShortVersionString>1.8.5</CFBundleShortVersionString>
     <Nullable>enable</Nullable>
-    <LangVersion>default</LangVersion>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <AvaloniaResource Remove="bin\**" />
     <AvaloniaXaml Remove="bin\**" />
@@ -26,7 +26,7 @@
     <EmbeddedResource Remove="bin\**" />
     <None Remove="bin\**" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <PackageReference Include="Autofac" Version="7.1.0" />
     <PackageReference Include="Avalonia" Version="0.10.22" />
@@ -60,16 +60,13 @@
     <PackageReference Include="Splat.Autofac" Version="14.7.1" />
     <PackageReference Include="System.Drawing.Common" Version="7.0.0" />
     <PackageReference Include="ThemeEditor.Controls.ColorPicker" Version="0.10.17" />
-    <PackageReference Update="Packaging.Targets">
-      <Version>0.1.220</Version>
-    </PackageReference>
   </ItemGroup>
-  
+
   <ItemGroup>
     <ProjectReference Include="..\OpenTracker.Models\OpenTracker.Models.csproj" />
     <ProjectReference Include="..\OpenTracker.Utils\OpenTracker.Utils.csproj" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <None Update="Themes\*.xaml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -81,5 +78,5 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  
+
 </Project>

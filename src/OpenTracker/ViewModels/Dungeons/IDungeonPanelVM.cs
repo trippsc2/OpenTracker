@@ -1,7 +1,8 @@
-using OpenTracker.Utils;
+using OpenTracker.ViewModels.UIPanels;
 
-namespace OpenTracker.ViewModels.Dungeons;
-
-public interface IDungeonPanelVM : IViewModel
+namespace OpenTracker.ViewModels.Dungeons
 {
+    public interface IDungeonPanelVM : IUIPanelBodyVMBase
+    {
+    }
 }

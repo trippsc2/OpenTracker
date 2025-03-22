@@ -1,8 +1,9 @@
 ﻿using Avalonia.Controls;
 
-namespace OpenTracker.Utils;
-
-public interface IMainWindowProvider
+namespace OpenTracker.Utils
 {
-    Window GetMainWindow();
+    public interface IMainWindowProvider
+    {
+        Window GetMainWindow();
+    }
 }
