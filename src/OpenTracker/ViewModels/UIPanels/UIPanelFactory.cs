@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Requirements.Alternative;
@@ -91,11 +90,12 @@ namespace OpenTracker.ViewModels.UIPanels
             {
                 UIPanelType.Item => null,
                 UIPanelType.Dungeon => null,
-                UIPanelType.Dropdown => _alternativeRequirements[new HashSet<IRequirement>
-                {
-                    _entranceShuffleRequirements[EntranceShuffle.All],
-                    _entranceShuffleRequirements[EntranceShuffle.Insanity]
-                }],
+                UIPanelType.Dropdown => _alternativeRequirements[
+                    [
+                        _entranceShuffleRequirements[EntranceShuffle.All],
+                        _entranceShuffleRequirements[EntranceShuffle.Insanity]
+                    ]
+                ],
                 UIPanelType.Location => null,
                 _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
             };
