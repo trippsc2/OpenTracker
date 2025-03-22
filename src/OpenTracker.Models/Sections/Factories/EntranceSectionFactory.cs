@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.Nodes;
@@ -249,7 +248,6 @@ namespace OpenTracker.Models.Sections.Factories
                 case LocationID.DarkHyliaFortuneTeller:
                 case LocationID.DarkTreesFairyCaveEntrance:
                 case LocationID.DarkSahasrahlaEntrance:
-                case LocationID.PalaceOfDarknessEntrance:
                 case LocationID.DarkWitchsHut:
                 case LocationID.DarkFluteSpotFiveEntrance:
                 case LocationID.FatFairyEntrance:
@@ -305,6 +303,7 @@ namespace OpenTracker.Models.Sections.Factories
                 case LocationID.SkullWoodsBack:
                 case LocationID.ThievesTownEntrance:
                 case LocationID.SwampPalaceEntrance:
+                case LocationID.PalaceOfDarknessEntrance:
                 case LocationID.IcePalaceEntrance:
                 case LocationID.MiseryMireEntrance:
                 case LocationID.TowerOfHeraEntrance:
@@ -353,38 +352,43 @@ namespace OpenTracker.Models.Sections.Factories
             switch (id)
             {
                 case LocationID.LinksHouseEntrance:
-                    return _aggregateRequirements[new HashSet<IRequirement>
-                    {
-                        _alternativeRequirements[new HashSet<IRequirement>
-                        {
-                            _entranceShuffleRequirements[EntranceShuffle.All],
-                            _entranceShuffleRequirements[EntranceShuffle.Insanity]
-                        }],
-                        _worldStateRequirements[WorldState.Inverted]
-                    }];
+                    return _aggregateRequirements[
+                        [
+                            _alternativeRequirements[
+                                [
+                                    _entranceShuffleRequirements[EntranceShuffle.All],
+                                    _entranceShuffleRequirements[EntranceShuffle.Insanity]
+                                ]
+                            ],
+                            _worldStateRequirements[WorldState.Inverted]
+                        ]
+                    ];
                 case LocationID.GanonHoleExit:
-                    return _aggregateRequirements[new HashSet<IRequirement>
-                    {
-                        _entranceShuffleRequirements[EntranceShuffle.Insanity],
-                        _worldStateRequirements[WorldState.Inverted]
-                    }];
+                    return _aggregateRequirements[
+                        [
+                            _entranceShuffleRequirements[EntranceShuffle.Insanity],
+                            _worldStateRequirements[WorldState.Inverted]
+                        ]
+                    ];
             }
 
             switch (entranceShuffleLevel)
             {
                 case EntranceShuffle.Dungeon:
-                    return _alternativeRequirements[new HashSet<IRequirement>
-                    {
-                        _entranceShuffleRequirements[EntranceShuffle.Dungeon],
-                        _entranceShuffleRequirements[EntranceShuffle.All],
-                        _entranceShuffleRequirements[EntranceShuffle.Insanity]
-                    }];
+                    return _alternativeRequirements[
+                        [
+                            _entranceShuffleRequirements[EntranceShuffle.Dungeon],
+                            _entranceShuffleRequirements[EntranceShuffle.All],
+                            _entranceShuffleRequirements[EntranceShuffle.Insanity]
+                        ]
+                    ];
                 case EntranceShuffle.All:
-                    return _alternativeRequirements[new HashSet<IRequirement>
-                    {
-                        _entranceShuffleRequirements[EntranceShuffle.All],
-                        _entranceShuffleRequirements[EntranceShuffle.Insanity]
-                    }];
+                    return _alternativeRequirements[
+                        [
+                            _entranceShuffleRequirements[EntranceShuffle.All],
+                            _entranceShuffleRequirements[EntranceShuffle.Insanity]
+                        ]
+                    ];
                 case EntranceShuffle.Insanity:
                     return _entranceShuffleRequirements[EntranceShuffle.Insanity];
                 default:
