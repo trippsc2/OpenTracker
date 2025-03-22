@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.AutoTracking.Values;
 using OpenTracker.Models.Locations;
@@ -256,7 +255,6 @@ namespace OpenTracker.Models.Sections.Factories
                 case LocationID.FatFairy:
                     return _overworldNodes[OverworldNodeID.BigBombToWall];
                 case LocationID.HauntedGrove:
-                    return _overworldNodes[OverworldNodeID.DarkWorldSouthNotBunny];
                 case LocationID.HypeCave:
                 case LocationID.DiggingGame:
                     return _overworldNodes[OverworldNodeID.DarkWorldSouthNotBunny];
@@ -434,20 +432,23 @@ namespace OpenTracker.Models.Sections.Factories
             switch (id)
             {
                 case LocationID.LinksHouse:
-                    return _alternativeRequirements[new HashSet<IRequirement>
-                    {
-                        _worldStateRequirements[WorldState.StandardOpen],
-                        _alternativeRequirements[new HashSet<IRequirement>
-                        {
-                            _entranceShuffleRequirements[EntranceShuffle.None],
-                            _entranceShuffleRequirements[EntranceShuffle.Dungeon]
-                        }]
-                    }];
+                    return _alternativeRequirements[
+                        [
+                            _worldStateRequirements[WorldState.StandardOpen],
+                            _alternativeRequirements[
+                                [
+                                    _entranceShuffleRequirements[EntranceShuffle.None],
+                                    _entranceShuffleRequirements[EntranceShuffle.Dungeon]
+                                ]
+                            ]
+                        ]
+                    ];
                 case LocationID.Pedestal:
                 case LocationID.BottleVendor:
                 case LocationID.Tavern:
                 case LocationID.RaceGame:
                 case LocationID.MushroomSpot:
+                case LocationID.GroveDiggingSpot:
                 case LocationID.Dam when index == 1:
                 case LocationID.Hobo:
                 case LocationID.PyramidLedge:
@@ -459,6 +460,7 @@ namespace OpenTracker.Models.Sections.Factories
                 case LocationID.DesertLedge:
                 case LocationID.Blacksmith:
                 case LocationID.PurpleChest:
+                case LocationID.BumperCave:
                 case LocationID.LakeHyliaIsland:
                 case LocationID.OldMan:
                 case LocationID.SpectacleRock when index == 0:
@@ -479,7 +481,6 @@ namespace OpenTracker.Models.Sections.Factories
                 case LocationID.BonkRocks:
                 case LocationID.KingsTomb:
                 case LocationID.AginahsCave:
-                case LocationID.GroveDiggingSpot:
                 case LocationID.Dam:
                 case LocationID.MiniMoldormCave:
                 case LocationID.IceRodCave:
@@ -492,7 +493,6 @@ namespace OpenTracker.Models.Sections.Factories
                 case LocationID.TreasureGame:
                 case LocationID.BombableShack:
                 case LocationID.HammerPegs:
-                case LocationID.BumperCave:
                 case LocationID.MireShack:
                 case LocationID.CheckerboardCave:
                 case LocationID.SpectacleRock:
@@ -502,11 +502,12 @@ namespace OpenTracker.Models.Sections.Factories
                 case LocationID.SuperBunnyCave:
                 case LocationID.HookshotCave:
                 case LocationID.MimicCave:
-                    return _alternativeRequirements[new HashSet<IRequirement>
-                    {
-                        _entranceShuffleRequirements[EntranceShuffle.None],
-                        _entranceShuffleRequirements[EntranceShuffle.Dungeon]
-                    }];
+                    return _alternativeRequirements[
+                        [
+                            _entranceShuffleRequirements[EntranceShuffle.None],
+                            _entranceShuffleRequirements[EntranceShuffle.Dungeon]
+                        ]
+                    ];
                 default:
                     throw new ArgumentOutOfRangeException(nameof(id), id, null);
             }
