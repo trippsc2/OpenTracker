@@ -2,15 +2,20 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vm="clr-namespace:OpenTracker.ViewModels.Dungeons"
+             xmlns:dungeons="clr-namespace:OpenTracker.ViewModels.Dungeons"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="OpenTracker.Views.Dungeons.HorizontalDungeonPanel"
-             x:DataType="vm:HorizontalDungeonPanelVM" x:CompileBindings="True">
+             x:Class="OpenTracker.Views.Dungeons.HorizontalDungeonPanel">
+	
+	<Design.DataContext>
+		<dungeons:HorizontalDungeonPanelVM />
+	</Design.DataContext>
+	
 	<StackPanel Margin="6 0 4 0" Orientation="Vertical">
+
 		<StackPanel Margin="0 0 0 8" Orientation="Horizontal">
+
 			<StackPanel Margin="0 0 4 0" Orientation="Horizontal">
 				<Image Classes="DungeonLabel" Source="avares://OpenTracker/Assets/Images/hc.png" />
-				
 				<ItemsControl Items="{Binding HCItems}">
 					<ItemsControl.ItemsPanel>
 						<ItemsPanelTemplate>
@@ -20,9 +25,9 @@
 				</ItemsControl>
 			</StackPanel>
 
-			<StackPanel Orientation="Horizontal" IsVisible="{Binding ATItemsVisible}">
+			<StackPanel Orientation="Horizontal"
+			            IsVisible="{Binding ATItemsVisible}">
 				<Image Classes="DungeonLabel" Source="avares://OpenTracker/Assets/Images/at.png" />
-				
 				<ItemsControl Items="{Binding ATItems}">
 					<ItemsControl.ItemsPanel>
 						<ItemsPanelTemplate>
@@ -31,11 +36,11 @@
 					</ItemsControl.ItemsPanel>
 				</ItemsControl>
 			</StackPanel>
+			
 		</StackPanel>
 
 		<StackPanel Orientation="Horizontal">
 			<Image Classes="DungeonLabel" Source="avares://OpenTracker/Assets/Images/ep.png" />
-			
 			<ItemsControl Items="{Binding EPItems}">
 				<ItemsControl.ItemsPanel>
 					<ItemsPanelTemplate>
@@ -47,7 +52,6 @@
 
 		<StackPanel Orientation="Horizontal">
 			<Image Classes="DungeonLabel" Source="avares://OpenTracker/Assets/Images/dp.png" />
-			
 			<ItemsControl Items="{Binding DPItems}">
 				<ItemsControl.ItemsPanel>
 					<ItemsPanelTemplate>
@@ -59,7 +63,6 @@
 
 		<StackPanel Orientation="Horizontal">
 			<Image Classes="DungeonLabel" Source="avares://OpenTracker/Assets/Images/th.png" />
-			
 			<ItemsControl Items="{Binding ToHItems}">
 				<ItemsControl.ItemsPanel>
 					<ItemsPanelTemplate>
@@ -71,7 +74,6 @@
 
 		<StackPanel Orientation="Horizontal">
 			<Image Classes="DungeonLabel" Source="avares://OpenTracker/Assets/Images/pd.png" />
-			
 			<ItemsControl Items="{Binding PoDItems}">
 				<ItemsControl.ItemsPanel>
 					<ItemsPanelTemplate>
@@ -83,7 +85,6 @@
 
 		<StackPanel Orientation="Horizontal">
 			<Image Classes="DungeonLabel" Source="avares://OpenTracker/Assets/Images/sp.png" />
-			
 			<ItemsControl Items="{Binding SPItems}">
 				<ItemsControl.ItemsPanel>
 					<ItemsPanelTemplate>
@@ -95,7 +96,6 @@
 
 		<StackPanel Orientation="Horizontal">
 			<Image Classes="DungeonLabel" Source="avares://OpenTracker/Assets/Images/sw.png" />
-			
 			<ItemsControl Items="{Binding SWItems}">
 				<ItemsControl.ItemsPanel>
 					<ItemsPanelTemplate>
@@ -107,7 +107,6 @@
 
 		<StackPanel Orientation="Horizontal">
 			<Image Classes="DungeonLabel" Source="avares://OpenTracker/Assets/Images/tt.png" />
-			
 			<ItemsControl Items="{Binding TTItems}">
 				<ItemsControl.ItemsPanel>
 					<ItemsPanelTemplate>
@@ -119,7 +118,6 @@
 
 		<StackPanel Orientation="Horizontal">
 			<Image Classes="DungeonLabel" Source="avares://OpenTracker/Assets/Images/ip.png" />
-			
 			<ItemsControl Items="{Binding IPItems}">
 				<ItemsControl.ItemsPanel>
 					<ItemsPanelTemplate>
@@ -131,7 +129,6 @@
 
 		<StackPanel Orientation="Horizontal">
 			<Image Classes="DungeonLabel" Source="avares://OpenTracker/Assets/Images/mm.png" />
-			
 			<ItemsControl Items="{Binding MMItems}">
 				<ItemsControl.ItemsPanel>
 					<ItemsPanelTemplate>
@@ -143,7 +140,6 @@
 
 		<StackPanel Orientation="Horizontal">
 			<Image Classes="DungeonLabel" Source="avares://OpenTracker/Assets/Images/tr.png" />
-			
 			<ItemsControl Items="{Binding TRItems}">
 				<ItemsControl.ItemsPanel>
 					<ItemsPanelTemplate>
@@ -155,7 +151,6 @@
 
 		<StackPanel Orientation="Horizontal">
 			<Image Classes="DungeonLabel" Source="avares://OpenTracker/Assets/Images/gt.png" />
-			
 			<ItemsControl Items="{Binding GTItems}">
 				<ItemsControl.ItemsPanel>
 					<ItemsPanelTemplate>
@@ -164,5 +159,7 @@
 				</ItemsControl.ItemsPanel>
 			</ItemsControl>
 		</StackPanel>
+
 	</StackPanel>
+	
 </UserControl>

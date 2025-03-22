@@ -1,28 +1,18 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:OpenTracker.ViewModels.Markings;assembly=OpenTracker"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vm="clr-namespace:OpenTracker.ViewModels.Markings"
-             mc:Ignorable="d" x:Class="OpenTracker.Views.Markings.MarkingSelect"
-             x:DataType="vm:MarkingSelectVM" x:CompileBindings="True">
-  <UserControl.Styles>
-    <Style Selector="Popup.MarkingSelect">
-      <Setter Property="IsLightDismissEnabled" Value="True" />
-      <Setter Property="PlacementMode" Value="Pointer" />
-    </Style>
-    
-    <Style Selector="WrapPanel.MarkingSelect">
-      <Setter Property="ItemHeight" Value="40" />
-      <Setter Property="ItemWidth" Value="34" />
-      <Setter Property="Margin" Value="0 0 0 10" />
-      <Setter Property="Orientation" Value="Horizontal" />
-      <Setter Property="HorizontalAlignment" Value="Left" />
-      <Setter Property="VerticalAlignment" Value="Top" />
-    </Style>
-  </UserControl.Styles>
+             mc:Ignorable="d" x:Class="OpenTracker.Views.Markings.MarkingSelect">
   
-  <Popup Classes="MarkingSelect" IsOpen="{Binding PopupOpen, Mode=TwoWay}">
+  <Design.DataContext>
+    <vm:MarkingSelectVM />
+  </Design.DataContext>
+  
+  <Popup IsOpen="{Binding PopupOpen, Mode=TwoWay}"
+         IsLightDismissEnabled="True" PlacementMode="Pointer">
     <LayoutTransformControl>
+
       <LayoutTransformControl.LayoutTransform>
         <ScaleTransform ScaleX="{Binding Scale}"
                         ScaleY="{Binding Scale}" />
@@ -30,22 +20,25 @@
 
       <Border Classes="Popup">
         <StackPanel Orientation="Vertical">
+
           <ItemsControl Items="{Binding Buttons}">
             <ItemsControl.ItemsPanel>
               <ItemsPanelTemplate>
-                <WrapPanel Classes="MarkingSelect"
+                <WrapPanel ItemWidth="34" ItemHeight="40" Margin="0 0 0 10" Orientation="Horizontal"
+                           MaxWidth="{Binding Width}"
                            MaxHeight="{Binding Height}"
-                           MaxWidth="{Binding Width}" />
+                           HorizontalAlignment="Left" VerticalAlignment="Top" />
               </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
           </ItemsControl>
-          
+
           <Border Classes="Separator" Margin="0 2" />
           <Button Classes="MarkingSelect"
-                  Content="Clear"
-                  Command="{Binding ClearMarkingCommand}" />
+                  Command="{Binding ClearMarking}">Clear</Button>
+
         </StackPanel>
       </Border>
+
     </LayoutTransformControl>
   </Popup>
 </UserControl>

@@ -1,22 +1,26 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:OpenTracker.ViewModels.ColorSelect;assembly=OpenTracker"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:view="clr-namespace:OpenTracker.Views.ColorSelect;assembly=OpenTracker"
-             xmlns:vm="clr-namespace:OpenTracker.ViewModels.ColorSelect"
-             mc:Ignorable="d" x:Class="OpenTracker.Views.ColorSelect.ColorSelectControl"
-             x:DataType="vm:ColorSelectControlVM" x:CompileBindings="True">
+             mc:Ignorable="d" x:Class="OpenTracker.Views.ColorSelect.ColorSelectControl">
+  
+  <Design.DataContext>
+    <vm:ColorSelectControlVM />
+  </Design.DataContext>
+  
   <StackPanel Orientation="Vertical">
     <Grid ColumnDefinitions="Auto * Auto">
-      <ToggleButton Grid.Column="0"
-                    Classes="ColorSelect"
-                    Background="{Binding Color.Value}"
-                    IsChecked="{Binding PickerOpen}" />
-      <TextBlock Grid.Column="2" Classes="ColorSelectLabel" Text="{Binding Label}" />
+      <ToggleButton Classes="ColorSelect"
+                    Background="{Binding Color}"
+                    IsChecked="{Binding PickerOpen, Mode=TwoWay}" />
+      <TextBlock Classes="ColorSelectLabel" Grid.Column="2"
+                 Text="{Binding Label}" />
     </Grid>
-    
-    <Border x:Name="ColorPickerBorder" Classes="ColorPicker" IsVisible="{Binding PickerOpen}">
-      <view:ColorPickerControl DataContext="{Binding Color.Value}" />
+    <Border Classes="ColorPicker"
+            IsVisible="{Binding PickerOpen}">
+      <view:ColorPickerControl DataContext="{Binding Color}" />
     </Border>
   </StackPanel>
   

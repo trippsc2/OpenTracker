@@ -1,21 +1,27 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:OpenTracker.ViewModels.Areas;assembly=OpenTracker"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vm="clr-namespace:OpenTracker.ViewModels.Areas"
-             mc:Ignorable="d" x:Class="OpenTracker.Views.Areas.MapArea"
-             x:DataType="vm:MapAreaVM" x:CompileBindings="True">
+             xmlns:mapLocations="clr-namespace:OpenTracker.ViewModels.MapLocations"
+             mc:Ignorable="d" x:Class="OpenTracker.Views.Areas.MapArea">
+  
+  <Design.DataContext>
+    <vm:MapAreaVM />
+  </Design.DataContext>
+  
   <Panel>
     <Viewbox Classes="MapArea">
       <Panel>
+
         <ItemsControl Items="{Binding Maps}">
           <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
-              <StackPanel Orientation="{Binding Orientation}" />
+              <StackPanel Orientation="{Binding Orientation, Mode=OneWay}" />
             </ItemsPanelTemplate>
           </ItemsControl.ItemsPanel>
         </ItemsControl>
-        
+
         <ItemsControl Items="{Binding Connectors}">
           <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
@@ -25,20 +31,23 @@
         </ItemsControl>
         
         <ItemsControl Classes="Canvas" Items="{Binding MapLocations}">
+          
           <ItemsControl.Styles>
             <Style Selector="ItemsControl.Canvas > ContentPresenter">
-              <!-- ReSharper disable once Xaml.BindingWithoutContextNotResolved -->
-              <Setter Property="Canvas.Left" Value="{ReflectionBinding CanvasX}" />
-              <!-- ReSharper disable once Xaml.BindingWithoutContextNotResolved -->
-              <Setter Property="Canvas.Top" Value="{ReflectionBinding CanvasY}" />
+              <Design.DataContext>
+                <mapLocations:MapLocationVM />
+              </Design.DataContext>
+              <Setter Property="Canvas.Left" Value="{Binding CanvasX}" />
+              <Setter Property="Canvas.Top" Value="{Binding CanvasY}" />
             </Style>
           </ItemsControl.Styles>
-          
+
           <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
               <Canvas />
             </ItemsPanelTemplate>
           </ItemsControl.ItemsPanel>
+
         </ItemsControl>
 
       </Panel>

@@ -1,16 +1,20 @@
 ﻿<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:OpenTracker.ViewModels.Dialogs;assembly=OpenTracker"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:vm="clr-namespace:OpenTracker.ViewModels.Dialogs"
         CanResize="False" mc:Ignorable="d" x:Class="OpenTracker.Views.Dialogs.ErrorBoxDialog"
         MaxWidth="400" SizeToContent="Height" Padding="5" WindowStartupLocation="CenterOwner"
         Icon="avares://OpenTracker/Assets/Images/triforce.png"
-        Title="{Binding Title}"
-        x:DataType="vm:ErrorBoxDialogVM" x:CompileBindings="True">
+        Title="{Binding Title}">
+
+  <Design.DataContext>
+    <vm:ErrorBoxDialogVM />
+  </Design.DataContext>
+  
   <Window.Styles>
     <Style Selector="Button">
-      <Setter Property="Margin" Value="15 0 0 0" />
+      <Setter Property="Margin" Value="15,0,0,0" />
       <Setter Property="MinHeight" Value="24" />
       <Setter Property="MinWidth" Value="75" />
     </Style>
@@ -18,10 +22,10 @@
 
   <StackPanel Orientation="Vertical">
 
-    <TextBlock Classes="MessageBox" Text="{Binding Text}" />
+    <TextBlock Classes="MessageBox" Text="{Binding Path=Text}" />
 
     <StackPanel Orientation="Horizontal" Margin="15" HorizontalAlignment="Right">
-      <Button x:Name="OkButton" Classes="MessageBox" Content="OK" Command="{Binding OkCommand}" />
+      <Button Classes="MessageBox" Content="OK" Command="{Binding Path=OkCommand}" />
     </StackPanel>
 
   </StackPanel>

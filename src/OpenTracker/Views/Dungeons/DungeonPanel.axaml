@@ -1,10 +1,15 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:OpenTracker.ViewModels.Dungeons;assembly=OpenTracker"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vm="clr-namespace:OpenTracker.ViewModels.Dungeons"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="OpenTracker.Views.Dungeons.DungeonPanel"
-             x:DataType="vm:DungeonPanelVM" x:CompileBindings="True">
+             x:Class="OpenTracker.Views.Dungeons.DungeonPanel">
+
+  <Design.DataContext>
+    <vm:DungeonPanelVM />
+  </Design.DataContext>
+  
   <ContentControl Content="{Binding Items}" />
+  
 </UserControl>

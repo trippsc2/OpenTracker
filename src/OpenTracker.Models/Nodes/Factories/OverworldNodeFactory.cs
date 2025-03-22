@@ -1,77 +1,111 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using Autofac;
-using NSubstitute;
-using OpenTracker.Models.Modes;
-using OpenTracker.Models.Nodes;
-using OpenTracker.Models.Nodes.Factories;
-using Xunit;
+using OpenTracker.Models.Nodes.Connections;
 
-namespace OpenTracker.UnitTests.Models.Nodes.Factories;
-
-[ExcludeFromCodeCoverage]
-public sealed class OverworldNodeFactoryTests
+namespace OpenTracker.Models.Nodes.Factories
 {
-    private static readonly IStartConnectionFactory StartConnectionFactory =
-        Substitute.For<IStartConnectionFactory>();
-    private static readonly ILightWorldConnectionFactory LightWorldConnectionFactory =
-        Substitute.For<ILightWorldConnectionFactory>();
-    private static readonly INWLightWorldConnectionFactory NWLightWorldConnectionFactory =
-        Substitute.For<INWLightWorldConnectionFactory>();
-    private static readonly ISLightWorldConnectionFactory SLightWorldConnectionFactory =
-        Substitute.For<ISLightWorldConnectionFactory>();
-    private static readonly INELightWorldConnectionFactory NELightWorldConnectionFactory =
-        Substitute.For<INELightWorldConnectionFactory>();
-    private static readonly ILWDeathMountainConnectionFactory LWDeathMountainConnectionFactory =
-        Substitute.For<ILWDeathMountainConnectionFactory>();
-    private static readonly INWDarkWorldConnectionFactory NWDarkWorldConnectionFactory =
-        Substitute.For<INWDarkWorldConnectionFactory>();
-    private static readonly ISDarkWorldConnectionFactory SDarkWorldConnectionFactory =
-        Substitute.For<ISDarkWorldConnectionFactory>();
-    private static readonly INEDarkWorldConnectionFactory NEDarkWorldConnectionFactory =
-        Substitute.For<INEDarkWorldConnectionFactory>();
-    private static readonly IDWDeathMountainConnectionFactory DWDeathMountainConnectionFactory =
-        Substitute.For<IDWDeathMountainConnectionFactory>();
-    private static readonly IDungeonEntryConnectionFactory DungeonEntryConnectionFactory =
-        Substitute.For<IDungeonEntryConnectionFactory>();
-
-    private static readonly Dictionary<OverworldNodeID, INodeConnectionFactory> ExpectedFactories = new();
-    private static readonly Dictionary<OverworldNodeID, Type> ExpectedTypes = new();
-
-    private readonly OverworldNodeFactory _sut;
-
-    public OverworldNodeFactoryTests()
+    /// <summary>
+    /// This class contains creation logic for <see cref="IStartNode"/> and <see cref="IOverworldNode"/> objects.
+    /// </summary>
+    public class OverworldNodeFactory : IOverworldNodeFactory
     {
-        _sut = new OverworldNodeFactory(
-            StartConnectionFactory, LightWorldConnectionFactory,
-            NWLightWorldConnectionFactory,
-            SLightWorldConnectionFactory,
-            NELightWorldConnectionFactory, LWDeathMountainConnectionFactory,
-            NWDarkWorldConnectionFactory,
-            SDarkWorldConnectionFactory,
-            NEDarkWorldConnectionFactory, DWDeathMountainConnectionFactory,
-            DungeonEntryConnectionFactory, () => new OverworldNode(
-                Substitute.For<IMode>(), new OverworldNodeDictionary(() => _sut!),
-                _sut!), () => new StartNode());
-    }
+        private readonly IStartConnectionFactory _startConnectionFactory;
+        private readonly ILightWorldConnectionFactory _lightWorldConnectionFactory;
+        private readonly INWLightWorldConnectionFactory _nwLightWorldConnectionFactory;
+        private readonly ISLightWorldConnectionFactory _sLightWorldConnectionFactory;
+        private readonly INELightWorldConnectionFactory _neLightWorldConnectionFactory;
+        private readonly ILWDeathMountainConnectionFactory _lwDeathMountainConnectionFactory;
+        private readonly INWDarkWorldConnectionFactory _nwDarkWorldConnectionFactory;
+        private readonly ISDarkWorldConnectionFactory _sDarkWorldConnectionFactory;
+        private readonly INEDarkWorldConnectionFactory _neDarkWorldConnectionFactory;
+        private readonly IDWDeathMountainConnectionFactory _dwDeathMountainConnectionFactory;
+        private readonly IDungeonEntryConnectionFactory _dungeonEntryConnectionFactory;
 
-    private static void PopulateExpectedValues()
-    {
-        ExpectedFactories.Clear();
-        ExpectedTypes.Clear();
-            
-        foreach (OverworldNodeID id in Enum.GetValues(typeof(OverworldNodeID)))
+        private readonly IOverworldNode.Factory _factory;
+        private readonly IStartNode.Factory _startFactory;
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="startConnectionFactory">
+        ///     The <see cref="IStartConnectionFactory"/>. 
+        /// </param>
+        /// <param name="lightWorldConnectionFactory">
+        ///     The <see cref="ILightWorldConnectionFactory"/>. 
+        /// </param>
+        /// <param name="nwLightWorldConnectionFactory">
+        ///     The <see cref="INWLightWorldConnectionFactory"/>.
+        /// </param>
+        /// <param name="sLightWorldConnectionFactory">
+        ///     The <see cref="ISLightWorldConnectionFactory"/>.
+        /// </param>
+        /// <param name="neLightWorldConnectionFactory">
+        ///     The <see cref="INELightWorldConnectionFactory"/>.
+        /// </param>
+        /// <param name="lwDeathMountainConnectionFactory">
+        ///     The <see cref="ILWDeathMountainConnectionFactory"/>.
+        /// </param>
+        /// <param name="nwDarkWorldConnectionFactory">
+        ///     The <see cref="INWDarkWorldConnectionFactory"/>.
+        /// </param>
+        /// <param name="sDarkWorldConnectionFactory">
+        ///     The <see cref="ISDarkWorldConnectionFactory"/>.
+        /// </param>
+        /// <param name="neDarkWorldConnectionFactory">
+        ///     The <see cref="INEDarkWorldConnectionFactory"/>.
+        /// </param>
+        /// <param name="dwDeathMountainConnectionFactory">
+        ///     The <see cref="IDWDeathMountainConnectionFactory"/>.
+        /// </param>
+        /// <param name="dungeonEntryConnectionFactory">
+        ///     The <see cref="IDungeonEntryConnectionFactory"/>.
+        /// </param>
+        /// <param name="factory">
+        ///     An Autofac factory for creating new <see cref="IOverworldNode"/> objects.
+        /// </param>
+        /// <param name="startFactory">
+        ///     An Autofac factory for creating new <see cref="IStartNode"/> objects.
+        /// </param>
+        public OverworldNodeFactory(
+            IStartConnectionFactory startConnectionFactory, ILightWorldConnectionFactory lightWorldConnectionFactory,
+            INWLightWorldConnectionFactory nwLightWorldConnectionFactory,
+            ISLightWorldConnectionFactory sLightWorldConnectionFactory,
+            INELightWorldConnectionFactory neLightWorldConnectionFactory,
+            ILWDeathMountainConnectionFactory lwDeathMountainConnectionFactory,
+            INWDarkWorldConnectionFactory nwDarkWorldConnectionFactory,
+            ISDarkWorldConnectionFactory sDarkWorldConnectionFactory,
+            INEDarkWorldConnectionFactory neDarkWorldConnectionFactory,
+            IDWDeathMountainConnectionFactory dwDeathMountainConnectionFactory,
+            IDungeonEntryConnectionFactory dungeonEntryConnectionFactory, IOverworldNode.Factory factory,
+            IStartNode.Factory startFactory)
+        {
+            _startConnectionFactory = startConnectionFactory;
+            _lightWorldConnectionFactory = lightWorldConnectionFactory;
+            _nwLightWorldConnectionFactory = nwLightWorldConnectionFactory;
+            _sLightWorldConnectionFactory = sLightWorldConnectionFactory;
+            _neLightWorldConnectionFactory = neLightWorldConnectionFactory;
+            _lwDeathMountainConnectionFactory = lwDeathMountainConnectionFactory;
+            _nwDarkWorldConnectionFactory = nwDarkWorldConnectionFactory;
+            _sDarkWorldConnectionFactory = sDarkWorldConnectionFactory;
+            _neDarkWorldConnectionFactory = neDarkWorldConnectionFactory;
+            _dwDeathMountainConnectionFactory = dwDeathMountainConnectionFactory;
+            _dungeonEntryConnectionFactory = dungeonEntryConnectionFactory;
+
+            _startFactory = startFactory;
+            _factory = factory;
+        }
+
+        public INode GetOverworldNode(OverworldNodeID id)
+        {
+            return id == OverworldNodeID.Start ? _startFactory() : _factory();
+        }
+
+        public IEnumerable<INodeConnection> GetNodeConnections(OverworldNodeID id, INode node)
         {
             switch (id)
             {
-                case OverworldNodeID.Start:
-                    ExpectedTypes.Add(id, typeof(StartNode));
-                    break;
                 case OverworldNodeID.Inaccessible:
-                    ExpectedTypes.Add(id, typeof(OverworldNode));
-                    break;
+                    return new List<INodeConnection>();
                 case OverworldNodeID.EntranceDungeonAllInsanity:
                 case OverworldNodeID.EntranceNone:
                 case OverworldNodeID.EntranceNoneInverted:
@@ -79,9 +113,7 @@ public sealed class OverworldNodeFactoryTests
                 case OverworldNodeID.FluteActivated:
                 case OverworldNodeID.FluteInverted:
                 case OverworldNodeID.FluteStandardOpen:
-                    ExpectedFactories.Add(id, StartConnectionFactory);
-                    ExpectedTypes.Add(id, typeof(OverworldNode));
-                    break;
+                    return _startConnectionFactory.GetNodeConnections(id, node);
                 case OverworldNodeID.LightWorld:
                 case OverworldNodeID.LightWorldInverted:
                 case OverworldNodeID.LightWorldInvertedNotBunny:
@@ -95,9 +127,8 @@ public sealed class OverworldNodeFactoryTests
                 case OverworldNodeID.LightWorldHammer:
                 case OverworldNodeID.LightWorldLift1:
                 case OverworldNodeID.LightWorldFlute:
-                    ExpectedFactories.Add(id, LightWorldConnectionFactory);
-                    ExpectedTypes.Add(id, typeof(OverworldNode));
-                    break;
+                case OverworldNodeID.LightWorldBook:
+                    return _lightWorldConnectionFactory.GetNodeConnections(id, node);
                 case OverworldNodeID.Pedestal:
                 case OverworldNodeID.LumberjackCaveHole:
                 case OverworldNodeID.DeathMountainEntry:
@@ -123,9 +154,7 @@ public sealed class OverworldNodeFactoryTests
                 case OverworldNodeID.KingsTomb:
                 case OverworldNodeID.KingsTombNotBunny:
                 case OverworldNodeID.KingsTombGrave:
-                    ExpectedFactories.Add(id, NWLightWorldConnectionFactory);
-                    ExpectedTypes.Add(id, typeof(OverworldNode));
-                    break;
+                    return _nwLightWorldConnectionFactory.GetNodeConnections(id, node);
                 case OverworldNodeID.RaceGameLedge:
                 case OverworldNodeID.RaceGameLedgeNotBunny:
                 case OverworldNodeID.SouthOfGroveLedge:
@@ -140,6 +169,7 @@ public sealed class OverworldNodeFactoryTests
                 case OverworldNodeID.CheckerboardCave:
                 case OverworldNodeID.DesertPalaceFrontEntrance:
                 case OverworldNodeID.BombosTabletLedge:
+                case OverworldNodeID.BombosTabletLedgeBook:
                 case OverworldNodeID.BombosTablet:
                 case OverworldNodeID.LWMirePortal:
                 case OverworldNodeID.LWMirePortalStandardOpen:
@@ -153,9 +183,7 @@ public sealed class OverworldNodeFactoryTests
                 case OverworldNodeID.LakeHyliaIsland:
                 case OverworldNodeID.LakeHyliaFairyIsland:
                 case OverworldNodeID.LakeHyliaFairyIslandStandardOpen:
-                    ExpectedFactories.Add(id, SLightWorldConnectionFactory);
-                    ExpectedTypes.Add(id, typeof(OverworldNode));
-                    break;
+                    return _sLightWorldConnectionFactory.GetNodeConnections(id, node);
                 case OverworldNodeID.HyruleCastleTop:
                 case OverworldNodeID.HyruleCastleTopInverted:
                 case OverworldNodeID.HyruleCastleTopStandardOpen:
@@ -172,14 +200,13 @@ public sealed class OverworldNodeFactoryTests
                 case OverworldNodeID.LWEastPortal:
                 case OverworldNodeID.LWEastPortalStandardOpen:
                 case OverworldNodeID.LWEastPortalNotBunny:
-                    ExpectedFactories.Add(id, NELightWorldConnectionFactory);
-                    ExpectedTypes.Add(id, typeof(OverworldNode));
-                    break;
+                    return _neLightWorldConnectionFactory.GetNodeConnections(id, node);
                 case OverworldNodeID.DeathMountainWestBottom:
                 case OverworldNodeID.DeathMountainWestBottomNonEntrance:
                 case OverworldNodeID.DeathMountainWestBottomNotBunny:
                 case OverworldNodeID.SpectacleRockTop:
                 case OverworldNodeID.DeathMountainWestTop:
+                case OverworldNodeID.DeathMountainWestTopBook:
                 case OverworldNodeID.DeathMountainWestTopNotBunny:
                 case OverworldNodeID.EtherTablet:
                 case OverworldNodeID.DeathMountainEastBottom:
@@ -204,9 +231,7 @@ public sealed class OverworldNodeFactoryTests
                 case OverworldNodeID.LWTurtleRockTopInverted:
                 case OverworldNodeID.LWTurtleRockTopInvertedNotBunny:
                 case OverworldNodeID.LWTurtleRockTopStandardOpen:
-                    ExpectedFactories.Add(id, LWDeathMountainConnectionFactory);
-                    ExpectedTypes.Add(id, typeof(OverworldNode));
-                    break;
+                    return _lwDeathMountainConnectionFactory.GetNodeConnections(id, node);
                 case OverworldNodeID.DWKakarikoPortal:
                 case OverworldNodeID.DWKakarikoPortalInverted:
                 case OverworldNodeID.DarkWorldWest:
@@ -232,9 +257,7 @@ public sealed class OverworldNodeFactoryTests
                 case OverworldNodeID.Blacksmith:
                 case OverworldNodeID.DWGraveyard:
                 case OverworldNodeID.DWGraveyardMirror:
-                    ExpectedFactories.Add(id, NWDarkWorldConnectionFactory);
-                    ExpectedTypes.Add(id, typeof(OverworldNode));
-                    break;
+                    return _nwDarkWorldConnectionFactory.GetNodeConnections(id, node);
                 case OverworldNodeID.DarkWorldSouth:
                 case OverworldNodeID.DarkWorldSouthInverted:
                 case OverworldNodeID.DarkWorldSouthStandardOpen:
@@ -267,9 +290,7 @@ public sealed class OverworldNodeFactoryTests
                 case OverworldNodeID.DarkWorldSouthEast:
                 case OverworldNodeID.DarkWorldSouthEastNotBunny:
                 case OverworldNodeID.DarkWorldSouthEastLift1:
-                    ExpectedFactories.Add(id, SDarkWorldConnectionFactory);
-                    ExpectedTypes.Add(id, typeof(OverworldNode));
-                    break;
+                    return _sDarkWorldConnectionFactory.GetNodeConnections(id, node);
                 case OverworldNodeID.DWWitchArea:
                 case OverworldNodeID.DWWitchAreaNotBunny:
                 case OverworldNodeID.CatfishArea:
@@ -281,9 +302,7 @@ public sealed class OverworldNodeFactoryTests
                 case OverworldNodeID.DWEastPortal:
                 case OverworldNodeID.DWEastPortalInverted:
                 case OverworldNodeID.DWEastPortalNotBunny:
-                    ExpectedFactories.Add(id, NEDarkWorldConnectionFactory);
-                    ExpectedTypes.Add(id, typeof(OverworldNode));
-                    break;
+                    return _neDarkWorldConnectionFactory.GetNodeConnections(id, node);
                 case OverworldNodeID.DarkDeathMountainWestBottom:
                 case OverworldNodeID.DarkDeathMountainWestBottomInverted:
                 case OverworldNodeID.DarkDeathMountainWestBottomNonEntrance:
@@ -317,9 +336,7 @@ public sealed class OverworldNodeFactoryTests
                 case OverworldNodeID.TurtleRockTunnel:
                 case OverworldNodeID.TurtleRockTunnelMirror:
                 case OverworldNodeID.TurtleRockSafetyDoor:
-                    ExpectedFactories.Add(id, DWDeathMountainConnectionFactory);
-                    ExpectedTypes.Add(id, typeof(OverworldNode));
-                    break;
+                    return _dwDeathMountainConnectionFactory.GetNodeConnections(id, node); 
                 case OverworldNodeID.GanonHole:
                 case OverworldNodeID.HCSanctuaryEntry:
                 case OverworldNodeID.HCFrontEntry:
@@ -345,69 +362,10 @@ public sealed class OverworldNodeFactoryTests
                 case OverworldNodeID.TRMiddleEntry:
                 case OverworldNodeID.TRBackEntry:
                 case OverworldNodeID.GTEntry:
-                    ExpectedFactories.Add(id, DungeonEntryConnectionFactory);
-                    ExpectedTypes.Add(id, typeof(OverworldNode));
-                    break;
+                    return _dungeonEntryConnectionFactory.GetNodeConnections(id, node);
             }
+
+            throw new ArgumentOutOfRangeException(nameof(id), id, null);
         }
-    }
-        
-    [Theory]
-    [MemberData(nameof(GetOverworldNode_ShouldReturnExpectedTypeData))]
-    public void GetOverworldNode_ShouldReturnExpectedType(Type expected, OverworldNodeID id)
-    {
-        var node = _sut.GetOverworldNode(id);
-            
-        Assert.Equal(expected, node.GetType());
-    }
-
-    public static IEnumerable<object[]> GetOverworldNode_ShouldReturnExpectedTypeData()
-    {
-        PopulateExpectedValues();
-
-        return ExpectedTypes.Keys.Select(id => new object[] {ExpectedTypes[id], id}).ToList();
-    }
-
-    [Fact]
-    public void GetNodeConnections_ShouldThrowException_WhenIDIsUnexpected()
-    {
-        Assert.Throws<ArgumentOutOfRangeException>(() =>
-            _ = _sut.GetNodeConnections((OverworldNodeID) int.MaxValue, Substitute.For<INode>()));
-    }
-
-    [Fact]
-    public void GetNodeConnections_ShouldReturnEmptyList_WhenIDIsInaccessible()
-    {
-        const OverworldNodeID id = OverworldNodeID.Inaccessible;
-        var connections = _sut.GetNodeConnections(id, Substitute.For<INode>());
-            
-        Assert.Empty(connections);
-    }
-
-    [Theory]
-    [MemberData(nameof(GetNodeConnections_ShouldCallExpectedFactoryMethodData))]
-    public void GetNodeConnections_ShouldCallExpectedFactoryMethod(
-        INodeConnectionFactory expected, OverworldNodeID id)
-    {
-        _ = _sut.GetNodeConnections(id, Substitute.For<INode>());
-
-        expected.Received().GetNodeConnections(id, Arg.Any<INode>());
-    }
-        
-    public static IEnumerable<object[]> GetNodeConnections_ShouldCallExpectedFactoryMethodData()
-    {
-        PopulateExpectedValues();
-
-        return ExpectedFactories.Keys.Select(id => new object[] {ExpectedFactories[id], id}).ToList();
-    }
-
-    [Fact]
-    public void AutofacTest()
-    {
-        using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-        var factory = scope.Resolve<IOverworldNodeFactory.Factory>();
-        var sut = factory();
-            
-        Assert.NotNull(sut as OverworldNodeFactory);
     }
 }

@@ -1,47 +1,42 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using Autofac;
-using NSubstitute;
-using OpenTracker.Models.Locations;
-using Xunit;
+﻿using System;
 
-namespace OpenTracker.UnitTests.Models.Locations;
-
-[ExcludeFromCodeCoverage]
-public sealed class LocationFactoryTests
+namespace OpenTracker.Models.Locations
 {
-    [Fact]
-    public void GetLocation_ShouldThrowException_WhenIDIsUnexpected()
+    /// <summary>
+    /// This class contains creation logic for <see cref="ILocation"/> objects.
+    /// </summary>
+    public class LocationFactory : ILocationFactory
     {
-        var sut = new LocationFactory((_, _) => Substitute.For<ILocation>());
+        private readonly ILocation.Factory _factory;
 
-        Assert.Throws<ArgumentOutOfRangeException>(() => sut.GetLocation((LocationID) int.MaxValue));
-    }
-        
-    [Theory]
-    [MemberData(nameof(GetLocation_ShouldCallFactoryWithExpectedNameData))]
-    public void GetLocation_ShouldCallFactoryWithExpectedName(string expected, LocationID id)
-    {
-        string calledName = string.Empty;
-
-        ILocation Factory(LocationID locationID, string name)
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="factory">
+        ///     An Autofac factory for creating new <see cref="ILocation"/> objects.
+        /// </param>
+        public LocationFactory(ILocation.Factory factory)
         {
-            calledName = name;
-            return Substitute.For<ILocation>();
+            _factory = factory;
         }
 
-        var sut = new LocationFactory(Factory);
-        sut.GetLocation(id);
-            
-        Assert.Equal(expected, calledName);
-    }
+        public ILocation GetLocation(LocationID id)
+        {
+            return _factory(id, GetLocationName(id));
+        }
 
-    public static IEnumerable<object[]> GetLocation_ShouldCallFactoryWithExpectedNameData()
-    {
-        return (from LocationID id in Enum.GetValues(typeof(LocationID))
-            let expected = id switch
+        /// <summary>
+        /// Returns the location name of the specified <see cref="LocationID"/>.
+        /// </summary>
+        /// <param name="id">
+        ///     The <see cref="LocationID"/>.
+        /// </param>
+        /// <returns>
+        ///     A <see cref="string"/> representing the location name.
+        /// </returns>
+        private static string GetLocationName(LocationID id)
+        {
+            return id switch
             {
                 LocationID.LinksHouse => "Link's House",
                 LocationID.Pedestal => "Pedestal",
@@ -293,19 +288,8 @@ public sealed class LocationFactoryTests
                 LocationID.DarkLakeHyliaShop => "Dark Lake Hylia Shop",
                 LocationID.DarkPotionShop => "Dark Potion Shop",
                 LocationID.DarkDeathMountainShop => "Dark Death Mountain Shop",
-                _ => null
-            }
-            where expected is not null
-            select new object[] {expected, id}).ToList();
-    }
-
-    [Fact]
-    public void AutofacTest()
-    {
-        using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-        var factory = scope.Resolve<ILocationFactory.Factory>();
-        var sut = factory();
-            
-        Assert.NotNull(sut as LocationFactory);
+                _ => throw new ArgumentOutOfRangeException(nameof(id))
+            };
+        }
     }
 }

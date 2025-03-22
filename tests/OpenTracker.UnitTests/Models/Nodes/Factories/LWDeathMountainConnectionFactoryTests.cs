@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Autofac;
 using ExpectedObjects;
@@ -19,47 +18,46 @@ using OpenTracker.Models.Requirements.SequenceBreak;
 using OpenTracker.Models.SequenceBreaks;
 using Xunit;
 
-namespace OpenTracker.UnitTests.Models.Nodes.Factories;
-
-[ExcludeFromCodeCoverage]
-public sealed class LWDeathMountainConnectionFactoryTests
+namespace OpenTracker.UnitTests.Models.Nodes.Factories
 {
-    private static readonly IAlternativeRequirementDictionary AlternativeRequirements =
-        new AlternativeRequirementDictionary(requirements =>
-            new AlternativeRequirement(requirements));
-    private static readonly IComplexRequirementDictionary ComplexRequirements =
-        Substitute.For<IComplexRequirementDictionary>();
-    private static readonly IEntranceShuffleRequirementDictionary EntranceShuffleRequirements =
-        Substitute.For<IEntranceShuffleRequirementDictionary>();
-    private static readonly IItemRequirementDictionary ItemRequirements =
-        Substitute.For<IItemRequirementDictionary>();
-    private static readonly ISequenceBreakRequirementDictionary SequenceBreakRequirements =
-        Substitute.For<ISequenceBreakRequirementDictionary>();
-    private static readonly IWorldStateRequirementDictionary WorldStateRequirements =
-        Substitute.For<IWorldStateRequirementDictionary>();
-        
-    private static readonly IOverworldNodeDictionary OverworldNodes =
-        Substitute.For<IOverworldNodeDictionary>();
-
-    private static readonly INodeConnection.Factory ConnectionFactory =
-        (fromNode, toNode, requirement) => new NodeConnection(fromNode, toNode, requirement);
-
-    private static readonly Dictionary<OverworldNodeID, ExpectedObject> ExpectedValues = new();
-
-    private readonly LWDeathMountainConnectionFactory _sut = new(
-        AlternativeRequirements, ComplexRequirements, EntranceShuffleRequirements, ItemRequirements,
-        SequenceBreakRequirements, WorldStateRequirements, OverworldNodes, ConnectionFactory);
-        
-    private static void PopulateExpectedValues()
+    public class LWDeathMountainConnectionFactoryTests
     {
-        ExpectedValues.Clear();
+        private static readonly IAlternativeRequirementDictionary AlternativeRequirements =
+            new AlternativeRequirementDictionary(requirements =>
+                new AlternativeRequirement(requirements));
+        private static readonly IComplexRequirementDictionary ComplexRequirements =
+            Substitute.For<IComplexRequirementDictionary>();
+        private static readonly IEntranceShuffleRequirementDictionary EntranceShuffleRequirements =
+            Substitute.For<IEntranceShuffleRequirementDictionary>();
+        private static readonly IItemRequirementDictionary ItemRequirements =
+            Substitute.For<IItemRequirementDictionary>();
+        private static readonly ISequenceBreakRequirementDictionary SequenceBreakRequirements =
+            Substitute.For<ISequenceBreakRequirementDictionary>();
+        private static readonly IWorldStateRequirementDictionary WorldStateRequirements =
+            Substitute.For<IWorldStateRequirementDictionary>();
+        
+        private static readonly IOverworldNodeDictionary OverworldNodes =
+            Substitute.For<IOverworldNodeDictionary>();
 
-        foreach (OverworldNodeID id in Enum.GetValues(typeof(OverworldNodeID)))
+        private static readonly INodeConnection.Factory ConnectionFactory =
+            (fromNode, toNode, requirement) => new NodeConnection(fromNode, toNode, requirement);
+
+        private static readonly Dictionary<OverworldNodeID, ExpectedObject> ExpectedValues = new();
+
+        private readonly LWDeathMountainConnectionFactory _sut = new(
+            AlternativeRequirements, ComplexRequirements, EntranceShuffleRequirements, ItemRequirements,
+            SequenceBreakRequirements, WorldStateRequirements, OverworldNodes, ConnectionFactory);
+        
+        private static void PopulateExpectedValues()
         {
-            var node = OverworldNodes[id];
+            ExpectedValues.Clear();
 
-            var connections = id switch
+            foreach (OverworldNodeID id in Enum.GetValues(typeof(OverworldNodeID)))
             {
+                var node = OverworldNodes[id];
+
+                var connections = id switch
+                {
                 OverworldNodeID.DeathMountainWestBottom => new List<INodeConnection>
                 {
                     ConnectionFactory(OverworldNodes[OverworldNodeID.FluteStandardOpen], node),
@@ -130,7 +128,7 @@ public sealed class LWDeathMountainConnectionFactoryTests
                     ConnectionFactory(OverworldNodes[OverworldNodeID.SpiralCaveLedge], node),
                     ConnectionFactory(
                         OverworldNodes[OverworldNodeID.MimicCaveLedge], node,
-                        WorldStateRequirements[WorldState.Inverted]),
+                            WorldStateRequirements[WorldState.Inverted]),
                     ConnectionFactory(
                         OverworldNodes[OverworldNodeID.DarkDeathMountainEastBottom], node,
                         ComplexRequirements[ComplexRequirementType.DWMirror]),
@@ -289,45 +287,46 @@ public sealed class LWDeathMountainConnectionFactoryTests
                         OverworldNodes[OverworldNodeID.LWTurtleRockTop], node,
                         WorldStateRequirements[WorldState.StandardOpen])
                 },
-                _ => null
-            };
+                    _ => null
+                };
 
-            if (connections is null)
-            {
-                continue;
+                if (connections is null)
+                {
+                    continue;
+                }
+
+                ExpectedValues.Add(id, connections.ToExpectedObject());
             }
-
-            ExpectedValues.Add(id, connections.ToExpectedObject());
         }
-    }
 
-    [Fact]
-    public void GetNodeConnections_ShouldThrowException_WhenIDIsUnexpected()
-    {
-        Assert.Throws<ArgumentOutOfRangeException>(
-            () => _sut.GetNodeConnections((OverworldNodeID)int.MaxValue, Substitute.For<INode>()));
-    }
+        [Fact]
+        public void GetNodeConnections_ShouldThrowException_WhenIDIsUnexpected()
+        {
+            Assert.Throws<ArgumentOutOfRangeException>(
+                () => _sut.GetNodeConnections((OverworldNodeID)int.MaxValue, Substitute.For<INode>()));
+        }
 
-    [Theory]
-    [MemberData(nameof(GetNodeConnections_ShouldReturnExpectedValueData))]
-    public void GetNodeConnections_ShouldReturnExpectedValue(ExpectedObject expected, OverworldNodeID id)
-    {
-        expected.ShouldEqual(_sut.GetNodeConnections(id, OverworldNodes[id]));
-    }
+        [Theory]
+        [MemberData(nameof(GetNodeConnections_ShouldReturnExpectedValueData))]
+        public void GetNodeConnections_ShouldReturnExpectedValue(ExpectedObject expected, OverworldNodeID id)
+        {
+            expected.ShouldEqual(_sut.GetNodeConnections(id, OverworldNodes[id]));
+        }
 
-    public static IEnumerable<object[]> GetNodeConnections_ShouldReturnExpectedValueData()
-    {
-        PopulateExpectedValues();
+        public static IEnumerable<object[]> GetNodeConnections_ShouldReturnExpectedValueData()
+        {
+            PopulateExpectedValues();
 
-        return ExpectedValues.Keys.Select(id => new object[] {ExpectedValues[id], id}).ToList();
-    }
+            return ExpectedValues.Keys.Select(id => new object[] {ExpectedValues[id], id}).ToList();
+        }
 
-    [Fact]
-    public void AutofacTest()
-    {
-        using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-        var sut = scope.Resolve<ILWDeathMountainConnectionFactory>();
+        [Fact]
+        public void AutofacTest()
+        {
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+            var sut = scope.Resolve<ILWDeathMountainConnectionFactory>();
             
-        Assert.NotNull(sut as LWDeathMountainConnectionFactory);
+            Assert.NotNull(sut as LWDeathMountainConnectionFactory);
+        }
     }
 }

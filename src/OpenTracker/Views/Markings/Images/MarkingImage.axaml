@@ -1,15 +1,20 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:OpenTracker.ViewModels.Markings.Images;assembly=OpenTracker"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vm="clr-namespace:OpenTracker.ViewModels.Markings.Images"
-             xmlns:vc="clr-namespace:OpenTracker.ValueConverters"
+             xmlns:vc="clr-namespace:OpenTracker.ValueConverters;assembly=OpenTracker"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="OpenTracker.Views.Markings.Images.MarkingImage"
-             x:DataType="vm:MarkingImageVM">
+             x:Class="OpenTracker.Views.Markings.Images.MarkingImage">
+	
+	<Design.DataContext>
+		<vm:MarkingImageVM />
+	</Design.DataContext>
+
 	<UserControl.Resources>
 		<vc:BitmapValueConverter x:Key="BitmapValueConverter" />
 	</UserControl.Resources>
-	
+
 	<Image Source="{Binding ImageSource, Converter={StaticResource BitmapValueConverter}}" />
+	
 </UserControl>

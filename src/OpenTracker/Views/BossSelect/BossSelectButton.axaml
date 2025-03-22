@@ -1,24 +1,24 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:OpenTracker.ViewModels.BossSelect;assembly=OpenTracker"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vm="clr-namespace:OpenTracker.ViewModels.BossSelect"
-             xmlns:vc="clr-namespace:OpenTracker.ValueConverters"
-             mc:Ignorable="d" x:Class="OpenTracker.Views.BossSelect.BossSelectButton"
-             x:DataType="vm:BossSelectButtonVM" x:CompileBindings="True">
+             xmlns:vc="clr-namespace:OpenTracker.ValueConverters;assembly=OpenTracker"
+             mc:Ignorable="d" x:Class="OpenTracker.Views.BossSelect.BossSelectButton">
+	
+	<Design.DataContext>
+		<vm:BossSelectButtonVM />
+	</Design.DataContext>
+
 	<UserControl.Resources>
 		<vc:BitmapValueConverter x:Key="BitmapValueConverter" />
 	</UserControl.Resources>
-	
-	<UserControl.Styles>
-		<Style Selector="Button.BossSelect">
-			<Setter Property="Background" Value="{DynamicResource ThemeBackgroundBrush}" />
-			<Setter Property="BorderThickness" Value="0" />
-		</Style>
-	</UserControl.Styles>
-	
-	<Button Classes="BossSelect" Command="{Binding ChangeBossCommand}">
-		<Image Height="32" Width="32"
-		       Source="{Binding ImageSource, Converter={StaticResource BitmapValueConverter}}" />
+
+	<Button Command="{Binding $parent[ItemsControl].DataContext.ChangeBoss}"
+	        Background="{DynamicResource ThemeBackgroundBrush}" BorderThickness="0"
+	        CommandParameter="{Binding Boss}">
+		<Image Source="{Binding ImageSource, Converter={StaticResource BitmapValueConverter}}"
+		       Height="32" Width="32" />
 	</Button>
+
 </UserControl>
