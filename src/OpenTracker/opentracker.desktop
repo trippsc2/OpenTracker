@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=OpenTracker
+Comment=An open-source cross-platform tracking app for A Link to the Past Randomizer.
+Exec=/usr/local/bin/OpenTracker
+Icon=/usr/share/OpenTracker/triforce.ico
+Terminal=false
+Type=Application
+Categories=Games

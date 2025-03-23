@@ -3,6 +3,7 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
+    <SelfContained>True</SelfContained>
     <ApplicationIcon>triforce.ico</ApplicationIcon>
     <Win32Resource />
     <Version>1.8.7</Version>
@@ -11,11 +12,11 @@
     <FileVersion>1.8.7</FileVersion>
     <CFBundleIconFile>OpenTracker.icns</CFBundleIconFile>
     <CFBundleShortVersionString>1.8.7</CFBundleShortVersionString>
-    <RuntimeIdentifiers>linux-arm;linux-arm64;linux-x64;osx-arm64;osx-x64;win-arm64;win-x64</RuntimeIdentifiers>
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
+    <PackagePrefix>alttpr-opentracker</PackagePrefix>
   </PropertyGroup>
-
+  
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
   </ItemGroup>
@@ -26,6 +27,12 @@
     <Compile Remove="bin\**" />
     <EmbeddedResource Remove="bin\**" />
     <None Remove="bin\**" />
+  </ItemGroup>
+  
+  <ItemGroup Condition="$(RuntimeIdentifier.StartsWith('linux'))">
+    <Content Include="opentracker.desktop" CopyToPublishDirectory="PreserveNewest">
+      <LinuxPath>/usr/share/applications/opentracker.desktop</LinuxPath>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -61,6 +68,9 @@
     <PackageReference Include="Splat.Autofac" Version="14.7.1" />
     <PackageReference Include="System.Drawing.Common" Version="7.0.0" />
     <PackageReference Include="ThemeEditor.Controls.ColorPicker" Version="0.10.17" />
+    <PackageReference Update="Packaging.Targets">
+      <Version>0.1.232</Version>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
