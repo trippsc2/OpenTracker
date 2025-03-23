@@ -19,7 +19,6 @@ using OpenTracker.Models.Items;
 using OpenTracker.Models.Items.Factories;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Locations.Map;
-using OpenTracker.Models.Locations.Map.Connections;
 using OpenTracker.Models.Logging;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.Nodes;
@@ -75,7 +74,6 @@ using OpenTracker.ViewModels.Dungeons;
 using OpenTracker.ViewModels.Items;
 using OpenTracker.ViewModels.Items.Adapters;
 using OpenTracker.ViewModels.MapLocations;
-using OpenTracker.ViewModels.Maps;
 using OpenTracker.ViewModels.Markings;
 using OpenTracker.ViewModels.Markings.Images;
 using OpenTracker.ViewModels.Menus;
@@ -92,15 +90,15 @@ namespace OpenTracker
     /// </summary>
     public static class ContainerConfig
     {
-        private static List<string> UtilsSkipTypes => new();
+        private static List<string> UtilsSkipTypes => [];
 
-        private static List<string> UtilsSelfTypes => new()
-        {
+        private static List<string> UtilsSelfTypes =>
+        [
             nameof(ConstrainedTaskScheduler)
-        };
+        ];
 
-        private static List<string> UtilsSingleInstanceTypes => new()
-        {
+        private static List<string> UtilsSingleInstanceTypes =>
+        [
             nameof(ConstrainedTaskScheduler),
             nameof(DialogService),
             nameof(FileDialogService),
@@ -108,19 +106,19 @@ namespace OpenTracker
             nameof(JsonConverter),
             nameof(ThemeManager),
             nameof(MainWindowProvider)
-        };
+        ];
 
-        private static List<string> ModelsSkipTypes => new()
-        {
+        private static List<string> ModelsSkipTypes =>
+        [
             nameof(AutoTrackValueBase),
             nameof(AccessibilityRequirement),
             nameof(BooleanRequirement)
-        };
+        ];
 
-        private static List<string> ModelsSelfTypes => new();
+        private static List<string> ModelsSelfTypes => [];
 
-        private static List<string> ModelsSingleInstanceTypes => new()
-        {
+        private static List<string> ModelsSingleInstanceTypes =>
+        [
             nameof(AutoTrackerLogService),
             nameof(MemoryAddressProvider),
             nameof(AutoTracker),
@@ -187,15 +185,15 @@ namespace OpenTracker
             nameof(SectionAutoTrackingFactory),
             nameof(SequenceBreakDictionary),
             nameof(UndoRedoManager)
-        };
+        ];
 
-        private static List<string> GUISkipTypes => new()
-        {
+        private static List<string> GUISkipTypes =>
+        [
             nameof(OrientedDungeonPanelVMBase)
-        };
+        ];
 
-        private static List<string> GUISelfTypes => new()
-        {
+        private static List<string> GUISelfTypes =>
+        [
             nameof(BossAdapter),
             nameof(CrystalRequirementAdapter),
             nameof(DropdownAdapter),
@@ -217,10 +215,10 @@ namespace OpenTracker
             nameof(BossSectionIconVM),
             nameof(MarkingSectionIconVM),
             nameof(PrizeSectionIconVM)
-        };
+        ];
 
-        private static List<string> GUISingleInstanceTypes => new()
-        {
+        private static List<string> GUISingleInstanceTypes =>
+        [
             nameof(AlwaysDisplayDungeonItemsRequirementDictionary),
             nameof(DisplayMapsCompassesRequirementDictionary),
             nameof(ItemsPanelOrientationRequirementDictionary),
@@ -249,7 +247,7 @@ namespace OpenTracker
             nameof(ItemVMDictionary),
             nameof(ItemVMFactory),
             nameof(MapLocationVMFactory),
-            nameof(ViewModels.Maps.MapConnectionCollection),
+            nameof(MapConnectionCollection),
             nameof(MarkingSelectFactory),
             nameof(MarkingImageDictionary),
             nameof(MarkingImageFactory),
@@ -267,7 +265,7 @@ namespace OpenTracker
             nameof(MainWindowVM),
             nameof(ModeSettingsVM),
             nameof(StatusBarVM)
-        };
+        ];
 
         public static ContainerBuilder GetContainerBuilder()
         {
