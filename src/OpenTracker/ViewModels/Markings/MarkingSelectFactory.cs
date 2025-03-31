@@ -16,10 +16,8 @@ namespace OpenTracker.ViewModels.Markings
         private readonly IMarkingSelectVM.Factory _selectFactory;
         private readonly INoteMarkingSelectVM.Factory _noteSelectFactory;
 
-        private List<IMarkingSelectItemVMBase> NonEntranceMarkingSelect { get; } =
-            new();
-        private List<IMarkingSelectItemVMBase> EntranceMarkingSelect { get; } =
-            new();
+        private List<IMarkingSelectItemVMBase> NonEntranceMarkingSelect { get; } = [];
+        private List<IMarkingSelectItemVMBase> EntranceMarkingSelect { get; } = [];
 
         public MarkingSelectFactory(
             MarkingSelectButtonVM.Factory buttonFactory, IMarkingSelectVM.Factory selectFactory,
@@ -39,7 +37,7 @@ namespace OpenTracker.ViewModels.Markings
         /// </summary>
         private void PopulateNonEntranceMarkingSelect()
         {
-            for (int i = 0; i < Enum.GetValues(typeof(MarkType)).Length; i++)
+            for (var i = 0; i < Enum.GetValues(typeof(MarkType)).Length; i++)
             {
                 switch ((MarkType)i)
                 {
@@ -92,7 +90,7 @@ namespace OpenTracker.ViewModels.Markings
         /// </summary>
         private void PopulateEntranceMarkingSelect()
         {
-            for (int i = 1; i < Enum.GetValues(typeof(MarkType)).Length; i++)
+            for (var i = 1; i < Enum.GetValues(typeof(MarkType)).Length; i++)
             {
                 EntranceMarkingSelect.Add(_buttonFactory((MarkType)i));
             }
