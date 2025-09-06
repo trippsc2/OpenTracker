@@ -349,6 +349,11 @@ namespace OpenTracker.UnitTests.Models.Requirements.Complex
                         ItemRequirements[(ItemType.Hookshot, 1)],
                         SequenceBreakRequirements[SequenceBreakType.ToHHerapot]
                     }],
+                    ComplexRequirementType.SPSpeckyClip => AggregateRequirements[new HashSet<IRequirement>
+                    {
+                        ItemRequirements[(ItemType.Hookshot, 1)],
+                        SequenceBreakRequirements[SequenceBreakType.SPSpeckyClip]
+                    }],
                     ComplexRequirementType.IPIceBreaker => AggregateRequirements[new HashSet<IRequirement>
                     {
                         ItemRequirements[(ItemType.CaneOfSomaria, 1)],
