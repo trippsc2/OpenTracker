@@ -21,7 +21,7 @@
       <Border Classes="Popup">
         <StackPanel Orientation="Vertical">
 
-          <ItemsControl Items="{Binding Buttons}">
+          <ItemsControl ItemsSource="{Binding Buttons}">
             <ItemsControl.ItemsPanel>
               <ItemsPanelTemplate>
                 <WrapPanel ItemWidth="34" ItemHeight="40" MaxWidth="238" MaxHeight="200" Margin="0 0 0 10"

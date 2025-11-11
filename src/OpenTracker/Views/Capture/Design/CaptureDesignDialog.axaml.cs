@@ -4,7 +4,7 @@ using OpenTracker.Utils.Dialog;
 
 namespace OpenTracker.Views.Capture.Design
 {
-    public class CaptureDesignDialog : DialogWindowBase
+    public partial class CaptureDesignDialog : DialogWindowBase
     {
         public CaptureDesignDialog()
         {

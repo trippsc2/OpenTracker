@@ -3,7 +3,7 @@ using Avalonia.Markup.Xaml;
 
 namespace OpenTracker.Views.Menus
 {
-    public class TopMenu : UserControl
+    public partial class TopMenu : UserControl
     {
         public TopMenu()
         {

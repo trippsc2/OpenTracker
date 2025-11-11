@@ -16,7 +16,7 @@
     <Panel DockPanel.Dock="Left">
       <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
         <TreeView Margin="1" Width="240"
-                  Items="{Binding Windows}">
+                  ItemsSource="{Binding Windows}">
           <TreeView.DataTemplates>
             <TreeDataTemplate DataType="capture:ICaptureControlVM">
               <TextBlock Text="{Binding Name}" />

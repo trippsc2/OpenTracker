@@ -10,7 +10,7 @@
   </Design.DataContext>
   
   <Border Classes="ControlBorder" BorderThickness="0 0 0 1">
-    <Menu Items="{Binding Items}">
+    <Menu ItemsSource="{Binding Items}">
       <Menu.Styles>
         <Style Selector="MenuItem">
           
@@ -22,7 +22,7 @@
           <Setter Property="Icon" Value="{Binding Icon}" />
           <Setter Property="Command" Value="{Binding Command}" />
           <Setter Property="CommandParameter" Value="{Binding CommandParameter}" />
-          <Setter Property="Items" Value="{Binding Items}" />
+          <Setter Property="ItemsSource" Value="{Binding Items}" />
         </Style>
       </Menu.Styles>
       

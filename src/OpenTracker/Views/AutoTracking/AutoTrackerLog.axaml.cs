@@ -3,7 +3,7 @@ using Avalonia.Markup.Xaml;
 
 namespace OpenTracker.Views.AutoTracking
 {
-    public class AutoTrackerLog : UserControl
+    public partial class AutoTrackerLog : UserControl
     {
         public AutoTrackerLog()
         {

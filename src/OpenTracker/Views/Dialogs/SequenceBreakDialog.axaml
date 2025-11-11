@@ -17,7 +17,7 @@
       <TextBlock Classes="SequenceBreakTitle" Text="Bomb Duplication" />
 
       <Panel HorizontalAlignment="Stretch">
-        <ItemsControl Items="{Binding BombDuplication}">
+        <ItemsControl ItemsSource="{Binding BombDuplication}">
           <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
               <UniformGrid Columns="3" />
@@ -29,7 +29,7 @@
       <TextBlock Classes="SequenceBreakTitle" Text="Bomb Jumps" />
 
       <Panel HorizontalAlignment="Stretch">
-        <ItemsControl Items="{Binding BombJumps}">
+        <ItemsControl ItemsSource="{Binding BombJumps}">
           <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
               <UniformGrid Columns="3" />
@@ -41,7 +41,7 @@
       <TextBlock Classes="SequenceBreakTitle" Text="Dark Rooms" />
 
       <Panel HorizontalAlignment="Stretch">
-        <ItemsControl Items="{Binding DarkRooms}">
+        <ItemsControl ItemsSource="{Binding DarkRooms}">
           <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
               <UniformGrid Columns="3" />
@@ -53,7 +53,7 @@
       <TextBlock Classes="SequenceBreakTitle" Text="Fake Flippers/WaterWalk" />
 
       <Panel HorizontalAlignment="Stretch">
-        <ItemsControl Items="{Binding FakeFlippersWaterWalk}">
+        <ItemsControl ItemsSource="{Binding FakeFlippersWaterWalk}">
           <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
               <UniformGrid Columns="3" />
@@ -65,7 +65,7 @@
       <TextBlock Classes="SequenceBreakTitle" Text="Super Bunny" />
 
       <Panel HorizontalAlignment="Stretch">
-        <ItemsControl Items="{Binding SuperBunny}">
+        <ItemsControl ItemsSource="{Binding SuperBunny}">
           <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
               <UniformGrid Columns="3" />
@@ -77,7 +77,7 @@
       <TextBlock Classes="SequenceBreakTitle" Text="Other" />
 
       <Panel HorizontalAlignment="Stretch">
-        <ItemsControl Items="{Binding Other}">
+        <ItemsControl ItemsSource="{Binding Other}">
           <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
               <UniformGrid Columns="3" />

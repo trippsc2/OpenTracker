@@ -3,7 +3,7 @@ using Avalonia.Markup.Xaml;
 
 namespace OpenTracker.Views.PinnedLocations.Sections
 {
-    public class BossSectionIcon : UserControl
+    public partial class BossSectionIcon : UserControl
     {
         public BossSectionIcon()
         {

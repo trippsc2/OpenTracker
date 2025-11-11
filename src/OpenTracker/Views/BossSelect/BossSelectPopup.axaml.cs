@@ -3,7 +3,7 @@ using Avalonia.Markup.Xaml;
 
 namespace OpenTracker.Views.BossSelect
 {
-    public class BossSelectPopup : UserControl
+    public partial class BossSelectPopup : UserControl
     {
         public BossSelectPopup()
         {

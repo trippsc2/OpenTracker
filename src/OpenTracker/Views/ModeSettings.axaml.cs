@@ -3,7 +3,7 @@ using Avalonia.Markup.Xaml;
 
 namespace OpenTracker.Views
 {
-    public class ModeSettings : UserControl
+    public partial class ModeSettings : UserControl
     {
         public ModeSettings()
         {

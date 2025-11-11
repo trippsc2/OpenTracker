@@ -3,7 +3,7 @@ using Avalonia.Markup.Xaml;
 
 namespace OpenTracker.Views.Menus
 {
-    public class MenuItemCheckBox : UserControl
+    public partial class MenuItemCheckBox : UserControl
     {
         public MenuItemCheckBox()
         {

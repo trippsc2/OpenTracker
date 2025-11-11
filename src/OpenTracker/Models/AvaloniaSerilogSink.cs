@@ -116,7 +116,7 @@ namespace OpenTracker.Models
         /// </returns>
         private static object? GetHierarchy(object? source)
         {
-            if (source is not IControl visual)
+            if (source is not Control visual)
             {
                 return source;
             }
@@ -130,10 +130,16 @@ namespace OpenTracker.Models
 
             while (visual.Parent is not null)
             {
-                visual = visual.Parent;
-                visualString = visual.ToString() ?? throw new NullReferenceException();
-
-                hierarchy.Insert(0, visualString);
+                if (visual.Parent is Control parentControl)
+                {
+                    visual = parentControl;
+                    visualString = visual.ToString() ?? throw new NullReferenceException();
+                    hierarchy.Insert(0, visualString);
+                }
+                else
+                {
+                    break;
+                }
             }
 
             return string.Join("/", hierarchy);

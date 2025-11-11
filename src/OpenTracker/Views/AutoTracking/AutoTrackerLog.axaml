@@ -15,7 +15,7 @@
       <StackPanel Margin="10" HorizontalAlignment="Center" Orientation="Horizontal">
         <TextBlock Classes="AutoTrackerLabel">Logging Level:</TextBlock>
         <ComboBox Classes="AutoTrackerLogLevel"
-                  Items="{Binding LogLevelOptions, Mode=OneWay}"
+                  ItemsSource="{Binding LogLevelOptions, Mode=OneWay}"
                   SelectedItem="{Binding LogLevel, Mode=TwoWay}" />
       </StackPanel>
 

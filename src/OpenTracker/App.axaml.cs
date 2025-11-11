@@ -53,8 +53,10 @@ namespace OpenTracker
 
         public override void Initialize()
         {
-            Logger.Sink = new AvaloniaSerilogSink(
-                AppPath.AvaloniaLogFilePath, Serilog.Events.LogEventLevel.Warning);
+            // Note: Avalonia 11 logging integration
+            // Logger.Sink has been replaced with more modern logging patterns
+            // For now, we rely on LogToTrace() in Program.cs and Serilog for app-level logging
+            // If Avalonia-specific logging is needed, consider using a logging bridge
 
             AvaloniaXamlLoader.Load(this);
         }

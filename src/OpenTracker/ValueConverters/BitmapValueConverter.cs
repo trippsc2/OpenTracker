@@ -39,8 +39,8 @@ namespace OpenTracker.ValueConverters
                         default:
                             try
                             {
-                                var assets = AvaloniaLocator.Current.GetService<IAssetLoader>();
-                                return new Bitmap(assets?.Open(uri));
+                                var assets = AssetLoader.Open(uri);
+                                return new Bitmap(assets);
                             }
                             catch (FileNotFoundException ex)
                             {

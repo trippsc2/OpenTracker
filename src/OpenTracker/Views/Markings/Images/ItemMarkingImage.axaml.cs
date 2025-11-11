@@ -3,7 +3,7 @@ using Avalonia.Markup.Xaml;
 
 namespace OpenTracker.Views.Markings.Images
 {
-    public class ItemMarkingImage : UserControl
+    public partial class ItemMarkingImage : UserControl
     {
         public ItemMarkingImage()
         {

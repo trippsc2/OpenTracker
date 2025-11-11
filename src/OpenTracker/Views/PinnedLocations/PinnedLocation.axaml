@@ -38,7 +38,7 @@
 
         <Border Classes="Separator" Margin="0 2" />
 
-        <ItemsControl Items="{Binding Sections}">
+        <ItemsControl ItemsSource="{Binding Sections}">
           <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
               <StackPanel Margin="0 2" Orientation="Horizontal" />

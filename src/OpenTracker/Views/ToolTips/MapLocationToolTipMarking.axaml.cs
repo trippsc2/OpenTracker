@@ -3,7 +3,7 @@ using Avalonia.Markup.Xaml;
 
 namespace OpenTracker.Views.ToolTips
 {
-    public class MapLocationToolTipMarking : UserControl
+    public partial class MapLocationToolTipMarking : UserControl
     {
         public MapLocationToolTipMarking()
         {

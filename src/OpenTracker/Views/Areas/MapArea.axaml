@@ -14,7 +14,7 @@
     <Viewbox Classes="MapArea">
       <Panel>
 
-        <ItemsControl Items="{Binding Maps}">
+        <ItemsControl ItemsSource="{Binding Maps}">
           <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
               <StackPanel Orientation="{Binding Orientation, Mode=OneWay}" />
@@ -22,15 +22,15 @@
           </ItemsControl.ItemsPanel>
         </ItemsControl>
 
-        <ItemsControl Items="{Binding Connectors}">
+        <ItemsControl ItemsSource="{Binding Connectors}">
           <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
               <Panel Classes="MapArea" />
             </ItemsPanelTemplate>
           </ItemsControl.ItemsPanel>
         </ItemsControl>
-        
-        <ItemsControl Classes="Canvas" Items="{Binding MapLocations}">
+
+        <ItemsControl Classes="Canvas" ItemsSource="{Binding MapLocations}">
           
           <ItemsControl.Styles>
             <Style Selector="ItemsControl.Canvas > ContentPresenter">

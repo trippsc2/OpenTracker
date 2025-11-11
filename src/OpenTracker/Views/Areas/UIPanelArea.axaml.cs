@@ -3,7 +3,7 @@ using Avalonia.Markup.Xaml;
 
 namespace OpenTracker.Views.Areas
 {
-    public class UIPanelArea : UserControl
+    public partial class UIPanelArea : UserControl
     {
         public UIPanelArea()
         {

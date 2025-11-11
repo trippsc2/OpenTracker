@@ -5,13 +5,12 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Platform;
 using OpenTracker.ViewModels;
 using System;
-using System.ComponentModel;
 using System.Linq;
 using OpenTracker.Utils.Dialog;
 
 namespace OpenTracker.Views
 {
-    public class MainWindow : DialogWindowBase
+    public partial class MainWindow : DialogWindowBase
     {
         private Orientation? _orientation;
 
@@ -27,7 +26,7 @@ namespace OpenTracker.Views
 #endif
         }
 
-        protected override void OnClosing(CancelEventArgs e)
+        protected override void OnClosing(WindowClosingEventArgs e)
         {
             ViewModel?.OnClose(WindowState == WindowState.Maximized, Bounds, Position);
 

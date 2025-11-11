@@ -9,8 +9,8 @@ namespace OpenTracker.ViewModels.MapLocations
     {
         string BorderColor { get; }
         string Color { get; }
-        ReactiveCommand<PointerEventArgs, Unit> HandlePointerEnter { get; }
-        ReactiveCommand<PointerEventArgs, Unit> HandlePointerLeave { get; }
+        ReactiveCommand<PointerEventArgs, Unit> HandlePointerEntered { get; }
+        ReactiveCommand<PointerEventArgs, Unit> HandlePointerExited { get; }
 
         delegate IMapLocationColorProvider Factory(IMapLocation mapLocation);
     }

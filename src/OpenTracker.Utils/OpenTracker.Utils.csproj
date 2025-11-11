@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <Version>1.8.5</Version>
     <LangVersion>latest</LangVersion>
@@ -9,9 +9,9 @@
 
   <ItemGroup>
     <PackageReference Include="Autofac" Version="7.1.0" />
-    <PackageReference Include="Avalonia" Version="0.10.22" />
-    <PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="0.10.22" />
-    <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.22" />
+    <PackageReference Include="Avalonia" Version="11.2.6" />
+    <PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="11.2.6" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="11.2.6" />
     <PackageReference Include="JetBrains.Annotations" Version="2023.2.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="ReactiveUI.Fody" Version="19.4.1" />

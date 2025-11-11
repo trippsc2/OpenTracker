@@ -4,7 +4,7 @@ using OpenTracker.Utils.Dialog;
 
 namespace OpenTracker.Views.ColorSelect
 {
-    public class ColorSelectDialog : DialogWindowBase
+    public partial class ColorSelectDialog : DialogWindowBase
     {
         public ColorSelectDialog()
         {

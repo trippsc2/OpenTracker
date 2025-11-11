@@ -108,8 +108,8 @@ namespace OpenTracker.ViewModels.MapLocations
         public double CanvasX => BaseX + Location.OffsetX + MarkingOffsetX;
         public double CanvasY => BaseY + Location.OffsetY + MarkingOffsetY;
         
-        public ReactiveCommand<PointerEventArgs, Unit> HandlePointerEnter { get; }
-        public ReactiveCommand<PointerEventArgs, Unit> HandlePointerLeave { get; }
+        public ReactiveCommand<PointerEventArgs, Unit> HandlePointerEntered { get; }
+        public ReactiveCommand<PointerEventArgs, Unit> HandlePointerExited { get; }
 
         /// <summary>
         /// Constructor
@@ -154,8 +154,8 @@ namespace OpenTracker.ViewModels.MapLocations
             Location = location;
             ToolTip = toolTip;
 
-            HandlePointerEnter = Location.HandlePointerEnter;
-            HandlePointerLeave = Location.HandlePointerLeave;
+            HandlePointerEntered = Location.HandlePointerEntered;
+            HandlePointerExited = Location.HandlePointerExited;
 
             PropertyChanged += OnPropertyChanged;
             _appSettings.Layout.PropertyChanged += OnLayoutChanged;

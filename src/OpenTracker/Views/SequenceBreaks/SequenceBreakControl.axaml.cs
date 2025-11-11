@@ -3,7 +3,7 @@ using Avalonia.Markup.Xaml;
 
 namespace OpenTracker.Views.SequenceBreaks
 {
-    public class SequenceBreakControl : UserControl
+    public partial class SequenceBreakControl : UserControl
     {
         public SequenceBreakControl()
         {

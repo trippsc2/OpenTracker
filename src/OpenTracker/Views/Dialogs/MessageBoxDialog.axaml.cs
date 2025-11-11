@@ -4,7 +4,7 @@ using OpenTracker.Utils.Dialog;
 
 namespace OpenTracker.Views.Dialogs
 {
-    public class MessageBoxDialog : DialogWindowBase<bool>
+    public partial class MessageBoxDialog : DialogWindowBase<bool>
     {
         public MessageBoxDialog()
         {
