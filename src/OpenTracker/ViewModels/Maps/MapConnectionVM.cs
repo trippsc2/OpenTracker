@@ -62,8 +62,8 @@ namespace OpenTracker.ViewModels.Maps
         public string Color => Highlighted ? "#ffffffff" : _colorSettings.ConnectorColor;
         
         public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
-        public ReactiveCommand<PointerEventArgs, Unit> HandlePointerEnter { get; }
-        public ReactiveCommand<PointerEventArgs, Unit> HandlePointerLeave { get; }
+        public ReactiveCommand<PointerEventArgs, Unit> HandlePointerEntered { get; }
+        public ReactiveCommand<PointerEventArgs, Unit> HandlePointerExited { get; }
 
         /// <summary>
         /// Constructor
@@ -95,8 +95,8 @@ namespace OpenTracker.ViewModels.Maps
             _undoRedoManager = undoRedoManager;
 
             HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
-            HandlePointerEnter = ReactiveCommand.Create<PointerEventArgs>(HandlePointerEnterImpl);
-            HandlePointerLeave = ReactiveCommand.Create<PointerEventArgs>(HandlePointerLeaveImpl);
+            HandlePointerEntered = ReactiveCommand.Create<PointerEventArgs>(HandlePointerEnteredImpl);
+            HandlePointerExited = ReactiveCommand.Create<PointerEventArgs>(HandlePointerExitedImpl);
 
             PropertyChanged += OnPropertyChanged;
             _mapArea.PropertyChanged += OnMapAreaChanged;
@@ -225,9 +225,9 @@ namespace OpenTracker.ViewModels.Maps
         /// Handles pointer entering the control.
         /// </summary>
         /// <param name="e">
-        /// The PointerEnter event args.
+        /// The PointerEntered event args.
         /// </param>
-        private void HandlePointerEnterImpl(PointerEventArgs e)
+        private void HandlePointerEnteredImpl(PointerEventArgs e)
         {
             Highlight();
         }
@@ -236,9 +236,9 @@ namespace OpenTracker.ViewModels.Maps
         /// Handles pointer leaving the control.
         /// </summary>
         /// <param name="e">
-        /// The PointerLeave event args.
+        /// The PointerExited event args.
         /// </param>
-        private void HandlePointerLeaveImpl(PointerEventArgs e)
+        private void HandlePointerExitedImpl(PointerEventArgs e)
         {
             Unhighlight();
         }

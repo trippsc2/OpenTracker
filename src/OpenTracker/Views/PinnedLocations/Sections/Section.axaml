@@ -33,7 +33,7 @@
       </i:Interaction.Behaviors>
     </TextBlock>
 
-    <ItemsControl Items="{Binding Icons}">
+    <ItemsControl ItemsSource="{Binding Icons}">
       <ItemsControl.ItemsPanel>
         <ItemsPanelTemplate>
           <StackPanel Orientation="Horizontal" Spacing="4" />

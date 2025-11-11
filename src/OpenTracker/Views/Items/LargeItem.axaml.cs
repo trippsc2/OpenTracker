@@ -3,7 +3,7 @@ using Avalonia.Markup.Xaml;
 
 namespace OpenTracker.Views.Items
 {
-    public class LargeItem : UserControl
+    public partial class LargeItem : UserControl
     {
         public LargeItem()
         {

@@ -4,7 +4,7 @@ using OpenTracker.Utils.Dialog;
 
 namespace OpenTracker.Views.Dialogs
 {
-    public class ErrorBoxDialog : DialogWindowBase
+    public partial class ErrorBoxDialog : DialogWindowBase
     {
         public ErrorBoxDialog()
         {

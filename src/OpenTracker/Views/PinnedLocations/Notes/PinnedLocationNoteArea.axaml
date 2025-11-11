@@ -12,7 +12,7 @@
   <StackPanel Margin="4 2 4 0" Orientation="Horizontal"
               HorizontalAlignment="{Binding Alignment}">
 
-    <ItemsControl Items="{Binding Notes}">
+    <ItemsControl ItemsSource="{Binding Notes}">
       <ItemsControl.ItemsPanel>
         <ItemsPanelTemplate>
           <StackPanel Margin="0 2 0 4" Orientation="Horizontal" />

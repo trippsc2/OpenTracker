@@ -3,7 +3,7 @@ using Avalonia.Markup.Xaml;
 
 namespace OpenTracker.Views.Areas
 {
-    public class MapArea : UserControl
+    public partial class MapArea : UserControl
     {
         public MapArea()
         {

@@ -9,7 +9,7 @@
 		<vm:LargeItemPanelVM />
 	</Design.DataContext>
 	
-	<ItemsControl Items="{Binding Items}">
+	<ItemsControl ItemsSource="{Binding Items}">
 		<ItemsControl.ItemsPanel>
 			<ItemsPanelTemplate>
 				<WrapPanel ItemWidth="34" ItemHeight="40" MaxWidth="238" MaxHeight="200" Orientation="Horizontal"

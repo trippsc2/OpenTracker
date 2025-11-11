@@ -3,7 +3,7 @@ using Avalonia.Markup.Xaml;
 
 namespace OpenTracker.Views
 {
-    public class StatusBar : UserControl
+    public partial class StatusBar : UserControl
     {
         public StatusBar()
         {

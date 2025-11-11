@@ -9,7 +9,7 @@
     <vm:PinnedLocationsPanelVM />
   </Design.DataContext>
   
-  <ItemsControl Items="{Binding Locations}">
+  <ItemsControl ItemsSource="{Binding Locations}">
     <ItemsControl.ItemsPanel>
       <ItemsPanelTemplate>
         <WrapPanel Orientation="{Binding Orientation, Mode=OneWay}" />

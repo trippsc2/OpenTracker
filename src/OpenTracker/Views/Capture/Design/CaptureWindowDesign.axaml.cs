@@ -3,7 +3,7 @@ using Avalonia.Markup.Xaml;
 
 namespace OpenTracker.Views.Capture.Design
 {
-    public class CaptureWindowDesign : UserControl
+    public partial class CaptureWindowDesign : UserControl
     {
         public CaptureWindowDesign()
         {

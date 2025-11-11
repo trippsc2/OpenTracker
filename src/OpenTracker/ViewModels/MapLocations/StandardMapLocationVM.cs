@@ -82,8 +82,8 @@ namespace OpenTracker.ViewModels.MapLocations
         
         public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
         public ReactiveCommand<RoutedEventArgs, Unit> HandleDoubleClick { get; }
-        public ReactiveCommand<PointerEventArgs, Unit> HandlePointerEnter { get; }
-        public ReactiveCommand<PointerEventArgs, Unit> HandlePointerLeave { get; }
+        public ReactiveCommand<PointerEventArgs, Unit> HandlePointerEntered { get; }
+        public ReactiveCommand<PointerEventArgs, Unit> HandlePointerExited { get; }
 
         public delegate StandardMapLocationVM Factory(IMapLocation mapLocation);
 
@@ -120,8 +120,8 @@ namespace OpenTracker.ViewModels.MapLocations
             
             HandleClick = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClickImpl);
             HandleDoubleClick = ReactiveCommand.Create<RoutedEventArgs>(HandleDoubleClickImpl);
-            HandlePointerEnter = _colorProvider.HandlePointerEnter;
-            HandlePointerLeave = _colorProvider.HandlePointerLeave;
+            HandlePointerEntered = _colorProvider.HandlePointerEntered;
+            HandlePointerExited = _colorProvider.HandlePointerExited;
 
             PropertyChanged += OnPropertyChanged;
             _trackerSettings.PropertyChanged += OnTrackerSettingsChanged;

@@ -11,8 +11,11 @@ namespace OpenTracker.Utils
         public static bool SupportsRecycling =>
             false;
 
-        public IControl Build(object data)
+        public Control? Build(object? data)
         {
+            if (data == null)
+                return null;
+
             var assembly = Assembly.GetEntryAssembly() ??
                 throw new NullReferenceException();
             var viewTypes = assembly.GetTypes();
@@ -29,7 +32,7 @@ namespace OpenTracker.Utils
             }
         }
 
-        public bool Match(object data)
+        public bool Match(object? data)
         {
             return data is ViewModelBase;
         }

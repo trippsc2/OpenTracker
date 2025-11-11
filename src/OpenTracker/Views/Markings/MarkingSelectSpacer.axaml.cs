@@ -3,7 +3,7 @@ using Avalonia.Markup.Xaml;
 
 namespace OpenTracker.Views.Markings
 {
-    public class MarkingSelectSpacer : UserControl
+    public partial class MarkingSelectSpacer : UserControl
     {
         public MarkingSelectSpacer()
         {

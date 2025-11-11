@@ -3,7 +3,7 @@ using Avalonia.Markup.Xaml;
 
 namespace OpenTracker.Views.PinnedLocations.Notes
 {
-    public class PinnedLocationNoteArea : UserControl
+    public partial class PinnedLocationNoteArea : UserControl
     {
         public PinnedLocationNoteArea()
         {

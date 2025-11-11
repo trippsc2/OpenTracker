@@ -3,7 +3,7 @@ using Avalonia.Markup.Xaml;
 
 namespace OpenTracker.Views.UIPanels
 {
-    public class UIPanel : UserControl
+    public partial class UIPanel : UserControl
     {
         public UIPanel()
         {

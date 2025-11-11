@@ -40,7 +40,7 @@
                 HorizontalAlignment="Center">
       <TextBlock Classes="AutoTrackerLabel">Device:</TextBlock>
       <ComboBox Classes="AutoTrackerDevices"
-                Items="{Binding Devices, Mode=OneWay}"
+                ItemsSource="{Binding Devices, Mode=OneWay}"
                 SelectedItem="{Binding Device, Mode=TwoWay}"
                 IsEnabled="{Binding DevicesComboBoxEnabled}" />
     </StackPanel>

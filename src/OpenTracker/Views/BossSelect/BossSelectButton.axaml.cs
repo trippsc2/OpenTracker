@@ -3,7 +3,7 @@ using Avalonia.Markup.Xaml;
 
 namespace OpenTracker.Views.BossSelect
 {
-    public class BossSelectButton : UserControl
+    public partial class BossSelectButton : UserControl
     {
         public BossSelectButton()
         {

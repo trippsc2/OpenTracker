@@ -9,7 +9,7 @@ namespace OpenTracker.ViewModels.MapLocations
         double OffsetX { get; }
         double OffsetY { get; }
         
-        ReactiveCommand<PointerEventArgs, Unit> HandlePointerEnter { get; }
-        ReactiveCommand<PointerEventArgs, Unit> HandlePointerLeave { get; }
+        ReactiveCommand<PointerEventArgs, Unit> HandlePointerEntered { get; }
+        ReactiveCommand<PointerEventArgs, Unit> HandlePointerExited { get; }
     }
 }

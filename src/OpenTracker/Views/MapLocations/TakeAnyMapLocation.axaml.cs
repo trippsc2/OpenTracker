@@ -3,7 +3,7 @@ using Avalonia.Markup.Xaml;
 
 namespace OpenTracker.Views.MapLocations
 {
-    public class TakeAnyMapLocation : UserControl
+    public partial class TakeAnyMapLocation : UserControl
     {
         public TakeAnyMapLocation()
         {

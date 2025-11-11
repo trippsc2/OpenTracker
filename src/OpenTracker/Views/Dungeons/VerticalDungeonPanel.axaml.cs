@@ -3,7 +3,7 @@ using Avalonia.Markup.Xaml;
 
 namespace OpenTracker.Views.Dungeons
 {
-    public class VerticalDungeonPanel : UserControl
+    public partial class VerticalDungeonPanel : UserControl
     {
         public VerticalDungeonPanel()
         {

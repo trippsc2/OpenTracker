@@ -16,7 +16,7 @@
 			
 			<TextBlock Classes="ColorSelectTitle" Text="Font Colors" />
 			
-			<ItemsControl Items="{Binding FontColors}">
+			<ItemsControl ItemsSource="{Binding FontColors}">
 				<ItemsControl.ItemsPanel>
 					<ItemsPanelTemplate>
 						<StackPanel Orientation="Vertical" />
@@ -26,7 +26,7 @@
 			
 			<TextBlock Classes="ColorSelectTitle" Text="Accessibility Colors" />
 			
-			<ItemsControl Items="{Binding  AccessibilityColors}">
+			<ItemsControl ItemsSource="{Binding  AccessibilityColors}">
 				<ItemsControl.ItemsPanel>
 					<ItemsPanelTemplate>
 						<StackPanel Orientation="Vertical" />
@@ -36,7 +36,7 @@
 			
 			<TextBlock Classes="ColorSelectTitle" Text="Connector Colors" />
 			
-			<ItemsControl Items="{Binding ConnectorColors}">
+			<ItemsControl ItemsSource="{Binding ConnectorColors}">
 				<ItemsControl.ItemsPanel>
 					<ItemsPanelTemplate>
 						<StackPanel Orientation="Vertical" />

@@ -28,7 +28,7 @@ The following is on my roadmap for future updates:
 
 ### Prerequisites
 
-OpenTracker is a .NET 8.0 application.  You will be required to install a .NET runtime version 8.0 or greater.  You can find it at this link: https://dotnet.microsoft.com/download/dotnet
+OpenTracker is a .NET 10.0 application.  You will be required to install a .NET runtime version 10.0 or greater.  You can find it at this link: https://dotnet.microsoft.com/download/dotnet
 
 ### Windows
 

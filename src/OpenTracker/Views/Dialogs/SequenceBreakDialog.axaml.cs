@@ -4,7 +4,7 @@ using OpenTracker.Utils.Dialog;
 
 namespace OpenTracker.Views.Dialogs
 {
-    public class SequenceBreakDialog : DialogWindowBase
+    public partial class SequenceBreakDialog : DialogWindowBase
     {
         public SequenceBreakDialog()
         {

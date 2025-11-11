@@ -3,7 +3,7 @@ using Avalonia.Markup.Xaml;
 
 namespace OpenTracker.Views.Menus
 {
-    public class MenuHotkeyHeader : UserControl
+    public partial class MenuHotkeyHeader : UserControl
     {
         public MenuHotkeyHeader()
         {
