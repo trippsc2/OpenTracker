@@ -77,6 +77,7 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
             ExpectedEntryValues.Clear();
             ExpectedNoRequirementValues.Clear();
             ExpectedBossValues.Clear();
+            ExpectedComplexValues.Clear();
             ExpectedItemValues.Clear();
             ExpectedKeyDoorValues.Clear();
             
@@ -250,7 +251,8 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
             var connections = new List<INodeConnection>();
             _sut.PopulateNodeConnections(dungeonData, id, node, connections);
 
-            Assert.Contains(_entryFactoryCalls, x => x == _overworldNodes[fromNodeID]);
+            Assert.True(_entryFactoryCalls.Contains(_overworldNodes[fromNodeID]),
+                $"Expected entry factory to be called with overworld node {fromNodeID}");
         }
 
         public static IEnumerable<object[]> PopulateNodeConnections_ShouldCreateExpectedEntryConnectionsData()
@@ -270,10 +272,16 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
             var dungeonData = Substitute.For<IMutableDungeon>();
             var node = Substitute.For<IDungeonNode>();
             var connections = new List<INodeConnection>();
+            
+            // Configure the substitute to return consistent node instances
+            var expectedNode = Substitute.For<INode>();
+            dungeonData.Nodes[fromNodeID].Returns(expectedNode);
+            
             _sut.PopulateNodeConnections(dungeonData, id, node, connections);
 
-            Assert.Contains(_connectionFactoryCalls, x =>
-                x.fromNode == dungeonData.Nodes[fromNodeID] && x.requirement == null);
+            Assert.True(_connectionFactoryCalls.Any(x =>
+                x.fromNode == expectedNode && x.requirement == null),
+                $"Expected connection from {fromNodeID} with no requirement for node {id}");
         }
 
         public static IEnumerable<object[]> PopulateNodeConnections_ShouldCreateExpectedNoRequirementConnectionsData()
@@ -293,10 +301,17 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
             var dungeonData = Substitute.For<IMutableDungeon>();
             var node = Substitute.For<IDungeonNode>();
             var connections = new List<INodeConnection>();
+            
+            // Configure the substitute to return consistent node instances
+            var expectedNode = Substitute.For<INode>();
+            dungeonData.Nodes[fromNodeID].Returns(expectedNode);
+            
             _sut.PopulateNodeConnections(dungeonData, id, node, connections);
 
-            Assert.Contains(_connectionFactoryCalls, x =>
-                x.fromNode == dungeonData.Nodes[fromNodeID] && x.requirement == _bossRequirements[bossID]);
+            Assert.True(_connectionFactoryCalls.Any(x =>
+                x.fromNode == expectedNode && 
+                ReferenceEquals(x.requirement, _bossRequirements[bossID])),
+                $"Expected boss connection from {fromNodeID} with boss {bossID} for node {id}");
         }
 
         public static IEnumerable<object[]> PopulateNodeConnections_ShouldCreateExpectedBossConnectionsData()
@@ -315,10 +330,17 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
             var dungeonData = Substitute.For<IMutableDungeon>();
             var node = Substitute.For<IDungeonNode>();
             var connections = new List<INodeConnection>();
+            
+            // Configure the substitute to return consistent node instances
+            var expectedNode = Substitute.For<INode>();
+            dungeonData.Nodes[fromNodeID].Returns(expectedNode);
+            
             _sut.PopulateNodeConnections(dungeonData, id, node, connections);
 
-            Assert.Contains(_connectionFactoryCalls, x =>
-                x.fromNode == dungeonData.Nodes[fromNodeID] && x.requirement == _complexRequirements[requirementType]);
+            Assert.True(_connectionFactoryCalls.Any(x =>
+                x.fromNode == expectedNode && 
+                ReferenceEquals(x.requirement, _complexRequirements[requirementType])),
+                $"Expected complex connection from {fromNodeID} with type {requirementType} for node {id}");
         }
 
         public static IEnumerable<object[]> PopulateNodeConnections_ShouldCreateExpectedComplexConnectionsData()
@@ -338,10 +360,17 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
             var dungeonData = Substitute.For<IMutableDungeon>();
             var node = Substitute.For<IDungeonNode>();
             var connections = new List<INodeConnection>();
+            
+            // Configure the substitute to return consistent node instances
+            var expectedNode = Substitute.For<INode>();
+            dungeonData.Nodes[fromNodeID].Returns(expectedNode);
+            
             _sut.PopulateNodeConnections(dungeonData, id, node, connections);
 
-            Assert.Contains(_connectionFactoryCalls, x =>
-                x.fromNode == dungeonData.Nodes[fromNodeID] && x.requirement == _itemRequirements[(type, count)]);
+            Assert.True(_connectionFactoryCalls.Any(x =>
+                x.fromNode == expectedNode && 
+                ReferenceEquals(x.requirement, _itemRequirements[(type, count)])),
+                $"Expected item connection from {fromNodeID} requiring {type}x{count} for node {id}");
         }
 
         public static IEnumerable<object[]> PopulateNodeConnections_ShouldCreateExpectedItemConnectionsData()
@@ -360,11 +389,17 @@ namespace OpenTracker.UnitTests.Models.Dungeons.Nodes.Factories
             var dungeonData = Substitute.For<IMutableDungeon>();
             var node = Substitute.For<IDungeonNode>();
             var connections = new List<INodeConnection>();
+            
+            // Configure the substitute to return consistent node instances
+            var expectedNode = Substitute.For<INode>();
+            dungeonData.Nodes[fromNodeID].Returns(expectedNode);
+            
             _sut.PopulateNodeConnections(dungeonData, id, node, connections);
 
-            Assert.Contains(_connectionFactoryCalls, x =>
-                x.fromNode == dungeonData.Nodes[fromNodeID] &&
-                x.requirement == dungeonData.KeyDoors[keyDoor].Requirement);
+            Assert.True(_connectionFactoryCalls.Any(x =>
+                x.fromNode == expectedNode &&
+                ReferenceEquals(x.requirement, dungeonData.KeyDoors[keyDoor].Requirement)),
+                $"Expected key door connection from {fromNodeID} with door {keyDoor} for node {id}");
         }
         
         public static IEnumerable<object[]> PopulateNodeConnections_ShouldCreateExpectedKeyDoorConnectionsData()
