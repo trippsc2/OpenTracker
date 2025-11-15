@@ -1,6 +1,5 @@
 using Autofac;
 using Avalonia.ReactiveUI;
-using Avalonia.Threading;
 using ReactiveUI;
 using Splat;
 using Splat.Autofac;
