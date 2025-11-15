@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Threading;
 using Newtonsoft.Json;
 using OpenTracker.Models.AutoTracking.SNESConnectors.Socket;
+using OpenTracker.Models.Exceptions;
 using OpenTracker.Models.Logging;
-using LogLevel = OpenTracker.Models.Logging.LogLevel;
 
 namespace OpenTracker.Models.AutoTracking.SNESConnectors.Requests
 {
@@ -34,8 +34,7 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors.Requests
 
             if (!deserialized!.TryGetValue("Results", out var results))
             {
-                throw new Exception(
-                    $"Request \'{Description}\' is invalid and does not contain a \'Results\' key.");
+                throw new InvalidRequestResponseException(Description, "Results");
             }
             
             Logger.Debug("Request \'{Description}\' response successfully deserialized",

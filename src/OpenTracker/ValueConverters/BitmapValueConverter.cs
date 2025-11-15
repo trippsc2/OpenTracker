@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using Avalonia;
 using Avalonia.Data.Converters;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
@@ -56,7 +55,7 @@ namespace OpenTracker.ValueConverters
 
         public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
-            throw new Exception("All bindings should be one-way.");
+            throw new NotSupportedException("All bindings should be one-way.");
         }
     }
 }
