@@ -13,20 +13,26 @@ namespace OpenTracker.Autofac;
 public static class ContainerBuilderAvaloniaExtensions
 {
     public static ContainerBuilder ConfigureAvalonia(this ContainerBuilder builder)
-    {
-        var autofacResolver = builder.UseAutofacDependencyResolver();
-        builder.RegisterInstance(autofacResolver);
-        autofacResolver.InitializeReactiveUI();
-        
-        RxApp.MainThreadScheduler = AvaloniaScheduler.Instance;
-        
-        Locator.CurrentMutable.RegisterConstant(
-            new AvaloniaActivationForViewFetcher(),
-            typeof(IActivationForViewFetcher));
-        Locator.CurrentMutable.RegisterConstant(
-            new AutoDataTemplateBindingHook(),
-            typeof(IPropertyBindingHook));
-        
-        return builder;
-    }
+{
+    ConfigureAutofacResolver(builder);
+    ConfigureReactiveUIServices();
+    return builder;
+}
+
+private static void ConfigureAutofacResolver(ContainerBuilder builder)
+{
+    var autofacResolver = builder.UseAutofacDependencyResolver();
+    builder.RegisterInstance(autofacResolver);
+    RxApp.MainThreadScheduler = AvaloniaScheduler.Instance;
+}
+
+private static void ConfigureReactiveUIServices()
+{
+    Locator.CurrentMutable.RegisterConstant(
+        new AvaloniaActivationForViewFetcher(),
+        typeof(IActivationForViewFetcher));
+    Locator.CurrentMutable.RegisterConstant(
+        new AutoDataTemplateBindingHook(),
+        typeof(IPropertyBindingHook));
+}
 }
