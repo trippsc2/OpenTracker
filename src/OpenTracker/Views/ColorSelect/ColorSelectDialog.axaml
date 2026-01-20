@@ -4,7 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" x:Class="OpenTracker.Views.ColorSelect.ColorSelectDialog"
-        Width="420" Height="554" Padding="5" CanResize="True" WindowStartupLocation="CenterScreen"
+        Background="{DynamicResource ThemeBackgroundBrush}"
+        Width="420" Padding="5" CanResize="True" WindowStartupLocation="CenterOwner"
         Icon="avares://OpenTracker/Assets/Images/triforce.png" Title="OpenTracker - Color Select">
 	
 	<Design.DataContext>
