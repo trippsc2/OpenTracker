@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" x:Class="OpenTracker.Views.ColorSelect.ColorSelectDialog"
         Background="{DynamicResource ThemeBackgroundBrush}"
-        Width="420" Padding="5" CanResize="True" WindowStartupLocation="CenterOwner"
+        SizeToContent="WidthAndHeight" Padding="5" CanResize="True" WindowStartupLocation="CenterOwner"
         Icon="avares://OpenTracker/Assets/Images/triforce.png" Title="OpenTracker - Color Select">
 	
 	<Design.DataContext>
@@ -13,7 +13,7 @@
 	</Design.DataContext>
 	
 	<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-		<StackPanel Orientation="Vertical">
+		<StackPanel Width="420" Orientation="Vertical">
 			
 			<TextBlock Classes="ColorSelectTitle" Text="Font Colors" />
 			
