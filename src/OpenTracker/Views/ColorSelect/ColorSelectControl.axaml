@@ -12,16 +12,11 @@
   
   <StackPanel Orientation="Vertical">
     <Grid ColumnDefinitions="Auto * Auto">
-      <ToggleButton Classes="ColorSelect"
-                    Background="{Binding Color}"
-                    IsChecked="{Binding PickerOpen, Mode=TwoWay}" />
+      <ColorPicker Grid.Column="0"
+                   Color="{Binding Color.Color, Mode=TwoWay}" />
       <TextBlock Classes="ColorSelectLabel" Grid.Column="2"
                  Text="{Binding Label}" />
     </Grid>
-    <Border Classes="ColorPicker"
-            IsVisible="{Binding PickerOpen}">
-      <view:ColorPickerControl DataContext="{Binding Color}" />
-    </Border>
   </StackPanel>
   
 </UserControl>
