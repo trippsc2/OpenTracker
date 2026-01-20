@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         CanResize="False" mc:Ignorable="d" x:Class="OpenTracker.Views.Dialogs.ErrorBoxDialog"
         MaxWidth="400" SizeToContent="Height" Padding="5" WindowStartupLocation="CenterOwner"
+        Background="{DynamicResource ThemeBackgroundBrush}"
         Icon="avares://OpenTracker/Assets/Images/triforce.png"
         Title="{Binding Title}">
 
