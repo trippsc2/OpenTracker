@@ -9,6 +9,7 @@
 
 	<Application.Styles>
 		<StyleInclude Source="avares://Avalonia.Themes.Fluent/FluentTheme.xaml" />
+		<StyleInclude Source="avares://Avalonia.Controls.ColorPicker/Themes/Fluent/Fluent.xaml" />
 
 		<Style Selector="Border.AutoTrackerLog">
 			<Setter Property="Background" Value="{DynamicResource ThemeAccentBrush}" />
