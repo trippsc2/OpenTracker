@@ -1,45 +1,44 @@
 ﻿using OpenTracker.Models.Modes;
 
-namespace OpenTracker.Models.UndoRedo.Mode
+namespace OpenTracker.Models.UndoRedo.Mode;
+
+/// <summary>
+/// This class contains the <see cref="IUndoable"/> action to change the <see cref="IMode.ShopShuffle"/> property.
+/// </summary>
+public class ChangeShopShuffle : IChangeShopShuffle
 {
+    private readonly IMode _mode;
+    private readonly bool _newValue;
+    private bool _previousValue;
+
     /// <summary>
-    /// This class contains the <see cref="IUndoable"/> action to change the <see cref="IMode.ShopShuffle"/> property.
+    /// Constructor
     /// </summary>
-    public class ChangeShopShuffle : IChangeShopShuffle
+    /// <param name="mode">
+    ///     The <see cref="IMode"/> data.
+    /// </param>
+    /// <param name="newValue">
+    ///     A <see cref="bool"/> representing the new <see cref="IMode.ShopShuffle"/> value.
+    /// </param>
+    public ChangeShopShuffle(IMode mode, bool newValue)
     {
-        private readonly IMode _mode;
-        private readonly bool _newValue;
-        private bool _previousValue;
+        _mode = mode;
+        _newValue = newValue;
+    }
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="mode">
-        ///     The <see cref="IMode"/> data.
-        /// </param>
-        /// <param name="newValue">
-        ///     A <see cref="bool"/> representing the new <see cref="IMode.ShopShuffle"/> value.
-        /// </param>
-        public ChangeShopShuffle(IMode mode, bool newValue)
-        {
-            _mode = mode;
-            _newValue = newValue;
-        }
+    public bool CanExecute()
+    {
+        return true;
+    }
 
-        public bool CanExecute()
-        {
-            return true;
-        }
+    public void ExecuteDo()
+    {
+        _previousValue = _mode.ShopShuffle;
+        _mode.ShopShuffle = _newValue;
+    }
 
-        public void ExecuteDo()
-        {
-            _previousValue = _mode.ShopShuffle;
-            _mode.ShopShuffle = _newValue;
-        }
-
-        public void ExecuteUndo()
-        {
-            _mode.ShopShuffle = _previousValue;
-        }
+    public void ExecuteUndo()
+    {
+        _mode.ShopShuffle = _previousValue;
     }
 }

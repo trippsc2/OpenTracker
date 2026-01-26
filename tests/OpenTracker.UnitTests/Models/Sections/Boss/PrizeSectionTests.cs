@@ -14,448 +14,447 @@ using OpenTracker.Models.Sections.Boss;
 using OpenTracker.Models.UndoRedo.Sections;
 using Xunit;
 
-namespace OpenTracker.UnitTests.Models.Sections.Boss
+namespace OpenTracker.UnitTests.Models.Sections.Boss;
+
+public class PrizeSectionTests
 {
-    public class PrizeSectionTests
+    private readonly ISaveLoadManager _saveLoadManager = Substitute.For<ISaveLoadManager>();
+
+    private readonly ICollectSection.Factory _collectSectionFactory = (section, force) =>
+        new CollectSection(section, force);
+    private readonly IUncollectSection.Factory _uncollectSectionFactory = section =>
+        new UncollectSection(section);
+    private readonly ITogglePrizeSection.Factory _togglePrizeSectionFactory = (section, force) =>
+        new TogglePrizeSection(section, force);
+
+    private readonly IBossAccessibilityProvider _accessibilityProvider =
+        Substitute.For<IBossAccessibilityProvider>();
+    private readonly IBossPlacement _bossPlacement = Substitute.For<IBossPlacement>();
+    private readonly IPrizePlacement _prizePlacement = Substitute.For<IPrizePlacement>();
+    private readonly IAutoTrackValue _autoTrackValue = Substitute.For<IAutoTrackValue>();
+
+    [Theory]
+    [InlineData("Boss", "Boss")]
+    [InlineData("Boss 1", "Boss 1")]
+    [InlineData("Boss 2", "Boss 2")]
+    [InlineData("Boss 3", "Boss 3")]
+    [InlineData("Final Boss", "Final Boss")]
+    public void Ctor_ShouldSetNameToExpected(string expected, string name)
     {
-        private readonly ISaveLoadManager _saveLoadManager = Substitute.For<ISaveLoadManager>();
-
-        private readonly ICollectSection.Factory _collectSectionFactory = (section, force) =>
-            new CollectSection(section, force);
-        private readonly IUncollectSection.Factory _uncollectSectionFactory = section =>
-            new UncollectSection(section);
-        private readonly ITogglePrizeSection.Factory _togglePrizeSectionFactory = (section, force) =>
-            new TogglePrizeSection(section, force);
-
-        private readonly IBossAccessibilityProvider _accessibilityProvider =
-            Substitute.For<IBossAccessibilityProvider>();
-        private readonly IBossPlacement _bossPlacement = Substitute.For<IBossPlacement>();
-        private readonly IPrizePlacement _prizePlacement = Substitute.For<IPrizePlacement>();
-        private readonly IAutoTrackValue _autoTrackValue = Substitute.For<IAutoTrackValue>();
-
-        [Theory]
-        [InlineData("Boss", "Boss")]
-        [InlineData("Boss 1", "Boss 1")]
-        [InlineData("Boss 2", "Boss 2")]
-        [InlineData("Boss 3", "Boss 3")]
-        [InlineData("Final Boss", "Final Boss")]
-        public void Ctor_ShouldSetNameToExpected(string expected, string name)
-        {
-            var sut = new PrizeSection(
-                _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
-                _accessibilityProvider, name, _bossPlacement, _prizePlacement, _autoTrackValue);
+        var sut = new PrizeSection(
+            _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
+            _accessibilityProvider, name, _bossPlacement, _prizePlacement, _autoTrackValue);
             
-            Assert.Equal(expected, sut.Name);
-        }
+        Assert.Equal(expected, sut.Name);
+    }
 
-        [Fact]
-        public void Ctor_ShouldSetBossPlacementToExpected()
-        {
-            var sut = new PrizeSection(
-                _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
-                _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue);
+    [Fact]
+    public void Ctor_ShouldSetBossPlacementToExpected()
+    {
+        var sut = new PrizeSection(
+            _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
+            _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue);
             
-            Assert.Equal(_bossPlacement, sut.BossPlacement);
-        }
+        Assert.Equal(_bossPlacement, sut.BossPlacement);
+    }
 
-        [Fact]
-        public void Ctor_ShouldSetPrizePlacementToExpected()
-        {
-            var sut = new PrizeSection(
-                _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
-                _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue);
+    [Fact]
+    public void Ctor_ShouldSetPrizePlacementToExpected()
+    {
+        var sut = new PrizeSection(
+            _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
+            _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue);
             
-            Assert.Equal(_prizePlacement, sut.PrizePlacement);
-        }
+        Assert.Equal(_prizePlacement, sut.PrizePlacement);
+    }
 
-        [Fact]
-        public void Ctor_ShouldSetAvailableTo1()
-        {
-            var sut = new PrizeSection(
-                _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
-                _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue);
+    [Fact]
+    public void Ctor_ShouldSetAvailableTo1()
+    {
+        var sut = new PrizeSection(
+            _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
+            _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue);
             
-            Assert.Equal(1, sut.Available);
-        }
+        Assert.Equal(1, sut.Available);
+    }
 
-        [Fact]
-        public void Ctor_ShouldSetTotalTo1()
-        {
-            var sut = new PrizeSection(
-                _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
-                _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue);
+    [Fact]
+    public void Ctor_ShouldSetTotalTo1()
+    {
+        var sut = new PrizeSection(
+            _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
+            _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue);
             
-            Assert.Equal(1, sut.Total);
-        }
+        Assert.Equal(1, sut.Total);
+    }
 
-        [Fact]
-        public void Accessibility_ShouldRaisePropertyChanged()
-        {
-            var sut = new PrizeSection(
-                _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
-                _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue);
-            _accessibilityProvider.Accessibility.Returns(AccessibilityLevel.Normal);
+    [Fact]
+    public void Accessibility_ShouldRaisePropertyChanged()
+    {
+        var sut = new PrizeSection(
+            _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
+            _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue);
+        _accessibilityProvider.Accessibility.Returns(AccessibilityLevel.Normal);
             
-            Assert.PropertyChanged(sut, nameof(ISection.Accessibility), () =>
-                _accessibilityProvider.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
-                    _accessibilityProvider,
-                    new PropertyChangedEventArgs(nameof(IBossAccessibilityProvider.Accessibility))));
-        }
-
-        [Theory]
-        [InlineData(AccessibilityLevel.None, AccessibilityLevel.None)]
-        [InlineData(AccessibilityLevel.Inspect, AccessibilityLevel.Inspect)]
-        [InlineData(AccessibilityLevel.SequenceBreak, AccessibilityLevel.SequenceBreak)]
-        [InlineData(AccessibilityLevel.Normal, AccessibilityLevel.Normal)]
-        public void Accessibility_ShouldEqualExpected(
-            AccessibilityLevel expected, AccessibilityLevel providerAccessibility)
-        {
-            _accessibilityProvider.Accessibility.Returns(providerAccessibility);
-            
-            var sut = new PrizeSection(
-                _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
-                _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue);
-
-            Assert.Equal(expected, sut.Accessibility);
-        }
-
-        [Fact]
-        public void Available_ShouldRaisePropertyChanged()
-        {
-            var sut = new PrizeSection(
-                _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
-                _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue);
-            Assert.PropertyChanged(sut, nameof(ISection.Available), () => sut.Available = 0);
-        }
-
-        [Fact]
-        public void Available_ShouldNotManipulatePrize_WhenPrizeIsNull()
-        {
-            var sut = new PrizeSection(
-                _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
-                _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue);
-            _prizePlacement.Prize.ReturnsNull();
-            sut.Available = 0;
-            
-            Assert.Null(sut.PrizePlacement.Prize);
-        }
-
-        [Theory]
-        [InlineData(0, 1)]
-        [InlineData(1, 0)]
-        public void Available_ShouldManipulatePrize_WhenPrizeIsNotNull(int expected, int available)
-        {
-            var sut = new PrizeSection(
-                _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
-                _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue) {Available = 0};
-            sut.Available = 1;
-            sut.Available = available;
-            
-            Assert.Equal(expected, _prizePlacement.Prize!.Current);
-        }
-
-        [Fact]
-        public void IsActive_ShouldAlwaysReturnTrue()
-        {
-            var sut = new PrizeSection(
-                _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
-                _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue);
-            
-            Assert.True(sut.IsActive);
-        }
-
-        [Theory]
-        [InlineData(false, AccessibilityLevel.None, 0)]
-        [InlineData(false, AccessibilityLevel.None, 1)]
-        [InlineData(false, AccessibilityLevel.Inspect, 0)]
-        [InlineData(true, AccessibilityLevel.Inspect, 1)]
-        [InlineData(false, AccessibilityLevel.SequenceBreak, 0)]
-        [InlineData(true, AccessibilityLevel.SequenceBreak, 1)]
-        [InlineData(false, AccessibilityLevel.Normal, 0)]
-        [InlineData(true, AccessibilityLevel.Normal, 1)]
-        public void ShouldBeDisplayed_ShouldEqualExpected(
-            bool expected, AccessibilityLevel nodeAccessibility, int available)
-        {
-            var sut = new PrizeSection(
-                _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
-                _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue)
-            {
-                Available = available
-            };
-            _accessibilityProvider.Accessibility.Returns(nodeAccessibility);
+        Assert.PropertyChanged(sut, nameof(ISection.Accessibility), () =>
             _accessibilityProvider.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
                 _accessibilityProvider,
-                new PropertyChangedEventArgs(nameof(IBossAccessibilityProvider.Accessibility)));
+                new PropertyChangedEventArgs(nameof(IBossAccessibilityProvider.Accessibility))));
+    }
+
+    [Theory]
+    [InlineData(AccessibilityLevel.None, AccessibilityLevel.None)]
+    [InlineData(AccessibilityLevel.Inspect, AccessibilityLevel.Inspect)]
+    [InlineData(AccessibilityLevel.SequenceBreak, AccessibilityLevel.SequenceBreak)]
+    [InlineData(AccessibilityLevel.Normal, AccessibilityLevel.Normal)]
+    public void Accessibility_ShouldEqualExpected(
+        AccessibilityLevel expected, AccessibilityLevel providerAccessibility)
+    {
+        _accessibilityProvider.Accessibility.Returns(providerAccessibility);
             
-            Assert.Equal(expected, sut.ShouldBeDisplayed);
-        }
+        var sut = new PrizeSection(
+            _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
+            _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue);
 
-        [Theory]
-        [InlineData(false, 0)]
-        [InlineData(true, 1)]
-        public void IsAvailable_ShouldReturnExpected(bool expected, int available)
-        {
-            var sut = new PrizeSection(
-                _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
-                _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue)
-            {
-                Available = available
-            };
+        Assert.Equal(expected, sut.Accessibility);
+    }
 
-            Assert.Equal(expected, sut.IsAvailable());
-        }
+    [Fact]
+    public void Available_ShouldRaisePropertyChanged()
+    {
+        var sut = new PrizeSection(
+            _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
+            _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue);
+        Assert.PropertyChanged(sut, nameof(ISection.Available), () => sut.Available = 0);
+    }
 
-        [Theory]
-        [InlineData(false, AccessibilityLevel.None, 0, false)]
-        [InlineData(false, AccessibilityLevel.None, 0, true)]
-        [InlineData(false, AccessibilityLevel.None, 1, false)]
-        [InlineData(true, AccessibilityLevel.None, 1, true)]
-        [InlineData(false, AccessibilityLevel.Inspect, 0, false)]
-        [InlineData(false, AccessibilityLevel.Inspect, 0, true)]
-        [InlineData(false, AccessibilityLevel.Inspect, 1, false)]
-        [InlineData(true, AccessibilityLevel.Inspect, 1, true)]
-        [InlineData(false, AccessibilityLevel.SequenceBreak, 0, false)]
-        [InlineData(false, AccessibilityLevel.SequenceBreak, 0, true)]
-        [InlineData(true, AccessibilityLevel.SequenceBreak, 1, false)]
-        [InlineData(true, AccessibilityLevel.SequenceBreak, 1, true)]
-        [InlineData(false, AccessibilityLevel.Normal, 0, false)]
-        [InlineData(false, AccessibilityLevel.Normal, 0, true)]
-        [InlineData(true, AccessibilityLevel.Normal, 1, false)]
-        [InlineData(true, AccessibilityLevel.Normal, 1, true)]
-        public void CanBeCleared_ShouldReturnExpected(
-            bool expected, AccessibilityLevel accessibility, int available, bool force)
-        {
-            var sut = new PrizeSection(
-                _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
-                _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue)
-            {
-                Available = available
-            };
-            _accessibilityProvider.Accessibility.Returns(accessibility);
-
-            _accessibilityProvider.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
-                _accessibilityProvider,
-                new PropertyChangedEventArgs(nameof(IBossAccessibilityProvider.Accessibility)));
+    [Fact]
+    public void Available_ShouldNotManipulatePrize_WhenPrizeIsNull()
+    {
+        var sut = new PrizeSection(
+            _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
+            _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue);
+        _prizePlacement.Prize.ReturnsNull();
+        sut.Available = 0;
             
-            Assert.Equal(expected, sut.CanBeCleared(force));
-        }
+        Assert.Null(sut.PrizePlacement.Prize);
+    }
 
-        [Fact]
-        public void Clear_ShouldSetAvailableTo0()
-        {
-            var sut = new PrizeSection(
-                _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
-                _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue);
-            sut.Clear(false);
+    [Theory]
+    [InlineData(0, 1)]
+    [InlineData(1, 0)]
+    public void Available_ShouldManipulatePrize_WhenPrizeIsNotNull(int expected, int available)
+    {
+        var sut = new PrizeSection(
+            _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
+            _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue) {Available = 0};
+        sut.Available = 1;
+        sut.Available = available;
             
-            Assert.Equal(0, sut.Available);
-        }
+        Assert.Equal(expected, _prizePlacement.Prize!.Current);
+    }
 
-        [Fact]
-        public void CreateCollectSectionAction_ShouldReturnNewAction()
-        {
-            var sut = new PrizeSection(
-                _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
-                _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue);
-            var action = sut.CreateCollectSectionAction(false);
+    [Fact]
+    public void IsActive_ShouldAlwaysReturnTrue()
+    {
+        var sut = new PrizeSection(
+            _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
+            _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue);
             
-            Assert.NotNull(action as CollectSection);
-        }
+        Assert.True(sut.IsActive);
+    }
 
-        [Theory]
-        [InlineData(true, 0)]
-        [InlineData(false, 1)]
-        public void CanBeUncleared_ShouldReturnExpected(bool expected, int available)
+    [Theory]
+    [InlineData(false, AccessibilityLevel.None, 0)]
+    [InlineData(false, AccessibilityLevel.None, 1)]
+    [InlineData(false, AccessibilityLevel.Inspect, 0)]
+    [InlineData(true, AccessibilityLevel.Inspect, 1)]
+    [InlineData(false, AccessibilityLevel.SequenceBreak, 0)]
+    [InlineData(true, AccessibilityLevel.SequenceBreak, 1)]
+    [InlineData(false, AccessibilityLevel.Normal, 0)]
+    [InlineData(true, AccessibilityLevel.Normal, 1)]
+    public void ShouldBeDisplayed_ShouldEqualExpected(
+        bool expected, AccessibilityLevel nodeAccessibility, int available)
+    {
+        var sut = new PrizeSection(
+            _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
+            _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue)
         {
-            var sut = new PrizeSection(
-                _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
-                _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue)
-            {
-                Available = available
-            };
-
-            Assert.Equal(expected, sut.CanBeUncleared());
-        }
-
-        [Fact]
-        public void CreateUncollectSectionAction_ShouldReturnNewAction()
-        {
-            var sut = new PrizeSection(
-                _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
-                _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue);
-            var action = sut.CreateUncollectSectionAction();
+            Available = available
+        };
+        _accessibilityProvider.Accessibility.Returns(nodeAccessibility);
+        _accessibilityProvider.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+            _accessibilityProvider,
+            new PropertyChangedEventArgs(nameof(IBossAccessibilityProvider.Accessibility)));
             
-            Assert.NotNull(action as UncollectSection);
-        }
+        Assert.Equal(expected, sut.ShouldBeDisplayed);
+    }
 
-        [Fact]
-        public void CreateTogglePrizeSectionAction_ShouldReturnNewAction()
+    [Theory]
+    [InlineData(false, 0)]
+    [InlineData(true, 1)]
+    public void IsAvailable_ShouldReturnExpected(bool expected, int available)
+    {
+        var sut = new PrizeSection(
+            _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
+            _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue)
         {
-            var sut = new PrizeSection(
-                _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
-                _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue);
-            var action = sut.CreateTogglePrizeSectionAction(false);
-            
-            Assert.NotNull(action as TogglePrizeSection);
-        }
+            Available = available
+        };
 
-        [Fact]
-        public void Reset_ShouldSetUserManipulatedToFalse()
-        {
-            var sut = new PrizeSection(
-                _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
-                _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue)
-            {
-                UserManipulated = true
-            };
-            sut.Reset();
-            
-            Assert.False(sut.UserManipulated);
-        }
+        Assert.Equal(expected, sut.IsAvailable());
+    }
 
-        [Fact]
-        public void Reset_ShouldSetAvailableTo1()
+    [Theory]
+    [InlineData(false, AccessibilityLevel.None, 0, false)]
+    [InlineData(false, AccessibilityLevel.None, 0, true)]
+    [InlineData(false, AccessibilityLevel.None, 1, false)]
+    [InlineData(true, AccessibilityLevel.None, 1, true)]
+    [InlineData(false, AccessibilityLevel.Inspect, 0, false)]
+    [InlineData(false, AccessibilityLevel.Inspect, 0, true)]
+    [InlineData(false, AccessibilityLevel.Inspect, 1, false)]
+    [InlineData(true, AccessibilityLevel.Inspect, 1, true)]
+    [InlineData(false, AccessibilityLevel.SequenceBreak, 0, false)]
+    [InlineData(false, AccessibilityLevel.SequenceBreak, 0, true)]
+    [InlineData(true, AccessibilityLevel.SequenceBreak, 1, false)]
+    [InlineData(true, AccessibilityLevel.SequenceBreak, 1, true)]
+    [InlineData(false, AccessibilityLevel.Normal, 0, false)]
+    [InlineData(false, AccessibilityLevel.Normal, 0, true)]
+    [InlineData(true, AccessibilityLevel.Normal, 1, false)]
+    [InlineData(true, AccessibilityLevel.Normal, 1, true)]
+    public void CanBeCleared_ShouldReturnExpected(
+        bool expected, AccessibilityLevel accessibility, int available, bool force)
+    {
+        var sut = new PrizeSection(
+            _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
+            _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue)
         {
-            var sut = new PrizeSection(
-                _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
-                _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue) {Available = 0};
-            sut.Reset();
-            
-            Assert.Equal(1, sut.Available);
-        }
+            Available = available
+        };
+        _accessibilityProvider.Accessibility.Returns(accessibility);
 
-        [Theory]
-        [InlineData(false, false)]
-        [InlineData(true, true)]
-        public void Save_ShouldSetSaveDataUserManipulatedToExpected(bool expected, bool userManipulated)
-        {
-            var sut = new PrizeSection(
-                _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
-                _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue)
-            {
-                UserManipulated = userManipulated
-            };
-            var saveData = sut.Save();
+        _accessibilityProvider.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+            _accessibilityProvider,
+            new PropertyChangedEventArgs(nameof(IBossAccessibilityProvider.Accessibility)));
             
-            Assert.Equal(expected, saveData.UserManipulated);
-        }
+        Assert.Equal(expected, sut.CanBeCleared(force));
+    }
 
-        [Theory]
-        [InlineData(0, 0)]
-        [InlineData(1, 1)]
-        public void Save_ShouldSetSaveDataAvailableToExpected(int expected, int available)
-        {
-            var sut = new PrizeSection(
-                _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
-                _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue)
-            {
-                Available = available
-            };
-            var saveData = sut.Save();
+    [Fact]
+    public void Clear_ShouldSetAvailableTo0()
+    {
+        var sut = new PrizeSection(
+            _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
+            _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue);
+        sut.Clear(false);
             
-            Assert.Equal(expected, saveData.Available);
-        }
+        Assert.Equal(0, sut.Available);
+    }
 
-        [Fact]
-        public void Load_ShouldDoNothing_WhenSaveDataIsNull()
-        {
-            var sut = new PrizeSection(
-                _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
-                _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue);
-            sut.Load(null);
+    [Fact]
+    public void CreateCollectSectionAction_ShouldReturnNewAction()
+    {
+        var sut = new PrizeSection(
+            _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
+            _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue);
+        var action = sut.CreateCollectSectionAction(false);
             
-            Assert.Equal(1, sut.Available);
-        }
+        Assert.NotNull(action as CollectSection);
+    }
+
+    [Theory]
+    [InlineData(true, 0)]
+    [InlineData(false, 1)]
+    public void CanBeUncleared_ShouldReturnExpected(bool expected, int available)
+    {
+        var sut = new PrizeSection(
+            _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
+            _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue)
+        {
+            Available = available
+        };
+
+        Assert.Equal(expected, sut.CanBeUncleared());
+    }
+
+    [Fact]
+    public void CreateUncollectSectionAction_ShouldReturnNewAction()
+    {
+        var sut = new PrizeSection(
+            _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
+            _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue);
+        var action = sut.CreateUncollectSectionAction();
+            
+        Assert.NotNull(action as UncollectSection);
+    }
+
+    [Fact]
+    public void CreateTogglePrizeSectionAction_ShouldReturnNewAction()
+    {
+        var sut = new PrizeSection(
+            _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
+            _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue);
+        var action = sut.CreateTogglePrizeSectionAction(false);
+            
+        Assert.NotNull(action as TogglePrizeSection);
+    }
+
+    [Fact]
+    public void Reset_ShouldSetUserManipulatedToFalse()
+    {
+        var sut = new PrizeSection(
+            _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
+            _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue)
+        {
+            UserManipulated = true
+        };
+        sut.Reset();
+            
+        Assert.False(sut.UserManipulated);
+    }
+
+    [Fact]
+    public void Reset_ShouldSetAvailableTo1()
+    {
+        var sut = new PrizeSection(
+            _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
+            _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue) {Available = 0};
+        sut.Reset();
+            
+        Assert.Equal(1, sut.Available);
+    }
+
+    [Theory]
+    [InlineData(false, false)]
+    [InlineData(true, true)]
+    public void Save_ShouldSetSaveDataUserManipulatedToExpected(bool expected, bool userManipulated)
+    {
+        var sut = new PrizeSection(
+            _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
+            _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue)
+        {
+            UserManipulated = userManipulated
+        };
+        var saveData = sut.Save();
+            
+        Assert.Equal(expected, saveData.UserManipulated);
+    }
+
+    [Theory]
+    [InlineData(0, 0)]
+    [InlineData(1, 1)]
+    public void Save_ShouldSetSaveDataAvailableToExpected(int expected, int available)
+    {
+        var sut = new PrizeSection(
+            _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
+            _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue)
+        {
+            Available = available
+        };
+        var saveData = sut.Save();
+            
+        Assert.Equal(expected, saveData.Available);
+    }
+
+    [Fact]
+    public void Load_ShouldDoNothing_WhenSaveDataIsNull()
+    {
+        var sut = new PrizeSection(
+            _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
+            _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue);
+        sut.Load(null);
+            
+        Assert.Equal(1, sut.Available);
+    }
         
-        [Theory]
-        [InlineData(false, false)]
-        [InlineData(true, true)]
-        public void Load_ShouldSetUserManipulatedToExpected(bool expected, bool userManipulated)
-        {
-            var sut = new PrizeSection(
-                _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
-                _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue);
-            var saveData = new SectionSaveData {UserManipulated = userManipulated};
-            sut.Load(saveData);
+    [Theory]
+    [InlineData(false, false)]
+    [InlineData(true, true)]
+    public void Load_ShouldSetUserManipulatedToExpected(bool expected, bool userManipulated)
+    {
+        var sut = new PrizeSection(
+            _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
+            _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue);
+        var saveData = new SectionSaveData {UserManipulated = userManipulated};
+        sut.Load(saveData);
             
-            Assert.Equal(expected, sut.UserManipulated);
-        }
+        Assert.Equal(expected, sut.UserManipulated);
+    }
 
-        [Theory]
-        [InlineData(0, 0)]
-        [InlineData(1, 1)]
-        public void Load_ShouldSetAvailableToExpected(int expected, int available)
-        {
-            var sut = new PrizeSection(
-                _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
-                _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue);
-            var saveData = new SectionSaveData {Available = available};
-            sut.Load(saveData);
+    [Theory]
+    [InlineData(0, 0)]
+    [InlineData(1, 1)]
+    public void Load_ShouldSetAvailableToExpected(int expected, int available)
+    {
+        var sut = new PrizeSection(
+            _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
+            _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue);
+        var saveData = new SectionSaveData {Available = available};
+        sut.Load(saveData);
             
-            Assert.Equal(expected, sut.Available);
-        }
+        Assert.Equal(expected, sut.Available);
+    }
 
-        [Fact]
-        public void AccessibilityProviderChanged_ShouldUpdateAccessibility()
-        {
-            var sut = new PrizeSection(
-                _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
-                _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue);
-            _accessibilityProvider.Accessibility.Returns(AccessibilityLevel.Normal);
-            _accessibilityProvider.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
-                _accessibilityProvider,
-                new PropertyChangedEventArgs(nameof(IBossAccessibilityProvider.Accessibility)));
+    [Fact]
+    public void AccessibilityProviderChanged_ShouldUpdateAccessibility()
+    {
+        var sut = new PrizeSection(
+            _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
+            _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue);
+        _accessibilityProvider.Accessibility.Returns(AccessibilityLevel.Normal);
+        _accessibilityProvider.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+            _accessibilityProvider,
+            new PropertyChangedEventArgs(nameof(IBossAccessibilityProvider.Accessibility)));
 
-            Assert.Equal(AccessibilityLevel.Normal, sut.Accessibility);
-        }
+        Assert.Equal(AccessibilityLevel.Normal, sut.Accessibility);
+    }
 
-        [Theory]
-        [InlineData(1, null)]
-        [InlineData(1, 0)]
-        [InlineData(0, 1)]
-        public void AutoTrackValueChanged_ShouldSetAvailableToExpected(int expected, int? autoTrackValue)
-        {
-            var sut = new PrizeSection(
-                _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
-                _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue);
-            _autoTrackValue.CurrentValue.Returns(autoTrackValue);
-            _autoTrackValue.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
-                _autoTrackValue, new PropertyChangedEventArgs(nameof(IAutoTrackValue.CurrentValue)));
+    [Theory]
+    [InlineData(1, null)]
+    [InlineData(1, 0)]
+    [InlineData(0, 1)]
+    public void AutoTrackValueChanged_ShouldSetAvailableToExpected(int expected, int? autoTrackValue)
+    {
+        var sut = new PrizeSection(
+            _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
+            _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue);
+        _autoTrackValue.CurrentValue.Returns(autoTrackValue);
+        _autoTrackValue.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+            _autoTrackValue, new PropertyChangedEventArgs(nameof(IAutoTrackValue.CurrentValue)));
             
-            Assert.Equal(expected, sut.Available);
-        }
+        Assert.Equal(expected, sut.Available);
+    }
 
-        [Fact]
-        public void PrizePlacementChanged_ShouldTransferPrizeToNewPrize()
+    [Fact]
+    public void PrizePlacementChanged_ShouldTransferPrizeToNewPrize()
+    {
+        var prize1 = Substitute.For<IItem>();
+        _prizePlacement.Prize.Returns(prize1);
+        var unused = new PrizeSection(
+            _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
+            _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue)
         {
-            var prize1 = Substitute.For<IItem>();
-            _prizePlacement.Prize.Returns(prize1);
-            var unused = new PrizeSection(
-                _saveLoadManager, _collectSectionFactory, _uncollectSectionFactory, _togglePrizeSectionFactory,
-                _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue)
-            {
-                Available = 0
-            };
-            var prize2 = Substitute.For<IItem>();
-            _prizePlacement.PropertyChanging += Raise.Event<PropertyChangingEventHandler>(
-                _prizePlacement, new PropertyChangingEventArgs(nameof(IPrizePlacement.Prize)));
-            _prizePlacement.Prize.Returns(prize2);
-            _prizePlacement.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
-                _prizePlacement, new PropertyChangedEventArgs(nameof(IPrizePlacement.Prize)));
+            Available = 0
+        };
+        var prize2 = Substitute.For<IItem>();
+        _prizePlacement.PropertyChanging += Raise.Event<PropertyChangingEventHandler>(
+            _prizePlacement, new PropertyChangingEventArgs(nameof(IPrizePlacement.Prize)));
+        _prizePlacement.Prize.Returns(prize2);
+        _prizePlacement.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+            _prizePlacement, new PropertyChangedEventArgs(nameof(IPrizePlacement.Prize)));
             
-            Assert.Equal(0, prize1.Current);
-            Assert.Equal(1, prize2.Current);
-        }
+        Assert.Equal(0, prize1.Current);
+        Assert.Equal(1, prize2.Current);
+    }
 
-        [Fact]
-        public void AutofacTest()
-        {
-            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-            var factory = scope.Resolve<IPrizeSection.Factory>();
-            var sut = factory(
-                _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue);
+    [Fact]
+    public void AutofacTest()
+    {
+        using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+        var factory = scope.Resolve<IPrizeSection.Factory>();
+        var sut = factory(
+            _accessibilityProvider, "Test", _bossPlacement, _prizePlacement, _autoTrackValue);
             
-            Assert.NotNull(sut as PrizeSection);
-        }
+        Assert.NotNull(sut as PrizeSection);
     }
 }

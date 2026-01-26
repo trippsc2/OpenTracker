@@ -6,29 +6,28 @@ using OpenTracker.Models.Dungeons.State;
 using OpenTracker.Models.Requirements;
 using Xunit;
 
-namespace OpenTracker.UnitTests.Models.Dungeons.KeyLayouts
+namespace OpenTracker.UnitTests.Models.Dungeons.KeyLayouts;
+
+public class EndKeyLayoutTests
 {
-    public class EndKeyLayoutTests
+    private readonly IRequirement _requirement = Substitute.For<IRequirement>();
+
+    private readonly EndKeyLayout _sut;
+
+    public EndKeyLayoutTests()
     {
-        private readonly IRequirement _requirement = Substitute.For<IRequirement>();
+        _sut = new EndKeyLayout(_requirement);
+    }
 
-        private readonly EndKeyLayout _sut;
-
-        public EndKeyLayoutTests()
-        {
-            _sut = new EndKeyLayout(_requirement);
-        }
-
-        [Theory]
-        [InlineData(false, false)]
-        [InlineData(true, true)]
-        public void CanBeTrue_ShouldReturnTrue_WhenRequirementMetReturnsTrue(bool expected, bool requirementMet)
-        {
-            _requirement.Met.Returns(requirementMet);
+    [Theory]
+    [InlineData(false, false)]
+    [InlineData(true, true)]
+    public void CanBeTrue_ShouldReturnTrue_WhenRequirementMetReturnsTrue(bool expected, bool requirementMet)
+    {
+        _requirement.Met.Returns(requirementMet);
             
-            Assert.Equal(expected, _sut.CanBeTrue(
-                new List<DungeonItemID>(), new List<DungeonItemID>(),
-                Substitute.For<IDungeonState>()));
-        }
+        Assert.Equal(expected, _sut.CanBeTrue(
+            new List<DungeonItemID>(), new List<DungeonItemID>(),
+            Substitute.For<IDungeonState>()));
     }
 }

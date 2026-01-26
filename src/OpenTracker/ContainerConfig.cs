@@ -83,337 +83,336 @@ using OpenTracker.ViewModels.SequenceBreaks;
 using OpenTracker.ViewModels.UIPanels;
 using MapConnectionCollection = OpenTracker.Models.Locations.Map.Connections.MapConnectionCollection;
 
-namespace OpenTracker
+namespace OpenTracker;
+
+/// <summary>
+/// This class contains the logic to create and configure the Autofac container.
+/// </summary>
+public static class ContainerConfig
 {
-    /// <summary>
-    /// This class contains the logic to create and configure the Autofac container.
-    /// </summary>
-    public static class ContainerConfig
+    private static List<string> UtilsSkipTypes => [];
+
+    private static List<string> UtilsSelfTypes =>
+    [
+        nameof(ConstrainedTaskScheduler)
+    ];
+
+    private static List<string> UtilsSingleInstanceTypes =>
+    [
+        nameof(ConstrainedTaskScheduler),
+        nameof(DialogService),
+        nameof(FileDialogService),
+        nameof(FileManager),
+        nameof(JsonConverter),
+        nameof(ThemeManager),
+        nameof(MainWindowProvider)
+    ];
+
+    private static List<string> ModelsSkipTypes =>
+    [
+        nameof(AutoTrackValueBase),
+        nameof(AccessibilityRequirement),
+        nameof(BooleanRequirement)
+    ];
+
+    private static List<string> ModelsSelfTypes => [];
+
+    private static List<string> ModelsSingleInstanceTypes =>
+    [
+        nameof(AutoTrackerLogService),
+        nameof(MemoryAddressProvider),
+        nameof(AutoTracker),
+        nameof(SNESConnector),
+        nameof(BossPlacementDictionary),
+        nameof(BossPlacementFactory),
+        nameof(MapConnectionCollection),
+        nameof(DropdownDictionary),
+        nameof(DropdownFactory),
+        nameof(DungeonItemFactory),
+        nameof(DungeonNodeFactory),
+        nameof(DungeonDictionary),
+        nameof(DungeonFactory),
+        nameof(CappedItemFactory),
+        nameof(ItemFactory),
+        nameof(ItemAutoTrackValueFactory),
+        nameof(KeyItemFactory),
+        nameof(ItemDictionary),
+        nameof(KeyDoorFactory),
+        nameof(KeyLayoutFactory),
+        nameof(LocationDictionary),
+        nameof(LocationFactory),
+        nameof(MapLocationFactory),
+        nameof(PinnedLocationCollection),
+        nameof(AutoTrackerLogger),
+        nameof(Mode),
+        nameof(PrizePlacementDictionary),
+        nameof(PrizePlacementFactory),
+        nameof(PrizeDictionary),
+        nameof(OverworldNodeDictionary),
+        nameof(OverworldNodeFactory),
+        nameof(AggregateRequirementDictionary),
+        nameof(AlternativeRequirementDictionary),
+        nameof(RaceIllegalTrackingRequirement),
+        nameof(BigKeyShuffleRequirementDictionary),
+        nameof(BossRequirementDictionary),
+        nameof(BossTypeRequirementDictionary),
+        nameof(BossTypeRequirementFactory),
+        nameof(BossShuffleRequirementDictionary),
+        nameof(BossTypeRequirementFactory),
+        nameof(CompassShuffleRequirementDictionary),
+        nameof(ComplexRequirementDictionary),
+        nameof(ComplexRequirementFactory),
+        nameof(EnemyShuffleRequirementDictionary),
+        nameof(GenericKeysRequirementDictionary),
+        nameof(GuaranteedBossItemsRequirementDictionary),
+        nameof(CrystalRequirement),
+        nameof(ItemRequirementDictionary),
+        nameof(ItemExactRequirementDictionary),
+        nameof(PrizeRequirementDictionary),
+        nameof(SmallKeyRequirementDictionary),
+        nameof(KeyDropShuffleRequirementDictionary),
+        nameof(MapShuffleRequirementDictionary),
+        nameof(EntranceShuffleRequirementDictionary),
+        nameof(ItemPlacementRequirementDictionary),
+        nameof(WorldStateRequirementDictionary),
+        nameof(SequenceBreakRequirementDictionary),
+        nameof(ShopShuffleRequirementDictionary),
+        nameof(SmallKeyShuffleRequirementDictionary),
+        nameof(TakeAnyLocationsRequirementDictionary),
+        nameof(ResetManager),
+        nameof(SaveLoadManager),
+        nameof(SectionFactory),
+        nameof(SectionAutoTrackingFactory),
+        nameof(SequenceBreakDictionary),
+        nameof(UndoRedoManager)
+    ];
+
+    private static List<string> GUISkipTypes =>
+    [
+        nameof(OrientedDungeonPanelVMBase)
+    ];
+
+    private static List<string> GUISelfTypes =>
+    [
+        nameof(BossAdapter),
+        nameof(CrystalRequirementAdapter),
+        nameof(DropdownAdapter),
+        nameof(DungeonSmallKeyAdapter),
+        nameof(ItemAdapter),
+        nameof(PairItemAdapter),
+        nameof(PrizeAdapter),
+        nameof(SmallKeyAdapter),
+        nameof(StaticPrizeAdapter),
+        nameof(EntranceMapLocationVM),
+        nameof(ShopMapLocationVM),
+        nameof(StandardMapLocationVM),
+        nameof(TakeAnyMapLocationVM),
+        nameof(MarkingSelectButtonVM),
+        nameof(MarkingSelectSpacerVM),
+        nameof(ItemMarkingImageVM),
+        nameof(MarkingImageVM),
+        nameof(MenuItemCheckBoxVM),
+        nameof(BossSectionIconVM),
+        nameof(MarkingSectionIconVM),
+        nameof(PrizeSectionIconVM)
+    ];
+
+    private static List<string> GUISingleInstanceTypes =>
+    [
+        nameof(AlwaysDisplayDungeonItemsRequirementDictionary),
+        nameof(DisplayMapsCompassesRequirementDictionary),
+        nameof(ItemsPanelOrientationRequirementDictionary),
+        nameof(AppSettings),
+        nameof(BoundsSettings),
+        nameof(ColorSettings),
+        nameof(LayoutSettings),
+        nameof(TrackerSettings),
+        nameof(MapAreaVM),
+        nameof(MapAreaFactory),
+        nameof(UIPanelAreaVM),
+        nameof(AutoTrackerDialogVM),
+        nameof(AutoTrackerLogVM),
+        nameof(AutoTrackerStatusVM),
+        nameof(BossSelectFactory),
+        nameof(CaptureDesignDialogVM),
+        nameof(CaptureManager),
+        nameof(CaptureWindowCollection),
+        nameof(ColorSelectDialogVM),
+        nameof(DropdownVMFactory),
+        nameof(DungeonPanelVM),
+        nameof(DungeonVMDictionary),
+        nameof(DungeonVMFactory),
+        nameof(HorizontalDungeonPanelVM),
+        nameof(VerticalDungeonPanelVM),
+        nameof(ItemVMDictionary),
+        nameof(ItemVMFactory),
+        nameof(MapLocationVMFactory),
+        nameof(MapConnectionCollection),
+        nameof(MarkingSelectFactory),
+        nameof(MarkingImageDictionary),
+        nameof(MarkingImageFactory),
+        nameof(CaptureWindowMenuCollection),
+        nameof(MenuItemFactory),
+        nameof(PinnedLocationDictionary),
+        nameof(PinnedLocationsPanelVM),
+        nameof(PinnedLocationVMCollection),
+        nameof(PinnedLocationVMFactory),
+        nameof(SectionVMFactory),
+        nameof(SequenceBreakControlFactory),
+        nameof(SequenceBreakDialogVM),
+        nameof(UIPanelFactory),
+        nameof(AboutDialogVM),
+        nameof(MainWindowVM),
+        nameof(ModeSettingsVM),
+        nameof(StatusBarVM)
+    ];
+
+    public static ContainerBuilder GetContainerBuilder()
     {
-        private static List<string> UtilsSkipTypes => [];
+        var builder = new ContainerBuilder();
 
-        private static List<string> UtilsSelfTypes =>
-        [
-            nameof(ConstrainedTaskScheduler)
-        ];
+        RegisterAssemblyTypes(
+            Assembly.Load($"{nameof(OpenTracker)}.{nameof(Utils)}"), builder, UtilsSkipTypes, UtilsSelfTypes,
+            UtilsSingleInstanceTypes);
+        RegisterAssemblyTypes(
+            Assembly.Load($"{nameof(OpenTracker)}.{nameof(Models)}"), builder, ModelsSkipTypes, ModelsSelfTypes,
+            ModelsSingleInstanceTypes);
+        RegisterAssemblyTypes(
+            Assembly.Load(nameof(OpenTracker)), builder, GUISkipTypes, GUISelfTypes, GUISingleInstanceTypes);
 
-        private static List<string> UtilsSingleInstanceTypes =>
-        [
-            nameof(ConstrainedTaskScheduler),
-            nameof(DialogService),
-            nameof(FileDialogService),
-            nameof(FileManager),
-            nameof(JsonConverter),
-            nameof(ThemeManager),
-            nameof(MainWindowProvider)
-        ];
+        return builder;
+    }
 
-        private static List<string> ModelsSkipTypes =>
-        [
-            nameof(AutoTrackValueBase),
-            nameof(AccessibilityRequirement),
-            nameof(BooleanRequirement)
-        ];
-
-        private static List<string> ModelsSelfTypes => [];
-
-        private static List<string> ModelsSingleInstanceTypes =>
-        [
-            nameof(AutoTrackerLogService),
-            nameof(MemoryAddressProvider),
-            nameof(AutoTracker),
-            nameof(SNESConnector),
-            nameof(BossPlacementDictionary),
-            nameof(BossPlacementFactory),
-            nameof(MapConnectionCollection),
-            nameof(DropdownDictionary),
-            nameof(DropdownFactory),
-            nameof(DungeonItemFactory),
-            nameof(DungeonNodeFactory),
-            nameof(DungeonDictionary),
-            nameof(DungeonFactory),
-            nameof(CappedItemFactory),
-            nameof(ItemFactory),
-            nameof(ItemAutoTrackValueFactory),
-            nameof(KeyItemFactory),
-            nameof(ItemDictionary),
-            nameof(KeyDoorFactory),
-            nameof(KeyLayoutFactory),
-            nameof(LocationDictionary),
-            nameof(LocationFactory),
-            nameof(MapLocationFactory),
-            nameof(PinnedLocationCollection),
-            nameof(AutoTrackerLogger),
-            nameof(Mode),
-            nameof(PrizePlacementDictionary),
-            nameof(PrizePlacementFactory),
-            nameof(PrizeDictionary),
-            nameof(OverworldNodeDictionary),
-            nameof(OverworldNodeFactory),
-            nameof(AggregateRequirementDictionary),
-            nameof(AlternativeRequirementDictionary),
-            nameof(RaceIllegalTrackingRequirement),
-            nameof(BigKeyShuffleRequirementDictionary),
-            nameof(BossRequirementDictionary),
-            nameof(BossTypeRequirementDictionary),
-            nameof(BossTypeRequirementFactory),
-            nameof(BossShuffleRequirementDictionary),
-            nameof(BossTypeRequirementFactory),
-            nameof(CompassShuffleRequirementDictionary),
-            nameof(ComplexRequirementDictionary),
-            nameof(ComplexRequirementFactory),
-            nameof(EnemyShuffleRequirementDictionary),
-            nameof(GenericKeysRequirementDictionary),
-            nameof(GuaranteedBossItemsRequirementDictionary),
-            nameof(CrystalRequirement),
-            nameof(ItemRequirementDictionary),
-            nameof(ItemExactRequirementDictionary),
-            nameof(PrizeRequirementDictionary),
-            nameof(SmallKeyRequirementDictionary),
-            nameof(KeyDropShuffleRequirementDictionary),
-            nameof(MapShuffleRequirementDictionary),
-            nameof(EntranceShuffleRequirementDictionary),
-            nameof(ItemPlacementRequirementDictionary),
-            nameof(WorldStateRequirementDictionary),
-            nameof(SequenceBreakRequirementDictionary),
-            nameof(ShopShuffleRequirementDictionary),
-            nameof(SmallKeyShuffleRequirementDictionary),
-            nameof(TakeAnyLocationsRequirementDictionary),
-            nameof(ResetManager),
-            nameof(SaveLoadManager),
-            nameof(SectionFactory),
-            nameof(SectionAutoTrackingFactory),
-            nameof(SequenceBreakDictionary),
-            nameof(UndoRedoManager)
-        ];
-
-        private static List<string> GUISkipTypes =>
-        [
-            nameof(OrientedDungeonPanelVMBase)
-        ];
-
-        private static List<string> GUISelfTypes =>
-        [
-            nameof(BossAdapter),
-            nameof(CrystalRequirementAdapter),
-            nameof(DropdownAdapter),
-            nameof(DungeonSmallKeyAdapter),
-            nameof(ItemAdapter),
-            nameof(PairItemAdapter),
-            nameof(PrizeAdapter),
-            nameof(SmallKeyAdapter),
-            nameof(StaticPrizeAdapter),
-            nameof(EntranceMapLocationVM),
-            nameof(ShopMapLocationVM),
-            nameof(StandardMapLocationVM),
-            nameof(TakeAnyMapLocationVM),
-            nameof(MarkingSelectButtonVM),
-            nameof(MarkingSelectSpacerVM),
-            nameof(ItemMarkingImageVM),
-            nameof(MarkingImageVM),
-            nameof(MenuItemCheckBoxVM),
-            nameof(BossSectionIconVM),
-            nameof(MarkingSectionIconVM),
-            nameof(PrizeSectionIconVM)
-        ];
-
-        private static List<string> GUISingleInstanceTypes =>
-        [
-            nameof(AlwaysDisplayDungeonItemsRequirementDictionary),
-            nameof(DisplayMapsCompassesRequirementDictionary),
-            nameof(ItemsPanelOrientationRequirementDictionary),
-            nameof(AppSettings),
-            nameof(BoundsSettings),
-            nameof(ColorSettings),
-            nameof(LayoutSettings),
-            nameof(TrackerSettings),
-            nameof(MapAreaVM),
-            nameof(MapAreaFactory),
-            nameof(UIPanelAreaVM),
-            nameof(AutoTrackerDialogVM),
-            nameof(AutoTrackerLogVM),
-            nameof(AutoTrackerStatusVM),
-            nameof(BossSelectFactory),
-            nameof(CaptureDesignDialogVM),
-            nameof(CaptureManager),
-            nameof(CaptureWindowCollection),
-            nameof(ColorSelectDialogVM),
-            nameof(DropdownVMFactory),
-            nameof(DungeonPanelVM),
-            nameof(DungeonVMDictionary),
-            nameof(DungeonVMFactory),
-            nameof(HorizontalDungeonPanelVM),
-            nameof(VerticalDungeonPanelVM),
-            nameof(ItemVMDictionary),
-            nameof(ItemVMFactory),
-            nameof(MapLocationVMFactory),
-            nameof(MapConnectionCollection),
-            nameof(MarkingSelectFactory),
-            nameof(MarkingImageDictionary),
-            nameof(MarkingImageFactory),
-            nameof(CaptureWindowMenuCollection),
-            nameof(MenuItemFactory),
-            nameof(PinnedLocationDictionary),
-            nameof(PinnedLocationsPanelVM),
-            nameof(PinnedLocationVMCollection),
-            nameof(PinnedLocationVMFactory),
-            nameof(SectionVMFactory),
-            nameof(SequenceBreakControlFactory),
-            nameof(SequenceBreakDialogVM),
-            nameof(UIPanelFactory),
-            nameof(AboutDialogVM),
-            nameof(MainWindowVM),
-            nameof(ModeSettingsVM),
-            nameof(StatusBarVM)
-        ];
-
-        public static ContainerBuilder GetContainerBuilder()
-        {
-            var builder = new ContainerBuilder();
-
-            RegisterAssemblyTypes(
-                Assembly.Load($"{nameof(OpenTracker)}.{nameof(Utils)}"), builder, UtilsSkipTypes, UtilsSelfTypes,
-                UtilsSingleInstanceTypes);
-            RegisterAssemblyTypes(
-                Assembly.Load($"{nameof(OpenTracker)}.{nameof(Models)}"), builder, ModelsSkipTypes, ModelsSelfTypes,
-                ModelsSingleInstanceTypes);
-            RegisterAssemblyTypes(
-                Assembly.Load(nameof(OpenTracker)), builder, GUISkipTypes, GUISelfTypes, GUISingleInstanceTypes);
-
-            return builder;
-        }
-
-        /// <summary>
-        /// Returns a newly configured Autofac container.
-        /// </summary>
-        /// <returns>
-        /// A new Autofac container.
-        /// </returns>
-        public static IContainer Configure()
-        {
-            var builder = GetContainerBuilder();
+    /// <summary>
+    /// Returns a newly configured Autofac container.
+    /// </summary>
+    /// <returns>
+    /// A new Autofac container.
+    /// </returns>
+    public static IContainer Configure()
+    {
+        var builder = GetContainerBuilder();
             
-            return builder.Build();
-        }
+        return builder.Build();
+    }
 
-        /// <summary>
-        /// Register all relevant types in the specified assembly.
-        /// </summary>
-        /// <param name="assembly">
-        /// The assembly from which types will be registered.
-        /// </param>
-        /// <param name="builder">
-        /// The container builder.
-        /// </param>
-        /// <param name="skip">
-        /// A list of strings representing types that should not be registered.
-        /// </param>
-        /// <param name="self">
-        /// A list of strings representing types that should be registered to themselves.
-        /// </param>
-        /// <param name="singleInstance">
-        /// A list of strings representing types that should be registered as a single instance.
-        /// </param>
-        private static void RegisterAssemblyTypes(
-            Assembly assembly, ContainerBuilder builder, ICollection<string> skip, ICollection<string> self,
-            ICollection<string> singleInstance)
+    /// <summary>
+    /// Register all relevant types in the specified assembly.
+    /// </summary>
+    /// <param name="assembly">
+    /// The assembly from which types will be registered.
+    /// </param>
+    /// <param name="builder">
+    /// The container builder.
+    /// </param>
+    /// <param name="skip">
+    /// A list of strings representing types that should not be registered.
+    /// </param>
+    /// <param name="self">
+    /// A list of strings representing types that should be registered to themselves.
+    /// </param>
+    /// <param name="singleInstance">
+    /// A list of strings representing types that should be registered as a single instance.
+    /// </param>
+    private static void RegisterAssemblyTypes(
+        Assembly assembly, ContainerBuilder builder, ICollection<string> skip, ICollection<string> self,
+        ICollection<string> singleInstance)
+    {
+        foreach (var type in assembly.GetTypes())
         {
-            foreach (var type in assembly.GetTypes())
-            {
-                RegisterType(builder, skip, self, singleInstance, type);
-            }
+            RegisterType(builder, skip, self, singleInstance, type);
         }
+    }
 
-        /// <summary>
-        /// Register the specified type.
-        /// </summary>
-        /// <param name="builder">
-        /// The container builder.
-        /// </param>
-        /// <param name="skip">
-        /// A list of strings representing types that should not be registered.
-        /// </param>
-        /// <param name="self">
-        /// A list of strings representing types that should be registered to themselves.
-        /// </param>
-        /// <param name="singleInstance">
-        /// A list of strings representing types that should be registered as a single instance.
-        /// </param>
-        /// <param name="type">
-        /// The type to be registered.
-        /// </param>
-        private static void RegisterType(
-            ContainerBuilder builder, ICollection<string> skip, ICollection<string> self,
-            ICollection<string> singleInstance, Type type)
+    /// <summary>
+    /// Register the specified type.
+    /// </summary>
+    /// <param name="builder">
+    /// The container builder.
+    /// </param>
+    /// <param name="skip">
+    /// A list of strings representing types that should not be registered.
+    /// </param>
+    /// <param name="self">
+    /// A list of strings representing types that should be registered to themselves.
+    /// </param>
+    /// <param name="singleInstance">
+    /// A list of strings representing types that should be registered as a single instance.
+    /// </param>
+    /// <param name="type">
+    /// The type to be registered.
+    /// </param>
+    private static void RegisterType(
+        ContainerBuilder builder, ICollection<string> skip, ICollection<string> self,
+        ICollection<string> singleInstance, Type type)
+    {
+        if (skip.Contains(type.Name))
         {
-            if (skip.Contains(type.Name))
-            {
-                return;
-            }
-
-            if (self.Contains(type.Name))
-            {
-                RegisterTypeAsSelf(builder, singleInstance, type);
-                return;
-            }
-
-            RegisterTypeAsInterface(builder, singleInstance, type);
+            return;
         }
 
-        /// <summary>
-        /// Register the specified type as itself.
-        /// </summary>
-        /// <param name="builder">
-        /// The container builder.
-        /// </param>
-        /// <param name="singleInstance">
-        /// A list of strings representing types that should be registered as a single instance.
-        /// </param>
-        /// <param name="type">
-        /// The type to be registered.
-        /// </param>
-        private static void RegisterTypeAsSelf(ContainerBuilder builder, ICollection<string> singleInstance, Type type)
+        if (self.Contains(type.Name))
         {
-            if (singleInstance.Contains(type.Name))
-            {
-                builder.RegisterType(type).AsSelf().SingleInstance();
-                return;
-            }
-
-            builder.RegisterType(type).AsSelf();
+            RegisterTypeAsSelf(builder, singleInstance, type);
+            return;
         }
 
-        /// <summary>
-        /// Register the specified type as the matching interface.
-        /// </summary>
-        /// <param name="builder">
-        /// The container builder.
-        /// </param>
-        /// <param name="singleInstance">
-        /// A list of strings representing types that should be registered as a single instance.
-        /// </param>
-        /// <param name="type">
-        /// The type to be registered.
-        /// </param>
-        private static void RegisterTypeAsInterface(
-            ContainerBuilder builder, ICollection<string> singleInstance, Type type)
+        RegisterTypeAsInterface(builder, singleInstance, type);
+    }
+
+    /// <summary>
+    /// Register the specified type as itself.
+    /// </summary>
+    /// <param name="builder">
+    /// The container builder.
+    /// </param>
+    /// <param name="singleInstance">
+    /// A list of strings representing types that should be registered as a single instance.
+    /// </param>
+    /// <param name="type">
+    /// The type to be registered.
+    /// </param>
+    private static void RegisterTypeAsSelf(ContainerBuilder builder, ICollection<string> singleInstance, Type type)
+    {
+        if (singleInstance.Contains(type.Name))
         {
-            var interfaceName = $"I{type.Name}";
-            var interfaceType = type.GetInterfaces().FirstOrDefault(
-                i => i.Name == interfaceName);
-
-            if (interfaceType is null)
-            {
-                return;
-            }
-
-            if (singleInstance.Contains(type.Name))
-            {
-                builder.RegisterType(type).As(interfaceType).SingleInstance();
-                return;
-            }
-
-            builder.RegisterType(type).As(interfaceType);
+            builder.RegisterType(type).AsSelf().SingleInstance();
+            return;
         }
+
+        builder.RegisterType(type).AsSelf();
+    }
+
+    /// <summary>
+    /// Register the specified type as the matching interface.
+    /// </summary>
+    /// <param name="builder">
+    /// The container builder.
+    /// </param>
+    /// <param name="singleInstance">
+    /// A list of strings representing types that should be registered as a single instance.
+    /// </param>
+    /// <param name="type">
+    /// The type to be registered.
+    /// </param>
+    private static void RegisterTypeAsInterface(
+        ContainerBuilder builder, ICollection<string> singleInstance, Type type)
+    {
+        var interfaceName = $"I{type.Name}";
+        var interfaceType = type.GetInterfaces().FirstOrDefault(
+            i => i.Name == interfaceName);
+
+        if (interfaceType is null)
+        {
+            return;
+        }
+
+        if (singleInstance.Contains(type.Name))
+        {
+            builder.RegisterType(type).As(interfaceType).SingleInstance();
+            return;
+        }
+
+        builder.RegisterType(type).As(interfaceType);
     }
 }

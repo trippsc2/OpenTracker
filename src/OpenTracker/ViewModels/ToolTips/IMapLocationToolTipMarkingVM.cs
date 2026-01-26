@@ -1,10 +1,9 @@
 ﻿using OpenTracker.Models.Markings;
 using OpenTracker.Utils;
 
-namespace OpenTracker.ViewModels.ToolTips
+namespace OpenTracker.ViewModels.ToolTips;
+
+public interface IMapLocationToolTipMarkingVM : IModelWrapper
 {
-    public interface IMapLocationToolTipMarkingVM : IModelWrapper
-    {
-        delegate IMapLocationToolTipMarkingVM Factory(IMarking marking);
-    }
+    delegate IMapLocationToolTipMarkingVM Factory(IMarking marking);
 }

@@ -1,8 +1,7 @@
 using OpenTracker.Utils;
 
-namespace OpenTracker.ViewModels.Menus
+namespace OpenTracker.ViewModels.Menus;
+
+public interface ICaptureWindowMenuCollection : IObservableCollection<IMenuItemVM>
 {
-    public interface ICaptureWindowMenuCollection : IObservableCollection<IMenuItemVM>
-    {
-    }
 }

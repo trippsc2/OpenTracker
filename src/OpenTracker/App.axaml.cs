@@ -10,83 +10,82 @@ using OpenTracker.Utils.Themes;
 using OpenTracker.ViewModels;
 using OpenTracker.Views;
 
-namespace OpenTracker
+namespace OpenTracker;
+
+public class App : Application
 {
-    public class App : Application
+    private static void CopyDefaultThemesToAppData()
     {
-        private static void CopyDefaultThemesToAppData()
+        var themePath = AppPath.AppDataThemesPath;
+
+        if (!Directory.Exists(themePath))
         {
-            var themePath = AppPath.AppDataThemesPath;
-
-            if (!Directory.Exists(themePath))
-            {
-                Directory.CreateDirectory(themePath);
-            }
-
-            foreach (var srcTheme in Directory.GetFiles(AppPath.AppRootThemesPath))
-            {
-                var filename = Path.GetFileName(srcTheme);
-                var destTheme = Path.Combine(themePath, filename);
-
-                if (File.Exists(destTheme))
-                {
-                    File.Delete(destTheme);
-                }
-
-                File.Copy(srcTheme, destTheme);
-            }
+            Directory.CreateDirectory(themePath);
         }
 
-        private static void SetThemeToLastOrDefault(IThemeManager selector)
+        foreach (var srcTheme in Directory.GetFiles(AppPath.AppRootThemesPath))
         {
-            var lastThemeFilePath = AppPath.LastThemeFilePath;
+            var filename = Path.GetFileName(srcTheme);
+            var destTheme = Path.Combine(themePath, filename);
 
-            if (!File.Exists(lastThemeFilePath))
+            if (File.Exists(destTheme))
             {
-                return;
+                File.Delete(destTheme);
             }
+
+            File.Copy(srcTheme, destTheme);
+        }
+    }
+
+    private static void SetThemeToLastOrDefault(IThemeManager selector)
+    {
+        var lastThemeFilePath = AppPath.LastThemeFilePath;
+
+        if (!File.Exists(lastThemeFilePath))
+        {
+            return;
+        }
             
-            selector.LoadSelectedTheme(lastThemeFilePath);
-        }
+        selector.LoadSelectedTheme(lastThemeFilePath);
+    }
 
-        public override void Initialize()
+    public override void Initialize()
+    {
+        // Note: Avalonia 11 logging integration
+        // Logger.Sink has been replaced with more modern logging patterns
+        // For now, we rely on LogToTrace() in Program.cs and Serilog for app-level logging
+        // If Avalonia-specific logging is needed, consider using a logging bridge
+
+        AvaloniaXamlLoader.Load(this);
+    }
+
+    public override void OnFrameworkInitializationCompleted()
+    {
+        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            // Note: Avalonia 11 logging integration
-            // Logger.Sink has been replaced with more modern logging patterns
-            // For now, we rely on LogToTrace() in Program.cs and Serilog for app-level logging
-            // If Avalonia-specific logging is needed, consider using a logging bridge
+            desktop.ShutdownMode = ShutdownMode.OnMainWindowClose;
+            CopyDefaultThemesToAppData();
 
-            AvaloniaXamlLoader.Load(this);
-        }
+            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
 
-        public override void OnFrameworkInitializationCompleted()
-        {
-            if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            var themeManagerFactory = scope.Resolve<IThemeManager.Factory>();
+            var themeManager = themeManagerFactory(this, AppPath.AppDataThemesPath);
+            var saveLoadManager = scope.Resolve<ISaveLoadManager>();
+            saveLoadManager.OpenSequenceBreaks(AppPath.SequenceBreakPath);
+            desktop.MainWindow = new MainWindow()
             {
-                desktop.ShutdownMode = ShutdownMode.OnMainWindowClose;
-                CopyDefaultThemesToAppData();
-
-                using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-
-                var themeManagerFactory = scope.Resolve<IThemeManager.Factory>();
-                var themeManager = themeManagerFactory(this, AppPath.AppDataThemesPath);
-                var saveLoadManager = scope.Resolve<ISaveLoadManager>();
-                saveLoadManager.OpenSequenceBreaks(AppPath.SequenceBreakPath);
-                desktop.MainWindow = new MainWindow()
-                {
-                    DataContext = scope.Resolve<IMainWindowVM>()
-                };
+                DataContext = scope.Resolve<IMainWindowVM>()
+            };
                 
-                SetThemeToLastOrDefault(themeManager);
+            SetThemeToLastOrDefault(themeManager);
 
-                desktop.Exit += (_, _) =>
-                {
-                    saveLoadManager.SaveSequenceBreaks(AppPath.SequenceBreakPath);
-                    themeManager.SaveSelectedTheme(AppPath.LastThemeFilePath);
-                };
-            }
-
-            base.OnFrameworkInitializationCompleted();
+            desktop.Exit += (_, _) =>
+            {
+                saveLoadManager.SaveSequenceBreaks(AppPath.SequenceBreakPath);
+                themeManager.SaveSelectedTheme(AppPath.LastThemeFilePath);
+            };
         }
+
+        base.OnFrameworkInitializationCompleted();
     }
 }

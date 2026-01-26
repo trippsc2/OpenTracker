@@ -1,9 +1,8 @@
-﻿namespace OpenTracker.ViewModels.AutoTracking
+﻿namespace OpenTracker.ViewModels.AutoTracking;
+
+/// <summary>
+/// This interface contains the auto-tracker log control ViewModel data.
+/// </summary>
+public interface IAutoTrackerLogVM
 {
-    /// <summary>
-    /// This interface contains the auto-tracker log control ViewModel data.
-    /// </summary>
-    public interface IAutoTrackerLogVM
-    {
-    }
 }

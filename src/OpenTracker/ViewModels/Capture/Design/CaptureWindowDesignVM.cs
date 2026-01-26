@@ -4,30 +4,29 @@ using Avalonia.Threading;
 using OpenTracker.Utils;
 using ReactiveUI;
 
-namespace OpenTracker.ViewModels.Capture.Design
+namespace OpenTracker.ViewModels.Capture.Design;
+
+public class CaptureWindowDesignVM : ViewModelBase, ICaptureDesignVM
 {
-    public class CaptureWindowDesignVM : ViewModelBase, ICaptureDesignVM
+    private readonly ICaptureWindowVM _captureWindow;
+
+    public SolidColorBrush? BackgroundColor
     {
-        private readonly ICaptureWindowVM _captureWindow;
+        get => _captureWindow.BackgroundColor;
+        set => _captureWindow.BackgroundColor = value;
+    }
 
-        public SolidColorBrush? BackgroundColor
-        {
-            get => _captureWindow.BackgroundColor;
-            set => _captureWindow.BackgroundColor = value;
-        }
+    public delegate CaptureWindowDesignVM Factory(ICaptureWindowVM captureWindowVM);
 
-        public delegate CaptureWindowDesignVM Factory(ICaptureWindowVM captureWindowVM);
+    public CaptureWindowDesignVM(ICaptureWindowVM captureWindow)
+    {
+        _captureWindow = captureWindow;
 
-        public CaptureWindowDesignVM(ICaptureWindowVM captureWindow)
-        {
-            _captureWindow = captureWindow;
+        _captureWindow.PropertyChanged += OnCaptureWindowChanged;
+    }
 
-            _captureWindow.PropertyChanged += OnCaptureWindowChanged;
-        }
-
-        private async void OnCaptureWindowChanged(object? sender, PropertyChangedEventArgs e)
-        {
-            await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(e.PropertyName));
-        }
+    private async void OnCaptureWindowChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        await Dispatcher.UIThread.InvokeAsync(() => this.RaisePropertyChanged(e.PropertyName));
     }
 }

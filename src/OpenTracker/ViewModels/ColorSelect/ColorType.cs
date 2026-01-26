@@ -1,16 +1,15 @@
-namespace OpenTracker.ViewModels.ColorSelect
+namespace OpenTracker.ViewModels.ColorSelect;
+
+/// <summary>
+/// This enum type contains the app color types.
+/// </summary>
+public enum ColorType
 {
-    /// <summary>
-    /// This enum type contains the app color types.
-    /// </summary>
-    public enum ColorType
-    {
-        EmphasisFont,
-        AccessibilityNone,
-        AccessibilityPartial,
-        AccessibilityInspect,
-        AccessibilitySequenceBreak,
-        AccessibilityNormal,
-        Connector
-    }
+    EmphasisFont,
+    AccessibilityNone,
+    AccessibilityPartial,
+    AccessibilityInspect,
+    AccessibilitySequenceBreak,
+    AccessibilityNormal,
+    Connector
 }

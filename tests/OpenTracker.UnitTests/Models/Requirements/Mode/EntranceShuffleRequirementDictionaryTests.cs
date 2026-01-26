@@ -4,48 +4,47 @@ using OpenTracker.Models.Modes;
 using OpenTracker.Models.Requirements.Mode;
 using Xunit;
 
-namespace OpenTracker.UnitTests.Models.Requirements.Mode
+namespace OpenTracker.UnitTests.Models.Requirements.Mode;
+
+public class EntranceShuffleRequirementDictionaryTests
 {
-    public class EntranceShuffleRequirementDictionaryTests
+    // ReSharper disable once CollectionNeverUpdated.Local
+    private readonly EntranceShuffleRequirementDictionary _sut;
+
+    public EntranceShuffleRequirementDictionaryTests()
     {
-        // ReSharper disable once CollectionNeverUpdated.Local
-        private readonly EntranceShuffleRequirementDictionary _sut;
-
-        public EntranceShuffleRequirementDictionaryTests()
+        static IEntranceShuffleRequirement Factory(EntranceShuffle expectedValue)
         {
-            static IEntranceShuffleRequirement Factory(EntranceShuffle expectedValue)
-            {
-                return Substitute.For<IEntranceShuffleRequirement>();
-            }
-
-            _sut = new EntranceShuffleRequirementDictionary(Factory);
+            return Substitute.For<IEntranceShuffleRequirement>();
         }
 
-        [Fact]
-        public void Indexer_ShouldReturnTheSameInstance()
-        {
-            var requirement1 = _sut[EntranceShuffle.None];
-            var requirement2 = _sut[EntranceShuffle.None];
+        _sut = new EntranceShuffleRequirementDictionary(Factory);
+    }
+
+    [Fact]
+    public void Indexer_ShouldReturnTheSameInstance()
+    {
+        var requirement1 = _sut[EntranceShuffle.None];
+        var requirement2 = _sut[EntranceShuffle.None];
             
-            Assert.Equal(requirement1, requirement2);
-        }
+        Assert.Equal(requirement1, requirement2);
+    }
 
-        [Fact]
-        public void Indexer_ShouldReturnTheDifferentInstances()
-        {
-            var requirement1 = _sut[EntranceShuffle.None];
-            var requirement2 = _sut[EntranceShuffle.Dungeon];
+    [Fact]
+    public void Indexer_ShouldReturnTheDifferentInstances()
+    {
+        var requirement1 = _sut[EntranceShuffle.None];
+        var requirement2 = _sut[EntranceShuffle.Dungeon];
             
-            Assert.NotEqual(requirement1, requirement2);
-        }
+        Assert.NotEqual(requirement1, requirement2);
+    }
 
-        [Fact]
-        public void AutofacTest()
-        {
-            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-            var sut = scope.Resolve<IEntranceShuffleRequirementDictionary>();
+    [Fact]
+    public void AutofacTest()
+    {
+        using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+        var sut = scope.Resolve<IEntranceShuffleRequirementDictionary>();
             
-            Assert.NotNull(sut as EntranceShuffleRequirementDictionary);
-        }
+        Assert.NotNull(sut as EntranceShuffleRequirementDictionary);
     }
 }

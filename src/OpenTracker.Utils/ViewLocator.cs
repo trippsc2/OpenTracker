@@ -4,37 +4,36 @@ using System;
 using System.Linq;
 using System.Reflection;
 
-namespace OpenTracker.Utils
+namespace OpenTracker.Utils;
+
+public class ViewLocator : IDataTemplate
 {
-    public class ViewLocator : IDataTemplate
+    public static bool SupportsRecycling =>
+        false;
+
+    public Control? Build(object? data)
     {
-        public static bool SupportsRecycling =>
-            false;
+        if (data == null)
+            return null;
 
-        public Control? Build(object? data)
+        var assembly = Assembly.GetEntryAssembly() ??
+                       throw new NullReferenceException();
+        var viewTypes = assembly.GetTypes();
+        var viewName = data.GetType().FullName!.Replace("ViewModel", "View").Replace("VM", "");
+        var type = viewTypes.SingleOrDefault(t => t.FullName == viewName);
+
+        if (type != null)
         {
-            if (data == null)
-                return null;
-
-            var assembly = Assembly.GetEntryAssembly() ??
-                throw new NullReferenceException();
-            var viewTypes = assembly.GetTypes();
-            var viewName = data.GetType().FullName!.Replace("ViewModel", "View").Replace("VM", "");
-            var type = viewTypes.SingleOrDefault(t => t.FullName == viewName);
-
-            if (type != null)
-            {
-                return (Control)Activator.CreateInstance(type)!;
-            }
-            else
-            {
-                return new TextBlock { Text = "Not Found: " + viewName };
-            }
+            return (Control)Activator.CreateInstance(type)!;
         }
-
-        public bool Match(object? data)
+        else
         {
-            return data is ViewModelBase;
+            return new TextBlock { Text = "Not Found: " + viewName };
         }
+    }
+
+    public bool Match(object? data)
+    {
+        return data is ViewModelBase;
     }
 }

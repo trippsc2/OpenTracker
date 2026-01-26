@@ -3,143 +3,142 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace OpenTracker.Utils
+namespace OpenTracker.Utils;
+
+public class ConstrainedTaskScheduler : TaskScheduler
 {
-    public class ConstrainedTaskScheduler : TaskScheduler
+    [ThreadStatic]
+    private static bool _currentThreadIsProcessingItems;
+
+    private int _pendingTaskCount;
+
+    private readonly int _concurrentTasks;
+    private readonly LinkedList<Task> _tasks = new();
+
+    public override int MaximumConcurrencyLevel => _concurrentTasks;
+
+    public ConstrainedTaskScheduler() : this(Math.Max(1, Environment.ProcessorCount - 1))
     {
-        [ThreadStatic]
-        private static bool _currentThreadIsProcessingItems;
-
-        private int _pendingTaskCount;
-
-        private readonly int _concurrentTasks;
-        private readonly LinkedList<Task> _tasks = new();
-
-        public override int MaximumConcurrencyLevel => _concurrentTasks;
-
-        public ConstrainedTaskScheduler() : this(Math.Max(1, Environment.ProcessorCount - 1))
-        {
-        }
+    }
         
-        public ConstrainedTaskScheduler(int concurrentTasks)
+    public ConstrainedTaskScheduler(int concurrentTasks)
+    {
+        if (concurrentTasks < 1)
         {
-            if (concurrentTasks < 1)
-            {
-                throw new ArgumentOutOfRangeException(nameof(concurrentTasks));
-            }
-
-            _concurrentTasks = concurrentTasks;
+            throw new ArgumentOutOfRangeException(nameof(concurrentTasks));
         }
 
-        private void NotifyThreadPoolOfPendingWork()
+        _concurrentTasks = concurrentTasks;
+    }
+
+    private void NotifyThreadPoolOfPendingWork()
+    {
+        ThreadPool.UnsafeQueueUserWorkItem(_ =>
         {
-            ThreadPool.UnsafeQueueUserWorkItem(_ =>
-            {
-                _currentThreadIsProcessingItems = true;
-
-                try
-                {
-                    while (true)
-                    {
-                        Task item;
-
-                        lock (_tasks)
-                        {
-                            if (_tasks.Count == 0)
-                            {
-                                _pendingTaskCount--;
-                                break;
-                            }
-
-                            item = _tasks.First!.Value;
-                            _tasks.RemoveFirst();
-                        }
-
-                        TryExecuteTask(item);
-                    }
-                }
-                finally
-                {
-                    _currentThreadIsProcessingItems = false;
-                }
-            }, null);
-        }
-
-        protected override IEnumerable<Task> GetScheduledTasks()
-        {
-            bool lockTaken = false;
+            _currentThreadIsProcessingItems = true;
 
             try
             {
-                Monitor.TryEnter(_tasks, ref lockTaken);
+                while (true)
+                {
+                    Task item;
 
-                if (lockTaken)
-                {
-                    return _tasks;
-                }
-                else
-                {
-                    throw new NotSupportedException();
+                    lock (_tasks)
+                    {
+                        if (_tasks.Count == 0)
+                        {
+                            _pendingTaskCount--;
+                            break;
+                        }
+
+                        item = _tasks.First!.Value;
+                        _tasks.RemoveFirst();
+                    }
+
+                    TryExecuteTask(item);
                 }
             }
             finally
             {
-                if (lockTaken)
-                {
-                    Monitor.Exit(_tasks);
-                }
+                _currentThreadIsProcessingItems = false;
             }
-        }
+        }, null);
+    }
 
-        protected override void QueueTask(Task task)
+    protected override IEnumerable<Task> GetScheduledTasks()
+    {
+        bool lockTaken = false;
+
+        try
         {
-            lock (_tasks)
-            {
-                _tasks.AddLast(task);
+            Monitor.TryEnter(_tasks, ref lockTaken);
 
-                if (_pendingTaskCount < _concurrentTasks)
-                {
-                    _pendingTaskCount++;
-                    NotifyThreadPoolOfPendingWork();
-                }
-            }
-        }
-
-        protected override bool TryExecuteTaskInline(Task task, bool taskWasPreviouslyQueued)
-        {
-            if (!_currentThreadIsProcessingItems)
+            if (lockTaken)
             {
-                return false;
-            }
-
-            if (taskWasPreviouslyQueued)
-            {
-                if (TryDequeue(task))
-                {
-                    return TryExecuteTask(task);
-                }
-                else
-                {
-                    return false;
-                }
+                return _tasks;
             }
             else
             {
-                return TryExecuteTask(task);
+                throw new NotSupportedException();
             }
         }
-
-        protected override bool TryDequeue(Task task)
+        finally
         {
-            lock (_tasks)
+            if (lockTaken)
             {
-                if (_tasks.Remove(task))
-                {
-                    return true;
-                }
+                Monitor.Exit(_tasks);
+            }
+        }
+    }
 
+    protected override void QueueTask(Task task)
+    {
+        lock (_tasks)
+        {
+            _tasks.AddLast(task);
+
+            if (_pendingTaskCount < _concurrentTasks)
+            {
+                _pendingTaskCount++;
+                NotifyThreadPoolOfPendingWork();
+            }
+        }
+    }
+
+    protected override bool TryExecuteTaskInline(Task task, bool taskWasPreviouslyQueued)
+    {
+        if (!_currentThreadIsProcessingItems)
+        {
+            return false;
+        }
+
+        if (taskWasPreviouslyQueued)
+        {
+            if (TryDequeue(task))
+            {
+                return TryExecuteTask(task);
+            }
+            else
+            {
                 return false;
             }
+        }
+        else
+        {
+            return TryExecuteTask(task);
+        }
+    }
+
+    protected override bool TryDequeue(Task task)
+    {
+        lock (_tasks)
+        {
+            if (_tasks.Remove(task))
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }

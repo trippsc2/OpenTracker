@@ -1,11 +1,10 @@
 using System.Reactive;
 using ReactiveUI;
 
-namespace OpenTracker.ViewModels.Capture
+namespace OpenTracker.ViewModels.Capture;
+
+public interface ICaptureManager
 {
-    public interface ICaptureManager
-    {
-        ReactiveCommand<ICaptureWindowVM, Unit> OpenCaptureWindow { get; }
-        void GenerateInitialData();
-    }
+    ReactiveCommand<ICaptureWindowVM, Unit> OpenCaptureWindow { get; }
+    void GenerateInitialData();
 }

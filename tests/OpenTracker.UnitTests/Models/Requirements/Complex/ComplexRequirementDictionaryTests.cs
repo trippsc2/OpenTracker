@@ -3,43 +3,42 @@ using NSubstitute;
 using OpenTracker.Models.Requirements.Complex;
 using Xunit;
 
-namespace OpenTracker.UnitTests.Models.Requirements.Complex
+namespace OpenTracker.UnitTests.Models.Requirements.Complex;
+
+public class ComplexRequirementDictionaryTests
 {
-    public class ComplexRequirementDictionaryTests
+    // ReSharper disable once CollectionNeverUpdated.Local
+    private readonly ComplexRequirementDictionary _sut;
+
+    public ComplexRequirementDictionaryTests()
     {
-        // ReSharper disable once CollectionNeverUpdated.Local
-        private readonly ComplexRequirementDictionary _sut;
+        _sut = new ComplexRequirementDictionary(() => Substitute.For<IComplexRequirementFactory>());
+    }
 
-        public ComplexRequirementDictionaryTests()
-        {
-            _sut = new ComplexRequirementDictionary(() => Substitute.For<IComplexRequirementFactory>());
-        }
-
-        [Fact]
-        public void Indexer_ShouldReturnTheSameInstance()
-        {
-            var requirement1 = _sut[ComplexRequirementType.AllMedallions];
-            var requirement2 = _sut[ComplexRequirementType.AllMedallions];
+    [Fact]
+    public void Indexer_ShouldReturnTheSameInstance()
+    {
+        var requirement1 = _sut[ComplexRequirementType.AllMedallions];
+        var requirement2 = _sut[ComplexRequirementType.AllMedallions];
             
-            Assert.Equal(requirement1, requirement2);
-        }
+        Assert.Equal(requirement1, requirement2);
+    }
 
-        [Fact]
-        public void Indexer_ShouldReturnDifferentInstances()
-        {
-            var requirement1 = _sut[ComplexRequirementType.AllMedallions];
-            var requirement2 = _sut[ComplexRequirementType.ExtendMagic1];
+    [Fact]
+    public void Indexer_ShouldReturnDifferentInstances()
+    {
+        var requirement1 = _sut[ComplexRequirementType.AllMedallions];
+        var requirement2 = _sut[ComplexRequirementType.ExtendMagic1];
             
-            Assert.NotEqual(requirement1, requirement2);
-        }
+        Assert.NotEqual(requirement1, requirement2);
+    }
         
-        [Fact]
-        public void AutofacTest()
-        {
-            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-            var sut = scope.Resolve<IComplexRequirementDictionary>();
+    [Fact]
+    public void AutofacTest()
+    {
+        using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+        var sut = scope.Resolve<IComplexRequirementDictionary>();
             
-            Assert.NotNull(sut as ComplexRequirementDictionary);
-        }
+        Assert.NotNull(sut as ComplexRequirementDictionary);
     }
 }

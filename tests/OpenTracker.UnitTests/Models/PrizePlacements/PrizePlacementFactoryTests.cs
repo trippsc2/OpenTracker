@@ -10,61 +10,60 @@ using OpenTracker.Models.Prizes;
 using OpenTracker.Models.UndoRedo.Prize;
 using Xunit;
 
-namespace OpenTracker.UnitTests.Models.PrizePlacements
+namespace OpenTracker.UnitTests.Models.PrizePlacements;
+
+public class PrizePlacementFactoryTests
 {
-    public class PrizePlacementFactoryTests
+    private static readonly IPrizeDictionary Prizes =
+        new PrizeDictionary((_, _) => Substitute.For<IItem>());
+    private static readonly IPrizePlacement.Factory Factory =
+        startingPrize => new PrizePlacement(
+            Prizes, _ => Substitute.For<IChangePrize>(), startingPrize);
+
+    private static readonly Dictionary<PrizePlacementID, ExpectedObject> ExpectedValues = new();
+
+    private readonly PrizePlacementFactory _sut = new(Prizes, Factory);
+
+    private static void PopulateExpectedValues()
     {
-        private static readonly IPrizeDictionary Prizes =
-            new PrizeDictionary((_, _) => Substitute.For<IItem>());
-        private static readonly IPrizePlacement.Factory Factory =
-            startingPrize => new PrizePlacement(
-                Prizes, _ => Substitute.For<IChangePrize>(), startingPrize);
+        ExpectedValues.Clear();
 
-        private static readonly Dictionary<PrizePlacementID, ExpectedObject> ExpectedValues = new();
-
-        private readonly PrizePlacementFactory _sut = new(Prizes, Factory);
-
-        private static void PopulateExpectedValues()
+        foreach (PrizePlacementID id in Enum.GetValues(typeof(PrizePlacementID)))
         {
-            ExpectedValues.Clear();
-
-            foreach (PrizePlacementID id in Enum.GetValues(typeof(PrizePlacementID)))
+            var expected = (id switch
             {
-                var expected = (id switch
-                {
-                    PrizePlacementID.ATPrize => Factory(Prizes[PrizeType.Aga1]),
-                    PrizePlacementID.GTPrize => Factory(Prizes[PrizeType.Aga2]),
-                    _ => Factory()
-                }).ToExpectedObject();
+                PrizePlacementID.ATPrize => Factory(Prizes[PrizeType.Aga1]),
+                PrizePlacementID.GTPrize => Factory(Prizes[PrizeType.Aga2]),
+                _ => Factory()
+            }).ToExpectedObject();
                 
-                ExpectedValues.Add(id, expected);
-            }
+            ExpectedValues.Add(id, expected);
         }
+    }
 
-        [Theory]
-        [MemberData(nameof(GetPrizePlacement_ShouldReturnExpectedData))]
-        public void GetPrizePlacement_ShouldReturnExpected(ExpectedObject expected, PrizePlacementID id)
-        {
-            var prizePlacement = _sut.GetPrizePlacement(id);
+    [Theory]
+    [MemberData(nameof(GetPrizePlacement_ShouldReturnExpectedData))]
+    public void GetPrizePlacement_ShouldReturnExpected(ExpectedObject expected, PrizePlacementID id)
+    {
+        var prizePlacement = _sut.GetPrizePlacement(id);
             
-            expected.ShouldEqual(prizePlacement);
-        }
+        expected.ShouldEqual(prizePlacement);
+    }
 
-        public static IEnumerable<object[]> GetPrizePlacement_ShouldReturnExpectedData()
-        {
-            PopulateExpectedValues();
+    public static IEnumerable<object[]> GetPrizePlacement_ShouldReturnExpectedData()
+    {
+        PopulateExpectedValues();
 
-            return ExpectedValues.Keys.Select(id => new object[] {ExpectedValues[id], id}).ToList();
-        }
+        return ExpectedValues.Keys.Select(id => new object[] {ExpectedValues[id], id}).ToList();
+    }
 
-        [Fact]
-        public void AutofacTest()
-        {
-            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-            var factory = scope.Resolve<IPrizePlacementFactory.Factory>();
-            var sut = factory();
+    [Fact]
+    public void AutofacTest()
+    {
+        using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+        var factory = scope.Resolve<IPrizePlacementFactory.Factory>();
+        var sut = factory();
             
-            Assert.NotNull(sut as PrizePlacementFactory);
-        }
+        Assert.NotNull(sut as PrizePlacementFactory);
     }
 }

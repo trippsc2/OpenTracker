@@ -3,48 +3,47 @@ using NSubstitute;
 using OpenTracker.Models.Requirements.GuaranteedBossItems;
 using Xunit;
 
-namespace OpenTracker.UnitTests.Models.Requirements.GuaranteedBossItems
+namespace OpenTracker.UnitTests.Models.Requirements.GuaranteedBossItems;
+
+public class GuaranteedBossItemsRequirementDictionaryTests
 {
-    public class GuaranteedBossItemsRequirementDictionaryTests
+    // ReSharper disable once CollectionNeverUpdated.Local
+    private readonly GuaranteedBossItemsRequirementDictionary _sut;
+
+    public GuaranteedBossItemsRequirementDictionaryTests()
     {
-        // ReSharper disable once CollectionNeverUpdated.Local
-        private readonly GuaranteedBossItemsRequirementDictionary _sut;
-
-        public GuaranteedBossItemsRequirementDictionaryTests()
+        static IGuaranteedBossItemsRequirement Factory(bool expectedValue)
         {
-            static IGuaranteedBossItemsRequirement Factory(bool expectedValue)
-            {
-                return Substitute.For<IGuaranteedBossItemsRequirement>();
-            }
-
-            _sut = new GuaranteedBossItemsRequirementDictionary(Factory);
+            return Substitute.For<IGuaranteedBossItemsRequirement>();
         }
 
-        [Fact]
-        public void Indexer_ShouldReturnTheSameInstance()
-        {
-            var requirement1 = _sut[false];
-            var requirement2 = _sut[false];
+        _sut = new GuaranteedBossItemsRequirementDictionary(Factory);
+    }
+
+    [Fact]
+    public void Indexer_ShouldReturnTheSameInstance()
+    {
+        var requirement1 = _sut[false];
+        var requirement2 = _sut[false];
             
-            Assert.Equal(requirement1, requirement2);
-        }
+        Assert.Equal(requirement1, requirement2);
+    }
 
-        [Fact]
-        public void Indexer_ShouldReturnTheDifferentInstances()
-        {
-            var requirement1 = _sut[false];
-            var requirement2 = _sut[true];
+    [Fact]
+    public void Indexer_ShouldReturnTheDifferentInstances()
+    {
+        var requirement1 = _sut[false];
+        var requirement2 = _sut[true];
             
-            Assert.NotEqual(requirement1, requirement2);
-        }
+        Assert.NotEqual(requirement1, requirement2);
+    }
 
-        [Fact]
-        public void AutofacTest()
-        {
-            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-            var sut = scope.Resolve<IGuaranteedBossItemsRequirementDictionary>();
+    [Fact]
+    public void AutofacTest()
+    {
+        using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+        var sut = scope.Resolve<IGuaranteedBossItemsRequirementDictionary>();
             
-            Assert.NotNull(sut as GuaranteedBossItemsRequirementDictionary);
-        }
+        Assert.NotNull(sut as GuaranteedBossItemsRequirementDictionary);
     }
 }

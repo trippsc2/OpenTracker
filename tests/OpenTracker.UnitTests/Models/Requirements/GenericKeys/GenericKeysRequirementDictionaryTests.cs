@@ -3,48 +3,47 @@ using NSubstitute;
 using OpenTracker.Models.Requirements.GenericKeys;
 using Xunit;
 
-namespace OpenTracker.UnitTests.Models.Requirements.GenericKeys
+namespace OpenTracker.UnitTests.Models.Requirements.GenericKeys;
+
+public class GenericKeysRequirementDictionaryTests
 {
-    public class GenericKeysRequirementDictionaryTests
+    // ReSharper disable once CollectionNeverUpdated.Local
+    private readonly GenericKeysRequirementDictionary _sut;
+
+    public GenericKeysRequirementDictionaryTests()
     {
-        // ReSharper disable once CollectionNeverUpdated.Local
-        private readonly GenericKeysRequirementDictionary _sut;
-
-        public GenericKeysRequirementDictionaryTests()
+        static IGenericKeysRequirement Factory(bool expectedValue)
         {
-            static IGenericKeysRequirement Factory(bool expectedValue)
-            {
-                return Substitute.For<IGenericKeysRequirement>();
-            }
-
-            _sut = new GenericKeysRequirementDictionary(Factory);
+            return Substitute.For<IGenericKeysRequirement>();
         }
 
-        [Fact]
-        public void Indexer_ShouldReturnTheSameInstance()
-        {
-            var requirement1 = _sut[false];
-            var requirement2 = _sut[false];
+        _sut = new GenericKeysRequirementDictionary(Factory);
+    }
+
+    [Fact]
+    public void Indexer_ShouldReturnTheSameInstance()
+    {
+        var requirement1 = _sut[false];
+        var requirement2 = _sut[false];
             
-            Assert.Equal(requirement1, requirement2);
-        }
+        Assert.Equal(requirement1, requirement2);
+    }
 
-        [Fact]
-        public void Indexer_ShouldReturnTheDifferentInstances()
-        {
-            var requirement1 = _sut[false];
-            var requirement2 = _sut[true];
+    [Fact]
+    public void Indexer_ShouldReturnTheDifferentInstances()
+    {
+        var requirement1 = _sut[false];
+        var requirement2 = _sut[true];
             
-            Assert.NotEqual(requirement1, requirement2);
-        }
+        Assert.NotEqual(requirement1, requirement2);
+    }
 
-        [Fact]
-        public void AutofacTest()
-        {
-            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-            var sut = scope.Resolve<IGenericKeysRequirementDictionary>();
+    [Fact]
+    public void AutofacTest()
+    {
+        using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+        var sut = scope.Resolve<IGenericKeysRequirementDictionary>();
             
-            Assert.NotNull(sut as GenericKeysRequirementDictionary);
-        }
+        Assert.NotNull(sut as GenericKeysRequirementDictionary);
     }
 }

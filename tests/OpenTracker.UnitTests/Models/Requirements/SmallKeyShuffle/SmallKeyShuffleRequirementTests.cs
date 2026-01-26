@@ -8,102 +8,101 @@ using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Requirements.SmallKeyShuffle;
 using Xunit;
 
-namespace OpenTracker.UnitTests.Models.Requirements.SmallKeyShuffle
+namespace OpenTracker.UnitTests.Models.Requirements.SmallKeyShuffle;
+
+public class SmallKeyShuffleRequirementTests
 {
-    public class SmallKeyShuffleRequirementTests
+    private readonly IMode _mode = Substitute.For<IMode>();
+
+    [Fact]
+    public void ModeChanged_ShouldUpdateMetValue()
     {
-        private readonly IMode _mode = Substitute.For<IMode>();
+        var sut = new SmallKeyShuffleRequirement(_mode, true);
+        _mode.SmallKeyShuffle.Returns(true);
 
-        [Fact]
-        public void ModeChanged_ShouldUpdateMetValue()
-        {
-            var sut = new SmallKeyShuffleRequirement(_mode, true);
-            _mode.SmallKeyShuffle.Returns(true);
-
-            _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
-                _mode, new PropertyChangedEventArgs(nameof(IMode.SmallKeyShuffle)));
+        _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+            _mode, new PropertyChangedEventArgs(nameof(IMode.SmallKeyShuffle)));
             
-            Assert.True(sut.Met);
-        }
+        Assert.True(sut.Met);
+    }
 
-        [Fact]
-        public void Met_ShouldRaisePropertyChanged()
+    [Fact]
+    public void Met_ShouldRaisePropertyChanged()
+    {
+        var sut = new SmallKeyShuffleRequirement(_mode, true);
+        _mode.SmallKeyShuffle.Returns(true);
+
+        Assert.PropertyChanged(sut, nameof(IRequirement.Met), 
+            () => _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                _mode, new PropertyChangedEventArgs(nameof(IMode.SmallKeyShuffle))));
+    }
+
+    [Fact]
+    public void Met_ShouldRaiseChangePropagated()
+    {
+        var sut = new SmallKeyShuffleRequirement(_mode, true);
+        _mode.SmallKeyShuffle.Returns(true);
+
+        var eventRaised = false;
+
+        void Handler(object? sender, EventArgs e)
         {
-            var sut = new SmallKeyShuffleRequirement(_mode, true);
-            _mode.SmallKeyShuffle.Returns(true);
-
-            Assert.PropertyChanged(sut, nameof(IRequirement.Met), 
-                () => _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
-                    _mode, new PropertyChangedEventArgs(nameof(IMode.SmallKeyShuffle))));
+            eventRaised = true;
         }
-
-        [Fact]
-        public void Met_ShouldRaiseChangePropagated()
-        {
-            var sut = new SmallKeyShuffleRequirement(_mode, true);
-            _mode.SmallKeyShuffle.Returns(true);
-
-            var eventRaised = false;
-
-            void Handler(object? sender, EventArgs e)
-            {
-                eventRaised = true;
-            }
             
-            sut.ChangePropagated += Handler;
-            _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
-                _mode, new PropertyChangedEventArgs(nameof(IMode.SmallKeyShuffle)));
-            sut.ChangePropagated -= Handler;
+        sut.ChangePropagated += Handler;
+        _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+            _mode, new PropertyChangedEventArgs(nameof(IMode.SmallKeyShuffle)));
+        sut.ChangePropagated -= Handler;
             
-            Assert.True(eventRaised);
-        }
+        Assert.True(eventRaised);
+    }
 
-        [Theory]
-        [InlineData(true, false, false)]
-        [InlineData(false, false, true)]
-        [InlineData(false, true, false)]
-        [InlineData(true, true, true)]
-        public void Met_ShouldReturnExpectedValue(bool expected, bool smallKeyShuffle, bool requirement)
-        {
-            _mode.SmallKeyShuffle.Returns(smallKeyShuffle);
-            var sut = new SmallKeyShuffleRequirement(_mode, requirement);
+    [Theory]
+    [InlineData(true, false, false)]
+    [InlineData(false, false, true)]
+    [InlineData(false, true, false)]
+    [InlineData(true, true, true)]
+    public void Met_ShouldReturnExpectedValue(bool expected, bool smallKeyShuffle, bool requirement)
+    {
+        _mode.SmallKeyShuffle.Returns(smallKeyShuffle);
+        var sut = new SmallKeyShuffleRequirement(_mode, requirement);
             
-            Assert.Equal(expected, sut.Met);
-        }
+        Assert.Equal(expected, sut.Met);
+    }
 
-        [Fact]
-        public void Accessibility_ShouldRaisePropertyChanged()
-        {
-            var sut = new SmallKeyShuffleRequirement(_mode, true);
-            _mode.SmallKeyShuffle.Returns(true);
+    [Fact]
+    public void Accessibility_ShouldRaisePropertyChanged()
+    {
+        var sut = new SmallKeyShuffleRequirement(_mode, true);
+        _mode.SmallKeyShuffle.Returns(true);
 
-            Assert.PropertyChanged(sut, nameof(IRequirement.Accessibility), 
-                () => _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
-                    _mode, new PropertyChangedEventArgs(nameof(IMode.SmallKeyShuffle))));
-        }
+        Assert.PropertyChanged(sut, nameof(IRequirement.Accessibility), 
+            () => _mode.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(
+                _mode, new PropertyChangedEventArgs(nameof(IMode.SmallKeyShuffle))));
+    }
 
-        [Theory]
-        [InlineData(AccessibilityLevel.Normal, false, false)]
-        [InlineData(AccessibilityLevel.None, false, true)]
-        [InlineData(AccessibilityLevel.None, true, false)]
-        [InlineData(AccessibilityLevel.Normal, true, true)]
-        public void Accessibility_ShouldReturnExpectedValue(
-            AccessibilityLevel expected, bool smallKeyShuffle, bool requirement)
-        {
-            _mode.SmallKeyShuffle.Returns(smallKeyShuffle);
-            var sut = new SmallKeyShuffleRequirement(_mode, requirement);
+    [Theory]
+    [InlineData(AccessibilityLevel.Normal, false, false)]
+    [InlineData(AccessibilityLevel.None, false, true)]
+    [InlineData(AccessibilityLevel.None, true, false)]
+    [InlineData(AccessibilityLevel.Normal, true, true)]
+    public void Accessibility_ShouldReturnExpectedValue(
+        AccessibilityLevel expected, bool smallKeyShuffle, bool requirement)
+    {
+        _mode.SmallKeyShuffle.Returns(smallKeyShuffle);
+        var sut = new SmallKeyShuffleRequirement(_mode, requirement);
             
-            Assert.Equal(expected, sut.Accessibility);
-        }
+        Assert.Equal(expected, sut.Accessibility);
+    }
 
-        [Fact]
-        public void AutofacTest()
-        {
-            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-            var factory = scope.Resolve<ISmallKeyShuffleRequirement.Factory>();
-            var sut = factory(false);
+    [Fact]
+    public void AutofacTest()
+    {
+        using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+        var factory = scope.Resolve<ISmallKeyShuffleRequirement.Factory>();
+        var sut = factory(false);
             
-            Assert.NotNull(sut as SmallKeyShuffleRequirement);
-        }
+        Assert.NotNull(sut as SmallKeyShuffleRequirement);
     }
 }

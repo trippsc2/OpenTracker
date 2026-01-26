@@ -1,13 +1,12 @@
-﻿namespace OpenTracker.Models.Reset
+﻿namespace OpenTracker.Models.Reset;
+
+/// <summary>
+/// This interface contains logic for resetting the tracker.
+/// </summary>
+public interface IResetManager
 {
     /// <summary>
-    /// This interface contains logic for resetting the tracker.
+    /// Resets all the tracker data to its starting values.
     /// </summary>
-    public interface IResetManager
-    {
-        /// <summary>
-        /// Resets all the tracker data to its starting values.
-        /// </summary>
-        void ResetAsync();
-    }
+    void ResetAsync();
 }

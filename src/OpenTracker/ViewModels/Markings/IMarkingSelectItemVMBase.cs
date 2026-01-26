@@ -1,9 +1,8 @@
-﻿namespace OpenTracker.ViewModels.Markings
+﻿namespace OpenTracker.ViewModels.Markings;
+
+/// <summary>
+/// This is the base class for marking select items for type protection purposes.
+/// </summary>
+public interface IMarkingSelectItemVMBase
 {
-    /// <summary>
-    /// This is the base class for marking select items for type protection purposes.
-    /// </summary>
-    public interface IMarkingSelectItemVMBase
-    {
-    }
 }

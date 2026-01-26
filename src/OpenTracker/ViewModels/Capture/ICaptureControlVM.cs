@@ -1,12 +1,11 @@
 using System.Collections.ObjectModel;
 using ReactiveUI;
 
-namespace OpenTracker.ViewModels.Capture
+namespace OpenTracker.ViewModels.Capture;
+
+public interface ICaptureControlVM : IReactiveObject
 {
-    public interface ICaptureControlVM : IReactiveObject
-    {
-        string Name { get; set; }
+    string Name { get; set; }
         
-        ObservableCollection<ICaptureControlVM> Contents { get; }
-    }
+    ObservableCollection<ICaptureControlVM> Contents { get; }
 }

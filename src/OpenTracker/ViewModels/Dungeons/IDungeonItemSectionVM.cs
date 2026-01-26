@@ -1,9 +1,8 @@
 using OpenTracker.Models.Sections;
 
-namespace OpenTracker.ViewModels.Dungeons
+namespace OpenTracker.ViewModels.Dungeons;
+
+public interface IDungeonItemSectionVM : IDungeonItemVM
 {
-    public interface IDungeonItemSectionVM : IDungeonItemVM
-    {
-        new delegate IDungeonItemSectionVM Factory(ISection section);
-    }
+    new delegate IDungeonItemSectionVM Factory(ISection section);
 }

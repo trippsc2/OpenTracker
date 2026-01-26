@@ -5,103 +5,102 @@ using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.SaveLoad;
 using Xunit;
 
-namespace OpenTracker.UnitTests.Models.BossPlacements
+namespace OpenTracker.UnitTests.Models.BossPlacements;
+
+public class BossPlacementDictionaryTests
 {
-    public class BossPlacementDictionaryTests
+    private readonly BossPlacementDictionary _sut;
+
+    public BossPlacementDictionaryTests()
     {
-        private readonly BossPlacementDictionary _sut;
+        _sut = new BossPlacementDictionary(() => Substitute.For<IBossPlacementFactory>());
+    }
 
-        public BossPlacementDictionaryTests()
-        {
-            _sut = new BossPlacementDictionary(() => Substitute.For<IBossPlacementFactory>());
-        }
-
-        [Fact]
-        public void Indexer_ShouldReturnTheSameInstance()
-        {
-            var bossPlacement1 = _sut[BossPlacementID.ATBoss];
-            var bossPlacement2 = _sut[BossPlacementID.ATBoss];
+    [Fact]
+    public void Indexer_ShouldReturnTheSameInstance()
+    {
+        var bossPlacement1 = _sut[BossPlacementID.ATBoss];
+        var bossPlacement2 = _sut[BossPlacementID.ATBoss];
             
-            Assert.Equal(bossPlacement1, bossPlacement2);
-        }
+        Assert.Equal(bossPlacement1, bossPlacement2);
+    }
 
-        [Fact]
-        public void Indexer_ShouldReturnTheDifferentInstances()
-        {
-            var bossPlacement1 = _sut[BossPlacementID.ATBoss];
-            var bossPlacement2 = _sut[BossPlacementID.EPBoss];
+    [Fact]
+    public void Indexer_ShouldReturnTheDifferentInstances()
+    {
+        var bossPlacement1 = _sut[BossPlacementID.ATBoss];
+        var bossPlacement2 = _sut[BossPlacementID.EPBoss];
             
-            Assert.NotEqual(bossPlacement1, bossPlacement2);
-        }
+        Assert.NotEqual(bossPlacement1, bossPlacement2);
+    }
 
-        [Fact]
-        public void Reset_ShouldCallResetOnBossPlacements()
-        {
-            var bossPlacement = _sut[BossPlacementID.ATBoss];
-            _sut.Reset();
+    [Fact]
+    public void Reset_ShouldCallResetOnBossPlacements()
+    {
+        var bossPlacement = _sut[BossPlacementID.ATBoss];
+        _sut.Reset();
             
-            bossPlacement.Received().Reset();
-        }
+        bossPlacement.Received().Reset();
+    }
 
-        [Fact]
-        public void Save_ShouldCallSaveOnBossPlacements()
-        {
-            var bossPlacement = _sut[BossPlacementID.ATBoss];
-            _ = _sut.Save();
+    [Fact]
+    public void Save_ShouldCallSaveOnBossPlacements()
+    {
+        var bossPlacement = _sut[BossPlacementID.ATBoss];
+        _ = _sut.Save();
             
-            bossPlacement.Received().Save();
-        }
+        bossPlacement.Received().Save();
+    }
 
-        [Fact]
-        public void Save_ShouldReturnDictionaryOfSaveData()
-        {
-            var bossPlacement = _sut[BossPlacementID.ATBoss];
-            var bossPlacementSaveData = new BossPlacementSaveData();
-            bossPlacement.Save().Returns(bossPlacementSaveData);
-            var saveData = _sut.Save();
+    [Fact]
+    public void Save_ShouldReturnDictionaryOfSaveData()
+    {
+        var bossPlacement = _sut[BossPlacementID.ATBoss];
+        var bossPlacementSaveData = new BossPlacementSaveData();
+        bossPlacement.Save().Returns(bossPlacementSaveData);
+        var saveData = _sut.Save();
 
-            Assert.Equal(bossPlacementSaveData, saveData[BossPlacementID.ATBoss]);
-        }
+        Assert.Equal(bossPlacementSaveData, saveData[BossPlacementID.ATBoss]);
+    }
 
-        [Fact]
-        public void Load_ShouldDoNothing_WhenSaveDataIsNull()
-        {
-            var bossPlacement = _sut[BossPlacementID.ATBoss];
-            _sut.Load(null);
+    [Fact]
+    public void Load_ShouldDoNothing_WhenSaveDataIsNull()
+    {
+        var bossPlacement = _sut[BossPlacementID.ATBoss];
+        _sut.Load(null);
             
-            bossPlacement.DidNotReceive().Load(Arg.Any<BossPlacementSaveData>());
-        }
+        bossPlacement.DidNotReceive().Load(Arg.Any<BossPlacementSaveData>());
+    }
 
-        [Fact]
-        public void Load_ShouldCallLoadOnBossPlacements()
+    [Fact]
+    public void Load_ShouldCallLoadOnBossPlacements()
+    {
+        var bossPlacement = _sut[BossPlacementID.ATBoss];
+        var saveData = new Dictionary<BossPlacementID, BossPlacementSaveData>
         {
-            var bossPlacement = _sut[BossPlacementID.ATBoss];
-            var saveData = new Dictionary<BossPlacementID, BossPlacementSaveData>
-            {
-                { BossPlacementID.ATBoss, new BossPlacementSaveData() }
-            };
-            _sut.Load(saveData);
+            { BossPlacementID.ATBoss, new BossPlacementSaveData() }
+        };
+        _sut.Load(saveData);
             
-            bossPlacement.Received().Load(Arg.Any<BossPlacementSaveData>());
-        }
+        bossPlacement.Received().Load(Arg.Any<BossPlacementSaveData>());
+    }
 
-        [Fact]
-        public void AutofacTest()
-        {
-            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-            var sut = scope.Resolve<IBossPlacementDictionary>();
+    [Fact]
+    public void AutofacTest()
+    {
+        using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+        var sut = scope.Resolve<IBossPlacementDictionary>();
             
-            Assert.NotNull(sut as BossPlacementDictionary);
-        }
+        Assert.NotNull(sut as BossPlacementDictionary);
+    }
 
-        [Fact]
-        public void AutofacSingleInstanceTest()
-        {
-            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-            var value1 = scope.Resolve<IBossPlacementDictionary>();
-            var value2 = scope.Resolve<IBossPlacementDictionary>();
+    [Fact]
+    public void AutofacSingleInstanceTest()
+    {
+        using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+        var value1 = scope.Resolve<IBossPlacementDictionary>();
+        var value2 = scope.Resolve<IBossPlacementDictionary>();
             
-            Assert.Equal(value1, value2);
-        }
+        Assert.Equal(value1, value2);
     }
 }

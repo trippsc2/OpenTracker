@@ -1,52 +1,51 @@
 ﻿using System.ComponentModel;
 using OpenTracker.Models.AutoTracking;
 
-namespace OpenTracker.Models.Requirements.AutoTracking
+namespace OpenTracker.Models.Requirements.AutoTracking;
+
+/// <summary>
+/// This class contains <see cref="IAutoTracker.RaceIllegalTracking"/> requirement data.
+/// </summary>
+public class RaceIllegalTrackingRequirement : BooleanRequirement, IRaceIllegalTrackingRequirement
 {
+    private readonly IAutoTracker _autoTracker;
+    private readonly bool _expectedValue;
+
     /// <summary>
-    /// This class contains <see cref="IAutoTracker.RaceIllegalTracking"/> requirement data.
+    /// Constructor
     /// </summary>
-    public class RaceIllegalTrackingRequirement : BooleanRequirement, IRaceIllegalTrackingRequirement
+    /// <param name="autoTracker">
+    ///     The <see cref="IAutoTracker"/>.
+    /// </param>
+    public RaceIllegalTrackingRequirement(IAutoTracker autoTracker)
     {
-        private readonly IAutoTracker _autoTracker;
-        private readonly bool _expectedValue;
+        _autoTracker = autoTracker;
+        _expectedValue = true;
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="autoTracker">
-        ///     The <see cref="IAutoTracker"/>.
-        /// </param>
-        public RaceIllegalTrackingRequirement(IAutoTracker autoTracker)
+        _autoTracker.PropertyChanged += OnAutoTrackerChanged;
+
+        UpdateValue();
+    }
+
+    /// <summary>
+    /// Subscribes to the <see cref="IAutoTracker.PropertyChanged"/> event.
+    /// </summary>
+    /// <param name="sender">
+    ///     The <see cref="object"/> from which the event is sent.
+    /// </param>
+    /// <param name="e">
+    ///     The <see cref="PropertyChangedEventArgs"/>.
+    /// </param>
+    private void OnAutoTrackerChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(IAutoTracker.RaceIllegalTracking))
         {
-            _autoTracker = autoTracker;
-            _expectedValue = true;
-
-            _autoTracker.PropertyChanged += OnAutoTrackerChanged;
-
             UpdateValue();
         }
+    }
 
-        /// <summary>
-        /// Subscribes to the <see cref="IAutoTracker.PropertyChanged"/> event.
-        /// </summary>
-        /// <param name="sender">
-        ///     The <see cref="object"/> from which the event is sent.
-        /// </param>
-        /// <param name="e">
-        ///     The <see cref="PropertyChangedEventArgs"/>.
-        /// </param>
-        private void OnAutoTrackerChanged(object? sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(IAutoTracker.RaceIllegalTracking))
-            {
-                UpdateValue();
-            }
-        }
-
-        protected override bool ConditionMet()
-        {
-            return _autoTracker.RaceIllegalTracking == _expectedValue;
-        }
+    protected override bool ConditionMet()
+    {
+        return _autoTracker.RaceIllegalTracking == _expectedValue;
     }
 }

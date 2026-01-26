@@ -1,9 +1,8 @@
 ﻿using OpenTracker.Models.Locations.Map;
 
-namespace OpenTracker.ViewModels.Maps
+namespace OpenTracker.ViewModels.Maps;
+
+public interface IMapVM
 {
-    public interface IMapVM
-    {
-        delegate IMapVM Factory(MapID id);
-    }
+    delegate IMapVM Factory(MapID id);
 }

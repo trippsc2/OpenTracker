@@ -1,18 +1,17 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
-namespace OpenTracker.Views.PinnedLocations
-{
-    public partial class PinnedLocation : UserControl
-    {
-        public PinnedLocation()
-        {
-            InitializeComponent();
-        }
+namespace OpenTracker.Views.PinnedLocations;
 
-        private void InitializeComponent()
-        {
-            AvaloniaXamlLoader.Load(this);
-        }
+public partial class PinnedLocation : UserControl
+{
+    public PinnedLocation()
+    {
+        InitializeComponent();
+    }
+
+    private void InitializeComponent()
+    {
+        AvaloniaXamlLoader.Load(this);
     }
 }

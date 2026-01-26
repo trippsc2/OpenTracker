@@ -2,44 +2,43 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace OpenTracker.Models.Locations
+namespace OpenTracker.Models.Locations;
+
+/// <summary>
+/// This class contains the <see cref="ObservableCollection{T}"/> container for pinned location data.
+/// </summary>
+public class PinnedLocationCollection : ObservableCollection<ILocation>, IPinnedLocationCollection
 {
+    private readonly ILocationDictionary _locations;
+
     /// <summary>
-    /// This class contains the <see cref="ObservableCollection{T}"/> container for pinned location data.
+    /// Constructor
     /// </summary>
-    public class PinnedLocationCollection : ObservableCollection<ILocation>, IPinnedLocationCollection
+    /// <param name="locations">
+    ///     The <see cref="ILocationDictionary"/>.
+    /// </param>
+    public PinnedLocationCollection(ILocationDictionary locations)
     {
-        private readonly ILocationDictionary _locations;
+        _locations = locations;
+    }
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="locations">
-        ///     The <see cref="ILocationDictionary"/>.
-        /// </param>
-        public PinnedLocationCollection(ILocationDictionary locations)
+    public IList<LocationID> Save()
+    {
+        return this.Select(pinnedLocation => pinnedLocation.ID).ToList();
+    }
+
+    public void Load(IList<LocationID>? saveData)
+    {
+        if (saveData == null)
         {
-            _locations = locations;
+            return;
         }
 
-        public IList<LocationID> Save()
+        Clear();
+
+        foreach (var location in saveData)
         {
-            return this.Select(pinnedLocation => pinnedLocation.ID).ToList();
-        }
-
-        public void Load(IList<LocationID>? saveData)
-        {
-            if (saveData == null)
-            {
-                return;
-            }
-
-            Clear();
-
-            foreach (var location in saveData)
-            {
-                Add(_locations[location]);
-            }
+            Add(_locations[location]);
         }
     }
 }

@@ -5,57 +5,56 @@ using OpenTracker.Models.Items.Factories;
 using OpenTracker.Models.SaveLoad;
 using Xunit;
 
-namespace OpenTracker.UnitTests.Models.Items
+namespace OpenTracker.UnitTests.Models.Items;
+
+public class ItemDictionaryTests
 {
-    public class ItemDictionaryTests
+    private readonly IItemFactory _itemFactory = Substitute.For<IItemFactory>();
+    private readonly ItemDictionary _sut;
+
+    public ItemDictionaryTests()
     {
-        private readonly IItemFactory _itemFactory = Substitute.For<IItemFactory>();
-        private readonly ItemDictionary _sut;
+        _itemFactory.GetItem(Arg.Any<ItemType>()).Returns(Substitute.For<IItem>());
+        _sut = new ItemDictionary(() => _itemFactory);
+    }
 
-        public ItemDictionaryTests()
-        {
-            _itemFactory.GetItem(Arg.Any<ItemType>()).Returns(Substitute.For<IItem>());
-            _sut = new ItemDictionary(() => _itemFactory);
-        }
-
-        [Fact]
-        public void Reset_ShouldCallResetOnItems()
-        {
-            var item = _sut[ItemType.Sword];
-            _sut.Reset();
+    [Fact]
+    public void Reset_ShouldCallResetOnItems()
+    {
+        var item = _sut[ItemType.Sword];
+        _sut.Reset();
             
-            item.Received().Reset();
-        }
+        item.Received().Reset();
+    }
 
-        [Fact]
-        public void Save_ShouldReturnSaveData()
-        {
-            _ = _sut[ItemType.Sword];
-            var saveData = _sut.Save();
+    [Fact]
+    public void Save_ShouldReturnSaveData()
+    {
+        _ = _sut[ItemType.Sword];
+        var saveData = _sut.Save();
 
-            Assert.Single(saveData);
-        }
+        Assert.Single(saveData);
+    }
 
-        [Fact]
-        public void Load_ShouldDoNothing_WhenSaveDataIsNull()
-        {
-            var item = _sut[ItemType.Sword];
-            _sut.Load(null);
+    [Fact]
+    public void Load_ShouldDoNothing_WhenSaveDataIsNull()
+    {
+        var item = _sut[ItemType.Sword];
+        _sut.Load(null);
             
-            item.DidNotReceive().Load(Arg.Any<ItemSaveData>());
-        }
+        item.DidNotReceive().Load(Arg.Any<ItemSaveData>());
+    }
 
-        [Fact]
-        public void Load_ShouldCallLoadOnItems_WhenSaveDataIsNotNull()
+    [Fact]
+    public void Load_ShouldCallLoadOnItems_WhenSaveDataIsNotNull()
+    {
+        var item = _sut[ItemType.Sword];
+        var saveData = new Dictionary<ItemType, ItemSaveData>
         {
-            var item = _sut[ItemType.Sword];
-            var saveData = new Dictionary<ItemType, ItemSaveData>
-            {
-                {ItemType.Sword, new ItemSaveData {Current = 0, Known = false}}
-            };
-            _sut.Load(saveData);
+            {ItemType.Sword, new ItemSaveData {Current = 0, Known = false}}
+        };
+        _sut.Load(saveData);
             
-            item.Received().Load(Arg.Any<ItemSaveData>());
-        }
+        item.Received().Load(Arg.Any<ItemSaveData>());
     }
 }

@@ -3,147 +3,146 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 
-namespace OpenTracker.Utils
+namespace OpenTracker.Utils;
+
+public abstract class ViewModelCollection<TViewModel, TModel> : IObservableCollection<TViewModel>
+    where TViewModel : IModelWrapper
 {
-    public abstract class ViewModelCollection<TViewModel, TModel> : IObservableCollection<TViewModel>
-        where TViewModel : IModelWrapper
+    private readonly List<TViewModel> _list;
+    private readonly IObservableCollection<TModel> _model;
+
+    public int Count => _list.Count;
+    public bool IsReadOnly => ((ICollection<TViewModel>)_list).IsReadOnly;
+
+    public TViewModel this[int index]
     {
-        private readonly List<TViewModel> _list;
-        private readonly IObservableCollection<TModel> _model;
+        get => _list[index];
+        set => _list[index] = value;
+    }
 
-        public int Count => _list.Count;
-        public bool IsReadOnly => ((ICollection<TViewModel>)_list).IsReadOnly;
+    public event NotifyCollectionChangedEventHandler? CollectionChanged;
 
-        public TViewModel this[int index]
+    protected ViewModelCollection(IObservableCollection<TModel> model)
+    {
+        _model = model;
+        _list = new List<TViewModel>(from m in _model select CreateViewModel(m));
+        _model.CollectionChanged += OnModelCollectionChanged;
+    }
+
+    private void OnCollectionChanged(
+        NotifyCollectionChangedAction action, object? item, int index)
+    {
+        CollectionChanged?.Invoke(
+            this, new NotifyCollectionChangedEventArgs(action, item, index));
+    }
+
+    private void OnModelCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        switch (e.Action)
         {
-            get => _list[index];
-            set => _list[index] = value;
-        }
-
-        public event NotifyCollectionChangedEventHandler? CollectionChanged;
-
-        protected ViewModelCollection(IObservableCollection<TModel> model)
-        {
-            _model = model;
-            _list = new List<TViewModel>(from m in _model select CreateViewModel(m));
-            _model.CollectionChanged += OnModelCollectionChanged;
-        }
-
-        private void OnCollectionChanged(
-            NotifyCollectionChangedAction action, object? item, int index)
-        {
-            CollectionChanged?.Invoke(
-                this, new NotifyCollectionChangedEventArgs(action, item, index));
-        }
-
-        private void OnModelCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
-        {
-            switch (e.Action)
+            case NotifyCollectionChangedAction.Add:
             {
-                case NotifyCollectionChangedAction.Add:
+                if (e.NewItems is null)
                 {
-                    if (e.NewItems is null)
-                    {
-                        return;
-                    }
-                    
-                    foreach (var item in e.NewItems)
-                    {
-                        var vmItem = CreateViewModel((TModel)item!);
-
-                        if (e.NewStartingIndex != _list.Count)
-                        {
-                            _list.Insert(_model.IndexOf((TModel)item!), vmItem);
-                        }
-                        else
-                        {
-                            _list.Add(vmItem);
-                        }
-
-                        OnCollectionChanged(e.Action, vmItem, e.NewStartingIndex);
-                    }
+                    return;
                 }
-                    break;
-                case NotifyCollectionChangedAction.Remove:
+                    
+                foreach (var item in e.NewItems)
                 {
-                    if (e.OldItems is null)
-                    {
-                        return;
-                    }
-                    
-                    foreach (var item in e.OldItems)
-                    {
-                        IEnumerable<TViewModel> query;
+                    var vmItem = CreateViewModel((TModel)item!);
 
-                        while ((query = from vm in _list where vm.Model == item select vm).Any())
-                        {
-                            var vmItem = query.First();
-                            var index = _list.IndexOf(vmItem);
-                            _list.Remove(vmItem);
-                            OnCollectionChanged(e.Action, vmItem, index);
-                        }
-                    }
-                }
-                    break;
-                case NotifyCollectionChangedAction.Reset:
+                    if (e.NewStartingIndex != _list.Count)
                     {
-                        _list.Clear();
-                        OnCollectionChanged(e.Action, null, e.NewStartingIndex);
+                        _list.Insert(_model.IndexOf((TModel)item!), vmItem);
                     }
-                    break;
+                    else
+                    {
+                        _list.Add(vmItem);
+                    }
+
+                    OnCollectionChanged(e.Action, vmItem, e.NewStartingIndex);
+                }
             }
-        }
+                break;
+            case NotifyCollectionChangedAction.Remove:
+            {
+                if (e.OldItems is null)
+                {
+                    return;
+                }
+                    
+                foreach (var item in e.OldItems)
+                {
+                    IEnumerable<TViewModel> query;
 
-        public void Add(TViewModel item)
-        {
-            _list.Add(item);
+                    while ((query = from vm in _list where vm.Model == item select vm).Any())
+                    {
+                        var vmItem = query.First();
+                        var index = _list.IndexOf(vmItem);
+                        _list.Remove(vmItem);
+                        OnCollectionChanged(e.Action, vmItem, index);
+                    }
+                }
+            }
+                break;
+            case NotifyCollectionChangedAction.Reset:
+            {
+                _list.Clear();
+                OnCollectionChanged(e.Action, null, e.NewStartingIndex);
+            }
+                break;
         }
+    }
 
-        public void Clear()
-        {
-            _list.Clear();
-        }
+    public void Add(TViewModel item)
+    {
+        _list.Add(item);
+    }
 
-        public bool Contains(TViewModel item)
-        {
-            return _list.Contains(item);
-        }
+    public void Clear()
+    {
+        _list.Clear();
+    }
 
-        public void CopyTo(TViewModel[] array, int arrayIndex)
-        {
-            _list.CopyTo(array, arrayIndex);
-        }
+    public bool Contains(TViewModel item)
+    {
+        return _list.Contains(item);
+    }
 
-        public IEnumerator<TViewModel> GetEnumerator()
-        {
-            return _list.GetEnumerator();
-        }
+    public void CopyTo(TViewModel[] array, int arrayIndex)
+    {
+        _list.CopyTo(array, arrayIndex);
+    }
 
-        public int IndexOf(TViewModel item)
-        {
-            return _list.IndexOf(item);
-        }
+    public IEnumerator<TViewModel> GetEnumerator()
+    {
+        return _list.GetEnumerator();
+    }
 
-        public void Insert(int index, TViewModel item)
-        {
-            _list.Insert(index, item);
-        }
+    public int IndexOf(TViewModel item)
+    {
+        return _list.IndexOf(item);
+    }
 
-        public bool Remove(TViewModel item)
-        {
-            return _list.Remove(item);
-        }
+    public void Insert(int index, TViewModel item)
+    {
+        _list.Insert(index, item);
+    }
 
-        public void RemoveAt(int index)
-        {
-            _list.RemoveAt(index);
-        }
+    public bool Remove(TViewModel item)
+    {
+        return _list.Remove(item);
+    }
 
-        protected abstract TViewModel CreateViewModel(TModel model);
+    public void RemoveAt(int index)
+    {
+        _list.RemoveAt(index);
+    }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return _list.GetEnumerator();
-        }
+    protected abstract TViewModel CreateViewModel(TModel model);
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return _list.GetEnumerator();
     }
 }

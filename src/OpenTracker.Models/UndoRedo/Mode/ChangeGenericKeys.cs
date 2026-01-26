@@ -1,45 +1,44 @@
 ﻿using OpenTracker.Models.Modes;
 
-namespace OpenTracker.Models.UndoRedo.Mode
+namespace OpenTracker.Models.UndoRedo.Mode;
+
+/// <summary>
+/// This class contains the <see cref="IUndoable"/> action to change the <see cref="IMode.GenericKeys"/> property.
+/// </summary>
+public class ChangeGenericKeys : IChangeGenericKeys
 {
+    private readonly IMode _mode;
+    private readonly bool _newValue;
+    private bool _previousValue;
+
     /// <summary>
-    /// This class contains the <see cref="IUndoable"/> action to change the <see cref="IMode.GenericKeys"/> property.
+    /// Constructor
     /// </summary>
-    public class ChangeGenericKeys : IChangeGenericKeys
+    /// <param name="mode">
+    ///     The <see cref="IMode"/> data.
+    /// </param>
+    /// <param name="newValue">
+    ///     A <see cref="bool"/> representing the new <see cref="IMode.GenericKeys"/> value.
+    /// </param>
+    public ChangeGenericKeys(IMode mode, bool newValue)
     {
-        private readonly IMode _mode;
-        private readonly bool _newValue;
-        private bool _previousValue;
+        _mode = mode;
+        _newValue = newValue;
+    }
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="mode">
-        ///     The <see cref="IMode"/> data.
-        /// </param>
-        /// <param name="newValue">
-        ///     A <see cref="bool"/> representing the new <see cref="IMode.GenericKeys"/> value.
-        /// </param>
-        public ChangeGenericKeys(IMode mode, bool newValue)
-        {
-            _mode = mode;
-            _newValue = newValue;
-        }
+    public bool CanExecute()
+    {
+        return true;
+    }
 
-        public bool CanExecute()
-        {
-            return true;
-        }
+    public void ExecuteDo()
+    {
+        _previousValue = _mode.GenericKeys;
+        _mode.GenericKeys = _newValue;
+    }
 
-        public void ExecuteDo()
-        {
-            _previousValue = _mode.GenericKeys;
-            _mode.GenericKeys = _newValue;
-        }
-
-        public void ExecuteUndo()
-        {
-            _mode.GenericKeys = _previousValue;
-        }
+    public void ExecuteUndo()
+    {
+        _mode.GenericKeys = _previousValue;
     }
 }

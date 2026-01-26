@@ -1,23 +1,22 @@
 using System;
 
-namespace OpenTracker.ViewModels.Capture.Design
-{
-    public class CaptureDesignFactory
-    {
-        private readonly CaptureWindowDesignVM.Factory _windowFactory;
+namespace OpenTracker.ViewModels.Capture.Design;
 
-        public CaptureDesignFactory(CaptureWindowDesignVM.Factory windowFactory)
-        {
-            _windowFactory = windowFactory;
-        }
+public class CaptureDesignFactory
+{
+    private readonly CaptureWindowDesignVM.Factory _windowFactory;
+
+    public CaptureDesignFactory(CaptureWindowDesignVM.Factory windowFactory)
+    {
+        _windowFactory = windowFactory;
+    }
         
-        public ICaptureDesignVM GetDesignVM(ICaptureControlVM control)
+    public ICaptureDesignVM GetDesignVM(ICaptureControlVM control)
+    {
+        return control switch
         {
-            return control switch
-            {
-                ICaptureWindowVM captureWindow => _windowFactory(captureWindow),
-                _ => throw new ArgumentOutOfRangeException(nameof(control))
-            };
-        }
+            ICaptureWindowVM captureWindow => _windowFactory(captureWindow),
+            _ => throw new ArgumentOutOfRangeException(nameof(control))
+        };
     }
 }

@@ -1,18 +1,17 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
-namespace OpenTracker.Views.BossSelect
-{
-    public partial class BossSelectButton : UserControl
-    {
-        public BossSelectButton()
-        {
-            this.InitializeComponent();
-        }
+namespace OpenTracker.Views.BossSelect;
 
-        private void InitializeComponent()
-        {
-            AvaloniaXamlLoader.Load(this);
-        }
+public partial class BossSelectButton : UserControl
+{
+    public BossSelectButton()
+    {
+        this.InitializeComponent();
+    }
+
+    private void InitializeComponent()
+    {
+        AvaloniaXamlLoader.Load(this);
     }
 }

@@ -1,6 +1,5 @@
-namespace OpenTracker.ViewModels.Capture.Design
+namespace OpenTracker.ViewModels.Capture.Design;
+
+public interface ICaptureDesignDialogVM
 {
-    public interface ICaptureDesignDialogVM
-    {
-    }
 }

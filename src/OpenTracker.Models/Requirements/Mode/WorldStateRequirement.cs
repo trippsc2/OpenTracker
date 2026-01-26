@@ -1,55 +1,54 @@
 ﻿using System.ComponentModel;
 using OpenTracker.Models.Modes;
 
-namespace OpenTracker.Models.Requirements.Mode
+namespace OpenTracker.Models.Requirements.Mode;
+
+/// <summary>
+/// This class contains <see cref="IMode.WorldState"/> <see cref="IRequirement"/> data.
+/// </summary>
+public class WorldStateRequirement : BooleanRequirement, IWorldStateRequirement
 {
+    private readonly IMode _mode;
+    private readonly WorldState _expectedValue;
+
     /// <summary>
-    /// This class contains <see cref="IMode.WorldState"/> <see cref="IRequirement"/> data.
+    /// Constructor
     /// </summary>
-    public class WorldStateRequirement : BooleanRequirement, IWorldStateRequirement
+    /// <param name="mode">
+    ///     The <see cref="IMode"/> data.
+    /// </param>
+    /// <param name="expectedValue">
+    ///     A <see cref="WorldState"/> representing the expected <see cref="IMode.WorldState"/> value.
+    /// </param>
+    public WorldStateRequirement(IMode mode, WorldState expectedValue)
     {
-        private readonly IMode _mode;
-        private readonly WorldState _expectedValue;
+        _mode = mode;
+        _expectedValue = expectedValue;
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="mode">
-        ///     The <see cref="IMode"/> data.
-        /// </param>
-        /// <param name="expectedValue">
-        ///     A <see cref="WorldState"/> representing the expected <see cref="IMode.WorldState"/> value.
-        /// </param>
-        public WorldStateRequirement(IMode mode, WorldState expectedValue)
+        _mode.PropertyChanged += OnModeChanged;
+
+        UpdateValue();
+    }
+
+    /// <summary>
+    /// Subscribes to the <see cref="IMode.PropertyChanged"/> event.
+    /// </summary>
+    /// <param name="sender">
+    ///     The <see cref="object"/> from which the event is sent.
+    /// </param>
+    /// <param name="e">
+    ///     The <see cref="PropertyChangedEventArgs"/>.
+    /// </param>
+    private void OnModeChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(IMode.WorldState))
         {
-            _mode = mode;
-            _expectedValue = expectedValue;
-
-            _mode.PropertyChanged += OnModeChanged;
-
             UpdateValue();
         }
+    }
 
-        /// <summary>
-        /// Subscribes to the <see cref="IMode.PropertyChanged"/> event.
-        /// </summary>
-        /// <param name="sender">
-        ///     The <see cref="object"/> from which the event is sent.
-        /// </param>
-        /// <param name="e">
-        ///     The <see cref="PropertyChangedEventArgs"/>.
-        /// </param>
-        private void OnModeChanged(object? sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(IMode.WorldState))
-            {
-                UpdateValue();
-            }
-        }
-
-        protected override bool ConditionMet()
-        {
-            return _mode.WorldState == _expectedValue;
-        }
+    protected override bool ConditionMet()
+    {
+        return _mode.WorldState == _expectedValue;
     }
 }

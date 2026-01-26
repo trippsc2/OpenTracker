@@ -3,12 +3,11 @@ using OpenTracker.Models.Locations.Map;
 using OpenTracker.Models.Requirements;
 using OpenTracker.ViewModels.ToolTips;
 
-namespace OpenTracker.ViewModels.MapLocations
+namespace OpenTracker.ViewModels.MapLocations;
+
+public interface IMapLocationVM
 {
-    public interface IMapLocationVM
-    {
-        delegate IMapLocationVM Factory(
-            IMapLocation mapLocation, IRequirement? dockRequirement, Dock metDock, Dock unmetDock,
-            IMapLocationMarkingVM? marking, IShapedMapLocationVMBase location, IMapLocationToolTipVM toolTip);
-    }
+    delegate IMapLocationVM Factory(
+        IMapLocation mapLocation, IRequirement? dockRequirement, Dock metDock, Dock unmetDock,
+        IMapLocationMarkingVM? marking, IShapedMapLocationVMBase location, IMapLocationToolTipVM toolTip);
 }

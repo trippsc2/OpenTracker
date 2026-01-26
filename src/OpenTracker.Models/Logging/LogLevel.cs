@@ -1,15 +1,14 @@
-﻿namespace OpenTracker.Models.Logging
+﻿namespace OpenTracker.Models.Logging;
+
+/// <summary>
+/// This enum type defines the log level values.
+/// </summary>
+public enum LogLevel
 {
-    /// <summary>
-    /// This enum type defines the log level values.
-    /// </summary>
-    public enum LogLevel
-    {
-        Trace,
-        Debug,
-        Info,
-        Warn,
-        Error,
-        Fatal
-    }
+    Trace,
+    Debug,
+    Info,
+    Warn,
+    Error,
+    Fatal
 }

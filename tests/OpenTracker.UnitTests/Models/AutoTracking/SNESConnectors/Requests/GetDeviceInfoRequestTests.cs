@@ -9,83 +9,82 @@ using OpenTracker.Models.AutoTracking.SNESConnectors.Socket;
 using OpenTracker.Models.Logging;
 using Xunit;
 
-namespace OpenTracker.UnitTests.Models.AutoTracking.SNESConnectors.Requests
+namespace OpenTracker.UnitTests.Models.AutoTracking.SNESConnectors.Requests;
+
+public class GetDeviceInfoRequestTests
 {
-    public class GetDeviceInfoRequestTests
+    private readonly IAutoTrackerLogger _logger = Substitute.For<IAutoTrackerLogger>();
+
+    private readonly GetDeviceInfoRequest _sut;
+
+    public GetDeviceInfoRequestTests()
     {
-        private readonly IAutoTrackerLogger _logger = Substitute.For<IAutoTrackerLogger>();
+        _sut = new GetDeviceInfoRequest(_logger);
+    }
 
-        private readonly GetDeviceInfoRequest _sut;
-
-        public GetDeviceInfoRequestTests()
-        {
-            _sut = new GetDeviceInfoRequest(_logger);
-        }
-
-        [Fact]
-        public void Description_ShouldReturnExpected()
-        {
-            const string expected = "Get device info";
+    [Fact]
+    public void Description_ShouldReturnExpected()
+    {
+        const string expected = "Get device info";
             
-            Assert.Equal(expected, _sut.Description);
-        }
+        Assert.Equal(expected, _sut.Description);
+    }
 
-        [Fact]
-        public void StatusRequired_ShouldReturnExpected()
-        {
-            const ConnectionStatus expected = ConnectionStatus.Connected;
+    [Fact]
+    public void StatusRequired_ShouldReturnExpected()
+    {
+        const ConnectionStatus expected = ConnectionStatus.Connected;
             
-            Assert.Equal(expected, _sut.StatusRequired);
-        }
+        Assert.Equal(expected, _sut.StatusRequired);
+    }
         
-        [Fact]
-        public void ToJsonString_ShouldReturnExpected()
-        {
-            const string expected = "{\"Opcode\":\"Info\",\"Space\":\"SNES\"}";
+    [Fact]
+    public void ToJsonString_ShouldReturnExpected()
+    {
+        const string expected = "{\"Opcode\":\"Info\",\"Space\":\"SNES\"}";
             
-            Assert.Equal(expected, _sut.ToJsonString());
-        }
+        Assert.Equal(expected, _sut.ToJsonString());
+    }
 
-        [Fact]
-        public void ProcessResponseAndReturnResults_ShouldReturnExpected()
-        {
-            string[] expected = {"Test"};
-            var messageEventArgs = Substitute.For<IMessageEventArgsWrapper>();
-            messageEventArgs.Data.Returns($"{{\"Results\":[\"{expected[0]}\"]}}");
+    [Fact]
+    public void ProcessResponseAndReturnResults_ShouldReturnExpected()
+    {
+        string[] expected = {"Test"};
+        var messageEventArgs = Substitute.For<IMessageEventArgsWrapper>();
+        messageEventArgs.Data.Returns($"{{\"Results\":[\"{expected[0]}\"]}}");
             
-            Assert.Equal(expected, _sut.ProcessResponseAndReturnResults(
-                messageEventArgs, new ManualResetEvent(false)));
-        }
+        Assert.Equal(expected, _sut.ProcessResponseAndReturnResults(
+            messageEventArgs, new ManualResetEvent(false)));
+    }
 
-        [Fact]
-        public void ProcessResponseAndReturnResults_ShouldThrowException_WhenDataIsNotJSON()
-        {
-            var messageEventArgs = Substitute.For<IMessageEventArgsWrapper>();
-            messageEventArgs.Data.Returns("Test");
+    [Fact]
+    public void ProcessResponseAndReturnResults_ShouldThrowException_WhenDataIsNotJSON()
+    {
+        var messageEventArgs = Substitute.For<IMessageEventArgsWrapper>();
+        messageEventArgs.Data.Returns("Test");
             
-            Assert.Throws<JsonReaderException>(() => _sut.ProcessResponseAndReturnResults(
-                messageEventArgs, new ManualResetEvent(false)));
-        }
+        Assert.Throws<JsonReaderException>(() => _sut.ProcessResponseAndReturnResults(
+            messageEventArgs, new ManualResetEvent(false)));
+    }
 
-        [Fact]
-        public void ProcessResponseAndReturnResults_ShouldThrowException_WhenDataDoesNotContainResults()
-        {
-            string[] expected = {"Test"};
-            var messageEventArgs = Substitute.For<IMessageEventArgsWrapper>();
-            messageEventArgs.Data.Returns($"{{\"Test\":[\"{expected[0]}\"]}}");
+    [Fact]
+    public void ProcessResponseAndReturnResults_ShouldThrowException_WhenDataDoesNotContainResults()
+    {
+        string[] expected = {"Test"};
+        var messageEventArgs = Substitute.For<IMessageEventArgsWrapper>();
+        messageEventArgs.Data.Returns($"{{\"Test\":[\"{expected[0]}\"]}}");
             
-            Assert.Throws<Exception>(() => _sut.ProcessResponseAndReturnResults(
-                messageEventArgs, new ManualResetEvent(false)));
-        }
+        Assert.Throws<Exception>(() => _sut.ProcessResponseAndReturnResults(
+            messageEventArgs, new ManualResetEvent(false)));
+    }
         
-        [Fact]
-        public void AutofacTest()
-        {
-            using var scope = ContainerConfig.Configure().BeginLifetimeScope();
-            var factory = scope.Resolve<IGetDeviceInfoRequest.Factory>();
-            var sut = factory();
+    [Fact]
+    public void AutofacTest()
+    {
+        using var scope = ContainerConfig.Configure().BeginLifetimeScope();
+        var factory = scope.Resolve<IGetDeviceInfoRequest.Factory>();
+        var sut = factory();
             
-            Assert.NotNull(sut as GetDeviceInfoRequest);
-        }
+        Assert.NotNull(sut as GetDeviceInfoRequest);
     }
 }

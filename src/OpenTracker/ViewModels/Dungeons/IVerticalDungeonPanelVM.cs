@@ -1,6 +1,5 @@
-﻿namespace OpenTracker.ViewModels.Dungeons
+﻿namespace OpenTracker.ViewModels.Dungeons;
+
+public interface IVerticalDungeonPanelVM : IOrientedDungeonPanelVMBase
 {
-    public interface IVerticalDungeonPanelVM : IOrientedDungeonPanelVMBase
-    {
-    }
 }

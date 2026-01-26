@@ -4,12 +4,11 @@ using OpenTracker.Models.Requirements;
 using OpenTracker.ViewModels.Items.Adapters;
 using ReactiveUI;
 
-namespace OpenTracker.ViewModels.Items
-{
-    public interface IItemVM
-    {
-        ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
+namespace OpenTracker.ViewModels.Items;
 
-        delegate IItemVM Factory(IItemAdapter item, IRequirement? requirement = null);
-    }
+public interface IItemVM
+{
+    ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
+
+    delegate IItemVM Factory(IItemAdapter item, IRequirement? requirement = null);
 }
