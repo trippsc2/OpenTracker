@@ -1,6 +1,11 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using Avalonia.Layout;
 using Avalonia.Threading;
+using DynamicData;
+using DynamicData.Binding;
+using OpenTracker.Models.Locations;
 using OpenTracker.Models.Settings;
 using OpenTracker.Utils;
 using ReactiveUI;
@@ -16,7 +21,7 @@ public class PinnedLocationsPanelVM : ViewModelBase, IPinnedLocationsPanelVM
 
     public Orientation Orientation => _layoutSettings.CurrentLayoutOrientation;
 
-    public IPinnedLocationVMCollection Locations { get; }
+    public ReadOnlyObservableCollection<IPinnedLocationVM> Locations { get; }
 
     /// <summary>
     /// Constructor
@@ -24,12 +29,24 @@ public class PinnedLocationsPanelVM : ViewModelBase, IPinnedLocationsPanelVM
     /// <param name="layoutSettings">
     /// The layout settings data.
     /// </param>
-    /// <param name="locations">
-    /// The pinned location control collection.
+    /// <param name="pinnedLocations">
+    /// The pinned location collection.
     /// </param>
-    public PinnedLocationsPanelVM(ILayoutSettings layoutSettings, IPinnedLocationVMCollection locations)
+    /// <param name="viewModelFactory">
+    /// A factory for creating pinned location ViewModels.
+    /// </param>
+    public PinnedLocationsPanelVM(
+        ILayoutSettings layoutSettings,
+        IPinnedLocationCollection pinnedLocations,
+        IPinnedLocationVMFactory viewModelFactory)
     {
         _layoutSettings = layoutSettings;
+
+        ((PinnedLocationCollection)pinnedLocations)
+            .ToObservableChangeSet()
+            .Transform(viewModelFactory.GetLocationControlVM)
+            .Bind(out var locations)
+            .Subscribe();
 
         Locations = locations;
 
