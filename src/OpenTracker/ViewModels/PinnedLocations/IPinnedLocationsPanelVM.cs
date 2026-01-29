@@ -1,7 +1,8 @@
-﻿using OpenTracker.ViewModels.UIPanels;
+﻿using System;
+using OpenTracker.ViewModels.UIPanels;
 
 namespace OpenTracker.ViewModels.PinnedLocations;
 
-public interface IPinnedLocationsPanelVM : IUIPanelBodyVMBase
+public interface IPinnedLocationsPanelVM : IUIPanelBodyVMBase, IDisposable
 {
 }

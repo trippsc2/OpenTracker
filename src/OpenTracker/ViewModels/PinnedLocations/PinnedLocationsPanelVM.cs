@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Reactive.Disposables;
 using Avalonia.Layout;
 using Avalonia.Threading;
 using DynamicData;
@@ -15,8 +16,9 @@ namespace OpenTracker.ViewModels.PinnedLocations;
 /// <summary>
 /// This class contains the pinned location panel control ViewModel data.
 /// </summary>
-public class PinnedLocationsPanelVM : ViewModelBase, IPinnedLocationsPanelVM
+public sealed class PinnedLocationsPanelVM : ViewModelBase, IPinnedLocationsPanelVM
 {
+    private readonly CompositeDisposable _disposables = new();
     private readonly ILayoutSettings _layoutSettings;
 
     public Orientation Orientation => _layoutSettings.CurrentLayoutOrientation;
@@ -46,11 +48,18 @@ public class PinnedLocationsPanelVM : ViewModelBase, IPinnedLocationsPanelVM
             .ToObservableChangeSet()
             .Transform(viewModelFactory.GetLocationControlVM)
             .Bind(out var locations)
-            .Subscribe();
+            .Subscribe()
+            .DisposeWith(_disposables);
 
         Locations = locations;
 
         _layoutSettings.PropertyChanged += OnLayoutChanged;
+    }
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        _disposables.Dispose();
     }
 
     /// <summary>
