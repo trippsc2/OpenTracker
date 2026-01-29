@@ -31,7 +31,7 @@ public class SNESConnectorTests
 
     public SNESConnectorTests()
     {
-        _webSocket.Url.Returns(new Uri("ws://localhost:8080"));
+        _webSocket.Url.Returns(new Uri("ws://localhost:23074"));
         _webSocket.When(x => x.Send(Arg.Any<string>())).Do(
             _ => _webSocket.OnMessage += Raise.Event<EventHandler<MessageEventArgs>>(
                 _webSocket, FormatterServices.GetUninitializedObject(typeof(MessageEventArgs))));

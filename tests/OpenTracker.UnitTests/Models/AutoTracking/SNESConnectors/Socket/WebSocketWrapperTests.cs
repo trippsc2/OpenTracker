@@ -11,7 +11,7 @@ public class WebSocketWrapperTests
     {
         using var scope = ContainerConfig.Configure().BeginLifetimeScope();
         var factory = scope.Resolve<IWebSocketWrapper.Factory>();
-        var sut = factory("ws://localhost:8080");
+        var sut = factory("ws://localhost:23074");
             
         Assert.NotNull(sut as WebSocketWrapper);
     }

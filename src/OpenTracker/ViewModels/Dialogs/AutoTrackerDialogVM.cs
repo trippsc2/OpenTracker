@@ -26,7 +26,7 @@ public class AutoTrackerDialogVM : DialogViewModelBase, IAutoTrackerDialogVM
 
     public bool UriTextBoxEnabled => _autoTracker.CanConnect();
 
-    private string _uriString = "ws://localhost:8080";
+    private string _uriString = "ws://localhost:23074";
     public string UriString
     {
         get => _uriString;
