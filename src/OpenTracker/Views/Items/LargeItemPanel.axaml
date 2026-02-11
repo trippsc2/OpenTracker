@@ -13,7 +13,7 @@
 		<ItemsControl.ItemsPanel>
 			<ItemsPanelTemplate>
 				<WrapPanel ItemWidth="34" ItemHeight="40" MaxWidth="238" MaxHeight="200" Orientation="Horizontal"
-				           HorizontalAlignment="Left" VerticalAlignment="Top" />
+				           HorizontalAlignment="Center" VerticalAlignment="Center" />
 			</ItemsPanelTemplate>
 		</ItemsControl.ItemsPanel>
 	</ItemsControl>
