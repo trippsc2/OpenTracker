@@ -103,7 +103,7 @@ public class ResetManagerTests
     {
         _sut.ResetAsync();
             
-        _connections.Received(1).Clear();
+        _connections.Received(1).Reset();
     }
 
     [Fact]

@@ -21,7 +21,7 @@ public class AddConnectionTests
     [Fact]
     public void CanExecute_ShouldReturnTrue_WhenConnectionCollectionContainsReturnsFalse()
     {
-        _connections.Contains(_connection).Returns(false);
+        _connections.Connections.Contains(_connection).Returns(false);
             
         Assert.True(_sut.CanExecute());
     }
@@ -29,7 +29,7 @@ public class AddConnectionTests
     [Fact]
     public void CanExecute_ShouldReturnFalse_WhenConnectionCollectionContainsConnection()
     {
-        _connections.Contains(_connection).Returns(true);
+        _connections.Connections.Contains(_connection).Returns(true);
             
         Assert.False(_sut.CanExecute());
     }
@@ -39,7 +39,7 @@ public class AddConnectionTests
     {
         _sut.ExecuteDo();
 
-        _connections.Received().Add(_connection);
+        _connections.Connections.Received().Add(_connection);
     }
 
     [Fact]
@@ -48,7 +48,7 @@ public class AddConnectionTests
         _sut.ExecuteDo();
         _sut.ExecuteUndo();
 
-        _connections.Received().Remove(_connection);
+        _connections.Connections.Received().Remove(_connection);
     }
 
     [Fact]

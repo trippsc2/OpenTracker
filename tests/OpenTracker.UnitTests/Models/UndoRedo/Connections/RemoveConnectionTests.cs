@@ -29,7 +29,7 @@ public class RemoveConnectionTests
     {
         _sut.ExecuteDo();
 
-        _connections.Received().Remove(_connection);
+        _connections.Connections.Received().Remove(_connection);
     }
 
     [Fact]
@@ -38,7 +38,7 @@ public class RemoveConnectionTests
         _sut.ExecuteDo();
         _sut.ExecuteUndo();
             
-        _connections.Received().Add(_connection);
+        _connections.Connections.Received().Add(_connection);
     }
 
     [Fact]

@@ -27,16 +27,16 @@ public class AddMapConnection : IAddMapConnection
 
     public bool CanExecute()
     {
-        return !_mapConnections.Contains(_mapConnection);
+        return !_mapConnections.Connections.Contains(_mapConnection);
     }
 
     public void ExecuteDo()
     {
-        _mapConnections.Add(_mapConnection);
+        _mapConnections.Connections.Add(_mapConnection);
     }
 
     public void ExecuteUndo()
     {
-        _mapConnections.Remove(_mapConnection);
+        _mapConnections.Connections.Remove(_mapConnection);
     }
 }

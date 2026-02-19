@@ -33,11 +33,11 @@ public class RemoveMapConnection : IRemoveMapConnection
 
     public void ExecuteDo()
     {
-        _mapConnections.Remove(_mapConnection);
+        _mapConnections.Connections.Remove(_mapConnection);
     }
 
     public void ExecuteUndo()
     {
-        _mapConnections.Add(_mapConnection);
+        _mapConnections.Connections.Add(_mapConnection);
     }
 }

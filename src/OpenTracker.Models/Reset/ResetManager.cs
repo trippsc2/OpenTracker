@@ -81,6 +81,6 @@ public class ResetManager : IResetManager
         _prizePlacements.Reset();
         _items.Reset();
         _dropdowns.Reset();
-        _connections.Clear();
+        _connections.Reset();
     }
 }

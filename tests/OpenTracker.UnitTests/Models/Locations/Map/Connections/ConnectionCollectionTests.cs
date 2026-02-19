@@ -35,10 +35,8 @@ public class ConnectionCollectionTests
             
         _locations[Arg.Any<LocationID>()].Returns(location);
             
-        _sut = new MapConnectionCollection(_locations, _connectionFactory, _addConnectionFactory)
-        {
-            _connection
-        };
+        _sut = new MapConnectionCollection(_locations, _connectionFactory, _addConnectionFactory);
+        _sut.Connections.Add(_connection);
         _connection.Save().Returns(_connectionSaveData);
     }
 
@@ -73,7 +71,7 @@ public class ConnectionCollectionTests
     {
         _sut.Load(null);
 
-        Assert.Single(_sut);
+        Assert.Single(_sut.Connections);
     }
 
     [Fact]
@@ -85,7 +83,7 @@ public class ConnectionCollectionTests
         };
         _sut.Load(saveData);
             
-        Assert.DoesNotContain(_connection, _sut);
+        Assert.DoesNotContain(_connection, _sut.Connections);
     }
 
     [Fact]

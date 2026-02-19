@@ -11,7 +11,7 @@ namespace OpenTracker.Models.Locations.Map.Connections;
 /// This class contains the <see cref="ObservableCollection{T}"/> container for <see cref="IMapConnection"/>
 /// objects.
 /// </summary>
-public class MapConnectionCollection : ObservableCollection<IMapConnection>, IMapConnectionCollection
+public class MapConnectionCollection : IMapConnectionCollection
 {
     private readonly ILocationDictionary _locations;
 
@@ -39,6 +39,8 @@ public class MapConnectionCollection : ObservableCollection<IMapConnection>, IMa
         _addConnectionFactory = addConnectionFactory;
     }
 
+    public ObservableCollection<IMapConnection> Connections { get; } = [];
+
     public IUndoable AddConnection(IMapLocation location1, IMapLocation location2)
     {
         return _addConnectionFactory(_connectionFactory(location1, location2));
@@ -46,7 +48,7 @@ public class MapConnectionCollection : ObservableCollection<IMapConnection>, IMa
 
     public IList<ConnectionSaveData> Save()
     {
-        return this.Select(connection => connection.Save()).ToList();
+        return Connections.Select(connection => connection.Save()).ToList();
     }
 
     public void Load(IList<ConnectionSaveData>? saveData)
@@ -56,13 +58,18 @@ public class MapConnectionCollection : ObservableCollection<IMapConnection>, IMa
             return;
         }
 
-        Clear();
+        Connections.Clear();
 
         foreach (var connection in saveData)
         {
-            Add(_connectionFactory(
+            Connections.Add(_connectionFactory(
                 _locations[connection.Location1].MapLocations[connection.Index1],
                 _locations[connection.Location2].MapLocations[connection.Index2]));
         }
+    }
+
+    public void Reset()
+    {
+        Connections.Clear();
     }
 }
