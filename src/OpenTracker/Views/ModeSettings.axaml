@@ -23,7 +23,7 @@
     </Image>
     
     <Popup IsOpen="{Binding PopupOpen, Mode=TwoWay}"
-           IsLightDismissEnabled="True" PlacementMode="Top" HorizontalOffset="8" VerticalOffset="8"
+           IsLightDismissEnabled="True" Placement="Top" HorizontalOffset="8" VerticalOffset="8"
            PlacementTarget="{Binding $parent[view:ModeSettings]}">
       <Border Classes="Popup">
         <StackPanel Orientation="Vertical">

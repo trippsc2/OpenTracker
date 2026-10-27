@@ -9,9 +9,6 @@ public partial class SequenceBreakDialog : DialogWindowBase
     public SequenceBreakDialog()
     {
         InitializeComponent();
-#if DEBUG
-        this.AttachDevTools();
-#endif
     }
 
     private void InitializeComponent()

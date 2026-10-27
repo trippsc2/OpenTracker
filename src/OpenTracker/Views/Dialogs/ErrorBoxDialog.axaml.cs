@@ -9,9 +9,6 @@ public partial class ErrorBoxDialog : DialogWindowBase
     public ErrorBoxDialog()
     {
         InitializeComponent();
-#if DEBUG
-        this.AttachDevTools();
-#endif
     }
 
     private void InitializeComponent()

@@ -1,6 +1,6 @@
+using RxVoid = ReactiveUI.Primitives.RxVoid;
 using System.ComponentModel;
 using System.Globalization;
-using System.Reactive;
 using Avalonia.Input;
 using Avalonia.Threading;
 using OpenTracker.Models.Items;
@@ -27,7 +27,7 @@ public class ItemAdapter : ViewModelBase, IItemAdapter
         
     public IBossSelectPopupVM? BossSelect { get; } = null;
         
-    public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
+    public ReactiveCommand<PointerReleasedEventArgs, RxVoid> HandleClick { get; }
 
     public delegate ItemAdapter Factory(IItem item, string imageSourceBase);
 

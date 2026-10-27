@@ -1,10 +1,10 @@
 using System;
 using System.Reactive.Disposables;
+using System.Reactive.Disposables.Fluent;
 using System.Reactive.Linq;
 using OpenTracker.Models.Accessibility;
 using OpenTracker.Models.Requirements;
 using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
 
 namespace OpenTracker.UnitTests.Models.Requirements;
 
@@ -12,18 +12,23 @@ public sealed class MockAccessibilityRequirement : ReactiveObject, IRequirement
 {
     private readonly CompositeDisposable _disposables = new();
     
-    [Reactive]
-    public AccessibilityLevel Accessibility { get; set; }
-    [ObservableAsProperty]
-    public bool Met { get; }
+    private readonly ObservableAsPropertyHelper<bool> _met;
+
+    private AccessibilityLevel _accessibility;
+    public AccessibilityLevel Accessibility
+    {
+        get => _accessibility;
+        set => this.RaiseAndSetIfChanged(ref _accessibility, value);
+    }
+    public bool Met => _met.Value;
     
     public event EventHandler? ChangePropagated;
 
     public MockAccessibilityRequirement()
     {
-        this.WhenAnyValue(x => x.Accessibility)
+        _met = this.WhenAnyValue(x => x.Accessibility)
             .Select(x => x > AccessibilityLevel.None)
-            .ToPropertyEx(this, x => x.Met)
+            .ToProperty(this, x => x.Met)
             .DisposeWith(_disposables);
     }
 

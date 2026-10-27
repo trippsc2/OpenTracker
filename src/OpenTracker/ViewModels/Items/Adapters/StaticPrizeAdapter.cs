@@ -1,5 +1,5 @@
+using RxVoid = ReactiveUI.Primitives.RxVoid;
 using System.ComponentModel;
-using System.Reactive;
 using Avalonia.Input;
 using Avalonia.Threading;
 using OpenTracker.Models.Sections;
@@ -27,7 +27,7 @@ public class StaticPrizeAdapter : ViewModelBase, IItemAdapter
 
     public IBossSelectPopupVM? BossSelect { get; } = null;
         
-    public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
+    public ReactiveCommand<PointerReleasedEventArgs, RxVoid> HandleClick { get; }
 
     public delegate StaticPrizeAdapter Factory(IPrizeSection section, string imageSourceBase);
 

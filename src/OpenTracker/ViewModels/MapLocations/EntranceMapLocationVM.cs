@@ -1,6 +1,6 @@
+using RxVoid = ReactiveUI.Primitives.RxVoid;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Reactive;
 using Avalonia;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -31,10 +31,10 @@ public class EntranceMapLocationVM : ViewModelBase, IEntranceMapLocationVM
     public string BorderColor => _colorProvider.BorderColor;
     public string Color => _colorProvider.Color;
 
-    public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
-    public ReactiveCommand<RoutedEventArgs, Unit> HandleDoubleClick { get; }
-    public ReactiveCommand<PointerEventArgs, Unit> HandlePointerEntered { get; }
-    public ReactiveCommand<PointerEventArgs, Unit> HandlePointerExited { get; }
+    public ReactiveCommand<PointerReleasedEventArgs, RxVoid> HandleClick { get; }
+    public ReactiveCommand<RoutedEventArgs, RxVoid> HandleDoubleClick { get; }
+    public ReactiveCommand<PointerEventArgs, RxVoid> HandlePointerEntered { get; }
+    public ReactiveCommand<PointerEventArgs, RxVoid> HandlePointerExited { get; }
 
     public delegate EntranceMapLocationVM Factory(
         IMapLocation mapLocation, double offsetX, double offsetY, List<Point> points);

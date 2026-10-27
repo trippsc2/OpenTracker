@@ -10,7 +10,7 @@
   </Design.DataContext>
   
   <Popup IsOpen="{Binding PopupOpen, Mode=TwoWay}"
-         IsLightDismissEnabled="True" PlacementMode="Pointer">
+         IsLightDismissEnabled="True" Placement="Pointer">
     <LayoutTransformControl>
 
       <LayoutTransformControl.LayoutTransform>

@@ -1,4 +1,4 @@
-using System.Reactive;
+using RxVoid = ReactiveUI.Primitives.RxVoid;
 using Avalonia.Input;
 using OpenTracker.ViewModels.BossSelect;
 using ReactiveUI;
@@ -12,7 +12,7 @@ public interface IItemAdapter : IReactiveObject
 {
     string ImageSource { get; }
     string? Label { get; }
-    ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
+    ReactiveCommand<PointerReleasedEventArgs, RxVoid> HandleClick { get; }
     string LabelColor { get; }
     IBossSelectPopupVM? BossSelect { get; }
 }

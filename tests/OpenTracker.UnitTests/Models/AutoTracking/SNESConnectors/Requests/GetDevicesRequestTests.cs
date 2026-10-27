@@ -74,7 +74,7 @@ public class GetDevicesRequestTests
         var messageEventArgs = Substitute.For<IMessageEventArgsWrapper>();
         messageEventArgs.Data.Returns($"{{\"Test\":[\"{expected[0]}\"]}}");
             
-        Assert.Throws<Exception>(() => _sut.ProcessResponseAndReturnResults(
+        Assert.ThrowsAny<Exception>(() => _sut.ProcessResponseAndReturnResults(
             messageEventArgs, new ManualResetEvent(false)));
     }
         

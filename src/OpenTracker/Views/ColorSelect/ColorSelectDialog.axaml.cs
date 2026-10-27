@@ -9,9 +9,6 @@ public partial class ColorSelectDialog : DialogWindowBase
     public ColorSelectDialog()
     {
         InitializeComponent();
-#if DEBUG
-        this.AttachDevTools();
-#endif
     }
 
     private void InitializeComponent()

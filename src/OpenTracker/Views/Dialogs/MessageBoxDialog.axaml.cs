@@ -9,9 +9,6 @@ public partial class MessageBoxDialog : DialogWindowBase<bool>
     public MessageBoxDialog()
     {
         InitializeComponent();
-#if DEBUG
-        this.AttachDevTools();
-#endif
     }
 
     private void InitializeComponent()

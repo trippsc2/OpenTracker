@@ -143,9 +143,7 @@ public class SLightWorldConnectionFactoryTests
                 },
                 OverworldNodeID.DesertPalaceFrontEntrance => new List<INodeConnection>
                 {
-                    ConnectionFactory(
-                        OverworldNodes[OverworldNodeID.LightWorld], node,
-                        ItemRequirements[(ItemType.Book, 1)]),
+                    ConnectionFactory(OverworldNodes[OverworldNodeID.LightWorldBook], node),
                     ConnectionFactory(OverworldNodes[OverworldNodeID.MireAreaMirror], node)
                 },
                 OverworldNodeID.BombosTabletLedge => new List<INodeConnection>

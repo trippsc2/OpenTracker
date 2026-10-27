@@ -1,4 +1,4 @@
-using System.Reactive;
+using RxVoid = ReactiveUI.Primitives.RxVoid;
 using Avalonia.Input;
 using OpenTracker.Models.Requirements;
 using OpenTracker.ViewModels.Items.Adapters;
@@ -8,7 +8,7 @@ namespace OpenTracker.ViewModels.Items;
 
 public interface IItemVM
 {
-    ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
+    ReactiveCommand<PointerReleasedEventArgs, RxVoid> HandleClick { get; }
 
     delegate IItemVM Factory(IItemAdapter item, IRequirement? requirement = null);
 }

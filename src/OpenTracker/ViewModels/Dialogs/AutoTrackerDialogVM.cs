@@ -1,7 +1,7 @@
-﻿using System;
+using RxVoid = ReactiveUI.Primitives.RxVoid;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Reactive;
 using System.Threading.Tasks;
 using Avalonia.Threading;
 using OpenTracker.Models.AutoTracking;
@@ -50,39 +50,39 @@ public class AutoTrackerDialogVM : DialogViewModelBase, IAutoTrackerDialogVM
     public IAutoTrackerStatusVM Status { get; }
 
     private bool _canConnect;
-    private bool CanConnect
+    internal bool CanConnect
     {
         get => _canConnect;
         set => this.RaiseAndSetIfChanged(ref _canConnect, value);
     }
 
     private bool _canGetDevices;
-    private bool CanGetDevices
+    internal bool CanGetDevices
     {
         get => _canGetDevices;
         set => this.RaiseAndSetIfChanged(ref _canGetDevices, value);
     }
 
     private bool _canDisconnect;
-    private bool CanDisconnect
+    internal bool CanDisconnect
     {
         get => _canDisconnect;
         set => this.RaiseAndSetIfChanged(ref _canDisconnect, value);
     }
 
     private bool _canStart;
-    private bool CanStart
+    internal bool CanStart
     {
         get => _canStart;
         set => this.RaiseAndSetIfChanged(ref _canStart, value);
     }
 
-    public ReactiveCommand<Unit, Unit> ConnectCommand { get; }
-    public ReactiveCommand<Unit, Unit> GetDevicesCommand { get; }
-    public ReactiveCommand<Unit, Unit> DisconnectCommand { get; }
-    public ReactiveCommand<Unit, Unit> StartCommand { get; }
+    public ReactiveCommand<RxVoid, RxVoid> ConnectCommand { get; }
+    public ReactiveCommand<RxVoid, RxVoid> GetDevicesCommand { get; }
+    public ReactiveCommand<RxVoid, RxVoid> DisconnectCommand { get; }
+    public ReactiveCommand<RxVoid, RxVoid> StartCommand { get; }
 
-    public ReactiveCommand<Unit, Unit> ToggleRaceIllegalTrackingCommand { get; }
+    public ReactiveCommand<RxVoid, RxVoid> ToggleRaceIllegalTrackingCommand { get; }
 
     private readonly ObservableAsPropertyHelper<bool> _isConnecting;
     private bool IsConnecting => _isConnecting.Value;

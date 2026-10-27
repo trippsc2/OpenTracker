@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Locations.Map.Connections;
@@ -10,11 +11,14 @@ public class RemoveConnectionTests
 {
     private readonly IMapConnection _connection = Substitute.For<IMapConnection>();
     private readonly IMapConnectionCollection _connections = Substitute.For<IMapConnectionCollection>();
+    private readonly ObservableCollection<IMapConnection> _collection = new();
 
     private readonly RemoveMapConnection _sut;
 
     public RemoveConnectionTests()
     {
+        _connections.Connections.Returns(_collection);
+        _collection.Add(_connection);
         _sut = new RemoveMapConnection(_connections, _connection);
     }
         
@@ -29,7 +33,7 @@ public class RemoveConnectionTests
     {
         _sut.ExecuteDo();
 
-        _connections.Connections.Received().Remove(_connection);
+        Assert.DoesNotContain(_connection, _collection);
     }
 
     [Fact]
@@ -38,7 +42,7 @@ public class RemoveConnectionTests
         _sut.ExecuteDo();
         _sut.ExecuteUndo();
             
-        _connections.Connections.Received().Add(_connection);
+        Assert.Contains(_connection, _collection);
     }
 
     [Fact]

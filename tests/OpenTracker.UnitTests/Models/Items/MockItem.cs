@@ -3,15 +3,18 @@ using OpenTracker.Models.Items;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.UndoRedo;
 using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
 
 namespace OpenTracker.UnitTests.Models.Items;
 
 [ExcludeFromCodeCoverage]
 public sealed class MockItem : ReactiveObject, IItem
 {
-    [Reactive]
-    public int Current { get; set; }
+    private int _current;
+    public int Current
+    {
+        get => _current;
+        set => this.RaiseAndSetIfChanged(ref _current, value);
+    }
     
     public void Reset()
     {

@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using System.Reactive;
+using RxVoid = ReactiveUI.Primitives.RxVoid;
 using System.Threading;
 using OpenTracker.Models.AutoTracking.SNESConnectors.Socket;
 using OpenTracker.Models.Logging;
@@ -9,7 +9,7 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors.Requests;
 /// <summary>
 /// This class contains the request to register the app name. 
 /// </summary>
-public class RegisterNameRequest : RequestBase<Unit>, IRegisterNameRequest
+public class RegisterNameRequest : RequestBase<RxVoid>, IRegisterNameRequest
 {
     private const string AppName = "OpenTracker";
         
@@ -25,7 +25,7 @@ public class RegisterNameRequest : RequestBase<Unit>, IRegisterNameRequest
     {
     }
 
-    public override Unit ProcessResponseAndReturnResults(IMessageEventArgsWrapper messageEventArgs,
+    public override RxVoid ProcessResponseAndReturnResults(IMessageEventArgsWrapper messageEventArgs,
         ManualResetEvent sendEvent)
     {
         return default;

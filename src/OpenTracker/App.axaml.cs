@@ -57,6 +57,9 @@ public class App : Application
         // If Avalonia-specific logging is needed, consider using a logging bridge
 
         AvaloniaXamlLoader.Load(this);
+#if DEBUG
+        this.AttachDeveloperTools();
+#endif
     }
 
     public override void OnFrameworkInitializationCompleted()

@@ -1,6 +1,6 @@
-﻿using System;
+using RxVoid = ReactiveUI.Primitives.RxVoid;
+using System;
 using System.ComponentModel;
-using System.Reactive;
 using Avalonia.Input;
 using Avalonia.Threading;
 using OpenTracker.Models.Modes;
@@ -49,24 +49,24 @@ public class ModeSettingsVM : ViewModelBase, IModeSettingsVM
     public bool TakeAnyLocations => _mode.TakeAnyLocations;
     public bool KeyDropShuffle => _mode.KeyDropShuffle;
         
-    public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
+    public ReactiveCommand<PointerReleasedEventArgs, RxVoid> HandleClick { get; }
 
-    public ReactiveCommand<string, Unit> ChangeItemPlacement { get; }
-    public ReactiveCommand<string, Unit> ChangeWorldState { get; }
-    public ReactiveCommand<string, Unit> ChangeEntranceShuffle { get; }
+    public ReactiveCommand<string, RxVoid> ChangeItemPlacement { get; }
+    public ReactiveCommand<string, RxVoid> ChangeWorldState { get; }
+    public ReactiveCommand<string, RxVoid> ChangeEntranceShuffle { get; }
 
-    public ReactiveCommand<Unit, Unit> ToggleMapShuffle { get; }
-    public ReactiveCommand<Unit, Unit> ToggleCompassShuffle { get; }
-    public ReactiveCommand<Unit, Unit> ToggleSmallKeyShuffle { get; }
-    public ReactiveCommand<Unit, Unit> ToggleBigKeyShuffle { get; }
+    public ReactiveCommand<RxVoid, RxVoid> ToggleMapShuffle { get; }
+    public ReactiveCommand<RxVoid, RxVoid> ToggleCompassShuffle { get; }
+    public ReactiveCommand<RxVoid, RxVoid> ToggleSmallKeyShuffle { get; }
+    public ReactiveCommand<RxVoid, RxVoid> ToggleBigKeyShuffle { get; }
 
-    public ReactiveCommand<Unit, Unit> ToggleBossShuffle { get; }
-    public ReactiveCommand<Unit, Unit> ToggleEnemyShuffle { get; }
-    public ReactiveCommand<Unit, Unit> ToggleGuaranteedBossItems { get; }
-    public ReactiveCommand<Unit, Unit> ToggleShopShuffle { get; }
-    public ReactiveCommand<Unit, Unit> ToggleGenericKeys { get; }
-    public ReactiveCommand<Unit, Unit> ToggleTakeAnyLocations { get; }
-    public ReactiveCommand<Unit, Unit> ToggleKeyDropShuffle { get; }
+    public ReactiveCommand<RxVoid, RxVoid> ToggleBossShuffle { get; }
+    public ReactiveCommand<RxVoid, RxVoid> ToggleEnemyShuffle { get; }
+    public ReactiveCommand<RxVoid, RxVoid> ToggleGuaranteedBossItems { get; }
+    public ReactiveCommand<RxVoid, RxVoid> ToggleShopShuffle { get; }
+    public ReactiveCommand<RxVoid, RxVoid> ToggleGenericKeys { get; }
+    public ReactiveCommand<RxVoid, RxVoid> ToggleTakeAnyLocations { get; }
+    public ReactiveCommand<RxVoid, RxVoid> ToggleKeyDropShuffle { get; }
 
     /// <summary>
     /// Constructor

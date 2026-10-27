@@ -1,5 +1,5 @@
-﻿using System.ComponentModel;
-using System.Reactive;
+using RxVoid = ReactiveUI.Primitives.RxVoid;
+using System.ComponentModel;
 using Avalonia.Threading;
 using OpenTracker.Models.SequenceBreaks;
 using OpenTracker.Utils;
@@ -19,7 +19,7 @@ public class SequenceBreakControlVM : ViewModelBase, ISequenceBreakControlVM
     public string Text { get; }
     public string ToolTipText { get; }
 
-    public ReactiveCommand<Unit, Unit> ToggleEnabled { get; }
+    public ReactiveCommand<RxVoid, RxVoid> ToggleEnabled { get; }
 
     /// <summary>
     /// Constructor

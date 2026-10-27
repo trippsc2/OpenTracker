@@ -1,5 +1,5 @@
-﻿using System.ComponentModel;
-using System.Reactive;
+using RxVoid = ReactiveUI.Primitives.RxVoid;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Input;
@@ -61,9 +61,9 @@ public class MapConnectionVM : ViewModelBase, IMapConnectionVM
         };
     public string Color => Highlighted ? "#ffffffff" : _colorSettings.ConnectorColor;
         
-    public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
-    public ReactiveCommand<PointerEventArgs, Unit> HandlePointerEntered { get; }
-    public ReactiveCommand<PointerEventArgs, Unit> HandlePointerExited { get; }
+    public ReactiveCommand<PointerReleasedEventArgs, RxVoid> HandleClick { get; }
+    public ReactiveCommand<PointerEventArgs, RxVoid> HandlePointerEntered { get; }
+    public ReactiveCommand<PointerEventArgs, RxVoid> HandlePointerExited { get; }
 
     /// <summary>
     /// Constructor

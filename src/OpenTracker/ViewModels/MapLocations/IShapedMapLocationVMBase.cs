@@ -1,4 +1,4 @@
-using System.Reactive;
+using RxVoid = ReactiveUI.Primitives.RxVoid;
 using Avalonia.Input;
 using ReactiveUI;
 
@@ -9,6 +9,6 @@ public interface IShapedMapLocationVMBase : IReactiveObject
     double OffsetX { get; }
     double OffsetY { get; }
         
-    ReactiveCommand<PointerEventArgs, Unit> HandlePointerEntered { get; }
-    ReactiveCommand<PointerEventArgs, Unit> HandlePointerExited { get; }
+    ReactiveCommand<PointerEventArgs, RxVoid> HandlePointerEntered { get; }
+    ReactiveCommand<PointerEventArgs, RxVoid> HandlePointerExited { get; }
 }

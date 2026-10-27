@@ -1,4 +1,5 @@
-﻿using System.Reactive;
+using RxVoid = ReactiveUI.Primitives.RxVoid;
+using System.Reactive;
 using OpenTracker.Utils.Dialog;
 using ReactiveUI;
 
@@ -12,7 +13,7 @@ public class ErrorBoxDialogVM : DialogViewModelBase, IErrorBoxDialogVM
     public string Title { get; }
     public string Text { get; }
 
-    public ReactiveCommand<Unit, Unit> OkCommand { get; }
+    public ReactiveCommand<RxVoid, RxVoid> OkCommand { get; }
 
     /// <summary>
     /// Constructor

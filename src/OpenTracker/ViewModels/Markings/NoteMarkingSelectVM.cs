@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+using RxVoid = ReactiveUI.Primitives.RxVoid;
+using System.Collections.Generic;
 using System.ComponentModel;
-using System.Reactive;
 using Avalonia.Threading;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Markings;
@@ -33,8 +33,8 @@ public class NoteMarkingSelectVM : ViewModelBase, INoteMarkingSelectVM
         set => this.RaiseAndSetIfChanged(ref _popupOpen, value);
     }
 
-    public ReactiveCommand<MarkType?, Unit> ChangeMarking { get; }
-    public ReactiveCommand<Unit, Unit> RemoveNote { get; }
+    public ReactiveCommand<MarkType?, RxVoid> ChangeMarking { get; }
+    public ReactiveCommand<RxVoid, RxVoid> RemoveNote { get; }
 
     public delegate INoteMarkingSelectVM Factory(
         IMarking marking, List<IMarkingSelectItemVMBase> buttons, ILocation location);

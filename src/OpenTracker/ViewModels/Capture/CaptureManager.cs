@@ -1,5 +1,5 @@
+using RxVoid = ReactiveUI.Primitives.RxVoid;
 using System;
-using System.Reactive;
 using System.Threading.Tasks;
 using Avalonia.Threading;
 using OpenTracker.Utils.Dialog;
@@ -12,7 +12,7 @@ public class CaptureManager : ICaptureManager
     private readonly IDialogService _dialogService;
     private readonly Lazy<ICaptureWindowCollection> _windows;
         
-    public ReactiveCommand<ICaptureWindowVM, Unit> OpenCaptureWindow { get; }
+    public ReactiveCommand<ICaptureWindowVM, RxVoid> OpenCaptureWindow { get; }
 
     public CaptureManager(IDialogService dialogService, ICaptureWindowCollection.Factory windows)
     {

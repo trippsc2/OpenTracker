@@ -1,5 +1,5 @@
-﻿using System.Collections.Specialized;
-using System.Reactive;
+using RxVoid = ReactiveUI.Primitives.RxVoid;
+using System.Collections.Specialized;
 using System.Threading.Tasks;
 using Avalonia.Layout;
 using Avalonia.Threading;
@@ -22,10 +22,10 @@ public class PinnedLocationNoteAreaVM : ViewModelBase, IPinnedLocationNoteAreaVM
     public HorizontalAlignment Alignment =>
         Notes.Count == 0 ? HorizontalAlignment.Center : HorizontalAlignment.Left;
 
-    public ReactiveCommand<Unit, Unit> Add { get; }
+    public ReactiveCommand<RxVoid, RxVoid> Add { get; }
 
     private bool _canAdd;
-    private bool CanAdd
+    internal bool CanAdd
     {
         get => _canAdd;
         set => this.RaiseAndSetIfChanged(ref _canAdd, value);

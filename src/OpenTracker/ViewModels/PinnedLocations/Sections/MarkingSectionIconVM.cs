@@ -1,5 +1,5 @@
-﻿using System.ComponentModel;
-using System.Reactive;
+using RxVoid = ReactiveUI.Primitives.RxVoid;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using Avalonia.Input;
 using Avalonia.Threading;
@@ -30,7 +30,7 @@ public class MarkingSectionIconVM : ViewModelBase, ISectionIconVM
 
     public IMarkingSelectVM MarkingSelect { get; }
         
-    public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
+    public ReactiveCommand<PointerReleasedEventArgs, RxVoid> HandleClick { get; }
 
     public delegate MarkingSectionIconVM Factory(ISection section);
 

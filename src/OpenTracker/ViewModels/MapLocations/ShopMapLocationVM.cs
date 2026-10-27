@@ -1,5 +1,5 @@
+using RxVoid = ReactiveUI.Primitives.RxVoid;
 using System.ComponentModel;
-using System.Reactive;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
@@ -25,10 +25,10 @@ public class ShopMapLocationVM : ViewModelBase, IShapedMapLocationVMBase
     public string BorderColor => _colorProvider.BorderColor;
     public string Color => _colorProvider.Color;
         
-    public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
-    public ReactiveCommand<RoutedEventArgs, Unit> HandleDoubleClick { get; }
-    public ReactiveCommand<PointerEventArgs, Unit> HandlePointerEntered { get; }
-    public ReactiveCommand<PointerEventArgs, Unit> HandlePointerExited { get; }
+    public ReactiveCommand<PointerReleasedEventArgs, RxVoid> HandleClick { get; }
+    public ReactiveCommand<RoutedEventArgs, RxVoid> HandleDoubleClick { get; }
+    public ReactiveCommand<PointerEventArgs, RxVoid> HandlePointerEntered { get; }
+    public ReactiveCommand<PointerEventArgs, RxVoid> HandlePointerExited { get; }
 
     public delegate ShopMapLocationVM Factory(IMapLocation mapLocation);
 

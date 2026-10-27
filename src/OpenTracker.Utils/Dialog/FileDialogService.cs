@@ -1,5 +1,5 @@
 ﻿using Avalonia.Controls;
-using System.Collections.Generic;
+using Avalonia.Platform.Storage;
 using System.Threading.Tasks;
 
 namespace OpenTracker.Utils.Dialog;
@@ -22,6 +22,12 @@ public class FileDialogService : IFileDialogService
         _mainWindowProvider = mainWindowProvider;
     }
 
+    private static readonly FilePickerFileType JsonFileType = new("JSON Files")
+    {
+        Patterns = new[] { "*.json" },
+        MimeTypes = new[] { "application/json" }
+    };
+
     /// <summary>
     /// Opens the OpenFileDialog window from the ViewModel.
     /// </summary>
@@ -30,22 +36,19 @@ public class FileDialogService : IFileDialogService
     /// </returns>
     public async Task<string?> ShowOpenDialogAsync()
     {
-        var dialog = new OpenFileDialog()
-        {
-            AllowMultiple = false,
-            Filters = new List<FileDialogFilter>
-            {
-                new() { Name = "JSON", Extensions = { "json" } }
-            }
-        };
-        var result = await dialog.ShowAsync(_mainWindowProvider.GetMainWindow());
-
-        if (result == null || result.Length == 0)
+        var topLevel = TopLevel.GetTopLevel(_mainWindowProvider.GetMainWindow());
+        if (topLevel?.StorageProvider is not IStorageProvider storageProvider)
         {
             return null;
         }
 
-        return result[0];
+        var result = await storageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+        {
+            AllowMultiple = false,
+            FileTypeFilter = new[] { JsonFileType }
+        });
+
+        return result.Count > 0 ? result[0].Path.LocalPath : null;
     }
 
     /// <summary>
@@ -56,14 +59,17 @@ public class FileDialogService : IFileDialogService
     /// </returns>
     public async Task<string?> ShowSaveDialogAsync()
     {
-        var dialog = new SaveFileDialog()
+        var topLevel = TopLevel.GetTopLevel(_mainWindowProvider.GetMainWindow());
+        if (topLevel?.StorageProvider is not IStorageProvider storageProvider)
         {
-            Filters = new List<FileDialogFilter>
-            {
-                new() { Name = "JSON", Extensions = { "json" } }
-            }
-        };
+            return null;
+        }
 
-        return await dialog.ShowAsync(_mainWindowProvider.GetMainWindow());
+        var result = await storageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
+        {
+            FileTypeChoices = new[] { JsonFileType }
+        });
+
+        return result?.Path.LocalPath;
     }
 }

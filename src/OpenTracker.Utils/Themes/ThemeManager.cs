@@ -7,6 +7,7 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Markup.Xaml.Styling;
 using Avalonia.Styling;
 using ReactiveUI;
+using ReactiveUI.Primitives;
 
 namespace OpenTracker.Utils.Themes;
 
@@ -61,8 +62,7 @@ public class ThemeManager : ReactiveObject, IThemeManager
     private ITheme LoadTheme(string file)
     {
         var name = Path.GetFileNameWithoutExtension(file);
-        var xaml = File.ReadAllText(file);
-        var style = AvaloniaRuntimeXamlLoader.Parse<IStyle>(xaml);
+        var style = AvaloniaRuntimeXamlLoader.Parse<IStyle>(File.ReadAllText(file));
 
         return _themeFactory(name, style);
     }

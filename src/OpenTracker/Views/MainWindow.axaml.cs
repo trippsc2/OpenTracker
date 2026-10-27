@@ -21,9 +21,6 @@ public partial class MainWindow : DialogWindowBase
         BoundsProperty.Changed.AddClassHandler<MainWindow>(OnBoundsChanged);
         InitializeComponent();
         DataContextChanged += OnDataContextChanged;
-#if DEBUG
-        this.AttachDevTools();
-#endif
     }
 
     protected override void OnClosing(WindowClosingEventArgs e)

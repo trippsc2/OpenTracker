@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using System.Reactive;
+using RxVoid = ReactiveUI.Primitives.RxVoid;
 using System.Threading;
 using OpenTracker.Models.AutoTracking.SNESConnectors.Socket;
 using OpenTracker.Models.Logging;
@@ -9,7 +9,7 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors.Requests;
 /// <summary>
 /// This class contains the request to attach a device. 
 /// </summary>
-public class AttachDeviceRequest : RequestBase<Unit>, IAttachDeviceRequest
+public class AttachDeviceRequest : RequestBase<RxVoid>, IAttachDeviceRequest
 {
     /// <summary>
     /// Constructor
@@ -26,7 +26,7 @@ public class AttachDeviceRequest : RequestBase<Unit>, IAttachDeviceRequest
     {
     }
 
-    public override Unit ProcessResponseAndReturnResults(IMessageEventArgsWrapper messageEventArgs,
+    public override RxVoid ProcessResponseAndReturnResults(IMessageEventArgsWrapper messageEventArgs,
         ManualResetEvent sendEvent)
     {
         return default;

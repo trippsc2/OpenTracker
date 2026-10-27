@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+using RxVoid = ReactiveUI.Primitives.RxVoid;
+using System.Collections.Generic;
 using System.ComponentModel;
-using System.Reactive;
 using Avalonia.Input;
 using Avalonia.Threading;
 using OpenTracker.Models.Locations;
@@ -30,7 +30,7 @@ public class PinnedLocationVM : ViewModelBase, IPinnedLocationVM
     public List<ISectionVM> Sections { get; }
     public IPinnedLocationNoteAreaVM Notes { get; }
 
-    public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
+    public ReactiveCommand<PointerReleasedEventArgs, RxVoid> HandleClick { get; }
 
     /// <summary>
     /// Constructor

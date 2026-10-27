@@ -1,5 +1,5 @@
 using Autofac;
-using Avalonia.ReactiveUI;
+using ReactiveUI.Avalonia;
 using ReactiveUI;
 using Splat;
 using Splat.Autofac;
@@ -22,7 +22,6 @@ private static void ConfigureAutofacResolver(ContainerBuilder builder)
 {
     var autofacResolver = builder.UseAutofacDependencyResolver();
     builder.RegisterInstance(autofacResolver);
-    RxApp.MainThreadScheduler = AvaloniaScheduler.Instance;
 }
 
 private static void ConfigureReactiveUIServices()

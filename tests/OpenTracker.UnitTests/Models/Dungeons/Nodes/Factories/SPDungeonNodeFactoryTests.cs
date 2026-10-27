@@ -274,7 +274,7 @@ public class SPDungeonNodeFactoryTests
         var connections = new List<INodeConnection>();
             
         // Configure the substitute to return consistent node instances
-        var expectedNode = Substitute.For<INode>();
+        var expectedNode = Substitute.For<IDungeonNode>();
         dungeonData.Nodes[fromNodeID].Returns(expectedNode);
             
         _sut.PopulateNodeConnections(dungeonData, id, node, connections);
@@ -303,7 +303,7 @@ public class SPDungeonNodeFactoryTests
         var connections = new List<INodeConnection>();
             
         // Configure the substitute to return consistent node instances
-        var expectedNode = Substitute.For<INode>();
+        var expectedNode = Substitute.For<IDungeonNode>();
         dungeonData.Nodes[fromNodeID].Returns(expectedNode);
             
         _sut.PopulateNodeConnections(dungeonData, id, node, connections);
@@ -332,7 +332,7 @@ public class SPDungeonNodeFactoryTests
         var connections = new List<INodeConnection>();
             
         // Configure the substitute to return consistent node instances
-        var expectedNode = Substitute.For<INode>();
+        var expectedNode = Substitute.For<IDungeonNode>();
         dungeonData.Nodes[fromNodeID].Returns(expectedNode);
             
         _sut.PopulateNodeConnections(dungeonData, id, node, connections);
@@ -362,7 +362,7 @@ public class SPDungeonNodeFactoryTests
         var connections = new List<INodeConnection>();
             
         // Configure the substitute to return consistent node instances
-        var expectedNode = Substitute.For<INode>();
+        var expectedNode = Substitute.For<IDungeonNode>();
         dungeonData.Nodes[fromNodeID].Returns(expectedNode);
             
         _sut.PopulateNodeConnections(dungeonData, id, node, connections);
@@ -391,7 +391,7 @@ public class SPDungeonNodeFactoryTests
         var connections = new List<INodeConnection>();
             
         // Configure the substitute to return consistent node instances
-        var expectedNode = Substitute.For<INode>();
+        var expectedNode = Substitute.For<IDungeonNode>();
         dungeonData.Nodes[fromNodeID].Returns(expectedNode);
             
         _sut.PopulateNodeConnections(dungeonData, id, node, connections);

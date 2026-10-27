@@ -1,6 +1,6 @@
+using RxVoid = ReactiveUI.Primitives.RxVoid;
 using System.ComponentModel;
 using System.Globalization;
-using System.Reactive;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Input;
@@ -80,10 +80,10 @@ public class StandardMapLocationVM : ViewModelBase, IShapedMapLocationVMBase
 
     public bool LabelVisible => _trackerSettings.ShowItemCountsOnMap && Size > 70.0 && Label is not null;
         
-    public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
-    public ReactiveCommand<RoutedEventArgs, Unit> HandleDoubleClick { get; }
-    public ReactiveCommand<PointerEventArgs, Unit> HandlePointerEntered { get; }
-    public ReactiveCommand<PointerEventArgs, Unit> HandlePointerExited { get; }
+    public ReactiveCommand<PointerReleasedEventArgs, RxVoid> HandleClick { get; }
+    public ReactiveCommand<RoutedEventArgs, RxVoid> HandleDoubleClick { get; }
+    public ReactiveCommand<PointerEventArgs, RxVoid> HandlePointerEntered { get; }
+    public ReactiveCommand<PointerEventArgs, RxVoid> HandlePointerExited { get; }
 
     public delegate StandardMapLocationVM Factory(IMapLocation mapLocation);
 

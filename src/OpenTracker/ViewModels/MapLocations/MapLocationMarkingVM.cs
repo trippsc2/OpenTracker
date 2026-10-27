@@ -1,5 +1,5 @@
+using RxVoid = ReactiveUI.Primitives.RxVoid;
 using System.ComponentModel;
-using System.Reactive;
 using System.Threading.Tasks;
 using Avalonia.Input;
 using Avalonia.Threading;
@@ -27,7 +27,7 @@ public class MapLocationMarkingVM : ViewModelBase, IMapLocationMarkingVM
 
     public IMarkingSelectVM MarkingSelect { get; }
         
-    public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
+    public ReactiveCommand<PointerReleasedEventArgs, RxVoid> HandleClick { get; }
 
     /// <summary>
     /// Constructor

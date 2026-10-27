@@ -1,8 +1,8 @@
-﻿using System;
+using RxVoid = ReactiveUI.Primitives.RxVoid;
+using System;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
-using System.Reactive;
 using System.Threading.Tasks;
 using Avalonia.Threading;
 using OpenTracker.Models.AutoTracking.Logging;
@@ -35,8 +35,8 @@ public class AutoTrackerLogVM : ViewModelBase, IAutoTrackerLogVM
         set => this.RaiseAndSetIfChanged(ref _logVisible, value);
     }
 
-    public ReactiveCommand<Unit, Unit> ResetLogCommand { get; }
-    public ReactiveCommand<Unit, Unit> SaveLogCommand { get; }
+    public ReactiveCommand<RxVoid, RxVoid> ResetLogCommand { get; }
+    public ReactiveCommand<RxVoid, RxVoid> SaveLogCommand { get; }
         
     private readonly ObservableAsPropertyHelper<bool> _isResettingLog;
     private bool IsResettingLog => _isResettingLog.Value;

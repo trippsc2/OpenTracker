@@ -9,9 +9,6 @@ public partial class CaptureDesignDialog : DialogWindowBase
     public CaptureDesignDialog()
     {
         InitializeComponent();
-#if DEBUG
-        this.AttachDevTools();
-#endif
     }
 
     private void InitializeComponent()

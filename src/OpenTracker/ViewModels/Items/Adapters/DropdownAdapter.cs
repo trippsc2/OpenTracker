@@ -1,5 +1,5 @@
+using RxVoid = ReactiveUI.Primitives.RxVoid;
 using System.ComponentModel;
-using System.Reactive;
 using Avalonia.Input;
 using Avalonia.Threading;
 using OpenTracker.Models.Dropdowns;
@@ -23,7 +23,7 @@ public class DropdownAdapter : ViewModelBase, IItemAdapter
     public string LabelColor { get; } = "#ffffffff";
     public IBossSelectPopupVM? BossSelect { get; } = null;
 
-    public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
+    public ReactiveCommand<PointerReleasedEventArgs, RxVoid> HandleClick { get; }
 
     public delegate DropdownAdapter Factory(IDropdown dropdown, string imageSourceBase);
 

@@ -1,11 +1,11 @@
-using System.Reactive;
+using RxVoid = ReactiveUI.Primitives.RxVoid;
 
 namespace OpenTracker.Models.AutoTracking.SNESConnectors.Requests;
 
 /// <summary>
 /// This interface contains the request to register the app name. 
 /// </summary>
-public interface IRegisterNameRequest : IRequest<Unit>
+public interface IRegisterNameRequest : IRequest<RxVoid>
 {
     /// <summary>
     /// A factory for creating new <see cref="IRegisterNameRequest"/> objects.

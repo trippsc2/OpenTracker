@@ -1,6 +1,6 @@
+using RxVoid = ReactiveUI.Primitives.RxVoid;
 using System.ComponentModel;
 using System.Linq;
-using System.Reactive;
 using System.Text;
 using Avalonia.Input;
 using Avalonia.Threading;
@@ -44,7 +44,7 @@ public class PrizeAdapter : ViewModelBase, IItemAdapter
         }
     }
         
-    public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
+    public ReactiveCommand<PointerReleasedEventArgs, RxVoid> HandleClick { get; }
 
     public delegate PrizeAdapter Factory(IPrizeSection section);
 

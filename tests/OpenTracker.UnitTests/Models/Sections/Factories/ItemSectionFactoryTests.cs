@@ -340,6 +340,12 @@ public class ItemSectionFactoryTests
     {
         switch (id)
         {
+            case LocationID.Pedestal:
+                return OverworldNodes[OverworldNodeID.LightWorldBook];
+            case LocationID.BombosTablet:
+                return OverworldNodes[OverworldNodeID.BombosTabletLedgeBook];
+            case LocationID.EtherTablet:
+                return OverworldNodes[OverworldNodeID.DeathMountainWestTopBook];
             case LocationID.LumberjackCave:
             case LocationID.RaceGame:
             case LocationID.Library:
@@ -386,6 +392,9 @@ public class ItemSectionFactoryTests
                     }]
                 }];
             case LocationID.Pedestal:
+            case LocationID.Tavern:
+            case LocationID.GroveDiggingSpot:
+            case LocationID.BumperCave:
             case LocationID.BottleVendor:
             case LocationID.RaceGame:
             case LocationID.MushroomSpot:
@@ -410,7 +419,6 @@ public class ItemSectionFactoryTests
             case LocationID.BlindsHouse:
             case LocationID.TheWell:
             case LocationID.ChickenHouse:
-            case LocationID.Tavern:
             case LocationID.SickKid:
             case LocationID.MagicBat:
             case LocationID.Library:
@@ -421,7 +429,6 @@ public class ItemSectionFactoryTests
             case LocationID.BonkRocks:
             case LocationID.KingsTomb:
             case LocationID.AginahsCave:
-            case LocationID.GroveDiggingSpot:
             case LocationID.Dam:
             case LocationID.MiniMoldormCave:
             case LocationID.IceRodCave:
@@ -434,7 +441,6 @@ public class ItemSectionFactoryTests
             case LocationID.TreasureGame:
             case LocationID.BombableShack:
             case LocationID.HammerPegs:
-            case LocationID.BumperCave:
             case LocationID.MireShack:
             case LocationID.CheckerboardCave:
             case LocationID.SpectacleRock:

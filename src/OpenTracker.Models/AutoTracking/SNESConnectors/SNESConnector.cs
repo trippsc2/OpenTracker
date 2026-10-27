@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Reactive;
+using RxVoid = ReactiveUI.Primitives.RxVoid;
 using System.Threading;
 using System.Threading.Tasks;
 using OpenTracker.Models.AutoTracking.SNESConnectors.Requests;
@@ -374,7 +374,7 @@ public class SNESConnector : ReactiveObject, ISNESConnector
                 request.Description);
         }
 
-        if (request is not IRequest<Unit>)
+        if (request is not IRequest<RxVoid>)
         {
             Socket!.OnMessage += HandleMessage;
             _logger.Debug("Subscribed to message handler successfully");
@@ -388,7 +388,7 @@ public class SNESConnector : ReactiveObject, ISNESConnector
         _logger.Information("Sent request \'{Request}\' successfully",
             request.Description);
 
-        if (request is IRequest<Unit>)
+        if (request is IRequest<RxVoid>)
         {
             _logger.Debug("Skipped waiting for received data for request \'{Request}\'",
                 request.Description);

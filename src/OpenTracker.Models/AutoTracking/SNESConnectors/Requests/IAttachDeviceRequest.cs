@@ -1,11 +1,11 @@
-using System.Reactive;
+using RxVoid = ReactiveUI.Primitives.RxVoid;
 
 namespace OpenTracker.Models.AutoTracking.SNESConnectors.Requests;
 
 /// <summary>
 /// This interface contains the request to attach a device. 
 /// </summary>
-public interface IAttachDeviceRequest : IRequest<Unit>
+public interface IAttachDeviceRequest : IRequest<RxVoid>
 {
     /// <summary>
     /// A factory for creating new <see cref="IAttachDeviceRequest"/> objects.

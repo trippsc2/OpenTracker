@@ -1,4 +1,4 @@
-using System.Reactive;
+using RxVoid = ReactiveUI.Primitives.RxVoid;
 using System.Threading;
 using Autofac;
 using NSubstitute;
@@ -52,7 +52,7 @@ public class RegisterNameRequestTests
     {
         var messageEventArgs = Substitute.For<IMessageEventArgsWrapper>();
             
-        Assert.Equal(Unit.Default, _sut.ProcessResponseAndReturnResults(
+        Assert.Equal(RxVoid.Default, _sut.ProcessResponseAndReturnResults(
             messageEventArgs, new ManualResetEvent(false)));
     }
         

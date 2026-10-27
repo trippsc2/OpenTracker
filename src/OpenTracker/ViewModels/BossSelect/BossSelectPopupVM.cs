@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+using RxVoid = ReactiveUI.Primitives.RxVoid;
+using System.Collections.Generic;
 using System.ComponentModel;
-using System.Reactive;
 using System.Threading.Tasks;
 using Avalonia.Threading;
 using OpenTracker.Models.BossPlacements;
@@ -32,7 +32,7 @@ public class BossSelectPopupVM : ViewModelBase, IBossSelectPopupVM
     }
 
     // ReSharper disable MemberCanBePrivate.Global
-    public ReactiveCommand<BossType?, Unit> ChangeBoss { get; }
+    public ReactiveCommand<BossType?, RxVoid> ChangeBoss { get; }
     // ReSharper restore MemberCanBePrivate.Global
 
     private readonly ObservableAsPropertyHelper<bool> _isChangingBoss;

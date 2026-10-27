@@ -1,6 +1,6 @@
-﻿using System.ComponentModel;
+using RxVoid = ReactiveUI.Primitives.RxVoid;
+using System.ComponentModel;
 using System.Globalization;
-using System.Reactive;
 using System.Threading.Tasks;
 using Avalonia.Input;
 using Avalonia.Threading;
@@ -36,7 +36,7 @@ public class DungeonItemSectionVM : ViewModelBase, IDungeonItemSectionVM
 
     public string NumberString => _section.Available.ToString(CultureInfo.InvariantCulture);
         
-    public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClick { get; }
+    public ReactiveCommand<PointerReleasedEventArgs, RxVoid> HandleClick { get; }
 
     /// <summary>
     /// Constructor

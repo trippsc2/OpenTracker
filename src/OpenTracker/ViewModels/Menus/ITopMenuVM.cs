@@ -1,5 +1,5 @@
-﻿using System;
-using System.Reactive;
+using RxVoid = ReactiveUI.Primitives.RxVoid;
+using System;
 using ReactiveUI;
 
 namespace OpenTracker.ViewModels.Menus;
@@ -9,13 +9,13 @@ namespace OpenTracker.ViewModels.Menus;
 /// </summary>
 public interface ITopMenuVM
 {
-    ReactiveCommand<Unit, Unit> Reset { get; }
-    ReactiveCommand<Unit, Unit> Undo { get; }
-    ReactiveCommand<Unit, Unit> Redo { get; }
-    ReactiveCommand<Unit, Unit> ToggleDisplayAllLocations { get; }
-    ReactiveCommand<Unit, Unit> Open { get; }
-    ReactiveCommand<Unit, Unit> Save { get; }
-    ReactiveCommand<Unit, Unit> SaveAs { get; }
+    ReactiveCommand<RxVoid, RxVoid> Reset { get; }
+    ReactiveCommand<RxVoid, RxVoid> Undo { get; }
+    ReactiveCommand<RxVoid, RxVoid> Redo { get; }
+    ReactiveCommand<RxVoid, RxVoid> ToggleDisplayAllLocations { get; }
+    ReactiveCommand<RxVoid, RxVoid> Open { get; }
+    ReactiveCommand<RxVoid, RxVoid> Save { get; }
+    ReactiveCommand<RxVoid, RxVoid> SaveAs { get; }
 
     delegate ITopMenuVM Factory(Action closeAction);
 }

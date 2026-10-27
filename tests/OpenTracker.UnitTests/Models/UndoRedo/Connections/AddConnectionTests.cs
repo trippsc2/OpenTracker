@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using Autofac;
 using NSubstitute;
 using OpenTracker.Models.Locations.Map.Connections;
@@ -10,18 +11,20 @@ public class AddConnectionTests
 {
     private readonly IMapConnection _connection = Substitute.For<IMapConnection>();
     private readonly IMapConnectionCollection _connections = Substitute.For<IMapConnectionCollection>();
+    private readonly ObservableCollection<IMapConnection> _collection = new();
 
     private readonly AddMapConnection _sut;
 
     public AddConnectionTests()
     {
+        _connections.Connections.Returns(_collection);
         _sut = new AddMapConnection(_connections, _connection);
     }
         
     [Fact]
     public void CanExecute_ShouldReturnTrue_WhenConnectionCollectionContainsReturnsFalse()
     {
-        _connections.Connections.Contains(_connection).Returns(false);
+        
             
         Assert.True(_sut.CanExecute());
     }
@@ -29,7 +32,7 @@ public class AddConnectionTests
     [Fact]
     public void CanExecute_ShouldReturnFalse_WhenConnectionCollectionContainsConnection()
     {
-        _connections.Connections.Contains(_connection).Returns(true);
+        _collection.Add(_connection);
             
         Assert.False(_sut.CanExecute());
     }
@@ -39,7 +42,7 @@ public class AddConnectionTests
     {
         _sut.ExecuteDo();
 
-        _connections.Connections.Received().Add(_connection);
+        Assert.Contains(_connection, _collection);
     }
 
     [Fact]
@@ -48,7 +51,7 @@ public class AddConnectionTests
         _sut.ExecuteDo();
         _sut.ExecuteUndo();
 
-        _connections.Connections.Received().Remove(_connection);
+        Assert.DoesNotContain(_connection, _collection);
     }
 
     [Fact]

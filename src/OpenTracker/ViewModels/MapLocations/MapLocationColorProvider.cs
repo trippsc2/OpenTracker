@@ -1,5 +1,5 @@
+using RxVoid = ReactiveUI.Primitives.RxVoid;
 using System.ComponentModel;
-using System.Reactive;
 using Avalonia.Input;
 using Avalonia.Threading;
 using OpenTracker.Models.Locations;
@@ -34,8 +34,8 @@ public class MapLocationColorProvider : ViewModelBase, IMapLocationColorProvider
     public string BorderColor => Highlighted ? "#ffffffff" : "#ff000000";
     public string Color => _colorSettings.AccessibilityColors[_mapLocation.Location.Accessibility];
         
-    public ReactiveCommand<PointerEventArgs, Unit> HandlePointerEntered { get; }
-    public ReactiveCommand<PointerEventArgs, Unit> HandlePointerExited { get; }
+    public ReactiveCommand<PointerEventArgs, RxVoid> HandlePointerEntered { get; }
+    public ReactiveCommand<PointerEventArgs, RxVoid> HandlePointerExited { get; }
 
     /// <summary>
     /// Constructor

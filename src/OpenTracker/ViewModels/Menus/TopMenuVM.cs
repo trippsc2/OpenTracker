@@ -1,7 +1,7 @@
-﻿using System;
+using RxVoid = ReactiveUI.Primitives.RxVoid;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Reactive;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Layout;
@@ -48,11 +48,11 @@ public class TopMenuVM : ViewModelBase, ITopMenuVM
     public List<IMenuItemVM> Items { get; }
 
 
-    public ReactiveCommand<Unit, Unit> Open { get; }
-    public ReactiveCommand<Unit, Unit> Save { get; }
-    public ReactiveCommand<Unit, Unit> SaveAs { get; }
-    public ReactiveCommand<Unit, Unit> Reset { get; }
-    public ReactiveCommand<Unit, Unit> Close { get; }
+    public ReactiveCommand<RxVoid, RxVoid> Open { get; }
+    public ReactiveCommand<RxVoid, RxVoid> Save { get; }
+    public ReactiveCommand<RxVoid, RxVoid> SaveAs { get; }
+    public ReactiveCommand<RxVoid, RxVoid> Reset { get; }
+    public ReactiveCommand<RxVoid, RxVoid> Close { get; }
 
     private readonly ObservableAsPropertyHelper<bool> _isOpening;
     private bool IsOpening => _isOpening.Value;
@@ -69,10 +69,10 @@ public class TopMenuVM : ViewModelBase, ITopMenuVM
     public bool CanUndo => _undoRedoManager.CanUndo;
     public bool CanRedo => _undoRedoManager.CanRedo;
 
-    public ReactiveCommand<Unit, Unit> Undo { get; }
-    public ReactiveCommand<Unit, Unit> Redo { get; }
-    public ReactiveCommand<Unit, Unit> AutoTracker { get; }
-    public ReactiveCommand<Unit, Unit> SequenceBreaks { get; }
+    public ReactiveCommand<RxVoid, RxVoid> Undo { get; }
+    public ReactiveCommand<RxVoid, RxVoid> Redo { get; }
+    public ReactiveCommand<RxVoid, RxVoid> AutoTracker { get; }
+    public ReactiveCommand<RxVoid, RxVoid> SequenceBreaks { get; }
 
     private readonly ObservableAsPropertyHelper<bool> _isUndoing;
     private bool IsUndoing => _isUndoing.Value;
@@ -86,32 +86,32 @@ public class TopMenuVM : ViewModelBase, ITopMenuVM
     private readonly ObservableAsPropertyHelper<bool> _isOpeningSequenceBreak;
     private bool IsOpeningSequenceBreak => _isOpeningSequenceBreak.Value;
         
-    public ReactiveCommand<Unit, Unit> CaptureDesign { get; }
+    public ReactiveCommand<RxVoid, RxVoid> CaptureDesign { get; }
 
     private readonly ObservableAsPropertyHelper<bool> _isOpeningCaptureDesign;
     public bool IsOpeningCaptureDesign => _isOpeningCaptureDesign.Value;
 
-    public ReactiveCommand<ITheme, Unit> ChangeTheme { get; }
+    public ReactiveCommand<ITheme, RxVoid> ChangeTheme { get; }
         
-    public ReactiveCommand<Unit, Unit> ToggleDisplayAllLocations { get; }
-    public ReactiveCommand<Unit, Unit> ToggleShowItemCountsOnMap { get; }
-    public ReactiveCommand<Unit, Unit> ToggleDisplayMapsCompasses { get; }
-    public ReactiveCommand<Unit, Unit> ToggleAlwaysDisplayDungeonItems { get; }
+    public ReactiveCommand<RxVoid, RxVoid> ToggleDisplayAllLocations { get; }
+    public ReactiveCommand<RxVoid, RxVoid> ToggleShowItemCountsOnMap { get; }
+    public ReactiveCommand<RxVoid, RxVoid> ToggleDisplayMapsCompasses { get; }
+    public ReactiveCommand<RxVoid, RxVoid> ToggleAlwaysDisplayDungeonItems { get; }
 
-    public ReactiveCommand<Unit, Unit> ColorSelect { get; }
+    public ReactiveCommand<RxVoid, RxVoid> ColorSelect { get; }
 
     private readonly ObservableAsPropertyHelper<bool> _isOpeningColorSelect;
     private bool IsOpeningColorSelect => _isOpeningColorSelect.Value;
 
-    public ReactiveCommand<Orientation?, Unit> ChangeLayoutOrientation { get; }
-    public ReactiveCommand<Orientation?, Unit> ChangeMapOrientation { get; }
-    public ReactiveCommand<Dock, Unit> ChangeHorizontalUIPanelPlacement { get; }
-    public ReactiveCommand<Dock, Unit> ChangeVerticalUIPanelPlacement { get; }
-    public ReactiveCommand<Dock, Unit> ChangeHorizontalItemsPlacement { get; }
-    public ReactiveCommand<Dock, Unit> ChangeVerticalItemsPlacement { get; }
-    public ReactiveCommand<double, Unit> ChangeUIScale { get; }
+    public ReactiveCommand<Orientation?, RxVoid> ChangeLayoutOrientation { get; }
+    public ReactiveCommand<Orientation?, RxVoid> ChangeMapOrientation { get; }
+    public ReactiveCommand<Dock, RxVoid> ChangeHorizontalUIPanelPlacement { get; }
+    public ReactiveCommand<Dock, RxVoid> ChangeVerticalUIPanelPlacement { get; }
+    public ReactiveCommand<Dock, RxVoid> ChangeHorizontalItemsPlacement { get; }
+    public ReactiveCommand<Dock, RxVoid> ChangeVerticalItemsPlacement { get; }
+    public ReactiveCommand<double, RxVoid> ChangeUIScale { get; }
 
-    public ReactiveCommand<Unit, Unit> About { get; }
+    public ReactiveCommand<RxVoid, RxVoid> About { get; }
 
     private readonly ObservableAsPropertyHelper<bool> _isOpeningAbout;
     private bool IsOpeningAbout => _isOpeningAbout.Value;

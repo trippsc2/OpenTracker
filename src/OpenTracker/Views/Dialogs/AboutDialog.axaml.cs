@@ -9,9 +9,6 @@ public partial class AboutDialog : DialogWindowBase
     public AboutDialog()
     {
         InitializeComponent();
-#if DEBUG
-        this.AttachDevTools();
-#endif
     }
 
     private void InitializeComponent()
